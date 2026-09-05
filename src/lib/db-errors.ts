@@ -1,0 +1,88 @@
+/**
+ * Drizzle wrapt fouten uit de driver, waardoor de Postgres-foutcode en de
+ * naam van de geschonden constraint niet in error.message staan maar in
+ * error.cause. Zonder deze module krijgt een gebruiker een kale 500 in
+ * plaats van te horen wat er mis is.
+ */
+
+export type PostgresErrorInfo = {
+  code: string | null
+  constraint: string | null
+  detail: string | null
+}
+
+/** Leest de Postgres-foutdetails uit een (mogelijk gewrapte) fout. */
+export function readPostgresError(error: unknown): PostgresErrorInfo | null {
+  let current: unknown = error
+
+  // Maximaal een paar niveaus door de cause-keten lopen.
+  for (let depth = 0; depth < 5 && current !== null && current !== undefined; depth++) {
+    if (typeof current === 'object') {
+      const candidate = current as Record<string, unknown>
+      if (typeof candidate.code === 'string') {
+        return {
+          code: candidate.code,
+          constraint:
+            typeof candidate.constraint_name === 'string'
+              ? candidate.constraint_name
+              : typeof candidate.constraint === 'string'
+                ? candidate.constraint
+                : null,
+          detail: typeof candidate.detail === 'string' ? candidate.detail : null,
+        }
+      }
+      current = candidate.cause
+      continue
+    }
+    break
+  }
+
+  return null
+}
+
+/** True als de fout een schending is van de opgegeven constraint. */
+export function isConstraintViolation(error: unknown, constraint: string): boolean {
+  return readPostgresError(error)?.constraint === constraint
+}
+
+/** Postgres-foutcodes die we in de app apart willen behandelen. */
+export const PG_UNIQUE_VIOLATION = '23505'
+export const PG_CHECK_VIOLATION = '23514'
+export const PG_FOREIGN_KEY_VIOLATION = '23503'
+
+/**
+ * Zet een databasefout om naar een melding die een mens begrijpt.
+ * Geeft null als het geen bekende constraint is, zodat de aanroeper de
+ * fout gewoon kan doorgooien in plaats van hem te verbloemen.
+ */
+export function describeLedgerDbError(error: unknown): string | null {
+  const info = readPostgresError(error)
+  if (!info) return null
+
+  switch (info.constraint) {
+    case 'ledger_source_ref_idx':
+      return 'Deze taak is al eerder afgeboekt op deze wallet.'
+    case 'sign_matches_kind':
+      return 'Het bedrag past niet bij het soort boeking (bijschrijving moet positief zijn, afschrijving negatief).'
+    case 'amount_not_zero':
+      return 'Een boeking van € 0,00 kan niet worden opgeslagen.'
+    case 'only_corrections_reverse':
+      return 'Alleen een correctie mag naar een eerdere boeking verwijzen.'
+    case 'client_needs_org':
+      return 'Een klantgebruiker moet aan een organisatie gekoppeld zijn.'
+    case 'invoices_org_number_idx':
+      return 'Dit factuurnummer bestaat al voor deze klant.'
+    case 'organizations_slug_idx':
+      return 'Er bestaat al een klant met deze naam.'
+    case 'users_email_idx':
+      return 'Dit e-mailadres is al in gebruik.'
+    default:
+      break
+  }
+
+  if (info.code === PG_FOREIGN_KEY_VIOLATION) {
+    return 'Deze actie kan niet worden uitgevoerd omdat er nog gekoppelde gegevens zijn. Financiële historie wordt nooit verwijderd.'
+  }
+
+  return null
+}
