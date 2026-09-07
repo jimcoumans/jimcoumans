@@ -75,6 +75,13 @@ export const serviceUnitEnum = pgEnum('service_unit', [
 
 export const syncStatusEnum = pgEnum('sync_status', ['running', 'success', 'failed'])
 
+/** Staat van een abonnement. Alleen 'active' wordt gefactureerd. */
+export const subscriptionStatusEnum = pgEnum('subscription_status', [
+  'active', // loopt: wordt maandelijks gefactureerd
+  'paused', // tijdelijk stil: geen facturen, wel bewaard
+  'ended', // gestopt
+])
+
 /* ------------------------------- Klanten -------------------------------- */
 
 export const organizations = pgTable(
@@ -223,6 +230,91 @@ export const services = pgTable(
   ],
 )
 
+/* ------------------------------ Abonnementen ---------------------------- */
+
+/**
+ * Een doorlopend abonnement van een klant.
+ *
+ * Zolang de staat 'active' is, wordt op de facturatiedag van elke maand een
+ * factuur aangemaakt en het bedrag als budget bijgeschreven op de wallet.
+ * Dat gebeurt door de dagelijkse run in src/lib/billing.ts.
+ *
+ * Dat een maand niet twee keer gefactureerd kan worden, is geen kwestie van
+ * goed opletten: op invoices staat een unieke index op (abonnement, periode).
+ * De database weigert de tweede poging, ook als de run dubbel draait.
+ */
+export const subscriptions = pgTable(
+  'subscriptions',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    organizationId: uuid('organization_id')
+      .notNull()
+      .references(() => organizations.id, { onDelete: 'cascade' }),
+    /**
+     * De wallet waar het budget op komt.
+     * ON DELETE RESTRICT: een wallet met een abonnement eraan verdwijnt niet
+     * zomaar, want dan zou het budget nergens meer heen kunnen.
+     */
+    walletId: uuid('wallet_id')
+      .notNull()
+      .references(() => wallets.id, { onDelete: 'restrict' }),
+
+    name: text('name').notNull(),
+    description: text('description'),
+
+    /** Maandbedrag exclusief btw, in centen. Dit wordt het budget. */
+    amountExclVatCents: integer('amount_excl_vat_cents').notNull(),
+    /** Btw-percentage voor de factuur. Het budget is altijd exclusief btw. */
+    vatRatePercent: integer('vat_rate_percent').notNull().default(21),
+
+    status: subscriptionStatusEnum('status').notNull().default('active'),
+
+    /**
+     * Dag van de maand waarop gefactureerd wordt. Maximaal 28, zodat de
+     * dag in februari ook bestaat.
+     */
+    billingDay: integer('billing_day').notNull().default(2),
+
+    /** Eerste maand die gefactureerd wordt. */
+    startedOn: timestamp('started_on', { withTimezone: true }).notNull(),
+    /** Laatste maand die gefactureerd wordt. Leeg = doorlopend. */
+    endsOn: timestamp('ends_on', { withTimezone: true }),
+
+    /** Optioneel: bij welke dienst uit de catalogus dit abonnement hoort. */
+    serviceId: uuid('service_id').references(() => services.id, {
+      onDelete: 'set null',
+    }),
+
+    /** Task-id van het abonnement in ClickUp, voor de koppeling. */
+    clickupTaskId: text('clickup_task_id'),
+
+    notes: text('notes'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('subscriptions_org_idx').on(t.organizationId),
+    index('subscriptions_wallet_idx').on(t.walletId),
+    index('subscriptions_status_idx').on(t.status),
+    uniqueIndex('subscriptions_clickup_idx').on(t.clickupTaskId),
+    check('subscription_amount_positive', sql`${t.amountExclVatCents} > 0`),
+    check(
+      'subscription_billing_day_valid',
+      sql`${t.billingDay} >= 1 AND ${t.billingDay} <= 28`,
+    ),
+    check(
+      'subscription_vat_valid',
+      sql`${t.vatRatePercent} >= 0 AND ${t.vatRatePercent} <= 100`,
+    ),
+    // Een einddatum voor de startdatum zou betekenen dat er nooit
+    // gefactureerd wordt; dat is bijna zeker een typefout.
+    check(
+      'subscription_ends_after_start',
+      sql`${t.endsOn} IS NULL OR ${t.endsOn} >= ${t.startedOn}`,
+    ),
+  ],
+)
+
 /* ------------------------------- Facturen ------------------------------- */
 
 export const invoices = pgTable(
@@ -245,12 +337,43 @@ export const invoices = pgTable(
     /** Id in Moneybird, voor latere koppeling. */
     moneybirdId: text('moneybird_id'),
     pdfUrl: text('pdf_url'),
+
+    /**
+     * Gevuld als deze factuur uit een abonnement komt.
+     *
+     * ON DELETE RESTRICT: een abonnement met facturen kan niet verwijderd
+     * worden. Dat is met opzet en om twee redenen. Financiele historie
+     * verdwijnt niet, en met SET NULL zou de periode achterblijven zonder
+     * abonnement, waardoor de check hieronder zou breken en dezelfde maand
+     * opnieuw gefactureerd kon worden. Een abonnement dat afloopt zet je op
+     * 'ended'; verwijderen hoort niet.
+     */
+    subscriptionId: uuid('subscription_id').references(() => subscriptions.id, {
+      onDelete: 'restrict',
+    }),
+    /**
+     * De maand waarover deze abonnementsfactuur gaat, als 'JJJJ-MM'.
+     * Samen met subscriptionId uniek: dat maakt dubbel factureren
+     * onmogelijk in plaats van onwaarschijnlijk.
+     */
+    period: text('period'),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [
     index('invoices_org_idx').on(t.organizationId),
     uniqueIndex('invoices_org_number_idx').on(t.organizationId, t.number),
     uniqueIndex('invoices_moneybird_idx').on(t.moneybirdId),
+    // De sluitsteen onder de maandelijkse run: een abonnement kan per
+    // periode maar een factuur hebben.
+    uniqueIndex('invoices_subscription_period_idx').on(t.subscriptionId, t.period),
+    index('invoices_subscription_idx').on(t.subscriptionId),
+    // Een periode zonder abonnement, of een abonnement zonder periode, zou
+    // buiten die unieke index vallen en dus dubbel kunnen.
+    check(
+      'subscription_needs_period',
+      sql`(${t.subscriptionId} IS NULL) = (${t.period} IS NULL)`,
+    ),
+    check('period_format', sql`${t.period} IS NULL OR ${t.period} ~ '^[0-9]{4}-[0-9]{2}$'`),
   ],
 )
 
@@ -397,6 +520,23 @@ export const organizationsRelations = relations(organizations, ({ many }) => ({
   users: many(users),
   wallets: many(wallets),
   invoices: many(invoices),
+  subscriptions: many(subscriptions),
+}))
+
+export const subscriptionsRelations = relations(subscriptions, ({ one, many }) => ({
+  organization: one(organizations, {
+    fields: [subscriptions.organizationId],
+    references: [organizations.id],
+  }),
+  wallet: one(wallets, {
+    fields: [subscriptions.walletId],
+    references: [wallets.id],
+  }),
+  service: one(services, {
+    fields: [subscriptions.serviceId],
+    references: [services.id],
+  }),
+  invoices: many(invoices),
 }))
 
 export const usersRelations = relations(users, ({ one }) => ({
@@ -440,6 +580,10 @@ export const invoicesRelations = relations(invoices, ({ one, many }) => ({
     fields: [invoices.organizationId],
     references: [organizations.id],
   }),
+  subscription: one(subscriptions, {
+    fields: [invoices.subscriptionId],
+    references: [subscriptions.id],
+  }),
   entries: many(ledgerEntries),
 }))
 
@@ -449,5 +593,6 @@ export type Wallet = typeof wallets.$inferSelect
 export type LedgerEntry = typeof ledgerEntries.$inferSelect
 export type Invoice = typeof invoices.$inferSelect
 export type Service = typeof services.$inferSelect
+export type Subscription = typeof subscriptions.$inferSelect
 export type NewService = typeof services.$inferInsert
 export type SyncRun = typeof syncRuns.$inferSelect

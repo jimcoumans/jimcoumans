@@ -7,6 +7,7 @@ export function Header({ user, actief }: { user: SessionUser; actief?: string })
   const links = isTeam
     ? [
         { href: '/beheer', label: 'Klanten', key: 'beheer' },
+        { href: '/beheer/abonnementen', label: 'Abonnementen', key: 'abonnementen' },
         { href: '/beheer/diensten', label: 'Diensten', key: 'diensten' },
         { href: '/beheer/financieel', label: 'Financieel', key: 'financieel' },
         { href: '/beheer/medewerkers', label: 'Team', key: 'medewerkers' },

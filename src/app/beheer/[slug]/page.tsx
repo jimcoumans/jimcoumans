@@ -8,6 +8,9 @@ import { Header } from '@/components/Header'
 import { ActionForm, Field } from '@/components/ActionForm'
 import { boek, draaiTerug, nieuweWallet, nieuweGebruiker, wisselToegang } from '../actions'
 import { boekDienst, nieuweFactuur, zetFactuurStatus } from '../service-actions'
+import { nieuwAbonnement } from '../subscription-actions'
+import { SubscriptionCard, NewSubscriptionForm } from '@/components/SubscriptionCard'
+import { listSubscriptions } from '@/lib/billing'
 import { BookServiceForm } from '@/components/BookServiceForm'
 import { formatQuantity, unitShort } from '@/lib/quantity'
 import { formatCents, formatSignedCents } from '@/lib/money'
@@ -28,10 +31,11 @@ export default async function KlantPage({
   const klant = await getOrganizationBySlug(slug)
   if (!klant) notFound()
 
-  const [facturen, diensten, team] = await Promise.all([
+  const [facturen, diensten, team, abonnementen] = await Promise.all([
     getOrganizationInvoices(klant.organization.id, 20),
     listActiveServices(),
     listStaff(),
+    listSubscriptions({ organizationId: klant.organization.id }),
   ])
   const vandaag = new Date().toISOString().slice(0, 10)
 
@@ -81,6 +85,40 @@ export default async function KlantPage({
             </div>
 
             <Gebruikers klant={klant} slug={slug} />
+          </section>
+
+          <section>
+            <h2 className="mb-1 text-lg">Abonnementen</h2>
+            <p className="mb-3 text-sm text-gray-600">
+              Zolang een abonnement loopt, wordt op de facturatiedag elke maand
+              automatisch een factuur gemaakt en het budget bijgeschreven.
+            </p>
+
+            {abonnementen.length > 0 && (
+              <ul className="mb-4 space-y-3">
+                {abonnementen.map((item) => (
+                  <SubscriptionCard key={item.subscription.id} item={item} slug={slug} />
+                ))}
+              </ul>
+            )}
+
+            <div className="rounded-xl bg-white p-5 shadow-sm">
+              <h3 className="mb-3 text-sm">
+                {abonnementen.length === 0
+                  ? 'Eerste abonnement aanmaken'
+                  : 'Abonnement toevoegen'}
+              </h3>
+              <NewSubscriptionForm
+                action={nieuwAbonnement}
+                organizationId={klant.organization.id}
+                slug={slug}
+                wallets={klant.wallets.map(({ wallet }) => ({
+                  id: wallet.id,
+                  name: wallet.name,
+                }))}
+                vandaag={vandaag}
+              />
+            </div>
           </section>
 
           <Facturen
@@ -506,6 +544,7 @@ function Facturen({
                     <p className="mt-0.5 text-xs text-gray-600">
                       {formatDate(f.issuedOn)}
                       {f.description && <> &middot; {f.description}</>}
+                      {f.period && <> &middot; abonnement {f.period}</>}
                       {f.paidOn && <> &middot; betaald {formatDate(f.paidOn)}</>}
                     </p>
                     {afwijking && (

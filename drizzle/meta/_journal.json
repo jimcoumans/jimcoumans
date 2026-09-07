@@ -22,6 +22,20 @@
       "when": 1788789944844,
       "tag": "0002_kostprijs_op_boeking",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1788793164674,
+      "tag": "0003_abonnementen",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1788793796466,
+      "tag": "0004_abonnement_niet_verwijderbaar",
+      "breakpoints": true
     }
   ]
 }

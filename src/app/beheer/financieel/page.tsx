@@ -14,6 +14,7 @@ import { formatCents } from '@/lib/money'
 import { formatQuantity } from '@/lib/quantity'
 import { formatDate, formatMonth } from '@/lib/dates'
 import { CATEGORY_COLORS } from '@/lib/chart-colors'
+import { getMonthlyRecurringCents } from '@/lib/billing'
 
 /** Financieel overzicht: overall, per klant, per medewerker, per dienst. */
 export default async function FinancieelPage({
@@ -29,7 +30,7 @@ export default async function FinancieelPage({
   const gekozen = params.periode ?? 'alles'
   const periode = periodeUit(gekozen)
 
-  const [overall, perKlant, perMedewerker, perDienst, perMaand, openstaand] =
+  const [overall, perKlant, perMedewerker, perDienst, perMaand, openstaand, mrr] =
     await Promise.all([
       getOverallFigures(periode),
       getFiguresByOrganization(periode),
@@ -37,6 +38,7 @@ export default async function FinancieelPage({
       getFiguresByService(periode),
       getFiguresByMonth(12),
       getOutstandingInvoices(),
+      getMonthlyRecurringCents(),
     ])
 
   const openstaandTotaal = openstaand.reduce(
@@ -73,7 +75,13 @@ export default async function FinancieelPage({
           ))}
         </nav>
 
-        <section className="mb-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <section className="mb-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <StatTegel
+            label="Per maand terugkerend"
+            waarde={formatCents(mrr)}
+            toelichting="uit lopende abonnementen, stand van nu"
+            groot
+          />
           <StatTegel
             label="Omzet"
             waarde={formatCents(overall.revenueCents)}

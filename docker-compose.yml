@@ -1,0 +1,28 @@
+# Postgres voor lokaal ontwikkelen. Start met:
+#   docker compose up -d
+#
+# De data blijft in het volume 'jr-wallet-data' staan, ook als je de
+# container stopt. Alles weggooien: docker compose down -v
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: jr-wallet-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: jr
+      POSTGRES_PASSWORD: jrwallet
+      POSTGRES_DB: jrwallet
+    ports:
+      # 5433 in plaats van 5432, zodat een Postgres die je misschien al
+      # hebt draaien er geen last van heeft.
+      - '5433:5432'
+    volumes:
+      - jr-wallet-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U jr -d jrwallet']
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  jr-wallet-data:

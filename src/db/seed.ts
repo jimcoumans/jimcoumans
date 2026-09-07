@@ -6,9 +6,17 @@
  */
 import { eq, inArray, sql } from 'drizzle-orm'
 import { db, client } from './index'
-import { organizations, users, wallets, invoices, ledgerEntries, services } from './schema'
+import {
+  organizations,
+  users,
+  wallets,
+  invoices,
+  ledgerEntries,
+  services,
+  subscriptions,
+} from './schema'
 import { addServiceEntry, addEntry, reverseEntry } from '../lib/ledger'
-import { createInvoiceWithTopup } from '../lib/invoices'
+import { runBilling } from '../lib/billing'
 
 const DEMO_SLUGS = ['hotel-voncken-demo', 'damen-makelaardij-demo']
 
@@ -112,6 +120,11 @@ async function main() {
     for (const row of rows) {
       await db.delete(ledgerEntries).where(eq(ledgerEntries.walletId, row.id))
     }
+    // De volgorde is dwingend: boekingen verwijzen naar facturen, en
+    // facturen naar abonnementen met ON DELETE RESTRICT. Andersom weigert
+    // de database, en dat is precies de bedoeling in productie.
+    await db.delete(invoices).where(eq(invoices.organizationId, org.id))
+    await db.delete(subscriptions).where(eq(subscriptions.organizationId, org.id))
     await db.delete(organizations).where(eq(organizations.id, org.id))
   }
 
@@ -204,18 +217,22 @@ async function main() {
     .values({ organizationId: voncken!.id, name: 'Strippenkaart extra werk' })
     .returning()
 
-  // Facturen: elke factuur schrijft zijn bedrag bij als budget.
-  for (const maand of [0, 1, 2]) {
-    await createInvoiceWithTopup({
-      organizationId: voncken!.id,
-      walletId: vonckenWallet!.id,
-      number: `2026-01${12 + maand * 43}`,
-      amountExclVatCents: 250_000,
-      description: `Marketing abonnement ${new Date(2026, maand, 1).toLocaleDateString('nl-NL', { month: 'long' })}`,
-      issuedOn: new Date(2026, maand, 1),
-      status: maand < 2 ? 'paid' : 'open',
-    })
-  }
+  // Een lopend abonnement. De facturen en het budget ontstaan verderop uit
+  // de abonnementsrun, net zoals in productie.
+  //
+  // createdAt staat bewust in januari: de run factureert nooit maanden van
+  // voordat een abonnement bestond, dus zonder deze datum zou de demo geen
+  // enkele factuur opleveren.
+  await db.insert(subscriptions).values({
+    organizationId: voncken!.id,
+    walletId: vonckenWallet!.id,
+    name: 'Marketing abonnement',
+    description: 'Social, SEA, e-mail en doorontwikkeling van de website.',
+    amountExclVatCents: 250_000,
+    billingDay: 2,
+    startedOn: new Date(2026, 0, 1),
+    createdAt: new Date(2026, 0, 1),
+  })
 
   // Geleverde diensten.
   const werk: [string, number, number, number, string][] = [
@@ -290,15 +307,54 @@ async function main() {
     })
     .returning()
 
-  await createInvoiceWithTopup({
+  await db.insert(subscriptions).values({
     organizationId: damen!.id,
     walletId: damenWallet!.id,
-    number: '2026-0155',
+    name: 'Marketing abonnement',
+    description: 'SEA en social media voor de makelaardij.',
     amountExclVatCents: 95_000,
-    description: 'Marketing abonnement Q1',
-    issuedOn: new Date(2026, 0, 5),
-    status: 'paid',
+    billingDay: 2,
+    startedOn: new Date(2026, 0, 1),
+    createdAt: new Date(2026, 0, 1),
   })
+
+  // Een gepauzeerd abonnement, zodat te zien is hoe dat oogt.
+  await db.insert(subscriptions).values({
+    organizationId: damen!.id,
+    walletId: damenWallet!.id,
+    name: 'Extra contentpakket',
+    description: 'Tijdelijk stilgelegd op verzoek van de klant.',
+    amountExclVatCents: 45_000,
+    status: 'paused',
+    billingDay: 2,
+    startedOn: new Date(2026, 0, 1),
+    createdAt: new Date(2026, 0, 1),
+  })
+
+  /* ------------------- De abonnementsrun draaien ------------------------ */
+
+  // Zo ontstaan de facturen en het budget precies zoals in productie: de
+  // dagelijkse run haalt alle openstaande maanden in.
+  const peildatum = new Date(2026, 2, 5) // 5 maart 2026
+  const rapport = await runBilling({ apply: true, today: peildatum })
+  console.log(
+    `  abonnementsrun: ${rapport.gefactureerd} maanden gefactureerd voor ${rapport.bekekenAbonnementen} abonnementen`,
+  )
+
+  // De eerste twee maanden als betaald markeren, de laatste laten openstaan.
+  const gemaakt = await db
+    .select({ id: invoices.id, period: invoices.period })
+    .from(invoices)
+    .where(inArray(invoices.organizationId, [voncken!.id, damen!.id]))
+
+  for (const factuur of gemaakt) {
+    if (factuur.period && factuur.period < '2026-03') {
+      await db
+        .update(invoices)
+        .set({ status: 'paid', paidOn: new Date(2026, Number(factuur.period.slice(5)) - 1, 8) })
+        .where(eq(invoices.id, factuur.id))
+    }
+  }
 
   for (const [code, dag, aantal, medewerker] of [
     ['SEA-BEHEER', 10, 100, bram],

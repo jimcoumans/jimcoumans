@@ -26,14 +26,23 @@ een urenteller.
 | Team | Collega's toevoegen, en zien wat ieder heeft geleverd |
 | Sync | Status van de ClickUp-koppeling |
 
-## De vier posttypes
+## De vijf posttypes
 
 ```
-klant (organizations)      het bedrijf
-diensten (services)        de catalogus met tarieven
-facturen (invoices)        bouwen het budget op
-boekingen (ledger_entries) geleverde diensten, gaan van het budget af
+klant (organizations)        het bedrijf
+diensten (services)          de catalogus met tarieven
+abonnementen (subscriptions) doorlopend, verhogen maandelijks het budget
+facturen (invoices)          bouwen het budget op
+boekingen (ledger_entries)   geleverde diensten, gaan van het budget af
 ```
+
+**Abonnement → maandelijks budget.** Zolang een abonnement loopt, wordt op de
+facturatiedag (standaard de 2e, zoals de Moneybird-facturen) een factuur
+aangemaakt en het maandbedrag als budget bijgeschreven. De run draait elke
+ochtend en kijkt zelf welke maanden nog openstaan, dus een gemiste dag wordt
+ingehaald. **Dubbel factureren is onmogelijk:** op de facturen staat een unieke
+index op (abonnement, periode), dus de database weigert een tweede factuur voor
+dezelfde maand — ook als de run twee keer of gelijktijdig draait.
 
 **Factuur → budget.** Een factuur van € 1.000 exclusief btw betekent € 1.000
 budget in de wallet. Factuur en bijschrijving worden in ÉÉN transactie
@@ -87,17 +96,20 @@ Bewust saai gekozen, zodat dit over een jaar nog te onderhouden is.
 | Styling | Tailwind met JR-huisstijl als tokens | Kleuren op één plek, nergens hardcoded |
 | Tests | `node:test` | Zit in Node, geen testframework om te onderhouden |
 
-## Lokaal opzetten
+## Aan de slag
+
+Stap voor stap, inclusief live zetten: **[SETUP.md](SETUP.md)**.
+
+Kort samengevat, lokaal:
 
 ```bash
 npm install
-cp .env.example .env.local        # vul DATABASE_URL en AUTH_SECRET in
-npm run db:migrate                # tabellen aanmaken
-npm run db:seed                   # voorbeelddata
+docker compose up -d      # Postgres
+npm run setup             # instellingen, tabellen, voorbeelddata, inloglinks
 npm run dev
 ```
 
-`AUTH_SECRET` genereer je met `openssl rand -base64 32`.
+`npm run setup` print twee inloglinks: één als beheerder, één als klant.
 
 Zonder `RESEND_API_KEY` wordt er geen mail verstuurd. Een inloglink maak je dan zo:
 
@@ -117,6 +129,10 @@ npm run login:link -- demo-klant@voorbeeld.nl
 | `npm run db:migrate` | Migraties uitvoeren |
 | `npm run db:seed` | Voorbeelddata (niet in productie) |
 | `npm run login:link -- <email>` | Inloglink printen |
+| `npm run billing` | Abonnementsrun als proefronde |
+| `npm run billing -- --apply` | Abonnementsrun echt uitvoeren |
+| `npm run setup` | Alles in één keer klaarzetten (lokaal) |
+| `npm run db:reset` | Database leeg en opnieuw vullen (alleen lokaal) |
 | `npm run sync:clickup -- ...` | ClickUp-sync, zie hieronder |
 
 ## Datamodel
@@ -127,6 +143,7 @@ users           klantcontactpersonen (client) en het JR-team (staff/admin)
 login_tokens    eenmalige inloglinks, opgeslagen als hash
 wallets         een klant kan meerdere wallets hebben
 services        de dienstencatalogus met tarieven en kostprijzen
+subscriptions   doorlopende abonnementen met een maandbedrag
 ledger_entries  de boekingen — append-only
 invoices        facturen die het budget opbouwen
 sync_runs       geschiedenis van de ClickUp-sync
@@ -155,6 +172,11 @@ is afschrijven. Het saldo is `SUM(amount_cents)`.
 | `quantity_positive` | Een aantal is altijd groter dan nul |
 | `service_needs_quantity_and_price` | Staat er een dienst op een boeking, dan horen aantal en tarief erbij — anders is het bedrag niet na te rekenen |
 | `service_price_positive` | Een dienst heeft een tarief boven nul |
+| `invoices_subscription_period_idx` | Een abonnement kan per maand maar één factuur hebben |
+| `subscription_needs_period` | Een abonnementsfactuur heeft altijd een periode, een losse factuur nooit |
+| `subscription_billing_day_valid` | Facturatiedag tussen 1 en 28, zodat de dag in elke maand bestaat |
+| `subscription_ends_after_start` | Een einddatum ligt niet voor de startdatum |
+| FK abonnement op factuur (`RESTRICT`) | Een abonnement met facturen kan niet verwijderd worden — zet het op 'ended' |
 | `client_needs_org` | Een klantgebruiker hoort altijd bij een organisatie |
 | FK met `ON DELETE RESTRICT` | Een wallet met boekingen kan niet worden verwijderd |
 
@@ -195,6 +217,33 @@ npm run sync:clickup -- --org=klant-slug --lists=901512499356 --apply
 De mapping-regels staan in `src/lib/clickup/mapping.ts` en zijn los getest in
 `src/lib/__tests__/mapping.test.ts`. Wil je de regel veranderen (bijvoorbeeld
 `Offerte` in plaats van `Verkoopfactuur`), dan pas je daar één functie aan.
+
+## De maandelijkse abonnementsrun
+
+Draait via Vercel Cron elke ochtend om 6:00 op `/api/cron/billing`
+(zie `vercel.json`). Het endpoint weigert elke aanvraag zonder het juiste
+`CRON_SECRET`; zonder dat geheim in de omgeving gaat de deur op slot, niet open.
+
+Drie eigenschappen die er niet uit mogen:
+
+1. **Dubbel factureren is onmogelijk** — de unieke index op
+   (abonnement, periode) weigert een tweede factuur, ook bij twee runs tegelijk.
+2. **De run haalt in** — hij kijkt welke maanden nog openstaan, dus een dag
+   uitval betekent geen gemiste maand. Bij meer dan 12 maanden achterstand
+   stopt hij en meldt dat, in plaats van stil een jaar te factureren.
+3. **Factuur en budget gaan samen** — beide in één transactie.
+
+Let op het factuurnummer: **Moneybird maakt de echte factuur.** Dit systeem
+maakt een intern nummer (`ABO-JJJJ-MM`) zodat het budget herleidbaar is. Het
+echte nummer kan later in `moneybird_id`; die koppeling is nog niet gebouwd.
+
+Zelf draaien:
+
+```bash
+npm run billing              # proefronde, verandert niets
+npm run billing -- --apply   # echt factureren
+npm run billing -- --datum=2026-03-02 --apply   # op een andere peildatum
+```
 
 ## Naar productie
 
@@ -255,8 +304,13 @@ geen categorie aanduiden.
 - **Koppeling tussen ClickUp-lijsten en klanten.** De sync werkt nu per klant
   met `--org=` en `--lists=`. Automatisch bepalen bij welke klant een lijst hoort
   vraagt om het doorlopen van de folder-structuur in ClickUp.
-- **Moneybird.** Facturen worden nu met de hand of via de sync ingevoerd. Het
-  veld `invoices.moneybird_id` staat er al klaar voor.
+- **Moneybird.** Dit systeem maakt eigen factuurnummers; het echte nummer uit
+  Moneybird koppelen kan via `invoices.moneybird_id`, maar die koppeling is er
+  nog niet. Nu is het handwerk of een aparte controle.
+- **De interface.** De schermen zetten nu veel tegelijk in beeld. Richting
+  Mollie/Stripe/Revolut betekent: meer witruimte, één actie per scherm,
+  formulieren in een zijpaneel in plaats van altijd zichtbaar. Dat is een
+  herindeling, geen kleurenkwestie.
 - **Campagneresultaten** naast het budget (Google Ads, Meta, Analytics).
 - **Signaal bij een laag saldo.** De drempel staat in het datamodel en de klant
   ziet een melding, maar er gaat nog geen mail uit.

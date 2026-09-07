@@ -14,7 +14,10 @@
     "db:seed": "tsx --env-file-if-exists=.env.local src/db/seed.ts",
     "sync:clickup": "tsx --env-file-if-exists=.env.local src/lib/clickup/run-sync.ts",
     "test": "tsx --test --test-concurrency=1 --env-file-if-exists=.env.local 'src/**/__tests__/*.test.ts'",
-    "login:link": "tsx --env-file-if-exists=.env.local src/db/login-link.ts"
+    "login:link": "tsx --env-file-if-exists=.env.local src/db/login-link.ts",
+    "billing": "tsx --env-file-if-exists=.env.local src/lib/run-billing.ts",
+    "setup": "node scripts/setup.mjs",
+    "db:reset": "tsx --env-file-if-exists=.env.local src/db/reset.ts"
   },
   "dependencies": {
     "drizzle-orm": "^0.45.2",

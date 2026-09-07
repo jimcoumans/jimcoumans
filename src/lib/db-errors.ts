@@ -80,6 +80,22 @@ export function describeLedgerDbError(error: unknown): string | null {
       return 'De kostprijs kan niet negatief zijn.'
     case 'services_code_idx':
       return 'Deze dienstcode is al in gebruik.'
+    case 'invoices_subscription_period_idx':
+      return 'Deze maand is voor dit abonnement al gefactureerd.'
+    case 'subscription_needs_period':
+      return 'Een abonnementsfactuur heeft altijd een periode nodig, en een losse factuur juist niet.'
+    case 'period_format':
+      return 'De periode moet de vorm JJJJ-MM hebben, bijvoorbeeld 2026-03.'
+    case 'subscription_amount_positive':
+      return 'Het maandbedrag van een abonnement moet boven nul zijn.'
+    case 'subscription_billing_day_valid':
+      return 'De facturatiedag moet tussen 1 en 28 liggen, zodat de dag in elke maand bestaat.'
+    case 'subscription_vat_valid':
+      return 'Het btw-percentage moet tussen 0 en 100 liggen.'
+    case 'subscription_ends_after_start':
+      return 'De einddatum kan niet voor de startdatum liggen.'
+    case 'subscriptions_clickup_idx':
+      return 'Dit ClickUp-abonnement is al aan een ander abonnement gekoppeld.'
     case 'invoices_org_number_idx':
       return 'Dit factuurnummer bestaat al voor deze klant.'
     case 'organizations_slug_idx':
