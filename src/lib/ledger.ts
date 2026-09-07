@@ -1,7 +1,8 @@
 import { and, desc, eq, sql, gte, lte, inArray } from 'drizzle-orm'
 import { db } from '@/db'
-import { ledgerEntries, wallets, organizations, invoices } from '@/db/schema'
+import { ledgerEntries, wallets, organizations, invoices, services, users } from '@/db/schema'
 import type { LedgerEntry } from '@/db/schema'
+import { lineTotalCents } from './quantity'
 
 /* -------------------------------------------------------------------------
    Het grootboek is append-only. Deze module is de ENIGE manier waarop er
@@ -137,6 +138,9 @@ export type EntryWithRunningBalance = LedgerEntry & {
   /** Saldo direct na deze boeking. Zoals op een bankafschrift. */
   runningBalanceCents: number
   invoiceNumber: string | null
+  serviceName: string | null
+  serviceUnit: 'piece' | 'hour' | 'month' | 'project' | null
+  deliveredByName: string | null
 }
 
 /**
@@ -181,10 +185,16 @@ export async function getWalletEntries(
       entry: ledgerEntries,
       runningBalance: running.runningBalance,
       invoiceNumber: invoices.number,
+      serviceName: services.name,
+      serviceUnit: services.unit,
+      deliveredByName: users.name,
+      deliveredByEmail: users.email,
     })
     .from(ledgerEntries)
     .innerJoin(running, eq(running.id, ledgerEntries.id))
     .leftJoin(invoices, eq(invoices.id, ledgerEntries.invoiceId))
+    .leftJoin(services, eq(services.id, ledgerEntries.serviceId))
+    .leftJoin(users, eq(users.id, ledgerEntries.deliveredByUserId))
     .where(and(...conditions))
     .orderBy(desc(ledgerEntries.bookedOn), desc(ledgerEntries.createdAt))
     .limit(limit)
@@ -194,6 +204,10 @@ export async function getWalletEntries(
     ...r.entry,
     runningBalanceCents: Number(r.runningBalance),
     invoiceNumber: r.invoiceNumber ?? null,
+    serviceName: r.serviceName ?? null,
+    serviceUnit: r.serviceUnit ?? null,
+    // Zonder naam is het e-mailadres nog altijd beter dan niets.
+    deliveredByName: r.deliveredByName ?? r.deliveredByEmail ?? null,
   }))
 }
 
@@ -212,6 +226,12 @@ export type NewEntryInput = {
   sourceRef?: string | null
   invoiceId?: string | null
   createdByUserId?: string | null
+  /* Alleen bij een boeking van een dienst uit de catalogus. */
+  serviceId?: string | null
+  quantityHundredths?: number | null
+  unitPriceCents?: number | null
+  unitCostCents?: number | null
+  deliveredByUserId?: string | null
 }
 
 /**
@@ -243,11 +263,83 @@ export async function addEntry(input: NewEntryInput): Promise<LedgerEntry> {
       sourceRef: input.sourceRef ?? null,
       invoiceId: input.invoiceId ?? null,
       createdByUserId: input.createdByUserId ?? null,
+      serviceId: input.serviceId ?? null,
+      quantityHundredths: input.quantityHundredths ?? null,
+      unitPriceCents: input.unitPriceCents ?? null,
+      unitCostCents: input.unitCostCents ?? null,
+      deliveredByUserId: input.deliveredByUserId ?? null,
     })
     .returning()
 
   if (!entry) throw new LedgerError('Boeking kon niet worden opgeslagen.')
   return entry
+}
+
+export type ServiceEntryInput = {
+  walletId: string
+  serviceId: string
+  /** Aantal in honderdsten: 300 is 3 stuks, 150 is 1,5 uur. */
+  quantityHundredths: number
+  /**
+   * Afwijkend tarief in centen, bijvoorbeeld bij korting of een
+   * maatwerkafspraak. Leeg laten neemt het tarief van de dienst.
+   */
+  unitPriceCentsOverride?: number | null
+  /** Leeg laten neemt de naam van de dienst als omschrijving. */
+  description?: string | null
+  detail?: string | null
+  bookedOn?: Date
+  deliveredByUserId?: string | null
+  createdByUserId?: string | null
+}
+
+/**
+ * Boekt een geleverde dienst af van het budget.
+ *
+ * Het tarief wordt hier van de dienst GEKOPIEERD naar de boeking. Verandert
+ * het tarief later, dan blijft deze boeking staan op het bedrag dat toen is
+ * afgesproken. Het bedrag wordt op de server berekend uit aantal maal
+ * tarief, nooit meegestuurd door de aanroeper: anders kan een verkeerd
+ * bedrag het grootboek in.
+ */
+export async function addServiceEntry(input: ServiceEntryInput): Promise<LedgerEntry> {
+  if (!Number.isInteger(input.quantityHundredths) || input.quantityHundredths <= 0) {
+    throw new LedgerError('Vul een aantal groter dan nul in.')
+  }
+
+  const [service] = await db
+    .select()
+    .from(services)
+    .where(eq(services.id, input.serviceId))
+    .limit(1)
+
+  if (!service) throw new LedgerError('Deze dienst bestaat niet.')
+
+  const unitPrice = input.unitPriceCentsOverride ?? service.unitPriceCents
+  if (!Number.isInteger(unitPrice) || unitPrice <= 0) {
+    throw new LedgerError('Het tarief moet groter dan nul zijn.')
+  }
+
+  const amountCents = lineTotalCents(input.quantityHundredths, unitPrice)
+
+  return addEntry({
+    walletId: input.walletId,
+    kind: 'spend',
+    amountCents,
+    description: input.description?.trim() || service.name,
+    detail: input.detail ?? null,
+    category: service.category,
+    bookedOn: input.bookedOn ?? new Date(),
+    source: 'manual',
+    createdByUserId: input.createdByUserId ?? null,
+    serviceId: service.id,
+    quantityHundredths: input.quantityHundredths,
+    unitPriceCents: unitPrice,
+    // Ook de kostprijs vastleggen, zodat de marge van vandaag niet
+    // verandert als je morgen een inkoopprijs bijwerkt.
+    unitCostCents: service.costPriceCents,
+    deliveredByUserId: input.deliveredByUserId ?? null,
+  })
 }
 
 /**
@@ -298,6 +390,16 @@ export async function reverseEntry(
         source: 'manual',
         reversesEntryId: original.id,
         createdByUserId: opts.createdByUserId ?? null,
+        // De dienstgegevens gaan mee, zodat de tegenboeking volwaardig is.
+        // Zonder dit blijven de kosten en dus de marge van het origineel in
+        // de financiele overzichten staan, ook al is het werk teruggedraaid.
+        // Het teken van het bedrag zorgt dat de correctie de omzet en de
+        // kosten van het origineel precies opheft.
+        serviceId: original.serviceId,
+        quantityHundredths: original.quantityHundredths,
+        unitPriceCents: original.unitPriceCents,
+        unitCostCents: original.unitCostCents,
+        deliveredByUserId: original.deliveredByUserId,
       })
       .returning()
 

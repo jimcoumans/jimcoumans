@@ -1,0 +1,1 @@
+ALTER TABLE "ledger_entries" ADD COLUMN "unit_cost_cents" integer;

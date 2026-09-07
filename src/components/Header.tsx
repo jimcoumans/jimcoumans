@@ -7,6 +7,9 @@ export function Header({ user, actief }: { user: SessionUser; actief?: string })
   const links = isTeam
     ? [
         { href: '/beheer', label: 'Klanten', key: 'beheer' },
+        { href: '/beheer/diensten', label: 'Diensten', key: 'diensten' },
+        { href: '/beheer/financieel', label: 'Financieel', key: 'financieel' },
+        { href: '/beheer/medewerkers', label: 'Team', key: 'medewerkers' },
         { href: '/beheer/sync', label: 'Sync', key: 'sync' },
       ]
     : [
@@ -23,7 +26,7 @@ export function Header({ user, actief }: { user: SessionUser; actief?: string })
         </a>
 
         <div className="flex items-center gap-4">
-          <nav className="flex gap-1" aria-label="Hoofdmenu">
+          <nav className="flex flex-wrap gap-1" aria-label="Hoofdmenu">
             {links.map((link) => (
               <a
                 key={link.key}

@@ -8,6 +8,20 @@
       "when": 1788622970348,
       "tag": "0000_init",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1788789672491,
+      "tag": "0001_diensten_en_boekingen",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1788789944844,
+      "tag": "0002_kostprijs_op_boeking",
+      "breakpoints": true
     }
   ]
 }

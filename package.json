@@ -13,7 +13,7 @@
     "db:migrate": "tsx --env-file-if-exists=.env.local src/db/migrate.ts",
     "db:seed": "tsx --env-file-if-exists=.env.local src/db/seed.ts",
     "sync:clickup": "tsx --env-file-if-exists=.env.local src/lib/clickup/run-sync.ts",
-    "test": "tsx --test --env-file-if-exists=.env.local 'src/**/__tests__/*.test.ts'",
+    "test": "tsx --test --test-concurrency=1 --env-file-if-exists=.env.local 'src/**/__tests__/*.test.ts'",
     "login:link": "tsx --env-file-if-exists=.env.local src/db/login-link.ts"
   },
   "dependencies": {

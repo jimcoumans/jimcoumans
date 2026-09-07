@@ -70,6 +70,16 @@ export function describeLedgerDbError(error: unknown): string | null {
       return 'Alleen een correctie mag naar een eerdere boeking verwijzen.'
     case 'client_needs_org':
       return 'Een klantgebruiker moet aan een organisatie gekoppeld zijn.'
+    case 'quantity_positive':
+      return 'Het aantal moet groter dan nul zijn.'
+    case 'service_needs_quantity_and_price':
+      return 'Bij een geboekte dienst horen altijd een aantal en een tarief, zodat het bedrag na te rekenen is.'
+    case 'service_price_positive':
+      return 'Een dienst moet een tarief boven nul hebben.'
+    case 'service_cost_not_negative':
+      return 'De kostprijs kan niet negatief zijn.'
+    case 'services_code_idx':
+      return 'Deze dienstcode is al in gebruik.'
     case 'invoices_org_number_idx':
       return 'Dit factuurnummer bestaat al voor deze klant.'
     case 'organizations_slug_idx':

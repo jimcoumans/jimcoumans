@@ -8,6 +8,7 @@ import {
   index,
   uniqueIndex,
   check,
+  boolean,
 } from 'drizzle-orm/pg-core'
 import { relations, sql } from 'drizzle-orm'
 
@@ -32,6 +33,11 @@ import { relations, sql } from 'drizzle-orm'
       tot het saldo dat erboven staat. Dan is het geen afschrift meer maar
       een verhaal. Moet er iets niet naar de klant, dan hoort het niet in
       de wallet.
+
+   5. Een boeking legt het TARIEF VAN DAT MOMENT vast, niet alleen een
+      verwijzing naar de dienst. Verhoog je "Social media post" van 100
+      naar 120 euro, dan blijven oude boekingen op 100 staan. Een grootboek
+      dat verandert als je een prijslijst aanpast, is geen grootboek.
    ------------------------------------------------------------------------- */
 
 export const userRoleEnum = pgEnum('user_role', ['client', 'staff', 'admin'])
@@ -58,6 +64,14 @@ export const invoiceStatusEnum = pgEnum('invoice_status', [
 ])
 
 export const walletStatusEnum = pgEnum('wallet_status', ['active', 'paused', 'closed'])
+
+/** Waar een dienst per stuk in wordt afgerekend. */
+export const serviceUnitEnum = pgEnum('service_unit', [
+  'piece', // per stuk, bijv. een social post
+  'hour', // per uur
+  'month', // per maand, bijv. campagnebeheer
+  'project', // vaste prijs voor een project
+])
 
 export const syncStatusEnum = pgEnum('sync_status', ['running', 'success', 'failed'])
 
@@ -159,6 +173,56 @@ export const wallets = pgTable(
   ],
 )
 
+/* ------------------------------- Diensten ------------------------------- */
+
+/**
+ * De dienstencatalogus: wat James Robinson levert en wat het kost.
+ *
+ * Het tarief hier is het TARIEF VAN NU. Bij het boeken wordt het naar de
+ * boeking gekopieerd, zodat een prijswijziging nooit oude boekingen raakt.
+ */
+export const services = pgTable(
+  'services',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    /** Korte code voor intern gebruik, bijv. SOC-POST. */
+    code: text('code'),
+    name: text('name').notNull(),
+    description: text('description'),
+    /** Productgroep zoals in ClickUp: SEA, SEO, Social Management, ... */
+    category: text('category'),
+    /** Afdeling: Marketing, Web, Managed Services, Content Creatie. */
+    department: text('department'),
+    unit: serviceUnitEnum('unit').notNull().default('piece'),
+    /** Verkooptarief per eenheid, in centen. */
+    unitPriceCents: integer('unit_price_cents').notNull(),
+    /**
+     * Kostprijs per eenheid in centen: inkoop of interne uurkosten.
+     * Alleen voor de marge in het financiele overzicht; klanten zien dit
+     * nooit.
+     */
+    costPriceCents: integer('cost_price_cents'),
+    /** Verwachte tijd per eenheid in minuten, voor capaciteitsplanning. */
+    estimatedMinutes: integer('estimated_minutes'),
+    /** Interne notities, bijv. wat er wel en niet bij hoort. */
+    notes: text('notes'),
+    active: boolean('active').notNull().default(true),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('services_name_idx').on(t.name),
+    uniqueIndex('services_code_idx').on(t.code),
+    index('services_active_idx').on(t.active),
+    // Een dienst van nul euro is geen dienst maar een vergissing.
+    check('service_price_positive', sql`${t.unitPriceCents} > 0`),
+    check(
+      'service_cost_not_negative',
+      sql`${t.costPriceCents} IS NULL OR ${t.costPriceCents} >= 0`,
+    ),
+  ],
+)
+
 /* ------------------------------- Facturen ------------------------------- */
 
 export const invoices = pgTable(
@@ -226,6 +290,40 @@ export const ledgerEntries = pgTable(
 
     invoiceId: uuid('invoice_id').references(() => invoices.id, { onDelete: 'set null' }),
 
+    /* --- Geleverde dienst (bij afschrijvingen) --- */
+
+    /**
+     * Welke dienst er is geleverd. Blijft leeg bij bijschrijvingen en bij
+     * losse boekingen zonder dienst uit de catalogus.
+     * ON DELETE RESTRICT: een dienst die is geboekt kan niet verdwijnen,
+     * anders is niet meer te zien wat er geleverd is.
+     */
+    serviceId: uuid('service_id').references(() => services.id, {
+      onDelete: 'restrict',
+    }),
+    /** Aantal eenheden, in honderdsten zodat 1,5 uur ook kan (= 150). */
+    quantityHundredths: integer('quantity_hundredths'),
+    /**
+     * Het tarief per eenheid op het moment van boeken, in centen.
+     * Bewust gekopieerd van de dienst: een prijswijziging mag oude
+     * boekingen niet veranderen.
+     */
+    unitPriceCents: integer('unit_price_cents'),
+    /**
+     * De kostprijs per eenheid op het moment van boeken, in centen.
+     * Om dezelfde reden gekopieerd: anders verandert de marge van vorig
+     * jaar zodra je een inkoopprijs bijwerkt. Klanten zien dit nooit.
+     */
+    unitCostCents: integer('unit_cost_cents'),
+
+    /**
+     * Wie de dienst heeft geleverd. Dit is de basis voor het overzicht per
+     * medewerker en is iets anders dan created_by_user_id (wie het invoerde).
+     */
+    deliveredByUserId: uuid('delivered_by_user_id').references(() => users.id, {
+      onDelete: 'set null',
+    }),
+
     /** Bij een correctie: welke boeking wordt teruggedraaid. */
     reversesEntryId: uuid('reverses_entry_id'),
 
@@ -237,6 +335,9 @@ export const ledgerEntries = pgTable(
   (t) => [
     index('ledger_wallet_booked_idx').on(t.walletId, t.bookedOn),
     index('ledger_kind_idx').on(t.kind),
+    index('ledger_service_idx').on(t.serviceId),
+    index('ledger_delivered_by_idx').on(t.deliveredByUserId),
+    index('ledger_booked_on_idx').on(t.bookedOn),
     // Dezelfde ClickUp-taak mag nooit twee keer worden afgeboekt.
     uniqueIndex('ledger_source_ref_idx').on(t.source, t.sourceRef),
     // Een boeking van 0 zegt niets en vervuilt het overzicht.
@@ -253,6 +354,19 @@ export const ledgerEntries = pgTable(
     check(
       'only_corrections_reverse',
       sql`(${t.reversesEntryId} IS NULL) OR (${t.kind} = 'correction')`,
+    ),
+    // Een aantal van nul of negatief levert een bedrag op dat niet bij de
+    // boeking past.
+    check(
+      'quantity_positive',
+      sql`${t.quantityHundredths} IS NULL OR ${t.quantityHundredths} > 0`,
+    ),
+    // Staat er een dienst op de boeking, dan horen aantal en tarief er ook
+    // bij: anders is het bedrag niet na te rekenen.
+    check(
+      'service_needs_quantity_and_price',
+      sql`(${t.serviceId} IS NULL)
+       OR (${t.quantityHundredths} IS NOT NULL AND ${t.unitPriceCents} IS NOT NULL)`,
     ),
   ],
 )
@@ -303,10 +417,22 @@ export const walletsRelations = relations(wallets, ({ one, many }) => ({
 export const ledgerEntriesRelations = relations(ledgerEntries, ({ one }) => ({
   wallet: one(wallets, { fields: [ledgerEntries.walletId], references: [wallets.id] }),
   invoice: one(invoices, { fields: [ledgerEntries.invoiceId], references: [invoices.id] }),
+  service: one(services, {
+    fields: [ledgerEntries.serviceId],
+    references: [services.id],
+  }),
   createdBy: one(users, {
     fields: [ledgerEntries.createdByUserId],
     references: [users.id],
   }),
+  deliveredBy: one(users, {
+    fields: [ledgerEntries.deliveredByUserId],
+    references: [users.id],
+  }),
+}))
+
+export const servicesRelations = relations(services, ({ many }) => ({
+  entries: many(ledgerEntries),
 }))
 
 export const invoicesRelations = relations(invoices, ({ one, many }) => ({
@@ -322,4 +448,6 @@ export type User = typeof users.$inferSelect
 export type Wallet = typeof wallets.$inferSelect
 export type LedgerEntry = typeof ledgerEntries.$inferSelect
 export type Invoice = typeof invoices.$inferSelect
+export type Service = typeof services.$inferSelect
+export type NewService = typeof services.$inferInsert
 export type SyncRun = typeof syncRuns.$inferSelect

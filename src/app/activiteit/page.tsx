@@ -9,6 +9,7 @@ import {
 import { Header } from '@/components/Header'
 import { TransactionList } from '@/components/TransactionList'
 import { formatCents } from '@/lib/money'
+import { categoryColor } from '@/lib/chart-colors'
 
 const PER_PAGINA = 50
 
@@ -124,37 +125,33 @@ function CategorieBalk({
   const totaal = perCategorie.reduce((acc, c) => acc + c.spentCents, 0)
   if (totaal === 0) return null
 
-  // Vaste reeks uit de huisstijl, zodat dezelfde categorie altijd dezelfde
-  // kleur heeft binnen een overzicht.
-  const kleuren = [
-    'bg-jr-blue',
-    'bg-jr-deepblue',
-    'bg-jr-purple',
-    'bg-jr-orange',
-    'bg-jr-green',
-    'bg-jr-yellow',
-    'bg-gray-400',
-  ]
-
   return (
     <>
-      <div className="flex h-3 w-full overflow-hidden rounded-full bg-gray-200">
+      {/* De 2px witte tussenruimte houdt aangrenzende segmenten van elkaar
+          gescheiden, ook als twee kleuren op elkaar lijken. */}
+      <div className="flex h-3 w-full gap-0.5 overflow-hidden rounded-full bg-gray-200">
         {perCategorie.map((c, i) => (
           <div
             key={c.category}
-            className={kleuren[i % kleuren.length]}
-            style={{ width: `${(c.spentCents / totaal) * 100}%` }}
+            className="first:rounded-l-full last:rounded-r-full"
+            style={{
+              width: `${(c.spentCents / totaal) * 100}%`,
+              backgroundColor: categoryColor(i),
+            }}
             title={`${c.category}: ${formatCents(c.spentCents)}`}
           />
         ))}
       </div>
 
+      {/* Elke categorie krijgt een eigen tekstlabel met bedrag en aandeel,
+          zodat je nooit op kleur alleen hoeft te vertrouwen. */}
       <dl className="mt-4 grid gap-x-6 gap-y-2 sm:grid-cols-2">
         {perCategorie.map((c, i) => (
           <div key={c.category} className="flex items-center justify-between gap-3">
             <dt className="flex min-w-0 items-center gap-2 text-sm">
               <span
-                className={`h-2.5 w-2.5 shrink-0 rounded-full ${kleuren[i % kleuren.length]}`}
+                className="h-2.5 w-2.5 shrink-0 rounded-full"
+                style={{ backgroundColor: categoryColor(i) }}
                 aria-hidden
               />
               <span className="truncate">{c.category}</span>

@@ -1,4 +1,4 @@
-import { asc, eq, sql, desc } from 'drizzle-orm'
+import { asc, eq, sql, desc, isNull, and } from 'drizzle-orm'
 import { db } from '@/db'
 import { organizations, wallets, users, ledgerEntries, syncRuns } from '@/db/schema'
 import { getWalletBalances } from './ledger'
@@ -63,6 +63,15 @@ export async function getOrganizationBySlug(slug: string) {
     wallets: walletRows.map((w) => ({ wallet: w, balance: balances.get(w.id)! })),
     users: klantGebruikers,
   }
+}
+
+/** Het JR-team, voor de keuzelijst "geleverd door". */
+export async function listStaff() {
+  return db
+    .select({ id: users.id, name: users.name, email: users.email })
+    .from(users)
+    .where(and(isNull(users.organizationId), isNull(users.disabledAt)))
+    .orderBy(asc(users.name), asc(users.email))
 }
 
 /** Laatste sync-runs, om te zien of de koppeling nog loopt. */

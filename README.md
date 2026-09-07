@@ -8,16 +8,44 @@ een urenteller.
 
 ## Wat het is
 
-Een klant logt in en ziet:
+**Een klant** logt in en ziet:
 
 - **Zijn saldo** — beschikbaar budget, groot bovenaan
 - **Het afschrift** — bij- en afschrijvingen per maand, met het saldo na elke
-  regel. Bijvoorbeeld "Website wijzigingen — € 122,50", niet "2,45 uur × € 50"
+  regel. Bijvoorbeeld "Social media post — € 300,00", niet "3 uur × € 100"
 - **Waar het budget naartoe ging** — verdeeld over productgroepen
 - **Zijn facturen** — de bijschrijvingen die het budget hebben opgebouwd
 
-Het JR-team heeft een beheerscherm om te boeken, te corrigeren, wallets aan te
-maken en klanten toegang te geven.
+**Het JR-team** heeft een beheerdeel met vijf schermen:
+
+| Scherm | Wat je er doet |
+|---|---|
+| Klanten | Klant openen, dienst afboeken, factuur aanmaken, boeking corrigeren, wallets en klanttoegang beheren |
+| Diensten | De catalogus: wat we leveren, wat het kost, wat de kostprijs is |
+| Financieel | Omzet, marge en budget — overall, per klant, per medewerker, per dienst |
+| Team | Collega's toevoegen, en zien wat ieder heeft geleverd |
+| Sync | Status van de ClickUp-koppeling |
+
+## De vier posttypes
+
+```
+klant (organizations)      het bedrijf
+diensten (services)        de catalogus met tarieven
+facturen (invoices)        bouwen het budget op
+boekingen (ledger_entries) geleverde diensten, gaan van het budget af
+```
+
+**Factuur → budget.** Een factuur van € 1.000 exclusief btw betekent € 1.000
+budget in de wallet. Factuur en bijschrijving worden in ÉÉN transactie
+aangemaakt, dus ze kunnen niet uit elkaar lopen. Let op: het budget komt
+beschikbaar bij *factureren*, niet bij *betalen* — een klant kan dus budget
+opmaken dat nog niet betaald is. De betaalstatus staat in het beheer en op het
+financiële overzicht.
+
+**Dienst → afschrijving.** Kies een dienst, vul het aantal in, en het bedrag
+volgt uit het tarief. 3 × "Social media post" van € 100 wordt € 300 van het
+budget af. Het bedrag wordt op de server berekend, nooit meegestuurd door de
+browser.
 
 ## De drie regels waar het systeem op staat
 
@@ -38,6 +66,12 @@ het niet in de wallet.
 Nooit floats — `0.1 + 0.2` is in binaire floats niet `0.3`. Het omzetten van
 getypte bedragen naar centen gebeurt volledig met integers, zonder tussenstap via
 een float. Zie `src/lib/money.ts`.
+
+**4. Een boeking legt het tarief van dat moment vast.**
+Verhoog je "Social media post" van € 100 naar € 120, dan blijven boekingen van
+vorig jaar op € 100 staan en verandert geen enkel saldo. Hetzelfde geldt voor de
+kostprijs, zodat de marge van vorig kwartaal niet verschuift als je een
+inkoopprijs bijwerkt.
 
 ## Techniek
 
@@ -92,10 +126,16 @@ organizations   klanten
 users           klantcontactpersonen (client) en het JR-team (staff/admin)
 login_tokens    eenmalige inloglinks, opgeslagen als hash
 wallets         een klant kan meerdere wallets hebben
+services        de dienstencatalogus met tarieven en kostprijzen
 ledger_entries  de boekingen — append-only
 invoices        facturen die het budget opbouwen
 sync_runs       geschiedenis van de ClickUp-sync
 ```
+
+Een boeking van een dienst bewaart naast het bedrag ook: welke dienst, hoeveel
+(in honderdsten, zodat 1,5 uur kan), het tarief van dat moment, de kostprijs van
+dat moment, en wie de dienst heeft geleverd. Die laatste is de basis voor het
+overzicht per medewerker en is iets anders dan wie de boeking invoerde.
 
 Het **saldo is nooit een kolom**, altijd een som over `ledger_entries`. Een
 saldo-kolom raakt op een dag uit sync met de boekingen, en dan weet je niet meer
@@ -112,6 +152,9 @@ is afschrijven. Het saldo is `SUM(amount_cents)`.
 | `amount_not_zero` | Geen boekingen van € 0,00 |
 | `only_corrections_reverse` | Alleen een correctie mag naar een eerdere boeking verwijzen |
 | `ledger_source_ref_idx` | Dezelfde ClickUp-taak kan niet twee keer worden afgeboekt |
+| `quantity_positive` | Een aantal is altijd groter dan nul |
+| `service_needs_quantity_and_price` | Staat er een dienst op een boeking, dan horen aantal en tarief erbij — anders is het bedrag niet na te rekenen |
+| `service_price_positive` | Een dienst heeft een tarief boven nul |
 | `client_needs_org` | Een klantgebruiker hoort altijd bij een organisatie |
 | FK met `ON DELETE RESTRICT` | Een wallet met boekingen kan niet worden verwijderd |
 
@@ -190,7 +233,22 @@ INSERT INTO users (email, role) VALUES ('jim@jamesrobinson.nl', 'admin');
   het intrekken van toegang werkt direct
 - Klanten kunnen alleen bij hun eigen organisatie; een gegokt wallet-id in de
   URL valt terug op hun eigen wallet
+- Rollen: `client` ziet alleen zijn eigen organisatie, `staff` en `admin` zien
+  alle klanten, en alleen een `admin` kan nieuwe beheerders toevoegen
+- Je kunt je eigen beheertoegang niet intrekken, zodat er altijd iemand binnen kan
+- Kostprijzen en marges zijn nooit zichtbaar voor klanten
 - Het portaal staat op `noindex` en mag niet in een frame
+
+## Kleuren in overzichten
+
+De kleurenreeks voor categorieën staat in `src/lib/chart-colors.ts` en is
+gevalideerd op leesbaarheid, niet op gevoel gekozen: lichtheid, kleurverzadiging,
+onderscheid bij kleurenblindheid en contrast. **De volgorde is onderdeel van die
+validatie** — kleuren omwisselen of toevoegen betekent opnieuw valideren.
+
+Rood, oranje en groen zitten er bewust niet in: die hebben in deze app
+statusbetekenis (negatief saldo, budget raakt op, bijschrijving) en mogen daarom
+geen categorie aanduiden.
 
 ## Wat nog niet af is
 
@@ -204,6 +262,10 @@ INSERT INTO users (email, role) VALUES ('jim@jamesrobinson.nl', 'admin');
   ziet een melding, maar er gaat nog geen mail uit.
 - **Btw.** De wallet rekent met bedragen exclusief btw. Facturen bewaren de btw
   apart.
+- **Diensten per klant.** Er is één catalogus voor alle klanten. Klantspecifieke
+  tarieven kunnen nu per boeking als afwijkend tarief.
+- **Meerdere diensten in één boeking.** Elke boeking is nu één dienst. Een
+  factuurregel met meerdere posten wordt meerdere boekingen.
 
 ---
 
