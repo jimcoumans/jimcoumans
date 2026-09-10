@@ -9,6 +9,7 @@ export function Header({ user, actief }: { user: SessionUser; actief?: string })
         { href: '/beheer', label: 'Klanten', key: 'beheer' },
         { href: '/beheer/abonnementen', label: 'Abonnementen', key: 'abonnementen' },
         { href: '/beheer/diensten', label: 'Diensten', key: 'diensten' },
+        { href: '/beheer/partners', label: 'Partners', key: 'partners' },
         { href: '/beheer/financieel', label: 'Financieel', key: 'financieel' },
         { href: '/beheer/medewerkers', label: 'Team', key: 'medewerkers' },
         { href: '/beheer/sync', label: 'Sync', key: 'sync' },

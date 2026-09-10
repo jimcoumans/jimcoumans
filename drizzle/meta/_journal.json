@@ -36,6 +36,13 @@
       "when": 1788793796466,
       "tag": "0004_abonnement_niet_verwijderbaar",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1789024135051,
+      "tag": "0005_crm",
+      "breakpoints": true
     }
   ]
 }

@@ -68,6 +68,73 @@ export function ActionForm({
   )
 }
 
+/** Aanvinkveld, voor ja-of-nee zonder dat er een waarde bij hoort. */
+export function Check({
+  label,
+  name,
+  hint,
+  defaultChecked = false,
+}: {
+  label: string
+  name: string
+  hint?: string
+  defaultChecked?: boolean
+}) {
+  const id = `check-${name}-${label.replace(/\W+/g, '')}`
+  return (
+    <div>
+      <label htmlFor={id} className="flex items-start gap-2.5 text-sm">
+        <input
+          id={id}
+          name={name}
+          type="checkbox"
+          defaultChecked={defaultChecked}
+          className="accent-jr-blue mt-0.5 h-4 w-4 shrink-0"
+        />
+        <span>{label}</span>
+      </label>
+      {hint && <p className="mt-1 ml-6.5 text-xs text-gray-500">{hint}</p>}
+    </div>
+  )
+}
+
+/** Keuzelijst met label. */
+export function Select({
+  label,
+  name,
+  options,
+  defaultValue,
+  hint,
+}: {
+  label: string
+  name: string
+  options: { value: string; label: string }[]
+  defaultValue?: string
+  hint?: string
+}) {
+  const id = `select-${name}-${label.replace(/\W+/g, '')}`
+  return (
+    <div>
+      <label htmlFor={id} className="mb-1 block text-xs text-gray-600">
+        {label}
+      </label>
+      <select
+        id={id}
+        name={name}
+        defaultValue={defaultValue}
+        className="focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
+      >
+        {options.map((o) => (
+          <option key={o.value} value={o.value}>
+            {o.label}
+          </option>
+        ))}
+      </select>
+      {hint && <p className="mt-1 text-xs text-gray-500">{hint}</p>}
+    </div>
+  )
+}
+
 /** Invoerveld met label, in de stijl van de rest van het beheerscherm. */
 export function Field({
   label,

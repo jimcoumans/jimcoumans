@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { getSessionUser } from '@/lib/auth'
 import { listOrganizations } from '@/lib/admin'
+import { getCrmCounts, organizationStatusLabels, organizationStatusStyles } from '@/lib/crm'
 import { Header } from '@/components/Header'
 import { ActionForm, Field } from '@/components/ActionForm'
 import { nieuweKlant } from './actions'
@@ -13,6 +14,7 @@ export default async function BeheerPage() {
   if (user.role !== 'staff' && user.role !== 'admin') redirect('/')
 
   const klanten = await listOrganizations()
+  const crm = await getCrmCounts(klanten.map((k) => k.organization.id))
   const totaal = klanten.reduce((acc, k) => acc + k.totalBalanceCents, 0)
   const negatief = klanten.filter((k) => k.totalBalanceCents < 0)
 
@@ -55,11 +57,32 @@ export default async function BeheerPage() {
                       className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-3.5 transition-colors hover:bg-gray-50 sm:px-6"
                     >
                       <div className="min-w-0 flex-1">
-                        <p className="text-sm">{k.organization.name}</p>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <p className="text-sm">{k.organization.name}</p>
+                          {k.organization.status !== 'client' && (
+                            <span
+                              className={`rounded-full px-2 py-0.5 text-xs ${organizationStatusStyles[k.organization.status]}`}
+                            >
+                              {organizationStatusLabels[k.organization.status]}
+                            </span>
+                          )}
+                        </div>
                         <p className="mt-0.5 text-xs text-gray-600">
-                          {k.walletCount} {k.walletCount === 1 ? 'wallet' : 'wallets'}{' '}
-                          &middot; {k.clientUserCount}{' '}
-                          {k.clientUserCount === 1 ? 'gebruiker' : 'gebruikers'}
+                          {[
+                            k.organization.industry,
+                            `${k.walletCount} ${k.walletCount === 1 ? 'wallet' : 'wallets'}`,
+                            (() => {
+                              const c = crm.get(k.organization.id)
+                              if (!c) return null
+                              const delen = []
+                              if (c.contacts > 0) delen.push(`${c.contacts} contact${c.contacts === 1 ? '' : 'en'}`)
+                              if (c.partners > 0) delen.push(`${c.partners} partner${c.partners === 1 ? '' : 's'}`)
+                              if (c.accounts > 0) delen.push(`${c.accounts} account${c.accounts === 1 ? '' : 's'}`)
+                              return delen.join(' · ') || null
+                            })(),
+                          ]
+                            .filter(Boolean)
+                            .join(' · ')}
                           {k.clientUserCount === 0 && (
                             <span className="text-jr-orange">
                               {' '}

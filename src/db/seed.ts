@@ -14,11 +14,24 @@ import {
   ledgerEntries,
   services,
   subscriptions,
+  partners,
+  organizationPartners,
 } from './schema'
 import { addServiceEntry, addEntry, reverseEntry } from '../lib/ledger'
 import { runBilling } from '../lib/billing'
+import {
+  createContact,
+  createPartner,
+  linkPartner,
+  createAccount,
+  updateOrganizationDetails,
+} from '../lib/crm'
 
 const DEMO_SLUGS = ['hotel-voncken-demo', 'damen-makelaardij-demo']
+
+/** Partners die deze seed aanmaakt. Bij een herhaalde run eerst weg, anders
+ *  staan ze er na de tweede keer dubbel in. */
+const DEMO_PARTNERS = ['Studio Lens', 'Drukkerij Limburg', 'Kraft Development']
 
 /* --------------------------- Dienstencatalogus --------------------------- */
 
@@ -123,6 +136,7 @@ async function main() {
     // De volgorde is dwingend: boekingen verwijzen naar facturen, en
     // facturen naar abonnementen met ON DELETE RESTRICT. Andersom weigert
     // de database, en dat is precies de bedoeling in productie.
+    // Contactpersonen, partnerkoppelingen en accounts gaan met de klant mee.
     await db.delete(invoices).where(eq(invoices.organizationId, org.id))
     await db.delete(subscriptions).where(eq(subscriptions.organizationId, org.id))
     await db.delete(organizations).where(eq(organizations.id, org.id))
@@ -184,6 +198,9 @@ async function main() {
   console.log(`  ${MEDEWERKERS.length} medewerkers en ${adminEmails.length} beheerder(s)`)
 
   /* ---------------------------- Klant 1 --------------------------------- */
+
+  // Demo-partners opruimen; hun koppelingen aan klanten gaan mee via cascade.
+  await db.delete(partners).where(inArray(partners.name, DEMO_PARTNERS))
 
   const [voncken] = await db
     .insert(organizations)
@@ -368,6 +385,173 @@ async function main() {
       deliveredByUserId: medewerker,
     })
   }
+
+  /* ------------------------------- CRM ---------------------------------- */
+
+  await updateOrganizationDetails(voncken!.id, {
+    status: 'client',
+    industry: 'Horeca',
+    kvkNumber: '14036281',
+    vatNumber: 'NL809912345B01',
+    website: 'hotelvoncken.nl',
+    phone: '043 601 22 38',
+    email: 'info@hotelvoncken.nl',
+    addressLine: 'Neerhem 21',
+    postalCode: '6301 CJ',
+    city: 'Valkenburg',
+    clientSince: new Date(2021, 5, 1),
+    notes: 'Seizoensgevoelig: piek in het voorjaar, rustig in januari.',
+  })
+
+  await updateOrganizationDetails(damen!.id, {
+    status: 'client',
+    industry: 'Makelaardij',
+    kvkNumber: '14092837',
+    website: 'damenmakelaardij.nl',
+    phone: '045 571 40 90',
+    city: 'Heerlen',
+    clientSince: new Date(2024, 0, 15),
+  })
+
+  await createContact({
+    organizationId: voncken!.id,
+    name: 'Marieke Voncken',
+    jobTitle: 'Eigenaar',
+    email: 'marieke@hotelvoncken.nl',
+    mobile: '06 24 55 18 902',
+    isPrimary: true,
+    notes: 'Beslist over campagnes. Liever bellen dan mailen.',
+  })
+  await createContact({
+    organizationId: voncken!.id,
+    name: 'Peter Janssen',
+    jobTitle: 'Bedrijfsleider',
+    email: 'peter@hotelvoncken.nl',
+    phone: '043 601 22 38',
+    receivesInvoices: true,
+  })
+  await createContact({
+    organizationId: damen!.id,
+    name: 'Rob Damen',
+    jobTitle: 'Makelaar',
+    email: 'rob@damenmakelaardij.nl',
+    mobile: '06 51 22 77 41',
+    isPrimary: true,
+    receivesInvoices: true,
+  })
+
+  // Externe partners en bij wie ze horen.
+  const [lens] = await db
+    .insert(partners)
+    .values({
+      name: 'Studio Lens',
+      type: 'photographer',
+      contactName: 'Tom Lens',
+      email: 'tom@studiolens.nl',
+      phone: '06 14 88 20 55',
+      website: 'studiolens.nl',
+      hourlyRateCents: 9_500,
+      dayRateCents: 65_000,
+      paymentTermDays: 30,
+      agreementNotes:
+        'Reiskosten binnen Limburg inbegrepen. Nabewerking per uur. Beelden vrij van rechten voor de klant.',
+    })
+    .returning()
+
+  const [drukwerk] = await db
+    .insert(partners)
+    .values({
+      name: 'Drukkerij Limburg',
+      type: 'printer',
+      contactName: 'Els Hermans',
+      email: 'els@drukkerijlimburg.nl',
+      paymentTermDays: 14,
+      agreementNotes: '10% bureaukorting op alle drukwerk. Levertijd 5 werkdagen.',
+    })
+    .returning()
+
+  const [devs] = await db
+    .insert(partners)
+    .values({
+      name: 'Kraft Development',
+      type: 'developer',
+      contactName: 'Sander Kraft',
+      email: 'sander@kraftdev.nl',
+      hourlyRateCents: 11_000,
+      paymentTermDays: 30,
+      agreementNotes: 'Voor maatwerk dat buiten ons eigen webteam valt.',
+    })
+    .returning()
+
+  await linkPartner({
+    organizationId: voncken!.id,
+    partnerId: lens!.id,
+    role: 'Huisfotograaf',
+    since: new Date(2022, 3, 1),
+    notes: 'Kent het pand, fotografeert elk seizoen de kamers opnieuw.',
+  })
+  await linkPartner({
+    organizationId: voncken!.id,
+    partnerId: drukwerk!.id,
+    role: 'Vaste drukker',
+    notes: 'Menukaarten en seizoensflyers.',
+  })
+  await linkPartner({
+    organizationId: damen!.id,
+    partnerId: lens!.id,
+    role: 'Fotograaf woningpresentaties',
+    customHourlyRateCents: 8_000,
+    notes: 'Afwijkend tarief: hoog volume, korte sessies per woning.',
+  })
+  await linkPartner({
+    organizationId: damen!.id,
+    partnerId: devs!.id,
+    role: 'Developer woningzoeker',
+  })
+
+  // Accountregister: welke systemen, waar het wachtwoord staat.
+  // Nooit het wachtwoord zelf.
+  await createAccount({
+    organizationId: voncken!.id,
+    name: 'WordPress admin',
+    system: 'WordPress',
+    url: 'https://hotelvoncken.nl/wp-admin',
+    loginHint: 'marketing@hotelvoncken.nl',
+    owner: 'client',
+    vaultReference: '1Password → Klanten → Hotel Voncken → WordPress',
+    hasMfa: true,
+    mfaNotes: 'Code loopt via de telefoon van Marieke.',
+  })
+  await createAccount({
+    organizationId: voncken!.id,
+    name: 'Google Ads',
+    system: 'Google Ads',
+    loginHint: 'ads@jamesrobinson.nl',
+    owner: 'agency',
+    vaultReference: '1Password → JR → Google Ads beheer',
+    hasMfa: true,
+  })
+  await createAccount({
+    organizationId: voncken!.id,
+    name: 'Meta Business Manager',
+    system: 'Meta Business Manager',
+    loginHint: 'marieke@hotelvoncken.nl',
+    owner: 'client',
+    hasMfa: false,
+    notes: 'Wij hebben partnertoegang; het account blijft van de klant.',
+  })
+  await createAccount({
+    organizationId: damen!.id,
+    name: 'WordPress admin',
+    system: 'WordPress',
+    url: 'https://damenmakelaardij.nl/wp-admin',
+    loginHint: 'rob@damenmakelaardij.nl',
+    owner: 'client',
+    vaultReference: '1Password → Klanten → Damen → WordPress',
+    hasMfa: true,
+  })
+
+  console.log('  CRM: 3 contactpersonen, 3 partners, 4 accounts')
 
   console.log('')
   console.log('Klaar. Inloggen kan met:')

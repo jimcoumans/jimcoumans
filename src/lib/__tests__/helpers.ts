@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { isConstraintViolation, describeLedgerDbError } from '../db-errors'
+import { isConstraintViolation, describeDbError } from '../db-errors'
 
 /**
  * Drizzle wrapt driver-fouten, waardoor de constraint-naam niet in
@@ -18,7 +18,7 @@ export async function assertViolatesConstraint(
       `verwachtte schending van ${constraint}, kreeg: ${String(error)}`,
     )
     assert.ok(
-      describeLedgerDbError(error),
+      describeDbError(error),
       `${constraint} hoort een leesbare foutmelding te hebben`,
     )
     return

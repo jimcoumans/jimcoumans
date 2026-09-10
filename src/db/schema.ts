@@ -76,6 +76,32 @@ export const serviceUnitEnum = pgEnum('service_unit', [
 export const syncStatusEnum = pgEnum('sync_status', ['running', 'success', 'failed'])
 
 /** Staat van een abonnement. Alleen 'active' wordt gefactureerd. */
+/** Waar een klant in de relatie staat. */
+export const organizationStatusEnum = pgEnum('organization_status', [
+  'prospect', // nog geen klant
+  'client', // lopende samenwerking
+  'former', // oud-klant
+])
+
+/** Van wie een account is. Bepaalt wie het bij een breuk kan intrekken. */
+export const accountOwnerEnum = pgEnum('account_owner', [
+  'client', // de klant is eigenaar, wij hebben toegang gekregen
+  'agency', // James Robinson is eigenaar
+  'shared', // gezamenlijk, bijv. een account op naam van beiden
+])
+
+/** Soort externe partner. */
+export const partnerTypeEnum = pgEnum('partner_type', [
+  'photographer',
+  'videographer',
+  'printer',
+  'developer',
+  'copywriter',
+  'translator',
+  'designer',
+  'other',
+])
+
 export const subscriptionStatusEnum = pgEnum('subscription_status', [
   'active', // loopt: wordt maandelijks gefactureerd
   'paused', // tijdelijk stil: geen facturen, wel bewaard
@@ -93,12 +119,236 @@ export const organizations = pgTable(
     name: text('name').notNull(),
     /** Task-id van het bedrijf in de ClickUp CRM-lijst. */
     clickupCompanyId: text('clickup_company_id'),
+
+    /* --- Bedrijfsgegevens --- */
+    status: organizationStatusEnum('status').notNull().default('client'),
+    /** Branche, bijv. Horeca of Makelaardij. Vrije tekst met een suggestielijst. */
+    industry: text('industry'),
+    kvkNumber: text('kvk_number'),
+    vatNumber: text('vat_number'),
+    website: text('website'),
+    phone: text('phone'),
+    /** Algemeen e-mailadres van het bedrijf, niet van een persoon. */
+    email: text('email'),
+    addressLine: text('address_line'),
+    postalCode: text('postal_code'),
+    city: text('city'),
+    country: text('country').notNull().default('Nederland'),
+    clientSince: timestamp('client_since', { withTimezone: true }),
+    notes: text('notes'),
+
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
     archivedAt: timestamp('archived_at', { withTimezone: true }),
   },
   (t) => [
     uniqueIndex('organizations_slug_idx').on(t.slug),
     uniqueIndex('organizations_clickup_idx').on(t.clickupCompanyId),
+    index('organizations_status_idx').on(t.status),
+    index('organizations_industry_idx').on(t.industry),
+  ],
+)
+
+/* ---------------------------- Contactpersonen --------------------------- */
+
+/**
+ * Een contactpersoon bij een klant.
+ *
+ * Dit is met opzet iets anders dan een rij in `users`. Een contactpersoon is
+ * CRM-gegeven: wie bel je, wie tekent, wie krijgt de factuur. Een user is een
+ * identiteit die kan inloggen. De meeste contactpersonen hoeven nooit in te
+ * loggen, en niet elke inlogger is een contactpersoon. Wil je iemand beide
+ * geven, dan wijst userId naar het account.
+ */
+export const contacts = pgTable(
+  'contacts',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    organizationId: uuid('organization_id')
+      .notNull()
+      .references(() => organizations.id, { onDelete: 'cascade' }),
+
+    name: text('name').notNull(),
+    /** Functie binnen het bedrijf, bijv. Eigenaar of Marketing manager. */
+    jobTitle: text('job_title'),
+    email: text('email'),
+    phone: text('phone'),
+    mobile: text('mobile'),
+    linkedinUrl: text('linkedin_url'),
+
+    /** De vaste contactpersoon. Er kan er maar één per klant zijn. */
+    isPrimary: boolean('is_primary').notNull().default(false),
+    /** Krijgt de facturen. Meerdere mensen mogen dit zijn. */
+    receivesInvoices: boolean('receives_invoices').notNull().default(false),
+
+    /** Optioneel gekoppeld aan een account dat kan inloggen. */
+    userId: uuid('user_id').references(() => users.id, { onDelete: 'set null' }),
+
+    notes: text('notes'),
+    active: boolean('active').notNull().default(true),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('contacts_org_idx').on(t.organizationId),
+    index('contacts_name_idx').on(t.name),
+    uniqueIndex('contacts_user_idx').on(t.userId),
+    // Twee vaste contactpersonen bij dezelfde klant betekent dat niemand
+    // weet wie je moet bellen. De index staat alleen op de primaire rijen,
+    // zodat er wel meerdere niet-primaire contacten mogen bestaan.
+    uniqueIndex('contacts_one_primary_idx')
+      .on(t.organizationId)
+      .where(sql`${t.isPrimary}`),
+  ],
+)
+
+/* ---------------------------- Accountregister --------------------------- */
+
+/**
+ * WELKE systemen een klant heeft en wie erbij kan. Bewust GEEN wachtwoorden.
+ *
+ * Er is met opzet geen kolom voor een wachtwoord, sleutel of token, ook niet
+ * versleuteld. De reden: zodra de inloggegevens van tientallen klanten in
+ * deze database staan, is één lek geen incident meer maar een sleutelbos
+ * naar alle klantomgevingen tegelijk. Dat risico hoort bij een
+ * wachtwoordmanager die daarvoor gebouwd en gecontroleerd is.
+ *
+ * Wat hier wel staat is het overzicht: welk systeem, van wie het account is,
+ * of er tweestapsverificatie op zit, en WAAR het wachtwoord te vinden is
+ * (vaultReference). Daarmee kun je in een oogopslag zien wat er bij een
+ * klant hoort, zonder dat dit bestand zelf een doelwit wordt.
+ *
+ * Er staat een test op die faalt zodra iemand hier alsnog een
+ * wachtwoordkolom aan toevoegt.
+ */
+export const accounts = pgTable(
+  'accounts',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    organizationId: uuid('organization_id')
+      .notNull()
+      .references(() => organizations.id, { onDelete: 'cascade' }),
+
+    /** Hoe wij het noemen, bijv. "WordPress admin". */
+    name: text('name').notNull(),
+    /** Het systeem: WordPress, Google Ads, Meta Business Manager, ... */
+    system: text('system'),
+    url: text('url'),
+
+    /**
+     * Waarmee je inlogt: meestal een e-mailadres. Dit is geen geheim, maar
+     * wel de helft van de sleutel, dus het staat alleen in het beheer.
+     */
+    loginHint: text('login_hint'),
+
+    owner: accountOwnerEnum('owner').notNull().default('client'),
+
+    /**
+     * Waar het wachtwoord staat, bijv. de naam van het item in 1Password.
+     * Een verwijzing, geen inhoud.
+     */
+    vaultReference: text('vault_reference'),
+
+    hasMfa: boolean('has_mfa').notNull().default(false),
+    /** Wie de tweestapscode kan geven. */
+    mfaNotes: text('mfa_notes'),
+
+    notes: text('notes'),
+    active: boolean('active').notNull().default(true),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('accounts_org_idx').on(t.organizationId),
+    index('accounts_system_idx').on(t.system),
+  ],
+)
+
+/* ------------------------------- Partners ------------------------------- */
+
+/**
+ * Een externe partner: fotograaf, drukker, videograaf, freelance developer.
+ * Hier staan de afspraken die met hen gelden, los van een specifieke klant.
+ */
+export const partners = pgTable(
+  'partners',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    name: text('name').notNull(),
+    type: partnerTypeEnum('type').notNull().default('other'),
+
+    contactName: text('contact_name'),
+    email: text('email'),
+    phone: text('phone'),
+    website: text('website'),
+
+    kvkNumber: text('kvk_number'),
+    vatNumber: text('vat_number'),
+
+    /* --- Tariefafspraken --- */
+    /** Uurtarief in centen. */
+    hourlyRateCents: integer('hourly_rate_cents'),
+    /** Dagtarief in centen. */
+    dayRateCents: integer('day_rate_cents'),
+    /** Betaaltermijn in dagen. */
+    paymentTermDays: integer('payment_term_days'),
+    /** Wat er verder is afgesproken: staffels, reiskosten, voorwaarden. */
+    agreementNotes: text('agreement_notes'),
+
+    notes: text('notes'),
+    active: boolean('active').notNull().default(true),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('partners_name_idx').on(t.name),
+    index('partners_type_idx').on(t.type),
+    index('partners_active_idx').on(t.active),
+    check(
+      'partner_hourly_positive',
+      sql`${t.hourlyRateCents} IS NULL OR ${t.hourlyRateCents} > 0`,
+    ),
+    check('partner_day_positive', sql`${t.dayRateCents} IS NULL OR ${t.dayRateCents} > 0`),
+    check(
+      'partner_term_positive',
+      sql`${t.paymentTermDays} IS NULL OR ${t.paymentTermDays} > 0`,
+    ),
+  ],
+)
+
+/**
+ * Welke partner bij welke klant hoort, en in welke rol.
+ * Dit is waar "de huisfotograaf van Hotel Voncken" vandaan komt.
+ */
+export const organizationPartners = pgTable(
+  'organization_partners',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    organizationId: uuid('organization_id')
+      .notNull()
+      .references(() => organizations.id, { onDelete: 'cascade' }),
+    partnerId: uuid('partner_id')
+      .notNull()
+      .references(() => partners.id, { onDelete: 'cascade' }),
+
+    /** De rol bij deze klant, bijv. Huisfotograaf of Vaste drukker. */
+    role: text('role').notNull(),
+    /** Afwijkend uurtarief voor deze klant, in centen. Leeg = het standaardtarief. */
+    customHourlyRateCents: integer('custom_hourly_rate_cents'),
+    since: timestamp('since', { withTimezone: true }),
+    notes: text('notes'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('org_partners_org_idx').on(t.organizationId),
+    index('org_partners_partner_idx').on(t.partnerId),
+    // Dezelfde partner twee keer aan dezelfde klant hangen levert alleen
+    // verwarring op over welke afspraak geldt.
+    uniqueIndex('org_partners_pair_idx').on(t.organizationId, t.partnerId),
+    check(
+      'org_partner_rate_positive',
+      sql`${t.customHourlyRateCents} IS NULL OR ${t.customHourlyRateCents} > 0`,
+    ),
   ],
 )
 
@@ -521,6 +771,39 @@ export const organizationsRelations = relations(organizations, ({ many }) => ({
   wallets: many(wallets),
   invoices: many(invoices),
   subscriptions: many(subscriptions),
+  contacts: many(contacts),
+  partners: many(organizationPartners),
+  accounts: many(accounts),
+}))
+
+export const accountsRelations = relations(accounts, ({ one }) => ({
+  organization: one(organizations, {
+    fields: [accounts.organizationId],
+    references: [organizations.id],
+  }),
+}))
+
+export const contactsRelations = relations(contacts, ({ one }) => ({
+  organization: one(organizations, {
+    fields: [contacts.organizationId],
+    references: [organizations.id],
+  }),
+  user: one(users, { fields: [contacts.userId], references: [users.id] }),
+}))
+
+export const partnersRelations = relations(partners, ({ many }) => ({
+  organizations: many(organizationPartners),
+}))
+
+export const organizationPartnersRelations = relations(organizationPartners, ({ one }) => ({
+  organization: one(organizations, {
+    fields: [organizationPartners.organizationId],
+    references: [organizations.id],
+  }),
+  partner: one(partners, {
+    fields: [organizationPartners.partnerId],
+    references: [partners.id],
+  }),
 }))
 
 export const subscriptionsRelations = relations(subscriptions, ({ one, many }) => ({
@@ -594,5 +877,9 @@ export type LedgerEntry = typeof ledgerEntries.$inferSelect
 export type Invoice = typeof invoices.$inferSelect
 export type Service = typeof services.$inferSelect
 export type Subscription = typeof subscriptions.$inferSelect
+export type Contact = typeof contacts.$inferSelect
+export type Account = typeof accounts.$inferSelect
+export type Partner = typeof partners.$inferSelect
+export type OrganizationPartner = typeof organizationPartners.$inferSelect
 export type NewService = typeof services.$inferInsert
 export type SyncRun = typeof syncRuns.$inferSelect

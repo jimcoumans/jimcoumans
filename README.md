@@ -16,20 +16,25 @@ een urenteller.
 - **Waar het budget naartoe ging** — verdeeld over productgroepen
 - **Zijn facturen** — de bijschrijvingen die het budget hebben opgebouwd
 
-**Het JR-team** heeft een beheerdeel met vijf schermen:
+**Het JR-team** heeft een beheerdeel:
 
 | Scherm | Wat je er doet |
 |---|---|
-| Klanten | Klant openen, dienst afboeken, factuur aanmaken, boeking corrigeren, wallets en klanttoegang beheren |
+| Klanten | Klant openen: contactpersonen, partners, wallets, abonnementen, facturen, accounts en bedrijfsgegevens |
+| Abonnementen | Lopende abonnementen, wanneer ze factureren, aan- en uitzetten |
 | Diensten | De catalogus: wat we leveren, wat het kost, wat de kostprijs is |
+| Partners | Externen met hun tariefafspraken, en bij welke klanten ze horen |
 | Financieel | Omzet, marge en budget — overall, per klant, per medewerker, per dienst |
 | Team | Collega's toevoegen, en zien wat ieder heeft geleverd |
 | Sync | Status van de ClickUp-koppeling |
 
-## De vijf posttypes
+## De posttypes
 
 ```
-klant (organizations)        het bedrijf
+klant (organizations)        het bedrijf, met CRM-gegevens
+contactpersonen (contacts)   wie je belt, wie de facturen krijgt
+partners (partners)          externen, met de tariefafspraken
+accounts (accounts)          welke systemen een klant heeft — zonder wachtwoorden
 diensten (services)          de catalogus met tarieven
 abonnementen (subscriptions) doorlopend, verhogen maandelijks het budget
 facturen (invoices)          bouwen het budget op
@@ -81,6 +86,43 @@ Verhoog je "Social media post" van € 100 naar € 120, dan blijven boekingen v
 vorig jaar op € 100 staan en verandert geen enkel saldo. Hetzelfde geldt voor de
 kostprijs, zodat de marge van vorig kwartaal niet verschuift als je een
 inkoopprijs bijwerkt.
+
+## Het CRM-deel
+
+**Contactpersonen** staan los van inlogaccounts. Een contactpersoon is
+CRM-gegeven — wie bel je, wie tekent, wie krijgt de factuur. Een `user` is een
+identiteit die kan inloggen. De meeste contactpersonen hoeven nooit in te loggen.
+Per klant kan er maar één vaste contactpersoon zijn; de database dwingt dat af
+met een partiële unieke index, en het toewijzen van een nieuwe haalt de rol
+automatisch bij de vorige weg.
+
+**Partners** zijn de externen: fotograaf, drukker, freelance developer. Hun
+tarieven staan bij de partner zelf; per klant kan daarvan worden afgeweken. Zo
+zie je op de klantpagina wie de huisfotograaf is en wat die bij déze klant kost,
+en op de partnerpagina bij welke klanten hij hoort.
+
+## Wachtwoorden: die staan hier niet
+
+Het accountregister legt vast **welke** systemen een klant heeft — WordPress,
+Google Ads, Meta — van wie het account is, of er tweestapsverificatie op zit, en
+**waar het wachtwoord te vinden is**. Nooit het wachtwoord zelf, ook niet
+versleuteld.
+
+De reden: zodra de inloggegevens van tientallen klanten in deze database staan,
+is één lek geen incident meer maar een sleutelbos naar alle klantomgevingen
+tegelijk. Dat hoort in een wachtwoordmanager die daarvoor gebouwd en
+gecontroleerd is (1Password, Bitwarden); `vault_reference` wijst ernaar.
+
+Dit is geen afspraak maar een garantie:
+
+- Er is geen kolom voor een wachtwoord, sleutel of token.
+- `src/lib/__tests__/no-secrets.test.ts` scant zowel het schema als de
+  draaiende database op kolomnamen die op een geheim wijzen, en faalt zodra er
+  een verschijnt.
+- Het formulier weigert een wachtwoord in het notitieveld.
+
+Wil je hier ooit van afwijken, dan faalt die test en is het een bewuste
+beslissing in plaats van een sluipende.
 
 ## Techniek
 
@@ -144,6 +186,10 @@ login_tokens    eenmalige inloglinks, opgeslagen als hash
 wallets         een klant kan meerdere wallets hebben
 services        de dienstencatalogus met tarieven en kostprijzen
 subscriptions   doorlopende abonnementen met een maandbedrag
+contacts        contactpersonen bij een klant
+partners        externe partners met hun tariefafspraken
+organization_partners  welke partner bij welke klant hoort, en in welke rol
+accounts        welke systemen een klant heeft — zonder wachtwoorden
 ledger_entries  de boekingen — append-only
 invoices        facturen die het budget opbouwen
 sync_runs       geschiedenis van de ClickUp-sync
@@ -177,6 +223,9 @@ is afschrijven. Het saldo is `SUM(amount_cents)`.
 | `subscription_billing_day_valid` | Facturatiedag tussen 1 en 28, zodat de dag in elke maand bestaat |
 | `subscription_ends_after_start` | Een einddatum ligt niet voor de startdatum |
 | FK abonnement op factuur (`RESTRICT`) | Een abonnement met facturen kan niet verwijderd worden — zet het op 'ended' |
+| `contacts_one_primary_idx` | Per klant is er hoogstens één vaste contactpersoon |
+| `org_partners_pair_idx` | Dezelfde partner hangt maar één keer aan dezelfde klant |
+| `partner_hourly_positive` / `partner_day_positive` | Partnertarieven zijn boven nul |
 | `client_needs_org` | Een klantgebruiker hoort altijd bij een organisatie |
 | FK met `ON DELETE RESTRICT` | Een wallet met boekingen kan niet worden verwijderd |
 

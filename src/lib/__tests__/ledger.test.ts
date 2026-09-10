@@ -11,7 +11,7 @@ import assert from 'node:assert/strict'
 import { eq } from 'drizzle-orm'
 import { db, client } from '../../db'
 import { organizations, users, wallets, ledgerEntries } from '../../db/schema'
-import { isConstraintViolation, describeLedgerDbError } from '../db-errors'
+import { isConstraintViolation, describeDbError } from '../db-errors'
 import {
   addEntry,
   reverseEntry,
@@ -40,7 +40,7 @@ async function assertViolates(fn: () => Promise<unknown>, constraint: string) {
       `verwachtte schending van ${constraint}, kreeg: ${String(error)}`,
     )
     assert.ok(
-      describeLedgerDbError(error),
+      describeDbError(error),
       `${constraint} hoort een leesbare foutmelding te hebben`,
     )
     return

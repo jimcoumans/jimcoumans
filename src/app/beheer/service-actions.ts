@@ -9,7 +9,7 @@ import { addServiceEntry, LedgerError } from '@/lib/ledger'
 import { createInvoiceWithTopup } from '@/lib/invoices'
 import { parseAmountToCents } from '@/lib/money'
 import { parseQuantityToHundredths } from '@/lib/quantity'
-import { describeLedgerDbError } from '@/lib/db-errors'
+import { describeDbError } from '@/lib/db-errors'
 import type { ActionResult } from './actions'
 
 /* Acties voor diensten, dienstboekingen, facturen en medewerkers.
@@ -23,7 +23,7 @@ async function veilig(fn: () => Promise<void>): Promise<ActionResult> {
   } catch (error) {
     if (error instanceof LedgerError) return { ok: false, error: error.message }
 
-    const melding = describeLedgerDbError(error)
+    const melding = describeDbError(error)
     if (melding) return { ok: false, error: melding }
 
     if (error instanceof Error && error.message === 'NEXT_REDIRECT') throw error

@@ -11,6 +11,8 @@ import { boekDienst, nieuweFactuur, zetFactuurStatus } from '../service-actions'
 import { nieuwAbonnement } from '../subscription-actions'
 import { SubscriptionCard, NewSubscriptionForm } from '@/components/SubscriptionCard'
 import { listSubscriptions } from '@/lib/billing'
+import { listContacts, listAccounts, listPartnersForOrganization, listActivePartners, organizationStatusLabels, organizationStatusStyles } from '@/lib/crm'
+import { Contactpersonen, Partners, Accounts, Bedrijfsgegevens } from '@/components/CrmSections'
 import { BookServiceForm } from '@/components/BookServiceForm'
 import { formatQuantity, unitShort } from '@/lib/quantity'
 import { formatCents, formatSignedCents } from '@/lib/money'
@@ -31,12 +33,17 @@ export default async function KlantPage({
   const klant = await getOrganizationBySlug(slug)
   if (!klant) notFound()
 
-  const [facturen, diensten, team, abonnementen] = await Promise.all([
-    getOrganizationInvoices(klant.organization.id, 20),
-    listActiveServices(),
-    listStaff(),
-    listSubscriptions({ organizationId: klant.organization.id }),
-  ])
+  const [facturen, diensten, team, abonnementen, contacten, accounts, partnerLinks, allePartners] =
+    await Promise.all([
+      getOrganizationInvoices(klant.organization.id, 20),
+      listActiveServices(),
+      listStaff(),
+      listSubscriptions({ organizationId: klant.organization.id }),
+      listContacts(klant.organization.id),
+      listAccounts(klant.organization.id),
+      listPartnersForOrganization(klant.organization.id),
+      listActivePartners(),
+    ])
   const vandaag = new Date().toISOString().slice(0, 10)
 
   return (
@@ -48,13 +55,55 @@ export default async function KlantPage({
           &larr; Alle klanten
         </a>
 
-        <h1 className="text-jr-blue mt-2 mb-1 text-2xl">{klant.organization.name}</h1>
+        <div className="mt-2 mb-1 flex flex-wrap items-center gap-3">
+          <h1 className="text-jr-blue text-2xl">{klant.organization.name}</h1>
+          <span
+            className={`rounded-full px-2.5 py-0.5 text-xs ${organizationStatusStyles[klant.organization.status]}`}
+          >
+            {organizationStatusLabels[klant.organization.status]}
+          </span>
+        </div>
         <p className="mb-8 text-sm text-gray-600">
-          {klant.wallets.length} {klant.wallets.length === 1 ? 'wallet' : 'wallets'}
-          {klant.organization.clickupCompanyId && <> &middot; gekoppeld aan ClickUp</>}
+          {[
+            `${klant.wallets.length} ${klant.wallets.length === 1 ? 'wallet' : 'wallets'}`,
+            klant.organization.industry,
+            contacten.find((c) => c.isPrimary)?.name,
+            klant.organization.phone,
+          ]
+            .filter(Boolean)
+            .join(' · ')}
+          {klant.organization.website && (
+            <>
+              {' · '}
+              <a
+                href={
+                  klant.organization.website.startsWith('http')
+                    ? klant.organization.website
+                    : `https://${klant.organization.website}`
+                }
+                className="hover:text-jr-blue"
+                rel="noreferrer noopener"
+              >
+                {klant.organization.website.replace(/^https?:\/\//, '')}
+              </a>
+            </>
+          )}
         </p>
 
         <div className="space-y-10">
+          <Contactpersonen
+            contacts={contacten}
+            organizationId={klant.organization.id}
+            slug={slug}
+          />
+
+          <Partners
+            links={partnerLinks}
+            alle={allePartners}
+            organizationId={klant.organization.id}
+            slug={slug}
+          />
+
           {klant.wallets.map(({ wallet, balance }) => (
             <WalletBeheer
               key={wallet.id}
@@ -127,6 +176,14 @@ export default async function KlantPage({
             slug={slug}
             vandaag={vandaag}
           />
+
+          <Accounts
+            accounts={accounts}
+            organizationId={klant.organization.id}
+            slug={slug}
+          />
+
+          <Bedrijfsgegevens org={klant.organization} slug={slug} />
         </div>
       </main>
     </>

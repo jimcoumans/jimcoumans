@@ -7,7 +7,7 @@ import { organizations, wallets, users } from '@/db/schema'
 import { requireStaff } from '@/lib/auth'
 import { addEntry, reverseEntry, LedgerError } from '@/lib/ledger'
 import { parseAmountToCents } from '@/lib/money'
-import { describeLedgerDbError } from '@/lib/db-errors'
+import { describeDbError } from '@/lib/db-errors'
 import { uniekeSlug } from '@/lib/admin'
 import { normalizeEmail } from '@/lib/auth'
 
@@ -30,7 +30,7 @@ async function veilig(fn: () => Promise<void>): Promise<ActionResult> {
   } catch (error) {
     if (error instanceof LedgerError) return { ok: false, error: error.message }
 
-    const melding = describeLedgerDbError(error)
+    const melding = describeDbError(error)
     if (melding) return { ok: false, error: melding }
 
     // Redirects van Next.js zijn geen fouten en moeten doorgegooid worden.

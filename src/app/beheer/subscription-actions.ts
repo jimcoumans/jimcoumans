@@ -8,7 +8,7 @@ import { requireStaff } from '@/lib/auth'
 import { LedgerError } from '@/lib/ledger'
 import { runBilling } from '@/lib/billing'
 import { parseAmountToCents } from '@/lib/money'
-import { describeLedgerDbError } from '@/lib/db-errors'
+import { describeDbError } from '@/lib/db-errors'
 import type { ActionResult } from './actions'
 
 /* Acties voor abonnementen. Elke actie begint met requireStaff(). */
@@ -20,7 +20,7 @@ async function veilig(fn: () => Promise<void>): Promise<ActionResult> {
   } catch (error) {
     if (error instanceof LedgerError) return { ok: false, error: error.message }
 
-    const melding = describeLedgerDbError(error)
+    const melding = describeDbError(error)
     if (melding) return { ok: false, error: melding }
 
     if (error instanceof Error && error.message === 'NEXT_REDIRECT') throw error

@@ -55,7 +55,7 @@ export const PG_FOREIGN_KEY_VIOLATION = '23503'
  * Geeft null als het geen bekende constraint is, zodat de aanroeper de
  * fout gewoon kan doorgooien in plaats van hem te verbloemen.
  */
-export function describeLedgerDbError(error: unknown): string | null {
+export function describeDbError(error: unknown): string | null {
   const info = readPostgresError(error)
   if (!info) return null
 
@@ -96,6 +96,20 @@ export function describeLedgerDbError(error: unknown): string | null {
       return 'De einddatum kan niet voor de startdatum liggen.'
     case 'subscriptions_clickup_idx':
       return 'Dit ClickUp-abonnement is al aan een ander abonnement gekoppeld.'
+    case 'contacts_one_primary_idx':
+      return 'Deze klant heeft al een vaste contactpersoon. Maak eerst de ander niet-vast, of gebruik "Maak vaste contactpersoon".'
+    case 'contacts_user_idx':
+      return 'Dit inlogaccount is al aan een andere contactpersoon gekoppeld.'
+    case 'org_partners_pair_idx':
+      return 'Deze partner is al aan deze klant gekoppeld. Pas de bestaande koppeling aan in plaats van er een tweede te maken.'
+    case 'partner_hourly_positive':
+      return 'Het uurtarief van een partner moet boven nul zijn.'
+    case 'partner_day_positive':
+      return 'Het dagtarief van een partner moet boven nul zijn.'
+    case 'partner_term_positive':
+      return 'De betaaltermijn moet een positief aantal dagen zijn.'
+    case 'org_partner_rate_positive':
+      return 'Het afwijkende tarief moet boven nul zijn.'
     case 'invoices_org_number_idx':
       return 'Dit factuurnummer bestaat al voor deze klant.'
     case 'organizations_slug_idx':
