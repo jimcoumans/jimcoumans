@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { getSessionUser } from '@/lib/auth'
 import { listSyncRuns } from '@/lib/admin'
-import { Header } from '@/components/Header'
+import { AppShell } from '@/components/AppShell'
 import { formatDateLong } from '@/lib/dates'
 
 /** Status van de ClickUp-koppeling. */
@@ -14,10 +14,7 @@ export default async function SyncPage() {
   const gekoppeld = Boolean(process.env.CLICKUP_API_TOKEN)
 
   return (
-    <>
-      <Header user={user} actief="sync" />
-
-      <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+    <AppShell user={user} actief="sync">
         <h1 className="text-jr-blue mb-1 text-2xl">ClickUp-sync</h1>
         <p className="mb-6 text-sm text-gray-600">
           Haalt factureerbare taken uit ClickUp en boekt ze af op de wallet van de klant.
@@ -124,7 +121,6 @@ export default async function SyncPage() {
             </ul>
           )}
         </section>
-      </main>
-    </>
+    </AppShell>
   )
 }

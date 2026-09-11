@@ -81,7 +81,7 @@ export async function nieuweWallet(formData: FormData): Promise<ActionResult> {
       name: naam,
       lowBalanceThresholdCents: drempelCents,
     })
-    revalidatePath(`/beheer/${slug}`)
+    revalidatePath(`/beheer/klanten/${slug}`)
   })
 }
 
@@ -140,7 +140,7 @@ export async function boek(formData: FormData): Promise<ActionResult> {
       source: 'manual',
       createdByUserId: staff.id,
     })
-    revalidatePath(`/beheer/${slug}`)
+    revalidatePath(`/beheer/klanten/${slug}`)
   })
 }
 
@@ -159,7 +159,7 @@ export async function draaiTerug(formData: FormData): Promise<ActionResult> {
 
   return veilig(async () => {
     await reverseEntry(entryId, { reason: reden, createdByUserId: staff.id })
-    revalidatePath(`/beheer/${slug}`)
+    revalidatePath(`/beheer/klanten/${slug}`)
   })
 }
 
@@ -185,7 +185,7 @@ export async function nieuweGebruiker(formData: FormData): Promise<ActionResult>
         target: users.email,
         set: { organizationId, name: naam || null, disabledAt: null },
       })
-    revalidatePath(`/beheer/${slug}`)
+    revalidatePath(`/beheer/klanten/${slug}`)
   })
 }
 
@@ -204,6 +204,6 @@ export async function wisselToegang(formData: FormData): Promise<ActionResult> {
       .update(users)
       .set({ disabledAt: blokkeren ? new Date() : null })
       .where(eq(users.id, userId))
-    revalidatePath(`/beheer/${slug}`)
+    revalidatePath(`/beheer/klanten/${slug}`)
   })
 }

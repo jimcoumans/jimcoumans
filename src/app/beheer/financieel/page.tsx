@@ -9,7 +9,7 @@ import {
   getOutstandingInvoices,
   type Periode,
 } from '@/lib/reports'
-import { Header } from '@/components/Header'
+import { AppShell } from '@/components/AppShell'
 import { formatCents } from '@/lib/money'
 import { formatQuantity } from '@/lib/quantity'
 import { formatDate, formatMonth } from '@/lib/dates'
@@ -47,10 +47,7 @@ export default async function FinancieelPage({
   )
 
   return (
-    <>
-      <Header user={user} actief="financieel" />
-
-      <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+    <AppShell user={user} actief="financieel">
         <h1 className="text-jr-blue mb-1 text-2xl">Financieel overzicht</h1>
         <p className="mb-6 text-sm text-gray-600">
           Omzet is wat er aan diensten is geleverd. Teruggedraaide boekingen zitten er
@@ -127,7 +124,7 @@ export default async function FinancieelPage({
                 >
                   <div className="min-w-0">
                     <a
-                      href={`/beheer/${r.organizationSlug}`}
+                      href={`/beheer/klanten/${r.organizationSlug}`}
                       className="hover:text-jr-blue text-sm"
                     >
                       {r.organizationName}
@@ -157,7 +154,7 @@ export default async function FinancieelPage({
           rijen={perKlant.map((k) => ({
             key: k.organizationId,
             naam: k.organizationName,
-            href: `/beheer/${k.organizationSlug}`,
+            href: `/beheer/klanten/${k.organizationSlug}`,
             onder: `${k.bookingCount} ${k.bookingCount === 1 ? 'boeking' : 'boekingen'}`,
             hoofdwaarde: k.revenueCents,
             waarden: [
@@ -204,8 +201,7 @@ export default async function FinancieelPage({
           }))}
           leegTekst="Nog geen diensten geboekt."
         />
-      </main>
-    </>
+    </AppShell>
   )
 }
 

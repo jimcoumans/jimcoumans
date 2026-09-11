@@ -5,7 +5,7 @@ import {
   invoiceStatusLabels,
   invoiceStatusStyles,
 } from '@/lib/invoices'
-import { Header } from '@/components/Header'
+import { AppShell } from '@/components/AppShell'
 import { formatCents } from '@/lib/money'
 import { formatDate } from '@/lib/dates'
 
@@ -22,10 +22,7 @@ export default async function FacturenPage() {
     .reduce((acc, f) => acc + f.amountExclVatCents + f.vatCents, 0)
 
   return (
-    <>
-      <Header user={user} actief="facturen" />
-
-      <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+    <AppShell user={user} actief="facturen">
         <h1 className="text-jr-blue mb-1 text-2xl">Facturen</h1>
         <p className="mb-6 text-sm text-gray-600">
           Deze facturen vormen samen het budget in je wallet. Bedragen zijn exclusief
@@ -97,7 +94,6 @@ export default async function FacturenPage() {
             })}
           </ul>
         )}
-      </main>
-    </>
+    </AppShell>
   )
 }

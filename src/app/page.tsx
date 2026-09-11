@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { getSessionUser } from '@/lib/auth'
 import { getOrganizationWallets, getWalletEntries, getReversedEntryIds } from '@/lib/ledger'
-import { Header } from '@/components/Header'
+import { AppShell } from '@/components/AppShell'
 import { BalanceCard } from '@/components/BalanceCard'
 import { TransactionList } from '@/components/TransactionList'
 import { formatCents } from '@/lib/money'
@@ -18,10 +18,7 @@ export default async function HomePage() {
   const wallets = await getOrganizationWallets(user.organizationId)
 
   return (
-    <>
-      <Header user={user} actief="wallet" />
-
-      <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+    <AppShell user={user} actief="wallet">
         {wallets.length === 0 ? (
           <div className="rounded-xl bg-white p-8 shadow-sm">
             <h1 className="text-jr-blue mb-2 text-2xl">Nog geen wallet</h1>
@@ -44,8 +41,7 @@ export default async function HomePage() {
             ))}
           </div>
         )}
-      </main>
-    </>
+    </AppShell>
   )
 }
 

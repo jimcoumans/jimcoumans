@@ -4,7 +4,7 @@ import { db } from '@/db'
 import { users } from '@/db/schema'
 import { getSessionUser } from '@/lib/auth'
 import { getFiguresByEmployee } from '@/lib/reports'
-import { Header } from '@/components/Header'
+import { AppShell } from '@/components/AppShell'
 import { ActionForm, Field } from '@/components/ActionForm'
 import { nieuweMedewerker, wisselMedewerkerToegang } from '../service-actions'
 import { formatCents } from '@/lib/money'
@@ -26,10 +26,7 @@ export default async function MedewerkersPage() {
   const perUser = new Map(cijfers.map((c) => [c.userId, c]))
 
   return (
-    <>
-      <Header user={user} actief="medewerkers" />
-
-      <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+    <AppShell user={user} actief="medewerkers">
         <h1 className="text-jr-blue mb-1 text-2xl">Team</h1>
         <p className="mb-6 text-sm text-gray-600">
           {team.length} {team.length === 1 ? 'medewerker' : 'medewerkers'} met toegang tot
@@ -161,7 +158,6 @@ export default async function MedewerkersPage() {
             </ActionForm>
           </aside>
         </div>
-      </main>
-    </>
+    </AppShell>
   )
 }

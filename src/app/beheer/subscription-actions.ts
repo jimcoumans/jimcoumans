@@ -101,7 +101,7 @@ export async function nieuwAbonnement(formData: FormData): Promise<ActionResult>
       notes: String(formData.get('notities') ?? '').trim() || null,
     })
 
-    revalidatePath(`/beheer/${slug}`)
+    revalidatePath(`/beheer/klanten/${slug}`)
     revalidatePath('/beheer/abonnementen')
   })
 }
@@ -147,7 +147,7 @@ export async function wijzigAbonnement(formData: FormData): Promise<ActionResult
       })
       .where(eq(subscriptions.id, id))
 
-    revalidatePath(`/beheer/${slug}`)
+    revalidatePath(`/beheer/klanten/${slug}`)
     revalidatePath('/beheer/abonnementen')
   })
 }
@@ -179,7 +179,7 @@ export async function zetAbonnementStatus(formData: FormData): Promise<ActionRes
       })
       .where(eq(subscriptions.id, id))
 
-    revalidatePath(`/beheer/${slug}`)
+    revalidatePath(`/beheer/klanten/${slug}`)
     revalidatePath('/beheer/abonnementen')
   })
 }
@@ -209,7 +209,7 @@ export async function factureerNu(formData: FormData): Promise<ActionResult> {
       )
     }
 
-    if (slug) revalidatePath(`/beheer/${slug}`)
+    if (slug) revalidatePath(`/beheer/klanten/${slug}`)
     revalidatePath('/beheer/abonnementen')
     revalidatePath('/beheer/financieel')
   })

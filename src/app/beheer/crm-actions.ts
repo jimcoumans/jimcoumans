@@ -75,7 +75,7 @@ export async function nieuweContactpersoon(formData: FormData): Promise<ActionRe
       receivesInvoices: formData.get('facturen') === 'on',
       notes: tekst(formData, 'notities') || null,
     })
-    revalidatePath(`/beheer/${slug}`)
+    revalidatePath(`/beheer/klanten/${slug}`)
   })
 }
 
@@ -87,7 +87,7 @@ export async function maakVasteContactpersoon(formData: FormData): Promise<Actio
 
   return veilig(async () => {
     await makePrimaryContact(id)
-    revalidatePath(`/beheer/${slug}`)
+    revalidatePath(`/beheer/klanten/${slug}`)
   })
 }
 
@@ -99,7 +99,7 @@ export async function verwijderContactpersoon(formData: FormData): Promise<Actio
 
   return veilig(async () => {
     await deleteContact(id)
-    revalidatePath(`/beheer/${slug}`)
+    revalidatePath(`/beheer/klanten/${slug}`)
   })
 }
 
@@ -140,7 +140,7 @@ export async function bedrijfsgegevens(formData: FormData): Promise<ActionResult
       clientSince,
       notes: tekst(formData, 'notities') || null,
     })
-    revalidatePath(`/beheer/${slug}`)
+    revalidatePath(`/beheer/klanten/${slug}`)
   })
 }
 
@@ -185,7 +185,7 @@ export async function nieuwAccount(formData: FormData): Promise<ActionResult> {
       mfaNotes: tekst(formData, 'mfaNotities') || null,
       notes: notities || null,
     })
-    revalidatePath(`/beheer/${slug}`)
+    revalidatePath(`/beheer/klanten/${slug}`)
   })
 }
 
@@ -197,7 +197,7 @@ export async function verwijderAccount(formData: FormData): Promise<ActionResult
 
   return veilig(async () => {
     await deleteAccount(id)
-    revalidatePath(`/beheer/${slug}`)
+    revalidatePath(`/beheer/klanten/${slug}`)
   })
 }
 
@@ -270,7 +270,7 @@ export async function koppelPartner(formData: FormData): Promise<ActionResult> {
       customHourlyRateCents: tarief.cents,
       notes: tekst(formData, 'notities') || null,
     })
-    revalidatePath(`/beheer/${slug}`)
+    revalidatePath(`/beheer/klanten/${slug}`)
     revalidatePath('/beheer/partners')
   })
 }
@@ -283,7 +283,7 @@ export async function ontkoppelPartner(formData: FormData): Promise<ActionResult
 
   return veilig(async () => {
     await unlinkPartner(linkId)
-    revalidatePath(`/beheer/${slug}`)
+    revalidatePath(`/beheer/klanten/${slug}`)
     revalidatePath('/beheer/partners')
   })
 }

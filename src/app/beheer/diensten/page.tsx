@@ -7,7 +7,7 @@ import {
   marginPerUnitCents,
   marginPercent,
 } from '@/lib/services'
-import { Header } from '@/components/Header'
+import { AppShell } from '@/components/AppShell'
 import { ActionForm, Field } from '@/components/ActionForm'
 import { nieuweDienst, wijzigDienst, wisselDienstActief } from '../service-actions'
 import { formatCents } from '@/lib/money'
@@ -24,10 +24,7 @@ export default async function DienstenPage() {
   const inactief = diensten.filter((d) => !d.active)
 
   return (
-    <>
-      <Header user={user} actief="diensten" />
-
-      <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+    <AppShell user={user} actief="diensten">
         <h1 className="text-jr-blue mb-1 text-2xl">Diensten</h1>
         <p className="mb-6 text-sm text-gray-600">
           {actief.length} actieve {actief.length === 1 ? 'dienst' : 'diensten'}. Het tarief
@@ -152,8 +149,7 @@ export default async function DienstenPage() {
             </ActionForm>
           </aside>
         </div>
-      </main>
-    </>
+    </AppShell>
   )
 }
 

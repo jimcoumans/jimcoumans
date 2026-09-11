@@ -6,7 +6,7 @@ import {
   getReversedEntryIds,
   getSpendByCategory,
 } from '@/lib/ledger'
-import { Header } from '@/components/Header'
+import { AppShell } from '@/components/AppShell'
 import { TransactionList } from '@/components/TransactionList'
 import { formatCents } from '@/lib/money'
 import { categoryColor } from '@/lib/chart-colors'
@@ -47,10 +47,7 @@ export default async function ActiviteitPage({
   const meerPaginas = gekozen.balance.entryCount > pagina * PER_PAGINA
 
   return (
-    <>
-      <Header user={user} actief="activiteit" />
-
-      <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+    <AppShell user={user} actief="activiteit">
         <h1 className="text-jr-blue mb-1 text-2xl">Activiteit</h1>
         <p className="mb-6 text-sm text-gray-600">
           Alle mutaties op je wallet, van nieuw naar oud. Bij elke regel staat het
@@ -107,8 +104,7 @@ export default async function ActiviteitPage({
             )}
           </nav>
         )}
-      </main>
-    </>
+    </AppShell>
   )
 }
 

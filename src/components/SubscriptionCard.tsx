@@ -58,7 +58,7 @@ export function SubscriptionCard({
 
           {toonKlant && (
             <a
-              href={`/beheer/${item.organizationSlug}`}
+              href={`/beheer/klanten/${item.organizationSlug}`}
               className="hover:text-jr-blue mt-0.5 block text-sm text-gray-700"
             >
               {item.organizationName}

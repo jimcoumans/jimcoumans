@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { getSessionUser } from '@/lib/auth'
 import { listSubscriptions, getMonthlyRecurringCents } from '@/lib/billing'
-import { Header } from '@/components/Header'
+import { AppShell } from '@/components/AppShell'
 import { ActionForm } from '@/components/ActionForm'
 import { SubscriptionCard } from '@/components/SubscriptionCard'
 import { factureerNu } from '../subscription-actions'
@@ -28,10 +28,7 @@ export default async function AbonnementenPage() {
   )
 
   return (
-    <>
-      <Header user={user} actief="abonnementen" />
-
-      <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+    <AppShell user={user} actief="abonnementen">
         <h1 className="text-jr-blue mb-1 text-2xl">Abonnementen</h1>
         <p className="mb-6 text-sm text-gray-600">
           Zolang een abonnement loopt, wordt op de facturatiedag van elke maand een
@@ -91,7 +88,7 @@ export default async function AbonnementenPage() {
           <div className="rounded-xl bg-white p-8 text-center shadow-sm">
             <p className="text-sm text-gray-600">
               Nog geen abonnementen. Je maakt er een aan bij een klant, onder{' '}
-              <a href="/beheer" className="text-jr-blue hover:underline">
+              <a href="/beheer/klanten" className="text-jr-blue hover:underline">
                 Klanten
               </a>
               .
@@ -104,8 +101,7 @@ export default async function AbonnementenPage() {
             <Groep titel="Gestopt" items={gestopt} />
           </div>
         )}
-      </main>
-    </>
+    </AppShell>
   )
 }
 

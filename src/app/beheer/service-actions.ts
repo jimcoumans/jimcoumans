@@ -205,7 +205,7 @@ export async function boekDienst(formData: FormData): Promise<ActionResult> {
       deliveredByUserId: geleverdDoor || null,
       createdByUserId: staff.id,
     })
-    revalidatePath(`/beheer/${slug}`)
+    revalidatePath(`/beheer/klanten/${slug}`)
   })
 }
 
@@ -251,7 +251,7 @@ export async function nieuweFactuur(formData: FormData): Promise<ActionResult> {
       issuedOn,
       createdByUserId: staff.id,
     })
-    revalidatePath(`/beheer/${slug}`)
+    revalidatePath(`/beheer/klanten/${slug}`)
   })
 }
 
@@ -271,7 +271,7 @@ export async function zetFactuurStatus(formData: FormData): Promise<ActionResult
 
   return veilig(async () => {
     await setInvoiceStatus(invoiceId, status as 'draft' | 'open' | 'paid' | 'overdue' | 'credited')
-    revalidatePath(`/beheer/${slug}`)
+    revalidatePath(`/beheer/klanten/${slug}`)
   })
 }
 

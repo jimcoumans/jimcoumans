@@ -83,6 +83,24 @@ export const organizationStatusEnum = pgEnum('organization_status', [
   'former', // oud-klant
 ])
 
+/** Waar een offerte in het traject staat. */
+export const quoteStatusEnum = pgEnum('quote_status', [
+  'draft', // concept, nog niet naar de klant
+  'awaiting_partner', // wachten op de offerte van een partner
+  'sent', // bij de klant
+  'accepted', // akkoord: dit is een opdracht
+  'declined', // afgewezen
+  'expired', // verlopen zonder reactie
+])
+
+/** Waar een offerteregel vandaan komt. */
+export const quoteLineKindEnum = pgEnum('quote_line_kind', [
+  'service', // een dienst uit onze eigen catalogus
+  'partner', // werk dat een externe partner uitvoert
+  'custom', // eenmalig, niet uit de catalogus
+  'discount', // korting: een negatieve regel
+])
+
 /** Van wie een account is. Bepaalt wie het bij een breuk kan intrekken. */
 export const accountOwnerEnum = pgEnum('account_owner', [
   'client', // de klant is eigenaar, wij hebben toegang gekregen
@@ -199,6 +217,133 @@ export const contacts = pgTable(
     uniqueIndex('contacts_one_primary_idx')
       .on(t.organizationId)
       .where(sql`${t.isPrimary}`),
+  ],
+)
+
+/* ------------------------------- Offertes ------------------------------- */
+
+/**
+ * Een offerte aan een klant.
+ *
+ * Een offerte kan werk van onszelf bevatten, werk dat een partner uitvoert,
+ * of allebei. Bij een doorzetopdracht koop je bij de partner in en zet je er
+ * je eigen marge en uren bovenop; de klant ziet één voorstel.
+ *
+ * De bedragen staan op de regels, niet hier. Een totaal dat als kolom wordt
+ * bijgehouden loopt vroeg of laat uit de pas met de regels waar het uit
+ * hoort te volgen.
+ */
+export const quotes = pgTable(
+  'quotes',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    organizationId: uuid('organization_id')
+      .notNull()
+      .references(() => organizations.id, { onDelete: 'restrict' }),
+
+    /** Offertenummer zoals de klant het ziet, bijv. OFF-2026-014. */
+    number: text('number').notNull(),
+    title: text('title').notNull(),
+    status: quoteStatusEnum('status').notNull().default('draft'),
+
+    /** Contactpersoon aan wie de offerte is gericht. */
+    contactId: uuid('contact_id').references(() => contacts.id, { onDelete: 'set null' }),
+
+    /** Inleidende tekst boven de regels. */
+    introText: text('intro_text'),
+    /** Voorwaarden onder de regels. */
+    termsText: text('terms_text'),
+
+    vatRatePercent: integer('vat_rate_percent').notNull().default(21),
+
+    issuedOn: timestamp('issued_on', { withTimezone: true }).notNull().defaultNow(),
+    validUntil: timestamp('valid_until', { withTimezone: true }),
+    sentAt: timestamp('sent_at', { withTimezone: true }),
+    decidedAt: timestamp('decided_at', { withTimezone: true }),
+
+    /** Waarom afgewezen; leerzaam bij het volgende voorstel. */
+    declineReason: text('decline_reason'),
+
+    notes: text('notes'),
+    createdByUserId: uuid('created_by_user_id').references(() => users.id, {
+      onDelete: 'set null',
+    }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('quotes_org_idx').on(t.organizationId),
+    index('quotes_status_idx').on(t.status),
+    uniqueIndex('quotes_number_idx').on(t.number),
+    check(
+      'quote_vat_valid',
+      sql`${t.vatRatePercent} >= 0 AND ${t.vatRatePercent} <= 100`,
+    ),
+  ],
+)
+
+/**
+ * Een regel op een offerte.
+ *
+ * Elke regel kent TWEE bedragen: wat de klant betaalt (unitPriceCents) en wat
+ * het ons kost (unitCostCents). Bij een partnerregel is de kostprijs wat de
+ * partner ons factureert; bij een eigen dienst de interne kostprijs. Daaruit
+ * volgt de marge per regel, per offerte en per partner, zonder dat daar een
+ * aparte administratie voor nodig is.
+ */
+export const quoteLines = pgTable(
+  'quote_lines',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    quoteId: uuid('quote_id')
+      .notNull()
+      .references(() => quotes.id, { onDelete: 'cascade' }),
+
+    /** Volgorde op de offerte. */
+    sortOrder: integer('sort_order').notNull().default(0),
+    kind: quoteLineKindEnum('kind').notNull().default('custom'),
+
+    /** Bij kind 'service': welke dienst uit de catalogus. */
+    serviceId: uuid('service_id').references(() => services.id, { onDelete: 'set null' }),
+    /** Bij kind 'partner': wie het uitvoert. */
+    partnerId: uuid('partner_id').references(() => partners.id, { onDelete: 'restrict' }),
+
+    description: text('description').notNull(),
+    /** Toelichting die de klant leest. */
+    detail: text('detail'),
+
+    /** Aantal in honderdsten, zodat 1,5 uur ook kan. */
+    quantityHundredths: integer('quantity_hundredths').notNull().default(100),
+    /** Wat de klant per eenheid betaalt, in centen. */
+    unitPriceCents: integer('unit_price_cents').notNull(),
+    /** Wat het ons per eenheid kost, in centen. Leeg = onbekend. */
+    unitCostCents: integer('unit_cost_cents'),
+
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('quote_lines_quote_idx').on(t.quoteId, t.sortOrder),
+    index('quote_lines_partner_idx').on(t.partnerId),
+    index('quote_lines_service_idx').on(t.serviceId),
+    // Een aantal van nul levert een regel op die niets doet maar wel
+    // meetelt in het overzicht.
+    check('quote_line_quantity_positive', sql`${t.quantityHundredths} > 0`),
+    // Een kortingsregel is negatief; alle andere regels positief.
+    check(
+      'quote_line_price_sign',
+      sql`(${t.kind} = 'discount' AND ${t.unitPriceCents} < 0)
+       OR (${t.kind} <> 'discount' AND ${t.unitPriceCents} > 0)`,
+    ),
+    check(
+      'quote_line_cost_not_negative',
+      sql`${t.unitCostCents} IS NULL OR ${t.unitCostCents} >= 0`,
+    ),
+    // Een partnerregel zonder partner is niet terug te voeren op wie het
+    // uitvoert, en valt dus buiten de partnerrapportage.
+    check(
+      'partner_line_needs_partner',
+      sql`(${t.kind} <> 'partner') OR (${t.partnerId} IS NOT NULL)`,
+    ),
   ],
 )
 
@@ -774,6 +919,22 @@ export const organizationsRelations = relations(organizations, ({ many }) => ({
   contacts: many(contacts),
   partners: many(organizationPartners),
   accounts: many(accounts),
+  quotes: many(quotes),
+}))
+
+export const quotesRelations = relations(quotes, ({ one, many }) => ({
+  organization: one(organizations, {
+    fields: [quotes.organizationId],
+    references: [organizations.id],
+  }),
+  contact: one(contacts, { fields: [quotes.contactId], references: [contacts.id] }),
+  lines: many(quoteLines),
+}))
+
+export const quoteLinesRelations = relations(quoteLines, ({ one }) => ({
+  quote: one(quotes, { fields: [quoteLines.quoteId], references: [quotes.id] }),
+  service: one(services, { fields: [quoteLines.serviceId], references: [services.id] }),
+  partner: one(partners, { fields: [quoteLines.partnerId], references: [partners.id] }),
 }))
 
 export const accountsRelations = relations(accounts, ({ one }) => ({
@@ -879,6 +1040,8 @@ export type Service = typeof services.$inferSelect
 export type Subscription = typeof subscriptions.$inferSelect
 export type Contact = typeof contacts.$inferSelect
 export type Account = typeof accounts.$inferSelect
+export type Quote = typeof quotes.$inferSelect
+export type QuoteLine = typeof quoteLines.$inferSelect
 export type Partner = typeof partners.$inferSelect
 export type OrganizationPartner = typeof organizationPartners.$inferSelect
 export type NewService = typeof services.$inferInsert

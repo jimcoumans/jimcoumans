@@ -110,6 +110,27 @@ export function describeDbError(error: unknown): string | null {
       return 'De betaaltermijn moet een positief aantal dagen zijn.'
     case 'org_partner_rate_positive':
       return 'Het afwijkende tarief moet boven nul zijn.'
+    case 'quotes_number_idx':
+      return 'Dit offertenummer bestaat al.'
+    case 'quote_vat_valid':
+      return 'Het btw-percentage moet tussen 0 en 100 liggen.'
+    case 'quote_line_quantity_positive':
+      return 'Het aantal op een offerteregel moet groter dan nul zijn.'
+    case 'quote_line_price_sign':
+      return 'Een gewone regel heeft een positief bedrag; alleen een kortingsregel is negatief.'
+    case 'quote_line_cost_not_negative':
+      return 'De kostprijs kan niet negatief zijn.'
+    case 'partner_line_needs_partner':
+      return 'Kies welke partner deze regel uitvoert, anders valt het werk buiten de partnerrapportage.'
+    case 'invoices_moneybird_idx':
+      return 'Deze factuur uit Moneybird is al aan een andere factuur gekoppeld.'
+    case 'organizations_clickup_idx':
+      return 'Dit ClickUp-bedrijf is al aan een andere klant gekoppeld.'
+    case 'wallets_clickup_idx':
+      return 'Dit ClickUp-abonnement is al aan een andere wallet gekoppeld.'
+    case 'login_tokens_hash_idx':
+      // Praktisch onbereikbaar: twee keer hetzelfde willekeurige token.
+      return 'Deze inloglink kon niet worden aangemaakt. Probeer het opnieuw.'
     case 'invoices_org_number_idx':
       return 'Dit factuurnummer bestaat al voor deze klant.'
     case 'organizations_slug_idx':

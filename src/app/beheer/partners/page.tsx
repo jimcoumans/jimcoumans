@@ -1,7 +1,8 @@
 import { redirect } from 'next/navigation'
 import { getSessionUser } from '@/lib/auth'
 import { listPartners, listOrganizationsForPartner, partnerTypeLabels } from '@/lib/crm'
-import { Header } from '@/components/Header'
+import { getPartnerFigures } from '@/lib/quotes'
+import { AppShell } from '@/components/AppShell'
 import { ActionForm, Field, Select } from '@/components/ActionForm'
 import { nieuwePartner } from '../crm-actions'
 import { formatCents } from '@/lib/money'
@@ -12,8 +13,15 @@ export default async function PartnersPage() {
   if (!user) redirect('/login')
   if (user.role !== 'staff' && user.role !== 'admin') redirect('/')
 
-  const partners = await listPartners()
+  const [partners, cijfers] = await Promise.all([listPartners(), getPartnerFigures()])
   const actief = partners.filter((p) => p.active)
+  const perPartnerCijfers = new Map(cijfers.map((c) => [c.partnerId, c]))
+
+  // Alleen partners waar daadwerkelijk iets mee loopt, en de grootste eerst.
+  const metWerk = cijfers.filter((c) => c.quoteCount > 0)
+  const totaalOmzet = metWerk.reduce((a, c) => a + c.revenueCents, 0)
+  const totaalNaarPartners = metWerk.reduce((a, c) => a + c.partnerCostCents, 0)
+  const totaalMarge = totaalOmzet - totaalNaarPartners
 
   // Bij welke klanten elke partner hoort; dat is waar het overzicht om draait.
   const koppelingen = await Promise.all(
@@ -22,15 +30,79 @@ export default async function PartnersPage() {
   const perPartner = new Map(koppelingen.map((k) => [k.id, k.klanten]))
 
   return (
-    <>
-      <Header user={user} actief="partners" />
-
-      <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+    <AppShell user={user} actief="partners">
         <h1 className="text-jr-blue mb-1 text-2xl">Partners</h1>
         <p className="mb-6 text-sm text-gray-600">
           De externen met wie we werken, wat we met ze hebben afgesproken en bij welke
           klanten ze horen.
         </p>
+
+        {metWerk.length > 0 && (
+          <section className="mb-8 rounded-xl bg-white p-5 shadow-sm">
+            <h2 className="mb-1 text-base">Wat partners opleveren</h2>
+            <p className="mb-4 text-xs text-gray-500">
+              Uit de offerteregels. Omzet en inkoop tellen alleen mee zodra de klant
+              akkoord is; de aantallen laten alles zien, zodat je ziet hoeveel er is
+              voorgesteld tegenover hoeveel ervan doorging.
+            </p>
+
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[640px] text-sm">
+                <thead>
+                  <tr className="border-b border-gray-200 text-left text-xs text-gray-600">
+                    <th className="pb-2 font-normal">Partner</th>
+                    <th className="pb-2 text-right font-normal">Offertes</th>
+                    <th className="pb-2 text-right font-normal">Opdrachten</th>
+                    <th className="pb-2 text-right font-normal">Omzet voor ons</th>
+                    <th className="pb-2 text-right font-normal">Naar partner</th>
+                    <th className="pb-2 text-right font-normal">Onze marge</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {metWerk.map((c) => (
+                    <tr key={c.partnerId}>
+                      <td className="py-2.5">
+                        <a
+                          href={`/beheer/offertes?partner=${c.partnerId}`}
+                          className="hover:text-jr-blue"
+                        >
+                          {c.partnerName}
+                        </a>
+                      </td>
+                      <td className="tabular py-2.5 text-right">
+                        {c.quoteCount}
+                        {c.openCount > 0 && (
+                          <span className="text-jr-orange text-xs"> ({c.openCount} open)</span>
+                        )}
+                      </td>
+                      <td className="tabular py-2.5 text-right">{c.acceptedCount}</td>
+                      <td className="tabular py-2.5 text-right">{formatCents(c.revenueCents)}</td>
+                      <td className="tabular py-2.5 text-right text-gray-600">
+                        {formatCents(c.partnerCostCents)}
+                      </td>
+                      <td className="tabular py-2.5 text-right">
+                        {formatCents(c.marginCents)}
+                        {c.marginPercent !== null && (
+                          <span className="text-xs text-gray-500"> ({c.marginPercent}%)</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+                <tfoot>
+                  <tr className="border-t border-gray-200 font-bold">
+                    <td className="pt-2.5">Samen</td>
+                    <td />
+                    <td />
+                    <td className="tabular pt-2.5 text-right">{formatCents(totaalOmzet)}</td>
+                    <td className="tabular pt-2.5 text-right">{formatCents(totaalNaarPartners)}</td>
+                    <td className="tabular pt-2.5 text-right">{formatCents(totaalMarge)}</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </section>
+        )}
 
         <div className="grid gap-8 lg:grid-cols-[1fr_330px]">
           <div>
@@ -66,13 +138,26 @@ export default async function PartnersPage() {
                             <p className="mt-2 text-sm text-gray-600">{p.agreementNotes}</p>
                           )}
 
+                          {(() => {
+                            const c = perPartnerCijfers.get(p.id)
+                            if (!c || c.quoteCount === 0) return null
+                            return (
+                              <p className="tabular mt-2 text-xs text-gray-600">
+                                {c.quoteCount} {c.quoteCount === 1 ? 'offerte' : 'offertes'},{' '}
+                                {c.acceptedCount} akkoord &middot; {formatCents(c.revenueCents)} omzet
+                                &middot; {formatCents(c.partnerCostCents)} naar hen &middot;{' '}
+                                {formatCents(c.marginCents)} marge
+                              </p>
+                            )
+                          })()}
+
                           {klanten.length > 0 ? (
                             <p className="mt-2.5 text-xs text-gray-600">
                               {klanten.map((k, i) => (
                                 <span key={k.link.id}>
                                   {i > 0 && ' · '}
                                   <a
-                                    href={`/beheer/${k.organizationSlug}`}
+                                    href={`/beheer/klanten/${k.organizationSlug}`}
                                     className="hover:text-jr-blue"
                                   >
                                     {k.link.role} bij {k.organizationName}
@@ -155,7 +240,6 @@ export default async function PartnersPage() {
             </ActionForm>
           </aside>
         </div>
-      </main>
-    </>
+    </AppShell>
   )
 }

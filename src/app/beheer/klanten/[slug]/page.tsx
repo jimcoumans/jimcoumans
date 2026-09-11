@@ -4,11 +4,11 @@ import { getOrganizationBySlug, listStaff } from '@/lib/admin'
 import { listActiveServices } from '@/lib/services'
 import { getWalletEntries, getReversedEntryIds } from '@/lib/ledger'
 import { getOrganizationInvoices, invoiceStatusLabels, invoiceStatusStyles } from '@/lib/invoices'
-import { Header } from '@/components/Header'
+import { AppShell } from '@/components/AppShell'
 import { ActionForm, Field } from '@/components/ActionForm'
-import { boek, draaiTerug, nieuweWallet, nieuweGebruiker, wisselToegang } from '../actions'
-import { boekDienst, nieuweFactuur, zetFactuurStatus } from '../service-actions'
-import { nieuwAbonnement } from '../subscription-actions'
+import { boek, draaiTerug, nieuweWallet, nieuweGebruiker, wisselToegang } from '../../actions'
+import { boekDienst, nieuweFactuur, zetFactuurStatus } from '../../service-actions'
+import { nieuwAbonnement } from '../../subscription-actions'
 import { SubscriptionCard, NewSubscriptionForm } from '@/components/SubscriptionCard'
 import { listSubscriptions } from '@/lib/billing'
 import { listContacts, listAccounts, listPartnersForOrganization, listActivePartners, organizationStatusLabels, organizationStatusStyles } from '@/lib/crm'
@@ -47,11 +47,8 @@ export default async function KlantPage({
   const vandaag = new Date().toISOString().slice(0, 10)
 
   return (
-    <>
-      <Header user={user} actief="beheer" />
-
-      <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
-        <a href="/beheer" className="text-jr-blue text-sm hover:underline">
+    <AppShell user={user} actief="klanten">
+        <a href="/beheer/klanten" className="text-jr-blue text-sm hover:underline">
           &larr; Alle klanten
         </a>
 
@@ -185,8 +182,7 @@ export default async function KlantPage({
 
           <Bedrijfsgegevens org={klant.organization} slug={slug} />
         </div>
-      </main>
-    </>
+    </AppShell>
   )
 }
 
