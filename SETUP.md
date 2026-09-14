@@ -89,6 +89,14 @@ Onderaan dat bestand staan ook de regels die bijhouden welke migraties al
 gedraaid zijn, zodat een latere wijziging aan de database gewoon werkt en niet
 alles opnieuw probeert aan te maken.
 
+Het zet meteen **Row Level Security** aan op alle tabellen. Supabase opent
+standaard een REST-API die bereikbaar is met de `anon`-key, en die key is in
+hun model publiek. Zonder RLS kan iedereen die hem heeft het klantenbestand
+uitlezen. De wallet gebruikt die API niet en praat als eigenaar van de
+tabellen, dus hij gaat er langs heen; je sluit een deur die je toch niet
+gebruikt. Waarschuwt Supabase alsnog over RLS, kies dan gerust
+**Run and enable RLS** — het resultaat is hetzelfde.
+
 > Komt er later een nieuwe tabel bij? Dan draait `npm run db:bundel` dit
 > bestand opnieuw uit de migraties. Bewerk het niet met de hand.
 

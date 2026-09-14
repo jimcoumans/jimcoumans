@@ -523,6 +523,44 @@ CREATE INDEX "quotes_status_idx" ON "quotes" USING btree ("status");
 CREATE UNIQUE INDEX "quotes_number_idx" ON "quotes" USING btree ("number");
 
 -- ---------------------------------------------------------------------------
+-- 0007_rls
+-- ---------------------------------------------------------------------------
+
+-- Row Level Security aanzetten op alle tabellen.
+--
+-- Waarom: Supabase zet standaard een REST-API voor je tabellen open die
+-- bereikbaar is met de `anon`-key. Die key is in hun model publiek; hij is
+-- bedoeld om in browsercode te staan. Zonder RLS kan iedereen die hem heeft
+-- het hele klantenbestand uitlezen: namen, telefoonnummers, omzetcijfers.
+--
+-- De wallet gebruikt die API niet. Hij praat rechtstreeks Postgres als de
+-- eigenaar van de tabellen, en een eigenaar gaat langs RLS heen. Deze regels
+-- veranderen dus niets aan wat de app kan, en sluiten wel een deur die
+-- anderszins openstaat.
+--
+-- Er komen met opzet GEEN policies bij. Zonder policy mag een rol die niet
+-- de eigenaar is helemaal niets, en dat is precies de bedoeling: wie via de
+-- REST-API binnenkomt hoort niets te kunnen. Zou hier later een policy bij
+-- moeten, dan is dat een bewuste keuze en geen bijvangst.
+--
+-- Op een gewone Postgres (Docker, Neon, een eigen server) is dit onschadelijk:
+-- daar is er geen anon-rol en gaat de app om dezelfde reden langs RLS heen.
+
+DO $$
+DECLARE
+  t record;
+BEGIN
+  FOR t IN
+    SELECT tablename
+    FROM pg_tables
+    WHERE schemaname = 'public'
+  LOOP
+    EXECUTE format('ALTER TABLE public.%I ENABLE ROW LEVEL SECURITY', t.tablename);
+  END LOOP;
+END $$;
+
+
+-- ---------------------------------------------------------------------------
 -- Welke migraties hiermee gedraaid zijn
 -- ---------------------------------------------------------------------------
 
@@ -541,4 +579,5 @@ INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at") VALUES
   ('6167b6a9f0315965d0c5e1b1547254db9f7812ddcf31635476bcfa4b9bbf1d63', 1788793164674),  -- 0003_abonnementen
   ('d3ea417bd20032654be3f6f62a76acc4ef575fd8e4a53896194340a2d8c2402c', 1788793796466),  -- 0004_abonnement_niet_verwijderbaar
   ('c4170edac62b10a7df4d213096081ef62b2484277495ba230e6115be5dde678f', 1789024135051),  -- 0005_crm
-  ('2ff75852cc2565de289f49c687a5c5e5c6169045e5fbfe1948f9c99e82216df1', 1789111263063);  -- 0006_offertes
+  ('2ff75852cc2565de289f49c687a5c5e5c6169045e5fbfe1948f9c99e82216df1', 1789111263063),  -- 0006_offertes
+  ('acc8bba55ee145b3b5ae41c3a5b074d194c9d015fab8c13c769db6faa5aae559', 1789197663063);  -- 0007_rls
