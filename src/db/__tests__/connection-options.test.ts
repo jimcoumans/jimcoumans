@@ -6,7 +6,7 @@
  */
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { connectionOptionsFor, usesTransactionPooler } from '../connection-options'
+import { connectionOptionsFor, usesTransactionPooler, readConnectionString } from '../connection-options'
 
 const DIRECT = 'postgresql://postgres:geheim@db.abcdefgh.supabase.co:5432/postgres'
 const POOLER = 'postgresql://postgres.abcdefgh:geheim@aws-0-eu-central-1.pooler.supabase.com:6543/postgres'
@@ -40,4 +40,60 @@ test('DATABASE_PREPARE kan ze niet aanzetten op een pooler', () => {
 
 test('een onleesbare connection string laat de app niet omvallen', () => {
   assert.equal(usesTransactionPooler('dit is geen url'), false)
+})
+
+/* ------------------------- DATABASE_URL nakijken ------------------------ */
+
+test('een niet-vervangen [YOUR-PASSWORD] wordt herkend', () => {
+  // Deze string is technisch een geldige URL, dus de parser klaagt niet.
+  // Je zou pas bij de eerste query een inlogfout krijgen die nergens op slaat.
+  const metPlaatshouder = 'postgresql://postgres.abc:[YOUR-PASSWORD]@aws-0-eu-central-1.pooler.supabase.com:6543/postgres'
+
+  assert.throws(
+    () => readConnectionString(metPlaatshouder),
+    (fout: Error) => /YOUR-PASSWORD/.test(fout.message),
+  )
+})
+
+test('een hekje, slash of vraagteken in het wachtwoord wordt bij naam genoemd', () => {
+  // Dit zijn de tekens waar postgres-js echt op struikelt, en waar hij
+  // alleen "Invalid URL" over zegt met de waarde gemaskeerd als ****.
+  for (const [teken, encoded] of [['#', '%23'], ['/', '%2F'], ['?', '%3F']]) {
+    const url = `postgresql://postgres.abc:Geheim${teken}123@aws-0.pooler.supabase.com:6543/postgres`
+
+    assert.throws(
+      () => readConnectionString(url),
+      (fout: Error) =>
+        fout.message.includes(teken!) && fout.message.includes(encoded!),
+      `${teken} zou genoemd moeten worden, met ${encoded} als oplossing`,
+    )
+  }
+})
+
+test('een apenstaartje of spatie in het wachtwoord mag gewoon', () => {
+  // Die laat de parser ongemoeid, dus daar hoeven we niet over te klagen.
+  const metAt = 'postgresql://postgres.abc:Geheim@123@aws-0.pooler.supabase.com:6543/postgres'
+  assert.equal(readConnectionString(metAt), metAt)
+})
+
+test('een ontbrekende DATABASE_URL wijst naar de handleiding', () => {
+  assert.throws(() => readConnectionString(undefined), /DATABASE_URL ontbreekt/)
+  assert.throws(() => readConnectionString('   '), /DATABASE_URL ontbreekt/)
+})
+
+test('iets dat geen postgres-string is wordt herkend', () => {
+  assert.throws(
+    () => readConnectionString('https://mijnproject.supabase.co'),
+    /begint niet met postgresql/,
+  )
+})
+
+test('spaties en regeleindes van het plakken gaan eraf', () => {
+  const met = `  ${NEON}\n`
+  assert.equal(readConnectionString(met), NEON)
+})
+
+test('een goede string komt er ongewijzigd uit', () => {
+  assert.equal(readConnectionString(POOLER), POOLER)
+  assert.equal(readConnectionString(DIRECT), DIRECT)
 })

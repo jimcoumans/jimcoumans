@@ -1,13 +1,11 @@
 import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
 import * as schema from './schema'
-import { connectionOptionsFor } from './connection-options'
+import { connectionOptionsFor, readConnectionString } from './connection-options'
 
-const connectionString = process.env.DATABASE_URL
-
-if (!connectionString) {
-  throw new Error('DATABASE_URL ontbreekt. Zie .env.example.')
-}
+// Nakijken voordat postgres-js het doet: die gooit bij een kapotte string een
+// kale "Invalid URL" met de waarde gemaskeerd, en dan weet je nog niets.
+const connectionString = readConnectionString(process.env.DATABASE_URL)
 
 /**
  * In development wordt deze module bij elke hot reload opnieuw geladen.
