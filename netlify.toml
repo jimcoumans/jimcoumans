@@ -1,0 +1,17 @@
+# Netlify-instellingen voor de James Robinson Wallet.
+#
+# De Next.js-runtime van Netlify wordt automatisch bijgewerkt; we pinnen hem
+# bewust niet, want dan lopen we achter op de Next-versie die we draaien.
+
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# De dagelijkse abonnementsrun. Netlify draait deze functie volgens het
+# schema hieronder; de functie roept vervolgens /api/cron/billing aan met
+# het geheim. Zie netlify/functions/billing.mts.
+[functions."billing"]
+  schedule = "0 6 * * *"

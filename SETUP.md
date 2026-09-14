@@ -32,7 +32,7 @@ npm run login:link -- jim@jamesrobinson.nl
 npm run login:link -- demo-klant@voorbeeld.nl
 ```
 
-**Geen Docker?** Maak dan een gratis database bij [Neon](https://neon.tech) en
+**Geen Docker?** Maak dan een gratis database bij [Supabase](https://supabase.com) of [Neon](https://neon.tech) en
 zet die connection string in `.env.local` als `DATABASE_URL`. Daarna
 `npm run setup`.
 
@@ -40,79 +40,106 @@ zet die connection string in `.env.local` als `DATABASE_URL`. Daarna
 
 ---
 
-## B. Live op internet (± 10 minuten)
+## B. Live op internet (± 15 minuten)
 
 Dan kun je het op je telefoon, iPad en laptop gebruiken, en kunnen klanten en
 collega's echt inloggen.
 
-### 1. Database bij Neon
+Je hebt drie dingen nodig: een database, een plek om te hosten, en iets dat
+mail verstuurt (de inloglinks gaan per mail). Hieronder staat de route via
+**Supabase en Netlify**. Neon en Vercel werken net zo goed — de app praat
+gewoon Postgres en is een gewone Next.js-app. Wat de een kan, kan de ander.
 
-1. Ga naar [neon.tech](https://neon.tech) en maak een gratis account
-2. Maak een project, bijvoorbeeld `jr-wallet`
-3. Kopieer de **connection string** (begint met `postgresql://`)
+### 1. Database bij Supabase
+
+1. Ga naar [supabase.com](https://supabase.com) → **New project**
+2. Naam `jr-wallet`, regio **Central EU (Frankfurt)** — hier komen
+   klantgegevens in te staan, die houd je in Europa
+3. Bewaar het databasewachtwoord dat je invult; je ziet het daarna niet meer
+4. Ga naar **Project Settings → Database → Connection string** en kies
+   **Transaction pooler** (poort 6543). Die string is `DATABASE_URL`
+5. Kopieer ook de **Direct connection** (poort 5432) apart; die heb je zo
+   nodig om de tabellen aan te maken
+
+> De app herkent zelf dat je via de pooler werkt en zet prepared statements
+> uit. Zonder dat werkt alles tot de tweede keer dat dezelfde query langskomt
+> en krijg je een fout die niemand aan de verbinding koppelt. Zie
+> `src/db/connection-options.ts`.
+
+We gebruiken van Supabase alleen de database, niet hun inlogsysteem of
+opslag. De app heeft zijn eigen inlog met magic links.
 
 ### 2. E-mail bij Resend
 
-Nodig omdat inloglinks per mail gaan.
-
 1. Ga naar [resend.com](https://resend.com) en maak een account
-2. Voeg `jamesrobinson.nl` toe als domein en zet de DNS-records klaar — zonder
-   verifieerd domein belanden inlogmails in de spam
+2. Voeg `jamesrobinson.nl` toe als domein en zet de DNS-records klaar —
+   zonder geverifieerd domein belanden inlogmails in de spam
 3. Maak een **API key** aan
 
-### 3. Deploy op Vercel
+Geen `RESEND_API_KEY` ingevuld? Dan zet de app de inloglink in de serverlog
+in plaats van in een mail. Handig om mee te testen, niet om mee te werken.
 
-1. Ga naar [vercel.com](https://vercel.com), log in met GitHub
-2. **Add New → Project** en kies de repo `jimcoumans/jimcoumans`
-3. Zet bij **Branch** de branch `claude/code-cloud-sync-c0tb9v`
-4. Vul onder **Environment Variables** deze regels in:
+### 3. Tabellen aanmaken
+
+Eenmalig, vanaf je eigen Mac, met de **directe** verbinding (poort 5432):
+
+```bash
+DATABASE_URL="<supabase-direct-string>" npm run db:migrate
+```
+
+### 4. Deploy op Netlify
+
+1. Ga naar [netlify.com](https://netlify.com) → **Add new site → Import an
+   existing project** → GitHub → `jimcoumans/jimcoumans`
+2. Zet bij **Branch to deploy** de branch `claude/code-cloud-sync-c0tb9v`
+3. Build command en publish directory staan al in `netlify.toml`; laat ze
+   zoals Netlify ze voorstelt
+4. Vul onder **Environment variables** deze regels in:
 
 | Naam | Waarde |
 |---|---|
-| `DATABASE_URL` | de connection string van Neon |
+| `DATABASE_URL` | de **pooler**-string van Supabase (poort 6543) |
 | `AUTH_SECRET` | genereer met `openssl rand -base64 32` |
-| `APP_URL` | `https://jouw-project.vercel.app` (vul na de eerste deploy je echte URL in) |
+| `APP_URL` | `https://jouw-site.netlify.app` (vul na de eerste deploy je echte URL in) |
 | `RESEND_API_KEY` | de API key van Resend |
 | `MAIL_FROM` | `James Robinson Wallet <wallet@jamesrobinson.nl>` |
 | `CRON_SECRET` | genereer met `openssl rand -hex 32` |
 | `ADMIN_EMAILS` | `jim@jamesrobinson.nl` |
 
-5. **Deploy**
-
-### 4. Tabellen aanmaken
-
-Eenmalig, vanaf je eigen Mac met de Neon-string:
-
-```bash
-DATABASE_URL="<neon-string>" npm run db:migrate
-```
+5. **Deploy site**
 
 ### 5. Jezelf toegang geven
 
-Er is bewust geen zelfregistratie. Voeg jezelf toe als beheerder:
+Er is bewust geen zelfregistratie: niemand kan zichzelf toevoegen. Voeg jezelf
+toe als beheerder via de SQL-editor van Supabase:
 
-```bash
-DATABASE_URL="<neon-string>" psql -c \
-  "INSERT INTO users (email, role) VALUES ('jim@jamesrobinson.nl', 'admin');"
+```sql
+INSERT INTO users (email, role) VALUES ('jim@jamesrobinson.nl', 'admin');
 ```
 
-Ga daarna naar `https://jouw-project.vercel.app/login`, vul je e-mailadres in
-en je krijgt een inloglink in je mail.
+Ga daarna naar `https://jouw-site.netlify.app/login`, vul je e-mailadres in en
+je krijgt een inloglink in je mail.
 
-**Wil je eerst met voorbeelddata spelen?** Dan `DATABASE_URL="<neon-string>"
-npm run db:seed`. Let op: dat maakt demoklanten aan die je later met de hand
-moet opruimen.
+**Wil je eerst met voorbeelddata spelen?** Dan
+`DATABASE_URL="<supabase-direct-string>" npm run db:seed`. Let op: dat maakt
+demoklanten aan die je later met de hand moet opruimen. Ga je echte
+klantgegevens invoeren, sla de seed dan over.
 
 ### 6. De maandelijkse run
 
-`vercel.json` staat al klaar: Vercel Cron roept elke ochtend om 6:00
-`/api/cron/billing` aan. Die kijkt zelf welke maanden nog openstaan, dus je
-hoeft niets in te stellen.
+Staat al klaar in `netlify.toml` en `netlify/functions/billing.mts`: elke
+ochtend om 6:00 roept Netlify `/api/cron/billing` aan met het geheim. Die
+kijkt zelf welke maanden nog openstaan, dus een gemiste dag wordt de dag erna
+ingehaald in plaats van dat een maand wordt overgeslagen.
+
+Controleer na de eerste nacht bij **Netlify → Logs → Functions** of de run
+gedraaid heeft. Een run die stilletjes niet draait, merk je anders pas als er
+een maand niet gefactureerd is.
 
 Zelf een keer starten om te kijken wat er zou gebeuren:
 
 ```bash
-curl "https://jouw-project.vercel.app/api/cron/billing?dryRun=1&secret=<CRON_SECRET>"
+curl "https://jouw-site.netlify.app/api/cron/billing?dryRun=1&secret=<CRON_SECRET>"
 ```
 
 Of vanaf je Mac tegen de database:
@@ -121,6 +148,14 @@ Of vanaf je Mac tegen de database:
 npm run billing              # proefronde, verandert niets
 npm run billing -- --apply   # echt factureren
 ```
+
+### Liever Neon en Vercel?
+
+Kan ook, en `vercel.json` staat er al voor klaar. Dan is het: database bij
+[neon.tech](https://neon.tech) (kies ook daar een EU-regio), de connection
+string als `DATABASE_URL`, en importeren op [vercel.com](https://vercel.com)
+met dezelfde variabelen als hierboven. De cron in `vercel.json` doet dan wat
+de Netlify-functie hier doet. De rest van deze handleiding blijft gelijk.
 
 ---
 

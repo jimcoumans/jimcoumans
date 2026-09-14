@@ -269,9 +269,12 @@ De mapping-regels staan in `src/lib/clickup/mapping.ts` en zijn los getest in
 
 ## De maandelijkse abonnementsrun
 
-Draait via Vercel Cron elke ochtend om 6:00 op `/api/cron/billing`
-(zie `vercel.json`). Het endpoint weigert elke aanvraag zonder het juiste
-`CRON_SECRET`; zonder dat geheim in de omgeving gaat de deur op slot, niet open.
+Draait elke ochtend om 6:00 op `/api/cron/billing`. Op Netlify via de
+geplande functie in `netlify/functions/billing.mts`, op Vercel via de cron in
+`vercel.json` — allebei roepen ze hetzelfde endpoint aan, zodat er één plek is
+waar het factureren gebeurt. Het endpoint weigert elke aanvraag zonder het
+juiste `CRON_SECRET`; zonder dat geheim in de omgeving gaat de deur op slot,
+niet open.
 
 Drie eigenschappen die er niet uit mogen:
 
@@ -296,14 +299,20 @@ npm run billing -- --datum=2026-03-02 --apply   # op een andere peildatum
 
 ## Naar productie
 
-**Database:** Neon of Supabase (Postgres). Zet de connection string in
-`DATABASE_URL` en draai `npm run db:migrate`.
+Stap voor stap staat het in [SETUP.md](SETUP.md). In het kort:
 
-**Hosting:** Vercel. Importeer de repo en zet deze omgevingsvariabelen:
+**Database:** Supabase of Neon (het is gewoon Postgres). Zet de connection
+string in `DATABASE_URL` en draai `npm run db:migrate` met de *directe*
+verbinding. Draai je via de transactiepooler van Supabase (poort 6543), dan
+zet de app zelf prepared statements uit — zie `src/db/connection-options.ts`.
+Kies een EU-regio: hier komen klantgegevens in te staan.
+
+**Hosting:** Netlify (`netlify.toml` staat klaar) of Vercel (`vercel.json`
+staat klaar). Importeer de repo en zet deze omgevingsvariabelen:
 
 ```
 DATABASE_URL, AUTH_SECRET, APP_URL, RESEND_API_KEY, MAIL_FROM,
-CLICKUP_API_TOKEN, ADMIN_EMAILS
+CRON_SECRET, CLICKUP_API_TOKEN, ADMIN_EMAILS
 ```
 
 **E-mail:** Resend, met `jamesrobinson.nl` als verifieerd domein zodat inlogmails
