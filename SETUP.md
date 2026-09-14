@@ -81,11 +81,40 @@ in plaats van in een mail. Handig om mee te testen, niet om mee te werken.
 
 ### 3. Tabellen aanmaken
 
-Eenmalig, vanaf je eigen Mac, met de **directe** verbinding (poort 5432):
+Geen terminal nodig. In Supabase: **SQL Editor → New query**, plak de inhoud
+van [`drizzle/supabase-setup.sql`](drizzle/supabase-setup.sql) en druk op
+**Run**. Dat maakt alle tabellen, indexen en controleregels in één keer aan.
+
+Onderaan dat bestand staan ook de regels die bijhouden welke migraties al
+gedraaid zijn, zodat een latere wijziging aan de database gewoon werkt en niet
+alles opnieuw probeert aan te maken.
+
+> Komt er later een nieuwe tabel bij? Dan draait `npm run db:bundel` dit
+> bestand opnieuw uit de migraties. Bewerk het niet met de hand.
+
+Heb je liever wel de terminal, dan kan het ook zo, met de **directe**
+verbinding (poort 5432):
 
 ```bash
 DATABASE_URL="<supabase-direct-string>" npm run db:migrate
 ```
+
+### 3b. Twee geheimen maken
+
+`AUTH_SECRET` ondertekent de inlogsessies en `CRON_SECRET` beveiligt de
+maandelijkse run. Allebei moeten het lange, willekeurige reeksen zijn. Maak ze
+in dezelfde SQL-editor, dan hoef je ze nergens anders langs te sturen:
+
+```sql
+create extension if not exists pgcrypto;
+
+select
+  encode(gen_random_bytes(32), 'base64') as auth_secret,
+  encode(gen_random_bytes(32), 'hex')    as cron_secret;
+```
+
+Kopieer de twee waarden; die heb je zo nodig bij Netlify. Deel ze verder met
+niemand — wie `AUTH_SECRET` heeft, kan zich voordoen als elke gebruiker.
 
 ### 4. Deploy op Netlify
 
@@ -114,8 +143,12 @@ Er is bewust geen zelfregistratie: niemand kan zichzelf toevoegen. Voeg jezelf
 toe als beheerder via de SQL-editor van Supabase:
 
 ```sql
-INSERT INTO users (email, role) VALUES ('jim@jamesrobinson.nl', 'admin');
+insert into users (email, name, role)
+values ('jim@jamesrobinson.nl', 'Jim Coumans', 'admin');
 ```
+
+Collega's voeg je daarna gewoon in de app toe onder **Team**; dit is alleen
+nodig voor de allereerste.
 
 Ga daarna naar `https://jouw-site.netlify.app/login`, vul je e-mailadres in en
 je krijgt een inloglink in je mail.
