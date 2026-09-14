@@ -3,9 +3,57 @@ import { getSessionUser } from '@/lib/auth'
 import { listPartners, listOrganizationsForPartner, partnerTypeLabels } from '@/lib/crm'
 import { getPartnerFigures } from '@/lib/quotes'
 import { AppShell } from '@/components/AppShell'
-import { ActionForm, Field, Select } from '@/components/ActionForm'
-import { nieuwePartner } from '../crm-actions'
+import { ActionForm, Field, Select, Uitklap } from '@/components/ActionForm'
+import { nieuwePartner, wijzigPartner, wisselPartnerActief, verwijderPartner } from '../crm-actions'
 import { formatCents } from '@/lib/money'
+import type { Partner } from '@/db/schema'
+
+/** Het wijzigformulier van een partner; zelfde velden als bij aanmaken. */
+function PartnerVelden({ partner }: { partner: Partner }) {
+  const bedrag = (cents: number | null) =>
+    cents === null ? '' : (cents / 100).toFixed(2).replace('.', ',')
+
+  return (
+    <ActionForm
+      action={wijzigPartner}
+      submitLabel="Opslaan"
+      resetOnSuccess={false}
+      className="grid gap-3 sm:grid-cols-2"
+    >
+      <input type="hidden" name="partnerId" value={partner.id} />
+      <Field label="Naam" name="naam" required defaultValue={partner.name} />
+      <Select
+        label="Soort"
+        name="type"
+        defaultValue={partner.type}
+        options={Object.entries(partnerTypeLabels).map(([value, label]) => ({ value, label }))}
+      />
+      <Field label="Contactpersoon" name="contactpersoon" defaultValue={partner.contactName ?? ''} />
+      <Field label="E-mailadres" name="email" type="email" defaultValue={partner.email ?? ''} />
+      <Field label="Telefoon" name="telefoon" defaultValue={partner.phone ?? ''} />
+      <Field label="Website" name="website" defaultValue={partner.website ?? ''} />
+      <Field label="Uurtarief" name="uurtarief" defaultValue={bedrag(partner.hourlyRateCents)} />
+      <Field label="Dagtarief" name="dagtarief" defaultValue={bedrag(partner.dayRateCents)} />
+      <Field
+        label="Betaaltermijn in dagen"
+        name="betaaltermijn"
+        type="number"
+        defaultValue={partner.paymentTermDays === null ? '' : String(partner.paymentTermDays)}
+      />
+      <div className="sm:col-span-2">
+        <Field
+          label="Tariefafspraken"
+          name="afspraken"
+          defaultValue={partner.agreementNotes ?? ''}
+          hint="Een nieuw tarief geldt vanaf nu. Offertes die er al liggen houden het tarief van toen."
+        />
+      </div>
+      <div className="sm:col-span-2">
+        <Field label="Interne notities" name="notities" defaultValue={partner.notes ?? ''} />
+      </div>
+    </ActionForm>
+  )
+}
 
 /** Externe partners met wie we werken, en de afspraken die er gelden. */
 export default async function PartnersPage() {
@@ -15,6 +63,7 @@ export default async function PartnersPage() {
 
   const [partners, cijfers] = await Promise.all([listPartners(), getPartnerFigures()])
   const actief = partners.filter((p) => p.active)
+  const gestopt = partners.filter((p) => !p.active)
   const perPartnerCijfers = new Map(cijfers.map((c) => [c.partnerId, c]))
 
   // Alleen partners waar daadwerkelijk iets mee loopt, en de grootste eerst.
@@ -201,10 +250,73 @@ export default async function PartnersPage() {
                           {p.notes}
                         </p>
                       )}
+
+                      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-gray-200 pt-3">
+                        <ActionForm
+                          action={wisselPartnerActief}
+                          submitLabel="Op non-actief zetten"
+                          submitClassName="text-gray-600 hover:bg-gray-100 !px-2 !py-1 !text-xs"
+                          resetOnSuccess={false}
+                          className=""
+                        >
+                          <input type="hidden" name="partnerId" value={p.id} />
+                          <input type="hidden" name="actief" value="nee" />
+                        </ActionForm>
+
+                        {p.clientCount === 0 && (
+                          <ActionForm
+                            action={verwijderPartner}
+                            submitLabel="Verwijderen"
+                            submitClassName="text-gray-600 hover:bg-gray-100 !px-2 !py-1 !text-xs"
+                            resetOnSuccess={false}
+                            className=""
+                          >
+                            <input type="hidden" name="partnerId" value={p.id} />
+                          </ActionForm>
+                        )}
+                      </div>
+
+                      <Uitklap label="Gegevens en tarieven wijzigen">
+                        <PartnerVelden partner={p} />
+                      </Uitklap>
                     </li>
                   )
                 })}
               </ul>
+            )}
+
+            {gestopt.length > 0 && (
+              <section className="mt-8">
+                <h2 className="mb-1 text-base">Niet meer actief</h2>
+                <p className="mb-3 text-xs text-gray-500">
+                  Niet meer kiesbaar bij een nieuwe offerte, maar ze tellen wel gewoon mee
+                  in de cijfers hierboven. Wat er is gebeurd, is gebeurd.
+                </p>
+                <ul className="space-y-2">
+                  {gestopt.map((p) => (
+                    <li key={p.id} className="rounded-xl bg-white p-4 opacity-70 shadow-sm">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <div>
+                          <span className="text-sm">{p.name}</span>
+                          <span className="ml-2 text-xs text-gray-600">
+                            {partnerTypeLabels[p.type]}
+                          </span>
+                        </div>
+                        <ActionForm
+                          action={wisselPartnerActief}
+                          submitLabel="Weer activeren"
+                          submitClassName="text-gray-600 hover:bg-gray-100 !px-2 !py-1 !text-xs"
+                          resetOnSuccess={false}
+                          className=""
+                        >
+                          <input type="hidden" name="partnerId" value={p.id} />
+                          <input type="hidden" name="actief" value="ja" />
+                        </ActionForm>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </section>
             )}
           </div>
 

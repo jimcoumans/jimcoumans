@@ -7,7 +7,8 @@ import { describeDbError } from '@/lib/db-errors'
 import { parseAmountToCents } from '@/lib/money'
 import { parseQuantityToHundredths } from '@/lib/quantity'
 import {
-  createQuote, addQuoteLine, deleteQuoteLine, setQuoteStatus, QuoteError,
+  createQuote, updateQuote, addQuoteLine, updateQuoteLine, deleteQuoteLine,
+  setQuoteStatus, QuoteError,
 } from '@/lib/quotes'
 import { db } from '@/db'
 import { services, partners } from '@/db/schema'
@@ -126,6 +127,91 @@ export async function nieuweRegel(formData: FormData): Promise<ActionResult> {
       unitCostCents: soort === 'discount' ? null : kost,
       serviceId: soort === 'service' ? serviceId : null,
       partnerId: soort === 'partner' ? partnerId : null,
+    })
+    revalidatePath(`/beheer/offertes/${quoteId}`)
+  })
+}
+
+/** Wijzigt de kop van de offerte: titel, contactpersoon, inleiding, geldig tot. */
+export async function wijzigOfferte(formData: FormData): Promise<ActionResult> {
+  await requireStaff()
+
+  const quoteId = tekst(formData, 'quoteId')
+  const titel = tekst(formData, 'titel')
+  if (!quoteId) return { ok: false, error: 'Onbekende offerte.' }
+  if (titel.length < 2) return { ok: false, error: 'Vul een titel voor de offerte in.' }
+
+  const geldig = tekst(formData, 'geldigTot')
+  let validUntil: Date | null = null
+  if (geldig !== '') {
+    const parsed = new Date(geldig)
+    if (Number.isNaN(parsed.getTime())) return { ok: false, error: 'De datum is niet geldig.' }
+    validUntil = parsed
+  }
+
+  const btwRaw = tekst(formData, 'btw')
+  const btw = btwRaw === '' ? 21 : Number.parseInt(btwRaw, 10)
+  if (!Number.isInteger(btw) || btw < 0 || btw > 100) {
+    return { ok: false, error: 'Het btw-tarief moet een percentage tussen 0 en 100 zijn.' }
+  }
+
+  return veilig(async () => {
+    await updateQuote(quoteId, {
+      title: titel,
+      contactId: tekst(formData, 'contactId') || null,
+      introText: tekst(formData, 'intro') || null,
+      validUntil,
+      vatRatePercent: btw,
+    })
+    revalidatePath(`/beheer/offertes/${quoteId}`)
+    revalidatePath('/beheer/offertes')
+  })
+}
+
+/**
+ * Wijzigt een regel.
+ *
+ * Het soort blijft wat het is: van partnerwerk je eigen dienst maken is geen
+ * correctie maar een ander voorstel. Daarvoor verwijder je de regel.
+ */
+export async function wijzigRegel(formData: FormData): Promise<ActionResult> {
+  await requireStaff()
+
+  const lineId = tekst(formData, 'lineId')
+  const quoteId = tekst(formData, 'quoteId')
+  const soort = tekst(formData, 'soort')
+  if (!lineId) return { ok: false, error: 'Onbekende regel.' }
+
+  const aantal = parseQuantityToHundredths(tekst(formData, 'aantal') || '1')
+  if (aantal === null) {
+    return { ok: false, error: 'Vul een aantal groter dan nul in, bijvoorbeeld 3 of 1,5.' }
+  }
+
+  const prijs = parseAmountToCents(tekst(formData, 'prijs'))
+  if (prijs === null || prijs <= 0) {
+    return { ok: false, error: 'Vul een bedrag boven nul in.' }
+  }
+
+  const kostRaw = tekst(formData, 'kostprijs')
+  let kost: number | null = null
+  if (kostRaw !== '') {
+    kost = parseAmountToCents(kostRaw)
+    if (kost === null) return { ok: false, error: 'De kostprijs is geen geldig bedrag.' }
+  }
+
+  const omschrijving = tekst(formData, 'omschrijving')
+  if (omschrijving.length < 2) {
+    return { ok: false, error: 'Vul een omschrijving in. De klant leest die.' }
+  }
+
+  return veilig(async () => {
+    await updateQuoteLine(lineId, {
+      description: omschrijving,
+      detail: tekst(formData, 'toelichting') || null,
+      quantityHundredths: aantal,
+      unitPriceCents: soort === 'discount' ? -prijs : prijs,
+      unitCostCents: soort === 'discount' ? null : kost,
+      partnerId: tekst(formData, 'partnerId') || null,
     })
     revalidatePath(`/beheer/offertes/${quoteId}`)
   })

@@ -6,6 +6,7 @@ import {
   partners,
   organizationPartners,
   accounts,
+  quoteLines,
 } from '@/db/schema'
 import type { Contact, Partner, Account, OrganizationPartner } from '@/db/schema'
 
@@ -16,6 +17,15 @@ import type { Contact, Partner, Account, OrganizationPartner } from '@/db/schema
    verwijderd worden. Een telefoonnummer dat verandert is geen boeking; daar
    hoort geen correctieregel bij maar een nieuwe waarde.
    ------------------------------------------------------------------------- */
+
+/**
+ * Een weigering met een reden die de gebruiker moet zien.
+ *
+ * Zonder eigen fouttype belandt "deze partner staat op een offerte" in de
+ * algemene vangnetmelding, en staat er op het scherm "er ging iets mis"
+ * terwijl er juist iets heel duidelijks aan de hand is.
+ */
+export class CrmError extends Error {}
 
 /** Branches waarin James Robinson werkt. Suggesties, geen keurslijf. */
 export const BRANCHES = [
@@ -135,7 +145,7 @@ export async function makePrimaryContact(contactId: string): Promise<void> {
       .where(eq(contacts.id, contactId))
       .limit(1)
 
-    if (!contact) throw new Error('Contactpersoon niet gevonden.')
+    if (!contact) throw new CrmError('Contactpersoon niet gevonden.')
 
     await tx
       .update(contacts)
@@ -146,6 +156,63 @@ export async function makePrimaryContact(contactId: string): Promise<void> {
       .update(contacts)
       .set({ isPrimary: true, updatedAt: new Date() })
       .where(eq(contacts.id, contactId))
+  })
+}
+
+/**
+ * Wijzigt een contactpersoon.
+ *
+ * Je kunt hier ook de vaste contactpersoon aanwijzen; dan verliest de vorige
+ * die rol in dezelfde transactie, precies zoals bij het aanmaken. Anders zou
+ * een verbetering van een telefoonnummer kunnen stranden op een index die
+ * over iets heel anders gaat.
+ */
+export type ContactPatch = Omit<NewContact, 'organizationId'>
+
+export async function updateContact(
+  contactId: string,
+  patch: ContactPatch,
+): Promise<Contact> {
+  return db.transaction(async (tx) => {
+    const [bestaand] = await tx
+      .select({ organizationId: contacts.organizationId })
+      .from(contacts)
+      .where(eq(contacts.id, contactId))
+      .limit(1)
+
+    if (!bestaand) throw new CrmError('Contactpersoon niet gevonden.')
+
+    if (patch.isPrimary) {
+      await tx
+        .update(contacts)
+        .set({ isPrimary: false, updatedAt: new Date() })
+        .where(
+          and(
+            eq(contacts.organizationId, bestaand.organizationId),
+            eq(contacts.isPrimary, true),
+          ),
+        )
+    }
+
+    const [contact] = await tx
+      .update(contacts)
+      .set({
+        name: patch.name.trim(),
+        jobTitle: patch.jobTitle ?? null,
+        email: patch.email?.trim().toLowerCase() || null,
+        phone: patch.phone ?? null,
+        mobile: patch.mobile ?? null,
+        linkedinUrl: patch.linkedinUrl ?? null,
+        isPrimary: patch.isPrimary ?? false,
+        receivesInvoices: patch.receivesInvoices ?? false,
+        notes: patch.notes ?? null,
+        updatedAt: new Date(),
+      })
+      .where(eq(contacts.id, contactId))
+      .returning()
+
+    if (!contact) throw new Error('Contactpersoon kon niet worden opgeslagen.')
+    return contact
   })
 }
 
@@ -217,6 +284,70 @@ export async function createPartner(input: NewPartner): Promise<Partner> {
   return partner
 }
 
+/** Wijzigt een partner. De tariefafspraak verandert alleen hier, niet met terugwerkende kracht: een offerteregel houdt het tarief van het moment dat hij werd gemaakt. */
+export async function updatePartner(partnerId: string, patch: NewPartner): Promise<Partner> {
+  const [partner] = await db
+    .update(partners)
+    .set({
+      name: patch.name.trim(),
+      type: patch.type,
+      contactName: patch.contactName ?? null,
+      email: patch.email?.trim().toLowerCase() || null,
+      phone: patch.phone ?? null,
+      website: patch.website ?? null,
+      hourlyRateCents: patch.hourlyRateCents ?? null,
+      dayRateCents: patch.dayRateCents ?? null,
+      paymentTermDays: patch.paymentTermDays ?? null,
+      agreementNotes: patch.agreementNotes ?? null,
+      notes: patch.notes ?? null,
+      updatedAt: new Date(),
+    })
+    .where(eq(partners.id, partnerId))
+    .returning()
+
+  if (!partner) throw new CrmError('Partner niet gevonden.')
+  return partner
+}
+
+/** Zet een partner aan of uit. Uit betekent: niet meer kiesbaar, wel in de cijfers. */
+export async function setPartnerActive(partnerId: string, active: boolean): Promise<void> {
+  await db
+    .update(partners)
+    .set({ active, updatedAt: new Date() })
+    .where(eq(partners.id, partnerId))
+}
+
+/**
+ * Verwijdert een partner, maar alleen als er niets aan hangt.
+ *
+ * Staat hij op een offerte of bij een klant, dan is weggooien geen opruimen
+ * maar geschiedenis wissen: de cijfers per partner kloppen daarna niet meer.
+ * Zet hem dan op non-actief.
+ */
+export async function deletePartner(partnerId: string): Promise<void> {
+  const [regels] = await db
+    .select({ aantal: sql<string>`COUNT(*)` })
+    .from(quoteLines)
+    .where(eq(quoteLines.partnerId, partnerId))
+
+  if (Number(regels?.aantal ?? 0) > 0) {
+    throw new CrmError(
+      'Deze partner staat op een offerte. Zet hem op non-actief in plaats van hem te verwijderen, anders kloppen de cijfers per partner niet meer.',
+    )
+  }
+
+  const [koppelingen] = await db
+    .select({ aantal: sql<string>`COUNT(*)` })
+    .from(organizationPartners)
+    .where(eq(organizationPartners.partnerId, partnerId))
+
+  if (Number(koppelingen?.aantal ?? 0) > 0) {
+    throw new CrmError('Deze partner is nog aan een klant gekoppeld. Haal die koppelingen eerst weg.')
+  }
+
+  await db.delete(partners).where(eq(partners.id, partnerId))
+}
+
 export type PartnerLink = OrganizationPartner & {
   partner: Partner
   /** Het tarief dat bij deze klant geldt: afwijkend als dat is afgesproken. */
@@ -279,6 +410,26 @@ export async function linkPartner(input: {
   return link
 }
 
+/** Wijzigt de afspraak tussen een klant en een partner: rol, afwijkend tarief, notities. */
+export async function updatePartnerLink(
+  linkId: string,
+  patch: { role: string; customHourlyRateCents?: number | null; since?: Date | null; notes?: string | null },
+): Promise<OrganizationPartner> {
+  const [link] = await db
+    .update(organizationPartners)
+    .set({
+      role: patch.role.trim(),
+      customHourlyRateCents: patch.customHourlyRateCents ?? null,
+      since: patch.since ?? null,
+      notes: patch.notes ?? null,
+    })
+    .where(eq(organizationPartners.id, linkId))
+    .returning()
+
+  if (!link) throw new CrmError('Koppeling niet gevonden.')
+  return link
+}
+
 export async function unlinkPartner(linkId: string): Promise<void> {
   await db.delete(organizationPartners).where(eq(organizationPartners.id, linkId))
 }
@@ -328,6 +479,36 @@ export async function createAccount(input: NewAccount): Promise<Account> {
     .returning()
 
   if (!account) throw new Error('Account kon niet worden opgeslagen.')
+  return account
+}
+
+/**
+ * Wijzigt een account. Ook hier is er geen parameter voor een wachtwoord:
+ * `vaultReference` wijst naar de wachtwoordmanager, meer slaan we niet op.
+ */
+export async function updateAccount(
+  accountId: string,
+  patch: Omit<NewAccount, 'organizationId'> & { active?: boolean },
+): Promise<Account> {
+  const [account] = await db
+    .update(accounts)
+    .set({
+      name: patch.name.trim(),
+      system: patch.system ?? null,
+      url: patch.url ?? null,
+      loginHint: patch.loginHint?.trim() || null,
+      owner: patch.owner ?? 'client',
+      vaultReference: patch.vaultReference ?? null,
+      hasMfa: patch.hasMfa ?? false,
+      mfaNotes: patch.mfaNotes ?? null,
+      notes: patch.notes ?? null,
+      active: patch.active ?? true,
+      updatedAt: new Date(),
+    })
+    .where(eq(accounts.id, accountId))
+    .returning()
+
+  if (!account) throw new CrmError('Account niet gevonden.')
   return account
 }
 

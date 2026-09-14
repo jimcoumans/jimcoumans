@@ -311,6 +311,43 @@ export async function nieuweMedewerker(formData: FormData): Promise<ActionResult
 }
 
 /** Toegang van een medewerker intrekken of teruggeven. */
+/**
+ * Wijzigt naam en rol van een collega.
+ *
+ * Het e-mailadres blijft staan: dat is waarmee iemand inlogt en waaraan zijn
+ * boekingen hangen. Een ander adres is een andere persoon, en die voeg je toe.
+ */
+export async function wijzigMedewerker(formData: FormData): Promise<ActionResult> {
+  const staff = await requireStaff()
+
+  const id = String(formData.get('userId') ?? '').trim()
+  if (!id) return { ok: false, error: 'Onbekende collega.' }
+
+  const rol = String(formData.get('rol') ?? 'staff')
+  if (rol !== 'staff' && rol !== 'admin') return { ok: false, error: 'Kies een geldige rol.' }
+  if (rol === 'admin' && staff.role !== 'admin') {
+    return { ok: false, error: 'Alleen een beheerder kan iemand tot beheerder maken.' }
+  }
+
+  // Jezelf degraderen kan de laatste beheerder buitensluiten.
+  if (id === staff.id && rol !== 'admin' && staff.role === 'admin') {
+    return {
+      ok: false,
+      error: 'Je kunt je eigen beheerrechten niet weghalen. Laat een andere beheerder dat doen.',
+    }
+  }
+
+  const naam = String(formData.get('naam') ?? '').trim()
+
+  return veilig(async () => {
+    await db
+      .update(users)
+      .set({ name: naam || null, role: rol })
+      .where(eq(users.id, id))
+    revalidatePath('/beheer/medewerkers')
+  })
+}
+
 export async function wisselMedewerkerToegang(formData: FormData): Promise<ActionResult> {
   const staff = await requireStaff()
 

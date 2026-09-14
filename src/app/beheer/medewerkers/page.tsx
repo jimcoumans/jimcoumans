@@ -5,8 +5,8 @@ import { users } from '@/db/schema'
 import { getSessionUser } from '@/lib/auth'
 import { getFiguresByEmployee } from '@/lib/reports'
 import { AppShell } from '@/components/AppShell'
-import { ActionForm, Field } from '@/components/ActionForm'
-import { nieuweMedewerker, wisselMedewerkerToegang } from '../service-actions'
+import { ActionForm, Field, Select, Uitklap } from '@/components/ActionForm'
+import { nieuweMedewerker, wijzigMedewerker, wisselMedewerkerToegang } from '../service-actions'
 import { formatCents } from '@/lib/money'
 import { formatDate } from '@/lib/dates'
 
@@ -85,6 +85,35 @@ export default async function MedewerkersPage() {
                             {c.clientCount === 1 ? 'klant' : 'klanten'}
                           </p>
                         )}
+
+                        <Uitklap label="Wijzigen">
+                          <ActionForm
+                            action={wijzigMedewerker}
+                            submitLabel="Opslaan"
+                            resetOnSuccess={false}
+                          >
+                            <input type="hidden" name="userId" value={lid.id} />
+                            <Field label="Naam" name="naam" defaultValue={lid.name ?? ''} />
+                            <Select
+                              label="Rol"
+                              name="rol"
+                              defaultValue={lid.role}
+                              options={[
+                                { value: 'staff', label: 'Medewerker' },
+                                { value: 'admin', label: 'Beheerder' },
+                              ]}
+                              hint={
+                                user.role === 'admin'
+                                  ? 'Alleen een beheerder kan abonnementen en medewerkers beheren.'
+                                  : 'Alleen een beheerder kan iemand tot beheerder maken.'
+                              }
+                            />
+                            <p className="text-xs text-gray-500">
+                              Het e-mailadres blijft {lid.email}. Daarmee logt hij in en daaraan
+                              hangen zijn boekingen; een ander adres is een andere persoon.
+                            </p>
+                          </ActionForm>
+                        </Uitklap>
                       </div>
 
                       <div className="shrink-0 text-right">

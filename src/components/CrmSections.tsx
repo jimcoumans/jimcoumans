@@ -1,8 +1,8 @@
-import { ActionForm, Field, Select, Check } from './ActionForm'
+import { ActionForm, Field, Select, Check, Uitklap } from './ActionForm'
 import {
-  nieuweContactpersoon, maakVasteContactpersoon, verwijderContactpersoon,
-  nieuwAccount, verwijderAccount,
-  koppelPartner, ontkoppelPartner,
+  nieuweContactpersoon, wijzigContactpersoon, maakVasteContactpersoon, verwijderContactpersoon,
+  nieuwAccount, wijzigAccount, verwijderAccount,
+  koppelPartner, wijzigKoppeling, ontkoppelPartner,
   bedrijfsgegevens,
 } from '@/app/beheer/crm-actions'
 import {
@@ -71,6 +71,29 @@ export function Contactpersonen({
                   </p>
 
                   {c.notes && <p className="mt-1 text-xs text-gray-500">{c.notes}</p>}
+
+                  <Uitklap label="Wijzigen">
+                    <ActionForm
+                      action={wijzigContactpersoon}
+                      submitLabel="Opslaan"
+                      resetOnSuccess={false}
+                      className="grid gap-3 sm:grid-cols-2"
+                    >
+                      <input type="hidden" name="contactId" value={c.id} />
+                      <input type="hidden" name="slug" value={slug} />
+                      <Field label="Naam" name="naam" required defaultValue={c.name} />
+                      <Field label="Functie" name="functie" defaultValue={c.jobTitle ?? ''} />
+                      <Field label="E-mailadres" name="email" type="email" defaultValue={c.email ?? ''} />
+                      <Field label="Mobiel" name="mobiel" defaultValue={c.mobile ?? ''} />
+                      <Field label="Telefoon" name="telefoon" defaultValue={c.phone ?? ''} />
+                      <Field label="LinkedIn" name="linkedin" defaultValue={c.linkedinUrl ?? ''} />
+                      <div className="sm:col-span-2">
+                        <Field label="Notities" name="notities" defaultValue={c.notes ?? ''} />
+                      </div>
+                      <Check label="Dit is de vaste contactpersoon" name="vast" defaultChecked={c.isPrimary} />
+                      <Check label="Ontvangt de facturen" name="facturen" defaultChecked={c.receivesInvoices} />
+                    </ActionForm>
+                  </Uitklap>
                 </div>
 
                 <div className="flex shrink-0 gap-3">
@@ -173,6 +196,36 @@ export function Partners({
                   {l.since && <> &middot; sinds {formatDate(l.since)}</>}
                 </p>
                 {l.notes && <p className="mt-1 text-xs text-gray-500">{l.notes}</p>}
+
+                <Uitklap label="Afspraak wijzigen">
+                  <ActionForm
+                    action={wijzigKoppeling}
+                    submitLabel="Opslaan"
+                    resetOnSuccess={false}
+                    className="grid gap-3 sm:grid-cols-2"
+                  >
+                    <input type="hidden" name="linkId" value={l.id} />
+                    <input type="hidden" name="slug" value={slug} />
+                    <Field label="Rol" name="rol" required defaultValue={l.role} />
+                    <Field
+                      label="Afwijkend uurtarief"
+                      name="tarief"
+                      defaultValue={
+                        l.customHourlyRateCents === null
+                          ? ''
+                          : (l.customHourlyRateCents / 100).toFixed(2).replace('.', ',')
+                      }
+                      hint={
+                        l.partner.hourlyRateCents === null
+                          ? 'Deze partner heeft geen standaardtarief.'
+                          : `Leeg laten betekent het standaardtarief van ${formatCents(l.partner.hourlyRateCents)}.`
+                      }
+                    />
+                    <div className="sm:col-span-2">
+                      <Field label="Notities" name="notities" defaultValue={l.notes ?? ''} />
+                    </div>
+                  </ActionForm>
+                </Uitklap>
               </div>
 
               <div className="shrink-0 text-right">
@@ -344,6 +397,51 @@ export function Accounts({
 
                 {a.mfaNotes && <p className="mt-1 text-xs text-gray-500">2FA: {a.mfaNotes}</p>}
                 {a.notes && <p className="mt-1 text-xs text-gray-500">{a.notes}</p>}
+
+                <Uitklap label="Wijzigen">
+                  <ActionForm
+                    action={wijzigAccount}
+                    submitLabel="Opslaan"
+                    resetOnSuccess={false}
+                    className="grid gap-3 sm:grid-cols-2"
+                  >
+                    <input type="hidden" name="accountId" value={a.id} />
+                    <input type="hidden" name="slug" value={slug} />
+                    <Field label="Naam" name="naam" required defaultValue={a.name} />
+                    <Select
+                      label="Systeem"
+                      name="systeem"
+                      defaultValue={a.system ?? ''}
+                      options={[
+                        { value: '', label: 'Kies of laat leeg' },
+                        ...COMMON_SYSTEMS.map((x) => ({ value: x, label: x })),
+                      ]}
+                    />
+                    <Field label="URL" name="url" defaultValue={a.url ?? ''} />
+                    <Field label="Inlognaam" name="inlognaam" defaultValue={a.loginHint ?? ''} />
+                    <Select
+                      label="Van wie is het account"
+                      name="eigenaar"
+                      defaultValue={a.owner}
+                      options={Object.entries(accountOwnerLabels).map(([value, label]) => ({ value, label }))}
+                    />
+                    <Field
+                      label="Waar staat het wachtwoord"
+                      name="kluis"
+                      defaultValue={a.vaultReference ?? ''}
+                      hint="Een verwijzing, bijvoorbeeld 1Password › Klanten › Voncken. Nooit het wachtwoord zelf."
+                    />
+                    <Field label="2FA-notities" name="mfaNotities" defaultValue={a.mfaNotes ?? ''} />
+                    <Field label="Notities" name="notities" defaultValue={a.notes ?? ''} />
+                    <Check label="Tweestapsverificatie staat aan" name="mfa" defaultChecked={a.hasMfa} />
+                    <Check
+                      label="Niet meer in gebruik"
+                      name="inactief"
+                      defaultChecked={!a.active}
+                      hint="Blijft staan in het register, maar telt niet meer mee als openstaand."
+                    />
+                  </ActionForm>
+                </Uitklap>
               </div>
 
               <div className="shrink-0">

@@ -370,6 +370,132 @@ export async function addQuoteLine(input: NewQuoteLine): Promise<QuoteLine> {
   return line
 }
 
+/**
+ * Wijzigt de kop van een offerte: titel, contactpersoon, inleiding,
+ * geldigheidsduur en btw-tarief.
+ *
+ * Mag alleen zolang de offerte niet bij de klant ligt. Wat verstuurd is,
+ * staat vast; anders zou de offerte die jij hier ziet stilletjes iets anders
+ * zijn dan de offerte die de klant in zijn mail heeft.
+ */
+export async function updateQuote(
+  quoteId: string,
+  patch: {
+    title: string
+    contactId?: string | null
+    introText?: string | null
+    termsText?: string | null
+    validUntil?: Date | null
+    vatRatePercent?: number
+    notes?: string | null
+  },
+): Promise<Quote> {
+  const [bestaand] = await db
+    .select({ status: quotes.status })
+    .from(quotes)
+    .where(eq(quotes.id, quoteId))
+    .limit(1)
+
+  if (!bestaand) throw new QuoteError('Offerte niet gevonden.')
+  if (!isEditable(bestaand)) {
+    throw new QuoteError(
+      'Deze offerte ligt al bij de klant. Zet hem terug op concept om hem te wijzigen.',
+    )
+  }
+  if (patch.title.trim().length < 2) {
+    throw new QuoteError('Vul een titel voor de offerte in.')
+  }
+
+  const [quote] = await db
+    .update(quotes)
+    .set({
+      title: patch.title.trim(),
+      contactId: patch.contactId ?? null,
+      introText: patch.introText ?? null,
+      termsText: patch.termsText ?? null,
+      validUntil: patch.validUntil ?? null,
+      vatRatePercent: patch.vatRatePercent ?? 21,
+      notes: patch.notes ?? null,
+      updatedAt: new Date(),
+    })
+    .where(eq(quotes.id, quoteId))
+    .returning()
+
+  if (!quote) throw new QuoteError('Offerte kon niet worden opgeslagen.')
+  return quote
+}
+
+/**
+ * Wijzigt een regel.
+ *
+ * Het soort regel blijft wat het is: van een partnerregel een eigen dienst
+ * maken verandert wie het werk doet, en dat is geen correctie maar een
+ * ander voorstel. Verwijder hem dan en voeg een nieuwe toe.
+ */
+export async function updateQuoteLine(
+  lineId: string,
+  patch: {
+    description: string
+    detail?: string | null
+    quantityHundredths: number
+    unitPriceCents: number
+    unitCostCents?: number | null
+    partnerId?: string | null
+  },
+): Promise<QuoteLine> {
+  const [row] = await db
+    .select({ status: quotes.status, kind: quoteLines.kind })
+    .from(quoteLines)
+    .innerJoin(quotes, eq(quotes.id, quoteLines.quoteId))
+    .where(eq(quoteLines.id, lineId))
+    .limit(1)
+
+  if (!row) throw new QuoteError('Regel niet gevonden.')
+  if (!isEditable(row)) {
+    throw new QuoteError('Deze offerte ligt al bij de klant en kan niet meer gewijzigd worden.')
+  }
+  if (patch.description.trim().length < 2) {
+    throw new QuoteError('Vul een omschrijving in. De klant leest die.')
+  }
+  if (row.kind === 'partner' && !patch.partnerId) {
+    throw new QuoteError('Kies welke partner dit uitvoert.')
+  }
+  // Een kortingsregel blijft negatief, een gewone regel blijft positief.
+  // De database bewaakt dat ook, maar hier is de melding bruikbaar.
+  if (row.kind === 'discount' && patch.unitPriceCents >= 0) {
+    throw new QuoteError('Een kortingsregel moet een bedrag onder nul hebben.')
+  }
+  if (row.kind !== 'discount' && patch.unitPriceCents <= 0) {
+    throw new QuoteError('Vul een bedrag boven nul in. Voor een korting gebruik je een kortingsregel.')
+  }
+
+  // Regel en offerte in één transactie: een gewijzigde regel maakt de
+  // offerte gewijzigd, dus die datum hoort mee te lopen.
+  return db.transaction(async (tx) => {
+    const [line] = await tx
+      .update(quoteLines)
+      .set({
+        description: patch.description.trim(),
+        detail: patch.detail ?? null,
+        quantityHundredths: patch.quantityHundredths,
+        unitPriceCents: patch.unitPriceCents,
+        unitCostCents: patch.unitCostCents ?? null,
+        partnerId: row.kind === 'partner' ? (patch.partnerId ?? null) : null,
+      })
+      .where(eq(quoteLines.id, lineId))
+      .returning()
+
+    if (!line) throw new QuoteError('Regel kon niet worden opgeslagen.')
+
+    await tx
+      .update(quotes)
+      .set({ updatedAt: new Date() })
+      .where(eq(quotes.id, line.quoteId))
+
+    return line
+  })
+}
+
 export async function deleteQuoteLine(lineId: string): Promise<void> {
   const [row] = await db
     .select({ status: quotes.status })

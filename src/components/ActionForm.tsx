@@ -173,3 +173,27 @@ export function Field({
     </div>
   )
 }
+
+/**
+ * Een wijzigformulier dat dichtgeklapt staat.
+ *
+ * De lijst blijft leesbaar — je kijkt meestal, je wijzigt zelden — en het
+ * formulier zit er wel bij in plaats van op een aparte pagina. Zonder deze
+ * uitklap staat elk scherm vol met velden die je bijna nooit nodig hebt.
+ */
+export function Uitklap({
+  label,
+  children,
+  className = 'mt-2',
+}: {
+  label: string
+  children: React.ReactNode
+  className?: string
+}) {
+  return (
+    <details className={className}>
+      <summary className="text-jr-blue cursor-pointer text-xs select-none">{label}</summary>
+      <div className="mt-2.5 rounded-lg border border-gray-200 p-4">{children}</div>
+    </details>
+  )
+}

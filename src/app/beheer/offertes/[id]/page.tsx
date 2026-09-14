@@ -11,13 +11,18 @@ import {
   lineKindLabels,
 } from '@/lib/quotes'
 import { AppShell } from '@/components/AppShell'
-import { ActionForm, Field } from '@/components/ActionForm'
+import { ActionForm, Field, Select, Uitklap } from '@/components/ActionForm'
 import { QuoteLineForm } from '@/components/QuoteLineForm'
-import { verwijderRegel, zetOfferteStatus } from '../../quote-actions'
+import { wijzigOfferte, wijzigRegel, verwijderRegel, zetOfferteStatus } from '../../quote-actions'
 import { formatCents } from '@/lib/money'
 import { formatQuantity, unitShort } from '@/lib/quantity'
 import { formatDate } from '@/lib/dates'
 import type { Quote } from '@/db/schema'
+
+/** Een bedrag zoals je het in een invoerveld wilt zien: 2400,00 */
+function bedragVeld(cents: number | null): string {
+  return cents === null ? '' : (cents / 100).toFixed(2).replace('.', ',')
+}
 
 /* Wat elke knop in gewone taal betekent. */
 const STATUS_KNOPPEN: Record<Quote['status'], string> = {
@@ -135,7 +140,7 @@ export default async function OffertePage({
                         )}
                         <p className="tabular mt-1 text-xs text-gray-500">
                           {formatQuantity(regel.quantityHundredths)} &times;{' '}
-                          {formatCents(regel.unitPriceCents)}
+                          {formatCents(regel.kind === 'discount' ? -regel.unitPriceCents : regel.unitPriceCents)}
                           {regel.unitCostCents !== null ? (
                             <>
                               {' '}&middot; kost {formatCents(regel.totals.costCents)} &middot;{' '}
@@ -147,6 +152,70 @@ export default async function OffertePage({
                             regel.kind !== 'discount' && <> &middot; geen kostprijs bekend</>
                           )}
                         </p>
+
+                        {bewerkbaar && (
+                          <Uitklap label="Regel wijzigen">
+                            <ActionForm
+                              action={wijzigRegel}
+                              submitLabel="Opslaan"
+                              resetOnSuccess={false}
+                              className="grid gap-3 sm:grid-cols-2"
+                            >
+                              <input type="hidden" name="lineId" value={regel.id} />
+                              <input type="hidden" name="quoteId" value={quote.id} />
+                              <input type="hidden" name="soort" value={regel.kind} />
+                              <div className="sm:col-span-2">
+                                <Field
+                                  label="Omschrijving"
+                                  name="omschrijving"
+                                  required
+                                  defaultValue={regel.description}
+                                />
+                              </div>
+                              {regel.kind === 'partner' && (
+                                <Select
+                                  label="Partner"
+                                  name="partnerId"
+                                  defaultValue={regel.partnerId ?? ''}
+                                  options={partners.map((p) => ({ value: p.id, label: p.name }))}
+                                />
+                              )}
+                              <Field
+                                label="Aantal"
+                                name="aantal"
+                                required
+                                defaultValue={formatQuantity(regel.quantityHundredths)}
+                              />
+                              <Field
+                                label={regel.kind === 'discount' ? 'Korting per stuk' : 'Prijs per stuk'}
+                                name="prijs"
+                                required
+                                defaultValue={bedragVeld(
+                                  regel.kind === 'discount' ? -regel.unitPriceCents : regel.unitPriceCents,
+                                )}
+                              />
+                              {regel.kind !== 'discount' && (
+                                <Field
+                                  label={regel.kind === 'partner' ? 'Wat de partner ons rekent' : 'Kostprijs per stuk'}
+                                  name="kostprijs"
+                                  defaultValue={bedragVeld(regel.unitCostCents)}
+                                  hint="Alleen voor ons. De klant ziet dit nooit."
+                                />
+                              )}
+                              <div className="sm:col-span-2">
+                                <Field
+                                  label="Toelichting"
+                                  name="toelichting"
+                                  defaultValue={regel.detail ?? ''}
+                                />
+                              </div>
+                              <p className="text-xs text-gray-500 sm:col-span-2">
+                                Het soort regel ligt vast. Van partnerwerk je eigen dienst maken
+                                is geen correctie maar een ander voorstel; verwijder de regel dan.
+                              </p>
+                            </ActionForm>
+                          </Uitklap>
+                        )}
                       </div>
 
                       <div className="flex shrink-0 items-center gap-3">
@@ -237,6 +306,43 @@ export default async function OffertePage({
         </div>
 
         <aside className="space-y-5 lg:sticky lg:top-4 lg:self-start">
+          {bewerkbaar && (
+            <section className="rounded-xl bg-white p-5 shadow-sm">
+              <h2 className="mb-3 text-base">Offerte wijzigen</h2>
+              <ActionForm action={wijzigOfferte} submitLabel="Opslaan" resetOnSuccess={false}>
+                <input type="hidden" name="quoteId" value={quote.id} />
+                <Field label="Titel" name="titel" required defaultValue={quote.title} />
+                <Select
+                  label="Gericht aan"
+                  name="contactId"
+                  defaultValue={quote.contactId ?? ''}
+                  options={[
+                    { value: '', label: 'Geen contactpersoon' },
+                    ...contactpersonen.map((c) => ({
+                      value: c.id,
+                      label: c.isPrimary ? `${c.name} (vast)` : c.name,
+                    })),
+                  ]}
+                />
+                <Field
+                  label="Geldig tot"
+                  name="geldigTot"
+                  type="date"
+                  defaultValue={
+                    quote.validUntil ? new Date(quote.validUntil).toISOString().slice(0, 10) : ''
+                  }
+                />
+                <Field
+                  label="Btw-percentage"
+                  name="btw"
+                  type="number"
+                  defaultValue={String(quote.vatRatePercent)}
+                />
+                <Field label="Inleiding" name="intro" defaultValue={quote.introText ?? ''} />
+              </ActionForm>
+            </section>
+          )}
+
           <section className="rounded-xl bg-white p-5 shadow-sm">
             <h2 className="mb-3 text-base">Status</h2>
             {overgangen.length === 0 ? (
