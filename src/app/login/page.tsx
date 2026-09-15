@@ -1,5 +1,7 @@
 import { redirect } from 'next/navigation'
-import { getSessionUser, createLoginToken, normalizeEmail } from '@/lib/auth'
+import { headers } from 'next/headers'
+import { getSessionUser, createLoginToken, createSession, normalizeEmail } from '@/lib/auth'
+import { controleerInlog } from '@/lib/wachtwoord'
 import { sendLoginEmail } from '@/lib/mail'
 import { Logo } from '@/components/Logo'
 
@@ -32,7 +34,36 @@ async function vraagLinkAan(formData: FormData) {
   redirect('/login?verstuurd=1')
 }
 
+/**
+ * Inloggen met een wachtwoord.
+ *
+ * Staat naast de inloglink, niet in plaats daarvan: klanten loggen in met een
+ * link — daar valt niets te raden en niets te vergeten — en het eigen team
+ * kan een wachtwoord instellen. Dat werkt ook als de mail het niet doet.
+ */
+async function logIn(formData: FormData) {
+  'use server'
+
+  const email = String(formData.get('email') ?? '')
+  const wachtwoord = String(formData.get('wachtwoord') ?? '')
+  if (!email.includes('@') || wachtwoord === '') redirect('/login?fout=inlog')
+
+  // Het IP alleen om te tellen, zodat je kunt zien waar het raden vandaan komt.
+  const kop = await headers()
+  const ip = kop.get('x-nf-client-connection-ip') ?? kop.get('x-forwarded-for')
+
+  const uitkomst = await controleerInlog(email, wachtwoord, ip)
+
+  if (uitkomst.status === 'op_slot') redirect('/login?fout=slot')
+  if (uitkomst.status !== 'ok') redirect('/login?fout=inlog')
+
+  await createSession(uitkomst.userId)
+  redirect('/')
+}
+
 const foutmeldingen: Record<string, string> = {
+  inlog: 'Dit e-mailadres en wachtwoord horen niet bij elkaar.',
+  slot: 'Te vaak mis geprobeerd. Wacht een kwartier, of vraag een inloglink aan.',
   email: 'Vul een geldig e-mailadres in.',
   limiet: 'Je hebt te veel inloglinks aangevraagd. Probeer het over een uur opnieuw.',
   ongeldig: 'Deze inloglink is niet geldig. Vraag een nieuwe aan.',
@@ -78,8 +109,7 @@ export default async function LoginPage({
             <>
               <h1 className="text-jr-blue mb-2 text-2xl">Inloggen</h1>
               <p className="mb-6 text-sm text-gray-600">
-                Vul je e-mailadres in. Je krijgt een link waarmee je direct binnen bent
-                &mdash; geen wachtwoord nodig.
+                Met je wachtwoord, of laat een inloglink sturen als je er geen hebt.
               </p>
 
               {fout && (
@@ -91,7 +121,7 @@ export default async function LoginPage({
                 </p>
               )}
 
-              <form action={vraagLinkAan} className="space-y-4">
+              <form action={logIn} className="space-y-4">
                 <div>
                   <label htmlFor="email" className="mb-1.5 block text-sm font-normal">
                     E-mailadres
@@ -101,9 +131,22 @@ export default async function LoginPage({
                     name="email"
                     type="email"
                     required
-                    autoComplete="email"
+                    autoComplete="username"
                     autoFocus
                     placeholder="naam@bedrijf.nl"
+                    className="focus:border-jr-blue focus:ring-jr-blue/20 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-base outline-none focus:ring-2"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="wachtwoord" className="mb-1.5 block text-sm font-normal">
+                    Wachtwoord
+                  </label>
+                  <input
+                    id="wachtwoord"
+                    name="wachtwoord"
+                    type="password"
+                    required
+                    autoComplete="current-password"
                     className="focus:border-jr-blue focus:ring-jr-blue/20 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-base outline-none focus:ring-2"
                   />
                 </div>
@@ -111,8 +154,33 @@ export default async function LoginPage({
                   type="submit"
                   className="bg-jr-btn hover:bg-jr-btnhover w-full rounded-lg px-4 py-2.5 text-base text-white transition-colors"
                 >
-                  Stuur mij een inloglink
+                  Inloggen
                 </button>
+              </form>
+
+              {/* De inloglink blijft: klanten hebben geen wachtwoord, en wie
+                  het zijne vergeet komt er zo alsnog in. */}
+              <form action={vraagLinkAan} className="mt-5 border-t border-gray-200 pt-5">
+                <label htmlFor="linkmail" className="mb-1.5 block text-sm text-gray-600">
+                  Geen wachtwoord? Laat een inloglink sturen.
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    id="linkmail"
+                    name="email"
+                    type="email"
+                    required
+                    autoComplete="email"
+                    placeholder="naam@bedrijf.nl"
+                    className="focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
+                  />
+                  <button
+                    type="submit"
+                    className="shrink-0 rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                  >
+                    Stuur link
+                  </button>
+                </div>
               </form>
             </>
           )}

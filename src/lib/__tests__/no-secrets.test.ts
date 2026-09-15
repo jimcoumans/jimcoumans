@@ -34,6 +34,16 @@ const TOEGESTAAN = new Set([
   'accounts.vault_reference',
   // De hash van een eenmalige inloglink. Onomkeerbaar en kortlevend.
   'login_tokens.token_hash',
+  /*
+   * De bcrypt-hash van een wachtwoord. Bewust toegestaan, en dit is precies
+   * waarvoor deze uitzonderingenlijst bestaat: het is een expliciete
+   * beslissing in plaats van iets wat er stilletjes bij is gekomen.
+   *
+   * Een bcrypt-hash is geen bewaard geheim. Het wachtwoord valt er niet uit
+   * terug te rekenen, er zit een salt in zodat twee mensen met hetzelfde
+   * wachtwoord een andere hash krijgen, en de kostenfactor maakt raden traag.
+   */
+  'users.password_hash',
 ])
 
 test('geen enkele kolom in de database ziet eruit als een bewaard geheim', async () => {
@@ -79,6 +89,7 @@ test('het schema bevat geen wachtwoordvelden in de broncode', () => {
     (naam) =>
       !TOEGESTAAN.has(`accounts.${naam}`) &&
       !TOEGESTAAN.has(`login_tokens.${naam}`) &&
+      !TOEGESTAAN.has(`users.${naam}`) &&
       VERDACHT.some((woord) => naam.includes(woord)),
   )
 

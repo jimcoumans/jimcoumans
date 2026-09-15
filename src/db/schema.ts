@@ -975,6 +975,23 @@ export const users = pgTable(
     aanhef: aanhefEnum('aanhef'),
     avatarImageId: uuid('avatar_image_id'),
 
+    /**
+     * Bcrypt-hash van het wachtwoord, gemaakt door pgcrypto.
+     *
+     * Dit is geen bewaard geheim: uit een bcrypt-hash valt het wachtwoord niet
+     * terug te rekenen, en er zit een salt in zodat twee mensen met hetzelfde
+     * wachtwoord een andere hash krijgen.
+     *
+     * Het hashen én het vergelijken gebeurt in de database met pgcrypto. Dat
+     * scheelt een extra pakket, en het betekent dat een wachtwoord ook met één
+     * regel SQL te zetten is — precies wat je nodig hebt als niemand kan
+     * inloggen en de mail het niet doet.
+     *
+     * Leeg betekent: deze gebruiker logt in met een inloglink. Dat blijft de
+     * standaard voor klanten.
+     */
+    passwordHash: text('password_hash'),
+
     /* Adres en noodcontact: wat je nodig hebt als er iets misgaat of als er
        post heen moet. Geen BSN en geen IBAN — zie de toelichting bij het
        personeelsdossier verderop. */
@@ -1698,6 +1715,28 @@ export const organizationGoals = pgTable(
     index('organization_goals_org_idx').on(t.organizationId),
     check('goal_title_not_empty', sql`length(trim(${t.title})) > 0`),
   ],
+)
+
+/**
+ * Mislukte inlogpogingen, om brute kracht af te remmen.
+ *
+ * Een wachtwoordveld op een openbare URL is een uitnodiging om te raden. Met
+ * een inloglink was dat geen probleem — daar valt niets te raden — maar met
+ * een wachtwoord wel. Na te veel misser op hetzelfde adres gaat de deur een
+ * kwartier op slot.
+ *
+ * Alleen mislukte pogingen worden bewaard. Een geslaagde inlog laat geen
+ * spoor achter dat je later nog nodig hebt.
+ */
+export const loginAttempts = pgTable(
+  'login_attempts',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    email: text('email').notNull(),
+    attemptedAt: timestamp('attempted_at', { withTimezone: true }).notNull().defaultNow(),
+    ip: text('ip'),
+  },
+  (t) => [index('login_attempts_email_idx').on(t.email, t.attemptedAt)],
 )
 
 /* -------------------------------------------------------------------------

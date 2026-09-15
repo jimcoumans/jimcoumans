@@ -127,6 +127,13 @@
       "when": 1789486238916,
       "tag": "0017_moneybird_velden",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1789506364012,
+      "tag": "0018_wachtwoord_inloggen",
+      "breakpoints": true
     }
   ]
 }

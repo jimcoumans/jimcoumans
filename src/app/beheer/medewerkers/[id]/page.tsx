@@ -24,6 +24,12 @@ import {
 } from '@/components/Personeelsdossier'
 import { Avatar } from '@/components/Avatar'
 import { AfbeeldingKiezer } from '@/components/AfbeeldingKiezer'
+import { heeftWachtwoord } from '@/lib/wachtwoord'
+import {
+  wijzigEigenWachtwoord,
+  zetWachtwoordVoorCollega,
+  haalWachtwoordWeg,
+} from '../../wachtwoord-actions'
 
 /**
  * Het profiel van één collega.
@@ -47,6 +53,8 @@ export default async function MedewerkerPage({
   const { lid, klanten, portfolioCents } = detail
   const isBeheerder = user.role === 'admin'
 
+  const heeftEenWachtwoord = await heeftWachtwoord(lid.id)
+  const isZelf = lid.id === user.id
   const cijfers = await getFiguresByEmployee()
   const eigen = cijfers.find((c) => c.userId === lid.id)
 
@@ -360,6 +368,65 @@ export default async function MedewerkerPage({
               </ul>
             )}
           </section>
+
+          {(isZelf || isBeheerder) && (
+            <section className="rounded-xl bg-white p-5 shadow-sm">
+              <h2 className="mb-1 text-base">Inloggen</h2>
+              <p className="mb-3 text-xs text-gray-500">
+                {heeftEenWachtwoord
+                  ? 'Deze collega logt in met een wachtwoord. Een inloglink blijft ook werken.'
+                  : 'Deze collega logt in met een inloglink. Een wachtwoord instellen kan hieronder.'}
+              </p>
+
+              {isZelf ? (
+                <ActionForm
+                  action={wijzigEigenWachtwoord}
+                  submitLabel={heeftEenWachtwoord ? 'Wachtwoord wijzigen' : 'Wachtwoord instellen'}
+                >
+                  <input type="hidden" name="heeftAl" value={heeftEenWachtwoord ? 'ja' : 'nee'} />
+                  {heeftEenWachtwoord && (
+                    <Field label="Huidig wachtwoord" name="huidig" type="password" required />
+                  )}
+                  <Field
+                    label="Nieuw wachtwoord"
+                    name="nieuw"
+                    type="password"
+                    required
+                    hint="Minstens 12 tekens. Een zin van vier woorden werkt prima en onthoud je makkelijker dan Welkom2024!"
+                  />
+                  <Field label="Nog een keer" name="herhaal" type="password" required />
+                </ActionForm>
+              ) : (
+                <ActionForm
+                  action={zetWachtwoordVoorCollega}
+                  submitLabel="Wachtwoord instellen"
+                >
+                  <input type="hidden" name="userId" value={lid.id} />
+                  <Field
+                    label="Nieuw wachtwoord"
+                    name="nieuw"
+                    type="password"
+                    required
+                    hint="Spreek het persoonlijk af en laat hem het daarna zelf wijzigen."
+                  />
+                </ActionForm>
+              )}
+
+              {heeftEenWachtwoord && (
+                <div className="mt-3 border-t border-gray-200 pt-3">
+                  <ActionForm
+                    action={haalWachtwoordWeg}
+                    submitLabel="Wachtwoord weghalen"
+                    submitClassName="text-gray-600 hover:bg-gray-100 !px-2 !py-1 !text-xs"
+                    resetOnSuccess={false}
+                    className=""
+                  >
+                    <input type="hidden" name="userId" value={lid.id} />
+                  </ActionForm>
+                </div>
+              )}
+            </section>
+          )}
 
           {isBeheerder && (
             <section className="rounded-xl bg-white p-5 shadow-sm">
