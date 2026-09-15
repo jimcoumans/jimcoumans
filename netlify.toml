@@ -4,7 +4,12 @@
 # bewust niet, want dan lopen we achter op de Next-versie die we draaien.
 
 [build]
-  command = "npm run build"
+  # Eerst de migraties, dan pas bouwen. Lukken de migraties niet, dan stopt de
+  # bouw en gaat er niets live: de vorige versie blijft draaien met de
+  # database die daarbij hoort. Zonder deze volgorde kan de code live gaan
+  # terwijl de database achterblijft, en dan valt het halve systeem om tot
+  # iemand met de hand SQL draait.
+  command = "npm run db:migrate && npm run build"
   publish = ".next"
 
 [build.environment]
