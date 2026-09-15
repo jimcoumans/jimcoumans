@@ -1,7 +1,14 @@
 import { redirect } from 'next/navigation'
 import { getSessionUser } from '@/lib/auth'
 import { listOrganizations } from '@/lib/admin'
-import { getCrmCounts, organizationStatusLabels, organizationStatusStyles } from '@/lib/crm'
+import {
+  getCrmCounts,
+  getFilterKeuzes,
+  filterKlantIds,
+  organizationStatusLabels,
+  organizationStatusStyles,
+} from '@/lib/crm'
+import { GEZONDHEID_LABELS, GEZONDHEID_STIJLEN } from '@/lib/bedrijf-labels'
 import { AppShell } from '@/components/AppShell'
 import { Avatar } from '@/components/Avatar'
 import { ActionForm, Field } from '@/components/ActionForm'
@@ -9,12 +16,35 @@ import { nieuweKlant } from '../actions'
 import { formatCents } from '@/lib/money'
 
 /** Klantenoverzicht voor het JR-team. */
-export default async function BeheerPage() {
+export default async function BeheerPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | undefined>>
+}) {
   const user = await getSessionUser()
   if (!user) redirect('/login')
   if (user.role !== 'staff' && user.role !== 'admin') redirect('/')
 
-  const klanten = await listOrganizations()
+  const q = await searchParams
+  const filter = {
+    zoek: q.zoek ?? '',
+    status: q.status ?? '',
+    branche: q.branche ?? '',
+    regio: q.regio ?? '',
+    gezondheid: q.gezondheid ?? '',
+    manager: q.manager ?? '',
+  }
+  const filtert = Object.values(filter).some((v) => v !== '')
+
+  const [alle, keuzes, treffers] = await Promise.all([
+    listOrganizations(),
+    getFilterKeuzes(),
+    filterKlantIds(filter),
+  ])
+
+  // null betekent: geen filter ingevuld, dus alles.
+  const klanten = treffers === null ? alle : alle.filter((k) => treffers.includes(k.organization.id))
+
   const crm = await getCrmCounts(klanten.map((k) => k.organization.id))
   const totaal = klanten.reduce((acc, k) => acc + k.totalBalanceCents, 0)
   const negatief = klanten.filter((k) => k.totalBalanceCents < 0)
@@ -22,11 +52,45 @@ export default async function BeheerPage() {
   return (
     <AppShell user={user} actief="klanten">
         <h1 className="text-jr-blue mb-1 text-2xl">Klanten</h1>
-        <p className="mb-6 text-sm text-gray-600">
-          {klanten.length} {klanten.length === 1 ? 'klant' : 'klanten'} &middot; totaal
-          openstaand budget{' '}
+        <p className="mb-4 text-sm text-gray-600">
+          {klanten.length} {klanten.length === 1 ? 'klant' : 'klanten'}
+          {filtert && ` van ${alle.length}`} &middot; totaal openstaand budget{' '}
           <span className="tabular">{formatCents(totaal)}</span>
         </p>
+
+        {/* Een gewoon formulier met GET: de filters staan in de URL, dus je
+            kunt een selectie bewaren of naar een collega sturen. */}
+        <form method="get" className="mb-6 flex flex-wrap items-end gap-2">
+          <input
+            type="search"
+            name="zoek"
+            defaultValue={filter.zoek}
+            placeholder="Naam, plaats, KvK of kernactiviteit"
+            className="focus:border-jr-blue w-full max-w-xs rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
+          />
+          <FilterKeuze naam="status" waarde={filter.status} leeg="Alle statussen"
+            opties={Object.entries(organizationStatusLabels).map(([v, l]) => ({ value: v, label: l }))} />
+          <FilterKeuze naam="branche" waarde={filter.branche} leeg="Alle branches"
+            opties={keuzes.branches.map((b) => ({ value: b, label: b }))} />
+          <FilterKeuze naam="regio" waarde={filter.regio} leeg="Alle regio's"
+            opties={keuzes.regios.map((r) => ({ value: r, label: r }))} />
+          <FilterKeuze naam="gezondheid" waarde={filter.gezondheid} leeg="Alle relaties"
+            opties={Object.entries(GEZONDHEID_LABELS).map(([v, l]) => ({ value: v, label: l }))} />
+          <FilterKeuze naam="manager" waarde={filter.manager} leeg="Alle managers"
+            opties={keuzes.managers.map((m) => ({ value: m.id, label: m.naam }))} />
+
+          <button
+            type="submit"
+            className="bg-jr-btn hover:bg-jr-btnhover rounded-lg px-4 py-2 text-sm text-white"
+          >
+            Filteren
+          </button>
+          {filtert && (
+            <a href="/beheer/klanten" className="rounded-lg px-3 py-2 text-sm text-gray-600 hover:bg-gray-100">
+              Wissen
+            </a>
+          )}
+        </form>
 
         {/* Staat alles op nul, dan is er nog nooit geboekt. Dat is bij het
             invullen van een vers systeem de normale situatie, en dan is een
@@ -80,6 +144,13 @@ export default async function BeheerPage() {
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-2">
                           <p className="text-sm">{k.organization.name}</p>
+                          {k.organization.relationHealth && (
+                            <span
+                              className={`rounded-full px-2 py-0.5 text-xs ${GEZONDHEID_STIJLEN[k.organization.relationHealth]}`}
+                            >
+                              {GEZONDHEID_LABELS[k.organization.relationHealth]}
+                            </span>
+                          )}
                           {k.organization.status !== 'client' && (
                             <span
                               className={`rounded-full px-2 py-0.5 text-xs ${organizationStatusStyles[k.organization.status]}`}
@@ -140,5 +211,37 @@ export default async function BeheerPage() {
           </aside>
         </div>
     </AppShell>
+  )
+}
+
+/** Eén keuzelijst in de filterbalk. Leeg is altijd de eerste optie. */
+function FilterKeuze({
+  naam,
+  waarde,
+  leeg,
+  opties,
+}: {
+  naam: string
+  waarde: string
+  leeg: string
+  opties: { value: string; label: string }[]
+}) {
+  // Een filter zonder opties toont niets: dan valt er ook niets te kiezen.
+  if (opties.length === 0) return null
+
+  return (
+    <select
+      name={naam}
+      defaultValue={waarde}
+      aria-label={leeg}
+      className="focus:border-jr-blue rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
+    >
+      <option value="">{leeg}</option>
+      {opties.map((o) => (
+        <option key={o.value} value={o.value}>
+          {o.label}
+        </option>
+      ))}
+    </select>
   )
 }

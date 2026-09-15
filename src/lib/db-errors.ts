@@ -179,6 +179,20 @@ export function describeDbError(error: unknown): string | null {
       return 'De werkgeverslasten moeten tussen 0 en 200 procent liggen. Gebruikelijk is ongeveer 28.'
     case 'fee_has_no_employer_cost':
       return 'Op een management fee zitten geen werkgeverslasten en geen vakantiegeld: dat is een factuur van een eigen BV. Zet beide op nul, of kies loondienst.'
+    case 'organizations_customer_number_idx':
+      return 'Dit klantnummer is al in gebruik bij een andere klant. Daar hangt de koppeling met ClickUp aan, dus twee dezelfde kan niet.'
+    case 'organizations_moneybird_idx':
+      return 'Deze Moneybird-klant is al aan een andere klant gekoppeld.'
+    case 'organization_employee_count_valid':
+      return 'Het aantal medewerkers kan niet negatief zijn.'
+    case 'organization_revenue_not_negative':
+      return 'Een jaaromzet kan niet negatief zijn. Laat het veld leeg als je het niet weet.'
+    case 'location_name_not_empty':
+      return 'Geef de vestiging een naam, bijvoorbeeld "Vestiging Maastricht".'
+    case 'competitor_name_not_empty':
+      return 'Geef de concurrent een naam.'
+    case 'goal_title_not_empty':
+      return 'Geef het doel een titel.'
     case 'child_name_not_empty':
       return 'Vul de naam van het kind in.'
     case 'child_birthday_complete':

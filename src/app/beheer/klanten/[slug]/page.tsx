@@ -16,8 +16,9 @@ import {
 } from '../../factuur-actions'
 import { SubscriptionCard, NewSubscriptionForm } from '@/components/SubscriptionCard'
 import { listSubscriptions } from '@/lib/billing'
-import { listContacts, listAccounts, listPartnersForOrganization, listActivePartners, listKinderen, organizationStatusLabels, organizationStatusStyles } from '@/lib/crm'
+import { listContacts, listAccounts, listPartnersForOrganization, listActivePartners, listKinderen, listVestigingen, listConcurrenten, listDoelen, organizationStatusLabels, organizationStatusStyles } from '@/lib/crm'
 import { Contactpersonen, Partners, Accounts, Bedrijfsgegevens } from '@/components/CrmSections'
+import { Vestigingen, Concurrenten, Doelen } from '@/components/Bedrijfsprofiel'
 import { BookServiceForm } from '@/components/BookServiceForm'
 import { formatQuantity, unitShort } from '@/lib/quantity'
 import { formatCents, formatSignedCents } from '@/lib/money'
@@ -52,6 +53,11 @@ export default async function KlantPage({
   // De kinderen apart, want die hangen aan de contactpersonen die we net
   // hebben opgehaald.
   const kinderenPer = await listKinderen(contacten.map((c) => c.id))
+  const [vestigingen, concurrenten, doelen] = await Promise.all([
+    listVestigingen(klant.organization.id),
+    listConcurrenten(klant.organization.id),
+    listDoelen(klant.organization.id),
+  ])
   const vandaag = new Date().toISOString().slice(0, 10)
 
   return (
@@ -190,6 +196,21 @@ export default async function KlantPage({
           />
 
           <Bedrijfsgegevens org={klant.organization} slug={slug} />
+
+          <Doelen organizationId={klant.organization.id} slug={slug} doelen={doelen} />
+
+          <div className="grid gap-6 xl:grid-cols-2">
+            <Vestigingen
+              organizationId={klant.organization.id}
+              slug={slug}
+              vestigingen={vestigingen}
+            />
+            <Concurrenten
+              organizationId={klant.organization.id}
+              slug={slug}
+              concurrenten={concurrenten}
+            />
+          </div>
         </div>
     </AppShell>
   )

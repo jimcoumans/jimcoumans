@@ -18,6 +18,11 @@ import { Avatar } from './Avatar'
 import { AfbeeldingKiezer } from './AfbeeldingKiezer'
 import { AANHEF_LABELS } from '@/lib/namen'
 import {
+  RECHTSVORM_LABELS,
+  GEZONDHEID_LABELS,
+  REGIOS,
+} from '@/lib/bedrijf-labels'
+import {
   GESLACHT_OPTIES,
   DISC_LABELS,
   DRINK_LABELS,
@@ -858,6 +863,162 @@ export function Bedrijfsgegevens({
             </div>
             <Field label="Postcode" name="postcode" defaultValue={org.postalCode ?? ''} placeholder="6301 AA" />
             <Field label="Plaats" name="plaats" defaultValue={org.city ?? ''} placeholder="Valkenburg" />
+            <Select
+              label="Regio"
+              name="regio"
+              defaultValue={org.region ?? ''}
+              options={[
+                { value: '', label: 'Niet ingevuld' },
+                ...REGIOS.map((r) => ({ value: r, label: r })),
+              ]}
+              hint="Hierop kun je filteren in het klantenoverzicht."
+            />
+            <Select
+              label="Rechtsvorm"
+              name="rechtsvorm"
+              defaultValue={org.legalForm ?? ''}
+              options={[
+                { value: '', label: 'Niet ingevuld' },
+                ...Object.entries(RECHTSVORM_LABELS).map(([value, label]) => ({ value, label })),
+              ]}
+            />
+
+            <div className="sm:col-span-2">
+              <p className="mt-2 mb-1 border-t border-gray-200 pt-3 text-xs font-bold text-gray-600">
+                Boekhouding
+              </p>
+              <p className="mb-2 text-xs text-gray-500">
+                Dezelfde velden als in Moneybird, zodat die kant op te synchroniseren is. Het
+                klantnummer is het belangrijkste: daar hangt de koppeling met ClickUp aan, en
+                de database laat er geen twee dezelfde toe.
+              </p>
+            </div>
+
+            <Field
+              label="Klantnummer"
+              name="klantnummer"
+              defaultValue={org.customerNumber ?? ''}
+              placeholder="672"
+            />
+            <Select
+              label="Type"
+              name="klanttype"
+              defaultValue={org.klantType ?? ''}
+              options={[
+                { value: '', label: 'Niet ingevuld' },
+                { value: 'bedrijf', label: 'Bedrijf' },
+                { value: 'particulier', label: 'Particulier' },
+              ]}
+            />
+            <Select
+              label="Verzendmethode facturen"
+              name="verzendmethode"
+              defaultValue={org.verzendmethode ?? ''}
+              options={[
+                { value: '', label: 'Niet ingevuld' },
+                { value: 'email', label: 'E-mail' },
+                { value: 'peppol', label: 'Peppol' },
+                { value: 'zelf', label: 'Zelf verzenden' },
+              ]}
+            />
+            <Field
+              label="Projectnummer"
+              name="projectnummer"
+              defaultValue={org.projectNumber ?? ''}
+            />
+            <Field
+              label="E-mailadres facturen"
+              name="factuurmail"
+              type="email"
+              defaultValue={org.invoiceEmail ?? ''}
+              placeholder="crediteuren@klant.nl"
+            />
+            <Field
+              label="T.a.v. facturen"
+              name="tavfacturen"
+              defaultValue={org.invoiceAttn ?? ''}
+            />
+
+            <div className="sm:col-span-2">
+              <p className="mt-2 mb-1 border-t border-gray-200 pt-3 text-xs font-bold text-gray-600">
+                Het bedrijf
+              </p>
+            </div>
+
+            <Field
+              label="Opgericht op"
+              name="opgericht"
+              type="date"
+              defaultValue={datumVeld(org.foundedOn)}
+              hint="Levert ook jubilea op."
+            />
+            <Select
+              label="Relatiegezondheid"
+              name="gezondheid"
+              defaultValue={org.relationHealth ?? ''}
+              options={[
+                { value: '', label: 'Niet beoordeeld' },
+                ...Object.entries(GEZONDHEID_LABELS).map(([value, label]) => ({ value, label })),
+              ]}
+              hint="Jouw oordeel, geen berekening. Een klant kan keurig betalen en toch weg willen."
+            />
+            <Field
+              label="Aantal medewerkers"
+              name="medewerkers"
+              type="number"
+              defaultValue={org.employeeCount === null ? '' : String(org.employeeCount)}
+            />
+            <Field
+              label="Jaaromzet (bij benadering)"
+              name="jaaromzet"
+              defaultValue={
+                org.annualRevenueCents === null
+                  ? ''
+                  : (org.annualRevenueCents / 100).toFixed(2).replace('.', ',')
+              }
+              placeholder="1500000,00"
+            />
+            <div className="sm:col-span-2">
+              <Field
+                label="Kernactiviteit"
+                name="kernactiviteit"
+                defaultValue={org.coreActivity ?? ''}
+                placeholder="Waar verdienen ze hun geld mee?"
+              />
+            </div>
+
+            <div className="sm:col-span-2">
+              <p className="mt-2 mb-1 border-t border-gray-200 pt-3 text-xs font-bold text-gray-600">
+                Online
+              </p>
+            </div>
+            <Field label="LinkedIn" name="linkedin" defaultValue={org.linkedinUrl ?? ''} />
+            <Field label="Facebook" name="facebook" defaultValue={org.facebookUrl ?? ''} />
+            <Field label="Instagram" name="instagram" defaultValue={org.instagramUrl ?? ''} />
+            <Field label="YouTube" name="youtube" defaultValue={org.youtubeUrl ?? ''} />
+            <Field label="TikTok" name="tiktok" defaultValue={org.tiktokUrl ?? ''} />
+
+            <div className="sm:col-span-2">
+              <p className="mt-2 mb-1 border-t border-gray-200 pt-3 text-xs font-bold text-gray-600">
+                Wat je moet weten
+              </p>
+            </div>
+            <div className="sm:col-span-2">
+              <Field
+                label="Vorige bureaus"
+                name="vorigebureaus"
+                defaultValue={org.previousAgencies ?? ''}
+                placeholder="Bij wie zaten ze, en waarom zijn ze daar weg?"
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <Field
+                label="Alert zijn op"
+                name="alert"
+                defaultValue={org.alertOn ?? ''}
+                placeholder="Kort en concreet: waar moet je bij deze klant op letten?"
+              />
+            </div>
             <div className="sm:col-span-2">
               <Field label="Notities" name="notities" defaultValue={org.notes ?? ''} />
             </div>

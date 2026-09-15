@@ -271,9 +271,63 @@ export async function bedrijfsgegevens(formData: FormData): Promise<ActionResult
       city: tekst(formData, 'plaats') || null,
       clientSince,
       notes: tekst(formData, 'notities') || null,
+
+      region: tekst(formData, 'regio') || null,
+      legalForm: keuze(formData, 'rechtsvorm', [
+        'eenmanszaak',
+        'vof',
+        'maatschap',
+        'cv',
+        'bv',
+        'nv',
+        'stichting',
+        'vereniging',
+        'overheid',
+        'anders',
+      ]) as never,
+      foundedOn: datum(formData, 'opgericht'),
+      relationHealth: keuze(formData, 'gezondheid', [
+        'uitstekend',
+        'goed',
+        'aandacht',
+        'zorgelijk',
+      ]) as never,
+      coreActivity: tekst(formData, 'kernactiviteit') || null,
+      employeeCount: getal(formData, 'medewerkers'),
+      annualRevenueCents: bedragOfNull(formData, 'jaaromzet'),
+      linkedinUrl: tekst(formData, 'linkedin') || null,
+      facebookUrl: tekst(formData, 'facebook') || null,
+      instagramUrl: tekst(formData, 'instagram') || null,
+      youtubeUrl: tekst(formData, 'youtube') || null,
+      tiktokUrl: tekst(formData, 'tiktok') || null,
+      previousAgencies: tekst(formData, 'vorigebureaus') || null,
+      alertOn: tekst(formData, 'alert') || null,
+
+      invoiceEmail: tekst(formData, 'factuurmail') || null,
+      customerNumber: tekst(formData, 'klantnummer') || null,
+      klantType: keuze(formData, 'klanttype', ['bedrijf', 'particulier']) as never,
+      verzendmethode: keuze(formData, 'verzendmethode', ['email', 'peppol', 'zelf']) as never,
+      projectNumber: tekst(formData, 'projectnummer') || null,
+      invoiceAttn: tekst(formData, 'tavfacturen') || null,
     })
     revalidatePath(`/beheer/klanten/${slug}`)
+    revalidatePath('/beheer/klanten')
   })
+}
+
+/** Een datumveld uit de browser; op de middag om tijdzones te ontlopen. */
+function datum(f: FormData, n: string): Date | null {
+  const waarde = tekst(f, n)
+  if (waarde === '') return null
+  const d = new Date(`${waarde}T12:00:00`)
+  return Number.isNaN(d.getTime()) ? null : d
+}
+
+/** Een bedrag in centen, of null. Een onleesbaar bedrag telt als niet ingevuld. */
+function bedragOfNull(f: FormData, n: string): number | null {
+  const waarde = tekst(f, n)
+  if (waarde === '') return null
+  return parseAmountToCents(waarde)
 }
 
 /* ---------------------------- Accountregister --------------------------- */
@@ -533,6 +587,117 @@ export async function wisKind(formData: FormData): Promise<ActionResult> {
   return veilig(async () => {
     const { verwijderKind } = await import('@/lib/crm')
     await verwijderKind(id)
+    revalidatePath(`/beheer/klanten/${slug}`)
+  })
+}
+
+/* --- Vestigingen, concurrenten en doelen --------------------------------- */
+
+export async function nieuweVestiging(formData: FormData): Promise<ActionResult> {
+  await requireStaff()
+  const organizationId = tekst(formData, 'organizationId')
+  const slug = tekst(formData, 'slug')
+  if (!organizationId) return { ok: false, error: 'Onbekende klant.' }
+
+  return veilig(async () => {
+    const { addVestiging } = await import('@/lib/crm')
+    await addVestiging({
+      organizationId,
+      name: tekst(formData, 'vestigingnaam'),
+      addressLine: tekst(formData, 'vestigingadres') || null,
+      postalCode: tekst(formData, 'vestigingpostcode') || null,
+      city: tekst(formData, 'vestigingplaats') || null,
+      phone: tekst(formData, 'vestigingtelefoon') || null,
+      notes: null,
+    })
+    revalidatePath(`/beheer/klanten/${slug}`)
+  })
+}
+
+export async function wisVestiging(formData: FormData): Promise<ActionResult> {
+  await requireStaff()
+  const id = tekst(formData, 'vestigingId')
+  const slug = tekst(formData, 'slug')
+  if (!id) return { ok: false, error: 'Onbekende vestiging.' }
+  return veilig(async () => {
+    const { verwijderVestiging } = await import('@/lib/crm')
+    await verwijderVestiging(id)
+    revalidatePath(`/beheer/klanten/${slug}`)
+  })
+}
+
+export async function nieuweConcurrent(formData: FormData): Promise<ActionResult> {
+  const staff = await requireStaff()
+  const organizationId = tekst(formData, 'organizationId')
+  const slug = tekst(formData, 'slug')
+  if (!organizationId) return { ok: false, error: 'Onbekende klant.' }
+
+  return veilig(async () => {
+    const { addConcurrent } = await import('@/lib/crm')
+    await addConcurrent({
+      organizationId,
+      name: tekst(formData, 'concurrentnaam'),
+      website: tekst(formData, 'concurrentwebsite') || null,
+      notes: tekst(formData, 'concurrentnotitie') || null,
+      createdByUserId: staff.id,
+    })
+    revalidatePath(`/beheer/klanten/${slug}`)
+    revalidatePath('/beheer/concurrenten')
+  })
+}
+
+export async function wisConcurrent(formData: FormData): Promise<ActionResult> {
+  await requireStaff()
+  const id = tekst(formData, 'concurrentId')
+  const slug = tekst(formData, 'slug')
+  if (!id) return { ok: false, error: 'Onbekende concurrent.' }
+  return veilig(async () => {
+    const { verwijderConcurrent } = await import('@/lib/crm')
+    await verwijderConcurrent(id)
+    revalidatePath(`/beheer/klanten/${slug}`)
+    revalidatePath('/beheer/concurrenten')
+  })
+}
+
+export async function nieuwDoel(formData: FormData): Promise<ActionResult> {
+  const staff = await requireStaff()
+  const organizationId = tekst(formData, 'organizationId')
+  const slug = tekst(formData, 'slug')
+  if (!organizationId) return { ok: false, error: 'Onbekende klant.' }
+
+  return veilig(async () => {
+    const { addDoel } = await import('@/lib/crm')
+    await addDoel({
+      organizationId,
+      title: tekst(formData, 'doeltitel'),
+      notes: tekst(formData, 'doelnotitie') || null,
+      targetOn: datum(formData, 'doeldatum'),
+      createdByUserId: staff.id,
+    })
+    revalidatePath(`/beheer/klanten/${slug}`)
+  })
+}
+
+export async function wisselDoel(formData: FormData): Promise<ActionResult> {
+  await requireStaff()
+  const id = tekst(formData, 'doelId')
+  const slug = tekst(formData, 'slug')
+  if (!id) return { ok: false, error: 'Onbekend doel.' }
+  return veilig(async () => {
+    const { zetDoelBehaald } = await import('@/lib/crm')
+    await zetDoelBehaald(id, tekst(formData, 'behaald') === 'ja')
+    revalidatePath(`/beheer/klanten/${slug}`)
+  })
+}
+
+export async function wisDoel(formData: FormData): Promise<ActionResult> {
+  await requireStaff()
+  const id = tekst(formData, 'doelId')
+  const slug = tekst(formData, 'slug')
+  if (!id) return { ok: false, error: 'Onbekend doel.' }
+  return veilig(async () => {
+    const { verwijderDoel } = await import('@/lib/crm')
+    await verwijderDoel(id)
     revalidatePath(`/beheer/klanten/${slug}`)
   })
 }

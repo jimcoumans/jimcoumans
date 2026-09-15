@@ -100,18 +100,22 @@ export default async function DashboardPage() {
         <Tegel
           label="Walletwaarde per maand"
           waarde={formatCents(maandbudget.budgetCents)}
-          onder={`${formatCents(maandbudget.budgetCents * 12)} per jaar`}
+          onder={<p>{formatCents(maandbudget.budgetCents * 12)} per jaar</p>}
           accent
         />
         <Tegel
-          label="Abonnementsomzet per jaar"
-          waarde={formatCents(mrr * 12)}
+          label="Abonnementsomzet per maand"
+          waarde={formatCents(mrr)}
           onder={
-            maandbudget.kortingCents > 0
-              ? `plus ${formatCents(maandbudget.kortingCents * 12)} korting = ${formatCents(
-                  maandbudget.budgetCents * 12,
-                )} walletwaarde`
-              : 'geen korting gegeven'
+            <>
+              <p>{formatCents(mrr * 12)} per jaar</p>
+              {maandbudget.kortingCents > 0 && (
+                <p>
+                  plus {formatCents(maandbudget.kortingCents)} korting ={' '}
+                  {formatCents(maandbudget.budgetCents)} walletwaarde
+                </p>
+              )}
+            </>
           }
         />
         <Tegel
@@ -301,7 +305,8 @@ function Tegel({
 }: {
   label: string
   waarde: string
-  onder?: string
+  /** Eén of meer regels klein eronder. */
+  onder?: React.ReactNode
   accent?: boolean
   waarschuwing?: boolean
 }) {
@@ -315,7 +320,7 @@ function Tegel({
       >
         {waarde}
       </p>
-      {onder && <p className="mt-1 text-xs text-gray-500">{onder}</p>}
+      {onder && <div className="mt-1 space-y-0.5 text-xs text-gray-500">{onder}</div>}
     </div>
   )
 }

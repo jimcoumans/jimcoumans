@@ -3,6 +3,7 @@ import {
   text,
   timestamp,
   integer,
+  bigint,
   uuid,
   pgEnum,
   index,
@@ -232,6 +233,40 @@ export const assetKindEnum = pgEnum('asset_kind', [
   'overig',
 ])
 
+/** Bedrijf of particulier, zoals Moneybird het onderscheidt. */
+export const klantTypeEnum = pgEnum('klant_type', ['bedrijf', 'particulier'])
+
+/** Hoe de factuur de deur uit gaat. Dezelfde keuzes als in Moneybird. */
+export const verzendmethodeEnum = pgEnum('verzendmethode', ['email', 'peppol', 'zelf'])
+
+/** Rechtsvorm. Bepaalt wie er tekent en wie aansprakelijk is. */
+export const legalFormEnum = pgEnum('legal_form', [
+  'eenmanszaak',
+  'vof',
+  'maatschap',
+  'cv',
+  'bv',
+  'nv',
+  'stichting',
+  'vereniging',
+  'overheid',
+  'anders',
+])
+
+/**
+ * Hoe de relatie ervoor staat, met de hand ingevuld.
+ *
+ * Bewust een oordeel van een mens en geen berekening. Een klant kan keurig
+ * betalen en toch op het punt staan te vertrekken; dat weet de marketing
+ * manager en dat weet geen enkele query.
+ */
+export const relationHealthEnum = pgEnum('relation_health', [
+  'uitstekend',
+  'goed',
+  'aandacht',
+  'zorgelijk',
+])
+
 /* ------------------------------- Klanten -------------------------------- */
 
 export const organizations = pgTable(
@@ -263,6 +298,26 @@ export const organizations = pgTable(
     clientSince: timestamp('client_since', { withTimezone: true }),
     notes: text('notes'),
 
+    /* --- Moneybird ---
+       Dezelfde velden als in de boekhouding, zodat we die kant op kunnen
+       synchroniseren zonder eerst alles opnieuw te moeten invoeren.
+
+       Het klantnummer is het belangrijkste veld van dit hele blok: daar hangt
+       de koppeling met ClickUp aan. Een dubbel klantnummer laat die
+       automatisering stilletjes naar de verkeerde klant wijzen, en daarom
+       staat er een unieke index op.
+
+       Wat hier NIET staat is de IBAN. Die heeft de boekhouding nodig om te
+       incasseren en daar staat hij al; vanuit dit systeem wordt niets
+       afgeschreven. Zodra dat verandert is het één kolom erbij. */
+    customerNumber: text('customer_number'),
+    klantType: klantTypeEnum('klant_type'),
+    /** Id van dit contact in Moneybird, voor de koppeling. */
+    moneybirdContactId: text('moneybird_contact_id'),
+    verzendmethode: verzendmethodeEnum('verzendmethode'),
+    /** Projectnummer zoals dat in Moneybird als extra veld staat. */
+    projectNumber: text('project_number'),
+
     /* --- Facturatie ---
        Apart van het bezoekadres, want de post gaat vaak ergens anders heen
        dan waar je op de koffie komt. Leeg laten betekent: gebruik het adres
@@ -273,7 +328,45 @@ export const organizations = pgTable(
     invoiceCity: text('invoice_city'),
     /** Klantnummer of referentie die op de factuur moet. */
     invoiceReference: text('invoice_reference'),
+    /** T.a.v. op de factuur, als die naar een specifiek persoon moet. */
+    invoiceAttn: text('invoice_attn'),
     paymentTermDays: integer('payment_term_days'),
+
+    /* --- Profiel ---
+       Waarmee je klanten met elkaar kunt vergelijken en filteren: waar zitten
+       ze, wat doen ze, hoe groot zijn ze, en hoe staat de relatie ervoor. */
+
+    /** Regio, bijv. Zuid-Limburg. Los van de stad: daarop filter je. */
+    region: text('region'),
+    legalForm: legalFormEnum('legal_form'),
+    /** Wanneer het bedrijf is opgericht. Levert ook jubilea op. */
+    foundedOn: timestamp('founded_on', { withTimezone: true }),
+    relationHealth: relationHealthEnum('relation_health'),
+    /** Eén zin: waar verdienen ze hun geld mee. */
+    coreActivity: text('core_activity'),
+    employeeCount: integer('employee_count'),
+    /**
+     * Jaaromzet bij benadering, in centen.
+     *
+     * Bigint omdat centen bij een omzet boven 21 miljoen niet meer in een
+     * gewone integer passen, en dat is precies het soort grens waar je pas
+     * tegenaan loopt als het misgaat.
+     */
+    annualRevenueCents: bigint('annual_revenue_cents', { mode: 'number' }),
+
+    /* --- Online ---
+       Waar ze te vinden zijn. Handig bij een audit en bij het opstellen van
+       een voorstel: je ziet in één blik welke kanalen ze wel en niet hebben. */
+    linkedinUrl: text('linkedin_url'),
+    facebookUrl: text('facebook_url'),
+    instagramUrl: text('instagram_url'),
+    youtubeUrl: text('youtube_url'),
+    tiktokUrl: text('tiktok_url'),
+
+    /** Bij welk bureau zaten ze hiervoor, en waarom zijn ze weg. */
+    previousAgencies: text('previous_agencies'),
+    /** Waar je bij deze klant op moet letten. Kort en concreet. */
+    alertOn: text('alert_on'),
 
     /* --- Commercieel --- */
     /** Waar deze lead vandaan kwam. Blijft staan als hij klant wordt; dat is
@@ -292,6 +385,20 @@ export const organizations = pgTable(
     uniqueIndex('organizations_clickup_idx').on(t.clickupCompanyId),
     index('organizations_status_idx').on(t.status),
     index('organizations_industry_idx').on(t.industry),
+    index('organizations_region_idx').on(t.region),
+    // Een dubbel klantnummer laat de ClickUp-automatisering stilletjes naar
+    // de verkeerde klant wijzen. Dat vangt de database af.
+    uniqueIndex('organizations_customer_number_idx').on(t.customerNumber),
+    uniqueIndex('organizations_moneybird_idx').on(t.moneybirdContactId),
+    index('organizations_health_idx').on(t.relationHealth),
+    check(
+      'organization_employee_count_valid',
+      sql`${t.employeeCount} IS NULL OR ${t.employeeCount} >= 0`,
+    ),
+    check(
+      'organization_revenue_not_negative',
+      sql`${t.annualRevenueCents} IS NULL OR ${t.annualRevenueCents} >= 0`,
+    ),
     // Om "wat staat er deze week open" te kunnen vragen zonder alles te lezen.
     index('organizations_next_action_idx').on(t.nextActionOn),
     check(
@@ -1499,6 +1606,101 @@ export const contactChildren = pgTable(
 )
 
 /* -------------------------------------------------------------------------
+   Rondom de klant: vestigingen, concurrenten en doelen.
+
+   Alle drie eigen tabellen omdat er meerdere van kunnen zijn. Een lijstje in
+   een tekstveld leest prima tot je erop wilt filteren of er een datum aan
+   wilt hangen, en dan moet je alsnog opnieuw beginnen.
+   ------------------------------------------------------------------------- */
+
+/** Vestigingen. De hoofdvestiging staat als adres op de klant zelf. */
+export const organizationLocations = pgTable(
+  'organization_locations',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    organizationId: uuid('organization_id')
+      .notNull()
+      .references(() => organizations.id, { onDelete: 'cascade' }),
+
+    name: text('name').notNull(),
+    addressLine: text('address_line'),
+    postalCode: text('postal_code'),
+    city: text('city'),
+    phone: text('phone'),
+    notes: text('notes'),
+
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('organization_locations_org_idx').on(t.organizationId),
+    check('location_name_not_empty', sql`length(trim(${t.name})) > 0`),
+  ],
+)
+
+/**
+ * Concurrenten van een klant.
+ *
+ * Per klant vastgelegd en niet als eigen bedrijvenlijst. Dezelfde partij kan
+ * bij de ene klant een concurrent zijn en bij de andere niet, en wat je erover
+ * noteert gaat over díe verhouding. Eén gedeelde concurrentenlijst zou die
+ * context weggooien.
+ */
+export const competitors = pgTable(
+  'competitors',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    organizationId: uuid('organization_id')
+      .notNull()
+      .references(() => organizations.id, { onDelete: 'cascade' }),
+
+    name: text('name').notNull(),
+    website: text('website'),
+    /** Waarom zij: wat doen ze beter, waar zitten ze in de weg. */
+    notes: text('notes'),
+
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    createdByUserId: uuid('created_by_user_id').references(() => users.id, {
+      onDelete: 'set null',
+    }),
+  },
+  (t) => [
+    index('competitors_org_idx').on(t.organizationId),
+    index('competitors_name_idx').on(t.name),
+    check('competitor_name_not_empty', sql`length(trim(${t.name})) > 0`),
+  ],
+)
+
+/**
+ * De doelen van een klant.
+ *
+ * Met een streefdatum en een vinkje, want een doel zonder datum is een wens.
+ * Wat er gebeurd is om het te halen staat op de tijdlijn.
+ */
+export const organizationGoals = pgTable(
+  'organization_goals',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    organizationId: uuid('organization_id')
+      .notNull()
+      .references(() => organizations.id, { onDelete: 'cascade' }),
+
+    title: text('title').notNull(),
+    notes: text('notes'),
+    targetOn: timestamp('target_on', { withTimezone: true }),
+    achievedOn: timestamp('achieved_on', { withTimezone: true }),
+
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    createdByUserId: uuid('created_by_user_id').references(() => users.id, {
+      onDelete: 'set null',
+    }),
+  },
+  (t) => [
+    index('organization_goals_org_idx').on(t.organizationId),
+    check('goal_title_not_empty', sql`length(trim(${t.title})) > 0`),
+  ],
+)
+
+/* -------------------------------------------------------------------------
    Afbeeldingen: logo's en profielfoto's.
 
    Ze staan in de database en niet in een aparte opslagdienst. Dat is een
@@ -1766,3 +1968,6 @@ export type DossierEntry = typeof dossierEntries.$inferSelect
 export type CompanyAsset = typeof companyAssets.$inferSelect
 export type Image = typeof images.$inferSelect
 export type ContactChild = typeof contactChildren.$inferSelect
+export type OrganizationLocation = typeof organizationLocations.$inferSelect
+export type Competitor = typeof competitors.$inferSelect
+export type OrganizationGoal = typeof organizationGoals.$inferSelect

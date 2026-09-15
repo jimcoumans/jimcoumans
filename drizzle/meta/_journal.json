@@ -113,6 +113,20 @@
       "when": 1789483390887,
       "tag": "0015_persoonsprofiel",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1789485847413,
+      "tag": "0016_bedrijfsprofiel",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1789486238916,
+      "tag": "0017_moneybird_velden",
+      "breakpoints": true
     }
   ]
 }

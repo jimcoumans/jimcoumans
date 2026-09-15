@@ -8,8 +8,14 @@ import {
   accounts,
   quoteLines,
   contactChildren,
+  organizationLocations,
+  competitors,
+  organizationGoals,
+  organizationOwners,
+  users,
 } from '@/db/schema'
 import type {
+  Organization,
   Contact,
   Partner,
   Account,
@@ -620,6 +626,30 @@ export type OrganizationDetails = {
   country?: string
   clientSince?: Date | null
   notes?: string | null
+
+  /* Profiel */
+  region?: string | null
+  legalForm?: Organization['legalForm']
+  foundedOn?: Date | null
+  relationHealth?: Organization['relationHealth']
+  coreActivity?: string | null
+  employeeCount?: number | null
+  annualRevenueCents?: number | null
+  linkedinUrl?: string | null
+  facebookUrl?: string | null
+  instagramUrl?: string | null
+  youtubeUrl?: string | null
+  tiktokUrl?: string | null
+  previousAgencies?: string | null
+  alertOn?: string | null
+
+  /* Moneybird */
+  invoiceEmail?: string | null
+  customerNumber?: string | null
+  klantType?: Organization['klantType']
+  verzendmethode?: Organization['verzendmethode']
+  projectNumber?: string | null
+  invoiceAttn?: string | null
 }
 
 export async function updateOrganizationDetails(
@@ -645,6 +675,30 @@ export async function updateOrganizationDetails(
       ...(input.country !== undefined && { country: input.country }),
       ...(input.clientSince !== undefined && { clientSince: input.clientSince }),
       ...(input.notes !== undefined && { notes: input.notes }),
+      ...(input.region !== undefined && { region: input.region }),
+      ...(input.legalForm !== undefined && { legalForm: input.legalForm }),
+      ...(input.foundedOn !== undefined && { foundedOn: input.foundedOn }),
+      ...(input.relationHealth !== undefined && { relationHealth: input.relationHealth }),
+      ...(input.coreActivity !== undefined && { coreActivity: input.coreActivity }),
+      ...(input.employeeCount !== undefined && { employeeCount: input.employeeCount }),
+      ...(input.annualRevenueCents !== undefined && {
+        annualRevenueCents: input.annualRevenueCents,
+      }),
+      ...(input.linkedinUrl !== undefined && { linkedinUrl: input.linkedinUrl }),
+      ...(input.facebookUrl !== undefined && { facebookUrl: input.facebookUrl }),
+      ...(input.instagramUrl !== undefined && { instagramUrl: input.instagramUrl }),
+      ...(input.youtubeUrl !== undefined && { youtubeUrl: input.youtubeUrl }),
+      ...(input.tiktokUrl !== undefined && { tiktokUrl: input.tiktokUrl }),
+      ...(input.previousAgencies !== undefined && {
+        previousAgencies: input.previousAgencies,
+      }),
+      ...(input.alertOn !== undefined && { alertOn: input.alertOn }),
+      ...(input.invoiceEmail !== undefined && { invoiceEmail: input.invoiceEmail }),
+      ...(input.customerNumber !== undefined && { customerNumber: input.customerNumber }),
+      ...(input.klantType !== undefined && { klantType: input.klantType }),
+      ...(input.verzendmethode !== undefined && { verzendmethode: input.verzendmethode }),
+      ...(input.projectNumber !== undefined && { projectNumber: input.projectNumber }),
+      ...(input.invoiceAttn !== undefined && { invoiceAttn: input.invoiceAttn }),
       updatedAt: new Date(),
     })
     .where(eq(organizations.id, organizationId))
@@ -765,4 +819,205 @@ export async function addKind(input: NieuwKind): Promise<ContactChild> {
 
 export async function verwijderKind(id: string): Promise<void> {
   await db.delete(contactChildren).where(eq(contactChildren.id, id))
+}
+
+/* --- Vestigingen, concurrenten en doelen --------------------------------- */
+
+export async function listVestigingen(organizationId: string) {
+  return db
+    .select()
+    .from(organizationLocations)
+    .where(eq(organizationLocations.organizationId, organizationId))
+    .orderBy(asc(organizationLocations.name))
+}
+
+export async function addVestiging(input: {
+  organizationId: string
+  name: string
+  addressLine: string | null
+  postalCode: string | null
+  city: string | null
+  phone: string | null
+  notes: string | null
+}) {
+  if (input.name.trim() === '') throw new CrmError('Geef de vestiging een naam.')
+  await db.insert(organizationLocations).values({ ...input, name: input.name.trim() })
+}
+
+export async function verwijderVestiging(id: string) {
+  await db.delete(organizationLocations).where(eq(organizationLocations.id, id))
+}
+
+export async function listConcurrenten(organizationId: string) {
+  return db
+    .select()
+    .from(competitors)
+    .where(eq(competitors.organizationId, organizationId))
+    .orderBy(asc(competitors.name))
+}
+
+export async function addConcurrent(input: {
+  organizationId: string
+  name: string
+  website: string | null
+  notes: string | null
+  createdByUserId: string | null
+}) {
+  if (input.name.trim() === '') throw new CrmError('Geef de concurrent een naam.')
+  await db.insert(competitors).values({ ...input, name: input.name.trim() })
+}
+
+export async function verwijderConcurrent(id: string) {
+  await db.delete(competitors).where(eq(competitors.id, id))
+}
+
+/**
+ * Waar we dezelfde concurrent vaker tegenkomen.
+ *
+ * Als dezelfde partij bij vijf klanten in de weg zit, is dat geen toeval maar
+ * een patroon waar je iets mee kunt.
+ */
+export async function concurrentenOverzicht() {
+  const rijen = await db
+    .select({
+      naam: competitors.name,
+      aantal: sql<string>`COUNT(DISTINCT ${competitors.organizationId})`,
+      klanten: sql<string>`STRING_AGG(DISTINCT ${organizations.name}, ', ' ORDER BY ${organizations.name})`,
+    })
+    .from(competitors)
+    .innerJoin(organizations, eq(organizations.id, competitors.organizationId))
+    .groupBy(competitors.name)
+    .orderBy(desc(sql`COUNT(DISTINCT ${competitors.organizationId})`), asc(competitors.name))
+
+  return rijen.map((r) => ({
+    naam: r.naam,
+    aantal: Number(r.aantal),
+    klanten: r.klanten ?? '',
+  }))
+}
+
+export async function listDoelen(organizationId: string) {
+  return db
+    .select()
+    .from(organizationGoals)
+    .where(eq(organizationGoals.organizationId, organizationId))
+    // Openstaande doelen eerst, dan op streefdatum.
+    .orderBy(asc(organizationGoals.achievedOn), asc(organizationGoals.targetOn))
+}
+
+export async function addDoel(input: {
+  organizationId: string
+  title: string
+  notes: string | null
+  targetOn: Date | null
+  createdByUserId: string | null
+}) {
+  if (input.title.trim() === '') throw new CrmError('Geef het doel een titel.')
+  await db.insert(organizationGoals).values({ ...input, title: input.title.trim() })
+}
+
+export async function zetDoelBehaald(id: string, behaald: boolean) {
+  await db
+    .update(organizationGoals)
+    .set({ achievedOn: behaald ? new Date() : null })
+    .where(eq(organizationGoals.id, id))
+}
+
+export async function verwijderDoel(id: string) {
+  await db.delete(organizationGoals).where(eq(organizationGoals.id, id))
+}
+
+/* --- Filteren op de klantenlijst ----------------------------------------- */
+
+export type KlantFilter = {
+  zoek?: string
+  status?: string
+  branche?: string
+  regio?: string
+  gezondheid?: string
+  /** User-id van de eerste aanspreekpartner. */
+  manager?: string
+}
+
+export type FilterKeuzes = {
+  branches: string[]
+  regios: string[]
+  managers: { id: string; naam: string }[]
+}
+
+/**
+ * Welke waarden er écht in de gegevens voorkomen.
+ *
+ * De keuzelijsten worden uit de database gevuld en niet uit een vaste lijst.
+ * Een filter dat opties toont waar geen enkele klant aan voldoet levert lege
+ * schermen op, en dan vertrouw je het filter niet meer.
+ */
+export async function getFilterKeuzes(): Promise<FilterKeuzes> {
+  const [branches, regios, managers] = await Promise.all([
+    db
+      .selectDistinct({ waarde: organizations.industry })
+      .from(organizations)
+      .where(sql`${organizations.industry} IS NOT NULL AND ${organizations.industry} <> ''`)
+      .orderBy(asc(organizations.industry)),
+
+    db
+      .selectDistinct({ waarde: organizations.region })
+      .from(organizations)
+      .where(sql`${organizations.region} IS NOT NULL AND ${organizations.region} <> ''`)
+      .orderBy(asc(organizations.region)),
+
+    db
+      .selectDistinct({ id: users.id, naam: users.name, mail: users.email })
+      .from(organizationOwners)
+      .innerJoin(users, eq(users.id, organizationOwners.userId))
+      .where(eq(organizationOwners.isPrimary, true))
+      .orderBy(asc(users.name)),
+  ])
+
+  return {
+    branches: branches.map((b) => b.waarde!).filter(Boolean),
+    regios: regios.map((r) => r.waarde!).filter(Boolean),
+    managers: managers.map((m) => ({ id: m.id, naam: m.naam ?? m.mail })),
+  }
+}
+
+/** De id's van klanten die aan het filter voldoen. Leeg filter = alles. */
+export async function filterKlantIds(filter: KlantFilter): Promise<string[] | null> {
+  const voorwaarden = []
+
+  const zoek = (filter.zoek ?? '').trim()
+  if (zoek !== '') {
+    voorwaarden.push(sql`(
+      ${organizations.name} ILIKE ${'%' + zoek + '%'}
+      OR ${organizations.industry} ILIKE ${'%' + zoek + '%'}
+      OR ${organizations.city} ILIKE ${'%' + zoek + '%'}
+      OR ${organizations.coreActivity} ILIKE ${'%' + zoek + '%'}
+      OR ${organizations.kvkNumber} ILIKE ${'%' + zoek + '%'}
+    )`)
+  }
+  if (filter.status) voorwaarden.push(sql`${organizations.status}::text = ${filter.status}`)
+  if (filter.branche) voorwaarden.push(eq(organizations.industry, filter.branche))
+  if (filter.regio) voorwaarden.push(eq(organizations.region, filter.regio))
+  if (filter.gezondheid) {
+    voorwaarden.push(sql`${organizations.relationHealth}::text = ${filter.gezondheid}`)
+  }
+
+  if (filter.manager) {
+    voorwaarden.push(sql`EXISTS (
+      SELECT 1 FROM ${organizationOwners}
+      WHERE ${organizationOwners.organizationId} = ${organizations.id}
+        AND ${organizationOwners.userId} = ${filter.manager}
+        AND ${organizationOwners.isPrimary}
+    )`)
+  }
+
+  // Niets ingevuld: geen filter, en dan hoeft er ook geen query te draaien.
+  if (voorwaarden.length === 0) return null
+
+  const rijen = await db
+    .select({ id: organizations.id })
+    .from(organizations)
+    .where(and(...voorwaarden))
+
+  return rijen.map((r) => r.id)
 }
