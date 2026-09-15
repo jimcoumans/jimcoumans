@@ -8,6 +8,20 @@ import { bewerkMedewerkerprofiel, bewerkUurkostprijs } from '../../medewerker-ac
 import { formatCents } from '@/lib/money'
 import { formatDate, formatDateInput, MAANDNAMEN } from '@/lib/dates'
 import { AANHEF_LABELS } from '@/lib/namen'
+import {
+  listContracten,
+  listSalarissen,
+  huidigSalaris,
+  listDossier,
+  listMiddelen,
+  ketensignaal,
+} from '@/lib/personeel'
+import {
+  Contracten,
+  Salaris,
+  Dossier,
+  Bedrijfsmiddelen,
+} from '@/components/Personeelsdossier'
 
 /**
  * Het profiel van één collega.
@@ -33,6 +47,19 @@ export default async function MedewerkerPage({
 
   const cijfers = await getFiguresByEmployee()
   const eigen = cijfers.find((c) => c.userId === lid.id)
+
+  /* Het personeelsdossier wordt alleen opgehaald als de kijker beheerder is.
+     Niet ophalen en dan verbergen: wat je niet opvraagt kan ook niet per
+     ongeluk ergens in de HTML belanden. */
+  const dossierGegevens = isBeheerder
+    ? await Promise.all([
+        listContracten(lid.id),
+        listSalarissen(lid.id),
+        huidigSalaris(lid.id),
+        listDossier(lid.id),
+        listMiddelen(lid.id),
+      ])
+    : null
 
   const uren = formatContractUren(lid.contractHoursPerWeekQuarters)
   const doelCents = lid.monthlyTargetCents
@@ -352,6 +379,34 @@ export default async function MedewerkerPage({
           )}
         </div>
       </div>
+
+      {dossierGegevens && (
+        <div className="mt-6 space-y-6">
+          <Contracten
+            userId={lid.id}
+            contracten={dossierGegevens[0]}
+            signaal={ketensignaal(dossierGegevens[0])}
+          />
+
+          <div className="grid gap-6 xl:grid-cols-2">
+            <Salaris
+              userId={lid.id}
+              regels={dossierGegevens[1]}
+              huidig={dossierGegevens[2]}
+            />
+            <Bedrijfsmiddelen userId={lid.id} middelen={dossierGegevens[4]} />
+          </div>
+
+          <Dossier userId={lid.id} regels={dossierGegevens[3]} />
+        </div>
+      )}
+
+      {!isBeheerder && (
+        <p className="mt-6 text-xs text-gray-500">
+          Contracten, salaris en het personeelsdossier zijn alleen zichtbaar voor
+          beheerders.
+        </p>
+      )}
     </AppShell>
   )
 }
