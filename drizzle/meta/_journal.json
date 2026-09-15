@@ -85,6 +85,13 @@
       "when": 1789466120404,
       "tag": "0011_korting",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1789476443134,
+      "tag": "0012_personeelsdossier",
+      "breakpoints": true
     }
   ]
 }

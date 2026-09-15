@@ -10,7 +10,15 @@ import { test, before, after } from 'node:test'
 import assert from 'node:assert/strict'
 import { eq, inArray } from 'drizzle-orm'
 import { db, client } from '../../db'
-import { organizations, users, subscriptions, wallets, organizationOwners } from '../../db/schema'
+import {
+  organizations,
+  users,
+  subscriptions,
+  wallets,
+  organizationOwners,
+  quotes,
+  quoteLines,
+} from '../../db/schema'
 import { getPortfolioBord, setMarketingManager, setMonthlyTarget, PortfolioError } from '../portfolio'
 import { addOwner, listOwners, makePrimaryOwner } from '../crm-owners'
 
@@ -209,4 +217,88 @@ test('klanten van een oud-manager verdwijnen niet stilletjes', async () => {
 test('een manager uitzetten wist ook zijn maanddoel', async () => {
   const [bram] = await db.select().from(users).where(eq(users.id, bramId))
   assert.equal(bram!.monthlyTargetCents, null)
+})
+
+/* --- Klanten zonder abonnement ------------------------------------------- */
+
+test('een klant op projectbasis telt mee via zijn geaccepteerde offertes', async () => {
+  // Waarom dit er is: lang niet elke klant heeft een abonnement. Telde het
+  // bord die als nul, dan lijkt een marketing manager met vijf projectklanten
+  // leeg te lopen terwijl hij het net zo druk heeft.
+  const [org] = await db
+    .insert(organizations)
+    .values({ slug: `pf-project-${suffix}`, name: `Projectklant ${suffix}`, status: 'client' })
+    .returning()
+
+  const [offerte] = await db
+    .insert(quotes)
+    .values({
+      organizationId: org!.id,
+      number: `OF-${suffix}`,
+      title: 'Merkpositionering',
+      status: 'accepted',
+      issuedOn: new Date(),
+    })
+    .returning()
+
+  // 12.000 over een jaar is 1.000 per maand.
+  await db.insert(quoteLines).values({
+    quoteId: offerte!.id,
+    kind: 'service',
+    description: 'Strategietraject',
+    quantityHundredths: 100,
+    unitPriceCents: 1_200_000,
+    sortOrder: 1,
+  })
+
+  const bord = await getPortfolioBord()
+  const klant = bord.nietToegewezen.find((k) => k.organizationId === org!.id)
+
+  assert.ok(klant, 'de projectklant staat op het bord')
+  assert.equal(klant!.abonnementen, 0, 'hij heeft geen abonnement')
+  assert.equal(klant!.abonnementCents, 0)
+  assert.equal(klant!.projectCents, 100_000, 'een jaaromzet van 12.000 is 1.000 per maand')
+  assert.equal(klant!.maandwaardeCents, 100_000, 'en dat is zijn maandwaarde')
+
+  await db.delete(quoteLines).where(eq(quoteLines.quoteId, offerte!.id))
+  await db.delete(quotes).where(eq(quotes.id, offerte!.id))
+  await db.delete(organizations).where(eq(organizations.id, org!.id))
+})
+
+test('een offerte die nog niet geaccepteerd is telt niet mee', async () => {
+  // Een verstuurde offerte is een hoop, geen waarde.
+  const [org] = await db
+    .insert(organizations)
+    .values({ slug: `pf-hoop-${suffix}`, name: `Hoopvol ${suffix}`, status: 'client' })
+    .returning()
+
+  const [offerte] = await db
+    .insert(quotes)
+    .values({
+      organizationId: org!.id,
+      number: `OF-hoop-${suffix}`,
+      title: 'Misschien',
+      status: 'sent',
+      issuedOn: new Date(),
+    })
+    .returning()
+
+  await db.insert(quoteLines).values({
+    quoteId: offerte!.id,
+    kind: 'service',
+    description: 'Strategietraject',
+    quantityHundredths: 100,
+    unitPriceCents: 1_200_000,
+    sortOrder: 1,
+  })
+
+  const bord = await getPortfolioBord()
+  const klant = bord.nietToegewezen.find((k) => k.organizationId === org!.id)
+
+  assert.ok(klant)
+  assert.equal(klant!.maandwaardeCents, 0, 'pas bij akkoord telt het mee')
+
+  await db.delete(quoteLines).where(eq(quoteLines.quoteId, offerte!.id))
+  await db.delete(quotes).where(eq(quotes.id, offerte!.id))
+  await db.delete(organizations).where(eq(organizations.id, org!.id))
 })

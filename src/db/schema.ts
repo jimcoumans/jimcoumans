@@ -149,6 +149,43 @@ export const subscriptionStatusEnum = pgEnum('subscription_status', [
   'ended', // gestopt
 ])
 
+
+/* ---------------------------- Personeelsdossier -------------------------- */
+
+export const contractTypeEnum = pgEnum('contract_type', [
+  'bepaalde_tijd',
+  'onbepaalde_tijd',
+  'oproep',
+  'stage',
+  'zzp',
+])
+
+/**
+ * Wat er in een dossier terecht kan komen.
+ *
+ * Er staat met opzet geen 'ziekte' of 'verzuim' tussen. Een werkgever mag
+ * wettelijk vastleggen DAT iemand ziek is, maar niet wat hij heeft; een vrij
+ * tekstveld bij een verzuimregel is een uitnodiging om dat toch te doen.
+ * Verzuim hoort daarom in een eigen vorm met vaste velden, niet hier.
+ */
+export const dossierKindEnum = pgEnum('dossier_kind', [
+  'gesprek',
+  'afspraak',
+  'opleiding',
+  'waarschuwing',
+  'mijlpaal',
+  'overig',
+])
+
+export const assetKindEnum = pgEnum('asset_kind', [
+  'laptop',
+  'telefoon',
+  'auto',
+  'sleutel',
+  'toegangspas',
+  'overig',
+])
+
 /* ------------------------------- Klanten -------------------------------- */
 
 export const organizations = pgTable(
@@ -746,6 +783,16 @@ export const users = pgTable(
      */
     hourlyCostCents: integer('hourly_cost_cents'),
 
+    /* Adres en noodcontact: wat je nodig hebt als er iets misgaat of als er
+       post heen moet. Geen BSN en geen IBAN — zie de toelichting bij het
+       personeelsdossier verderop. */
+    addressLine: text('address_line'),
+    postalCode: text('postal_code'),
+    city: text('city'),
+    emergencyContactName: text('emergency_contact_name'),
+    emergencyContactPhone: text('emergency_contact_phone'),
+    emergencyContactRelation: text('emergency_contact_relation'),
+
     notes: text('notes'),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
     disabledAt: timestamp('disabled_at', { withTimezone: true }),
@@ -1324,6 +1371,185 @@ export const invoicesRelations = relations(invoices, ({ one, many }) => ({
   entries: many(ledgerEntries),
 }))
 
+/* -------------------------------------------------------------------------
+   Personeelsdossier
+
+   Wat hier NIET in staat, en waarom:
+
+   - Geen BSN en geen kopie identiteitsbewijs. Die heeft de salarisadministratie
+     nodig en die staan daar al. Ze hier ook bewaren verdubbelt het risico
+     zonder dat er iets bij komt.
+   - Geen IBAN, om dezelfde reden: er wordt vanuit dit systeem niet uitbetaald.
+   - Geen medische gegevens. Een werkgever mag vastleggen dat iemand ziek is,
+     niet wat hij heeft. Daarom is er hier geen veld waar dat in zou passen.
+
+   Wat er wel in staat is wat we met iemand hebben afgesproken en hoe dat in
+   de loop van de tijd veranderd is.
+   ------------------------------------------------------------------------- */
+
+/**
+ * De contracten van een collega, op volgorde.
+ *
+ * Eén regel per contract, ook bij een verlenging. Dat is niet alleen
+ * geschiedenis: de ketenregeling telt het aantal tijdelijke contracten en de
+ * tijd ertussen, en dat kun je niet berekenen uit één rij die je steeds
+ * overschrijft.
+ */
+export const employmentContracts = pgTable(
+  'employment_contracts',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+
+    type: contractTypeEnum('type').notNull(),
+    startedOn: timestamp('started_on', { withTimezone: true }).notNull(),
+    /** Leeg bij een contract voor onbepaalde tijd. */
+    endsOn: timestamp('ends_on', { withTimezone: true }),
+
+    /** Contracturen per week in kwartieren: 3200 is 32 uur. */
+    hoursPerWeekQuarters: integer('hours_week_quarters'),
+    jobTitle: text('job_title'),
+    signedOn: timestamp('signed_on', { withTimezone: true }),
+    notes: text('notes'),
+
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    createdByUserId: uuid('created_by_user_id').references(() => users.id, {
+      onDelete: 'set null',
+    }),
+  },
+  (t) => [
+    index('employment_contracts_user_idx').on(t.userId, t.startedOn),
+    check(
+      'contract_ends_after_start',
+      sql`${t.endsOn} IS NULL OR ${t.endsOn} >= ${t.startedOn}`,
+    ),
+    // Een contract voor onbepaalde tijd met een einddatum is geen contract
+    // voor onbepaalde tijd. Dit is precies het soort fout dat je pas merkt
+    // als de ketenregeling verkeerd rekent.
+    check(
+      'contract_permanent_has_no_end',
+      sql`${t.type} <> 'onbepaalde_tijd' OR ${t.endsOn} IS NULL`,
+    ),
+    check(
+      'contract_hours_valid',
+      sql`${t.hoursPerWeekQuarters} IS NULL OR (${t.hoursPerWeekQuarters} > 0 AND ${t.hoursPerWeekQuarters} <= 8000)`,
+    ),
+  ],
+)
+
+/**
+ * Het salaris van een collega, per ingangsdatum.
+ *
+ * Net als het grootboek: je overschrijft niets, je zet er een regel bij. Het
+ * huidige salaris is de regel met de laatste ingangsdatum die al verstreken
+ * is. Zo kun je een verhoging vooruit invoeren en blijft zichtbaar wat er
+ * wanneer is afgesproken.
+ *
+ * Alleen zichtbaar voor beheerders.
+ */
+export const salaryRecords = pgTable(
+  'salary_records',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+
+    /** Bruto per maand in centen, bij het aantal uren hieronder. */
+    grossMonthlyCents: integer('gross_monthly_cents').notNull(),
+    /**
+     * De contracturen waarbij dit bedrag is afgesproken, in kwartieren.
+     *
+     * Staat er bewust bij in plaats van dat het uit het contract wordt
+     * gehaald: gaat iemand later minder werken, dan zou hetzelfde bedrag
+     * ineens iets anders betekenen.
+     */
+    basedOnHoursQuarters: integer('based_on_hours_quarters'),
+    /** Vakantiegeld in procenten; wettelijk minimaal 8. */
+    holidayAllowancePercent: integer('holiday_allowance_percent').notNull().default(8),
+
+    effectiveFrom: timestamp('effective_from', { withTimezone: true }).notNull(),
+    /** Waarom: indiensttreding, periodiek, promotie, urenwijziging. */
+    reason: text('reason'),
+
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    createdByUserId: uuid('created_by_user_id').references(() => users.id, {
+      onDelete: 'set null',
+    }),
+  },
+  (t) => [
+    // Twee salarissen op dezelfde ingangsdatum: dan is niet te zeggen welke
+    // geldt. De database laat dat niet toe in plaats van dat een query
+    // willekeurig kiest.
+    uniqueIndex('salary_records_user_date_idx').on(t.userId, t.effectiveFrom),
+    check('salary_positive', sql`${t.grossMonthlyCents} > 0`),
+    check(
+      'salary_holiday_allowance_valid',
+      sql`${t.holidayAllowancePercent} >= 0 AND ${t.holidayAllowancePercent} <= 100`,
+    ),
+    check(
+      'salary_hours_valid',
+      sql`${t.basedOnHoursQuarters} IS NULL OR (${t.basedOnHoursQuarters} > 0 AND ${t.basedOnHoursQuarters} <= 8000)`,
+    ),
+  ],
+)
+
+/** Wat er met iemand is besproken of afgesproken. Alleen voor beheerders. */
+export const dossierEntries = pgTable(
+  'dossier_entries',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+
+    kind: dossierKindEnum('kind').notNull(),
+    subject: text('subject').notNull(),
+    body: text('body'),
+    happenedOn: timestamp('happened_on', { withTimezone: true }).notNull(),
+
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    createdByUserId: uuid('created_by_user_id').references(() => users.id, {
+      onDelete: 'set null',
+    }),
+  },
+  (t) => [
+    index('dossier_entries_user_idx').on(t.userId, t.happenedOn),
+    check('dossier_subject_not_empty', sql`length(trim(${t.subject})) > 0`),
+  ],
+)
+
+/** Wat een collega van ons in beheer heeft: laptop, telefoon, auto, sleutel. */
+export const companyAssets = pgTable(
+  'company_assets',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+
+    kind: assetKindEnum('kind').notNull(),
+    label: text('label').notNull(),
+    serial: text('serial'),
+    handedOutOn: timestamp('handed_out_on', { withTimezone: true }).notNull(),
+    /** Leeg zolang iemand het nog heeft. */
+    returnedOn: timestamp('returned_on', { withTimezone: true }),
+    notes: text('notes'),
+
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('company_assets_user_idx').on(t.userId),
+    check('asset_label_not_empty', sql`length(trim(${t.label})) > 0`),
+    check(
+      'asset_returned_after_handout',
+      sql`${t.returnedOn} IS NULL OR ${t.returnedOn} >= ${t.handedOutOn}`,
+    ),
+  ],
+)
+
 export type Organization = typeof organizations.$inferSelect
 export type User = typeof users.$inferSelect
 export type Wallet = typeof wallets.$inferSelect
@@ -1342,3 +1568,7 @@ export type Tag = typeof tags.$inferSelect
 export type Activity = typeof activities.$inferSelect
 export type NewService = typeof services.$inferInsert
 export type SyncRun = typeof syncRuns.$inferSelect
+export type EmploymentContract = typeof employmentContracts.$inferSelect
+export type SalaryRecord = typeof salaryRecords.$inferSelect
+export type DossierEntry = typeof dossierEntries.$inferSelect
+export type CompanyAsset = typeof companyAssets.$inferSelect

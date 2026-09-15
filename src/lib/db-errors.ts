@@ -162,6 +162,28 @@ export function describeDbError(error: unknown): string | null {
     case 'subscription_discount_below_amount':
       return 'De korting is net zo hoog als het budget of hoger. Dan blijft er geen factuur over.'
 
+    /* --- Personeelsdossier --- */
+    case 'contract_ends_after_start':
+      return 'De einddatum van het contract ligt voor de startdatum. Controleer allebei de datums.'
+    case 'contract_permanent_has_no_end':
+      return 'Een contract voor onbepaalde tijd heeft geen einddatum. Haal de einddatum weg, of kies bepaalde tijd.'
+    case 'contract_hours_valid':
+      return 'Het aantal contracturen moet boven nul liggen en onder de twintig uur per dag.'
+    case 'salary_positive':
+      return 'Een salaris moet boven nul liggen.'
+    case 'salary_holiday_allowance_valid':
+      return 'Het vakantiegeld moet tussen 0 en 100 procent liggen. Wettelijk is het minimaal 8.'
+    case 'salary_hours_valid':
+      return 'Het aantal uren waarbij dit salaris hoort moet boven nul liggen en onder de twintig uur per dag.'
+    case 'salary_records_user_date_idx':
+      return 'Er staat al een salaris met deze ingangsdatum. Pas dat aan in plaats van er een tweede naast te zetten; anders is niet te zeggen welke geldt.'
+    case 'dossier_subject_not_empty':
+      return 'Geef de dossierregel een korte titel, anders staat er straks een lege regel in het dossier.'
+    case 'asset_label_not_empty':
+      return 'Geef het bedrijfsmiddel een naam, bijvoorbeeld "MacBook Pro 14, 2023".'
+    case 'asset_returned_after_handout':
+      return 'De datum van inleveren ligt voor de datum van uitgifte. Controleer allebei de datums.'
+
     /* --- Medewerkerprofiel --- */
     case 'user_birthday_complete':
       return 'Vul bij een verjaardag zowel de dag als de maand in. Een dag zonder maand zegt niets; het jaar mag je weglaten.'

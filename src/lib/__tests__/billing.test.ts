@@ -336,13 +336,18 @@ test('de maandelijkse terugkerende omzet telt alleen actieve abonnementen', asyn
   const totaal = await getMonthlyRecurringCents()
 
   const actieve = await db
-    .select({ bedrag: subscriptions.amountExclVatCents })
+    .select({
+      bedrag: subscriptions.amountExclVatCents,
+      korting: subscriptions.discountCents,
+    })
     .from(subscriptions)
     .where(eq(subscriptions.status, 'active'))
 
+  // Omzet is wat er gefactureerd wordt, dus na korting. Het budget dat eruit
+  // gaat is geen omzet maar een belofte.
   assert.equal(
     totaal,
-    actieve.reduce((acc, r) => acc + r.bedrag, 0),
+    actieve.reduce((acc, r) => acc + r.bedrag - r.korting, 0),
   )
 })
 

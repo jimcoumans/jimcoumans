@@ -196,7 +196,17 @@ function Kolom({
           <h2 className={`truncate text-sm font-bold ${waarschuwing ? 'text-jr-orange' : ''}`}>
             {titel}
           </h2>
-          <span className="tabular shrink-0 text-xs text-gray-500">{klanten.length}</span>
+          {/* Het aantal klanten staat naast het bedrag, want een kolom met
+              projectklanten kan weinig euro's tellen en toch vol zitten. */}
+          <span className="tabular shrink-0 text-xs text-gray-500">
+            {klanten.length}
+            {klanten.some((k) => k.abonnementen === 0) && (
+              <span className="text-gray-400">
+                {' '}
+                ({klanten.filter((k) => k.abonnementen === 0).length} project)
+              </span>
+            )}
+          </span>
         </div>
 
         <div className="mt-1 flex items-baseline justify-between gap-2">
@@ -362,9 +372,16 @@ function Kaart({
 
       <div className="mt-0.5 flex items-center justify-between gap-2">
         <p className="truncate text-[11px] text-gray-500">
-          {klant.abonnementen === 0
-            ? 'geen abonnement'
-            : `${klant.abonnementen} abo${klant.abonnementen === 1 ? '' : "'s"}`}
+          {klant.abonnementen > 0 &&
+            `${klant.abonnementen} abo${klant.abonnementen === 1 ? '' : "'s"}`}
+          {/* Een klant zonder abonnement is geen lege klant: hij werkt op
+              opdrachten. Dat moet je op de kaart kunnen zien, anders lijkt
+              een kolom vol projectklanten leeg. */}
+          {klant.abonnementen === 0 && klant.projectCents > 0 && 'projectbasis'}
+          {klant.abonnementen === 0 && klant.projectCents === 0 && (
+            <span className="text-jr-orange">nog geen waarde</span>
+          )}
+          {klant.abonnementen > 0 && klant.projectCents > 0 && ' + projecten'}
           {klant.status === 'prospect' && <span className="text-jr-purple"> · prospect</span>}
         </p>
 

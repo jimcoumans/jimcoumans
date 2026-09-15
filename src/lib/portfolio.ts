@@ -1,6 +1,13 @@
-import { and, asc, eq, isNull, sql } from 'drizzle-orm'
+import { and, asc, eq, gte, isNull, sql } from 'drizzle-orm'
 import { db } from '@/db'
-import { organizations, organizationOwners, subscriptions, users } from '@/db/schema'
+import {
+  organizations,
+  organizationOwners,
+  subscriptions,
+  users,
+  quotes,
+  quoteLines,
+} from '@/db/schema'
 
 /* -------------------------------------------------------------------------
    Het portfoliobord.
@@ -15,9 +22,19 @@ import { organizations, organizationOwners, subscriptions, users } from '@/db/sc
    dan kun je op de klantkaart iets anders lezen dan op het bord, en dan
    gelooft niemand meer welke van de twee klopt.
 
-   De waarde van een klant is de som van zijn LOPENDE abonnementen. Niet de
-   omzet van vorige maand, niet wat er geboekt is: het bord gaat over
-   structurele belasting, en dat is wat er elke maand terugkomt.
+   De waarde van een klant heeft twee helften. Zijn LOPENDE abonnementen —
+   wat er elke maand terugkomt — en zijn projectwerk, gerekend als de
+   geaccepteerde offertes van de afgelopen twaalf maanden gedeeld door twaalf.
+
+   Die tweede helft moest erbij. Lang niet elke klant heeft een abonnement;
+   een deel werkt op losse opdrachten. Telde het bord die als nul, dan leek
+   een marketing manager met vijf projectklanten leeg te lopen terwijl hij
+   het net zo druk heeft. Een kolom die de helft van het werk niet ziet, is
+   erger dan geen kolom.
+
+   Het projectdeel wordt AFGELEID uit offertes die je toch al invoert, niet
+   met de hand bijgehouden. Een veld dat iemand elke maand moet bijwerken is
+   een veld dat na twee maanden niet meer klopt.
    ------------------------------------------------------------------------- */
 
 export type PortfolioKlant = {
@@ -25,8 +42,12 @@ export type PortfolioKlant = {
   naam: string
   slug: string
   status: string
-  /** Wat deze klant per maand structureel waard is, in centen. */
+  /** Abonnementen plus projectwerk, samen de maandwaarde in centen. */
   maandwaardeCents: number
+  /** Het deel dat uit lopende abonnementen komt. */
+  abonnementCents: number
+  /** Het deel uit geaccepteerde offertes van de laatste twaalf maanden. */
+  projectCents: number
   abonnementen: number
   /** De rol die deze manager bij deze klant heeft, als die is ingevuld. */
   rol: string | null
@@ -76,8 +97,38 @@ async function maandwaardePerKlant(): Promise<Map<string, { cents: number; aanta
   )
 }
 
+/**
+ * De maandwaarde uit projectwerk: geaccepteerde offertes van de laatste
+ * twaalf maanden, gedeeld door twaalf.
+ *
+ * Twaalf maanden omdat projectwerk ongelijk over het jaar valt. Eén goede
+ * maand zegt niets; een jaar wel. En een afgelopen jaar is het eerlijkste
+ * antwoord op "hoeveel brengt deze klant ons" zolang de volgende opdracht
+ * nog niet binnen is.
+ */
+async function projectwaardePerKlant(
+  vandaag: Date = new Date(),
+): Promise<Map<string, number>> {
+  const eenJaarTerug = new Date(vandaag)
+  eenJaarTerug.setFullYear(eenJaarTerug.getFullYear() - 1)
+
+  const rijen = await db
+    .select({
+      organizationId: quotes.organizationId,
+      // Het bedrag volgt uit aantal maal tarief; er wordt nergens een totaal
+      // opgeslagen dat daarvan kan afwijken.
+      cents: sql<string>`SUM(ROUND(${quoteLines.quantityHundredths} * ${quoteLines.unitPriceCents} / 100.0))`,
+    })
+    .from(quotes)
+    .innerJoin(quoteLines, eq(quoteLines.quoteId, quotes.id))
+    .where(and(eq(quotes.status, 'accepted'), gte(quotes.issuedOn, eenJaarTerug)))
+    .groupBy(quotes.organizationId)
+
+  return new Map(rijen.map((r) => [r.organizationId, Math.round(Number(r.cents) / 12)]))
+}
+
 export async function getPortfolioBord(): Promise<PortfolioBord> {
-  const [managers, toewijzingen, klanten, waarden] = await Promise.all([
+  const [managers, toewijzingen, klanten, waarden, projectwaarden] = await Promise.all([
     db
       .select()
       .from(users)
@@ -97,6 +148,7 @@ export async function getPortfolioBord(): Promise<PortfolioBord> {
       .orderBy(asc(organizations.name)),
 
     maandwaardePerKlant(),
+    projectwaardePerKlant(),
   ])
 
   const beheerderVan = new Map(
@@ -105,12 +157,16 @@ export async function getPortfolioBord(): Promise<PortfolioBord> {
 
   const alsKlant = (org: typeof klanten[number], rol: string | null): PortfolioKlant => {
     const waarde = waarden.get(org.id)
+    const abonnementCents = waarde?.cents ?? 0
+    const projectCents = projectwaarden.get(org.id) ?? 0
     return {
       organizationId: org.id,
       naam: org.name,
       slug: org.slug,
       status: org.status,
-      maandwaardeCents: waarde?.cents ?? 0,
+      maandwaardeCents: abonnementCents + projectCents,
+      abonnementCents,
+      projectCents,
       abonnementen: waarde?.aantal ?? 0,
       rol,
     }

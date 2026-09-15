@@ -27,6 +27,20 @@ export default async function BeheerPage() {
           <span className="tabular">{formatCents(totaal)}</span>
         </p>
 
+        {/* Staat alles op nul, dan is er nog nooit geboekt. Dat is bij het
+            invullen van een vers systeem de normale situatie, en dan is een
+            link naar het scherm dat het rechttrekt nuttiger dan een cijfer. */}
+        {totaal === 0 && klanten.length > 0 && (
+          <p className="mb-6 text-sm text-gray-600">
+            Alle saldo&rsquo;s staan op nul. Een saldo ontstaat pas bij een boeking; een
+            abonnement is een afspraak, nog geen bedrag.{' '}
+            <a href="/beheer/beginsaldo" className="text-jr-blue">
+              Beginsaldo&rsquo;s overzetten
+            </a>
+            .
+          </p>
+        )}
+
         {negatief.length > 0 && (
           <p className="border-jr-orange bg-jr-orange/5 mb-6 rounded border-l-4 p-3 text-sm">
             {negatief.length === 1
