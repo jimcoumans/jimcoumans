@@ -716,14 +716,72 @@ CREATE TABLE IF NOT EXISTS "drizzle"."__drizzle_migrations" (
   created_at bigint
 );
 
-INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at") VALUES
-  ('738c7be8bd171dd1ee2c06df8387f94eb945b08891421400b29b127a3aa95cac', 1788622970348),  -- 0000_init
-  ('74272e4c1d0a4e1228a79f03cd08f178e0edc0a1afab34b7ee6bd1fa4949254c', 1788789672491),  -- 0001_diensten_en_boekingen
-  ('b80a545f154e3f5eb2c93a02102d400d436a711ac764389c4f9c9fd58addb11c', 1788789944844),  -- 0002_kostprijs_op_boeking
-  ('6167b6a9f0315965d0c5e1b1547254db9f7812ddcf31635476bcfa4b9bbf1d63', 1788793164674),  -- 0003_abonnementen
-  ('d3ea417bd20032654be3f6f62a76acc4ef575fd8e4a53896194340a2d8c2402c', 1788793796466),  -- 0004_abonnement_niet_verwijderbaar
-  ('c4170edac62b10a7df4d213096081ef62b2484277495ba230e6115be5dde678f', 1789024135051),  -- 0005_crm
-  ('2ff75852cc2565de289f49c687a5c5e5c6169045e5fbfe1948f9c99e82216df1', 1789111263063),  -- 0006_offertes
-  ('acc8bba55ee145b3b5ae41c3a5b074d194c9d015fab8c13c769db6faa5aae559', 1789197663063),  -- 0007_rls
-  ('fed6c34eb8d597e6be313bf41fa0d0ee7a7d3280aa582ae72ed3b079fbe3905e', 1789461828334),  -- 0008_crm_uitbreiding
-  ('23a4912dd0f99e1d96c9d9b853f0d3d5cd5af53357e400405f3e729a3a101c0b', 1789463118797);  -- 0009_portfolio
+-- 0000_init
+INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+SELECT '738c7be8bd171dd1ee2c06df8387f94eb945b08891421400b29b127a3aa95cac', 1788622970348
+WHERE NOT EXISTS (
+  SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = '738c7be8bd171dd1ee2c06df8387f94eb945b08891421400b29b127a3aa95cac'
+);
+
+-- 0001_diensten_en_boekingen
+INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+SELECT '74272e4c1d0a4e1228a79f03cd08f178e0edc0a1afab34b7ee6bd1fa4949254c', 1788789672491
+WHERE NOT EXISTS (
+  SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = '74272e4c1d0a4e1228a79f03cd08f178e0edc0a1afab34b7ee6bd1fa4949254c'
+);
+
+-- 0002_kostprijs_op_boeking
+INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+SELECT 'b80a545f154e3f5eb2c93a02102d400d436a711ac764389c4f9c9fd58addb11c', 1788789944844
+WHERE NOT EXISTS (
+  SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = 'b80a545f154e3f5eb2c93a02102d400d436a711ac764389c4f9c9fd58addb11c'
+);
+
+-- 0003_abonnementen
+INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+SELECT '6167b6a9f0315965d0c5e1b1547254db9f7812ddcf31635476bcfa4b9bbf1d63', 1788793164674
+WHERE NOT EXISTS (
+  SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = '6167b6a9f0315965d0c5e1b1547254db9f7812ddcf31635476bcfa4b9bbf1d63'
+);
+
+-- 0004_abonnement_niet_verwijderbaar
+INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+SELECT 'd3ea417bd20032654be3f6f62a76acc4ef575fd8e4a53896194340a2d8c2402c', 1788793796466
+WHERE NOT EXISTS (
+  SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = 'd3ea417bd20032654be3f6f62a76acc4ef575fd8e4a53896194340a2d8c2402c'
+);
+
+-- 0005_crm
+INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+SELECT 'c4170edac62b10a7df4d213096081ef62b2484277495ba230e6115be5dde678f', 1789024135051
+WHERE NOT EXISTS (
+  SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = 'c4170edac62b10a7df4d213096081ef62b2484277495ba230e6115be5dde678f'
+);
+
+-- 0006_offertes
+INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+SELECT '2ff75852cc2565de289f49c687a5c5e5c6169045e5fbfe1948f9c99e82216df1', 1789111263063
+WHERE NOT EXISTS (
+  SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = '2ff75852cc2565de289f49c687a5c5e5c6169045e5fbfe1948f9c99e82216df1'
+);
+
+-- 0007_rls
+INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+SELECT 'acc8bba55ee145b3b5ae41c3a5b074d194c9d015fab8c13c769db6faa5aae559', 1789197663063
+WHERE NOT EXISTS (
+  SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = 'acc8bba55ee145b3b5ae41c3a5b074d194c9d015fab8c13c769db6faa5aae559'
+);
+
+-- 0008_crm_uitbreiding
+INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+SELECT 'fed6c34eb8d597e6be313bf41fa0d0ee7a7d3280aa582ae72ed3b079fbe3905e', 1789461828334
+WHERE NOT EXISTS (
+  SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = 'fed6c34eb8d597e6be313bf41fa0d0ee7a7d3280aa582ae72ed3b079fbe3905e'
+);
+
+-- 0009_portfolio
+INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+SELECT '23a4912dd0f99e1d96c9d9b853f0d3d5cd5af53357e400405f3e729a3a101c0b', 1789463118797
+WHERE NOT EXISTS (
+  SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = '23a4912dd0f99e1d96c9d9b853f0d3d5cd5af53357e400405f3e729a3a101c0b'
+);

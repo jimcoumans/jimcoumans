@@ -100,6 +100,18 @@ gebruikt. Waarschuwt Supabase alsnog over RLS, kies dan gerust
 > Komt er later een nieuwe tabel bij? Dan draait `npm run db:bundel` dit
 > bestand opnieuw uit de migraties. Bewerk het niet met de hand.
 
+**Let op bij een database die al draait.** Nieuwe code gaat vanzelf live als
+je pusht, maar de database verandert niet mee. Draait er al data in, gebruik
+dan niet dit bestand maar het bijwerkbestand:
+
+```bash
+npm run db:bundel -- --vanaf=<laatste-migratie-die-je-draaide>
+```
+
+Dat schrijft `drizzle/supabase-update.sql` met alleen wat er nog bij moet.
+Plak dat in de SQL-editor. De boekhouding onderin wordt alleen aangevuld waar
+hij nog niet staat, dus daar krijg je geen dubbele regels van.
+
 Heb je liever wel de terminal, dan kan het ook zo, met de **directe**
 verbinding (poort 5432):
 

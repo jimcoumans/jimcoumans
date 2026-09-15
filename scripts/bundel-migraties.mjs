@@ -16,7 +16,40 @@ import { createHash } from 'node:crypto'
 
 const journal = JSON.parse(readFileSync('drizzle/meta/_journal.json', 'utf8'))
 
-const kop = `-- ============================================================================
+/*
+ * Met --vanaf=<tag> schrijft dit script een bijwerkbestand in plaats van het
+ * complete: alleen de migraties vanaf die tag. Dat heb je nodig als de
+ * database al draait en er alleen iets bij moet.
+ */
+const vanafArg = process.argv.find((a) => a.startsWith('--vanaf='))
+const vanaf = vanafArg ? vanafArg.slice('--vanaf='.length) : null
+
+let entries = journal.entries
+if (vanaf) {
+  const index = entries.findIndex((e) => e.tag === vanaf)
+  if (index === -1) {
+    console.error(`Onbekende migratie: ${vanaf}. Bekend zijn:`)
+    for (const e of entries) console.error(`  ${e.tag}`)
+    process.exit(1)
+  }
+  entries = entries.slice(index)
+}
+
+const kop = vanaf
+  ? `-- ============================================================================
+--  James Robinson Wallet — database bijwerken
+--
+--  Alleen de wijzigingen vanaf ${vanaf}. Plak dit in de SQL-editor van
+--  Supabase en druk op Run. Draai het ÉÉN keer: tabellen aanmaken die er al
+--  zijn geeft een foutmelding.
+--
+--  De regels onderaan die bijhouden welke migraties gedraaid zijn, worden
+--  alleen toegevoegd als ze er nog niet staan. Die kun je dus wel vaker
+--  uitvoeren zonder dubbele regels te krijgen.
+-- ============================================================================
+
+`
+  : `-- ============================================================================
 --  James Robinson Wallet — alle tabellen in één keer
 --
 --  Plak dit in de SQL-editor van Supabase en druk op Run. Daarna staan alle
@@ -33,7 +66,7 @@ const kop = `-- ================================================================
 const delen = [kop]
 const gedraaid = []
 
-for (const entry of journal.entries) {
+for (const entry of entries) {
   const inhoud = readFileSync(`drizzle/${entry.tag}.sql`, 'utf8')
 
   // De hash moet over het ONGEWIJZIGDE bestand gaan, precies zoals Drizzle
@@ -66,18 +99,21 @@ delen.push(
     '  hash text NOT NULL,\n' +
     '  created_at bigint\n' +
     ');\n\n' +
-    'INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at") VALUES\n' +
-    // Let op de volgorde: de komma hoort VOOR het commentaar. Staat hij
-    // erachter, dan valt hij binnen het commentaar en is het statement stuk.
+    // Alleen invoegen wat er nog niet staat, zodat dit bestand geen dubbele
+    // regels maakt als je het per ongeluk twee keer draait.
     gedraaid
-      .map((m, i) => {
-        const scheiding = i === gedraaid.length - 1 ? ';' : ','
-        return `  ('${m.hash}', ${m.when})${scheiding}  -- ${m.tag}`
-      })
-      .join('\n') +
-    '\n',
+      .map(
+        (m) =>
+          `-- ${m.tag}\n` +
+          'INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")\n' +
+          `SELECT '${m.hash}', ${m.when}\n` +
+          'WHERE NOT EXISTS (\n' +
+          `  SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = '${m.hash}'\n` +
+          ');\n',
+      )
+      .join('\n'),
 )
 
-const doel = 'drizzle/supabase-setup.sql'
+const doel = vanaf ? 'drizzle/supabase-update.sql' : 'drizzle/supabase-setup.sql'
 writeFileSync(doel, delen.join(''))
-console.log(`${doel} geschreven: ${journal.entries.length} migraties.`)
+console.log(`${doel} geschreven: ${entries.length} migraties.`)
