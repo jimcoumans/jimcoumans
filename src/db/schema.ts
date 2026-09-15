@@ -708,11 +708,28 @@ export const users = pgTable(
       onDelete: 'cascade',
     }),
     lastLoginAt: timestamp('last_login_at', { withTimezone: true }),
+
+    /* --- Portfolio ---
+       Niet elke collega draagt een klantportfolio. Wie dat wel doet krijgt
+       een eigen kolom op het portfoliobord, met een maandelijks doel om de
+       belasting tegen af te zetten. */
+    isMarketingManager: boolean('is_marketing_manager').notNull().default(false),
+    /** Maanddoel in centen, bijv. 2000000 voor 20.000 euro. */
+    monthlyTargetCents: integer('monthly_target_cents'),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
     disabledAt: timestamp('disabled_at', { withTimezone: true }),
   },
   (t) => [
     uniqueIndex('users_email_idx').on(t.email),
+    check(
+      'user_target_positive',
+      sql`${t.monthlyTargetCents} IS NULL OR ${t.monthlyTargetCents} > 0`,
+    ),
+    // Een doel zonder portfolio zegt niets; het hoort bij de rol.
+    check(
+      'user_target_needs_manager',
+      sql`${t.monthlyTargetCents} IS NULL OR ${t.isMarketingManager}`,
+    ),
     index('users_org_idx').on(t.organizationId),
     // Een klant zonder organisatie zou nergens bij horen en dus alles of
     // niets kunnen zien. De database weigert dat.

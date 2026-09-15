@@ -693,6 +693,18 @@ ALTER TABLE "tags" ENABLE ROW LEVEL SECURITY;
 
 
 -- ---------------------------------------------------------------------------
+-- 0009_portfolio
+-- ---------------------------------------------------------------------------
+
+ALTER TABLE "users" ADD COLUMN "is_marketing_manager" boolean DEFAULT false NOT NULL;
+
+ALTER TABLE "users" ADD COLUMN "monthly_target_cents" integer;
+
+ALTER TABLE "users" ADD CONSTRAINT "user_target_positive" CHECK ("users"."monthly_target_cents" IS NULL OR "users"."monthly_target_cents" > 0);
+
+ALTER TABLE "users" ADD CONSTRAINT "user_target_needs_manager" CHECK ("users"."monthly_target_cents" IS NULL OR "users"."is_marketing_manager");
+
+-- ---------------------------------------------------------------------------
 -- Welke migraties hiermee gedraaid zijn
 -- ---------------------------------------------------------------------------
 
@@ -713,4 +725,5 @@ INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at") VALUES
   ('c4170edac62b10a7df4d213096081ef62b2484277495ba230e6115be5dde678f', 1789024135051),  -- 0005_crm
   ('2ff75852cc2565de289f49c687a5c5e5c6169045e5fbfe1948f9c99e82216df1', 1789111263063),  -- 0006_offertes
   ('acc8bba55ee145b3b5ae41c3a5b074d194c9d015fab8c13c769db6faa5aae559', 1789197663063),  -- 0007_rls
-  ('fed6c34eb8d597e6be313bf41fa0d0ee7a7d3280aa582ae72ed3b079fbe3905e', 1789461828334);  -- 0008_crm_uitbreiding
+  ('fed6c34eb8d597e6be313bf41fa0d0ee7a7d3280aa582ae72ed3b079fbe3905e', 1789461828334),  -- 0008_crm_uitbreiding
+  ('23a4912dd0f99e1d96c9d9b853f0d3d5cd5af53357e400405f3e729a3a101c0b', 1789463118797);  -- 0009_portfolio

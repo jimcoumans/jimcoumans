@@ -77,6 +77,13 @@ const icons = {
       <path d="M4 18V9M10 18V5M16 18v-6M22 18h-2" />
     </svg>
   ),
+  portfolio: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
+      <rect x="3" y="4" width="5" height="16" rx="1.5" />
+      <rect x="9.5" y="4" width="5" height="11" rx="1.5" />
+      <rect x="16" y="4" width="5" height="7" rx="1.5" />
+    </svg>
+  ),
   sync: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
       <path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5" />
@@ -91,6 +98,7 @@ const TEAM_NAV: NavItem[] = [
   { href: '/beheer/abonnementen', label: 'Abonnementen', key: 'abonnementen', icon: icons.subs },
   { href: '/beheer/diensten', label: 'Diensten', key: 'diensten', icon: icons.services },
   { href: '/beheer/partners', label: 'Partners', key: 'partners', icon: icons.partners },
+  { href: '/beheer/portfolio', label: 'Portfolio', key: 'portfolio', icon: icons.portfolio },
   { href: '/beheer/financieel', label: 'Financieel', key: 'financieel', icon: icons.finance },
   { href: '/beheer/medewerkers', label: 'Team', key: 'medewerkers', icon: icons.team },
 ]

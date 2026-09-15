@@ -157,6 +157,10 @@ export function describeDbError(error: unknown): string | null {
       return 'De maand van de verjaardag moet tussen 1 en 12 liggen.'
     case 'contact_birth_year_valid':
       return 'Het geboortejaar lijkt niet te kloppen. Laat het leeg als je het niet weet.'
+    case 'user_target_positive':
+      return 'Een maanddoel moet boven nul liggen. Laat het leeg als er geen doel is.'
+    case 'user_target_needs_manager':
+      return 'Zet deze collega eerst aan als marketing manager; een maanddoel zonder klantportfolio zegt niets.'
     case 'activity_subject_not_empty':
       return 'Geef de notitie een korte titel, anders staat er straks een lege regel op de tijdlijn.'
     default:
