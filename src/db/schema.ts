@@ -716,11 +716,69 @@ export const users = pgTable(
     isMarketingManager: boolean('is_marketing_manager').notNull().default(false),
     /** Maanddoel in centen, bijv. 2000000 voor 20.000 euro. */
     monthlyTargetCents: integer('monthly_target_cents'),
+
+    /* --- Wie is dit --- */
+    jobTitle: text('job_title'),
+    /** Afdeling: Marketing, Web, Managed Services, Content Creatie. */
+    department: text('department'),
+    phone: text('phone'),
+    mobile: text('mobile'),
+    linkedinUrl: text('linkedin_url'),
+
+    /* --- Verjaardag ---
+       Zelfde afspraak als bij contactpersonen: dag en maand horen bij elkaar,
+       het jaar mag je weglaten. Collega's staan hierdoor in hetzelfde
+       attentieoverzicht als klanten; dat is waar het om begonnen was. */
+    birthDay: integer('birth_day'),
+    birthMonth: integer('birth_month'),
+    birthYear: integer('birth_year'),
+
+    /* --- In dienst --- */
+    startedOn: timestamp('started_on', { withTimezone: true }),
+    endedOn: timestamp('ended_on', { withTimezone: true }),
+    /** Contracturen per week, in kwartieren: 3200 is 32 uur. */
+    contractHoursPerWeekQuarters: integer('contract_hours_week_quarters'),
+    /**
+     * Wat een uur van deze collega ons kost, in centen.
+     *
+     * Alleen zichtbaar voor beheerders: dit ligt dicht tegen salaris aan en
+     * hoort niet op een scherm dat het hele team openslaat.
+     */
+    hourlyCostCents: integer('hourly_cost_cents'),
+
+    notes: text('notes'),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
     disabledAt: timestamp('disabled_at', { withTimezone: true }),
   },
   (t) => [
     uniqueIndex('users_email_idx').on(t.email),
+    index('users_department_idx').on(t.department),
+    index('users_birthday_idx').on(t.birthMonth, t.birthDay),
+    check(
+      'user_birthday_complete',
+      sql`(${t.birthDay} IS NULL) = (${t.birthMonth} IS NULL)`,
+    ),
+    check(
+      'user_birth_day_valid',
+      sql`${t.birthDay} IS NULL OR (${t.birthDay} >= 1 AND ${t.birthDay} <= 31)`,
+    ),
+    check(
+      'user_birth_month_valid',
+      sql`${t.birthMonth} IS NULL OR (${t.birthMonth} >= 1 AND ${t.birthMonth} <= 12)`,
+    ),
+    check(
+      'user_contract_hours_valid',
+      sql`${t.contractHoursPerWeekQuarters} IS NULL OR (${t.contractHoursPerWeekQuarters} > 0 AND ${t.contractHoursPerWeekQuarters} <= 8000)`,
+    ),
+    check(
+      'user_hourly_cost_not_negative',
+      sql`${t.hourlyCostCents} IS NULL OR ${t.hourlyCostCents} >= 0`,
+    ),
+    // Uit dienst voordat je begon kan niet.
+    check(
+      'user_employment_order',
+      sql`${t.endedOn} IS NULL OR ${t.startedOn} IS NULL OR ${t.endedOn} >= ${t.startedOn}`,
+    ),
     check(
       'user_target_positive',
       sql`${t.monthlyTargetCents} IS NULL OR ${t.monthlyTargetCents} > 0`,

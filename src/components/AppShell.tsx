@@ -112,10 +112,20 @@ const CLIENT_NAV: NavItem[] = [
 export function AppShell({
   user,
   actief,
+  breed = false,
   children,
 }: {
   user: SessionUser
   actief?: string
+  /**
+   * Laat de inhoud de volle breedte gebruiken.
+   *
+   * Leesbare tekst wil je smal houden — zestig tekens per regel leest nu
+   * eenmaal prettiger dan honderdveertig. Maar een overzicht wil je in één
+   * oogopslag zien, en dan is een kolom van duizend pixels op een scherm van
+   * tweeduizend gewoon zonde.
+   */
+  breed?: boolean
   children: React.ReactNode
 }) {
   const [open, setOpen] = useState(false)
@@ -249,7 +259,11 @@ export function AppShell({
       </nav>
 
       <div className="min-w-0 flex-1">
-        <main className="mx-auto max-w-5xl px-4 py-7 sm:px-8">{children}</main>
+        <main
+          className={`mx-auto px-4 py-7 sm:px-8 ${breed ? 'max-w-[1800px]' : 'max-w-5xl'}`}
+        >
+          {children}
+        </main>
       </div>
     </div>
   )

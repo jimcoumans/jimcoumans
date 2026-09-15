@@ -51,3 +51,32 @@ function startOfDay(date: Date): Date {
   copy.setHours(0, 0, 0, 0)
   return copy
 }
+
+/**
+ * De waarde die een `<input type="date">` verwacht: 2026-03-15.
+ *
+ * Bewust op de lokale datumdelen gebaseerd en niet op toISOString(). Die zet
+ * eerst om naar UTC, en dan staat er bij een datum van vroeg in de ochtend
+ * een dag eerder in het veld dan er in de database staat.
+ */
+export function formatDateInput(date: Date): string {
+  const maand = String(date.getMonth() + 1).padStart(2, '0')
+  const dag = String(date.getDate()).padStart(2, '0')
+  return `${date.getFullYear()}-${maand}-${dag}`
+}
+
+/** Maandnamen voor keuzelijsten; index 0 is januari. */
+export const MAANDNAMEN = [
+  'januari',
+  'februari',
+  'maart',
+  'april',
+  'mei',
+  'juni',
+  'juli',
+  'augustus',
+  'september',
+  'oktober',
+  'november',
+  'december',
+] as const

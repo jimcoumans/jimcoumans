@@ -1,6 +1,7 @@
 import { and, asc, eq, isNotNull, sql } from 'drizzle-orm'
 import { db } from '@/db'
 import { contacts, organizations } from '@/db/schema'
+import { teamJubileaInMaand, teamVerjaardagenInMaand } from './team'
 
 /* -------------------------------------------------------------------------
    Verjaardagen en jubilea.
@@ -124,22 +125,35 @@ export async function jubileaInMaand(
     .sort((a, b) => a.dag - b.dag)
 }
 
-/** Verjaardagen en jubilea van deze maand in één keer, voor het dashboard. */
+/**
+ * Alles wat deze maand aandacht verdient, in één keer.
+ *
+ * Collega's staan er bewust bij. Je eigen mensen vergeten terwijl je klanten
+ * feliciteert is een slechte ruil, en twee losse overzichtjes betekent dat er
+ * altijd eentje niet wordt opengeslagen.
+ */
 export async function attentiesDezeMaand(nu: Date = new Date()) {
   const maand = nu.getMonth() + 1
-  const [verjaardagen, jubilea] = await Promise.all([
+  const [verjaardagen, jubilea, teamVerjaardagen, teamJubilea] = await Promise.all([
     verjaardagenInMaand(maand, nu.getFullYear()),
     jubileaInMaand(maand, nu),
+    teamVerjaardagenInMaand(maand, nu.getFullYear()),
+    teamJubileaInMaand(maand, nu),
   ])
+
+  const komtNog = (dag: number) => dag >= nu.getDate()
 
   return {
     maand,
     verjaardagen,
     jubilea,
-    /** Wat er vandaag of later deze maand nog komt. */
-    nogTeGaan: [
-      ...verjaardagen.filter((v) => v.dag >= nu.getDate()).map(() => 1),
-      ...jubilea.filter((j) => j.dag >= nu.getDate()).map(() => 1),
-    ].length,
+    teamVerjaardagen,
+    teamJubilea,
+    /** Wat er vandaag of later deze maand nog komt, klanten en collega's samen. */
+    nogTeGaan:
+      verjaardagen.filter((v) => komtNog(v.dag)).length +
+      jubilea.filter((j) => komtNog(j.dag)).length +
+      teamVerjaardagen.filter((v) => komtNog(v.dag)).length +
+      teamJubilea.filter((j) => komtNog(j.dag)).length,
   }
 }

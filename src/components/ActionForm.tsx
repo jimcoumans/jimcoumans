@@ -174,6 +174,42 @@ export function Field({
   )
 }
 
+/** Meerregelig invoerveld, voor notities die niet op één regel passen. */
+export function TextArea({
+  label,
+  name,
+  rows = 4,
+  placeholder,
+  defaultValue,
+  hint,
+}: {
+  label: string
+  name: string
+  rows?: number
+  placeholder?: string
+  defaultValue?: string
+  hint?: string
+}) {
+  const id = `tekst-${name}-${label.replace(/\W+/g, '')}`
+  return (
+    <div>
+      <label htmlFor={id} className="mb-1 block text-xs text-gray-600">
+        {label}
+        <span className="text-gray-400"> (optioneel)</span>
+      </label>
+      <textarea
+        id={id}
+        name={name}
+        rows={rows}
+        placeholder={placeholder}
+        defaultValue={defaultValue}
+        className="focus:border-jr-blue focus:ring-jr-blue/20 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:ring-2"
+      />
+      {hint && <p className="mt-1 text-xs text-gray-500">{hint}</p>}
+    </div>
+  )
+}
+
 /**
  * Een wijzigformulier dat dichtgeklapt staat.
  *

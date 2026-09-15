@@ -193,6 +193,52 @@ ALTER TABLE "users" ADD CONSTRAINT "user_target_positive" CHECK ("users"."monthl
 ALTER TABLE "users" ADD CONSTRAINT "user_target_needs_manager" CHECK ("users"."monthly_target_cents" IS NULL OR "users"."is_marketing_manager");
 
 -- ---------------------------------------------------------------------------
+-- 0010_medewerkerprofiel
+-- ---------------------------------------------------------------------------
+
+ALTER TABLE "users" ADD COLUMN "job_title" text;
+
+ALTER TABLE "users" ADD COLUMN "department" text;
+
+ALTER TABLE "users" ADD COLUMN "phone" text;
+
+ALTER TABLE "users" ADD COLUMN "mobile" text;
+
+ALTER TABLE "users" ADD COLUMN "linkedin_url" text;
+
+ALTER TABLE "users" ADD COLUMN "birth_day" integer;
+
+ALTER TABLE "users" ADD COLUMN "birth_month" integer;
+
+ALTER TABLE "users" ADD COLUMN "birth_year" integer;
+
+ALTER TABLE "users" ADD COLUMN "started_on" timestamp with time zone;
+
+ALTER TABLE "users" ADD COLUMN "ended_on" timestamp with time zone;
+
+ALTER TABLE "users" ADD COLUMN "contract_hours_week_quarters" integer;
+
+ALTER TABLE "users" ADD COLUMN "hourly_cost_cents" integer;
+
+ALTER TABLE "users" ADD COLUMN "notes" text;
+
+CREATE INDEX "users_department_idx" ON "users" USING btree ("department");
+
+CREATE INDEX "users_birthday_idx" ON "users" USING btree ("birth_month","birth_day");
+
+ALTER TABLE "users" ADD CONSTRAINT "user_birthday_complete" CHECK (("users"."birth_day" IS NULL) = ("users"."birth_month" IS NULL));
+
+ALTER TABLE "users" ADD CONSTRAINT "user_birth_day_valid" CHECK ("users"."birth_day" IS NULL OR ("users"."birth_day" >= 1 AND "users"."birth_day" <= 31));
+
+ALTER TABLE "users" ADD CONSTRAINT "user_birth_month_valid" CHECK ("users"."birth_month" IS NULL OR ("users"."birth_month" >= 1 AND "users"."birth_month" <= 12));
+
+ALTER TABLE "users" ADD CONSTRAINT "user_contract_hours_valid" CHECK ("users"."contract_hours_week_quarters" IS NULL OR ("users"."contract_hours_week_quarters" > 0 AND "users"."contract_hours_week_quarters" <= 8000));
+
+ALTER TABLE "users" ADD CONSTRAINT "user_hourly_cost_not_negative" CHECK ("users"."hourly_cost_cents" IS NULL OR "users"."hourly_cost_cents" >= 0);
+
+ALTER TABLE "users" ADD CONSTRAINT "user_employment_order" CHECK ("users"."ended_on" IS NULL OR "users"."started_on" IS NULL OR "users"."ended_on" >= "users"."started_on");
+
+-- ---------------------------------------------------------------------------
 -- Welke migraties hiermee gedraaid zijn
 -- ---------------------------------------------------------------------------
 
@@ -223,4 +269,11 @@ INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
 SELECT '23a4912dd0f99e1d96c9d9b853f0d3d5cd5af53357e400405f3e729a3a101c0b', 1789463118797
 WHERE NOT EXISTS (
   SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = '23a4912dd0f99e1d96c9d9b853f0d3d5cd5af53357e400405f3e729a3a101c0b'
+);
+
+-- 0010_medewerkerprofiel
+INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+SELECT 'a443c3b5cb83e718b4aa317355a6d5422e51e74effea0c1255fa8982de6251e6', 1789464029976
+WHERE NOT EXISTS (
+  SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = 'a443c3b5cb83e718b4aa317355a6d5422e51e74effea0c1255fa8982de6251e6'
 );

@@ -157,6 +157,19 @@ export function describeDbError(error: unknown): string | null {
       return 'De maand van de verjaardag moet tussen 1 en 12 liggen.'
     case 'contact_birth_year_valid':
       return 'Het geboortejaar lijkt niet te kloppen. Laat het leeg als je het niet weet.'
+    /* --- Medewerkerprofiel --- */
+    case 'user_birthday_complete':
+      return 'Vul bij een verjaardag zowel de dag als de maand in. Een dag zonder maand zegt niets; het jaar mag je weglaten.'
+    case 'user_birth_day_valid':
+      return 'De dag van de verjaardag moet tussen 1 en 31 liggen.'
+    case 'user_birth_month_valid':
+      return 'De maand van de verjaardag moet tussen 1 en 12 liggen.'
+    case 'user_contract_hours_valid':
+      return 'Het aantal contracturen moet boven nul liggen en onder de twintig uur per dag. Laat het leeg als er geen vast aantal is.'
+    case 'user_hourly_cost_not_negative':
+      return 'Een uurkosten-bedrag kan niet negatief zijn. Laat het leeg als je het niet weet.'
+    case 'user_employment_order':
+      return 'De datum uit dienst ligt vóór de datum in dienst. Controleer allebei de datums.'
     case 'user_target_positive':
       return 'Een maanddoel moet boven nul liggen. Laat het leeg als er geen doel is.'
     case 'user_target_needs_manager':
