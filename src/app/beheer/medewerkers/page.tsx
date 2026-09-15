@@ -2,6 +2,9 @@ import { redirect } from 'next/navigation'
 import { getSessionUser } from '@/lib/auth'
 import { listTeam, formatContractUren } from '@/lib/team'
 import { getFiguresByEmployee } from '@/lib/reports'
+import { getPersoneelskosten } from '@/lib/kosten'
+import { getMonthlyRecurringCents } from '@/lib/billing'
+import { Avatar } from '@/components/Avatar'
 import { AppShell } from '@/components/AppShell'
 import { ActionForm, Field, Select, Uitklap } from '@/components/ActionForm'
 import { nieuweMedewerker, wijzigMedewerker, wisselMedewerkerToegang } from '../service-actions'
@@ -21,7 +24,15 @@ export default async function MedewerkersPage() {
   if (!user) redirect('/login')
   if (user.role !== 'staff' && user.role !== 'admin') redirect('/')
 
-  const [team, cijfers] = await Promise.all([listTeam(), getFiguresByEmployee()])
+  const isBeheerder = user.role === 'admin'
+  const [team, cijfers, kosten, mrr] = await Promise.all([
+    listTeam(),
+    getFiguresByEmployee(),
+    // Kosten alleen ophalen als je ze mag zien: wat je niet opvraagt kan ook
+    // niet per ongeluk in de HTML belanden.
+    isBeheerder ? getPersoneelskosten() : null,
+    isBeheerder ? getMonthlyRecurringCents() : null,
+  ])
   const perUser = new Map(cijfers.map((c) => [c.userId, c]))
 
   const inDienst = team.filter((l) => l.endedOn === null)
@@ -59,6 +70,78 @@ export default async function MedewerkersPage() {
           </div>
         </dl>
       </div>
+
+      {kosten && (
+        <section className="mb-6 rounded-xl bg-white p-5 shadow-sm">
+          <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+            <h2 className="text-base">Wat het team kost</h2>
+            <p className="text-xs text-gray-500">
+              Alleen zichtbaar voor beheerders &middot; brutoloon plus vakantiegeld en
+              werkgeverslasten
+            </p>
+          </div>
+
+          <dl className="mt-3 flex flex-wrap gap-x-8 gap-y-3">
+            <div>
+              <dt className="text-xs text-gray-600">Per maand</dt>
+              <dd className="tabular text-jr-blue text-2xl font-bold leading-tight">
+                {formatCents(kosten.totaalCents)}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-xs text-gray-600">Per jaar</dt>
+              <dd className="tabular text-2xl font-bold leading-tight">
+                {formatCents(kosten.totaalCents * 12)}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-xs text-gray-600">Loondienst</dt>
+              <dd className="tabular text-2xl font-bold leading-tight">
+                {formatCents(kosten.loondienstCents)}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-xs text-gray-600">Management fee</dt>
+              <dd className="tabular text-2xl font-bold leading-tight">
+                {formatCents(kosten.managementFeeCents)}
+              </dd>
+            </div>
+            {mrr !== null && mrr > 0 && (
+              <div>
+                <dt className="text-xs text-gray-600">Van de abonnementsomzet</dt>
+                <dd
+                  className={`tabular text-2xl font-bold leading-tight ${
+                    kosten.totaalCents > mrr ? 'text-jr-red' : ''
+                  }`}
+                >
+                  {Math.round((kosten.totaalCents / mrr) * 100)}%
+                </dd>
+              </div>
+            )}
+          </dl>
+
+          {kosten.zonderBeloning.length > 0 && (
+            <p className="border-jr-orange bg-jr-orange/5 mt-3 rounded border-l-4 p-3 text-sm">
+              {/* Stil op nul zetten is het gevaarlijkst: dan lijkt je grootste
+                  kostenpost lager dan hij is. */}
+              Nog geen beloning vastgelegd voor{' '}
+              {kosten.zonderBeloning.map((z) => z.naam).join(', ')}. Zolang dat zo is tellen
+              zij hierboven niet mee.
+            </p>
+          )}
+
+          {kosten.perAfdeling.length > 1 && (
+            <ul className="mt-3 flex flex-wrap gap-x-6 gap-y-1 border-t border-gray-200 pt-3">
+              {kosten.perAfdeling.map((a) => (
+                <li key={a.afdeling} className="text-xs text-gray-600">
+                  {a.afdeling}: <span className="tabular">{formatCents(a.cents)}</span> (
+                  {a.mensen})
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      )}
 
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
         <div className="space-y-6">
@@ -180,12 +263,19 @@ function Tabel({
             return (
               <tr key={lid.id} className="align-top">
                 <td className="px-4 py-3">
-                  <a
-                    href={`/beheer/medewerkers/${lid.id}`}
-                    className="hover:text-jr-blue font-medium"
-                  >
-                    {lid.name ?? lid.email}
-                  </a>
+                  <div className="flex items-center gap-2.5">
+                    <Avatar
+                      naam={lid.name ?? lid.email}
+                      imageId={lid.avatarImageId}
+                      maat={32}
+                    />
+                    <a
+                      href={`/beheer/medewerkers/${lid.id}`}
+                      className="hover:text-jr-blue font-medium"
+                    >
+                      {lid.name ?? lid.email}
+                    </a>
+                  </div>
                   <div className="mt-0.5 flex flex-wrap items-center gap-1.5">
                     {lid.role === 'admin' && (
                       <span className="bg-jr-lightblue text-jr-deepblue rounded-full px-1.5 py-0.5 text-xs">

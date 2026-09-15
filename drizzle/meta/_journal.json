@@ -99,6 +99,13 @@
       "when": 1789477355806,
       "tag": "0013_naamdelen",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1789482695532,
+      "tag": "0014_kosten_en_beeld",
+      "breakpoints": true
     }
   ]
 }

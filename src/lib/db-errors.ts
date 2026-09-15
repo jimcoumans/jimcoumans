@@ -175,6 +175,14 @@ export function describeDbError(error: unknown): string | null {
       return 'Het vakantiegeld moet tussen 0 en 100 procent liggen. Wettelijk is het minimaal 8.'
     case 'salary_hours_valid':
       return 'Het aantal uren waarbij dit salaris hoort moet boven nul liggen en onder de twintig uur per dag.'
+    case 'salary_employer_cost_valid':
+      return 'De werkgeverslasten moeten tussen 0 en 200 procent liggen. Gebruikelijk is ongeveer 28.'
+    case 'fee_has_no_employer_cost':
+      return 'Op een management fee zitten geen werkgeverslasten en geen vakantiegeld: dat is een factuur van een eigen BV. Zet beide op nul, of kies loondienst.'
+    case 'image_size_reasonable':
+      return 'Dit bestand is te groot. Een logo of profielfoto mag maximaal 1 MB zijn; verklein hem eerst.'
+    case 'image_type_allowed':
+      return 'Alleen PNG, JPEG en WebP. Geen SVG: daar kan script in zitten dat daarna in de browser van een collega draait.'
     case 'salary_records_user_date_idx':
       return 'Er staat al een salaris met deze ingangsdatum. Pas dat aan in plaats van er een tweede naast te zetten; anders is niet te zeggen welke geldt.'
     case 'dossier_subject_not_empty':

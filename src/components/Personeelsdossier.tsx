@@ -15,11 +15,13 @@ import {
   DOSSIER_LABELS,
   DOSSIER_STIJLEN,
   ASSET_LABELS,
+  BELONING_LABELS,
   jaarloonCents,
   type Ketensignaal,
   type DossierRegel,
 } from '@/lib/personeel-labels'
 import { formatContractUren } from '@/lib/team'
+import { maandlast, uurkostprijsCents } from '@/lib/kosten'
 import { formatCents } from '@/lib/money'
 import { formatDate, formatDateInput } from '@/lib/dates'
 import type { EmploymentContract, SalaryRecord, CompanyAsset } from '@/db/schema'
@@ -183,18 +185,31 @@ export function Salaris({
         {huidig ? (
           <dl className="flex flex-wrap gap-x-8 gap-y-3">
             <div>
-              <dt className="text-xs text-gray-600">Bruto per maand</dt>
-              <dd className="tabular text-jr-blue text-xl font-bold leading-tight">
+              <dt className="text-xs text-gray-600">
+                {huidig.soort === 'management_fee' ? 'Fee per maand' : 'Bruto per maand'}
+              </dt>
+              <dd className="tabular text-xl font-bold leading-tight">
                 {formatCents(huidig.grossMonthlyCents)}
               </dd>
             </div>
+            {/* Wat het ons kost staat groot en in kleur, want dat is het
+                getal waarmee je rekent. Bruto is bijna nooit het antwoord. */}
             <div>
-              <dt className="text-xs text-gray-600">Per jaar incl. vakantiegeld</dt>
+              <dt className="text-xs text-gray-600">Kost ons per maand</dt>
+              <dd className="tabular text-jr-blue text-xl font-bold leading-tight">
+                {formatCents(maandlast(huidig).totaalCents)}
+                {huidig.soort === 'loondienst' && (
+                  <span className="ml-1 text-xs font-normal text-gray-500">
+                    incl. {huidig.holidayAllowancePercent}% vg en{' '}
+                    {huidig.employerCostPercent}% wgl
+                  </span>
+                )}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-xs text-gray-600">Per jaar</dt>
               <dd className="tabular text-xl font-bold leading-tight">
-                {formatCents(jaarloonCents(huidig))}
-                <span className="ml-1 text-xs font-normal text-gray-500">
-                  {huidig.holidayAllowancePercent}%
-                </span>
+                {formatCents(maandlast(huidig).totaalCents * 12)}
               </dd>
             </div>
             <div>
@@ -205,15 +220,26 @@ export function Salaris({
             </div>
             {huidig.basedOnHoursQuarters !== null && (
               <div>
-                <dt className="text-xs text-gray-600">Bij</dt>
-                <dd className="text-xl font-bold leading-tight">
-                  {formatContractUren(huidig.basedOnHoursQuarters)}
+                <dt className="text-xs text-gray-600">Per uur aanwezigheid</dt>
+                <dd className="tabular text-xl font-bold leading-tight">
+                  {formatCents(
+                    uurkostprijsCents(
+                      maandlast(huidig).totaalCents,
+                      huidig.basedOnHoursQuarters,
+                    ) ?? 0,
+                  )}
+                  <span className="ml-1 text-xs font-normal text-gray-500">
+                    bij {formatContractUren(huidig.basedOnHoursQuarters)}
+                  </span>
                 </dd>
               </div>
             )}
           </dl>
         ) : (
-          <p className="text-sm text-gray-600">Nog geen salaris vastgelegd.</p>
+          <p className="text-sm text-gray-600">
+            Nog geen beloning vastgelegd. Zolang dat zo is telt deze collega niet mee in het
+            kostenoverzicht.
+          </p>
         )}
       </div>
 
@@ -226,6 +252,11 @@ export function Salaris({
                 <div className="min-w-0">
                   <p className="text-sm">
                     <span className="tabular">{formatCents(r.grossMonthlyCents)}</span>
+                    {r.soort === 'management_fee' && (
+                      <span className="ml-1.5 rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600">
+                        fee
+                      </span>
+                    )}
                     <span className="text-gray-600"> vanaf {formatDate(r.effectiveFrom)}</span>
                     {nogNietIn && (
                       <span className="bg-jr-lightblue text-jr-deepblue ml-2 rounded-full px-2 py-0.5 text-xs">
@@ -261,6 +292,13 @@ export function Salaris({
           </p>
           <ActionForm action={nieuwSalaris} submitLabel="Vastleggen" className="grid gap-3 sm:grid-cols-2">
             <input type="hidden" name="userId" value={userId} />
+            <Select
+              label="Soort"
+              name="soort"
+              defaultValue="loondienst"
+              options={Object.entries(BELONING_LABELS).map(([value, label]) => ({ value, label }))}
+              hint="Bij een management fee vervallen vakantiegeld en werkgeverslasten."
+            />
             <Field label="Bruto per maand" name="bedrag" required placeholder="3200,00" />
             <Field label="Ingangsdatum" name="ingangsdatum" type="date" required defaultValue={vandaag()} />
             <Field
@@ -275,6 +313,13 @@ export function Salaris({
               type="number"
               defaultValue="8"
               hint="Wettelijk minimaal 8."
+            />
+            <Field
+              label="Werkgeverslasten in %"
+              name="werkgeverslasten"
+              type="number"
+              defaultValue="28"
+              hint="Premies, pensioen, verzekeringen. Ongeveer 25 tot 30 procent."
             />
             <div className="sm:col-span-2">
               <Field label="Reden" name="reden" placeholder="Periodieke verhoging" />

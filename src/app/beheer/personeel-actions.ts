@@ -136,9 +136,25 @@ export async function nieuwSalaris(formData: FormData): Promise<ActionResult> {
   const ingang = datum(formData, 'ingangsdatum')
   if (ingang === null) return { ok: false, error: 'Vul een ingangsdatum in.' }
 
-  const vakantiegeld = Number.parseInt(tekst(formData, 'vakantiegeld') || '8', 10)
+  const soort = tekst(formData, 'soort') === 'management_fee' ? 'management_fee' : 'loondienst'
+  const isFee = soort === 'management_fee'
+
+  /* Op een management fee zitten geen werkgeverslasten en geen vakantiegeld:
+     het is een factuur van een eigen BV. We zetten ze hier op nul in plaats
+     van het formulier te laten kiezen, zodat een ingevuld percentage nooit
+     stilletjes meetelt. De database weigert het anders alsnog. */
+  const vakantiegeld = isFee
+    ? 0
+    : Number.parseInt(tekst(formData, 'vakantiegeld') || '8', 10)
   if (!Number.isInteger(vakantiegeld) || vakantiegeld < 0 || vakantiegeld > 100) {
     return { ok: false, error: 'Het vakantiegeld moet tussen 0 en 100 procent liggen.' }
+  }
+
+  const werkgeverslasten = isFee
+    ? 0
+    : Number.parseInt(tekst(formData, 'werkgeverslasten') || '28', 10)
+  if (!Number.isInteger(werkgeverslasten) || werkgeverslasten < 0 || werkgeverslasten > 200) {
+    return { ok: false, error: 'De werkgeverslasten moeten tussen 0 en 200 procent liggen.' }
   }
 
   const uren = tekst(formData, 'uren')
@@ -151,8 +167,10 @@ export async function nieuwSalaris(formData: FormData): Promise<ActionResult> {
     await addSalaris({
       userId,
       grossMonthlyCents: bedrag,
+      soort,
       basedOnHoursQuarters: urenQuarters,
       holidayAllowancePercent: vakantiegeld,
+      employerCostPercent: werkgeverslasten,
       effectiveFrom: ingang,
       reason: tekst(formData, 'reden') || null,
       createdByUserId: staff.id,

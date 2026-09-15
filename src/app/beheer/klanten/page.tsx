@@ -3,6 +3,7 @@ import { getSessionUser } from '@/lib/auth'
 import { listOrganizations } from '@/lib/admin'
 import { getCrmCounts, organizationStatusLabels, organizationStatusStyles } from '@/lib/crm'
 import { AppShell } from '@/components/AppShell'
+import { Avatar } from '@/components/Avatar'
 import { ActionForm, Field } from '@/components/ActionForm'
 import { nieuweKlant } from '../actions'
 import { formatCents } from '@/lib/money'
@@ -65,8 +66,17 @@ export default async function BeheerPage() {
                   <li key={k.organization.id}>
                     <a
                       href={`/beheer/klanten/${k.organization.slug}`}
-                      className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-3.5 transition-colors hover:bg-gray-50 sm:px-6"
+                      className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-3 transition-colors hover:bg-gray-50 sm:px-6"
                     >
+                      {/* Het logo vierkant en niet rond: een bedrijfslogo
+                          heeft zelden een rond formaat en wordt anders aan
+                          twee kanten afgesneden. */}
+                      <Avatar
+                        naam={k.organization.name}
+                        imageId={k.organization.logoImageId}
+                        maat={40}
+                        rond={false}
+                      />
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-2">
                           <p className="text-sm">{k.organization.name}</p>

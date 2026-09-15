@@ -162,6 +162,16 @@ export const subscriptionStatusEnum = pgEnum('subscription_status', [
  */
 export const aanhefEnum = pgEnum('aanhef', ['heer', 'mevrouw', 'neutraal'])
 
+/**
+ * Hoe iemand betaald wordt.
+ *
+ * Een management fee is geen salaris: er gaat geen vakantiegeld overheen en
+ * er zitten geen werkgeverslasten op, want het is een factuur van een eigen
+ * BV. Zou je het als salaris invoeren, dan reken je je maandlast structureel
+ * een derde te hoog.
+ */
+export const beloningEnum = pgEnum('beloning_soort', ['loondienst', 'management_fee'])
+
 export const contractTypeEnum = pgEnum('contract_type', [
   'bepaalde_tijd',
   'onbepaalde_tijd',
@@ -205,6 +215,8 @@ export const organizations = pgTable(
     /** URL-veilige naam, gebruikt in links. */
     slug: text('slug').notNull(),
     name: text('name').notNull(),
+    /** Logo van de klant. Leeg laat de initialen zien. */
+    logoImageId: uuid('logo_image_id'),
     /** Task-id van het bedrijf in de ClickUp CRM-lijst. */
     clickupCompanyId: text('clickup_company_id'),
 
@@ -295,6 +307,8 @@ export const contacts = pgTable(
     infix: text('infix'),
     lastName: text('last_name'),
     aanhef: aanhefEnum('aanhef'),
+    /** Profielfoto. Leeg laat de initialen zien. */
+    avatarImageId: uuid('avatar_image_id'),
     /** Functie binnen het bedrijf, bijv. Eigenaar of Marketing manager. */
     jobTitle: text('job_title'),
     email: text('email'),
@@ -809,6 +823,7 @@ export const users = pgTable(
     infix: text('infix'),
     lastName: text('last_name'),
     aanhef: aanhefEnum('aanhef'),
+    avatarImageId: uuid('avatar_image_id'),
 
     /* Adres en noodcontact: wat je nodig hebt als er iets misgaat of als er
        post heen moet. Geen BSN en geen IBAN — zie de toelichting bij het
@@ -1399,6 +1414,50 @@ export const invoicesRelations = relations(invoices, ({ one, many }) => ({
 }))
 
 /* -------------------------------------------------------------------------
+   Afbeeldingen: logo's en profielfoto's.
+
+   Ze staan in de database en niet in een aparte opslagdienst. Dat is een
+   bewuste afweging: het gaat om honderd logo's en tien pasfoto's van hooguit
+   een paar honderd kilobyte, en dat weegt niet op tegen een extra dienst met
+   eigen sleutels, een eigen bucket en een eigen manier om stuk te gaan.
+   Groeit dit uit tot documenten of veel grotere bestanden, dan is het tijd om
+   het te verhuizen — en dan hoeft alleen dit bestand mee.
+
+   Een eigen tabel, zodat de bytes niet in elke query over klanten of
+   contactpersonen meekomen en het weggooien van een foto één regel is.
+
+   SVG wordt bewust geweigerd. Een SVG kan script bevatten, en een plaatje dat
+   iemand kan uploaden en dat daarna in de browser van een collega draait, is
+   een gat dat je niet wilt.
+   ------------------------------------------------------------------------- */
+
+export const images = pgTable(
+  'images',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    /** image/png, image/jpeg of image/webp. */
+    contentType: text('content_type').notNull(),
+    bytes: integer('bytes').notNull(),
+    data: text('data').notNull(),
+    /** Oorspronkelijke bestandsnaam, puur om te tonen. */
+    filename: text('filename'),
+    uploadedByUserId: uuid('uploaded_by_user_id').references(() => users.id, {
+      onDelete: 'set null',
+    }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    // Een megabyte is ruim voor een logo en krap genoeg om te voorkomen dat
+    // iemand een foto van zijn telefoon rechtstreeks in de database zet.
+    check('image_size_reasonable', sql`${t.bytes} > 0 AND ${t.bytes} <= 1048576`),
+    check(
+      'image_type_allowed',
+      sql`${t.contentType} IN ('image/png', 'image/jpeg', 'image/webp')`,
+    ),
+  ],
+)
+
+/* -------------------------------------------------------------------------
    Personeelsdossier
 
    Wat hier NIET in staat, en waarom:
@@ -1494,8 +1553,18 @@ export const salaryRecords = pgTable(
      * ineens iets anders betekenen.
      */
     basedOnHoursQuarters: integer('based_on_hours_quarters'),
-    /** Vakantiegeld in procenten; wettelijk minimaal 8. */
+    soort: beloningEnum('soort').notNull().default('loondienst'),
+    /** Vakantiegeld in procenten; wettelijk minimaal 8. Nul bij een fee. */
     holidayAllowancePercent: integer('holiday_allowance_percent').notNull().default(8),
+    /**
+     * Werkgeverslasten in procenten bovenop het brutoloon inclusief
+     * vakantiegeld: sociale premies, pensioen, verzekeringen.
+     *
+     * Dit veld bestaat omdat brutoloon niet is wat iemand kost. Reken je met
+     * bruto, dan zie je ongeveer driekwart van je grootste kostenpost. Bij een
+     * management fee staat hier nul: die lasten zitten er niet op.
+     */
+    employerCostPercent: integer('employer_cost_percent').notNull().default(28),
 
     effectiveFrom: timestamp('effective_from', { withTimezone: true }).notNull(),
     /** Waarom: indiensttreding, periodiek, promotie, urenwijziging. */
@@ -1519,6 +1588,17 @@ export const salaryRecords = pgTable(
     check(
       'salary_hours_valid',
       sql`${t.basedOnHoursQuarters} IS NULL OR (${t.basedOnHoursQuarters} > 0 AND ${t.basedOnHoursQuarters} <= 8000)`,
+    ),
+    check(
+      'salary_employer_cost_valid',
+      sql`${t.employerCostPercent} >= 0 AND ${t.employerCostPercent} <= 200`,
+    ),
+    // Op een management fee zitten geen werkgeverslasten en geen
+    // vakantiegeld. Zou dat wel mogen, dan telt hetzelfde bedrag bij de ene
+    // eigenaar anders mee dan bij de andere.
+    check(
+      'fee_has_no_employer_cost',
+      sql`${t.soort} <> 'management_fee' OR (${t.employerCostPercent} = 0 AND ${t.holidayAllowancePercent} = 0)`,
     ),
   ],
 )
@@ -1599,3 +1679,4 @@ export type EmploymentContract = typeof employmentContracts.$inferSelect
 export type SalaryRecord = typeof salaryRecords.$inferSelect
 export type DossierEntry = typeof dossierEntries.$inferSelect
 export type CompanyAsset = typeof companyAssets.$inferSelect
+export type Image = typeof images.$inferSelect

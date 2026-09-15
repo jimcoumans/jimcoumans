@@ -11,6 +11,11 @@ import type { EmploymentContract, SalaryRecord, DossierEntry } from '@/db/schema
 
 export type DossierRegel = DossierEntry & { doorWie: string | null }
 
+export const BELONING_LABELS = {
+  loondienst: 'Loondienst',
+  management_fee: 'Management fee',
+} as const
+
 export const CONTRACT_LABELS = {
   bepaalde_tijd: 'Bepaalde tijd',
   onbepaalde_tijd: 'Onbepaalde tijd',

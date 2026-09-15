@@ -22,9 +22,13 @@ import {
    dan kun je op de klantkaart iets anders lezen dan op het bord, en dan
    gelooft niemand meer welke van de twee klopt.
 
-   De waarde van een klant heeft twee helften. Zijn LOPENDE abonnementen —
-   wat er elke maand terugkomt — en zijn projectwerk, gerekend als de
-   geaccepteerde offertes van de afgelopen twaalf maanden gedeeld door twaalf.
+   De waarde van een klant heeft twee helften. Het budget van zijn LOPENDE
+   abonnementen — wat hij elke maand aan diensten krijgt — en zijn projectwerk,
+   gerekend als de geaccepteerde offertes van de afgelopen twaalf maanden
+   gedeeld door twaalf.
+
+   Bewust het budget en niet de omzet na korting: dit bord gaat over werklast.
+   Een klant met korting vraagt evenveel tijd als een klant zonder.
 
    Die tweede helft moest erbij. Lang niet elke klant heeft een abonnement;
    een deel werkt op losse opdrachten. Telde het bord die als nul, dan leek
@@ -83,8 +87,12 @@ async function maandwaardePerKlant(): Promise<Map<string, { cents: number; aanta
   const rijen = await db
     .select({
       organizationId: subscriptions.organizationId,
-      // De waarde van een klant is wat hij ons oplevert, dus na korting.
-        cents: sql<string>`SUM(${subscriptions.amountExclVatCents} - ${subscriptions.discountCents})`,
+      /* Het BUDGET, niet de omzet. Korting is een commerciële afspraak en
+         maakt het werk niet minder: een klant met 1.600 budget en 480 korting
+         vraagt evenveel van zijn marketing manager als een klant die de volle
+         mep betaalt. Wat er binnenkomt na korting staat op het
+         abonnementenscherm. */
+      cents: sql<string>`SUM(${subscriptions.amountExclVatCents})`,
       aantal: sql<string>`COUNT(*)`,
     })
     .from(subscriptions)

@@ -12,6 +12,8 @@ import {
 import type { PartnerLink } from '@/lib/crm'
 import { formatCents } from '@/lib/money'
 import { formatDate } from '@/lib/dates'
+import { Avatar } from './Avatar'
+import { AfbeeldingKiezer } from './AfbeeldingKiezer'
 import { AANHEF_LABELS } from '@/lib/namen'
 
 /* Leeg staat er bewust bij en bovenaan: niets kiezen is het eerlijke
@@ -52,7 +54,9 @@ export function Contactpersonen({
           {contacts.map((c) => (
             <li key={c.id} className="px-4 py-3.5 sm:px-6">
               <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
-                <div className="min-w-0 flex-1">
+                <div className="flex min-w-0 flex-1 gap-3">
+                  <Avatar naam={c.name} imageId={c.avatarImageId} maat={40} />
+                  <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="text-sm">{c.name}</span>
                     {c.isPrimary && (
@@ -91,14 +95,20 @@ export function Contactpersonen({
                     >
                       <input type="hidden" name="contactId" value={c.id} />
                       <input type="hidden" name="slug" value={slug} />
-                      <Field label="Voornaam" name="voornaam" defaultValue={c.firstName ?? ''} />
-                      <Field
-                        label="Tussenvoegsel"
-                        name="tussenvoegsel"
-                        defaultValue={c.infix ?? ''}
-                        placeholder="van der"
-                      />
-                      <Field label="Achternaam" name="achternaam" defaultValue={c.lastName ?? ''} />
+                      {/* Voornaam, tussenvoegsel en achternaam horen bij
+                          elkaar, dus staan ze naast elkaar. Het tussenvoegsel
+                          krijgt weinig ruimte: er past "van der" in en meer
+                          hoeft niet. */}
+                      <div className="grid gap-3 sm:grid-cols-[1fr_5rem_1fr]">
+                        <Field label="Voornaam" name="voornaam" defaultValue={c.firstName ?? ''} />
+                        <Field
+                          label="Tussenvoegsel"
+                          name="tussenvoegsel"
+                          defaultValue={c.infix ?? ''}
+                          placeholder="van der"
+                        />
+                        <Field label="Achternaam" name="achternaam" defaultValue={c.lastName ?? ''} />
+                      </div>
                       <Select
                         label="Aanhef"
                         name="aanhef"
@@ -117,7 +127,18 @@ export function Contactpersonen({
                       <Check label="Dit is de vaste contactpersoon" name="vast" defaultChecked={c.isPrimary} />
                       <Check label="Ontvangt de facturen" name="facturen" defaultChecked={c.receivesInvoices} />
                     </ActionForm>
+
+                    <div className="mt-3 border-t border-gray-200 pt-3">
+                      <AfbeeldingKiezer
+                        soort="contact"
+                        doelId={c.id}
+                        naam={c.name}
+                        imageId={c.avatarImageId}
+                        slug={slug}
+                      />
+                    </div>
                   </Uitklap>
+                  </div>
                 </div>
 
                 <div className="flex shrink-0 gap-3">
@@ -160,9 +181,11 @@ export function Contactpersonen({
           >
             <input type="hidden" name="organizationId" value={organizationId} />
             <input type="hidden" name="slug" value={slug} />
-            <Field label="Voornaam" name="voornaam" placeholder="Marieke" />
-            <Field label="Tussenvoegsel" name="tussenvoegsel" placeholder="van der" />
-            <Field label="Achternaam" name="achternaam" placeholder="Voncken" />
+            <div className="grid gap-3 sm:grid-cols-[1fr_5rem_1fr]">
+              <Field label="Voornaam" name="voornaam" placeholder="Marieke" />
+              <Field label="Tussenvoegsel" name="tussenvoegsel" placeholder="van der" />
+              <Field label="Achternaam" name="achternaam" placeholder="Voncken" />
+            </div>
             <Select
               label="Aanhef"
               name="aanhef"
@@ -545,6 +568,17 @@ export function Bedrijfsgegevens({
   return (
     <section>
       <h2 className="mb-1 text-lg">Bedrijfsgegevens</h2>
+      <div className="mb-4 rounded-xl bg-white p-5 shadow-sm">
+        <AfbeeldingKiezer
+          soort="klant"
+          doelId={org.id}
+          naam={org.name}
+          imageId={org.logoImageId}
+          slug={slug}
+          label="Logo"
+          rond={false}
+        />
+      </div>
       <p className="mb-3 text-sm text-gray-600">
         {[org.industry, org.city, org.kvkNumber && `KvK ${org.kvkNumber}`]
           .filter(Boolean)

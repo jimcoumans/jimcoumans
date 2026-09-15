@@ -22,6 +22,8 @@ import {
   Dossier,
   Bedrijfsmiddelen,
 } from '@/components/Personeelsdossier'
+import { Avatar } from '@/components/Avatar'
+import { AfbeeldingKiezer } from '@/components/AfbeeldingKiezer'
 
 /**
  * Het profiel van één collega.
@@ -73,6 +75,7 @@ export default async function MedewerkerPage({
           &larr; Team
         </a>
         <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
+          <Avatar naam={lid.name ?? lid.email} imageId={lid.avatarImageId} maat={44} />
           <h1 className="text-jr-blue text-2xl">{lid.name ?? lid.email}</h1>
           {lid.role === 'admin' && (
             <span className="bg-jr-lightblue text-jr-deepblue rounded-full px-2 py-0.5 text-xs">
@@ -252,6 +255,15 @@ export default async function MedewerkerPage({
               placeholder="Afspraken, aandachtspunten, wat dan ook."
             />
           </ActionForm>
+
+          <div className="mt-4 border-t border-gray-200 pt-4">
+            <AfbeeldingKiezer
+              soort="medewerker"
+              doelId={lid.id}
+              naam={lid.name ?? lid.email}
+              imageId={lid.avatarImageId}
+            />
+          </div>
         </section>
 
         {/* ---------------------------------------------------------------

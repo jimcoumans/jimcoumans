@@ -2,7 +2,11 @@ import { redirect } from 'next/navigation'
 import { getSessionUser } from '@/lib/auth'
 import { AppShell } from '@/components/AppShell'
 import { getOverallFigures, getOutstandingInvoices, getFiguresByOrganization } from '@/lib/reports'
-import { getMonthlyRecurringCents, listSubscriptions } from '@/lib/billing'
+import {
+  getMonthlyRecurringCents,
+  getMonthlyBudgetCents,
+  listSubscriptions,
+} from '@/lib/billing'
 import { listQuotes, getQuoteFigures, quoteStatusLabels, quoteStatusStyles } from '@/lib/quotes'
 import { listOrganizations } from '@/lib/admin'
 import { formatCents } from '@/lib/money'
@@ -14,10 +18,20 @@ export default async function DashboardPage() {
   if (!user) redirect('/login')
   if (user.role !== 'staff' && user.role !== 'admin') redirect('/')
 
-  const [overall, mrr, quoteFigures, offertes, abonnementen, openstaand, klanten, perKlant] =
-    await Promise.all([
+  const [
+    overall,
+    mrr,
+    maandbudget,
+    quoteFigures,
+    offertes,
+    abonnementen,
+    openstaand,
+    klanten,
+    perKlant,
+  ] = await Promise.all([
       getOverallFigures(),
       getMonthlyRecurringCents(),
+      getMonthlyBudgetCents(),
       getQuoteFigures(),
       listQuotes(),
       listSubscriptions(),
@@ -73,17 +87,28 @@ export default async function DashboardPage() {
         {klanten.length} klanten &middot; {abonnementen.filter((s) => s.subscription.status === 'active').length} lopende abonnementen
       </p>
 
+      {/* De drie cijfers waar het om draait, en ze sluiten op elkaar aan:
+          de walletwaarde is wat we per maand aan diensten weggeven, en die
+          bestaat uit de omzet die we ervoor factureren plus de korting die we
+          erop geven. Per jaar staat erbij omdat je die twee anders niet kunt
+          optellen. */}
       <section className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Tegel
-          label="Per maand terugkerend"
-          waarde={formatCents(mrr)}
-          onder="uit lopende abonnementen"
+          label="Walletwaarde per maand"
+          waarde={formatCents(maandbudget.budgetCents)}
+          onder={`${formatCents(maandbudget.budgetCents * 12)} per jaar`}
           accent
         />
         <Tegel
-          label="Omzet totaal"
-          waarde={formatCents(overall.revenueCents)}
-          onder={`marge ${formatCents(overall.marginCents)}`}
+          label="Abonnementsomzet per jaar"
+          waarde={formatCents(mrr * 12)}
+          onder={
+            maandbudget.kortingCents > 0
+              ? `plus ${formatCents(maandbudget.kortingCents * 12)} korting = ${formatCents(
+                  maandbudget.budgetCents * 12,
+                )} walletwaarde`
+              : 'geen korting gegeven'
+          }
         />
         <Tegel
           label="Budget bij klanten"

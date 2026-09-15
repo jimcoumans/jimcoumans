@@ -45,10 +45,21 @@ export function PortfolioBord({
   for (const kolom of bord.kolommen) for (const k of kolom.klanten) alle.set(k.organizationId, k)
   for (const k of bord.nietToegewezen) alle.set(k.organizationId, k)
 
+  /*
+   * Abonnementsklanten eerst, daarna projectklanten, binnen elke groep op
+   * waarde. Die twee horen niet door elkaar: een abonnement is vaste
+   * maandelijkse belasting, projectwerk komt en gaat. Ze op waarde door
+   * elkaar zetten laat een kolom er stabieler uitzien dan hij is.
+   */
   const klantenVan = (userId: string) =>
     [...alle.values()]
       .filter((k) => (waar[k.organizationId] ?? NIET_TOEGEWEZEN) === userId)
-      .sort((a, b) => b.maandwaardeCents - a.maandwaardeCents)
+      .sort((a, b) => {
+        const aAbo = a.abonnementen > 0 ? 0 : 1
+        const bAbo = b.abonnementen > 0 ? 0 : 1
+        if (aAbo !== bAbo) return aAbo - bAbo
+        return b.maandwaardeCents - a.maandwaardeCents
+      })
 
   function verplaats(organizationId: string, naar: string) {
     const vorige = waar[organizationId] ?? NIET_TOEGEWEZEN
@@ -244,9 +255,28 @@ function Kolom({
             {waarschuwing ? 'Alles is verdeeld.' : 'Sleep hier een klant naartoe.'}
           </p>
         ) : (
-          klanten.map((k) => (
-            <Kaart key={k.organizationId} klant={k} huidige={id} opties={opties} onKies={onKies} onSleepStart={onSleepStart} />
-          ))
+          klanten.map((k, i) => {
+            // Een streepje op de grens tussen abonnement en projectwerk, maar
+            // alleen als er allebei zijn: anders staat er een kopje boven een
+            // lijst die toch al uit één soort bestaat.
+            const vorige = klanten[i - 1]
+            const grens = vorige !== undefined && vorige.abonnementen > 0 && k.abonnementen === 0
+
+            return (
+              <div key={k.organizationId}>
+                {grens && (
+                  <p className="px-1 pt-2 pb-1 text-[11px] text-gray-400">Op projectbasis</p>
+                )}
+                <Kaart
+                  klant={k}
+                  huidige={id}
+                  opties={opties}
+                  onKies={onKies}
+                  onSleepStart={onSleepStart}
+                />
+              </div>
+            )
+          })
         )}
       </div>
     </section>
