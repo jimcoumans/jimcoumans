@@ -929,8 +929,22 @@ export const subscriptions = pgTable(
     name: text('name').notNull(),
     description: text('description'),
 
-    /** Maandbedrag exclusief btw, in centen. Dit wordt het budget. */
+    /**
+     * Het maandbudget exclusief btw, in centen: wat de klant aan diensten
+     * krijgt en wat er in zijn wallet wordt bijgeschreven.
+     */
     amountExclVatCents: integer('amount_excl_vat_cents').notNull(),
+    /**
+     * Korting in centen: wat er van de factuur af gaat.
+     *
+     * Het budget blijft heel — de klant krijgt waar hij recht op heeft — maar
+     * hij betaalt minder. Zo staat de korting als getal in de administratie
+     * in plaats van verstopt in een lager budget, en kun je zien hoeveel we
+     * per maand weggeven.
+     *
+     * Nul bij iedereen die geen korting heeft, en dat is het gewone geval.
+     */
+    discountCents: integer('discount_cents').notNull().default(0),
     /** Btw-percentage voor de factuur. Het budget is altijd exclusief btw. */
     vatRatePercent: integer('vat_rate_percent').notNull().default(21),
 
@@ -965,6 +979,13 @@ export const subscriptions = pgTable(
     index('subscriptions_status_idx').on(t.status),
     uniqueIndex('subscriptions_clickup_idx').on(t.clickupTaskId),
     check('subscription_amount_positive', sql`${t.amountExclVatCents} > 0`),
+    check('subscription_discount_not_negative', sql`${t.discountCents} >= 0`),
+    // De korting mag het budget niet opeten: dan zou er een factuur van nul
+    // of minder uitgaan, en dat is geen factuur meer.
+    check(
+      'subscription_discount_below_amount',
+      sql`${t.discountCents} < ${t.amountExclVatCents}`,
+    ),
     check(
       'subscription_billing_day_valid',
       sql`${t.billingDay} >= 1 AND ${t.billingDay} <= 28`,

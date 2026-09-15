@@ -10,6 +10,7 @@ import {
   periodLabel,
   billingDate,
   vatCents,
+  invoiceCents,
   nextBillingDate,
 } from './billing-periods'
 
@@ -115,6 +116,11 @@ async function factureerPeriode(
     const nummer = await vrijFactuurnummer(tx, abonnement.organizationId, period)
     const uitgifte = billingDate(period, abonnement.billingDay)
 
+    // De factuur krijgt het bedrag na korting, de wallet het hele budget.
+    // Dat verschil IS de korting: de klant krijgt waar hij recht op heeft en
+    // betaalt minder.
+    const teFactureren = invoiceCents(abonnement.amountExclVatCents, abonnement.discountCents)
+
     const [factuur] = await tx
       .insert(invoices)
       .values({
@@ -122,9 +128,12 @@ async function factureerPeriode(
         subscriptionId: abonnement.id,
         period,
         number: nummer,
-        description: `${abonnement.name} ${periodLabel(period)}`,
-        amountExclVatCents: abonnement.amountExclVatCents,
-        vatCents: vatCents(abonnement.amountExclVatCents, abonnement.vatRatePercent),
+        description:
+          abonnement.discountCents > 0
+            ? `${abonnement.name} ${periodLabel(period)} (na korting)`
+            : `${abonnement.name} ${periodLabel(period)}`,
+        amountExclVatCents: teFactureren,
+        vatCents: vatCents(teFactureren, abonnement.vatRatePercent),
         status: 'open',
         issuedOn: uitgifte,
       })
@@ -139,7 +148,10 @@ async function factureerPeriode(
         kind: 'topup',
         amountCents: abonnement.amountExclVatCents,
         description: `Budget ${periodLabel(period)}`,
-        detail: `${abonnement.name} · factuur ${nummer}`,
+        detail:
+          abonnement.discountCents > 0
+            ? `${abonnement.name} · factuur ${nummer} · ${formatCents(abonnement.discountCents)} korting`
+            : `${abonnement.name} · factuur ${nummer}`,
         bookedOn: uitgifte,
         source: 'invoice',
         invoiceId: factuur.id,
@@ -251,7 +263,12 @@ export async function runBilling(opties: BillingOpties = {}): Promise<BillingRap
           subscriptionName: abonnement.name,
           period,
           amountCents: abonnement.amountExclVatCents,
-          toelichting: `zou ${formatCents(abonnement.amountExclVatCents)} bijschrijven`,
+          toelichting:
+            abonnement.discountCents > 0
+              ? `zou ${formatCents(abonnement.amountExclVatCents)} bijschrijven en ${formatCents(
+                  invoiceCents(abonnement.amountExclVatCents, abonnement.discountCents),
+                )} factureren`
+              : `zou ${formatCents(abonnement.amountExclVatCents)} bijschrijven`,
         })
         continue
       }
@@ -390,10 +407,98 @@ export async function listSubscriptions(opts: { organizationId?: string } = {}) 
 export async function getMonthlyRecurringCents(): Promise<number> {
   const [row] = await db
     .select({
-      totaal: sql<string>`COALESCE(SUM(${subscriptions.amountExclVatCents}), 0)`,
+      // Omzet is wat er gefactureerd wordt, dus na korting. Het budget dat
+      // eruit gaat staat los daarvan; dat is geen omzet maar een belofte.
+      totaal: sql<string>`COALESCE(SUM(${subscriptions.amountExclVatCents} - ${subscriptions.discountCents}), 0)`,
     })
     .from(subscriptions)
     .where(eq(subscriptions.status, 'active'))
 
   return Number(row?.totaal ?? 0)
+}
+
+/** Wat er per maand aan budget wordt bijgeschreven, en hoeveel korting daar in zit. */
+export async function getMonthlyBudgetCents(): Promise<{
+  budgetCents: number
+  kortingCents: number
+}> {
+  const [row] = await db
+    .select({
+      budget: sql<string>`COALESCE(SUM(${subscriptions.amountExclVatCents}), 0)`,
+      korting: sql<string>`COALESCE(SUM(${subscriptions.discountCents}), 0)`,
+    })
+    .from(subscriptions)
+    .where(eq(subscriptions.status, 'active'))
+
+  return {
+    budgetCents: Number(row?.budget ?? 0),
+    kortingCents: Number(row?.korting ?? 0),
+  }
+}
+
+export type KlantAandeel = {
+  organizationSlug: string
+  organizationName: string
+  /** Wat deze klant per maand aan abonnementen betaalt, na korting. */
+  omzetCents: number
+  /** Het budget dat hij daarvoor krijgt. */
+  budgetCents: number
+  kortingCents: number
+  /** Aandeel in de totale abonnementsomzet, in procenten met één decimaal. */
+  aandeelProcent: number
+  abonnementen: number
+}
+
+/**
+ * Hoe de abonnementsomzet over de klanten verdeeld is.
+ *
+ * Dit is een risicocijfer, geen scorebord. Eén klant die een groot deel van
+ * je vaste omzet is, is een klant die je niet kunt missen — en dat merk je
+ * liever nu dan op de dag dat hij opzegt.
+ *
+ * Gepauzeerde en gestopte abonnementen tellen niet mee: die leveren niets op.
+ */
+export async function getKlantAandelen(): Promise<{
+  klanten: KlantAandeel[]
+  totaalOmzetCents: number
+}> {
+  const rijen = await db
+    .select({
+      slug: organizations.slug,
+      naam: organizations.name,
+      omzet: sql<string>`SUM(${subscriptions.amountExclVatCents} - ${subscriptions.discountCents})`,
+      budget: sql<string>`SUM(${subscriptions.amountExclVatCents})`,
+      korting: sql<string>`SUM(${subscriptions.discountCents})`,
+      aantal: sql<string>`COUNT(*)`,
+    })
+    .from(subscriptions)
+    .innerJoin(organizations, eq(organizations.id, subscriptions.organizationId))
+    .where(eq(subscriptions.status, 'active'))
+    .groupBy(organizations.slug, organizations.name)
+
+  const klanten = rijen.map((r) => ({
+    organizationSlug: r.slug,
+    organizationName: r.naam,
+    omzetCents: Number(r.omzet),
+    budgetCents: Number(r.budget),
+    kortingCents: Number(r.korting),
+    abonnementen: Number(r.aantal),
+    aandeelProcent: 0,
+  }))
+
+  const totaalOmzetCents = klanten.reduce((t, k) => t + k.omzetCents, 0)
+
+  // Het percentage wordt hier berekend en niet in SQL, zodat het altijd bij
+  // precies dit totaal hoort. Twee query's zouden een tel uit elkaar kunnen
+  // lopen en dan telt de kolom niet op tot honderd.
+  for (const klant of klanten) {
+    klant.aandeelProcent =
+      totaalOmzetCents === 0
+        ? 0
+        : Math.round((klant.omzetCents / totaalOmzetCents) * 1000) / 10
+  }
+
+  klanten.sort((a, b) => b.omzetCents - a.omzetCents)
+
+  return { klanten, totaalOmzetCents }
 }

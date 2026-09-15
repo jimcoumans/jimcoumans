@@ -157,6 +157,11 @@ export function describeDbError(error: unknown): string | null {
       return 'De maand van de verjaardag moet tussen 1 en 12 liggen.'
     case 'contact_birth_year_valid':
       return 'Het geboortejaar lijkt niet te kloppen. Laat het leeg als je het niet weet.'
+    case 'subscription_discount_not_negative':
+      return 'Een korting kan niet negatief zijn. Laat het veld leeg als er geen korting is.'
+    case 'subscription_discount_below_amount':
+      return 'De korting is net zo hoog als het budget of hoger. Dan blijft er geen factuur over.'
+
     /* --- Medewerkerprofiel --- */
     case 'user_birthday_complete':
       return 'Vul bij een verjaardag zowel de dag als de maand in. Een dag zonder maand zegt niets; het jaar mag je weglaten.'

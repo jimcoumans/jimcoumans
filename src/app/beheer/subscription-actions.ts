@@ -77,6 +77,10 @@ export async function nieuwAbonnement(formData: FormData): Promise<ActionResult>
     return { ok: false, error: 'De einddatum kan niet voor de startdatum liggen.' }
   }
 
+  const kortingUitkomst = leesKorting(formData, bedrag)
+  if ('fout' in kortingUitkomst) return { ok: false, error: kortingUitkomst.fout }
+  const korting = kortingUitkomst.cents
+
   return veilig(async () => {
     // De wallet moet bij deze klant horen, anders zou het budget bij een
     // andere klant terechtkomen.
@@ -94,6 +98,7 @@ export async function nieuwAbonnement(formData: FormData): Promise<ActionResult>
       name: naam,
       description: String(formData.get('omschrijving') ?? '').trim() || null,
       amountExclVatCents: bedrag,
+      discountCents: korting,
       vatRatePercent: btw,
       billingDay: dag,
       startedOn: start,
@@ -104,6 +109,32 @@ export async function nieuwAbonnement(formData: FormData): Promise<ActionResult>
     revalidatePath(`/beheer/klanten/${slug}`)
     revalidatePath('/beheer/abonnementen')
   })
+}
+
+/**
+ * Leest het kortingsveld. Leeg is geen korting, en dat is het gewone geval.
+ *
+ * De korting mag het budget niet opeten: dan zou er een factuur van nul of
+ * minder uitgaan. De database weigert dat ook, maar hier krijg je een zin te
+ * lezen in plaats van een constraintnaam.
+ */
+function leesKorting(
+  formData: FormData,
+  budgetCents: number,
+): { cents: number } | { fout: string } {
+  const ruw = String(formData.get('korting') ?? '').trim()
+  if (ruw === '') return { cents: 0 }
+
+  const cents = parseAmountToCents(ruw)
+  if (cents === null || cents < 0) {
+    return { fout: 'De korting begrijp ik niet. Schrijf hem als 480,00, of laat het veld leeg.' }
+  }
+  if (cents >= budgetCents) {
+    return {
+      fout: 'De korting is net zo hoog als het budget of hoger. Dan blijft er geen factuur over.',
+    }
+  }
+  return { cents }
 }
 
 /**
@@ -133,6 +164,10 @@ export async function wijzigAbonnement(formData: FormData): Promise<ActionResult
   const eind = leesDatum(String(formData.get('einddatum') ?? ''))
   if (eind === 'fout') return { ok: false, error: 'De einddatum is niet geldig.' }
 
+  const kortingUitkomstWijzig = leesKorting(formData, bedrag)
+  if ('fout' in kortingUitkomstWijzig) return { ok: false, error: kortingUitkomstWijzig.fout }
+  const kortingBijWijzigen = kortingUitkomstWijzig.cents
+
   return veilig(async () => {
     await db
       .update(subscriptions)
@@ -140,6 +175,7 @@ export async function wijzigAbonnement(formData: FormData): Promise<ActionResult
         name: naam,
         description: String(formData.get('omschrijving') ?? '').trim() || null,
         amountExclVatCents: bedrag,
+        discountCents: kortingBijWijzigen,
         billingDay: dag,
         endsOn: eind,
         notes: String(formData.get('notities') ?? '').trim() || null,

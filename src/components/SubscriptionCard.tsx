@@ -6,7 +6,7 @@ import {
 } from '@/app/beheer/subscription-actions'
 import { formatCents } from '@/lib/money'
 import { formatDate } from '@/lib/dates'
-import { vatCents } from '@/lib/billing-periods'
+import { vatCents, invoiceCents, discountPercentage } from '@/lib/billing-periods'
 import type { SubscriptionOverzicht } from '@/lib/billing'
 
 const statusLabels = {
@@ -41,7 +41,11 @@ export function SubscriptionCard({
   toonKlant?: boolean
 }) {
   const { subscription: abo } = item
-  const btw = vatCents(abo.amountExclVatCents, abo.vatRatePercent)
+  // Het budget is wat de klant krijgt; het factuurbedrag is wat hij betaalt.
+  // Zonder korting is dat hetzelfde getal en tonen we er maar één.
+  const teFactureren = invoiceCents(abo.amountExclVatCents, abo.discountCents)
+  const btw = vatCents(teFactureren, abo.vatRatePercent)
+  const kortingPercentage = discountPercentage(abo.amountExclVatCents, abo.discountCents)
 
   return (
     <li className="rounded-xl bg-white p-5 shadow-sm">
@@ -92,10 +96,26 @@ export function SubscriptionCard({
 
         <div className="shrink-0 text-right">
           <p className="tabular text-lg">{formatCents(abo.amountExclVatCents)}</p>
-          <p className="text-xs text-gray-600">per maand, excl. btw</p>
-          <p className="text-xs text-gray-500">
-            incl. {formatCents(abo.amountExclVatCents + btw)}
-          </p>
+          <p className="text-xs text-gray-600">budget per maand, excl. btw</p>
+
+          {abo.discountCents > 0 ? (
+            <>
+              <p className="text-jr-orange text-xs">
+                &minus; {formatCents(abo.discountCents)} korting
+                {kortingPercentage !== null && ` (${kortingPercentage}%)`}
+              </p>
+              <p className="tabular mt-0.5 text-sm font-bold">
+                {formatCents(teFactureren)}
+              </p>
+              <p className="text-xs text-gray-600">
+                op de factuur &middot; incl. {formatCents(teFactureren + btw)}
+              </p>
+            </>
+          ) : (
+            <p className="text-xs text-gray-500">
+              incl. {formatCents(teFactureren + btw)}
+            </p>
+          )}
 
           {item.nextBillingOn ? (
             <p className="text-jr-blue mt-1.5 text-xs">
@@ -182,10 +202,18 @@ export function SubscriptionCard({
 
             <Field label="Naam" name="naam" required defaultValue={abo.name} />
             <Field
-              label="Maandbedrag excl. btw"
+              label="Maandbudget excl. btw"
               name="bedrag"
               required
               defaultValue={bedragVeld(abo.amountExclVatCents)}
+              hint="Wat de klant aan diensten krijgt; dit wordt in zijn wallet bijgeschreven."
+            />
+            <Field
+              label="Korting"
+              name="korting"
+              defaultValue={abo.discountCents > 0 ? bedragVeld(abo.discountCents) : ''}
+              placeholder="0,00"
+              hint="Gaat van de factuur af, niet van het budget. Leeg laten als er geen korting is."
             />
             <Field
               label="Facturatiedag"
@@ -252,11 +280,17 @@ export function NewSubscriptionForm({
 
       <Field label="Naam" name="naam" required placeholder="Marketing abonnement" />
       <Field
-        label="Maandbedrag excl. btw"
+        label="Maandbudget excl. btw"
         name="bedrag"
         required
         placeholder="2500,00"
-        hint="Dit wordt maandelijks als budget bijgeschreven."
+        hint="Wat de klant aan diensten krijgt; dit wordt maandelijks bijgeschreven."
+      />
+      <Field
+        label="Korting"
+        name="korting"
+        placeholder="0,00"
+        hint="Alleen invullen als de klant minder betaalt dan zijn budget. De korting gaat van de factuur af; het budget blijft heel."
       />
 
       <div>

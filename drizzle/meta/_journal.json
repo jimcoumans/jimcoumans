@@ -78,6 +78,13 @@
       "when": 1789464029976,
       "tag": "0010_medewerkerprofiel",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1789466120404,
+      "tag": "0011_korting",
+      "breakpoints": true
     }
   ]
 }

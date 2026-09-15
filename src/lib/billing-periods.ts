@@ -195,3 +195,29 @@ export function nextBillingDate(
 export function vatCents(amountExclVatCents: number, ratePercent: number): number {
   return Math.round((amountExclVatCents * ratePercent) / 100)
 }
+
+/**
+ * Wat er daadwerkelijk gefactureerd wordt: het budget min de korting.
+ *
+ * Het budget en het factuurbedrag lopen alleen uiteen bij een klant met een
+ * korting. Dat die twee getallen hier uit elkaar worden gehouden in plaats
+ * van in de facturatiecode zelf, is met opzet: de wallet krijgt het budget
+ * en de factuur dit bedrag, en die twee mogen nooit per ongeluk verwisseld
+ * worden.
+ */
+export function invoiceCents(amountExclVatCents: number, discountCents: number): number {
+  return amountExclVatCents - discountCents
+}
+
+/**
+ * De korting als percentage, om te tonen. Niet om mee te rekenen: de korting
+ * staat in centen in de database, want een percentage van een bedrag geeft
+ * afrondingen en dan klopt de factuur een cent niet.
+ */
+export function discountPercentage(
+  amountExclVatCents: number,
+  discountCents: number,
+): number | null {
+  if (discountCents === 0 || amountExclVatCents === 0) return null
+  return Math.round((discountCents / amountExclVatCents) * 100)
+}

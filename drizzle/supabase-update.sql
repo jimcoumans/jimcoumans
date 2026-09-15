@@ -291,3 +291,24 @@ BEGIN
   END IF;
 END $jr_0010_medewerkerprofiel$;
 
+-- ---------------------------------------------------------------------------
+-- 0011_korting
+-- ---------------------------------------------------------------------------
+
+DO $jr_0011_korting$
+BEGIN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = 'ee90ba2ce4c1b0818257c68fa27a78f39c8bc1ede564819d307f8eb8a3fc102c') THEN
+    RAISE NOTICE 'Overgeslagen: 0011_korting stond er al.';
+  ELSE
+    ALTER TABLE "subscriptions" ADD COLUMN "discount_cents" integer DEFAULT 0 NOT NULL;
+
+    ALTER TABLE "subscriptions" ADD CONSTRAINT "subscription_discount_not_negative" CHECK ("subscriptions"."discount_cents" >= 0);
+
+    ALTER TABLE "subscriptions" ADD CONSTRAINT "subscription_discount_below_amount" CHECK ("subscriptions"."discount_cents" < "subscriptions"."amount_excl_vat_cents");
+
+    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+    VALUES ('ee90ba2ce4c1b0818257c68fa27a78f39c8bc1ede564819d307f8eb8a3fc102c', 1789466120404);
+    RAISE NOTICE 'Toegepast: 0011_korting.';
+  END IF;
+END $jr_0011_korting$;
+

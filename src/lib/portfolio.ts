@@ -62,7 +62,8 @@ async function maandwaardePerKlant(): Promise<Map<string, { cents: number; aanta
   const rijen = await db
     .select({
       organizationId: subscriptions.organizationId,
-      cents: sql<string>`SUM(${subscriptions.amountExclVatCents})`,
+      // De waarde van een klant is wat hij ons oplevert, dus na korting.
+        cents: sql<string>`SUM(${subscriptions.amountExclVatCents} - ${subscriptions.discountCents})`,
       aantal: sql<string>`COUNT(*)`,
     })
     .from(subscriptions)

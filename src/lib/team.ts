@@ -59,7 +59,8 @@ export async function listTeam(): Promise<TeamlidMetPortfolio[]> {
       .select({
         userId: organizationOwners.userId,
         klanten: sql<string>`COUNT(DISTINCT ${organizationOwners.organizationId})`,
-        cents: sql<string>`COALESCE(SUM(${subscriptions.amountExclVatCents}), 0)`,
+        // Na korting: een portfolio telt wat er binnenkomt.
+        cents: sql<string>`COALESCE(SUM(${subscriptions.amountExclVatCents} - ${subscriptions.discountCents}), 0)`,
       })
       .from(organizationOwners)
       .leftJoin(
@@ -102,7 +103,7 @@ export async function getTeamlid(userId: string): Promise<TeamlidDetail | null> 
       rol: organizationOwners.role,
       isPrimary: organizationOwners.isPrimary,
       maandCents: sql<string>`COALESCE((
-        SELECT SUM(${subscriptions.amountExclVatCents})
+        SELECT SUM(${subscriptions.amountExclVatCents} - ${subscriptions.discountCents})
         FROM ${subscriptions}
         WHERE ${subscriptions.organizationId} = ${organizations.id}
           AND ${subscriptions.status} = 'active'
