@@ -137,6 +137,28 @@ export function describeDbError(error: unknown): string | null {
       return 'Er bestaat al een klant met deze naam.'
     case 'users_email_idx':
       return 'Dit e-mailadres is al in gebruik.'
+
+    /* --- CRM: accountmanagers, labels, verjaardagen, tijdlijn --- */
+    case 'organization_owners_pair_idx':
+      return 'Deze collega staat al als accountmanager op deze klant. Pas de bestaande regel aan in plaats van er een tweede te maken.'
+    case 'organization_owners_primary_idx':
+      return 'Er kan maar één eerste aanspreekpartner per klant zijn. Maak eerst de ander niet-primair.'
+    case 'organization_tags_organization_id_tag_id_pk':
+      return 'Dit label hangt al aan deze klant.'
+    case 'tags_name_idx':
+      return 'Dit label bestaat al. Gebruik het bestaande, anders krijg je twee halve groepen.'
+    case 'organization_payment_term_positive':
+      return 'De betaaltermijn moet een positief aantal dagen zijn.'
+    case 'contact_birthday_complete':
+      return 'Vul bij een verjaardag zowel de dag als de maand in. Een dag zonder maand zegt niets; het jaar mag je weglaten.'
+    case 'contact_birth_day_valid':
+      return 'De dag van de verjaardag moet tussen 1 en 31 liggen.'
+    case 'contact_birth_month_valid':
+      return 'De maand van de verjaardag moet tussen 1 en 12 liggen.'
+    case 'contact_birth_year_valid':
+      return 'Het geboortejaar lijkt niet te kloppen. Laat het leeg als je het niet weet.'
+    case 'activity_subject_not_empty':
+      return 'Geef de notitie een korte titel, anders staat er straks een lege regel op de tijdlijn.'
     default:
       break
   }

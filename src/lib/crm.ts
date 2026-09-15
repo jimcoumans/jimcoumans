@@ -58,13 +58,33 @@ export const accountOwnerLabels = {
   shared: 'Gedeeld',
 } as const
 
+export const leadSourceLabels = {
+  referral: 'Doorverwijzing',
+  network: 'Eigen netwerk',
+  inbound: 'Via de website',
+  outbound: 'Zelf benaderd',
+  partner: 'Via een partner',
+  event: 'Evenement',
+  other: 'Anders',
+} as const
+
+export const activityKindLabels = {
+  note: 'Notitie',
+  call: 'Telefoongesprek',
+  meeting: 'Afspraak',
+  email: 'Mail',
+  task: 'Taak',
+} as const
+
 export const organizationStatusLabels = {
+  lead: 'Lead',
   prospect: 'Prospect',
   client: 'Klant',
   former: 'Oud-klant',
 } as const
 
 export const organizationStatusStyles = {
+  lead: 'bg-jr-purple/10 text-jr-purple',
   prospect: 'bg-jr-lightblue text-jr-deepblue',
   client: 'bg-jr-green/10 text-jr-green',
   former: 'bg-gray-100 text-gray-600',

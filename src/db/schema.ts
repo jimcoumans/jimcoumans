@@ -9,6 +9,7 @@ import {
   uniqueIndex,
   check,
   boolean,
+  primaryKey,
 } from 'drizzle-orm/pg-core'
 import { relations, sql } from 'drizzle-orm'
 
@@ -78,9 +79,31 @@ export const syncStatusEnum = pgEnum('sync_status', ['running', 'success', 'fail
 /** Staat van een abonnement. Alleen 'active' wordt gefactureerd. */
 /** Waar een klant in de relatie staat. */
 export const organizationStatusEnum = pgEnum('organization_status', [
-  'prospect', // nog geen klant
+  'lead', // binnengekomen, nog geen gesprek
+  'prospect', // in gesprek, nog geen klant
   'client', // lopende samenwerking
   'former', // oud-klant
+])
+
+/** Waar een lead vandaan komt. Vrije tekst met suggesties zou ook kunnen,
+ *  maar een vaste lijst maakt "wat levert het meeste op" beantwoordbaar. */
+export const leadSourceEnum = pgEnum('lead_source', [
+  'referral', // doorverwijzing van een klant of relatie
+  'network', // eigen netwerk
+  'inbound', // via de website of een formulier
+  'outbound', // zelf benaderd
+  'partner', // via een partner
+  'event', // beurs, borrel, spreekbeurt
+  'other',
+])
+
+/** Wat er op de tijdlijn van een klant kan staan. */
+export const activityKindEnum = pgEnum('activity_kind', [
+  'note', // losse notitie
+  'call', // telefoongesprek
+  'meeting', // afspraak of bezoek
+  'email', // mailwisseling
+  'task', // afspraak met jezelf
 ])
 
 /** Waar een offerte in het traject staat. */
@@ -155,6 +178,26 @@ export const organizations = pgTable(
     clientSince: timestamp('client_since', { withTimezone: true }),
     notes: text('notes'),
 
+    /* --- Facturatie ---
+       Apart van het bezoekadres, want de post gaat vaak ergens anders heen
+       dan waar je op de koffie komt. Leeg laten betekent: gebruik het adres
+       hierboven. */
+    invoiceEmail: text('invoice_email'),
+    invoiceAddressLine: text('invoice_address_line'),
+    invoicePostalCode: text('invoice_postal_code'),
+    invoiceCity: text('invoice_city'),
+    /** Klantnummer of referentie die op de factuur moet. */
+    invoiceReference: text('invoice_reference'),
+    paymentTermDays: integer('payment_term_days'),
+
+    /* --- Commercieel --- */
+    /** Waar deze lead vandaan kwam. Blijft staan als hij klant wordt; dat is
+        precies wat je wilt weten als je vraagt wat het meeste oplevert. */
+    leadSource: leadSourceEnum('lead_source'),
+    /** Wat de volgende stap is, en wanneer. Dit is de pijplijn zonder bord. */
+    nextActionOn: timestamp('next_action_on', { withTimezone: true }),
+    nextActionNote: text('next_action_note'),
+
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
     archivedAt: timestamp('archived_at', { withTimezone: true }),
@@ -164,6 +207,12 @@ export const organizations = pgTable(
     uniqueIndex('organizations_clickup_idx').on(t.clickupCompanyId),
     index('organizations_status_idx').on(t.status),
     index('organizations_industry_idx').on(t.industry),
+    // Om "wat staat er deze week open" te kunnen vragen zonder alles te lezen.
+    index('organizations_next_action_idx').on(t.nextActionOn),
+    check(
+      'organization_payment_term_positive',
+      sql`${t.paymentTermDays} IS NULL OR ${t.paymentTermDays} > 0`,
+    ),
   ],
 )
 
@@ -193,6 +242,16 @@ export const contacts = pgTable(
     phone: text('phone'),
     mobile: text('mobile'),
     linkedinUrl: text('linkedin_url'),
+    /** Afdeling, bijv. Marketing of Directie. */
+    department: text('department'),
+
+    /* --- Verjaardag ---
+       Dag en maand apart, want lang niet iedereen deelt zijn geboortejaar en
+       een verzonnen jaartal is erger dan geen jaartal. Ze horen wel bij
+       elkaar: een dag zonder maand zegt niets. */
+    birthDay: integer('birth_day'),
+    birthMonth: integer('birth_month'),
+    birthYear: integer('birth_year'),
 
     /** De vaste contactpersoon. Er kan er maar één per klant zijn. */
     isPrimary: boolean('is_primary').notNull().default(false),
@@ -209,6 +268,24 @@ export const contacts = pgTable(
   },
   (t) => [
     index('contacts_org_idx').on(t.organizationId),
+    // Om "wie is er deze maand jarig" te kunnen vragen.
+    index('contacts_birthday_idx').on(t.birthMonth, t.birthDay),
+    check(
+      'contact_birthday_complete',
+      sql`(${t.birthDay} IS NULL) = (${t.birthMonth} IS NULL)`,
+    ),
+    check(
+      'contact_birth_day_valid',
+      sql`${t.birthDay} IS NULL OR (${t.birthDay} >= 1 AND ${t.birthDay} <= 31)`,
+    ),
+    check(
+      'contact_birth_month_valid',
+      sql`${t.birthMonth} IS NULL OR (${t.birthMonth} >= 1 AND ${t.birthMonth} <= 12)`,
+    ),
+    check(
+      'contact_birth_year_valid',
+      sql`${t.birthYear} IS NULL OR (${t.birthYear} >= 1900 AND ${t.birthYear} <= 2100)`,
+    ),
     index('contacts_name_idx').on(t.name),
     uniqueIndex('contacts_user_idx').on(t.userId),
     // Twee vaste contactpersonen bij dezelfde klant betekent dat niemand
@@ -233,6 +310,120 @@ export const contacts = pgTable(
  * bijgehouden loopt vroeg of laat uit de pas met de regels waar het uit
  * hoort te volgen.
  */
+/* -------------------------------------------------------------------------
+   Accountmanagers.
+
+   Normaal is er één per klant, maar het kunnen er meer zijn — bij een klant
+   waar zowel een strateeg als een performance-specialist op zit. Daarom een
+   eigen tabel en geen kolom op het bedrijf: een kolom dwingt je tot één, en
+   dan ga je de tweede in een notitieveld zetten.
+   ------------------------------------------------------------------------- */
+
+export const organizationOwners = pgTable(
+  'organization_owners',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    organizationId: uuid('organization_id')
+      .notNull()
+      .references(() => organizations.id, { onDelete: 'cascade' }),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    /** Waarvoor deze persoon aanspreekpunt is, bijv. Strategie of SEA. */
+    role: text('role'),
+    /** De eerste aanspreekpartner. Er kan er maar één zijn. */
+    isPrimary: boolean('is_primary').notNull().default(false),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    // Dezelfde collega twee keer op dezelfde klant is een vergissing.
+    uniqueIndex('organization_owners_pair_idx').on(t.organizationId, t.userId),
+    index('organization_owners_user_idx').on(t.userId),
+    // Eén eerste aanspreekpartner per klant, afgedwongen door de database.
+    uniqueIndex('organization_owners_primary_idx')
+      .on(t.organizationId)
+      .where(sql`${t.isPrimary}`),
+  ],
+)
+
+/* -------------------------------------------------------------------------
+   Labels.
+
+   Post-its op een bedrijf: "heeft webshop", "seizoensgebonden", "Limburg".
+   Dit is de ontsnapping voor alles wat we niet als veld hebben voorzien,
+   zonder dat er voor elke inval een migratie nodig is.
+   ------------------------------------------------------------------------- */
+
+export const tags = pgTable(
+  'tags',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    name: text('name').notNull(),
+    /** Kleur uit de huisstijl, voor herkenbaarheid in een lange lijst. */
+    color: text('color'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    // Twee keer hetzelfde label is twee halve groepen.
+    uniqueIndex('tags_name_idx').on(sql`lower(${t.name})`),
+  ],
+)
+
+export const organizationTags = pgTable(
+  'organization_tags',
+  {
+    organizationId: uuid('organization_id')
+      .notNull()
+      .references(() => organizations.id, { onDelete: 'cascade' }),
+    tagId: uuid('tag_id')
+      .notNull()
+      .references(() => tags.id, { onDelete: 'cascade' }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.organizationId, t.tagId] }),
+    index('organization_tags_tag_idx').on(t.tagId),
+  ],
+)
+
+/* -------------------------------------------------------------------------
+   Tijdlijn.
+
+   Hier staat alleen wat iemand met de hand vastlegt: een gesprek, een
+   bezoek, een notitie. Offertes, facturen en boekingen staan al ergens
+   anders en worden bij het tonen door de tijdlijn gemengd. Ze hier nog eens
+   overschrijven zou betekenen dat er twee waarheden zijn die uit elkaar
+   kunnen lopen, en dat is precies wat dit systeem niet moet doen.
+   ------------------------------------------------------------------------- */
+
+export const activities = pgTable(
+  'activities',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    organizationId: uuid('organization_id')
+      .notNull()
+      .references(() => organizations.id, { onDelete: 'cascade' }),
+    /** Met wie, als het om een persoon ging. */
+    contactId: uuid('contact_id').references(() => contacts.id, { onDelete: 'set null' }),
+    /** Wie het vastlegde. Blijft leeg als die collega later vertrekt. */
+    userId: uuid('user_id').references(() => users.id, { onDelete: 'set null' }),
+
+    kind: activityKindEnum('kind').notNull().default('note'),
+    subject: text('subject').notNull(),
+    body: text('body'),
+
+    /** Wanneer het gebeurde — niet wanneer het werd ingevoerd. */
+    occurredAt: timestamp('occurred_at', { withTimezone: true }).notNull().defaultNow(),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('activities_org_idx').on(t.organizationId, t.occurredAt),
+    index('activities_contact_idx').on(t.contactId),
+    check('activity_subject_not_empty', sql`length(trim(${t.subject})) > 0`),
+  ],
+)
+
 export const quotes = pgTable(
   'quotes',
   {
@@ -393,6 +584,12 @@ export const accounts = pgTable(
      * Een verwijzing, geen inhoud.
      */
     vaultReference: text('vault_reference'),
+    /**
+     * Directe link naar het item in de wachtwoordmanager (Bitwarden).
+     * Dit is een verwijzing, geen geheim: wie de link opent moet nog steeds
+     * zelf in Bitwarden kunnen. Het scheelt alleen het zoeken.
+     */
+    vaultUrl: text('vault_url'),
 
     hasMfa: boolean('has_mfa').notNull().default(false),
     /** Wie de tweestapscode kan geven. */
@@ -1044,5 +1241,8 @@ export type Quote = typeof quotes.$inferSelect
 export type QuoteLine = typeof quoteLines.$inferSelect
 export type Partner = typeof partners.$inferSelect
 export type OrganizationPartner = typeof organizationPartners.$inferSelect
+export type OrganizationOwner = typeof organizationOwners.$inferSelect
+export type Tag = typeof tags.$inferSelect
+export type Activity = typeof activities.$inferSelect
 export type NewService = typeof services.$inferInsert
 export type SyncRun = typeof syncRuns.$inferSelect
