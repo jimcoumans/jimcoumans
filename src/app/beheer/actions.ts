@@ -42,19 +42,94 @@ async function veilig(fn: () => Promise<void>): Promise<ActionResult> {
 }
 
 /** Nieuwe klant met meteen een eerste wallet. */
+/**
+ * Een nieuwe klant, in één keer compleet.
+ *
+ * Alles wat je weet als iemand binnenkomt kan meteen mee: status, branche,
+ * regio, klantnummer, wie de marketing manager wordt en de eerste
+ * contactpersoon. Alleen de naam is verplicht — de rest vul je aan wanneer
+ * je het weet.
+ *
+ * Waarom dit één formulier is en geen drie schermen: bij veertig klanten
+ * invoeren is elke extra klik veertig extra klikken, en wat je niet meteen
+ * kwijt kunt vul je later niet meer in.
+ */
 export async function nieuweKlant(formData: FormData): Promise<ActionResult> {
-  await requireStaff()
+  const staff = await requireStaff()
 
-  const naam = String(formData.get('naam') ?? '').trim()
-  const walletNaam = String(formData.get('walletNaam') ?? '').trim() || 'Marketing abonnement'
+  const lees = (n: string) => String(formData.get(n) ?? '').trim()
 
+  const naam = lees('naam')
   if (naam.length < 2) return { ok: false, error: 'Vul een klantnaam in.' }
 
+  const walletNaam = lees('walletNaam') || 'Marketing abonnement'
+
+  const status = lees('status')
+  if (status !== '' && !['lead', 'prospect', 'client', 'former'].includes(status)) {
+    return { ok: false, error: 'Kies een geldige status.' }
+  }
+
+  const contactVoornaam = lees('contactVoornaam')
+  const contactAchternaam = lees('contactAchternaam')
+  const contactMail = lees('contactEmail')
+  if (contactMail !== '' && !contactMail.includes('@')) {
+    return { ok: false, error: 'Vul een geldig e-mailadres voor de contactpersoon in, of laat het leeg.' }
+  }
+
   return veilig(async () => {
+    const { volledigeNaam } = await import('@/lib/namen')
+    const { addOwner } = await import('@/lib/crm-owners')
+    const { createContact } = await import('@/lib/crm')
+
     const slug = await uniekeSlug(naam)
-    const [org] = await db.insert(organizations).values({ slug, name: naam }).returning()
-    await db.insert(wallets).values({ organizationId: org!.id, name: walletNaam })
+    const [org] = await db
+      .insert(organizations)
+      .values({
+        slug,
+        name: naam,
+        status: (status || 'client') as 'lead' | 'prospect' | 'client' | 'former',
+        industry: lees('branche') || null,
+        region: lees('regio') || null,
+        city: lees('plaats') || null,
+        website: lees('website') || null,
+        kvkNumber: lees('kvk') || null,
+        customerNumber: lees('klantnummer') || null,
+      })
+      .returning()
+
+    if (!org) throw new LedgerError('Klant kon niet worden aangemaakt.')
+
+    await db.insert(wallets).values({ organizationId: org.id, name: walletNaam })
+
+    // De marketing manager wordt meteen eerste aanspreekpartner, zodat de
+    // klant niet in de kolom "nog niet toegewezen" belandt.
+    const managerId = lees('manager')
+    if (managerId) {
+      await addOwner({ organizationId: org.id, userId: managerId, role: 'Marketing manager' })
+    }
+
+    const contactNaam = volledigeNaam({
+      firstName: contactVoornaam || null,
+      infix: lees('contactTussenvoegsel') || null,
+      lastName: contactAchternaam || null,
+    })
+    if (contactNaam.length >= 2) {
+      await createContact({
+        organizationId: org.id,
+        name: contactNaam,
+        firstName: contactVoornaam || null,
+        infix: lees('contactTussenvoegsel') || null,
+        lastName: contactAchternaam || null,
+        jobTitle: lees('contactFunctie') || null,
+        email: contactMail || null,
+        mobile: lees('contactMobiel') || null,
+        isPrimary: true,
+      })
+    }
+
     revalidatePath('/beheer')
+    revalidatePath('/beheer/klanten')
+    revalidatePath('/beheer/portfolio')
   })
 }
 

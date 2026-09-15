@@ -1,7 +1,7 @@
-import { and, desc, eq, gte } from 'drizzle-orm'
+import { and, desc, eq, gte, sql } from 'drizzle-orm'
 import { db } from '@/db'
 import {
-  activities, contacts, users, quotes, invoices, ledgerEntries, wallets,
+  activities, contacts, users, quotes, quoteLines, invoices, ledgerEntries, wallets,
 } from '@/db/schema'
 import type { Activity } from '@/db/schema'
 import { quoteStatusLabels } from './quote-labels'
@@ -63,10 +63,27 @@ export async function getTijdlijn(
       .orderBy(desc(activities.occurredAt))
       .limit(limiet),
 
+    /*
+     * Het offertebedrag komt uit de regels, niet uit een opgeslagen totaal.
+     * Dat is dezelfde afspraak als op de offerte zelf: het bedrag volgt uit
+     * aantal maal tarief, zodat er nooit een totaal op het scherm staat dat
+     * niet meer klopt met de regels eronder.
+     *
+     * Bewust een join met GROUP BY en geen subquery in de SELECT. Drizzle laat
+     * de tabelnaam voor een kolom weg zolang een query maar één tabel heeft,
+     * en dan wordt `WHERE quote_id = id` binnen de subquery vergeleken met de
+     * id van de VERKEERDE tabel. Dat levert geen foutmelding op maar stil een
+     * nul, en dat is het soort fout waar je later een uur naar zoekt.
+     */
     db
-      .select()
+      .select({
+        quote: quotes,
+        bedrag: sql<string>`COALESCE(SUM(ROUND(${quoteLines.quantityHundredths} * ${quoteLines.unitPriceCents} / 100.0)), 0)`,
+      })
       .from(quotes)
+      .leftJoin(quoteLines, eq(quoteLines.quoteId, quotes.id))
       .where(eq(quotes.organizationId, organizationId))
+      .groupBy(quotes.id)
       .orderBy(desc(quotes.issuedOn))
       .limit(limiet),
 
@@ -103,7 +120,9 @@ export async function getTijdlijn(
     })
   }
 
-  for (const q of offertes) {
+  for (const rij of offertes) {
+    const q = rij.quote
+    const bedrag = Number(rij.bedrag)
     items.push({
       id: `quote-${q.id}`,
       bron: 'quote',
@@ -113,7 +132,7 @@ export async function getTijdlijn(
       toelichting: quoteStatusLabels[q.status],
       wie: null,
       metWie: null,
-      bedragCents: null,
+      bedragCents: bedrag === 0 ? null : bedrag,
       href: `/beheer/offertes/${q.id}`,
     })
   }

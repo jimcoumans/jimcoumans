@@ -8,10 +8,10 @@ import {
   organizationStatusLabels,
   organizationStatusStyles,
 } from '@/lib/crm'
-import { GEZONDHEID_LABELS, GEZONDHEID_STIJLEN } from '@/lib/bedrijf-labels'
+import { GEZONDHEID_LABELS, GEZONDHEID_STIJLEN, REGIOS } from '@/lib/bedrijf-labels'
 import { AppShell } from '@/components/AppShell'
 import { Avatar } from '@/components/Avatar'
-import { ActionForm, Field } from '@/components/ActionForm'
+import { ActionForm, Field, Select } from '@/components/ActionForm'
 import { nieuweKlant } from '../actions'
 import { formatCents } from '@/lib/money'
 
@@ -199,8 +199,61 @@ export default async function BeheerPage({
 
           <aside className="rounded-xl bg-white p-5 shadow-sm">
             <h2 className="mb-3 text-base">Klant toevoegen</h2>
+            <p className="mb-3 text-xs text-gray-500">
+              Alleen de naam is verplicht. Wat je nu al weet kun je meteen kwijt; de rest
+              vul je aan op de klantpagina.
+            </p>
             <ActionForm action={nieuweKlant} submitLabel="Klant aanmaken">
               <Field label="Klantnaam" name="naam" required placeholder="Hotel Voncken" />
+              <Select
+                label="Status"
+                name="status"
+                defaultValue="client"
+                options={Object.entries(organizationStatusLabels).map(([value, label]) => ({
+                  value,
+                  label,
+                }))}
+              />
+              <Field label="Klantnummer" name="klantnummer" placeholder="672" />
+              <Field label="Branche" name="branche" placeholder="Horeca" />
+              <Select
+                label="Regio"
+                name="regio"
+                options={[
+                  { value: '', label: 'Niet ingevuld' },
+                  ...REGIOS.map((r) => ({ value: r, label: r })),
+                ]}
+              />
+              <Field label="Plaats" name="plaats" placeholder="Valkenburg" />
+              <Field label="Website" name="website" placeholder="klant.nl" />
+              <Field label="KvK-nummer" name="kvk" />
+
+              {keuzes.managers.length > 0 && (
+                <Select
+                  label="Marketing manager"
+                  name="manager"
+                  options={[
+                    { value: '', label: 'Nog niet toegewezen' },
+                    ...keuzes.managers.map((m) => ({ value: m.id, label: m.naam })),
+                  ]}
+                  hint="Wordt meteen eerste aanspreekpartner, dan staat hij niet in de restkolom."
+                />
+              )}
+
+              <div className="border-t border-gray-200 pt-3">
+                <p className="mb-2 text-xs font-bold text-gray-600">Eerste contactpersoon</p>
+                <div className="space-y-3">
+                  <div className="grid gap-2 sm:grid-cols-[1fr_4rem_1fr]">
+                    <Field label="Voornaam" name="contactVoornaam" />
+                    <Field label="Tussen" name="contactTussenvoegsel" />
+                    <Field label="Achternaam" name="contactAchternaam" />
+                  </div>
+                  <Field label="Functie" name="contactFunctie" placeholder="Eigenaar" />
+                  <Field label="E-mailadres" name="contactEmail" type="email" />
+                  <Field label="Mobiel" name="contactMobiel" />
+                </div>
+              </div>
+
               <Field
                 label="Naam eerste wallet"
                 name="walletNaam"
