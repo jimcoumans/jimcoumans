@@ -12,6 +12,16 @@ import {
 import type { PartnerLink } from '@/lib/crm'
 import { formatCents } from '@/lib/money'
 import { formatDate } from '@/lib/dates'
+import { AANHEF_LABELS } from '@/lib/namen'
+
+/* Leeg staat er bewust bij en bovenaan: niets kiezen is het eerlijke
+   antwoord als je het niet weet, en dan wordt de aanhef "Beste <voornaam>". */
+const AANHEF_OPTIES = [
+  { value: '', label: 'Niet ingevuld' },
+  { value: 'heer', label: AANHEF_LABELS.heer },
+  { value: 'mevrouw', label: AANHEF_LABELS.mevrouw },
+  { value: 'neutraal', label: AANHEF_LABELS.neutraal },
+]
 import type { Contact, Account, Partner, Organization } from '@/db/schema'
 
 /* De CRM-blokken op de klantpagina: contactpersonen, partners, accounts en
@@ -81,7 +91,21 @@ export function Contactpersonen({
                     >
                       <input type="hidden" name="contactId" value={c.id} />
                       <input type="hidden" name="slug" value={slug} />
-                      <Field label="Naam" name="naam" required defaultValue={c.name} />
+                      <Field label="Voornaam" name="voornaam" defaultValue={c.firstName ?? ''} />
+                      <Field
+                        label="Tussenvoegsel"
+                        name="tussenvoegsel"
+                        defaultValue={c.infix ?? ''}
+                        placeholder="van der"
+                      />
+                      <Field label="Achternaam" name="achternaam" defaultValue={c.lastName ?? ''} />
+                      <Select
+                        label="Aanhef"
+                        name="aanhef"
+                        defaultValue={c.aanhef ?? ''}
+                        options={AANHEF_OPTIES}
+                        hint="Bepaalt hoe een mail begint. Weet je het niet, laat het dan staan."
+                      />
                       <Field label="Functie" name="functie" defaultValue={c.jobTitle ?? ''} />
                       <Field label="E-mailadres" name="email" type="email" defaultValue={c.email ?? ''} />
                       <Field label="Mobiel" name="mobiel" defaultValue={c.mobile ?? ''} />
@@ -136,7 +160,15 @@ export function Contactpersonen({
           >
             <input type="hidden" name="organizationId" value={organizationId} />
             <input type="hidden" name="slug" value={slug} />
-            <Field label="Naam" name="naam" required placeholder="Marieke Voncken" />
+            <Field label="Voornaam" name="voornaam" placeholder="Marieke" />
+            <Field label="Tussenvoegsel" name="tussenvoegsel" placeholder="van der" />
+            <Field label="Achternaam" name="achternaam" placeholder="Voncken" />
+            <Select
+              label="Aanhef"
+              name="aanhef"
+              options={AANHEF_OPTIES}
+              hint="Bepaalt hoe een mail begint. Weet je het niet, kies dan niets."
+            />
             <Field label="Functie" name="functie" placeholder="Eigenaar" />
             <Field label="E-mailadres" name="email" type="email" placeholder="marieke@voncken.nl" />
             <Field label="Mobiel" name="mobiel" placeholder="06 12 34 56 78" />

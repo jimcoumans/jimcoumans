@@ -5,10 +5,15 @@ import { listActiveServices } from '@/lib/services'
 import { getWalletEntries, getReversedEntryIds } from '@/lib/ledger'
 import { getOrganizationInvoices, invoiceStatusLabels, invoiceStatusStyles } from '@/lib/invoices'
 import { AppShell } from '@/components/AppShell'
-import { ActionForm, Field } from '@/components/ActionForm'
+import { ActionForm, Field, Uitklap } from '@/components/ActionForm'
 import { boek, draaiTerug, nieuweWallet, nieuweGebruiker, wisselToegang } from '../../actions'
 import { boekDienst, nieuweFactuur, zetFactuurStatus } from '../../service-actions'
 import { nieuwAbonnement } from '../../subscription-actions'
+import {
+  crediteerFactuurActie,
+  wijzigFactuurActie,
+  verwijderFactuurActie,
+} from '../../factuur-actions'
 import { SubscriptionCard, NewSubscriptionForm } from '@/components/SubscriptionCard'
 import { listSubscriptions } from '@/lib/billing'
 import { listContacts, listAccounts, listPartnersForOrganization, listActivePartners, organizationStatusLabels, organizationStatusStyles } from '@/lib/crm'
@@ -16,7 +21,7 @@ import { Contactpersonen, Partners, Accounts, Bedrijfsgegevens } from '@/compone
 import { BookServiceForm } from '@/components/BookServiceForm'
 import { formatQuantity, unitShort } from '@/lib/quantity'
 import { formatCents, formatSignedCents } from '@/lib/money'
-import { formatDate } from '@/lib/dates'
+import { formatDate, formatDateInput } from '@/lib/dates'
 
 import { PRODUCTGROEPEN } from '@/lib/services'
 
@@ -616,19 +621,103 @@ function Facturen({
                   </div>
                 </div>
 
-                {f.status !== 'paid' && (
-                  <div className="mt-2">
-                    <ActionForm
-                      action={zetFactuurStatus}
-                      submitLabel="Markeren als betaald"
-                      submitClassName="text-gray-600 hover:bg-gray-100 !px-2 !py-1 !text-xs"
-                      resetOnSuccess={false}
-                      className=""
-                    >
-                      <input type="hidden" name="invoiceId" value={f.id} />
-                      <input type="hidden" name="slug" value={slug} />
-                      <input type="hidden" name="status" value="paid" />
-                    </ActionForm>
+                {f.status !== 'credited' && (
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                    {f.status !== 'paid' && (
+                      <ActionForm
+                        action={zetFactuurStatus}
+                        submitLabel="Markeren als betaald"
+                        submitClassName="text-gray-600 hover:bg-gray-100 !px-2 !py-1 !text-xs"
+                        resetOnSuccess={false}
+                        className=""
+                      >
+                        <input type="hidden" name="invoiceId" value={f.id} />
+                        <input type="hidden" name="slug" value={slug} />
+                        <input type="hidden" name="status" value="paid" />
+                      </ActionForm>
+                    )}
+
+                    {/* Verwijderen kan alleen zolang er geen budget aan hangt.
+                        Alles wat al is bijgeschreven wordt gecrediteerd, want
+                        dan blijft in het grootboek staan dat het gebeurd is. */}
+                    {f.status === 'draft' && f.toppedUpCents === 0 && (
+                      <ActionForm
+                        action={verwijderFactuurActie}
+                        submitLabel="Verwijderen"
+                        submitClassName="text-jr-red hover:bg-jr-red/10 !px-2 !py-1 !text-xs"
+                        resetOnSuccess={false}
+                        className=""
+                      >
+                        <input type="hidden" name="invoiceId" value={f.id} />
+                        <input type="hidden" name="slug" value={slug} />
+                      </ActionForm>
+                    )}
+                  </div>
+                )}
+
+                {f.status !== 'credited' && (
+                  <div className="mt-2 flex flex-wrap gap-x-4">
+                    <Uitklap label="Gegevens wijzigen">
+                      <p className="mb-3 text-xs text-gray-600">
+                        Het bedrag staat hier niet tussen. Daar hangt een bijschrijving
+                        aan die precies zo groot is; zou je het hier wijzigen, dan klopt
+                        het saldo van de klant niet meer. Een ander bedrag betekent
+                        crediteren en opnieuw factureren.
+                      </p>
+                      <ActionForm
+                        action={wijzigFactuurActie}
+                        submitLabel="Opslaan"
+                        resetOnSuccess={false}
+                        className="grid gap-3 sm:grid-cols-2"
+                      >
+                        <input type="hidden" name="invoiceId" value={f.id} />
+                        <input type="hidden" name="slug" value={slug} />
+                        <Field label="Factuurnummer" name="nummer" required defaultValue={f.number} />
+                        <Field
+                          label="Factuurdatum"
+                          name="factuurdatum"
+                          type="date"
+                          required
+                          defaultValue={formatDateInput(f.issuedOn)}
+                        />
+                        <Field
+                          label="Omschrijving"
+                          name="omschrijving"
+                          defaultValue={f.description ?? ''}
+                        />
+                        <Field
+                          label="Vervaldatum"
+                          name="vervaldatum"
+                          type="date"
+                          defaultValue={f.dueOn ? formatDateInput(f.dueOn) : ''}
+                        />
+                      </ActionForm>
+                    </Uitklap>
+
+                    <Uitklap label="Crediteren">
+                      <p className="mb-3 text-xs text-gray-600">
+                        Het bijgeschreven budget van {formatCents(f.toppedUpCents)} gaat er
+                        weer af en de factuur wordt gemarkeerd als gecrediteerd. Het
+                        factuurnummer blijft bestaan: een gat in de nummering is een vraag
+                        van de accountant die je niet wilt krijgen.
+                      </p>
+                      <ActionForm
+                        action={crediteerFactuurActie}
+                        submitLabel="Crediteren"
+                        submitClassName="bg-jr-red hover:bg-jr-red/90 text-white !text-xs"
+                        resetOnSuccess={false}
+                      >
+                        <input type="hidden" name="invoiceId" value={f.id} />
+                        <input type="hidden" name="slug" value={slug} />
+                        <Field
+                          label="Reden"
+                          name="reden"
+                          required
+                          placeholder="Verkeerd bedrag ingevoerd"
+                          hint="Komt in het grootboek te staan bij de tegenboeking."
+                        />
+                      </ActionForm>
+                    </Uitklap>
                   </div>
                 )}
               </li>

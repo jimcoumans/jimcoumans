@@ -12,8 +12,11 @@ import {
   updateOrganizationDetails, CrmError,
 } from '@/lib/crm'
 import type { ContactPatch, NewPartner, NewAccount } from '@/lib/crm'
+import { volledigeNaam, type Aanhef } from '@/lib/namen'
 import type { ActionResult } from './actions'
 import type { Partner } from '@/db/schema'
+
+const AANHEF_WAARDEN: readonly Aanhef[] = ['heer', 'mevrouw', 'neutraal']
 
 /* Acties voor het CRM-deel. Elke actie begint met requireStaff():
    een server action is een publiek endpoint. */
@@ -58,8 +61,21 @@ function optioneelBedrag(
 function leesContact(
   formData: FormData,
 ): { ok: true; patch: ContactPatch } | { ok: false; error: string } {
-  const naam = tekst(formData, 'naam')
-  if (naam.length < 2) return { ok: false, error: 'Vul een naam in.' }
+  /* De naam komt in delen binnen en wordt hier samengesteld. Zo staat er
+     nooit een volledige naam in de database die iets anders zegt dan de
+     losse velden waarop je sorteert of waarmee je een aanhef maakt. */
+  const delen = {
+    firstName: tekst(formData, 'voornaam') || null,
+    infix: tekst(formData, 'tussenvoegsel') || null,
+    lastName: tekst(formData, 'achternaam') || null,
+  }
+  const naam = volledigeNaam(delen)
+  if (naam.length < 2) return { ok: false, error: 'Vul in elk geval een voor- of achternaam in.' }
+
+  const aanhefWaarde = tekst(formData, 'aanhef')
+  const aanhef = AANHEF_WAARDEN.includes(aanhefWaarde as Aanhef)
+    ? (aanhefWaarde as Aanhef)
+    : null
 
   const email = tekst(formData, 'email')
   if (email !== '' && !email.includes('@')) {
@@ -70,6 +86,10 @@ function leesContact(
     ok: true,
     patch: {
       name: naam,
+      firstName: delen.firstName,
+      infix: delen.infix,
+      lastName: delen.lastName,
+      aanhef,
       jobTitle: tekst(formData, 'functie') || null,
       email: email || null,
       phone: tekst(formData, 'telefoon') || null,

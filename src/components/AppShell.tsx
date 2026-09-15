@@ -66,6 +66,15 @@ const icons = {
       <path d="M5 19c0-3.3 3-6 7-6s7 2.7 7 6" />
     </svg>
   ),
+  /* Een adreskaartje: één persoon met regels ernaast. Anders dan het
+     team-icoon, want dat is een persoon zonder kaart. */
+  contacts: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
+      <rect x="3" y="4.5" width="18" height="15" rx="3" />
+      <circle cx="9" cy="10.5" r="2.2" />
+      <path d="M5.8 16.2c.5-1.7 1.8-2.6 3.2-2.6s2.7.9 3.2 2.6M14.8 9.8h4M14.8 13.4h4" />
+    </svg>
+  ),
   wallet: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
       <rect x="3" y="6" width="18" height="13" rx="3" />
@@ -94,6 +103,12 @@ const icons = {
 const TEAM_NAV: NavItem[] = [
   { href: '/beheer', label: 'Dashboard', key: 'dashboard', icon: icons.dashboard },
   { href: '/beheer/klanten', label: 'Klanten', key: 'klanten', icon: icons.clients },
+  {
+    href: '/beheer/contactpersonen',
+    label: 'Contactpersonen',
+    key: 'contactpersonen',
+    icon: icons.contacts,
+  },
   { href: '/beheer/offertes', label: 'Offertes', key: 'offertes', icon: icons.quotes },
   { href: '/beheer/abonnementen', label: 'Abonnementen', key: 'abonnementen', icon: icons.subs },
   { href: '/beheer/diensten', label: 'Diensten', key: 'diensten', icon: icons.services },

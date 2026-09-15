@@ -152,6 +152,16 @@ export const subscriptionStatusEnum = pgEnum('subscription_status', [
 
 /* ---------------------------- Personeelsdossier -------------------------- */
 
+/**
+ * Hoe je iemand aanspreekt.
+ *
+ * Dit veld bestaat om een brief of mail goed te laten beginnen, en daarom
+ * staat er 'neutraal' bij naast heer en mevrouw. Bij honderd contactpersonen
+ * weet je het lang niet altijd, en dan is "Geachte heer" gokken. Neutraal
+ * levert "Beste <voornaam>" op, en dat kan altijd.
+ */
+export const aanhefEnum = pgEnum('aanhef', ['heer', 'mevrouw', 'neutraal'])
+
 export const contractTypeEnum = pgEnum('contract_type', [
   'bepaalde_tijd',
   'onbepaalde_tijd',
@@ -272,7 +282,19 @@ export const contacts = pgTable(
       .notNull()
       .references(() => organizations.id, { onDelete: 'cascade' }),
 
+    /**
+     * De volledige naam zoals je hem toont.
+     *
+     * De app stelt hem samen uit de delen hieronder. Zo staat er nooit een
+     * naam op het scherm die iets anders zegt dan de velden waarop je
+     * sorteert of waarmee je een aanhef maakt.
+     */
     name: text('name').notNull(),
+    firstName: text('first_name'),
+    /** Tussenvoegsel: van, de, van der. Apart, want je sorteert er niet op. */
+    infix: text('infix'),
+    lastName: text('last_name'),
+    aanhef: aanhefEnum('aanhef'),
     /** Functie binnen het bedrijf, bijv. Eigenaar of Marketing manager. */
     jobTitle: text('job_title'),
     email: text('email'),
@@ -782,6 +804,11 @@ export const users = pgTable(
      * hoort niet op een scherm dat het hele team openslaat.
      */
     hourlyCostCents: integer('hourly_cost_cents'),
+
+    firstName: text('first_name'),
+    infix: text('infix'),
+    lastName: text('last_name'),
+    aanhef: aanhefEnum('aanhef'),
 
     /* Adres en noodcontact: wat je nodig hebt als er iets misgaat of als er
        post heen moet. Geen BSN en geen IBAN — zie de toelichting bij het

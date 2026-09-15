@@ -2,6 +2,7 @@ import { and, asc, eq, isNull, isNotNull, sql } from 'drizzle-orm'
 import { db } from '@/db'
 import { users, organizationOwners, organizations, subscriptions } from '@/db/schema'
 import type { User } from '@/db/schema'
+import type { Aanhef } from './namen'
 
 /* -------------------------------------------------------------------------
    Het team.
@@ -135,7 +136,12 @@ export async function getTeamlid(userId: string): Promise<TeamlidDetail | null> 
 }
 
 export type TeamlidPatch = {
+  /** Wordt samengesteld uit de delen hieronder; niet los invullen. */
   name: string | null
+  firstName?: string | null
+  infix?: string | null
+  lastName?: string | null
+  aanhef?: Aanhef | null
   jobTitle?: string | null
   department?: string | null
   phone?: string | null
@@ -158,6 +164,10 @@ export async function updateTeamlid(userId: string, patch: TeamlidPatch): Promis
     .update(users)
     .set({
       name: patch.name?.trim() || null,
+      firstName: patch.firstName?.trim() || null,
+      infix: patch.infix?.trim() || null,
+      lastName: patch.lastName?.trim() || null,
+      aanhef: patch.aanhef ?? null,
       jobTitle: patch.jobTitle?.trim() || null,
       department: patch.department?.trim() || null,
       phone: patch.phone?.trim() || null,

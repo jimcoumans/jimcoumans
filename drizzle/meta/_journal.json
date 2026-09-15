@@ -92,6 +92,13 @@
       "when": 1789476443134,
       "tag": "0012_personeelsdossier",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1789477355806,
+      "tag": "0013_naamdelen",
+      "breakpoints": true
     }
   ]
 }

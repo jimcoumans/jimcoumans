@@ -3,10 +3,11 @@ import { getSessionUser } from '@/lib/auth'
 import { getTeamlid, formatContractUren, AFDELINGEN } from '@/lib/team'
 import { getFiguresByEmployee } from '@/lib/reports'
 import { AppShell } from '@/components/AppShell'
-import { ActionForm, Field, TextArea } from '@/components/ActionForm'
+import { ActionForm, Field, Select, TextArea } from '@/components/ActionForm'
 import { bewerkMedewerkerprofiel, bewerkUurkostprijs } from '../../medewerker-actions'
 import { formatCents } from '@/lib/money'
 import { formatDate, formatDateInput, MAANDNAMEN } from '@/lib/dates'
+import { AANHEF_LABELS } from '@/lib/namen'
 
 /**
  * Het profiel van één collega.
@@ -94,7 +95,27 @@ export default async function MedewerkerPage({
           >
             <input type="hidden" name="userId" value={lid.id} />
 
-            <Field label="Naam" name="naam" defaultValue={lid.name ?? ''} />
+            <div className="grid gap-3 sm:grid-cols-[1fr_auto_1fr]">
+              <Field label="Voornaam" name="voornaam" defaultValue={lid.firstName ?? ''} />
+              <Field
+                label="Tussenvoegsel"
+                name="tussenvoegsel"
+                defaultValue={lid.infix ?? ''}
+                placeholder="van der"
+              />
+              <Field label="Achternaam" name="achternaam" defaultValue={lid.lastName ?? ''} />
+            </div>
+            <Select
+              label="Aanhef"
+              name="aanhef"
+              defaultValue={lid.aanhef ?? ''}
+              options={[
+                { value: '', label: 'Niet ingevuld' },
+                { value: 'heer', label: AANHEF_LABELS.heer },
+                { value: 'mevrouw', label: AANHEF_LABELS.mevrouw },
+                { value: 'neutraal', label: AANHEF_LABELS.neutraal },
+              ]}
+            />
             <Field
               label="Functie"
               name="functie"

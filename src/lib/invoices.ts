@@ -2,7 +2,7 @@ import { desc, eq, sql, and } from 'drizzle-orm'
 import { db } from '@/db'
 import { invoices, ledgerEntries, wallets } from '@/db/schema'
 import type { Invoice, LedgerEntry } from '@/db/schema'
-import { LedgerError } from './ledger'
+import { LedgerError, reverseEntry } from './ledger'
 import { formatDateLong } from './dates'
 
 export type InvoiceWithTopup = Invoice & {
@@ -182,4 +182,123 @@ export async function findInvoicesWithoutTopup(): Promise<Invoice[]> {
     .having(sql`COALESCE(SUM(${ledgerEntries.amountCents}), 0) <> ${invoices.amountExclVatCents}`)
 
   return rows.map((r) => r.invoice)
+}
+
+/**
+ * Crediteert een factuur: het bijgeschreven budget gaat er weer af en de
+ * factuur wordt als gecrediteerd gemarkeerd.
+ *
+ * Waarom crediteren en niet verwijderen. Het grootboek is append-only: je
+ * haalt er niets uit, je zet er een tegenboeking bij. Zo blijft zichtbaar dat
+ * er iets is gebeurd en dat het is teruggedraaid — en dat is precies wat je
+ * wilt kunnen laten zien als een klant vraagt waarom zijn saldo sprong.
+ *
+ * Een factuur waarvan het nummer al bij de klant ligt mag sowieso niet
+ * verdwijnen. Een gat in de factuurnummering is een vraag van de accountant
+ * die je niet wilt krijgen.
+ */
+export async function crediteerFactuur(
+  invoiceId: string,
+  opties: { reden: string; createdByUserId?: string | null },
+): Promise<{ teruggedraaidCents: number }> {
+  const reden = opties.reden.trim()
+  if (reden === '') {
+    throw new LedgerError('Vul in waarom deze factuur gecrediteerd wordt.')
+  }
+
+  const [factuur] = await db.select().from(invoices).where(eq(invoices.id, invoiceId)).limit(1)
+  if (!factuur) throw new LedgerError('Factuur niet gevonden.')
+  if (factuur.status === 'credited') {
+    throw new LedgerError('Deze factuur is al gecrediteerd.')
+  }
+
+  const boekingen = await db
+    .select()
+    .from(ledgerEntries)
+    .where(eq(ledgerEntries.invoiceId, invoiceId))
+
+  let teruggedraaidCents = 0
+  for (const boeking of boekingen) {
+    // Een correctie kun je niet nog eens corrigeren; die zijn we zelf ooit
+    // geweest bij een eerdere terugdraai-actie.
+    if (boeking.kind === 'correction') continue
+
+    const correctie = await reverseEntry(boeking.id, {
+      reason: `Factuur ${factuur.number} gecrediteerd: ${reden}`,
+      createdByUserId: opties.createdByUserId ?? null,
+    })
+    teruggedraaidCents += correctie.amountCents
+  }
+
+  await db
+    .update(invoices)
+    .set({ status: 'credited', paidOn: null })
+    .where(eq(invoices.id, invoiceId))
+
+  return { teruggedraaidCents }
+}
+
+/**
+ * Verwijdert een factuur die nog nergens in meetelt.
+ *
+ * Alleen een concept zonder boekingen. Alles wat al budget heeft
+ * bijgeschreven moet gecrediteerd worden: dan blijft de geschiedenis heel.
+ */
+export async function verwijderConceptfactuur(invoiceId: string): Promise<void> {
+  const [factuur] = await db.select().from(invoices).where(eq(invoices.id, invoiceId)).limit(1)
+  if (!factuur) throw new LedgerError('Factuur niet gevonden.')
+
+  const [boeking] = await db
+    .select({ id: ledgerEntries.id })
+    .from(ledgerEntries)
+    .where(eq(ledgerEntries.invoiceId, invoiceId))
+    .limit(1)
+
+  if (boeking) {
+    throw new LedgerError(
+      'Deze factuur heeft al budget bijgeschreven. Crediteer hem in plaats van hem te verwijderen, dan blijft zichtbaar wat er gebeurd is.',
+    )
+  }
+  if (factuur.status !== 'draft') {
+    throw new LedgerError(
+      'Alleen een concept kan weg. Een factuur met een nummer dat de deur uit is hoort gecrediteerd te worden, niet verwijderd.',
+    )
+  }
+
+  await db.delete(invoices).where(eq(invoices.id, invoiceId))
+}
+
+export type FactuurPatch = {
+  number: string
+  description: string | null
+  issuedOn: Date
+  dueOn: Date | null
+}
+
+/**
+ * Past de gegevens van een factuur aan — maar niet het bedrag.
+ *
+ * Het bedrag staat vast omdat er een bijschrijving aan hangt die precies dat
+ * bedrag groot is. Zou je het hier kunnen wijzigen, dan lopen factuur en
+ * grootboek uiteen en klopt het saldo van de klant niet meer. Een ander
+ * bedrag betekent: crediteren en opnieuw factureren.
+ */
+export async function wijzigFactuur(invoiceId: string, patch: FactuurPatch): Promise<void> {
+  if (patch.number.trim() === '') throw new LedgerError('Vul een factuurnummer in.')
+
+  const [factuur] = await db.select().from(invoices).where(eq(invoices.id, invoiceId)).limit(1)
+  if (!factuur) throw new LedgerError('Factuur niet gevonden.')
+  if (factuur.status === 'credited') {
+    throw new LedgerError('Een gecrediteerde factuur wijzig je niet meer.')
+  }
+
+  await db
+    .update(invoices)
+    .set({
+      number: patch.number.trim(),
+      description: patch.description?.trim() || null,
+      issuedOn: patch.issuedOn,
+      dueOn: patch.dueOn,
+    })
+    .where(eq(invoices.id, invoiceId))
 }

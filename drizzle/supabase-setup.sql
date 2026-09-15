@@ -1037,3 +1037,77 @@ BEGIN
   END IF;
 END $jr_0012_personeelsdossier$;
 
+-- ---------------------------------------------------------------------------
+-- 0013_naamdelen
+-- ---------------------------------------------------------------------------
+
+DO $jr_0013_naamdelen$
+BEGIN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = '0e58dcde23d90ad4de45ecbe5ebb4a68672a404a297f95fd21763d999970a08f') THEN
+    RAISE NOTICE 'Overgeslagen: 0013_naamdelen stond er al.';
+  ELSE
+    CREATE TYPE "public"."aanhef" AS ENUM('heer', 'mevrouw', 'neutraal');
+
+    ALTER TABLE "contacts" ADD COLUMN "first_name" text;
+
+    ALTER TABLE "contacts" ADD COLUMN "infix" text;
+
+    ALTER TABLE "contacts" ADD COLUMN "last_name" text;
+
+    ALTER TABLE "contacts" ADD COLUMN "aanhef" "aanhef";
+
+    ALTER TABLE "users" ADD COLUMN "first_name" text;
+
+    ALTER TABLE "users" ADD COLUMN "infix" text;
+
+    ALTER TABLE "users" ADD COLUMN "last_name" text;
+
+    ALTER TABLE "users" ADD COLUMN "aanhef" "aanhef";
+
+    -- ---------------------------------------------------------------------------
+    -- Bestaande namen uit elkaar trekken.
+    --
+    -- Dit is een gok die één keer over de bestaande gegevens heen gaat: het
+    -- eerste woord is de voornaam, een bekend tussenvoegsel gaat apart, de rest
+    -- is de achternaam. Bij een dubbele voornaam ("Jan Peter de Wit") klopt dat
+    -- niet, en dat corrigeer je daarna in het scherm. Daarna wordt er niet meer
+    -- geraden: de velden worden los ingevuld.
+    --
+    -- De volgorde in de lijst is van lang naar kort, zodat "van der Berg" als
+    -- "van der" wordt herkend en niet als "van".
+    -- ---------------------------------------------------------------------------
+
+    UPDATE "contacts" SET
+      first_name = split_part(regexp_replace(btrim(name), '\s+', ' ', 'g'), ' ', 1),
+      infix = (regexp_match(regexp_replace(btrim(name), '\s+', ' ', 'g'), '^\S+ (van der|van den|van de|van het|van ''t|in der|in den|in de|in het|in ''t|op der|op den|op de|aan der|aan den|aan de|uit de|uit den|van|de|den|der|des|het|''t|ten|ter|te|uit|op|aan|bij|onder|over|voor) (.+)$', 'i'))[1],
+      last_name = COALESCE(
+        (regexp_match(regexp_replace(btrim(name), '\s+', ' ', 'g'), '^\S+ (van der|van den|van de|van het|van ''t|in der|in den|in de|in het|in ''t|op der|op den|op de|aan der|aan den|aan de|uit de|uit den|van|de|den|der|des|het|''t|ten|ter|te|uit|op|aan|bij|onder|over|voor) (.+)$', 'i'))[2],
+        NULLIF(substring(regexp_replace(btrim(name), '\s+', ' ', 'g') from position(' ' in regexp_replace(btrim(name), '\s+', ' ', 'g')) + 1), '')
+      )
+    WHERE position(' ' in regexp_replace(btrim(name), '\s+', ' ', 'g')) > 0;
+
+
+    -- Eén woord is een voornaam, geen achternaam.
+    UPDATE "contacts" SET first_name = btrim(name)
+    WHERE position(' ' in regexp_replace(btrim(name), '\s+', ' ', 'g')) = 0 AND btrim(name) <> '';
+
+
+    UPDATE "users" SET
+      first_name = split_part(regexp_replace(btrim(name), '\s+', ' ', 'g'), ' ', 1),
+      infix = (regexp_match(regexp_replace(btrim(name), '\s+', ' ', 'g'), '^\S+ (van der|van den|van de|van het|van ''t|in der|in den|in de|in het|in ''t|op der|op den|op de|aan der|aan den|aan de|uit de|uit den|van|de|den|der|des|het|''t|ten|ter|te|uit|op|aan|bij|onder|over|voor) (.+)$', 'i'))[1],
+      last_name = COALESCE(
+        (regexp_match(regexp_replace(btrim(name), '\s+', ' ', 'g'), '^\S+ (van der|van den|van de|van het|van ''t|in der|in den|in de|in het|in ''t|op der|op den|op de|aan der|aan den|aan de|uit de|uit den|van|de|den|der|des|het|''t|ten|ter|te|uit|op|aan|bij|onder|over|voor) (.+)$', 'i'))[2],
+        NULLIF(substring(regexp_replace(btrim(name), '\s+', ' ', 'g') from position(' ' in regexp_replace(btrim(name), '\s+', ' ', 'g')) + 1), '')
+      )
+    WHERE name IS NOT NULL AND position(' ' in regexp_replace(btrim(name), '\s+', ' ', 'g')) > 0;
+
+
+    UPDATE "users" SET first_name = btrim(name)
+    WHERE name IS NOT NULL AND position(' ' in regexp_replace(btrim(name), '\s+', ' ', 'g')) = 0 AND btrim(name) <> '';
+
+    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+    VALUES ('0e58dcde23d90ad4de45ecbe5ebb4a68672a404a297f95fd21763d999970a08f', 1789477355806);
+    RAISE NOTICE 'Toegepast: 0013_naamdelen.';
+  END IF;
+END $jr_0013_naamdelen$;
+

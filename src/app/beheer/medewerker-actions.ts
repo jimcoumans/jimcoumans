@@ -5,6 +5,9 @@ import { requireStaff } from '@/lib/auth'
 import { describeDbError } from '@/lib/db-errors'
 import { parseAmountToCents } from '@/lib/money'
 import { parseContractUren, setHourlyCost, updateTeamlid, TeamError } from '@/lib/team'
+import { volledigeNaam, type Aanhef } from '@/lib/namen'
+
+const AANHEF_WAARDEN: readonly Aanhef[] = ['heer', 'mevrouw', 'neutraal']
 import type { ActionResult } from './actions'
 
 /* -------------------------------------------------------------------------
@@ -70,8 +73,19 @@ export async function bewerkMedewerkerprofiel(formData: FormData): Promise<Actio
   }
 
   return veilig(async () => {
+    const delen = {
+      firstName: tekst(formData, 'voornaam') || null,
+      infix: tekst(formData, 'tussenvoegsel') || null,
+      lastName: tekst(formData, 'achternaam') || null,
+    }
+    const aanhefWaarde = tekst(formData, 'aanhef')
+
     await updateTeamlid(userId, {
-      name: tekst(formData, 'naam') || null,
+      name: volledigeNaam(delen) || null,
+      ...delen,
+      aanhef: AANHEF_WAARDEN.includes(aanhefWaarde as Aanhef)
+        ? (aanhefWaarde as Aanhef)
+        : null,
       jobTitle: tekst(formData, 'functie') || null,
       department: tekst(formData, 'afdeling') || null,
       phone: tekst(formData, 'telefoon') || null,

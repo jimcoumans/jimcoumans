@@ -9,6 +9,7 @@ import {
   quoteLines,
 } from '@/db/schema'
 import type { Contact, Partner, Account, OrganizationPartner } from '@/db/schema'
+import type { Aanhef } from './namen'
 
 /* -------------------------------------------------------------------------
    Het CRM-deel: contactpersonen, externe partners en het accountregister.
@@ -103,7 +104,12 @@ export async function listContacts(organizationId: string): Promise<Contact[]> {
 
 export type NewContact = {
   organizationId: string
+  /** De volledige naam; stel hem samen met volledigeNaam() uit de delen. */
   name: string
+  firstName?: string | null
+  infix?: string | null
+  lastName?: string | null
+  aanhef?: Aanhef | null
   jobTitle?: string | null
   email?: string | null
   phone?: string | null
@@ -140,6 +146,10 @@ export async function createContact(input: NewContact): Promise<Contact> {
       .values({
         organizationId: input.organizationId,
         name: input.name.trim(),
+        firstName: input.firstName?.trim() || null,
+        infix: input.infix?.trim() || null,
+        lastName: input.lastName?.trim() || null,
+        aanhef: input.aanhef ?? null,
         jobTitle: input.jobTitle ?? null,
         email: input.email?.trim().toLowerCase() || null,
         phone: input.phone ?? null,
@@ -218,6 +228,10 @@ export async function updateContact(
       .update(contacts)
       .set({
         name: patch.name.trim(),
+        firstName: patch.firstName?.trim() || null,
+        infix: patch.infix?.trim() || null,
+        lastName: patch.lastName?.trim() || null,
+        aanhef: patch.aanhef ?? null,
         jobTitle: patch.jobTitle ?? null,
         email: patch.email?.trim().toLowerCase() || null,
         phone: patch.phone ?? null,
@@ -617,4 +631,49 @@ export async function getCrmCounts(organizationIds: string[]) {
   for (const row of a) { const e = leeg.get(row.id); if (e) e.accounts = Number(row.n) }
 
   return leeg
+}
+
+export type ContactMetKlant = Contact & {
+  klantNaam: string
+  klantSlug: string
+  klantStatus: string
+}
+
+/**
+ * Alle contactpersonen over alle klanten heen.
+ *
+ * Bestaat omdat je vaker een persoon zoekt dan een bedrijf. Je weet dat je
+ * Marieke moet hebben; bij welke klant ze hoort is precies wat je kwijt bent.
+ *
+ * Er wordt op achternaam gesorteerd en niet op de volledige naam: anders
+ * staat iedereen die Van heet onder de V.
+ */
+export async function listAlleContactpersonen(zoek?: string): Promise<ContactMetKlant[]> {
+  const term = (zoek ?? '').trim()
+
+  const rijen = await db
+    .select({ contact: contacts, org: organizations })
+    .from(contacts)
+    .innerJoin(organizations, eq(organizations.id, contacts.organizationId))
+    .where(
+      term === ''
+        ? undefined
+        : sql`(
+            ${contacts.name} ILIKE ${'%' + term + '%'}
+            OR ${contacts.email} ILIKE ${'%' + term + '%'}
+            OR ${contacts.jobTitle} ILIKE ${'%' + term + '%'}
+            OR ${organizations.name} ILIKE ${'%' + term + '%'}
+          )`,
+    )
+    .orderBy(
+      asc(sql`COALESCE(NULLIF(${contacts.lastName}, ''), ${contacts.name})`),
+      asc(contacts.firstName),
+    )
+
+  return rijen.map((r) => ({
+    ...r.contact,
+    klantNaam: r.org.name,
+    klantSlug: r.org.slug,
+    klantStatus: r.org.status,
+  }))
 }
