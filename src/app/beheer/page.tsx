@@ -9,6 +9,8 @@ import {
 } from '@/lib/billing'
 import { listQuotes, getQuoteFigures, quoteStatusLabels, quoteStatusStyles } from '@/lib/quotes'
 import { listOrganizations } from '@/lib/admin'
+import { komendeVerjaardagen } from '@/lib/verjaardagen'
+import { MAANDNAMEN } from '@/lib/dates'
 import { formatCents } from '@/lib/money'
 import { formatDate, formatRelative } from '@/lib/dates'
 
@@ -39,6 +41,8 @@ export default async function DashboardPage() {
       listOrganizations(),
       getFiguresByOrganization(),
     ])
+
+  const jarig = await komendeVerjaardagen(7)
 
   const openOffertes = offertes.filter(
     (q) => q.status === 'sent' || q.status === 'awaiting_partner',
@@ -124,6 +128,60 @@ export default async function DashboardPage() {
           }`}
         />
       </section>
+
+      {jarig.length > 0 && (
+        <section className="mb-8 rounded-xl bg-white shadow-sm">
+          <div className="flex flex-wrap items-baseline justify-between gap-x-4 border-b border-gray-200 px-5 py-3">
+            <h2 className="text-base">Jarig deze week</h2>
+            <p className="text-xs text-gray-500">
+              De eerste bovenaan. Collega&rsquo;s, contactpersonen en hun kinderen.
+            </p>
+          </div>
+
+          <ul className="divide-y divide-gray-200">
+            {jarig.map((v, i) => (
+              <li
+                key={`${v.soort}-${v.naam}-${i}`}
+                className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 px-5 py-2.5"
+              >
+                <div className="min-w-0">
+                  <p className="text-sm">
+                    {v.href ? (
+                      <a href={v.href} className="hover:text-jr-blue">
+                        {v.naam}
+                      </a>
+                    ) : (
+                      v.naam
+                    )}
+                    {v.wordt !== null && (
+                      <span className="text-gray-600"> wordt {v.wordt}</span>
+                    )}
+                  </p>
+                  <p className="text-xs text-gray-600">
+                    {v.bij}
+                    {v.soort === 'collega' && ' · collega'}
+                  </p>
+                </div>
+
+                <p
+                  className={`text-sm ${
+                    v.overDagen === 0 ? 'text-jr-orange font-bold' : 'text-gray-600'
+                  }`}
+                >
+                  {v.overDagen === 0
+                    ? 'vandaag'
+                    : v.overDagen === 1
+                      ? 'morgen'
+                      : `over ${v.overDagen} dagen`}
+                  <span className="ml-2 text-xs text-gray-500">
+                    {v.dag} {MAANDNAMEN[v.maand - 1]}
+                  </span>
+                </p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       {aandacht.length > 0 && (
         <section className="mb-8">

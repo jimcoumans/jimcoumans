@@ -4,26 +4,250 @@ import {
   nieuwAccount, wijzigAccount, verwijderAccount,
   koppelPartner, wijzigKoppeling, ontkoppelPartner,
   bedrijfsgegevens,
+  nieuwKind, wisKind,
 } from '@/app/beheer/crm-actions'
 import {
   BRANCHES, COMMON_SYSTEMS, partnerTypeLabels, accountOwnerLabels,
   organizationStatusLabels,
 } from '@/lib/crm'
 import type { PartnerLink } from '@/lib/crm'
+import type { ContactChild } from '@/db/schema'
 import { formatCents } from '@/lib/money'
 import { formatDate } from '@/lib/dates'
 import { Avatar } from './Avatar'
 import { AfbeeldingKiezer } from './AfbeeldingKiezer'
 import { AANHEF_LABELS } from '@/lib/namen'
+import {
+  GESLACHT_OPTIES,
+  DISC_LABELS,
+  DRINK_LABELS,
+  KANAAL_LABELS,
+  opties,
+} from '@/lib/contact-labels'
+import { MAANDNAMEN } from '@/lib/dates'
 
-/* Leeg staat er bewust bij en bovenaan: niets kiezen is het eerlijke
-   antwoord als je het niet weet, en dan wordt de aanhef "Beste <voornaam>". */
-const AANHEF_OPTIES = [
-  { value: '', label: 'Niet ingevuld' },
-  { value: 'heer', label: AANHEF_LABELS.heer },
-  { value: 'mevrouw', label: AANHEF_LABELS.mevrouw },
-  { value: 'neutraal', label: AANHEF_LABELS.neutraal },
-]
+/**
+ * De verjaardagsvelden: dag, maand en jaar apart.
+ *
+ * Lang niet iedereen deelt zijn geboortejaar, en een verzonnen jaartal is
+ * erger dan geen jaartal — dan feliciteer je straks iemand met een leeftijd
+ * die niet klopt.
+ */
+function Verjaardag({
+  dag,
+  maand,
+  jaar,
+}: {
+  dag: number | null
+  maand: number | null
+  jaar: number | null
+}) {
+  const veld =
+    'focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none'
+  return (
+    <div>
+      <p className="mb-1 text-xs text-gray-600">
+        Verjaardag<span className="text-gray-400"> (optioneel)</span>
+      </p>
+      <div className="grid grid-cols-[72px_1fr_88px] gap-2">
+        <input
+          name="geboortedag"
+          type="number"
+          min={1}
+          max={31}
+          placeholder="Dag"
+          aria-label="Dag"
+          defaultValue={dag ?? ''}
+          className={veld}
+        />
+        <select name="geboortemaand" aria-label="Maand" defaultValue={maand ?? ''} className={veld}>
+          <option value="">Maand</option>
+          {MAANDNAMEN.map((naam, i) => (
+            <option key={naam} value={i + 1}>
+              {naam}
+            </option>
+          ))}
+        </select>
+        <input
+          name="geboortejaar"
+          type="number"
+          min={1900}
+          max={2100}
+          placeholder="Jaar"
+          aria-label="Jaar"
+          defaultValue={jaar ?? ''}
+          className={veld}
+        />
+      </div>
+      <p className="mt-1 text-xs text-gray-500">
+        Dag en maand horen bij elkaar; het jaar mag je weglaten.
+      </p>
+    </div>
+  )
+}
+
+/**
+ * De kinderen van een contactpersoon.
+ *
+ * Bewust klein gehouden: een naam, een verjaardag en één zin. Dit zijn
+ * gegevens van kinderen van iemand anders, en die bewaar je niet omdat het
+ * kan maar omdat je er iets mee doet — een naam noemen, een kaartje sturen.
+ */
+function Kinderen({
+  contactId,
+  slug,
+  kinderen,
+}: {
+  contactId: string
+  slug: string
+  kinderen: ContactChild[]
+}) {
+  const veld =
+    'focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none'
+
+  return (
+    <div className="mt-3 border-t border-gray-200 pt-3">
+      <p className="mb-2 text-xs font-bold text-gray-600">Kinderen</p>
+
+      {kinderen.length > 0 && (
+        <ul className="mb-2 space-y-1">
+          {kinderen.map((k) => (
+            <li key={k.id} className="flex items-baseline justify-between gap-2 text-xs">
+              <span>
+                {k.name}
+                {k.birthDay !== null && k.birthMonth !== null && (
+                  <span className="text-gray-600">
+                    {' '}
+                    &middot; {k.birthDay} {MAANDNAMEN[k.birthMonth - 1]}
+                    {k.birthYear !== null && ` ${k.birthYear}`}
+                  </span>
+                )}
+                {k.notes && <span className="text-gray-500"> &middot; {k.notes}</span>}
+              </span>
+              <ActionForm
+                action={wisKind}
+                submitLabel="Weg"
+                submitClassName="text-gray-500 hover:bg-gray-100 !px-1.5 !py-0.5 !text-xs"
+                resetOnSuccess={false}
+                className=""
+              >
+                <input type="hidden" name="kindId" value={k.id} />
+                <input type="hidden" name="slug" value={slug} />
+              </ActionForm>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <ActionForm
+        action={nieuwKind}
+        submitLabel="Kind toevoegen"
+        submitClassName="text-jr-blue hover:bg-jr-lightblue !px-2 !py-1 !text-xs"
+        className="grid gap-2 sm:grid-cols-[1fr_64px_1fr_72px]"
+      >
+        <input type="hidden" name="contactId" value={contactId} />
+        <input type="hidden" name="slug" value={slug} />
+        <input name="kindnaam" placeholder="Naam" aria-label="Naam" className={veld} />
+        <input
+          name="kinddag"
+          type="number"
+          min={1}
+          max={31}
+          placeholder="Dag"
+          aria-label="Dag"
+          className={veld}
+        />
+        <select name="kindmaand" aria-label="Maand" defaultValue="" className={veld}>
+          <option value="">Maand</option>
+          {MAANDNAMEN.map((naam, i) => (
+            <option key={naam} value={i + 1}>
+              {naam}
+            </option>
+          ))}
+        </select>
+        <input
+          name="kindjaar"
+          type="number"
+          min={1950}
+          max={2100}
+          placeholder="Jaar"
+          aria-label="Jaar"
+          className={veld}
+        />
+        <div className="sm:col-span-4">
+          <input
+            name="kindnotitie"
+            placeholder="Bijzonderheden: voetbalt, examenjaar, heet naar zijn opa"
+            aria-label="Bijzonderheden"
+            className={veld}
+          />
+        </div>
+      </ActionForm>
+    </div>
+  )
+}
+
+/** De velden die van een adresboek een profiel maken. */
+function Persoonlijk({ c }: { c: Contact }) {
+  return (
+    <>
+      <div className="sm:col-span-2">
+        <p className="mt-2 mb-1 border-t border-gray-200 pt-3 text-xs font-bold text-gray-600">
+          Persoonlijk
+        </p>
+        <p className="mb-2 text-xs text-gray-500">
+          Alles hieronder is optioneel en dient één doel: dat je iemand kent in plaats van
+          alleen kunt bereiken. Een half ingevuld profiel is beter dan een leeg profiel.
+        </p>
+      </div>
+
+      <Verjaardag dag={c.birthDay} maand={c.birthMonth} jaar={c.birthYear} />
+      <Select label="Geslacht" name="aanhef" defaultValue={c.aanhef ?? ''} options={GESLACHT_OPTIES} />
+
+      <Select
+        label="Drinkt het liefst"
+        name="drinken"
+        defaultValue={c.drinkPreference ?? ''}
+        options={opties(DRINK_LABELS)}
+      />
+      <Select
+        label="Bereik je het best via"
+        name="kanaal"
+        defaultValue={c.preferredChannel ?? ''}
+        options={opties(KANAAL_LABELS)}
+      />
+
+      <div className="sm:col-span-2">
+        <Select
+          label="DISC-type"
+          name="disc"
+          defaultValue={c.discType ?? ''}
+          options={opties(DISC_LABELS)}
+          hint="Hoe hij het liefst benaderd wordt. Laat leeg als je het niet weet."
+        />
+      </div>
+
+      <Field label="Partner" name="partner" defaultValue={c.partnerName ?? ''} />
+      <Field
+        label="Hobby's"
+        name="hobbies"
+        defaultValue={c.hobbies ?? ''}
+        placeholder="wielrennen, koken, MVV"
+      />
+
+      <div className="sm:col-span-2">
+        <Field
+          label="Achtergrond"
+          name="achtergrond"
+          defaultValue={c.background ?? ''}
+          placeholder="Waar komt hij vandaan, waar kennen we hem van"
+        />
+      </div>
+    </>
+  )
+}
+
+
 import type { Contact, Account, Partner, Organization } from '@/db/schema'
 
 /* De CRM-blokken op de klantpagina: contactpersonen, partners, accounts en
@@ -33,10 +257,13 @@ export function Contactpersonen({
   contacts,
   organizationId,
   slug,
+  kinderenPer,
 }: {
   contacts: Contact[]
   organizationId: string
   slug: string
+  /** Per contactpersoon zijn kinderen; leeg als er geen zijn. */
+  kinderenPer: Map<string, ContactChild[]>
 }) {
   return (
     <section>
@@ -109,14 +336,13 @@ export function Contactpersonen({
                         />
                         <Field label="Achternaam" name="achternaam" defaultValue={c.lastName ?? ''} />
                       </div>
-                      <Select
-                        label="Aanhef"
-                        name="aanhef"
-                        defaultValue={c.aanhef ?? ''}
-                        options={AANHEF_OPTIES}
-                        hint="Bepaalt hoe een mail begint. Weet je het niet, laat het dan staan."
-                      />
                       <Field label="Functie" name="functie" defaultValue={c.jobTitle ?? ''} />
+                      <Field
+                        label="Afdeling"
+                        name="afdeling"
+                        defaultValue={c.department ?? ''}
+                        placeholder="Directie"
+                      />
                       <Field label="E-mailadres" name="email" type="email" defaultValue={c.email ?? ''} />
                       <Field label="Mobiel" name="mobiel" defaultValue={c.mobile ?? ''} />
                       <Field label="Telefoon" name="telefoon" defaultValue={c.phone ?? ''} />
@@ -126,7 +352,15 @@ export function Contactpersonen({
                       </div>
                       <Check label="Dit is de vaste contactpersoon" name="vast" defaultChecked={c.isPrimary} />
                       <Check label="Ontvangt de facturen" name="facturen" defaultChecked={c.receivesInvoices} />
+
+                      <Persoonlijk c={c} />
                     </ActionForm>
+
+                    <Kinderen
+                      contactId={c.id}
+                      slug={slug}
+                      kinderen={kinderenPer.get(c.id) ?? []}
+                    />
 
                     <div className="mt-3 border-t border-gray-200 pt-3">
                       <AfbeeldingKiezer
@@ -187,12 +421,13 @@ export function Contactpersonen({
               <Field label="Achternaam" name="achternaam" placeholder="Voncken" />
             </div>
             <Select
-              label="Aanhef"
+              label="Geslacht"
               name="aanhef"
-              options={AANHEF_OPTIES}
-              hint="Bepaalt hoe een mail begint. Weet je het niet, kies dan niets."
+              options={GESLACHT_OPTIES}
+              hint="Bepaalt ook hoe een brief begint. Weet je het niet, kies dan niets."
             />
             <Field label="Functie" name="functie" placeholder="Eigenaar" />
+            <Verjaardag dag={null} maand={null} jaar={null} />
             <Field label="E-mailadres" name="email" type="email" placeholder="marieke@voncken.nl" />
             <Field label="Mobiel" name="mobiel" placeholder="06 12 34 56 78" />
             <Field label="Telefoon" name="telefoon" placeholder="043 601 22 38" />

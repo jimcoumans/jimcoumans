@@ -179,6 +179,14 @@ export function describeDbError(error: unknown): string | null {
       return 'De werkgeverslasten moeten tussen 0 en 200 procent liggen. Gebruikelijk is ongeveer 28.'
     case 'fee_has_no_employer_cost':
       return 'Op een management fee zitten geen werkgeverslasten en geen vakantiegeld: dat is een factuur van een eigen BV. Zet beide op nul, of kies loondienst.'
+    case 'child_name_not_empty':
+      return 'Vul de naam van het kind in.'
+    case 'child_birthday_complete':
+      return 'Vul bij de verjaardag van een kind zowel de dag als de maand in. Het jaar mag je weglaten.'
+    case 'child_birth_day_valid':
+      return 'De dag van de verjaardag moet tussen 1 en 31 liggen.'
+    case 'child_birth_month_valid':
+      return 'De maand van de verjaardag moet tussen 1 en 12 liggen.'
     case 'image_size_reasonable':
       return 'Dit bestand is te groot. Een logo of profielfoto mag maximaal 1 MB zijn; verklein hem eerst.'
     case 'image_type_allowed':

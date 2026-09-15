@@ -58,6 +58,20 @@ function optioneelBedrag(
  * Aanmaken en wijzigen lezen hetzelfde formulier. Zouden ze dat elk apart
  * doen, dan werkt een nieuw veld op het ene scherm wel en op het andere niet.
  */
+/** Leeg veld is "niet ingevuld", niet nul. */
+function getal(f: FormData, n: string): number | null {
+  const waarde = String(f.get(n) ?? '').trim()
+  if (waarde === '') return null
+  const g = Number(waarde)
+  return Number.isFinite(g) ? Math.trunc(g) : null
+}
+
+/** Alleen waarden die de database kent; al het andere is niet ingevuld. */
+function keuze(f: FormData, n: string, toegestaan: readonly string[]): string | null {
+  const waarde = String(f.get(n) ?? '').trim()
+  return toegestaan.includes(waarde) ? waarde : null
+}
+
 function leesContact(
   formData: FormData,
 ): { ok: true; patch: ContactPatch } | { ok: false; error: string } {
@@ -95,6 +109,28 @@ function leesContact(
       phone: tekst(formData, 'telefoon') || null,
       mobile: tekst(formData, 'mobiel') || null,
       linkedinUrl: tekst(formData, 'linkedin') || null,
+      department: tekst(formData, 'afdeling') || null,
+      birthDay: getal(formData, 'geboortedag'),
+      birthMonth: getal(formData, 'geboortemaand'),
+      birthYear: getal(formData, 'geboortejaar'),
+      preferredChannel: (keuze(formData, 'kanaal', ['mail', 'telefoon', 'whatsapp', 'app']) ??
+        null) as never,
+      discType: (keuze(formData, 'disc', ['D', 'I', 'S', 'C']) ?? null) as never,
+      drinkPreference: keuze(formData, 'drinken', [
+        'koffie_zwart',
+        'koffie_suiker',
+        'koffie_melk',
+        'koffie_melk_suiker',
+        'cappuccino',
+        'latte_macchiato',
+        'thee',
+        'spa_rood',
+        'spa_blauw',
+        'anders',
+      ]),
+      partnerName: tekst(formData, 'partner') || null,
+      background: tekst(formData, 'achtergrond') || null,
+      hobbies: tekst(formData, 'hobbies') || null,
       isPrimary: formData.get('vast') === 'on',
       receivesInvoices: formData.get('facturen') === 'on',
       notes: tekst(formData, 'notities') || null,
@@ -458,5 +494,45 @@ export async function ontkoppelPartner(formData: FormData): Promise<ActionResult
     await unlinkPartner(linkId)
     revalidatePath(`/beheer/klanten/${slug}`)
     revalidatePath('/beheer/partners')
+  })
+}
+
+/* --- Kinderen van een contactpersoon ------------------------------------- */
+
+export async function nieuwKind(formData: FormData): Promise<ActionResult> {
+  await requireStaff()
+
+  const contactId = tekst(formData, 'contactId')
+  const slug = tekst(formData, 'slug')
+  if (!contactId) return { ok: false, error: 'Onbekende contactpersoon.' }
+
+  const naam = tekst(formData, 'kindnaam')
+  if (naam.length < 1) return { ok: false, error: 'Vul de naam van het kind in.' }
+
+  return veilig(async () => {
+    const { addKind } = await import('@/lib/crm')
+    await addKind({
+      contactId,
+      name: naam,
+      birthDay: getal(formData, 'kinddag'),
+      birthMonth: getal(formData, 'kindmaand'),
+      birthYear: getal(formData, 'kindjaar'),
+      notes: tekst(formData, 'kindnotitie') || null,
+    })
+    revalidatePath(`/beheer/klanten/${slug}`)
+  })
+}
+
+export async function wisKind(formData: FormData): Promise<ActionResult> {
+  await requireStaff()
+
+  const id = tekst(formData, 'kindId')
+  const slug = tekst(formData, 'slug')
+  if (!id) return { ok: false, error: 'Onbekend kind.' }
+
+  return veilig(async () => {
+    const { verwijderKind } = await import('@/lib/crm')
+    await verwijderKind(id)
+    revalidatePath(`/beheer/klanten/${slug}`)
   })
 }

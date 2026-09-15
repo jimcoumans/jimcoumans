@@ -16,7 +16,7 @@ import {
 } from '../../factuur-actions'
 import { SubscriptionCard, NewSubscriptionForm } from '@/components/SubscriptionCard'
 import { listSubscriptions } from '@/lib/billing'
-import { listContacts, listAccounts, listPartnersForOrganization, listActivePartners, organizationStatusLabels, organizationStatusStyles } from '@/lib/crm'
+import { listContacts, listAccounts, listPartnersForOrganization, listActivePartners, listKinderen, organizationStatusLabels, organizationStatusStyles } from '@/lib/crm'
 import { Contactpersonen, Partners, Accounts, Bedrijfsgegevens } from '@/components/CrmSections'
 import { BookServiceForm } from '@/components/BookServiceForm'
 import { formatQuantity, unitShort } from '@/lib/quantity'
@@ -49,6 +49,9 @@ export default async function KlantPage({
       listPartnersForOrganization(klant.organization.id),
       listActivePartners(),
     ])
+  // De kinderen apart, want die hangen aan de contactpersonen die we net
+  // hebben opgehaald.
+  const kinderenPer = await listKinderen(contacten.map((c) => c.id))
   const vandaag = new Date().toISOString().slice(0, 10)
 
   return (
@@ -97,6 +100,7 @@ export default async function KlantPage({
             contacts={contacten}
             organizationId={klant.organization.id}
             slug={slug}
+            kinderenPer={kinderenPer}
           />
 
           <Partners

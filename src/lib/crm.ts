@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, sql, count } from 'drizzle-orm'
+import { and, asc, desc, eq, inArray, sql, count } from 'drizzle-orm'
 import { db } from '@/db'
 import {
   organizations,
@@ -7,8 +7,15 @@ import {
   organizationPartners,
   accounts,
   quoteLines,
+  contactChildren,
 } from '@/db/schema'
-import type { Contact, Partner, Account, OrganizationPartner } from '@/db/schema'
+import type {
+  Contact,
+  Partner,
+  Account,
+  OrganizationPartner,
+  ContactChild,
+} from '@/db/schema'
 import type { Aanhef } from './namen'
 
 /* -------------------------------------------------------------------------
@@ -111,6 +118,16 @@ export type NewContact = {
   lastName?: string | null
   aanhef?: Aanhef | null
   jobTitle?: string | null
+  department?: string | null
+  birthDay?: number | null
+  birthMonth?: number | null
+  birthYear?: number | null
+  preferredChannel?: 'mail' | 'telefoon' | 'whatsapp' | 'app' | null
+  discType?: 'D' | 'I' | 'S' | 'C' | null
+  drinkPreference?: string | null
+  partnerName?: string | null
+  background?: string | null
+  hobbies?: string | null
   email?: string | null
   phone?: string | null
   mobile?: string | null
@@ -151,6 +168,16 @@ export async function createContact(input: NewContact): Promise<Contact> {
         lastName: input.lastName?.trim() || null,
         aanhef: input.aanhef ?? null,
         jobTitle: input.jobTitle ?? null,
+        department: input.department?.trim() || null,
+        birthDay: input.birthDay ?? null,
+        birthMonth: input.birthMonth ?? null,
+        birthYear: input.birthYear ?? null,
+        preferredChannel: input.preferredChannel ?? null,
+        discType: input.discType ?? null,
+        drinkPreference: (input.drinkPreference ?? null) as never,
+        partnerName: input.partnerName?.trim() || null,
+        background: input.background?.trim() || null,
+        hobbies: input.hobbies?.trim() || null,
         email: input.email?.trim().toLowerCase() || null,
         phone: input.phone ?? null,
         mobile: input.mobile ?? null,
@@ -233,6 +260,16 @@ export async function updateContact(
         lastName: patch.lastName?.trim() || null,
         aanhef: patch.aanhef ?? null,
         jobTitle: patch.jobTitle ?? null,
+        department: patch.department?.trim() || null,
+        birthDay: patch.birthDay ?? null,
+        birthMonth: patch.birthMonth ?? null,
+        birthYear: patch.birthYear ?? null,
+        preferredChannel: patch.preferredChannel ?? null,
+        discType: patch.discType ?? null,
+        drinkPreference: (patch.drinkPreference ?? null) as never,
+        partnerName: patch.partnerName?.trim() || null,
+        background: patch.background?.trim() || null,
+        hobbies: patch.hobbies?.trim() || null,
         email: patch.email?.trim().toLowerCase() || null,
         phone: patch.phone ?? null,
         mobile: patch.mobile ?? null,
@@ -676,4 +713,56 @@ export async function listAlleContactpersonen(zoek?: string): Promise<ContactMet
     klantSlug: r.org.slug,
     klantStatus: r.org.status,
   }))
+}
+
+/* --- Kinderen van een contactpersoon ------------------------------------- */
+
+export type NieuwKind = {
+  contactId: string
+  name: string
+  birthDay: number | null
+  birthMonth: number | null
+  birthYear: number | null
+  notes: string | null
+}
+
+export async function listKinderen(contactIds: string[]) {
+  if (contactIds.length === 0) return new Map<string, ContactChild[]>()
+
+  const rijen = await db
+    .select()
+    .from(contactChildren)
+    .where(inArray(contactChildren.contactId, contactIds))
+    .orderBy(asc(contactChildren.birthYear), asc(contactChildren.name))
+
+  const perContact = new Map<string, ContactChild[]>()
+  for (const kind of rijen) {
+    const lijst = perContact.get(kind.contactId) ?? []
+    lijst.push(kind)
+    perContact.set(kind.contactId, lijst)
+  }
+  return perContact
+}
+
+export async function addKind(input: NieuwKind): Promise<ContactChild> {
+  if (input.name.trim() === '') throw new CrmError('Vul de naam van het kind in.')
+
+  const [kind] = await db
+    .insert(contactChildren)
+    .values({
+      contactId: input.contactId,
+      name: input.name.trim(),
+      birthDay: input.birthDay,
+      birthMonth: input.birthMonth,
+      birthYear: input.birthYear,
+      notes: input.notes?.trim() || null,
+    })
+    .returning()
+
+  if (!kind) throw new CrmError('Kind kon niet worden opgeslagen.')
+  return kind
+}
+
+export async function verwijderKind(id: string): Promise<void> {
+  await db.delete(contactChildren).where(eq(contactChildren.id, id))
 }

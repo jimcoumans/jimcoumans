@@ -1,6 +1,6 @@
 import { and, asc, eq, isNotNull, sql } from 'drizzle-orm'
 import { db } from '@/db'
-import { contacts, organizations } from '@/db/schema'
+import { contacts, organizations, users, contactChildren } from '@/db/schema'
 import { teamJubileaInMaand, teamVerjaardagenInMaand } from './team'
 
 /* -------------------------------------------------------------------------
@@ -155,5 +155,137 @@ export async function attentiesDezeMaand(nu: Date = new Date()) {
       jubilea.filter((j) => komtNog(j.dag)).length +
       teamVerjaardagen.filter((v) => komtNog(v.dag)).length +
       teamJubilea.filter((j) => komtNog(j.dag)).length,
+  }
+}
+
+export type KomendeVerjaardag = {
+  soort: 'contact' | 'collega' | 'kind'
+  naam: string
+  /** Waar hij werkt, of bij wie het kind hoort. */
+  bij: string | null
+  /** Link naar de plek waar je meer ziet. */
+  href: string | null
+  dag: number
+  maand: number
+  /** Hoeveel nachten nog. Nul is vandaag. */
+  overDagen: number
+  /** De leeftijd die hij wordt, of null als het jaar niet bekend is. */
+  wordt: number | null
+}
+
+/**
+ * Wie er binnenkort jarig is, de eerste vooraan.
+ *
+ * Rekent met de eerstvolgende keer dat de dag-en-maand langskomt, dus eind
+ * december verschijnen de jarigen van begin januari gewoon in de lijst. Die
+ * jaarwisseling is precies waar zo'n overzicht anders stilletjes leegloopt,
+ * op het moment dat je er het meest aan hebt.
+ */
+export async function komendeVerjaardagen(
+  dagenVooruit = 7,
+  nu: Date = new Date(),
+): Promise<KomendeVerjaardag[]> {
+  const [contactRijen, teamRijen, kindRijen] = await Promise.all([
+    db
+      .select({ contact: contacts, org: organizations })
+      .from(contacts)
+      .innerJoin(organizations, eq(organizations.id, contacts.organizationId))
+      .where(and(isNotNull(contacts.birthDay), isNotNull(contacts.birthMonth))),
+
+    db
+      .select()
+      .from(users)
+      .where(
+        and(
+          isNotNull(users.birthDay),
+          isNotNull(users.birthMonth),
+          sql`${users.organizationId} IS NULL`,
+          sql`${users.endedOn} IS NULL`,
+        ),
+      ),
+
+    db
+      .select({ kind: contactChildren, contact: contacts })
+      .from(contactChildren)
+      .innerJoin(contacts, eq(contacts.id, contactChildren.contactId))
+      .where(and(isNotNull(contactChildren.birthDay), isNotNull(contactChildren.birthMonth))),
+  ])
+
+  const alles: KomendeVerjaardag[] = [
+    ...contactRijen.map((r) => ({
+      soort: 'contact' as const,
+      naam: r.contact.name,
+      bij: r.org.name,
+      href: `/beheer/klanten/${r.org.slug}`,
+      dag: r.contact.birthDay!,
+      maand: r.contact.birthMonth!,
+      jaar: r.contact.birthYear,
+    })),
+    ...teamRijen.map((u) => ({
+      soort: 'collega' as const,
+      naam: u.name ?? u.email,
+      bij: u.jobTitle,
+      href: `/beheer/medewerkers/${u.id}`,
+      dag: u.birthDay!,
+      maand: u.birthMonth!,
+      jaar: u.birthYear,
+    })),
+    ...kindRijen.map((r) => ({
+      soort: 'kind' as const,
+      naam: r.kind.name,
+      bij: `kind van ${r.contact.name}`,
+      href: null,
+      dag: r.kind.birthDay!,
+      maand: r.kind.birthMonth!,
+      jaar: r.kind.birthYear,
+    })),
+  ].map((v) => {
+    const { overDagen, jaarVanVieren } = tellAf(v.dag, v.maand, nu)
+    return {
+      soort: v.soort,
+      naam: v.naam,
+      bij: v.bij,
+      href: v.href,
+      dag: v.dag,
+      maand: v.maand,
+      overDagen,
+      wordt: v.jaar === null ? null : jaarVanVieren - v.jaar,
+    }
+  })
+
+  return alles
+    .filter((v) => v.overDagen <= dagenVooruit)
+    .sort((a, b) => a.overDagen - b.overDagen || a.naam.localeCompare(b.naam, 'nl'))
+}
+
+/**
+ * Hoeveel nachten tot de eerstvolgende keer dat deze dag langskomt.
+ *
+ * Valt de verjaardag dit jaar al achter ons, dan telt hij door naar volgend
+ * jaar — anders mist een overzicht van "deze week" alles rond oud en nieuw.
+ *
+ * 29 februari in een gewoon jaar wordt 1 maart. Dat is een keuze: liever een
+ * dag te vroeg feliciteren dan drie jaar overslaan.
+ */
+function tellAf(dag: number, maand: number, nu: Date): { overDagen: number; jaarVanVieren: number } {
+  const vandaag = new Date(nu.getFullYear(), nu.getMonth(), nu.getDate())
+
+  const maak = (jaar: number) => {
+    const d = new Date(jaar, maand - 1, dag)
+    // Een datum die niet bestaat rolt door naar de volgende maand; dat is
+    // precies het gedrag dat we willen voor 29 februari.
+    return d
+  }
+
+  let volgende = maak(vandaag.getFullYear())
+  let jaarVanVieren = vandaag.getFullYear()
+  if (volgende < vandaag) {
+    jaarVanVieren += 1
+    volgende = maak(jaarVanVieren)
+  }
+
+  return {
+    overDagen: Math.round((volgende.getTime() - vandaag.getTime()) / 86_400_000),
+    jaarVanVieren,
   }
 }

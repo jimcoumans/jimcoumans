@@ -172,6 +172,32 @@ export const aanhefEnum = pgEnum('aanhef', ['heer', 'mevrouw', 'neutraal'])
  */
 export const beloningEnum = pgEnum('beloning_soort', ['loondienst', 'management_fee'])
 
+/**
+ * DISC-type: hoe iemand het liefst benaderd wordt.
+ *
+ * D wil de kern, I wil het gesprek, S wil de rust, C wil de onderbouwing.
+ * Alleen de vier hoofdtypes; een combinatie zet je in de achtergrond, want
+ * een keuzelijst met zestien vakjes vult niemand in.
+ */
+export const discEnum = pgEnum('disc_type', ['D', 'I', 'S', 'C'])
+
+/** Wat iemand drinkt. Klein detail, groot effect als je het onthoudt. */
+export const drinkEnum = pgEnum('drink_preference', [
+  'koffie_zwart',
+  'koffie_suiker',
+  'koffie_melk',
+  'koffie_melk_suiker',
+  'cappuccino',
+  'latte_macchiato',
+  'thee',
+  'spa_rood',
+  'spa_blauw',
+  'anders',
+])
+
+/** Waarop iemand het liefst bereikt wordt. */
+export const kanaalEnum = pgEnum('contact_channel', ['mail', 'telefoon', 'whatsapp', 'app'])
+
 export const contractTypeEnum = pgEnum('contract_type', [
   'bepaalde_tijd',
   'onbepaalde_tijd',
@@ -325,6 +351,23 @@ export const contacts = pgTable(
     birthDay: integer('birth_day'),
     birthMonth: integer('birth_month'),
     birthYear: integer('birth_year'),
+
+    /* --- Attentiewaarde ---
+       Dit deel maakt het verschil tussen een adresboek en iemand kennen. Het
+       is allemaal optioneel: een half ingevuld profiel is beter dan een leeg
+       profiel dat niemand durft aan te raken. */
+
+    /** Hoe je hem het makkelijkst bereikt. */
+    preferredChannel: kanaalEnum('preferred_channel'),
+    /** D, I, S of C: hoe iemand het liefst benaderd wordt. */
+    discType: discEnum('disc_type'),
+    drinkPreference: drinkEnum('drink_preference'),
+    /** Naam van de partner. Eén veld: we bouwen geen stamboom. */
+    partnerName: text('partner_name'),
+    /** Waar hij vandaan komt, waar we hem van kennen, wat zijn verhaal is. */
+    background: text('background'),
+    /** Vrij veld: voetbal, wielrennen, koken. Kommagescheiden leest prima. */
+    hobbies: text('hobbies'),
 
     /** De vaste contactpersoon. Er kan er maar één per klant zijn. */
     isPrimary: boolean('is_primary').notNull().default(false),
@@ -1413,6 +1456,48 @@ export const invoicesRelations = relations(invoices, ({ one, many }) => ({
   entries: many(ledgerEntries),
 }))
 
+/**
+ * De kinderen van een contactpersoon.
+ *
+ * Een eigen tabel omdat er meerdere zijn en je ze los wilt kunnen bijwerken.
+ *
+ * Hou dit klein. Dit zijn gegevens van kinderen van iemand anders, en die
+ * bewaar je niet omdat het kan maar omdat je er iets mee doet: een naam
+ * noemen, een kaartje sturen. Een naam, een verjaardag en een zin is genoeg;
+ * meer heb je niet nodig en wil je niet verantwoorden.
+ */
+export const contactChildren = pgTable(
+  'contact_children',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    contactId: uuid('contact_id')
+      .notNull()
+      .references(() => contacts.id, { onDelete: 'cascade' }),
+
+    name: text('name').notNull(),
+    birthDay: integer('birth_day'),
+    birthMonth: integer('birth_month'),
+    birthYear: integer('birth_year'),
+    /** Eén zin: voetbalt, zit in de examenklas, heet naar zijn opa. */
+    notes: text('notes'),
+
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('contact_children_contact_idx').on(t.contactId),
+    check('child_name_not_empty', sql`length(trim(${t.name})) > 0`),
+    check('child_birthday_complete', sql`(${t.birthDay} IS NULL) = (${t.birthMonth} IS NULL)`),
+    check(
+      'child_birth_day_valid',
+      sql`${t.birthDay} IS NULL OR (${t.birthDay} >= 1 AND ${t.birthDay} <= 31)`,
+    ),
+    check(
+      'child_birth_month_valid',
+      sql`${t.birthMonth} IS NULL OR (${t.birthMonth} >= 1 AND ${t.birthMonth} <= 12)`,
+    ),
+  ],
+)
+
 /* -------------------------------------------------------------------------
    Afbeeldingen: logo's en profielfoto's.
 
@@ -1680,3 +1765,4 @@ export type SalaryRecord = typeof salaryRecords.$inferSelect
 export type DossierEntry = typeof dossierEntries.$inferSelect
 export type CompanyAsset = typeof companyAssets.$inferSelect
 export type Image = typeof images.$inferSelect
+export type ContactChild = typeof contactChildren.$inferSelect
