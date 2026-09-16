@@ -166,6 +166,26 @@ export function describeDbError(error: unknown): string | null {
     case 'subscription_discount_below_amount':
       return 'De korting is net zo hoog als het budget of hoger. Dan blijft er geen factuur over.'
 
+    /* --- Salespijplijn --- */
+    case 'stage_name_not_empty':
+      return 'Een fase moet een naam hebben.'
+    case 'stage_probability_valid':
+      return 'De kans van een fase moet tussen 0 en 100 procent liggen.'
+    case 'pipeline_stages_name_idx':
+      return 'Er bestaat al een fase met deze naam. Twee fases die hetzelfde heten maakt het bord onleesbaar.'
+    case 'deal_title_not_empty':
+      return 'Geef de deal een naam, anders weet niemand later waar het over ging.'
+    case 'deal_value_not_negative':
+      return 'Een dealwaarde kan niet negatief zijn. Laat het veld leeg als je het bedrag nog niet weet.'
+    case 'deal_closed_matches_status':
+      return 'Een open deal heeft geen sluitdatum, en een gewonnen of verloren deal juist wel. Zet de status en de datum bij elkaar goed.'
+    case 'deal_lost_has_reason':
+      return 'Vul in waarom deze deal verloren is. Een verloren deal zonder reden leert je niets, en aan het eind van het jaar is de vraag waarom we ze aflopen dan niet te beantwoorden.'
+    case 'deal_reason_only_when_lost':
+      return 'Er staat een verliesreden bij een deal die niet verloren is. Haal de reden weg, of zet de deal op verloren.'
+    case 'deal_next_action_complete':
+      return 'Een vervolgstap hoort een datum te hebben, en een datum hoort een vervolgstap te hebben. Vul ze allebei in, of allebei niet.'
+
     /* --- Personeelsdossier --- */
     case 'contract_ends_after_start':
       return 'De einddatum van het contract ligt voor de startdatum. Controleer allebei de datums.'

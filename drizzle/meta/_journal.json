@@ -141,6 +141,13 @@
       "when": 1789543744927,
       "tag": "0019_partnercontacten",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1789545656715,
+      "tag": "0020_salespijplijn",
+      "breakpoints": true
     }
   ]
 }

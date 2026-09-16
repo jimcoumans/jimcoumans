@@ -98,6 +98,27 @@ export const leadSourceEnum = pgEnum('lead_source', [
   'other',
 ])
 
+/** Waar een deal in staat. De fase is apart; dit is de uitkomst. */
+export const dealStatusEnum = pgEnum('deal_status', [
+  'open', // loopt nog
+  'won', // gewonnen
+  'lost', // verloren
+])
+
+/**
+ * Wat voor soort omzet een deal oplevert.
+ *
+ * Voor een bureau is dit het belangrijkste onderscheid dat er is. Een
+ * retainer van 1.600 per maand en een project van 8.000 zijn niet bij elkaar
+ * op te tellen: het eerste is 19.200 per jaar en komt elke maand terug, het
+ * tweede is eenmalig. Ze in een pijplijntotaal bij elkaar gooien levert een
+ * getal op dat niets betekent.
+ */
+export const dealKindEnum = pgEnum('deal_kind', [
+  'retainer', // doorlopend, bedrag is per maand
+  'project', // eenmalig, bedrag is het totaal
+])
+
 /** Wat er op de tijdlijn van een klant kan staan. */
 export const activityKindEnum = pgEnum('activity_kind', [
   'note', // losse notitie
@@ -651,6 +672,14 @@ export const activities = pgTable(
       .references(() => organizations.id, { onDelete: 'cascade' }),
     /** Met wie, als het om een persoon ging. */
     contactId: uuid('contact_id').references(() => contacts.id, { onDelete: 'set null' }),
+    /**
+     * Bij welke deal het hoorde, als het een verkoopgesprek was.
+     *
+     * Leeg is normaal: het meeste contact gaat niet over een lopende deal.
+     * Staat het er wel, dan verschijnt het gesprek zowel op de tijdlijn van
+     * de klant als op de dealkaart, zonder dat het twee keer is vastgelegd.
+     */
+    dealId: uuid('deal_id').references(() => deals.id, { onDelete: 'set null' }),
     /** Wie het vastlegde. Blijft leeg als die collega later vertrekt. */
     userId: uuid('user_id').references(() => users.id, { onDelete: 'set null' }),
 
@@ -666,6 +695,7 @@ export const activities = pgTable(
   (t) => [
     index('activities_org_idx').on(t.organizationId, t.occurredAt),
     index('activities_contact_idx').on(t.contactId),
+    index('activities_deal_idx').on(t.dealId),
     check('activity_subject_not_empty', sql`length(trim(${t.subject})) > 0`),
   ],
 )
@@ -2006,6 +2036,163 @@ export const companyAssets = pgTable(
   ],
 )
 
+/* -------------------------------------------------------------------------
+   De salespijplijn.
+
+   Twee keuzes waar de rest uit volgt.
+
+   1. Een deal hangt ALTIJD aan een bedrijf. Er is geen aparte leads-tabel
+      naast de bedrijven die we al hebben. Een bedrijf heeft immers al een
+      status: lead, prospect, klant of oud-klant. Een tweede lijst met
+      half-klanten ernaast betekent twee plekken waar dezelfde naam staat, en
+      dan is binnen een maand niet meer te zeggen welke van de twee klopt.
+      Krijg je een naam op een borrel, dan maak je het bedrijf aan met status
+      lead; dat kost een regel en levert meteen een plek op om alles aan te
+      hangen.
+
+   2. Elke open deal hoort een volgende actie met een datum te hebben. Dat is
+      geen administratieve netheid maar de hele reden dat een pijplijn werkt:
+      een deal zonder afgesproken vervolgstap is een deal die niemand meer
+      aanraakt. De database dwingt het niet af — dan zou je hem niet even snel
+      kunnen invoeren — maar het overzicht zet ze bovenaan, en dat is
+      vervelender.
+   ------------------------------------------------------------------------- */
+
+/**
+ * Een fase in de pijplijn.
+ *
+ * Een tabel en geen enum, omdat je de naam van een fase wilt kunnen wijzigen
+ * zonder database-migratie. "Gekwalificeerd" heet over een jaar misschien
+ * "Intake gehad", en dat mag geen deploy kosten.
+ *
+ * De kans hangt aan de fase en niet aan de deal. Dat is het hele punt van
+ * fases: ze zeggen iets over hoe waarschijnlijk het is. Kun je per deal een
+ * eigen percentage invullen, dan gaat iedereen zijn eigen inschatting maken
+ * en is het gewogen totaal niet meer te vergelijken tussen collega's.
+ */
+export const pipelineStages = pgTable(
+  'pipeline_stages',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    name: text('name').notNull(),
+    /** Volgorde op het bord, van links naar rechts. */
+    sortOrder: integer('sort_order').notNull().default(0),
+    /** Hoe groot de kans is dat een deal in deze fase doorgaat. */
+    probabilityPercent: integer('probability_percent').notNull().default(50),
+    /** Korte uitleg: wat moet er gebeurd zijn om hier te staan. */
+    description: text('description'),
+    /** Een gearchiveerde fase blijft bestaan voor oude deals. */
+    active: boolean('active').notNull().default(true),
+
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('pipeline_stages_order_idx').on(t.sortOrder),
+    uniqueIndex('pipeline_stages_name_idx').on(t.name),
+    check('stage_name_not_empty', sql`length(trim(${t.name})) > 0`),
+    check(
+      'stage_probability_valid',
+      sql`${t.probabilityPercent} >= 0 AND ${t.probabilityPercent} <= 100`,
+    ),
+  ],
+)
+
+/**
+ * Een kans bij een bedrijf.
+ *
+ * Het bedrag betekent iets anders per soort: bij een retainer is het het
+ * maandbedrag, bij een project het totaal. Ze worden daarom nooit bij elkaar
+ * opgeteld — zie de toelichting bij dealKindEnum.
+ */
+export const deals = pgTable(
+  'deals',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    organizationId: uuid('organization_id')
+      .notNull()
+      .references(() => organizations.id, { onDelete: 'cascade' }),
+    /** Met wie je praat. Leeg mag: soms weet je het bedrijf eerder. */
+    contactId: uuid('contact_id').references(() => contacts.id, { onDelete: 'set null' }),
+    stageId: uuid('stage_id')
+      .notNull()
+      .references(() => pipelineStages.id, { onDelete: 'restrict' }),
+
+    title: text('title').notNull(),
+    kind: dealKindEnum('kind').notNull().default('retainer'),
+    /**
+     * Bij een retainer het maandbedrag, bij een project het totaal. Leeg mag:
+     * in het begin weet je het bedrag vaak nog niet, en een verzonnen bedrag
+     * is erger dan geen bedrag.
+     */
+    valueCents: integer('value_cents'),
+
+    /** Wanneer je verwacht dat het rond is. */
+    expectedCloseOn: timestamp('expected_close_on', { withTimezone: true }),
+    /** Wie hem trekt. */
+    ownerUserId: uuid('owner_user_id').references(() => users.id, { onDelete: 'set null' }),
+    /** Waar hij vandaan komt; hiermee kun je zeggen wat het meeste oplevert. */
+    source: leadSourceEnum('source'),
+
+    /* --- De volgende stap ---
+       Dit is het mechanisme waar de pijplijn op draait. Wat spreek je af, en
+       wanneer. Staat het er niet, of is de datum voorbij, dan komt de deal
+       bovenaan in het overzicht te staan. */
+    nextAction: text('next_action'),
+    nextActionOn: timestamp('next_action_on', { withTimezone: true }),
+
+    status: dealStatusEnum('status').notNull().default('open'),
+    /**
+     * Waarom verloren. Verplicht bij status lost.
+     *
+     * Een verloren deal zonder reden leert je niets, en aan het eind van het
+     * jaar is de vraag "waarom lopen we die af" dan niet te beantwoorden.
+     */
+    lostReason: text('lost_reason'),
+    /** Wanneer hij dicht ging. Leeg zolang hij open staat. */
+    closedAt: timestamp('closed_at', { withTimezone: true }),
+
+    notes: text('notes'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('deals_org_idx').on(t.organizationId),
+    index('deals_stage_idx').on(t.stageId),
+    index('deals_owner_idx').on(t.ownerUserId),
+    index('deals_status_idx').on(t.status),
+    // Om "wat moet ik deze week doen" te kunnen vragen.
+    index('deals_next_action_idx').on(t.nextActionOn),
+
+    check('deal_title_not_empty', sql`length(trim(${t.title})) > 0`),
+    check('deal_value_not_negative', sql`${t.valueCents} IS NULL OR ${t.valueCents} >= 0`),
+
+    // Open betekent open: geen sluitdatum. Dicht betekent dicht: wel een.
+    // Zonder deze regel raakt het onderscheid zoek en kloppen de cijfers
+    // over doorlooptijd en scoringskans niet meer.
+    check(
+      'deal_closed_matches_status',
+      sql`(${t.status} = 'open') = (${t.closedAt} IS NULL)`,
+    ),
+    // Een verloren deal zonder reden leert je niets.
+    check(
+      'deal_lost_has_reason',
+      sql`${t.status} <> 'lost' OR length(trim(COALESCE(${t.lostReason}, ''))) > 0`,
+    ),
+    // En een reden bij een deal die niet verloren is, klopt niet.
+    check(
+      'deal_reason_only_when_lost',
+      sql`${t.status} = 'lost' OR ${t.lostReason} IS NULL`,
+    ),
+    // Een vervolgstap zonder datum verdwijnt uit beeld; een datum zonder
+    // afspraak zegt niet wat je moet doen. Ze horen bij elkaar.
+    check(
+      'deal_next_action_complete',
+      sql`(length(trim(COALESCE(${t.nextAction}, ''))) > 0) = (${t.nextActionOn} IS NOT NULL)`,
+    ),
+  ],
+)
+
 export type Organization = typeof organizations.$inferSelect
 export type User = typeof users.$inferSelect
 export type Wallet = typeof wallets.$inferSelect
@@ -2033,3 +2220,5 @@ export type ContactChild = typeof contactChildren.$inferSelect
 export type OrganizationLocation = typeof organizationLocations.$inferSelect
 export type Competitor = typeof competitors.$inferSelect
 export type OrganizationGoal = typeof organizationGoals.$inferSelect
+export type PipelineStage = typeof pipelineStages.$inferSelect
+export type Deal = typeof deals.$inferSelect
