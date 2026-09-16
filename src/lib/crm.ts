@@ -479,6 +479,37 @@ export async function listOrganizationsForPartner(partnerId: string) {
     .orderBy(asc(organizations.name))
 }
 
+/**
+ * Bij welke klanten alle partners horen, in een query.
+ *
+ * Zelfde reden als listContactenPerPartner: een query per partner is op een
+ * lokale database gratis en vanaf een serverless functie een netwerkronde.
+ */
+export async function listOrganizationsPerPartner(): Promise<
+  Map<string, { link: OrganizationPartner; organizationName: string; organizationSlug: string }[]>
+> {
+  const rijen = await db
+    .select({
+      link: organizationPartners,
+      organizationName: organizations.name,
+      organizationSlug: organizations.slug,
+    })
+    .from(organizationPartners)
+    .innerJoin(organizations, eq(organizations.id, organizationPartners.organizationId))
+    .orderBy(asc(organizations.name))
+
+  const perPartner = new Map<
+    string,
+    { link: OrganizationPartner; organizationName: string; organizationSlug: string }[]
+  >()
+  for (const rij of rijen) {
+    const lijst = perPartner.get(rij.link.partnerId) ?? []
+    lijst.push(rij)
+    perPartner.set(rij.link.partnerId, lijst)
+  }
+  return perPartner
+}
+
 export async function linkPartner(input: {
   organizationId: string
   partnerId: string

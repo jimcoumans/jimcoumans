@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { getSessionUser } from '@/lib/auth'
-import { listPartners, listOrganizationsForPartner, partnerTypeLabels } from '@/lib/crm'
-import { listPartnerContacten } from '@/lib/crm-personen'
+import { listPartners, listOrganizationsPerPartner, partnerTypeLabels } from '@/lib/crm'
+import { listContactenPerPartner } from '@/lib/crm-personen'
 import { getPartnerFigures } from '@/lib/quotes'
 import { AppShell } from '@/components/AppShell'
 import { ActionForm, Field, Select, Uitklap } from '@/components/ActionForm'
@@ -145,15 +145,13 @@ export default async function PartnersPage() {
   const totaalMarge = totaalOmzet - totaalNaarPartners
 
   // Bij welke klanten elke partner hoort; dat is waar het overzicht om draait.
-  const koppelingen = await Promise.all(
-    partners.map(async (p) => ({
-      id: p.id,
-      klanten: await listOrganizationsForPartner(p.id),
-      contacten: await listPartnerContacten(p.id),
-    })),
-  )
-  const perPartner = new Map(koppelingen.map((k) => [k.id, k.klanten]))
-  const contactenPerPartner = new Map(koppelingen.map((k) => [k.id, k.contacten]))
+  // Twee queries voor alle partners samen, niet twee per partner. Bij veertig
+  // partners scheelt dat zesentachtig netwerkrondes; lokaal merk je dat niet,
+  // vanaf een serverless functie is het het verschil tussen laden en aflopen.
+  const [perPartner, contactenPerPartner] = await Promise.all([
+    listOrganizationsPerPartner(),
+    listContactenPerPartner(),
+  ])
 
   return (
     <AppShell user={user} actief="partners">

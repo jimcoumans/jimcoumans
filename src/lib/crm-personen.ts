@@ -1,7 +1,7 @@
 import { asc, eq, isNotNull, or, sql } from 'drizzle-orm'
 import { db } from '@/db'
 import { organizations, contacts, partners, users } from '@/db/schema'
-import type { Organization, Partner } from '@/db/schema'
+import type { Contact, Organization, Partner } from '@/db/schema'
 
 type OrganizationStatus = Organization['status']
 type PartnerType = Partner['type']
@@ -282,6 +282,37 @@ export async function listPartnerContacten(partnerId: string) {
       asc(sql`CASE WHEN ${contacts.isPrimary} THEN 0 ELSE 1 END`),
       asc(sql`COALESCE(NULLIF(${contacts.lastName}, ''), ${contacts.name})`),
     )
+}
+
+/**
+ * De contactpersonen van ALLE partners, in een query.
+ *
+ * Bestaat omdat het partneroverzicht anders per partner een query afvuurt.
+ * Bij veertig partners zijn dat veertig heen-en-weertjes naar de database.
+ * Lokaal merk je dat niet — daar staat de database op dezelfde machine. Vanaf
+ * een serverless functie kost elke query een netwerkronde, en veertig daarvan
+ * achter elkaar is het verschil tussen een pagina die laadt en een functie die
+ * in zijn tijdslimiet loopt.
+ */
+export async function listContactenPerPartner(): Promise<Map<string, Contact[]>> {
+  const rijen = await db
+    .select()
+    .from(contacts)
+    .where(isNotNull(contacts.partnerId))
+    .orderBy(
+      // De vaste contactpersoon bovenaan: die bel je.
+      asc(sql`CASE WHEN ${contacts.isPrimary} THEN 0 ELSE 1 END`),
+      asc(sql`COALESCE(NULLIF(${contacts.lastName}, ''), ${contacts.name})`),
+    )
+
+  const perPartner = new Map<string, Contact[]>()
+  for (const rij of rijen) {
+    if (!rij.partnerId) continue
+    const lijst = perPartner.get(rij.partnerId) ?? []
+    lijst.push(rij)
+    perPartner.set(rij.partnerId, lijst)
+  }
+  return perPartner
 }
 
 /** Hoeveel contactpersonen elke partner heeft. Voor het partneroverzicht. */
