@@ -34,21 +34,35 @@ const globalForDb = globalThis as unknown as {
 }
 
 /**
- * Hoeveel verbindingen deze instantie tegelijk open mag hebben.
+ * Eén verbinding. Niet twee, niet tien.
  *
- * Bewust laag. De rekensom die hier telt is niet "hoeveel heeft één pagina
- * nodig" maar "hoeveel instanties draaien er tegelijk, maal dit getal". Een
- * dashboard dat zestien queries naast elkaar afvuurt voelt met tien
- * verbindingen sneller aan, maar bij twintig gelijktijdige functies zijn dat
- * tweehonderd verbindingen — en dan is de limiet van de pooler allang
- * bereikt. Wat er daarna gebeurt is geen nette foutmelding: de verbinding
- * blijft wachten tot er eentje vrijkomt, de functie loopt in zijn tijdslimiet
- * en de bezoeker krijgt een 502.
+ * Dit getal is gemeten en niet bedacht. Op de live omgeving:
  *
- * Met drie verbindingen wachten die zestien queries kort op elkaar. Dat kost
- * milliseconden. Een 502 kost de hele pagina.
+ *     1 query                  99 ms
+ *     2 queries tegelijk      591 ms
+ *     5 queries tegelijk      loopt vast
+ *    10 queries tegelijk      loopt vast
+ *
+ * Het ging om SELECT 1 — het simpelste wat een database kan doen. Het is dus
+ * niet de query en niet de hoeveelheid gegevens: deze database accepteert
+ * simpelweg geen handvol gelijktijdige verbindingen. Een tweede verbindng
+ * opzetten kost al een halve seconde, bij vijf blijft het hangen tot de
+ * functie wordt afgekapt en de bezoeker een 502 krijgt.
+ *
+ * Met één verbinding staan alle queries netjes in de rij. Zestien queries van
+ * honderd milliseconde is anderhalve seconde: trager dan parallel zou zijn
+ * als parallel werkte, en oneindig veel sneller dan een pagina die omvalt.
+ *
+ * Dit is ook gewoon hoe het hoort bij serverless. Een functie-instantie
+ * behandelt één verzoek tegelijk, dus meer dan één verbinding per instantie
+ * levert niets op behalve druk op de database — vermenigvuldigd met het
+ * aantal instanties dat tegelijk draait.
+ *
+ * Wil je hier ooit boven: dat kan alleen met een pooler ertussen die er wél
+ * tegen kan (Supabase noemt dat de transaction pooler, poort 6543). Zet dat
+ * getal niet omhoog zonder eerst opnieuw te meten.
  */
-const MAX_VERBINDINGEN = 3
+const MAX_VERBINDINGEN = 1
 
 function maakClient(): ReturnType<typeof postgres> {
   const bestaand = globalForDb.jrWalletClient
