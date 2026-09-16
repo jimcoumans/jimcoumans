@@ -30,29 +30,30 @@ export default async function DashboardPage() {
   if (!user) redirect('/login')
   if (user.role !== 'staff' && user.role !== 'admin') redirect('/')
 
-  const [
-    overall,
-    mrr,
-    maandbudget,
-    quoteFigures,
-    offertes,
-    abonnementen,
-    openstaand,
-    klanten,
-    perKlant,
-    cockpit,
-  ] = await Promise.all([
-      getOverallFigures(),
-      getMonthlyRecurringCents(),
-      getMonthlyBudgetCents(),
-      getQuoteFigures(),
-      listQuotes(),
-      listSubscriptions(),
-      getOutstandingInvoices(),
-      listOrganizations(),
-      getFiguresByOrganization(),
-      getCockpit(),
-    ])
+  /* Achter elkaar en niet met Promise.all.
+
+     Dit stond hier met Promise.all over tien functies, en dat leek logisch:
+     ze hebben elkaar niet nodig, dus waarom wachten. Maar elk van die tien
+     doet zelf ook meerdere queries, dus in de praktijk gingen er twintig
+     verbindingen tegelijk open naar een pooler met een limiet. Lokaal merk je
+     dat niet — daar staat de database op dezelfde machine en kost een query
+     bijna niets. Vanaf een serverless functie liep deze pagina daarop vast en
+     kreeg de bezoeker een 502 zonder foutmelding.
+
+     Achter elkaar kost dit de som van de rondes in plaats van het risico dat
+     de helft blijft wachten op een verbinding. Bij tien overzichten van een
+     paar honderd milliseconde is dat een paar seconden; een 502 is de hele
+     pagina. */
+  const overall = await getOverallFigures()
+  const mrr = await getMonthlyRecurringCents()
+  const maandbudget = await getMonthlyBudgetCents()
+  const quoteFigures = await getQuoteFigures()
+  const offertes = await listQuotes()
+  const abonnementen = await listSubscriptions()
+  const openstaand = await getOutstandingInvoices()
+  const klanten = await listOrganizations()
+  const perKlant = await getFiguresByOrganization()
+  const cockpit = await getCockpit()
 
   const jarig = await komendeVerjaardagen(7)
 

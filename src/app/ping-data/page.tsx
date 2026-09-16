@@ -21,6 +21,17 @@ export const dynamic = 'force-dynamic'
 export const maxDuration = 26
 
 const STAP_MS = 4000
+/**
+ * Hoe lang de hele meting mag duren.
+ *
+ * Elke stap een budget geven is niet genoeg: veertien stappen van vier
+ * seconden is zesenvijftig seconden, en dan loopt de meetpagina alsnog over
+ * maxDuration heen en geeft hij zelf een 502. Precies de fout die hij moest
+ * verklaren.
+ */
+const TOTAAL_MS = 18000
+
+let meetBegin = Date.now()
 
 const NEP_GEBRUIKER = {
   id: 'ping',
@@ -52,6 +63,9 @@ function korteFout(fout: unknown): string {
 }
 
 async function meet(naam: string, doe: () => Promise<unknown>): Promise<Meting> {
+  if (Date.now() - meetBegin > TOTAAL_MS) {
+    return { naam, ok: false, duurMs: 0, fout: 'overgeslagen, meting was door zijn tijd heen' }
+  }
   const begin = Date.now()
   try {
     await metBudget(doe(), STAP_MS)
@@ -124,6 +138,7 @@ async function ruweMetingen(): Promise<Meting[]> {
 }
 
 export default async function PingDataPagina() {
+  meetBegin = Date.now()
   const metingen: Meting[] = []
 
   // Eerst het laden van de modules zelf. Als een van deze niet in de

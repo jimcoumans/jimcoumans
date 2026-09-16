@@ -1,6 +1,5 @@
-import { and, countDistinct, eq, isNotNull, sql } from 'drizzle-orm'
+import { sql } from 'drizzle-orm'
 import { db } from '@/db'
-import { organizations, subscriptions, users, contacts, partners } from '@/db/schema'
 
 /* -------------------------------------------------------------------------
    De cockpit: hoe groot zijn we, in aantallen.
@@ -12,6 +11,19 @@ import { organizations, subscriptions, users, contacts, partners } from '@/db/sc
    Eén ding met opzet apart geteld: hoeveel klanten daadwerkelijk kunnen
    inloggen. Een portaal met honderd klanten erin en nul die binnenkomen is
    geen portaal, en dat cijfer moet je zien zonder ernaar te zoeken.
+
+   ALLES IN ÉÉN QUERY. Dat is hier geen optimalisatie vooraf maar een
+   reparatie achteraf. De eerste versie vuurde zeven tellingen naast elkaar
+   af met Promise.all. Op een lokale database kost dat niets — die staat op
+   dezelfde machine en een telling op dertig rijen is een fractie van een
+   milliseconde. Vanaf een serverless functie is elke query een netwerkronde
+   naar Supabase, en zeven tegelijk lopen daar vast: deze functie deed er
+   live meer dan vier seconden over terwijl hij lokaal vierentwintig
+   milliseconde kostte, en nam de hele pagina mee in een 502.
+
+   Het zijn allemaal tellingen op kleine tabellen zonder onderling verband.
+   Die passen prima als subquery in één SELECT: één ronde in plaats van
+   zeven, en de database rekent ze net zo snel uit.
    ------------------------------------------------------------------------- */
 
 export type Cockpit = {
@@ -40,87 +52,68 @@ export type Cockpit = {
   actievePartners: number
 }
 
+/** Wat de database teruggeeft; alles komt binnen als tekst of getal. */
+type Rij = Record<string, string | number | null>
+
+const getal = (rij: Rij | undefined, sleutel: string): number => Number(rij?.[sleutel] ?? 0)
+
 export async function getCockpit(): Promise<Cockpit> {
-  const [orgRij, retainerRij, klantMetAbonnementRij, klantRij, teamRij, crmRij, partnerRij] =
-    await Promise.all([
-      // Alle bedrijven, uitgesplitst naar status. Eén query in plaats van
-      // vier: het is dezelfde tabel en dezelfde scan.
-      db
-        .select({
-          totaal: sql<string>`COUNT(*)`,
-          klanten: sql<string>`COUNT(*) FILTER (WHERE ${organizations.status} = 'client')`,
-          prospects: sql<string>`COUNT(*) FILTER (WHERE ${organizations.status} = 'prospect')`,
-          leads: sql<string>`COUNT(*) FILTER (WHERE ${organizations.status} = 'lead')`,
-          oud: sql<string>`COUNT(*) FILTER (WHERE ${organizations.status} = 'former')`,
-        })
-        .from(organizations),
+  const rijen = await db.execute(sql`
+    SELECT
+      (SELECT COUNT(*) FROM organizations) AS bedrijven,
+      (SELECT COUNT(*) FROM organizations WHERE status = 'client') AS klanten,
+      (SELECT COUNT(*) FROM organizations WHERE status = 'prospect') AS prospects,
+      (SELECT COUNT(*) FROM organizations WHERE status = 'lead') AS leads,
+      (SELECT COUNT(*) FROM organizations WHERE status = 'former') AS oud,
 
-      // Bedrijven met minstens één lopend abonnement. countDistinct, want een
-      // klant met drie abonnementen is nog steeds één klant.
-      db
-        .select({ n: countDistinct(subscriptions.organizationId) })
-        .from(subscriptions)
-        .where(eq(subscriptions.status, 'active')),
+      -- Een klant met drie abonnementen is nog steeds een klant, vandaar
+      -- DISTINCT.
+      (SELECT COUNT(DISTINCT organization_id) FROM subscriptions
+        WHERE status = 'active') AS retainers,
 
-      // Klanten met een lopend abonnement. Apart van de regel hierboven,
-      // want een prospect met een abonnement telt hier niet mee en zou het
-      // aantal projectklanten anders negatief maken.
-      db
-        .select({ n: countDistinct(organizations.id) })
-        .from(organizations)
-        .innerJoin(subscriptions, eq(subscriptions.organizationId, organizations.id))
-        .where(and(eq(organizations.status, 'client'), eq(subscriptions.status, 'active'))),
+      -- Apart van de regel hierboven: een prospect met een abonnement telt
+      -- hier niet mee, anders wordt het aantal projectklanten negatief.
+      (SELECT COUNT(DISTINCT o.id) FROM organizations o
+        JOIN subscriptions s ON s.organization_id = o.id
+        WHERE o.status = 'client' AND s.status = 'active') AS klant_met_abo,
 
-      // Klantaccounts: hoeveel er zijn, hoeveel er ooit binnen zijn geweest,
-      // en bij hoeveel verschillende bedrijven ze horen.
-      db
-        .select({
-          gebruikers: sql<string>`COUNT(*)`,
-          ingelogd: sql<string>`COUNT(*) FILTER (WHERE ${users.lastLoginAt} IS NOT NULL)`,
-          bedrijven: countDistinct(users.organizationId),
-        })
-        .from(users)
-        .where(and(eq(users.role, 'client'), isNotNull(users.organizationId))),
+      (SELECT COUNT(*) FROM users
+        WHERE role = 'client' AND organization_id IS NOT NULL) AS klantgebruikers,
+      (SELECT COUNT(*) FROM users
+        WHERE role = 'client' AND organization_id IS NOT NULL
+          AND last_login_at IS NOT NULL) AS ingelogd,
+      (SELECT COUNT(DISTINCT organization_id) FROM users
+        WHERE role = 'client' AND organization_id IS NOT NULL) AS met_toegang,
 
-      // Collega's in dienst. Uit dienst blijft in het systeem staan, maar
-      // telt niet mee als "wij".
-      db
-        .select({ n: sql<string>`COUNT(*)` })
-        .from(users)
-        .where(
-          and(
-            sql`${users.role} IN ('staff', 'admin')`,
-            sql`(${users.endedOn} IS NULL OR ${users.endedOn} > NOW())`,
-          ),
-        ),
+      -- Uit dienst blijft in het systeem staan, maar telt niet mee als "wij".
+      (SELECT COUNT(*) FROM users
+        WHERE role IN ('staff', 'admin')
+          AND (ended_on IS NULL OR ended_on > NOW())) AS collegas,
 
-      // Alle contactpersonen: klanten en partners samen, want ze staan in
-      // dezelfde tabel. De collega's tellen we er hieronder bij op.
-      db.select({ n: sql<string>`COUNT(*)` }).from(contacts),
+      -- Klant- en partnercontacten staan in dezelfde tabel.
+      (SELECT COUNT(*) FROM contacts) AS contacten,
 
-      db
-        .select({ n: sql<string>`COUNT(*)` })
-        .from(partners)
-        .where(eq(partners.active, true)),
-    ])
+      (SELECT COUNT(*) FROM partners WHERE active) AS partners
+  `)
 
-  const klanten = Number(orgRij[0]?.klanten ?? 0)
-  const klantenMetAbonnement = Number(klantMetAbonnementRij[0]?.n ?? 0)
-  const collegas = Number(teamRij[0]?.n ?? 0)
+  const rij = (rijen as unknown as Rij[])[0]
+
+  const klanten = getal(rij, 'klanten')
+  const collegas = getal(rij, 'collegas')
 
   return {
-    retainerKlanten: Number(retainerRij[0]?.n ?? 0),
+    retainerKlanten: getal(rij, 'retainers'),
     klanten,
-    projectKlanten: klanten - klantenMetAbonnement,
-    bedrijven: Number(orgRij[0]?.totaal ?? 0),
-    prospects: Number(orgRij[0]?.prospects ?? 0),
-    leads: Number(orgRij[0]?.leads ?? 0),
-    oudKlanten: Number(orgRij[0]?.oud ?? 0),
-    klantenMetToegang: Number(klantRij[0]?.bedrijven ?? 0),
-    klantgebruikers: Number(klantRij[0]?.gebruikers ?? 0),
-    klantgebruikersIngelogd: Number(klantRij[0]?.ingelogd ?? 0),
-    mensenInCrm: Number(crmRij[0]?.n ?? 0) + collegas,
+    projectKlanten: klanten - getal(rij, 'klant_met_abo'),
+    bedrijven: getal(rij, 'bedrijven'),
+    prospects: getal(rij, 'prospects'),
+    leads: getal(rij, 'leads'),
+    oudKlanten: getal(rij, 'oud'),
+    klantenMetToegang: getal(rij, 'met_toegang'),
+    klantgebruikers: getal(rij, 'klantgebruikers'),
+    klantgebruikersIngelogd: getal(rij, 'ingelogd'),
+    mensenInCrm: getal(rij, 'contacten') + collegas,
     collegas,
-    actievePartners: Number(partnerRij[0]?.n ?? 0),
+    actievePartners: getal(rij, 'partners'),
   }
 }

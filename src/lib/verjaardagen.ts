@@ -186,7 +186,18 @@ export async function komendeVerjaardagen(
   dagenVooruit = 7,
   nu: Date = new Date(),
 ): Promise<KomendeVerjaardag[]> {
-  const [contactRijen, partnerRijen, teamRijen, kindRijen] = await Promise.all([
+  /* Achter elkaar en niet met Promise.all.
+
+     Op een lokale database is parallel altijd sneller en kost het niets.
+     Vanaf een serverless functie is elke query een netwerkronde, en vier
+     tegelijk betekent vier verbindingen tegelijk openen naar een pooler met
+     een limiet. Deze functie deed het live meer dan vier seconden en nam de
+     pagina mee in een 502, terwijl hij lokaal twaalf milliseconden kostte.
+
+     Achter elkaar kost het de som van vier rondes in plaats van het risico
+     dat er eentje blijft wachten op een verbinding die niet vrijkomt. Dat is
+     een paar honderd milliseconde; een 502 is de hele pagina. */
+  const queries = [
     db
       .select({ contact: contacts, org: organizations })
       .from(contacts)
@@ -225,7 +236,12 @@ export async function komendeVerjaardagen(
       .from(contactChildren)
       .innerJoin(contacts, eq(contacts.id, contactChildren.contactId))
       .where(and(isNotNull(contactChildren.birthDay), isNotNull(contactChildren.birthMonth))),
-  ])
+  ] as const
+
+  const contactRijen = await queries[0]
+  const partnerRijen = await queries[1]
+  const teamRijen = await queries[2]
+  const kindRijen = await queries[3]
 
   const alles: KomendeVerjaardag[] = [
     ...contactRijen.map((r) => ({
