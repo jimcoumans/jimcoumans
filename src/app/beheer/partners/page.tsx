@@ -1,12 +1,84 @@
 import { redirect } from 'next/navigation'
 import { getSessionUser } from '@/lib/auth'
 import { listPartners, listOrganizationsForPartner, partnerTypeLabels } from '@/lib/crm'
+import { listPartnerContacten } from '@/lib/crm-personen'
 import { getPartnerFigures } from '@/lib/quotes'
 import { AppShell } from '@/components/AppShell'
 import { ActionForm, Field, Select, Uitklap } from '@/components/ActionForm'
-import { nieuwePartner, wijzigPartner, wisselPartnerActief, verwijderPartner } from '../crm-actions'
+import {
+  nieuwePartner,
+  wijzigPartner,
+  wisselPartnerActief,
+  verwijderPartner,
+  nieuwPartnerContact,
+  verwijderPartnerContact,
+} from '../crm-actions'
 import { formatCents } from '@/lib/money'
-import type { Partner } from '@/db/schema'
+import type { Contact, Partner } from '@/db/schema'
+
+/**
+ * De contactpersonen bij een partner.
+ *
+ * Bij de drukker bel je een vaste persoon, en die heeft een mailadres en een
+ * verjaardag net als de marketingmanager van een klant. Ze staan dan ook in
+ * dezelfde tabel en verschijnen gewoon in het CRM, met het label Partner.
+ */
+function PartnerContacten({
+  partnerId,
+  contacten,
+}: {
+  partnerId: string
+  contacten: Contact[]
+}) {
+  return (
+    <div className="space-y-4">
+      {contacten.length === 0 ? (
+        <p className="text-xs text-gray-500">
+          Nog geen contactpersoon. Wie bel je hier als er haast bij is?
+        </p>
+      ) : (
+        <ul className="divide-y divide-gray-200">
+          {contacten.map((c) => (
+            <li key={c.id} className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 py-2 first:pt-0">
+              <div className="min-w-0">
+                <p className="text-sm">
+                  {c.name}
+                  {c.jobTitle && <span className="text-gray-500"> &middot; {c.jobTitle}</span>}
+                </p>
+                <p className="text-xs text-gray-600">
+                  {[c.email, c.mobile ?? c.phone].filter(Boolean).join(' · ') || 'geen gegevens'}
+                </p>
+              </div>
+              <ActionForm
+                action={verwijderPartnerContact}
+                submitLabel="Verwijderen"
+                submitClassName="text-gray-600 hover:bg-gray-100 !px-2 !py-1 !text-xs"
+                resetOnSuccess={false}
+                className=""
+              >
+                <input type="hidden" name="contactId" value={c.id} />
+              </ActionForm>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <div className="border-t border-gray-200 pt-3">
+        <ActionForm action={nieuwPartnerContact} submitLabel="Contactpersoon toevoegen">
+          <input type="hidden" name="partnerId" value={partnerId} />
+          <div className="grid gap-2 sm:grid-cols-[1fr_4rem_1fr]">
+            <Field label="Voornaam" name="voornaam" />
+            <Field label="Tussen" name="tussenvoegsel" />
+            <Field label="Achternaam" name="achternaam" />
+          </div>
+          <Field label="Functie" name="functie" placeholder="Eigenaar" />
+          <Field label="E-mailadres" name="email" type="email" />
+          <Field label="Mobiel" name="mobiel" />
+        </ActionForm>
+      </div>
+    </div>
+  )
+}
 
 /** Het wijzigformulier van een partner; zelfde velden als bij aanmaken. */
 function PartnerVelden({ partner }: { partner: Partner }) {
@@ -74,9 +146,14 @@ export default async function PartnersPage() {
 
   // Bij welke klanten elke partner hoort; dat is waar het overzicht om draait.
   const koppelingen = await Promise.all(
-    partners.map(async (p) => ({ id: p.id, klanten: await listOrganizationsForPartner(p.id) })),
+    partners.map(async (p) => ({
+      id: p.id,
+      klanten: await listOrganizationsForPartner(p.id),
+      contacten: await listPartnerContacten(p.id),
+    })),
   )
   const perPartner = new Map(koppelingen.map((k) => [k.id, k.klanten]))
+  const contactenPerPartner = new Map(koppelingen.map((k) => [k.id, k.contacten]))
 
   return (
     <AppShell user={user} actief="partners">
@@ -275,6 +352,20 @@ export default async function PartnersPage() {
                           </ActionForm>
                         )}
                       </div>
+
+                      <Uitklap
+                        label={(() => {
+                          const n = (contactenPerPartner.get(p.id) ?? []).length
+                          return n === 0
+                            ? 'Contactpersonen'
+                            : `Contactpersonen (${n})`
+                        })()}
+                      >
+                        <PartnerContacten
+                          partnerId={p.id}
+                          contacten={contactenPerPartner.get(p.id) ?? []}
+                        />
+                      </Uitklap>
 
                       <Uitklap label="Gegevens en tarieven wijzigen">
                         <PartnerVelden partner={p} />

@@ -235,6 +235,54 @@ export async function verwijderContactpersoon(formData: FormData): Promise<Actio
   })
 }
 
+/* --------------------- Contactpersonen bij een partner -------------------
+   Dezelfde tabel, hetzelfde formulier, ander vakje waar hij aan hangt. De
+   acties staan apart omdat ze een ander scherm moeten verversen. */
+
+export async function nieuwPartnerContact(formData: FormData): Promise<ActionResult> {
+  await requireStaff()
+
+  const partnerId = tekst(formData, 'partnerId')
+  if (!partnerId) return { ok: false, error: 'Onbekende partner.' }
+
+  const gelezen = leesContact(formData)
+  if (!gelezen.ok) return gelezen
+
+  return veilig(async () => {
+    await createContact({ partnerId, ...gelezen.patch })
+    revalidatePath('/beheer/partners')
+    revalidatePath('/beheer/crm')
+  })
+}
+
+export async function wijzigPartnerContact(formData: FormData): Promise<ActionResult> {
+  await requireStaff()
+
+  const id = tekst(formData, 'contactId')
+  if (!id) return { ok: false, error: 'Onbekende contactpersoon.' }
+
+  const gelezen = leesContact(formData)
+  if (!gelezen.ok) return gelezen
+
+  return veilig(async () => {
+    await updateContact(id, gelezen.patch)
+    revalidatePath('/beheer/partners')
+    revalidatePath('/beheer/crm')
+  })
+}
+
+export async function verwijderPartnerContact(formData: FormData): Promise<ActionResult> {
+  await requireStaff()
+  const id = tekst(formData, 'contactId')
+  if (!id) return { ok: false, error: 'Onbekende contactpersoon.' }
+
+  return veilig(async () => {
+    await deleteContact(id)
+    revalidatePath('/beheer/partners')
+    revalidatePath('/beheer/crm')
+  })
+}
+
 /* --------------------------- Bedrijfsgegevens --------------------------- */
 
 export async function bedrijfsgegevens(formData: FormData): Promise<ActionResult> {

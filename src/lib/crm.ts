@@ -116,7 +116,10 @@ export async function listContacts(organizationId: string): Promise<Contact[]> {
 }
 
 export type NewContact = {
-  organizationId: string
+  /** Bij een klant. Vul dit of partnerId in, nooit allebei. */
+  organizationId?: string | null
+  /** Bij een partner of leverancier. Vul dit of organizationId in. */
+  partnerId?: string | null
   /** De volledige naam; stel hem samen met volledigeNaam() uit de delen. */
   name: string
   firstName?: string | null
@@ -151,6 +154,17 @@ export type NewContact = {
  * zou je eerst de oude moeten omzetten, wat niemand onthoudt.
  */
 export async function createContact(input: NewContact): Promise<Contact> {
+  const organizationId = input.organizationId ?? null
+  const partnerId = input.partnerId ?? null
+
+  // De database houdt dit ook tegen, maar een melding uit de app leest beter
+  // dan een constraintfout, en dit is een programmeerfout, geen invoerfout.
+  if ((organizationId === null) === (partnerId === null)) {
+    throw new CrmError(
+      'Een contactpersoon hoort bij een klant of bij een partner, niet bij allebei en niet bij geen van beide.',
+    )
+  }
+
   return db.transaction(async (tx) => {
     if (input.isPrimary) {
       await tx
@@ -158,7 +172,7 @@ export async function createContact(input: NewContact): Promise<Contact> {
         .set({ isPrimary: false, updatedAt: new Date() })
         .where(
           and(
-            eq(contacts.organizationId, input.organizationId),
+            zelfdeEigenaar({ organizationId, partnerId }),
             eq(contacts.isPrimary, true),
           ),
         )
@@ -167,7 +181,8 @@ export async function createContact(input: NewContact): Promise<Contact> {
     const [contact] = await tx
       .insert(contacts)
       .values({
-        organizationId: input.organizationId,
+        organizationId,
+        partnerId,
         name: input.name.trim(),
         firstName: input.firstName?.trim() || null,
         infix: input.infix?.trim() || null,
@@ -203,7 +218,10 @@ export async function createContact(input: NewContact): Promise<Contact> {
 export async function makePrimaryContact(contactId: string): Promise<void> {
   await db.transaction(async (tx) => {
     const [contact] = await tx
-      .select({ organizationId: contacts.organizationId })
+      .select({
+        organizationId: contacts.organizationId,
+        partnerId: contacts.partnerId,
+      })
       .from(contacts)
       .where(eq(contacts.id, contactId))
       .limit(1)
@@ -213,7 +231,7 @@ export async function makePrimaryContact(contactId: string): Promise<void> {
     await tx
       .update(contacts)
       .set({ isPrimary: false, updatedAt: new Date() })
-      .where(eq(contacts.organizationId, contact.organizationId))
+      .where(zelfdeEigenaar(contact))
 
     await tx
       .update(contacts)
@@ -238,7 +256,10 @@ export async function updateContact(
 ): Promise<Contact> {
   return db.transaction(async (tx) => {
     const [bestaand] = await tx
-      .select({ organizationId: contacts.organizationId })
+      .select({
+        organizationId: contacts.organizationId,
+        partnerId: contacts.partnerId,
+      })
       .from(contacts)
       .where(eq(contacts.id, contactId))
       .limit(1)
@@ -249,12 +270,7 @@ export async function updateContact(
       await tx
         .update(contacts)
         .set({ isPrimary: false, updatedAt: new Date() })
-        .where(
-          and(
-            eq(contacts.organizationId, bestaand.organizationId),
-            eq(contacts.isPrimary, true),
-          ),
-        )
+        .where(and(zelfdeEigenaar(bestaand), eq(contacts.isPrimary, true)))
     }
 
     const [contact] = await tx
@@ -704,6 +720,29 @@ export async function updateOrganizationDetails(
     .where(eq(organizations.id, organizationId))
 }
 
+/**
+ * "Hoort bij dezelfde eigenaar als deze contactpersoon."
+ *
+ * Een contactpersoon hangt aan een klant of aan een partner. Bij het
+ * omzetten van de vaste contactpersoon moet de vlag weg bij de anderen van
+ * diezelfde eigenaar — en alleen daar. Zonder dit onderscheid zou het
+ * aanwijzen van een vaste contactpersoon bij een partner de vaste
+ * contactpersoon bij een klant kunnen resetten, want NULL = NULL levert in
+ * SQL geen treffer maar een leeg resultaat, en dan gebeurt er stilletjes
+ * niets of juist te veel.
+ */
+function zelfdeEigenaar(eigenaar: {
+  organizationId: string | null
+  partnerId: string | null
+}) {
+  return eigenaar.organizationId !== null
+    ? eq(contacts.organizationId, eigenaar.organizationId)
+    : eigenaar.partnerId !== null
+      ? eq(contacts.partnerId, eigenaar.partnerId)
+      : // Kan niet voorkomen: de check contact_hoort_bij_een sluit het uit.
+        sql`false`
+}
+
 /** Aantallen per klant, voor het klantenoverzicht. */
 export async function getCrmCounts(organizationIds: string[]) {
   const leeg = new Map<string, { contacts: number; partners: number; accounts: number }>()
@@ -712,7 +751,13 @@ export async function getCrmCounts(organizationIds: string[]) {
   for (const id of organizationIds) leeg.set(id, { contacts: 0, partners: 0, accounts: 0 })
 
   const [c, p, a] = await Promise.all([
-    db.select({ id: contacts.organizationId, n: count() }).from(contacts).groupBy(contacts.organizationId),
+    // Alleen contactpersonen die bij een klant horen. Partnercontacten
+    // staan in dezelfde tabel maar tellen niet mee bij een klant.
+    db
+      .select({ id: organizations.id, n: count() })
+      .from(contacts)
+      .innerJoin(organizations, eq(organizations.id, contacts.organizationId))
+      .groupBy(organizations.id),
     db.select({ id: organizationPartners.organizationId, n: count() }).from(organizationPartners).groupBy(organizationPartners.organizationId),
     db.select({ id: accounts.organizationId, n: count() }).from(accounts).groupBy(accounts.organizationId),
   ])

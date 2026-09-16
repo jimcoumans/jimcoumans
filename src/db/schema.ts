@@ -423,9 +423,20 @@ export const contacts = pgTable(
   'contacts',
   {
     id: uuid('id').primaryKey().defaultRandom(),
-    organizationId: uuid('organization_id')
-      .notNull()
-      .references(() => organizations.id, { onDelete: 'cascade' }),
+
+    /* --- Bij wie hoort deze persoon ---
+       Precies een van de twee is gevuld. Een contactpersoon hoort bij een
+       klant OF bij een partner, nooit bij allebei en nooit bij geen van
+       beide; de check onderaan houdt dat tegen.
+
+       Waarom partners hier en niet in een eigen tabel: het is dezelfde soort
+       mens met dezelfde soort gegevens. Een tweede tabel betekent twee
+       formulieren, twee zoekfuncties en een verjaardagsoverzicht dat de
+       halve wereld mist. */
+    organizationId: uuid('organization_id').references(() => organizations.id, {
+      onDelete: 'cascade',
+    }),
+    partnerId: uuid('partner_id').references(() => partners.id, { onDelete: 'cascade' }),
 
     /**
      * De volledige naam zoals je hem toont.
@@ -491,6 +502,14 @@ export const contacts = pgTable(
   },
   (t) => [
     index('contacts_org_idx').on(t.organizationId),
+    index('contacts_partner_idx').on(t.partnerId),
+    // Een contactpersoon hangt aan een klant of aan een partner. Zonder deze
+    // check kan er een persoon ontstaan die nergens bij hoort, en die vind je
+    // nooit meer terug omdat elk overzicht via een van beide binnenkomt.
+    check(
+      'contact_hoort_bij_een',
+      sql`(${t.organizationId} IS NULL) != (${t.partnerId} IS NULL)`,
+    ),
     // Om "wie is er deze maand jarig" te kunnen vragen.
     index('contacts_birthday_idx').on(t.birthMonth, t.birthDay),
     check(
@@ -516,6 +535,10 @@ export const contacts = pgTable(
     // zodat er wel meerdere niet-primaire contacten mogen bestaan.
     uniqueIndex('contacts_one_primary_idx')
       .on(t.organizationId)
+      .where(sql`${t.isPrimary}`),
+    // Hetzelfde voor een partner: bij de drukker bel je een vaste persoon.
+    uniqueIndex('contacts_one_primary_partner_idx')
+      .on(t.partnerId)
       .where(sql`${t.isPrimary}`),
   ],
 )

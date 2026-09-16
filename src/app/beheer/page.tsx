@@ -10,6 +10,7 @@ import {
 import { listQuotes, getQuoteFigures, quoteStatusLabels, quoteStatusStyles } from '@/lib/quotes'
 import { listOrganizations } from '@/lib/admin'
 import { komendeVerjaardagen } from '@/lib/verjaardagen'
+import { getCockpit } from '@/lib/cockpit'
 import { MAANDNAMEN } from '@/lib/dates'
 import { formatCents } from '@/lib/money'
 import { formatDate, formatRelative } from '@/lib/dates'
@@ -30,6 +31,7 @@ export default async function DashboardPage() {
     openstaand,
     klanten,
     perKlant,
+    cockpit,
   ] = await Promise.all([
       getOverallFigures(),
       getMonthlyRecurringCents(),
@@ -40,6 +42,7 @@ export default async function DashboardPage() {
       getOutstandingInvoices(),
       listOrganizations(),
       getFiguresByOrganization(),
+      getCockpit(),
     ])
 
   const jarig = await komendeVerjaardagen(7)
@@ -87,9 +90,57 @@ export default async function DashboardPage() {
   return (
     <AppShell user={user} actief="dashboard">
       <h1 className="text-jr-blue mb-1 text-2xl">Dashboard</h1>
-      <p className="mb-7 text-sm text-gray-600">
-        {klanten.length} klanten &middot; {abonnementen.filter((s) => s.subscription.status === 'active').length} lopende abonnementen
+      <p className="mb-5 text-sm text-gray-600">
+        {cockpit.bedrijven} {cockpit.bedrijven === 1 ? 'bedrijf' : 'bedrijven'} in het
+        systeem &middot; {cockpit.mensenInCrm} mensen in het CRM
       </p>
+
+      {/* Hoe groot zijn we, in aantallen. De bedragen staan hieronder; dit is
+          de andere vraag die je stelt als je binnenkomt. */}
+      <section className="mb-7 rounded-xl bg-white px-5 py-4 shadow-sm">
+        <dl className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3 lg:grid-cols-6">
+          <Cijfer
+            label="Retainerklanten"
+            waarde={cockpit.retainerKlanten}
+            onder="met lopend abonnement"
+          />
+          <Cijfer
+            label="Projectklanten"
+            waarde={cockpit.projectKlanten}
+            onder="losse opdrachten"
+          />
+          <Cijfer
+            label="Klanten totaal"
+            waarde={cockpit.klanten}
+            onder={`${cockpit.oudKlanten} oud-klant${cockpit.oudKlanten === 1 ? '' : 'en'}`}
+          />
+          <Cijfer
+            label="In de pijplijn"
+            waarde={cockpit.prospects + cockpit.leads}
+            onder={`${cockpit.leads} lead${cockpit.leads === 1 ? '' : 's'} · ${cockpit.prospects} prospect${cockpit.prospects === 1 ? '' : 's'}`}
+          />
+          <Cijfer label="Collega's" waarde={cockpit.collegas} onder="in dienst" />
+          <Cijfer
+            label="Partners"
+            waarde={cockpit.actievePartners}
+            onder="actief"
+          />
+        </dl>
+
+        {/* Een portaal waar niemand binnenkomt is geen portaal. Dit cijfer
+            staat er zolang het niet klopt, en verdwijnt zodra het wel klopt. */}
+        {cockpit.klanten > 0 && cockpit.klantenMetToegang < cockpit.klanten && (
+          <p className="border-jr-orange mt-4 border-t border-gray-200 pt-3 text-xs text-gray-600">
+            <span className="text-jr-orange">
+              {cockpit.klantenMetToegang} van de {cockpit.klanten} klanten
+            </span>{' '}
+            heeft iemand die kan inloggen
+            {cockpit.klantgebruikers > 0 &&
+              ` · ${cockpit.klantgebruikersIngelogd} van de ${cockpit.klantgebruikers} accounts is ooit binnen geweest`}
+            .
+          </p>
+        )}
+      </section>
 
       {/* De drie cijfers waar het om draait, en ze sluiten op elkaar aan:
           de walletwaarde is wat we per maand aan diensten weggeven, en die
@@ -138,7 +189,7 @@ export default async function DashboardPage() {
           <div className="flex flex-wrap items-baseline justify-between gap-x-4 border-b border-gray-200 px-5 py-3">
             <h2 className="text-base">Jarig deze week</h2>
             <p className="text-xs text-gray-500">
-              De eerste bovenaan. Collega&rsquo;s, contactpersonen en hun kinderen.
+              De eerste bovenaan. Collega&rsquo;s, contactpersonen, partners en hun kinderen.
             </p>
           </div>
 
@@ -164,6 +215,7 @@ export default async function DashboardPage() {
                   <p className="text-xs text-gray-600">
                     {v.bij}
                     {v.soort === 'collega' && ' · collega'}
+                    {v.soort === 'partner' && ' · partner'}
                   </p>
                 </div>
 
@@ -293,6 +345,31 @@ export default async function DashboardPage() {
         </section>
       </div>
     </AppShell>
+  )
+}
+
+/**
+ * Eén getal uit de cockpit.
+ *
+ * Bewust kaal: geen kader, geen kleur. Zes gekleurde tegels naast elkaar
+ * lezen als een dashboard uit een demo; zes getallen onder elkaar lees je
+ * in één blik.
+ */
+function Cijfer({
+  label,
+  waarde,
+  onder,
+}: {
+  label: string
+  waarde: number
+  onder?: string
+}) {
+  return (
+    <div>
+      <dt className="text-xs text-gray-600">{label}</dt>
+      <dd className="tabular text-jr-blue text-2xl leading-tight font-bold">{waarde}</dd>
+      {onder && <p className="text-xs text-gray-500">{onder}</p>}
+    </div>
   )
 }
 

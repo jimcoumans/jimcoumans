@@ -103,12 +103,7 @@ const icons = {
 const TEAM_NAV: NavItem[] = [
   { href: '/beheer', label: 'Dashboard', key: 'dashboard', icon: icons.dashboard },
   { href: '/beheer/klanten', label: 'Klanten', key: 'klanten', icon: icons.clients },
-  {
-    href: '/beheer/contactpersonen',
-    label: 'Contactpersonen',
-    key: 'contactpersonen',
-    icon: icons.contacts,
-  },
+  { href: '/beheer/crm', label: 'CRM', key: 'crm', icon: icons.contacts },
   { href: '/beheer/offertes', label: 'Offertes', key: 'offertes', icon: icons.quotes },
   { href: '/beheer/abonnementen', label: 'Abonnementen', key: 'abonnementen', icon: icons.subs },
   { href: '/beheer/diensten', label: 'Diensten', key: 'diensten', icon: icons.services },

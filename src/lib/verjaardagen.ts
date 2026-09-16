@@ -1,6 +1,6 @@
 import { and, asc, eq, isNotNull, sql } from 'drizzle-orm'
 import { db } from '@/db'
-import { contacts, organizations, users, contactChildren } from '@/db/schema'
+import { contacts, organizations, partners, users, contactChildren } from '@/db/schema'
 import { teamJubileaInMaand, teamVerjaardagenInMaand } from './team'
 
 /* -------------------------------------------------------------------------
@@ -54,6 +54,7 @@ export async function verjaardagenInMaand(
   const rijen = await db
     .select({
       contact: contacts,
+      organizationId: organizations.id,
       organizationName: organizations.name,
       organizationSlug: organizations.slug,
     })
@@ -76,7 +77,7 @@ export async function verjaardagenInMaand(
     jobTitle: r.contact.jobTitle,
     email: r.contact.email,
     mobile: r.contact.mobile ?? r.contact.phone,
-    organizationId: r.contact.organizationId,
+    organizationId: r.organizationId,
     organizationName: r.organizationName,
     organizationSlug: r.organizationSlug,
     dag: r.contact.birthDay!,
@@ -159,7 +160,7 @@ export async function attentiesDezeMaand(nu: Date = new Date()) {
 }
 
 export type KomendeVerjaardag = {
-  soort: 'contact' | 'collega' | 'kind'
+  soort: 'contact' | 'partner' | 'collega' | 'kind'
   naam: string
   /** Waar hij werkt, of bij wie het kind hoort. */
   bij: string | null
@@ -185,12 +186,27 @@ export async function komendeVerjaardagen(
   dagenVooruit = 7,
   nu: Date = new Date(),
 ): Promise<KomendeVerjaardag[]> {
-  const [contactRijen, teamRijen, kindRijen] = await Promise.all([
+  const [contactRijen, partnerRijen, teamRijen, kindRijen] = await Promise.all([
     db
       .select({ contact: contacts, org: organizations })
       .from(contacts)
       .innerJoin(organizations, eq(organizations.id, contacts.organizationId))
       .where(and(isNotNull(contacts.birthDay), isNotNull(contacts.birthMonth))),
+
+    // Ook de vaste fotograaf is jarig. Een partner die je al jaren belt is
+    // net zo goed een relatie als de marketingmanager van een klant.
+    db
+      .select({ contact: contacts, partner: partners })
+      .from(contacts)
+      .innerJoin(partners, eq(partners.id, contacts.partnerId))
+      .where(
+        and(
+          isNotNull(contacts.birthDay),
+          isNotNull(contacts.birthMonth),
+          eq(contacts.active, true),
+          eq(partners.active, true),
+        ),
+      ),
 
     db
       .select()
@@ -217,6 +233,15 @@ export async function komendeVerjaardagen(
       naam: r.contact.name,
       bij: r.org.name,
       href: `/beheer/klanten/${r.org.slug}`,
+      dag: r.contact.birthDay!,
+      maand: r.contact.birthMonth!,
+      jaar: r.contact.birthYear,
+    })),
+    ...partnerRijen.map((r) => ({
+      soort: 'partner' as const,
+      naam: r.contact.name,
+      bij: r.partner.name,
+      href: `/beheer/partners#${r.partner.id}`,
       dag: r.contact.birthDay!,
       maand: r.contact.birthMonth!,
       jaar: r.contact.birthYear,
