@@ -12,6 +12,15 @@ import { Avatar } from '@/components/Avatar'
 import { MAANDNAMEN } from '@/lib/dates'
 
 /**
+ * Netlify kapt een functie standaard na tien seconden af. Deze pagina haalt
+ * meerdere overzichten tegelijk op, en vanaf een serverless functie kost elke
+ * query een netwerkronde naar de database. Zit je daarboven, dan krijgt de
+ * bezoeker een 502 zonder dat er ergens staat waarom. Zesentwintig seconden
+ * is het maximum voor een gewone functie; het is een vangnet, geen streven.
+ */
+export const maxDuration = 26
+
+/**
  * Het CRM: iedereen die we kennen, op één pagina.
  *
  * Klantcontacten, contactpersonen bij partners en eigen collega's door

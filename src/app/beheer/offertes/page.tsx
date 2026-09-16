@@ -15,6 +15,15 @@ import { formatCents } from '@/lib/money'
 import { formatDate } from '@/lib/dates'
 import type { Quote } from '@/db/schema'
 
+/**
+ * Netlify kapt een functie standaard na tien seconden af. Deze pagina haalt
+ * meerdere overzichten tegelijk op, en vanaf een serverless functie kost elke
+ * query een netwerkronde naar de database. Zit je daarboven, dan krijgt de
+ * bezoeker een 502 zonder dat er ergens staat waarom. Zesentwintig seconden
+ * is het maximum voor een gewone functie; het is een vangnet, geen streven.
+ */
+export const maxDuration = 26
+
 /* De volgorde waarin je offertes wilt zien: eerst wat aandacht vraagt. */
 const GROEPEN: { status: Quote['status']; uitleg: string }[] = [
   { status: 'awaiting_partner', uitleg: 'Wachten op een prijs van de partner voordat ze de deur uit kunnen.' },

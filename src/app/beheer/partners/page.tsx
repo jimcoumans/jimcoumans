@@ -17,6 +17,15 @@ import { formatCents } from '@/lib/money'
 import type { Contact, Partner } from '@/db/schema'
 
 /**
+ * Netlify kapt een functie standaard na tien seconden af. Deze pagina haalt
+ * meerdere overzichten tegelijk op, en vanaf een serverless functie kost elke
+ * query een netwerkronde naar de database. Zit je daarboven, dan krijgt de
+ * bezoeker een 502 zonder dat er ergens staat waarom. Zesentwintig seconden
+ * is het maximum voor een gewone functie; het is een vangnet, geen streven.
+ */
+export const maxDuration = 26
+
+/**
  * De contactpersonen bij een partner.
  *
  * Bij de drukker bel je een vaste persoon, en die heeft een mailadres en een

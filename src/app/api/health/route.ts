@@ -25,6 +25,39 @@ import { NextResponse } from 'next/server'
    ------------------------------------------------------------------------- */
 
 export const dynamic = 'force-dynamic'
+/**
+ * Netlify kapt een functie standaard na tien seconden af, en dan krijgt de
+ * bezoeker een 502 zonder dat er ergens staat waarom. Een meetinstrument dat
+ * zelf in die limiet loopt is waardeloos: juist als het traag is wil je het
+ * antwoord. Zesentwintig seconden is het maximum voor een gewone functie.
+ */
+export const maxDuration = 26
+
+/** Hoe lang een losse stap mag duren voordat we hem opgeven. */
+const STAP_BUDGET_MS = 4000
+/** Hoe lang de hele meting mag duren. Ruim onder maxDuration. */
+const TOTAAL_BUDGET_MS = 18000
+
+/**
+ * Geeft een belofte een tijdslimiet.
+ *
+ * Zonder dit sleept een query die blijft hangen de hele meting mee de
+ * tijdslimiet in, en dan geeft het meetpunt zelf een 502 — precies wat het
+ * had moeten verklaren. De query loopt op de achtergrond door; dat mag, we
+ * wachten er alleen niet meer op.
+ */
+function metBudget<T>(belofte: Promise<T>, ms: number): Promise<T> {
+  return Promise.race([
+    belofte,
+    new Promise<never>((_, weiger) =>
+      setTimeout(() => {
+        const fout = new Error('te traag') as Error & { code: string }
+        fout.code = 'TE_TRAAG'
+        weiger(fout)
+      }, ms),
+    ),
+  ])
+}
 
 /** Wat er moet staan wil het portaal überhaupt kunnen draaien. */
 const VERPLICHT = ['DATABASE_URL', 'AUTH_SECRET'] as const
@@ -75,6 +108,11 @@ function verklaar(fout: unknown): { code: string; uitleg: string } {
       return { code, uitleg: 'Het wachtwoord in DATABASE_URL wordt niet geaccepteerd.' }
     case '3D000':
       return { code, uitleg: 'De database uit DATABASE_URL bestaat niet.' }
+    case 'TE_TRAAG':
+      return {
+        code,
+        uitleg: `Deze stap duurde langer dan ${STAP_BUDGET_MS / 1000} seconden en is opgegeven. Dit is de reden dat pagina's een 502 geven: Netlify kapt de functie af voordat de queries klaar zijn.`,
+      }
     case '53300':
       return { code, uitleg: 'Te veel verbindingen. De pooler zit vol.' }
     default:
@@ -202,10 +240,25 @@ async function draaiDashboardQueries(): Promise<
     uitleg?: string
   }[] = []
 
+  const meting = Date.now()
+
   for (const taak of taken) {
+    // Op is op. Blijft er geen tijd meer over, dan melden we dat eerlijk in
+    // plaats van alsnog in de limiet te lopen en niets te kunnen zeggen.
+    if (Date.now() - meting > TOTAAL_BUDGET_MS) {
+      uitkomst.push({
+        naam: taak.naam,
+        ok: false,
+        duurMs: 0,
+        code: 'overgeslagen',
+        uitleg: 'Niet meer geprobeerd: de meting was al door zijn tijd heen.',
+      })
+      continue
+    }
+
     const begin = Date.now()
     try {
-      await taak.doe()
+      await metBudget(taak.doe(), STAP_BUDGET_MS)
       uitkomst.push({ naam: taak.naam, ok: true, duurMs: Date.now() - begin })
     } catch (fout) {
       const { code, uitleg } = verklaar(fout)
@@ -213,20 +266,23 @@ async function draaiDashboardQueries(): Promise<
     }
   }
 
-  // En nu allemaal tegelijk, zoals de pagina het doet.
-  const begin = Date.now()
-  try {
-    await Promise.all(taken.map((t) => t.doe()))
-    uitkomst.push({ naam: 'alles tegelijk', ok: true, duurMs: Date.now() - begin })
-  } catch (fout) {
-    const { code, uitleg } = verklaar(fout)
-    uitkomst.push({
-      naam: 'alles tegelijk',
-      ok: false,
-      duurMs: Date.now() - begin,
-      code,
-      uitleg,
-    })
+  // En nu allemaal tegelijk, zoals de pagina het doet. Alleen als er nog tijd
+  // is; dit is de duurste ronde.
+  if (Date.now() - meting < TOTAAL_BUDGET_MS) {
+    const begin = Date.now()
+    try {
+      await metBudget(Promise.all(taken.map((t) => t.doe())), STAP_BUDGET_MS * 2)
+      uitkomst.push({ naam: 'alles tegelijk', ok: true, duurMs: Date.now() - begin })
+    } catch (fout) {
+      const { code, uitleg } = verklaar(fout)
+      uitkomst.push({
+        naam: 'alles tegelijk',
+        ok: false,
+        duurMs: Date.now() - begin,
+        code,
+        uitleg,
+      })
+    }
   }
 
   return uitkomst

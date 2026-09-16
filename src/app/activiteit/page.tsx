@@ -11,6 +11,15 @@ import { TransactionList } from '@/components/TransactionList'
 import { formatCents } from '@/lib/money'
 import { categoryColor } from '@/lib/chart-colors'
 
+/**
+ * Netlify kapt een functie standaard na tien seconden af. Deze pagina haalt
+ * meerdere overzichten tegelijk op, en vanaf een serverless functie kost elke
+ * query een netwerkronde naar de database. Zit je daarboven, dan krijgt de
+ * bezoeker een 502 zonder dat er ergens staat waarom. Zesentwintig seconden
+ * is het maximum voor een gewone functie; het is een vangnet, geen streven.
+ */
+export const maxDuration = 26
+
 const PER_PAGINA = 50
 
 /** Het volledige afschrift, plus waar het geld naartoe ging. */

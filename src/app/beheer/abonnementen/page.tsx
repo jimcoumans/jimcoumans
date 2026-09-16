@@ -13,6 +13,15 @@ import { factureerNu } from '../subscription-actions'
 import { formatCents } from '@/lib/money'
 import { formatDate } from '@/lib/dates'
 
+/**
+ * Netlify kapt een functie standaard na tien seconden af. Deze pagina haalt
+ * meerdere overzichten tegelijk op, en vanaf een serverless functie kost elke
+ * query een netwerkronde naar de database. Zit je daarboven, dan krijgt de
+ * bezoeker een 502 zonder dat er ergens staat waarom. Zesentwintig seconden
+ * is het maximum voor een gewone functie; het is een vangnet, geen streven.
+ */
+export const maxDuration = 26
+
 /** Alle abonnementen, met wanneer ze eerstvolgend factureren. */
 export default async function AbonnementenPage() {
   const user = await getSessionUser()

@@ -16,6 +16,15 @@ import { formatDate, formatMonth } from '@/lib/dates'
 import { CATEGORY_COLORS } from '@/lib/chart-colors'
 import { getMonthlyRecurringCents } from '@/lib/billing'
 
+/**
+ * Netlify kapt een functie standaard na tien seconden af. Deze pagina haalt
+ * meerdere overzichten tegelijk op, en vanaf een serverless functie kost elke
+ * query een netwerkronde naar de database. Zit je daarboven, dan krijgt de
+ * bezoeker een 502 zonder dat er ergens staat waarom. Zesentwintig seconden
+ * is het maximum voor een gewone functie; het is een vangnet, geen streven.
+ */
+export const maxDuration = 26
+
 /** Financieel overzicht: overall, per klant, per medewerker, per dienst. */
 export default async function FinancieelPage({
   searchParams,
