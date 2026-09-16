@@ -61,6 +61,68 @@ async function meet(naam: string, doe: () => Promise<unknown>): Promise<Meting> 
   }
 }
 
+/**
+ * Ruwe metingen, om onderscheid te maken tussen twee verklaringen.
+ *
+ * getCockpit en komendeVerjaardagen lopen allebei vast, en het zijn ook de
+ * twee die de meeste queries tegelijk afvuren. Dat kan twee dingen betekenen:
+ * er zit een trage query in, of meer dan een handvol queries tegelijk gaat
+ * mis. Die twee vragen om een heel andere oplossing, dus ze moeten uit
+ * elkaar gehaald worden in plaats van beredeneerd.
+ *
+ * Daarom: eerst een kale SELECT 1, dan dezelfde query twee, vijf en tien keer
+ * tegelijk. Loopt de tijd op met het aantal, dan is het de verbindingspool.
+ * Blijft hij gelijk en is een echte query traag, dan is het die query.
+ */
+async function ruweMetingen(): Promise<Meting[]> {
+  const uit: Meting[] = []
+
+  let db: typeof import('@/db').db
+  let sql: typeof import('drizzle-orm').sql
+  try {
+    ;({ db } = await import('@/db'))
+    ;({ sql } = await import('drizzle-orm'))
+  } catch (fout) {
+    return [{ naam: 'db laden', ok: false, duurMs: 0, fout: korteFout(fout) }]
+  }
+
+  const een = () => db.execute(sql`SELECT 1 AS x`)
+
+  uit.push(await meet('1x SELECT 1', () => een()))
+  uit.push(await meet('2x SELECT 1 tegelijk', () => Promise.all([een(), een()])))
+  uit.push(
+    await meet('5x SELECT 1 tegelijk', () => Promise.all(Array.from({ length: 5 }, een))),
+  )
+  uit.push(
+    await meet('10x SELECT 1 tegelijk', () => Promise.all(Array.from({ length: 10 }, een))),
+  )
+
+  // De tellingen uit getCockpit, los. Kleine tabellen, dus als deze traag is
+  // ligt het niet aan de hoeveelheid gegevens.
+  uit.push(
+    await meet('telling organisaties', () =>
+      db.execute(sql`
+        SELECT COUNT(*) AS totaal,
+               COUNT(*) FILTER (WHERE status = 'client') AS klanten
+        FROM organizations
+      `),
+    ),
+  )
+
+  // De join die ik aan komendeVerjaardagen heb toegevoegd.
+  uit.push(
+    await meet('verjaardagen van partners', () =>
+      db.execute(sql`
+        SELECT c.id FROM contacts c
+        JOIN partners p ON p.id = c.partner_id
+        WHERE c.birth_day IS NOT NULL AND c.birth_month IS NOT NULL
+      `),
+    ),
+  )
+
+  return uit
+}
+
 export default async function PingDataPagina() {
   const metingen: Meting[] = []
 
@@ -109,6 +171,8 @@ export default async function PingDataPagina() {
     metingen.push(await meet('komendeVerjaardagen', () => verjaardagen.komendeVerjaardagen(7)))
   }
 
+  const ruw = await ruweMetingen()
+
   const traagste = metingen.filter((m) => m.ok).sort((a, b) => b.duurMs - a.duurMs)[0]
   const totaal = metingen.reduce((a, m) => a + m.duurMs, 0)
 
@@ -121,7 +185,21 @@ export default async function PingDataPagina() {
         {traagste && ` · traagste: ${traagste.naam} (${traagste.duurMs} ms)`}.
       </p>
 
-      <div className="overflow-x-auto rounded-xl bg-white shadow-sm">
+      <Tabel titel="Wat het dashboard doet" rijen={metingen} />
+
+      <h2 className="mt-8 mb-1 text-base">Ruwe metingen</h2>
+      <p className="mb-3 text-sm text-gray-600">
+        Loopt de tijd op met het aantal queries tegelijk, dan is het de verbindingspool.
+        Blijft die gelijk en is een losse query traag, dan is het die query.
+      </p>
+      <Tabel titel="Ruw" rijen={ruw} />
+    </AppShell>
+  )
+}
+
+function Tabel({ titel, rijen }: { titel: string; rijen: Meting[] }) {
+  return (
+      <div className="overflow-x-auto rounded-xl bg-white shadow-sm" aria-label={titel}>
         <table className="w-full min-w-[520px] text-sm">
           <thead>
             <tr className="border-b border-gray-200 text-left text-xs text-gray-600">
@@ -131,7 +209,7 @@ export default async function PingDataPagina() {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {metingen.map((m) => (
+            {rijen.map((m) => (
               <tr key={m.naam}>
                 <td className="px-4 py-2.5">{m.naam}</td>
                 <td className="tabular px-4 py-2.5">{m.duurMs} ms</td>
@@ -143,6 +221,5 @@ export default async function PingDataPagina() {
           </tbody>
         </table>
       </div>
-    </AppShell>
   )
 }
