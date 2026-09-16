@@ -85,8 +85,12 @@ function verklaar(fout: unknown): { code: string; uitleg: string } {
   }
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   const start = Date.now()
+  // Met ?diep=1 worden ook de queries van het dashboard gedraaid. Dat is
+  // trager, dus niet standaard; maar als een pagina omvalt terwijl de
+  // database bereikbaar is, is dit precies wat je wilt weten.
+  const diep = new URL(request.url).searchParams.get('diep') === '1'
 
   const ontbreekt = VERPLICHT.filter((naam) => {
     const waarde = process.env[naam]
@@ -125,13 +129,21 @@ export async function GET() {
     )
     const eerste = (rijen as unknown as { aantal: number }[])[0]
 
-    return NextResponse.json({
+    const antwoord: Record<string, unknown> = {
       ok: true,
       database: 'bereikbaar',
       migraties: eerste?.aantal ?? 0,
       duurMs: Date.now() - start,
       optioneelUit,
-    })
+    }
+
+    if (diep) {
+      const stappen = await draaiDashboardQueries()
+      antwoord.stappen = stappen
+      antwoord.ok = stappen.every((s) => s.ok)
+    }
+
+    return NextResponse.json(antwoord, { status: antwoord.ok ? 200 : 503 })
   } catch (fout) {
     const { code, uitleg } = verklaar(fout)
     return NextResponse.json(
@@ -146,4 +158,76 @@ export async function GET() {
       { status: 503 },
     )
   }
+}
+
+
+/**
+ * Draait wat het dashboard draait, maar stap voor stap.
+ *
+ * Het dashboard vuurt tien queries tegelijk af met Promise.all. Valt daar
+ * eentje van om, dan valt de hele pagina om en zie je niet welke. Hier wordt
+ * elke stap apart geprobeerd en apart gerapporteerd, plus een ronde waarin ze
+ * wel naast elkaar lopen. Als het los goed gaat en samen niet, dan zit het in
+ * het aantal verbindingen en niet in de query.
+ */
+async function draaiDashboardQueries(): Promise<
+  { naam: string; ok: boolean; duurMs: number; code?: string; uitleg?: string }[]
+> {
+  const reports = await import('@/lib/reports')
+  const billing = await import('@/lib/billing')
+  const quotes = await import('@/lib/quotes')
+  const admin = await import('@/lib/admin')
+  const cockpit = await import('@/lib/cockpit')
+  const verjaardagen = await import('@/lib/verjaardagen')
+
+  const taken: { naam: string; doe: () => Promise<unknown> }[] = [
+    { naam: 'getOverallFigures', doe: () => reports.getOverallFigures() },
+    { naam: 'getMonthlyRecurringCents', doe: () => billing.getMonthlyRecurringCents() },
+    { naam: 'getMonthlyBudgetCents', doe: () => billing.getMonthlyBudgetCents() },
+    { naam: 'getQuoteFigures', doe: () => quotes.getQuoteFigures() },
+    { naam: 'listQuotes', doe: () => quotes.listQuotes() },
+    { naam: 'listSubscriptions', doe: () => billing.listSubscriptions() },
+    { naam: 'getOutstandingInvoices', doe: () => reports.getOutstandingInvoices() },
+    { naam: 'listOrganizations', doe: () => admin.listOrganizations() },
+    { naam: 'getFiguresByOrganization', doe: () => reports.getFiguresByOrganization() },
+    { naam: 'getCockpit', doe: () => cockpit.getCockpit() },
+    { naam: 'komendeVerjaardagen', doe: () => verjaardagen.komendeVerjaardagen(7) },
+  ]
+
+  const uitkomst: {
+    naam: string
+    ok: boolean
+    duurMs: number
+    code?: string
+    uitleg?: string
+  }[] = []
+
+  for (const taak of taken) {
+    const begin = Date.now()
+    try {
+      await taak.doe()
+      uitkomst.push({ naam: taak.naam, ok: true, duurMs: Date.now() - begin })
+    } catch (fout) {
+      const { code, uitleg } = verklaar(fout)
+      uitkomst.push({ naam: taak.naam, ok: false, duurMs: Date.now() - begin, code, uitleg })
+    }
+  }
+
+  // En nu allemaal tegelijk, zoals de pagina het doet.
+  const begin = Date.now()
+  try {
+    await Promise.all(taken.map((t) => t.doe()))
+    uitkomst.push({ naam: 'alles tegelijk', ok: true, duurMs: Date.now() - begin })
+  } catch (fout) {
+    const { code, uitleg } = verklaar(fout)
+    uitkomst.push({
+      naam: 'alles tegelijk',
+      ok: false,
+      duurMs: Date.now() - begin,
+      code,
+      uitleg,
+    })
+  }
+
+  return uitkomst
 }
