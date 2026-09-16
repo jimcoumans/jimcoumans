@@ -3,9 +3,22 @@ import postgres from 'postgres'
 import * as schema from './schema'
 import { connectionOptionsFor, readConnectionString } from './connection-options'
 
-// Nakijken voordat postgres-js het doet: die gooit bij een kapotte string een
-// kale "Invalid URL" met de waarde gemaskeerd, en dan weet je nog niets.
-const connectionString = readConnectionString(process.env.DATABASE_URL)
+/* -------------------------------------------------------------------------
+   De verbinding wordt pas opgebouwd bij de eerste query, niet bij het laden
+   van deze module.
+
+   Dat lijkt een detail maar het is het verschil tussen een leesbare fout en
+   een dode site. Vrijwel elke pagina importeert deze module, ook /login, die
+   de database niet eens nodig heeft om zijn formulier te tonen. Gooide dit
+   bestand bij het laden een fout omdat DATABASE_URL ontbreekt of niet klopt,
+   dan viel elke route om nog voordat er een regel paginacode draaide. De
+   bezoeker kreeg dan een kale 502 van de gateway: geen melding, geen
+   aanwijzing, niets.
+
+   Nu blijft de fout staan waar hij hoort. Een pagina die de database nodig
+   heeft krijgt hem te zien, met de uitleg uit readConnectionString erbij, en
+   /api/health kan precies vertellen wat er mankeert.
+   ------------------------------------------------------------------------- */
 
 /**
  * Eén verbindingspool per proces, ook in productie.
@@ -19,10 +32,6 @@ const connectionString = readConnectionString(process.env.DATABASE_URL)
 const globalForDb = globalThis as unknown as {
   jrWalletClient?: ReturnType<typeof postgres>
 }
-
-const opties = connectionOptionsFor(connectionString, {
-  DATABASE_PREPARE: process.env.DATABASE_PREPARE,
-})
 
 /**
  * Hoeveel verbindingen deze instantie tegelijk open mag hebben.
@@ -41,9 +50,18 @@ const opties = connectionOptionsFor(connectionString, {
  */
 const MAX_VERBINDINGEN = 3
 
-const client =
-  globalForDb.jrWalletClient ??
-  postgres(connectionString, {
+function maakClient(): ReturnType<typeof postgres> {
+  const bestaand = globalForDb.jrWalletClient
+  if (bestaand) return bestaand
+
+  // Nakijken voordat postgres-js het doet: die gooit bij een kapotte string
+  // een kale "Invalid URL" met de waarde gemaskeerd, en dan weet je nog niets.
+  const connectionString = readConnectionString(process.env.DATABASE_URL)
+  const opties = connectionOptionsFor(connectionString, {
+    DATABASE_PREPARE: process.env.DATABASE_PREPARE,
+  })
+
+  const nieuw = postgres(connectionString, {
     max: MAX_VERBINDINGEN,
     // Serverless: verbindingen niet eeuwig openhouden.
     idle_timeout: 20,
@@ -56,8 +74,32 @@ const client =
     prepare: opties.prepare,
   })
 
-globalForDb.jrWalletClient = client
+  globalForDb.jrWalletClient = nieuw
+  return nieuw
+}
 
-export const db = drizzle(client, { schema })
-export { client }
+/**
+ * De client en db worden doorgegeven als proxy.
+ *
+ * Zo blijft `import { db } from '@/db'` werken zoals het altijd deed, terwijl
+ * de verbinding pas wordt opgebouwd op het moment dat er iets mee gebeurt.
+ * Een proxy die bij elke aanraking maakClient() aanroept is goedkoop: na de
+ * eerste keer komt hij uit globalForDb.
+ */
+function luiDoor<T extends object>(maak: () => T): T {
+  return new Proxy({} as T, {
+    get(_doel, sleutel, ontvanger) {
+      const echt = maak() as T
+      const waarde = Reflect.get(echt, sleutel, ontvanger)
+      // Methodes moeten hun eigen object als `this` houden, niet de proxy.
+      return typeof waarde === 'function' ? waarde.bind(echt) : waarde
+    },
+    has: (_doel, sleutel) => Reflect.has(maak() as object, sleutel),
+    apply: (_doel, _dit, args) =>
+      (maak() as unknown as (...a: unknown[]) => unknown)(...args),
+  })
+}
+
+export const client = luiDoor(maakClient)
+export const db = luiDoor(() => drizzle(maakClient(), { schema }))
 export * from './schema'
