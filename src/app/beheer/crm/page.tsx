@@ -10,6 +10,7 @@ import {
 import { AppShell } from '@/components/AppShell'
 import { Avatar } from '@/components/Avatar'
 import { MAANDNAMEN } from '@/lib/dates'
+import { metGeheugen } from '@/lib/cache'
 
 /**
  * Netlify kapt een functie standaard na tien seconden af. Deze pagina haalt
@@ -47,7 +48,9 @@ export default async function CrmPage({
   // Zonder soortfilter, om de tellers per label te kunnen laten zien: die
   // moeten blijven staan als je op een van de labels klikt, anders kun je
   // niet meer terug naar de rest.
-  const alle = await listCrmPersonen({ zoek })
+  // Onthouden per zoekterm. Wie een lijst filtert of terugklikt krijgt hem
+  // uit het geheugen in plaats van opnieuw over de oceaan.
+  const alle = await metGeheugen(`crm:${zoek}`, () => listCrmPersonen({ zoek }))
   const telling = telPerSoort(alle)
   const mensen = soort === '' ? alle : alle.filter((m) => m.soort === soort)
 

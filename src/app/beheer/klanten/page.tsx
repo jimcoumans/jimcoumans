@@ -14,6 +14,7 @@ import { Avatar } from '@/components/Avatar'
 import { ActionForm, Field, Select } from '@/components/ActionForm'
 import { nieuweKlant } from '../actions'
 import { formatCents } from '@/lib/money'
+import { metGeheugen } from '@/lib/cache'
 
 /**
  * Netlify kapt een functie standaard na tien seconden af. Deze pagina haalt
@@ -45,16 +46,21 @@ export default async function BeheerPage({
   }
   const filtert = Object.values(filter).some((v) => v !== '')
 
-  const [alle, keuzes, treffers] = await Promise.all([
-    listOrganizations(),
-    getFilterKeuzes(),
-    filterKlantIds(filter),
-  ])
+  // Achter elkaar en onthouden. De lijst zelf en de filterkeuzes veranderen
+  // zelden; de treffers hangen aan wat je invult en krijgen hun eigen sleutel.
+  const alle = await metGeheugen('klanten:alle', listOrganizations)
+  const keuzes = await metGeheugen('klanten:keuzes', getFilterKeuzes)
+  const treffers = await metGeheugen(
+    `klanten:filter:${JSON.stringify(filter)}`,
+    () => filterKlantIds(filter),
+  )
 
   // null betekent: geen filter ingevuld, dus alles.
   const klanten = treffers === null ? alle : alle.filter((k) => treffers.includes(k.organization.id))
 
-  const crm = await getCrmCounts(klanten.map((k) => k.organization.id))
+  const crm = await metGeheugen('klanten:crmtellingen', () =>
+    getCrmCounts(alle.map((k) => k.organization.id)),
+  )
   const totaal = klanten.reduce((acc, k) => acc + k.totalBalanceCents, 0)
   const negatief = klanten.filter((k) => k.totalBalanceCents < 0)
 
