@@ -4,26 +4,40 @@
    --------------------------------------------------------------------------
    Designtaal : Apple (rust, ruimte, terughoudendheid)
    Merkbasis  : James Robinson Brandbook 2024
-   Versie     : 1.0
+   Versie     : 2.0
+   --------------------------------------------------------------------------
+   LETTERTYPE
+   Inter Tight (display/koppen) + Inter (body/UI). Beide via Google Fonts.
+   Stel ze in via Elementor → Site Settings → Global Fonts (sneller dan een
+   @import hier). Werk je zonder Elementor, zet dan bovenaan je stylesheet:
+   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&display=swap');
    --------------------------------------------------------------------------
    INHOUD
-   01. Design tokens (kleur, type, ruimte, radius, schaduw, motion)
+   01. Design tokens
+       1.1  Lettertypen          1.9  Verticaal ritme
+       1.2  Lettergewichten      1.10 Component-padding
+       1.3  Kleur — merk         1.11 Ruimte tussen containers
+       1.4  Kleur — tekst        1.12 Breedtes
+       1.5  Kleur — vlakken      1.13 Hoekradius
+       1.6  Kleur — lijnen       1.14 Lijndiktes
+       1.7  Kleur — status       1.15 Schaduwen
+       1.8  Lettergroottes       1.16 Motion
    02. Basis & reset
    03. Typografie
    04. Links
    05. Knoppen
    06. Vlakken, cards & schaduwen
-   07. Secties & containers
+   07. Secties, containers & ruimte
    08. Navigatie & header
    09. Formulieren
    10. Media & afbeeldingen
-   11. Lijsten, tabellen, quotes, dividers
-   12. Accordion / tabs / toggles
+   11. Lijsten, tabellen, quotes, lijnen
+   12. Accordion / tabs / segmented
    13. Badges, labels & eyebrows
    14. Donkere secties
    15. Utilities
    16. Motion & scroll reveal
-   17. Responsive overrides (tablet / mobiel)
+   17. Responsive
    18. Toegankelijkheid & print
    ========================================================================== */
 
@@ -35,118 +49,165 @@
 :root {
 
   /* ---- 1.1 Lettertypen ---------------------------------------------------
-     KEUZE: één regel wisselen verandert de hele site.
-     A (actief) = systeemstack. Op Mac/iPhone/iPad rendert dit in SF Pro —
-       letterlijk de Apple-look. Op Windows valt hij op Helvetica Neue /
-       Segoe UI, op Android op Roboto.
-     B = Inter (webfont, identiek op élk apparaat, ~95% SF Pro-gevoel).
-     C = strikt brandbook (Helvetica Neue met Arial-fallback).
-     Zie ELEMENTOR-SETUP.md §2 voor de afweging. */
+     Apple gebruikt twee optische varianten van hetzelfde font:
+       SF Pro Display  → 20px en groter
+       SF Pro Text     → onder 20px
+     Wij doen exact hetzelfde met de Inter-familie:
+       Inter Tight     → 21px en groter (strakker, smaller, voor koppen)
+       Inter           → onder 21px (ruimer, voor body en UI)
+     Eén familie, twee optische maten. Geen tweede lettertype. */
 
-  --jr-font-sans:
-    -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
-    "Helvetica Neue", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-
-  /* B: --jr-font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif; */
-  /* C: --jr-font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif; */
-
-  --jr-font-display: var(--jr-font-sans);
-  --jr-font-mono: "SF Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --jr-font-display: "Inter Tight", "Inter", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --jr-font-text:    "Inter", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --jr-font-mono:    "SF Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
 
   /* ---- 1.2 Lettergewichten ---------------------------------------------- */
-  --jr-weight-light:    300;   /* alleen grote intro-tekst, nooit onder 21px */
   --jr-weight-regular:  400;   /* body */
-  --jr-weight-medium:   500;   /* knoppen, labels */
-  --jr-weight-semibold: 600;   /* H3–H6, eyebrows */
-  --jr-weight-bold:     700;   /* H1, H2, display */
+  --jr-weight-medium:   500;   /* knoppen, labels, nav */
+  --jr-weight-semibold: 600;   /* H3–H6, eyebrow */
+  --jr-weight-bold:     700;   /* display, H1, H2 */
 
 
-  /* ---- 1.3 Kleur — merk -------------------------------------------------- */
-  --jr-blue:            #007AFF;   /* merkblauw. Accent, iconen, grote koppen */
-  --jr-blue-deep:       #005CBF;   /* diepte, gradients */
-  --jr-blue-action:     #0857C3;   /* knopvlakken — WCAG-veilig met wit (6.7:1) */
+  /* ---- 1.3 Kleur — merk --------------------------------------------------
+     DRIE BLAUWEN, ÉÉN REGEL:
+       blauw als VORM (icoon, vlak, streep, groot cijfer)  → --jr-blue
+       blauw als TEKST (eyebrow, link, label)              → --jr-blue-link
+       blauw als KNOPVLAK (met witte tekst)                → --jr-blue-action
+     Zo is er nooit twijfel welke je pakt. */
+
+  --jr-blue:            #007AFF;   /* merkblauw — vormen en grafische accenten */
+  --jr-blue-link:       #0066CC;   /* blauwe tekst — 5.6:1 op wit */
+  --jr-blue-link-hover: #004C99;   /* link hover */
+  --jr-blue-link-active:#003D7A;   /* link active */
+  --jr-blue-action:     #0857C3;   /* knopvlak — 6.7:1 met wit */
   --jr-blue-action-hov: #003967;   /* knop hover */
-  --jr-blue-link:       #0066CC;   /* tekstlinks — WCAG-veilig op wit (5.6:1) */
+  --jr-blue-action-act: #002E52;   /* knop active */
+  --jr-blue-deep:       #005CBF;   /* gradients, diepte */
+  --jr-blue-dm:         #2997FF;   /* blauwe tekst op donkere achtergrond */
+  --jr-blue-dm-hover:   #66B5FF;
   --jr-black:           #1C1C1E;   /* merkzwart */
 
+  /* Blauwe tinten voor vlakken */
+  --jr-blue-tint:       #E2EBF3;   /* lichtblauw vlak (brandbook) */
+  --jr-blue-tint-soft:  rgba(0,122,255,.08);
+  --jr-blue-tint-mid:   rgba(0,122,255,.12);
+
+  /* ---- 1.3b Accent — JR Lime ---------------------------------------------
+     Tweede accentkleur. Sportief, herkenbaar, en het complement van blauw.
+     Alleen als VLAK met donkere tekst, of als grafisch element.
+     NOOIT als tekstkleur op wit — daar is de donkere variant voor. */
+
+  --jr-lime:            #C4F000;   /* het vlak — 12.8:1 met --jr-text */
+  --jr-lime-hover:      #B2DA00;   /* hover op een lime vlak */
+  --jr-lime-active:     #9FC200;
+  --jr-lime-text:       #5A7000;   /* lime als tekst op wit — 5.6:1 */
+  --jr-lime-tint:       #F2FCCC;   /* zacht lime vlak */
+  --jr-lime-tint-mid:   rgba(196,240,0,.22);
+  --jr-lime-dm:         #D9FF33;   /* lime tekst op donkere achtergrond */
+
+
   /* ---- 1.4 Kleur — tekst ------------------------------------------------- */
-  --jr-text:            #1D1D1F;   /* primaire tekst */
-  --jr-text-secondary:  #6E6E73;   /* subkoppen, intro's */
+  --jr-text:            #1D1D1F;   /* primair */
+  --jr-text-secondary:  #6E6E73;   /* intro's, subkoppen */
   --jr-text-tertiary:   #86868B;   /* captions, metadata */
-  --jr-text-inverse:    #F5F5F7;   /* tekst op donker */
-  --jr-text-inverse-sec:#A1A1A6;   /* subtekst op donker */
+  --jr-text-disabled:   #ADADB2;
+  --jr-text-inverse:    #F5F5F7;   /* op donker */
+  --jr-text-inverse-sec:#A1A1A6;
+  --jr-text-inverse-ter:#86868B;
+  --jr-text-on-color:   #FFFFFF;   /* op blauw/rood/groen vlak */
+  --jr-text-on-lime:    #1D1D1F;   /* op lime vlak */
+
 
   /* ---- 1.5 Kleur — vlakken ---------------------------------------------- */
-  --jr-surface:         #FFFFFF;   /* basis */
-  --jr-surface-subtle:  #F5F5F7;   /* afwisselende secties — Apple's grijs */
+  --jr-surface:         #FFFFFF;
+  --jr-surface-subtle:  #F5F5F7;   /* afwisselende secties */
   --jr-surface-gray:    #F2F2F7;   /* brandbook-grijs */
-  --jr-surface-tint:    #E2EBF3;   /* lichtblauwe highlight */
-  --jr-surface-dark:    #1C1C1E;   /* donkere sectie */
-  --jr-surface-dark-alt:#2C2D2E;   /* card op donker */
+  --jr-surface-sunk:    #EBEBF0;   /* verzonken vlak, segmented track */
+  --jr-surface-tint:    #E2EBF3;   /* lichtblauw */
+  --jr-surface-dark:    #1C1C1E;
+  --jr-surface-dark-alt:#2C2D2E;   /* card op donkere sectie */
+  --jr-surface-dark-sunk:#38383C;
 
-  /* ---- 1.6 Kleur — randen ------------------------------------------------ */
-  --jr-border:          #D2D2D7;   /* standaard rand */
-  --jr-border-subtle:   #E5E5E9;   /* zeer subtiel */
-  --jr-border-strong:   #C8C8CD;
-  --jr-border-dark:     rgba(255,255,255,.14);
 
-  /* ---- 1.7 Kleur — status ------------------------------------------------ */
+  /* ---- 1.6 Kleur — lijnen ------------------------------------------------ */
+  --jr-line-subtle:     #E5E5E9;   /* dividers binnen een blok */
+  --jr-line:            #D2D2D7;   /* standaard rand, inputs */
+  --jr-line-strong:     #C8C8CD;   /* hover op een rand */
+  --jr-line-contrast:   #86868B;   /* rand die echt moet opvallen */
+  --jr-line-dark:       rgba(255,255,255,.14);
+  --jr-line-dark-strong:rgba(255,255,255,.28);
+
+
+  /* ---- 1.7 Kleur — status ------------------------------------------------
+     Elke status heeft vier tinten: vlak, hover, tekst-op-wit, zacht vlak.
+     Alles wat de stylesheet gebruikt, staat hier. Geen losse rgba's meer. */
+
+  /* Groen — succes */
   --jr-green:           #34C759;
-  --jr-green-dark:      #25AD42;
+  --jr-green-hover:     #25AD42;
+  --jr-green-text:      #1D7D3F;   /* 4.6:1 op wit */
+  --jr-green-tint:      #E6F7EB;
+  --jr-green-dm:        #41C96A;
+
+  /* Oranje — waarschuwing */
   --jr-orange:          #F6A027;
-  --jr-orange-dark:     #F4971A;
+  --jr-orange-hover:    #E08A10;
+  --jr-orange-text:     #94590A;   /* 4.7:1 op wit */
+  --jr-orange-tint:     #FEF2E0;
+  --jr-orange-dm:       #F0A040;
+
+  /* Geel — highlight */
   --jr-yellow:          #FFD631;
+  --jr-yellow-hover:    #F0C400;
+  --jr-yellow-text:     #806400;
+  --jr-yellow-tint:     #FFF8DC;
+
+  /* Rood — fout */
   --jr-red:             #FF3B30;
-  --jr-red-dark:        #EF302B;
+  --jr-red-hover:       #EF302B;
+  --jr-red-text:        #C02A22;   /* 4.9:1 op wit */
+  --jr-red-tint:        #FDECEA;
+  --jr-red-dm:          #FF6B61;
+
+  /* Paars — creatief accent */
   --jr-purple:          #AF52DE;
-  --jr-purple-dark:     #9840CC;
-  --jr-teal:            #00B48F;   /* secundaire knop uit brandbook */
-  --jr-teal-hover:      #008F72;
+  --jr-purple-hover:    #9840CC;
+  --jr-purple-text:     #7E2FB0;   /* 5.4:1 op wit */
+  --jr-purple-tint:     #F5EAFB;
+  --jr-purple-dm:       #C77CE8;
 
-  /* ---- 1.8 Kleur — grijstrap --------------------------------------------- */
-  --jr-gray-05: #F2F2F7;
-  --jr-gray-10: #E5E5E9;
-  --jr-gray-20: #D2D1D7;
-  --jr-gray-30: #C8C8CD;
-  --jr-gray-50: #ADADB2;
-  --jr-gray-60: #636466;
-  --jr-gray-70: #49484A;
-  --jr-gray-80: #3A3A3C;
-  --jr-gray-90: #2C2D2E;
-  --jr-gray-99: #1C1C1E;
+  /* Neutraal — informatie zonder lading */
+  --jr-neutral-tint:    #F5F5F7;
+  --jr-neutral-text:    #6E6E73;
 
 
-  /* ---- 1.9 Lettergroottes (desktop) --------------------------------------
-     Mobiel/tablet worden overschreven in §17. Zie ELEMENTOR-SETUP.md §3
-     voor de exacte px-waarden per breakpoint om in Elementor in te vullen. */
-
-  --jr-fs-display:  80px;   /* hero */
+  /* ---- 1.8 Lettergroottes (desktop) -------------------------------------- */
+  --jr-fs-display:  80px;
   --jr-fs-h1:       56px;
   --jr-fs-h2:       40px;
   --jr-fs-h3:       28px;
   --jr-fs-h4:       24px;
   --jr-fs-h5:       21px;
   --jr-fs-h6:       17px;
-  --jr-fs-lead:     21px;   /* intro / chapeau onder een kop */
-  --jr-fs-body:     17px;   /* Apple's body is 17px, niet 16 */
+  --jr-fs-lead:     21px;
+  --jr-fs-body:     17px;
   --jr-fs-small:    14px;
   --jr-fs-caption:  12px;
   --jr-fs-eyebrow:  14px;
   --jr-fs-button:   17px;
   --jr-fs-quote:    32px;
+  --jr-fs-stat:     64px;
 
-  /* ---- 1.10 Regelhoogtes -------------------------------------------------- */
+  /* Regelhoogtes */
   --jr-lh-display:  1.05;
   --jr-lh-tight:    1.08;
   --jr-lh-heading:  1.12;
   --jr-lh-snug:     1.25;
   --jr-lh-body:     1.55;
   --jr-lh-lead:     1.45;
-  --jr-lh-relaxed:  1.7;
 
-  /* ---- 1.11 Letterafstand -------------------------------------------------
-     Het Apple-geheim: hoe groter de tekst, hoe strakker de tracking. */
+  /* Letterafstand — hoe groter de tekst, hoe strakker */
   --jr-ls-display:  -0.028em;
   --jr-ls-h1:       -0.022em;
   --jr-ls-h2:       -0.018em;
@@ -159,84 +220,199 @@
   --jr-ls-button:   -0.008em;
 
 
-  /* ---- 1.12 Ruimte (8pt-raster) ------------------------------------------- */
-  --jr-space-0:   0;
-  --jr-space-1:   4px;
-  --jr-space-2:   8px;
-  --jr-space-3:   12px;
-  --jr-space-4:   16px;
-  --jr-space-5:   20px;
-  --jr-space-6:   24px;
-  --jr-space-7:   32px;
-  --jr-space-8:   40px;
-  --jr-space-9:   48px;
-  --jr-space-10:  64px;
-  --jr-space-11:  80px;
-  --jr-space-12:  96px;
-  --jr-space-13:  120px;
-  --jr-space-14:  160px;
+  /* ---- 1.9 VERTICAAL RITME ----------------------------------------------
+     De marges tussen tekstelementen. Dit is het verschil tussen "netjes" en
+     "klopt". Apple zet een eyebrow strak tegen de kop aan — 8px, niet 16.
+     Elk token beschrijft: wat staat er boven → wat staat eronder. */
 
-  /* Sectie-ademruimte — dit is waar "rust" vandaan komt */
+  --jr-gap-eyebrow-title:   8px;    /* eyebrow → kop            (strak!) */
+  --jr-gap-display-lead:    24px;   /* display → intro */
+  --jr-gap-title-lead:      16px;   /* H1/H2 → intro */
+  --jr-gap-title-body:      20px;   /* H1/H2 → lopende tekst */
+  --jr-gap-subtitle-body:   12px;   /* H3/H4 → lopende tekst */
+  --jr-gap-minor-body:      8px;    /* H5/H6 → lopende tekst */
+  --jr-gap-lead-body:       24px;   /* intro → lopende tekst */
+  --jr-gap-paragraph:       20px;   /* alinea → alinea */
+  --jr-gap-body-cta:        32px;   /* tekst → knop */
+  --jr-gap-body-list:       16px;   /* tekst → lijst */
+  --jr-gap-list-item:       12px;   /* lijstitem → lijstitem */
+  --jr-gap-label-field:     8px;    /* label → invoerveld */
+  --jr-gap-field-help:      7px;    /* veld → hulptekst of foutmelding */
+  --jr-gap-field-field:     16px;   /* veld → volgend veld */
+  --jr-gap-head-content:    64px;   /* sectiekop-blok → de content eronder */
+  --jr-gap-stat-label:      8px;    /* kengetal → bijschrift */
+  --jr-gap-quote-author:    16px;   /* citaat → naam */
+
+
+  /* ---- 1.10 COMPONENT-PADDING --------------------------------------------
+     Binnenruimte per component, per maat. Verticaal / horizontaal. */
+
+  /* Knoppen */
+  --jr-pad-btn-sm:      9px 20px;
+  --jr-pad-btn-md:      13px 26px;
+  --jr-pad-btn-lg:      16px 34px;
+  --jr-pad-btn-xl:      20px 42px;
+  --jr-h-btn-sm:        40px;
+  --jr-h-btn-md:        48px;
+  --jr-h-btn-lg:        56px;
+  --jr-h-btn-xl:        64px;
+  --jr-gap-btn-icon:    8px;     /* icoon → tekst in een knop */
+
+  /* Cards */
+  --jr-pad-card-sm:     24px;
+  --jr-pad-card-md:     32px;
+  --jr-pad-card-lg:     48px;
+  --jr-pad-card-xl:     80px;
+
+  /* Formulieren */
+  --jr-pad-field:       13px 16px;
+  --jr-h-field:         48px;
+  --jr-pad-textarea:    14px 16px;
+  --jr-h-textarea:      140px;
+
+  /* Kleine elementen */
+  --jr-pad-badge:       6px 12px;
+  --jr-pad-tag:         7px 16px;
+  --jr-pad-navlink:     10px 14px;
+  --jr-pad-segment:     8px 18px;
+  --jr-pad-segment-track: 4px;
+  --jr-pad-cell:        14px 14px;   /* tabelcel */
+  --jr-pad-accordion:   20px 0;
+  --jr-pad-tab:         16px 20px;
+  --jr-pad-message:     16px 20px;   /* form-melding */
+
+  /* Structuur */
+  --jr-pad-footer:      80px 0 48px;
+  --jr-pad-dropdown:    12px;
+
+
+  /* ---- 1.11 RUIMTE TUSSEN CONTAINERS -------------------------------------
+     Standaard = 24px. Dat is de waarde die je in Elementor invult bij
+     Container → Layout → Gap wanneer je twijfelt. */
+
+  --jr-gap-container:     24px;   /* STANDAARD — kolommen, grid-items */
+  --jr-gap-container-xs:  8px;    /* tegels die bijna aan elkaar plakken */
+  --jr-gap-container-sm:  16px;   /* compacte kaarten, tags, badges */
+  --jr-gap-container-lg:  32px;   /* ruime kaarten, twee-koloms content */
+  --jr-gap-container-xl:  48px;   /* tekst naast beeld */
+  --jr-gap-block:         64px;   /* contentblok → contentblok, in één sectie */
+  --jr-gap-block-lg:      96px;   /* idem, maar met echte adempauze */
+
+  /* Ruimteschaal (8pt) — voor alles wat hierboven niet in past */
+  --jr-space-1:  4px;    --jr-space-2:  8px;    --jr-space-3:  12px;
+  --jr-space-4:  16px;   --jr-space-5:  20px;   --jr-space-6:  24px;
+  --jr-space-7:  32px;   --jr-space-8:  40px;   --jr-space-9:  48px;
+  --jr-space-10: 64px;   --jr-space-11: 80px;   --jr-space-12: 96px;
+  --jr-space-13: 120px;  --jr-space-14: 160px;
+
+  /* Sectie-ademruimte */
   --jr-section-y:       120px;
   --jr-section-y-lg:    160px;
   --jr-section-y-sm:    80px;
-  --jr-section-gap:     64px;   /* ruimte tussen blokken bínnen een sectie */
 
 
-  /* ---- 1.13 Breedtes ------------------------------------------------------ */
-  --jr-container:        1024px;  /* standaard contentbreedte */
-  --jr-container-wide:   1280px;  /* brede secties, grids */
-  --jr-container-full:   1440px;  /* full-bleed met marge */
-  --jr-container-text:   692px;   /* leesbare tekstkolom — max ~75 tekens */
-  --jr-container-narrow: 540px;   /* centrale intro's, formulieren */
+  /* ---- 1.12 Breedtes ------------------------------------------------------ */
+  --jr-container:        1024px;
+  --jr-container-wide:   1280px;
+  --jr-container-full:   1440px;
+  --jr-container-text:   692px;   /* lopende tekst — nooit breder */
+  --jr-container-narrow: 540px;
   --jr-gutter:           32px;
 
 
-  /* ---- 1.14 Hoekradius ---------------------------------------------------- */
+  /* ---- 1.13 Hoekradius ---------------------------------------------------- */
   --jr-radius-xs:    8px;
   --jr-radius-sm:    12px;
-  --jr-radius-md:    18px;   /* Apple's standaard card */
+  --jr-radius-md:    18px;
   --jr-radius-lg:    24px;
   --jr-radius-xl:    32px;
-  --jr-radius-2xl:   44px;   /* grote feature-blokken */
-  --jr-radius-pill:  980px;  /* knoppen — Apple's exacte waarde */
+  --jr-radius-2xl:   44px;
+  --jr-radius-pill:  980px;
   --jr-radius-round: 50%;
 
 
+  /* ---- 1.14 LIJNDIKTES ----------------------------------------------------
+     Zes diktes, elk met één taak. Meer heb je niet nodig. */
+
+  --jr-stroke-hairline: 1px;      /* randen, dividers, inputs, tabelregels */
+  --jr-stroke-icon:     1.5px;    /* icoonlijnen — Apple's SF Symbols-dikte */
+  --jr-stroke-medium:   2px;      /* actieve tab, onderstreping bij nadruk */
+  --jr-stroke-accent:   3px;      /* accentbalk links van een card */
+  --jr-stroke-rule:     4px;      /* korte decoratieve streep onder een kop */
+  --jr-stroke-focus:    4px;      /* focusring — nooit dunner */
+
+  --jr-stroke-icon-lg:  2px;      /* iconen vanaf 32px */
+  --jr-underline:       1px;      /* linkonderstreping */
+  --jr-underline-offset:3px;
+  --jr-rule-width:      64px;     /* lengte van de korte decoratieve streep */
+
+
   /* ---- 1.15 Schaduwen -----------------------------------------------------
-     Apple gebruikt schaduw spaarzaam. Liever een vlak dan een schaduw. */
-  --jr-shadow-none: none;
+     Twee lagen per schaduw: kort en hard voor de rand, lang en zacht voor
+     de diepte. Eén laag ziet er altijd goedkoop uit. */
   --jr-shadow-xs:   0 1px 2px rgba(0,0,0,.04);
   --jr-shadow-sm:   0 1px 3px rgba(0,0,0,.05), 0 2px 8px rgba(0,0,0,.04);
   --jr-shadow-md:   0 2px 6px rgba(0,0,0,.05), 0 8px 20px rgba(0,0,0,.06);
   --jr-shadow-lg:   0 4px 12px rgba(0,0,0,.06), 0 16px 40px rgba(0,0,0,.08);
   --jr-shadow-xl:   0 8px 24px rgba(0,0,0,.08), 0 32px 72px rgba(0,0,0,.10);
   --jr-shadow-card-hover: 0 6px 16px rgba(0,0,0,.07), 0 24px 56px rgba(0,0,0,.11);
-  --jr-shadow-nav:  0 1px 0 rgba(0,0,0,.06);
   --jr-shadow-dark: 0 8px 32px rgba(0,0,0,.40);
   --jr-shadow-blue: 0 8px 28px rgba(0,122,255,.22);
+  --jr-shadow-lime: 0 8px 28px rgba(196,240,0,.30);
 
-  /* Focusring — verplicht voor toegankelijkheid */
-  --jr-focus-ring:  0 0 0 4px rgba(0,122,255,.40);
-  --jr-focus-ring-dark: 0 0 0 4px rgba(255,255,255,.55);
+  --jr-focus-ring:      0 0 0 var(--jr-stroke-focus) rgba(0,122,255,.40);
+  --jr-focus-ring-dark: 0 0 0 var(--jr-stroke-focus) rgba(255,255,255,.55);
+  --jr-focus-ring-error:0 0 0 var(--jr-stroke-focus) rgba(255,59,48,.20);
 
 
-  /* ---- 1.16 Motion --------------------------------------------------------
-     Apple's signatuur-easing. Nooit bouncy, nooit traag. */
+  /* ---- 1.16 Motion --------------------------------------------------------- */
   --jr-ease:        cubic-bezier(0.25, 0.1, 0.25, 1);
   --jr-ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
-  --jr-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
   --jr-dur-fast:    150ms;
   --jr-dur-base:    250ms;
   --jr-dur-slow:    400ms;
   --jr-dur-reveal:  800ms;
 
 
-  /* ---- 1.17 Overig -------------------------------------------------------- */
-  --jr-blur-nav:    saturate(180%) blur(20px);   /* Apple's glazen navbalk */
+  /* ---- 1.17 Overig ---------------------------------------------------------- */
+  --jr-blur-nav:    saturate(180%) blur(20px);
   --jr-nav-height:  72px;
   --jr-z-nav:       1000;
   --jr-z-overlay:   1100;
+
+  /* ---- 1.18 Transparante kleuren ------------------------------------------
+     Alles wat met doorzichtigheid werkt, ook hier gedefinieerd — zodat geen
+     enkele kleurwaarde ergens los in de stylesheet staat. */
+  --jr-alpha-nav:          rgba(255,255,255,.80);   /* glazen navbalk */
+  --jr-alpha-nav-dark:     rgba(28,28,30,.80);
+  --jr-alpha-dropdown:     rgba(255,255,255,.94);
+  --jr-alpha-glass:        rgba(255,255,255,.72);   /* glasvlak over beeld */
+  --jr-alpha-glass-border: rgba(255,255,255,.50);
+  --jr-alpha-field-dark:   rgba(255,255,255,.08);   /* invoerveld op donker */
+  --jr-alpha-chip-dark:    rgba(255,255,255,.10);   /* badge op donker */
+  --jr-alpha-lime-dark:    rgba(196,240,0,.18);     /* lime badge op donker */
+  --jr-alpha-spinner:      rgba(255,255,255,.35);   /* laadring in een knop */
+  --jr-alpha-underline:    rgba(0,102,204,.35);     /* rustige linkonderstreping */
+  --jr-alpha-overlay-top:  rgba(0,0,0,.05);         /* beeldoverlay boven */
+  --jr-alpha-overlay-bot:  rgba(0,0,0,.55);         /* beeldoverlay onder */
+
+  /* ---- 1.19 Print ---------------------------------------------------------
+     Print heeft een eigen palet: puur zwart op puur wit drukt scherper dan
+     #1D1D1F op #FFFFFF, en grijstinten moeten donkerder om leesbaar te blijven. */
+  --jr-print-text:   #000000;
+  --jr-print-bg:     #FFFFFF;
+  --jr-print-muted:  #555555;
+  --jr-print-line:   #CCCCCC;
+
+  /* ---- 1.20 Kleuren in SVG-iconen -----------------------------------------
+     De vinklijst, de select-chevron en de laadring gebruiken inline SVG als
+     data-URI. Daar werkt geen CSS-variabele in, dus die kleuren staan
+     url-encoded in de regel zelf. Wijzig je een van deze kleuren, pas dan
+     ook de data-URI aan:
+       %23fff     = #FFFFFF  (vink op blauw)
+       %231D1D1F  = --jr-text  (vink op lime)
+       %236E6E73  = --jr-text-secondary  (select-chevron) */
+
   --jr-z-modal:     1200;
 }
 
@@ -246,15 +422,16 @@
    ========================================================================== */
 
 html {
-  -webkit-font-smoothing: antialiased;         /* zonder dit ziet niets er Apple uit */
+  -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   scroll-behavior: smooth;
-  scroll-padding-top: calc(var(--jr-nav-height) + 24px);
+  scroll-padding-top: calc(var(--jr-nav-height) + var(--jr-space-6));
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  font-family: var(--jr-font-sans);
+  font-family: var(--jr-font-text);
   font-size: var(--jr-fs-body);
   font-weight: var(--jr-weight-regular);
   line-height: var(--jr-lh-body);
@@ -266,25 +443,46 @@ body {
 
 *, *::before, *::after { box-sizing: border-box; }
 
-::selection {
-  background: rgba(0,122,255,.18);
-  color: var(--jr-text);
-}
-
-/* Schaalt beeld en tekst nooit ongevraagd op iOS bij draaien */
-body, html { -webkit-text-size-adjust: 100%; }
+::selection { background: var(--jr-blue-tint-mid); color: var(--jr-text); }
 
 
 /* ==========================================================================
    03. TYPOGRAFIE
+   ==========================================================================
+   Twee optische maten van één familie, net als Apple:
+     Inter Tight → 21px en groter   (display, H1–H5, quote, stat)
+     Inter       → onder 21px       (H6, lead, body, small, caption, UI)
+   De marges hieronder zijn het verticale ritme uit §1.9. Pas ze daar aan,
+   niet hier.
    ========================================================================== */
 
-h1, h2, h3, h4, h5, h6,
-.elementor-heading-title {
+h1, h2, h3, h4, h5,
+.jr-display, .jr-quote, .jr-stat-value,
+.elementor-widget-heading h1.elementor-heading-title,
+.elementor-widget-heading h2.elementor-heading-title,
+.elementor-widget-heading h3.elementor-heading-title,
+.elementor-widget-heading h4.elementor-heading-title,
+.elementor-widget-heading h5.elementor-heading-title {
   font-family: var(--jr-font-display);
+}
+
+h6, .jr-lead, .jr-small, .jr-caption, .jr-eyebrow,
+.elementor-widget-heading h6.elementor-heading-title {
+  font-family: var(--jr-font-text);
+}
+
+h1, h2, h3, h4, h5, h6, .elementor-heading-title {
   color: var(--jr-text);
   margin-top: 0;
-  text-wrap: balance;               /* voorkomt lelijke weeskindjes in koppen */
+  text-wrap: balance;
+}
+
+.jr-display {
+  font-size: var(--jr-fs-display);
+  font-weight: var(--jr-weight-bold);
+  line-height: var(--jr-lh-display);
+  letter-spacing: var(--jr-ls-display);
+  margin-bottom: var(--jr-gap-display-lead);
 }
 
 h1, .jr-h1, .elementor-widget-heading h1.elementor-heading-title {
@@ -292,7 +490,7 @@ h1, .jr-h1, .elementor-widget-heading h1.elementor-heading-title {
   font-weight: var(--jr-weight-bold);
   line-height: var(--jr-lh-tight);
   letter-spacing: var(--jr-ls-h1);
-  margin-bottom: var(--jr-space-6);
+  margin-bottom: var(--jr-gap-title-body);
 }
 
 h2, .jr-h2, .elementor-widget-heading h2.elementor-heading-title {
@@ -300,7 +498,7 @@ h2, .jr-h2, .elementor-widget-heading h2.elementor-heading-title {
   font-weight: var(--jr-weight-bold);
   line-height: var(--jr-lh-heading);
   letter-spacing: var(--jr-ls-h2);
-  margin-bottom: var(--jr-space-5);
+  margin-bottom: var(--jr-gap-title-body);
 }
 
 h3, .jr-h3, .elementor-widget-heading h3.elementor-heading-title {
@@ -308,7 +506,7 @@ h3, .jr-h3, .elementor-widget-heading h3.elementor-heading-title {
   font-weight: var(--jr-weight-semibold);
   line-height: var(--jr-lh-heading);
   letter-spacing: var(--jr-ls-h3);
-  margin-bottom: var(--jr-space-4);
+  margin-bottom: var(--jr-gap-subtitle-body);
 }
 
 h4, .jr-h4, .elementor-widget-heading h4.elementor-heading-title {
@@ -316,7 +514,7 @@ h4, .jr-h4, .elementor-widget-heading h4.elementor-heading-title {
   font-weight: var(--jr-weight-semibold);
   line-height: var(--jr-lh-snug);
   letter-spacing: var(--jr-ls-h4);
-  margin-bottom: var(--jr-space-3);
+  margin-bottom: var(--jr-gap-subtitle-body);
 }
 
 h5, .jr-h5, .elementor-widget-heading h5.elementor-heading-title {
@@ -324,7 +522,7 @@ h5, .jr-h5, .elementor-widget-heading h5.elementor-heading-title {
   font-weight: var(--jr-weight-semibold);
   line-height: var(--jr-lh-snug);
   letter-spacing: var(--jr-ls-h5);
-  margin-bottom: var(--jr-space-3);
+  margin-bottom: var(--jr-gap-minor-body);
 }
 
 h6, .jr-h6, .elementor-widget-heading h6.elementor-heading-title {
@@ -332,19 +530,14 @@ h6, .jr-h6, .elementor-widget-heading h6.elementor-heading-title {
   font-weight: var(--jr-weight-semibold);
   line-height: var(--jr-lh-snug);
   letter-spacing: var(--jr-ls-h6);
-  margin-bottom: var(--jr-space-2);
+  margin-bottom: var(--jr-gap-minor-body);
 }
 
-/* Hero / display — de grote statement-kop bovenaan een pagina */
-.jr-display {
-  font-size: var(--jr-fs-display);
-  font-weight: var(--jr-weight-bold);
-  line-height: var(--jr-lh-display);
-  letter-spacing: var(--jr-ls-display);
-  margin-bottom: var(--jr-space-6);
-}
+/* Staat er een intro direct onder een kop, dan is de afstand kleiner
+   dan bij lopende tekst — de intro hoort visueel bij de kop. */
+h1 + .jr-lead, h2 + .jr-lead,
+.elementor-widget-heading + .elementor-widget-text-editor.jr-lead { margin-top: calc(var(--jr-gap-title-lead) - var(--jr-gap-title-body)); }
 
-/* Intro / lead — de zin onder de kop. Grijs, lichter, ruimer. */
 .jr-lead,
 .elementor-widget-text-editor.jr-lead p {
   font-size: var(--jr-fs-lead);
@@ -353,24 +546,20 @@ h6, .jr-h6, .elementor-widget-heading h6.elementor-heading-title {
   letter-spacing: 0;
   color: var(--jr-text-secondary);
   max-width: var(--jr-container-text);
+  margin-top: 0;
+  margin-bottom: var(--jr-gap-lead-body);
 }
-
-/* Lichte variant — alleen bij 21px en groter, anders wordt hij te dun */
-.jr-lead--light { font-weight: var(--jr-weight-light); }
 
 p {
   margin-top: 0;
-  margin-bottom: var(--jr-space-5);
+  margin-bottom: var(--jr-gap-paragraph);
   max-width: var(--jr-container-text);
 }
-p:last-child { margin-bottom: 0; }
+p:last-child, .jr-lead:last-child { margin-bottom: 0; }
 
-/* Gecentreerde tekstblokken krijgen hun marge automatisch */
-.jr-text-center p,
-.jr-text-center .jr-lead { margin-left: auto; margin-right: auto; }
+.jr-text-center p, .jr-text-center .jr-lead { margin-left: auto; margin-right: auto; }
 
-.jr-small,
-small {
+.jr-small, small {
   font-size: var(--jr-fs-small);
   line-height: 1.45;
   letter-spacing: var(--jr-ls-small);
@@ -385,16 +574,15 @@ small {
 }
 
 strong, b { font-weight: var(--jr-weight-semibold); }
-em, i    { font-style: italic; }
 
-/* Tekstkleur-varianten */
+/* Tekstkleur-utilities */
 .jr-text--primary   { color: var(--jr-text); }
 .jr-text--secondary { color: var(--jr-text-secondary); }
 .jr-text--tertiary  { color: var(--jr-text-tertiary); }
-.jr-text--blue      { color: var(--jr-blue); }
+.jr-text--blue      { color: var(--jr-blue-link); }
+.jr-text--lime      { color: var(--jr-lime-text); }
 .jr-text--inverse   { color: var(--jr-text-inverse); }
 
-/* Gradient-tekst — spaarzaam, hooguit één per pagina */
 .jr-text--gradient {
   background: linear-gradient(92deg, var(--jr-blue) 0%, var(--jr-purple) 100%);
   -webkit-background-clip: text;
@@ -405,44 +593,45 @@ em, i    { font-style: italic; }
 
 /* ==========================================================================
    04. LINKS
+   ==========================================================================
+   Één blauw voor alle blauwe tekst: --jr-blue-link. Eyebrows, links en
+   tekstknoppen delen die kleur, zodat ze naast elkaar niet vloeken.
    ========================================================================== */
 
 a {
   color: var(--jr-blue-link);
   text-decoration: none;
-  transition: color var(--jr-dur-fast) var(--jr-ease),
-              opacity var(--jr-dur-fast) var(--jr-ease);
+  transition: color var(--jr-dur-fast) var(--jr-ease);
 }
+a:hover  { color: var(--jr-blue-link-hover); text-decoration: underline;
+           text-underline-offset: var(--jr-underline-offset);
+           text-decoration-thickness: var(--jr-underline); }
+a:active { color: var(--jr-blue-link-active); }
 
-a:hover { text-decoration: underline; text-underline-offset: 3px; }
-a:active { opacity: .7; }
+/* Link in een alinea: altijd onderstreept, zodat hij herkenbaar is
+   zonder dat kleur het enige signaal is. */
+p a, li a, td a {
+  text-decoration: underline;
+  text-decoration-color: var(--jr-alpha-underline);
+  text-decoration-thickness: var(--jr-underline);
+  text-underline-offset: var(--jr-underline-offset);
+}
+p a:hover, li a:hover, td a:hover { text-decoration-color: currentColor; }
 
-a:focus-visible,
-button:focus-visible,
-.elementor-button:focus-visible,
-input:focus-visible,
-select:focus-visible,
-textarea:focus-visible,
-[tabindex]:focus-visible {
+/* Focus — geldt voor alles wat focus kan krijgen */
+a:focus-visible, button:focus-visible, .jr-btn:focus-visible,
+.elementor-button:focus-visible, input:focus-visible,
+select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
   outline: none;
   box-shadow: var(--jr-focus-ring);
   border-radius: var(--jr-radius-xs);
 }
 
-/* Link binnen een lopende alinea: onderstreept blijven voor herkenbaarheid */
-p a, li a {
-  text-decoration: underline;
-  text-decoration-color: rgba(0,102,204,.35);
-  text-underline-offset: 3px;
-  text-decoration-thickness: 1px;
-}
-p a:hover, li a:hover { text-decoration-color: currentColor; }
-
-/* Apple's chevron-link — de "Meer weten ›" */
+/* Chevron-link — "Meer weten ›" */
 .jr-link-arrow {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--jr-space-1);
   font-size: var(--jr-fs-body);
   font-weight: var(--jr-weight-regular);
   color: var(--jr-blue-link);
@@ -455,50 +644,39 @@ p a:hover, li a:hover { text-decoration-color: currentColor; }
   transform: translateY(-1px);
   transition: transform var(--jr-dur-base) var(--jr-ease-out);
 }
-.jr-link-arrow:hover { text-decoration: underline; text-underline-offset: 3px; }
+.jr-link-arrow:hover { color: var(--jr-blue-link-hover); text-decoration: underline;
+                       text-underline-offset: var(--jr-underline-offset); }
 .jr-link-arrow:hover::after { transform: translate(3px, -1px); }
 
 /* Stille link — navigatie, footer */
-.jr-link-quiet {
-  color: var(--jr-text-secondary);
-  text-decoration: none;
-}
+.jr-link-quiet { color: var(--jr-text-secondary); text-decoration: none; }
 .jr-link-quiet:hover { color: var(--jr-text); text-decoration: none; }
 
 /* Links op donkere achtergrond */
-.jr-section--dark a,
-.jr-surface--dark a { color: #2997FF; }          /* Apple's donkere-modus blauw */
+.jr-section--dark a, .jr-surface--dark a, .jr-card--dark a { color: var(--jr-blue-dm); }
+.jr-section--dark a:hover { color: var(--jr-blue-dm-hover); }
 .jr-section--dark a:focus-visible { box-shadow: var(--jr-focus-ring-dark); }
 
 
 /* ==========================================================================
    05. KNOPPEN
-   ==========================================================================
-   Apple-regels die we volgen:
-   · pill-vorm (radius 980px)
-   · geen transform, geen lift, geen schaduw bij hover — alleen kleur
-   · alleen de hoofdactie is gevuld; al het andere is outline of tekstlink
-   · nooit meer dan één gevulde knop per scherm
    ========================================================================== */
 
 .jr-btn,
-.elementor-button,
-.elementor-button-link,
-button.elementor-button,
-input[type="submit"],
-.elementor-field-type-submit .elementor-button {
+.elementor-button, .elementor-button-link, button.elementor-button,
+input[type="submit"], .elementor-field-type-submit .elementor-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  font-family: var(--jr-font-sans);
+  gap: var(--jr-gap-btn-icon);
+  font-family: var(--jr-font-text);
   font-size: var(--jr-fs-button);
   font-weight: var(--jr-weight-medium);
   line-height: 1.2;
   letter-spacing: var(--jr-ls-button);
-  padding: 13px 26px;
-  min-height: 48px;                 /* tapdoel — nooit kleiner */
-  border: 1px solid transparent;
+  padding: var(--jr-pad-btn-md);
+  min-height: var(--jr-h-btn-md);
+  border: var(--jr-stroke-hairline) solid transparent;
   border-radius: var(--jr-radius-pill);
   text-decoration: none;
   cursor: pointer;
@@ -506,33 +684,28 @@ input[type="submit"],
   transition: background-color var(--jr-dur-fast) var(--jr-ease),
               border-color var(--jr-dur-fast) var(--jr-ease),
               color var(--jr-dur-fast) var(--jr-ease),
-              opacity var(--jr-dur-fast) var(--jr-ease),
               transform var(--jr-dur-fast) var(--jr-ease);
 }
-
 .jr-btn:hover, .elementor-button:hover { text-decoration: none; }
 .jr-btn:active, .elementor-button:active { transform: scale(.98); }
 
-/* ---- 5.1 Primair — gevuld blauw ---------------------------------------- */
-.jr-btn--primary,
-.elementor-button:not([class*="jr-btn--"]) {
+/* Primair */
+.jr-btn--primary, .elementor-button:not([class*="jr-btn--"]) {
   background-color: var(--jr-blue-action);
   border-color: var(--jr-blue-action);
-  color: #FFFFFF;
+  color: var(--jr-text-on-color);
 }
-.jr-btn--primary:hover,
-.elementor-button:not([class*="jr-btn--"]):hover {
+.jr-btn--primary:hover, .elementor-button:not([class*="jr-btn--"]):hover {
   background-color: var(--jr-blue-action-hov);
   border-color: var(--jr-blue-action-hov);
-  color: #FFFFFF;
+  color: var(--jr-text-on-color);
 }
-.jr-btn--primary:active,
-.elementor-button:not([class*="jr-btn--"]):active {
-  background-color: #002E52;
-  border-color: #002E52;
+.jr-btn--primary:active, .elementor-button:not([class*="jr-btn--"]):active {
+  background-color: var(--jr-blue-action-act);
+  border-color: var(--jr-blue-action-act);
 }
 
-/* ---- 5.2 Secundair — outline ------------------------------------------- */
+/* Secundair — outline */
 .jr-btn--secondary {
   background-color: transparent;
   border-color: var(--jr-blue-action);
@@ -541,31 +714,38 @@ input[type="submit"],
 .jr-btn--secondary:hover {
   background-color: var(--jr-blue-action);
   border-color: var(--jr-blue-action);
-  color: #FFFFFF;
+  color: var(--jr-text-on-color);
 }
 .jr-btn--secondary:active {
   background-color: var(--jr-blue-action-hov);
   border-color: var(--jr-blue-action-hov);
 }
 
-/* ---- 5.3 Tertiair — zacht grijs ---------------------------------------- */
+/* Tertiair — zacht grijs */
 .jr-btn--tertiary {
   background-color: var(--jr-surface-subtle);
   border-color: var(--jr-surface-subtle);
   color: var(--jr-text);
 }
-.jr-btn--tertiary:hover {
-  background-color: var(--jr-gray-10);
-  border-color: var(--jr-gray-10);
-}
-.jr-btn--tertiary:active { background-color: var(--jr-gray-20); }
+.jr-btn--tertiary:hover { background-color: var(--jr-surface-sunk); border-color: var(--jr-surface-sunk); }
+.jr-btn--tertiary:active { background-color: var(--jr-line-subtle); border-color: var(--jr-line-subtle); }
 
-/* ---- 5.4 Tekstknop — Apple's meest gebruikte CTA ------------------------ */
+/* Lime — de opvallende actie. Eén per pagina, hooguit. */
+.jr-btn--lime {
+  background-color: var(--jr-lime);
+  border-color: var(--jr-lime);
+  color: var(--jr-text-on-lime);
+  font-weight: var(--jr-weight-semibold);
+}
+.jr-btn--lime:hover  { background-color: var(--jr-lime-hover);  border-color: var(--jr-lime-hover); }
+.jr-btn--lime:active { background-color: var(--jr-lime-active); border-color: var(--jr-lime-active); }
+
+/* Tekstknop */
 .jr-btn--text {
   background: transparent;
   border-color: transparent;
   color: var(--jr-blue-link);
-  padding: 4px 0;
+  padding: var(--jr-space-1) 0;
   min-height: 0;
   font-weight: var(--jr-weight-regular);
 }
@@ -576,243 +756,234 @@ input[type="submit"],
   transform: translateY(-1px);
   transition: transform var(--jr-dur-base) var(--jr-ease-out);
 }
-.jr-btn--text:hover { text-decoration: underline; text-underline-offset: 3px; }
+.jr-btn--text:hover { color: var(--jr-blue-link-hover); text-decoration: underline;
+                      text-underline-offset: var(--jr-underline-offset); }
 .jr-btn--text:hover::after { transform: translate(3px, -1px); }
-.jr-btn--text:active { transform: none; opacity: .7; }
+.jr-btn--text:active { transform: none; color: var(--jr-blue-link-active); }
 
-/* ---- 5.5 Groen — secundaire actie uit het brandbook --------------------- */
-.jr-btn--green {
-  background-color: var(--jr-teal);
-  border-color: var(--jr-teal);
-  color: #FFFFFF;
-}
-.jr-btn--green:hover {
-  background-color: var(--jr-teal-hover);
-  border-color: var(--jr-teal-hover);
-}
-
-/* ---- 5.6 Op donkere achtergrond ---------------------------------------- */
-.jr-btn--light,
-.jr-section--dark .elementor-button:not([class*="jr-btn--"]) {
-  background-color: #FFFFFF;
-  border-color: #FFFFFF;
+/* Op donkere achtergrond */
+.jr-btn--light, .jr-section--dark .elementor-button:not([class*="jr-btn--"]) {
+  background-color: var(--jr-surface);
+  border-color: var(--jr-surface);
   color: var(--jr-text);
 }
-.jr-btn--light:hover,
-.jr-section--dark .elementor-button:not([class*="jr-btn--"]):hover {
-  background-color: var(--jr-gray-10);
-  border-color: var(--jr-gray-10);
+.jr-btn--light:hover, .jr-section--dark .elementor-button:not([class*="jr-btn--"]):hover {
+  background-color: var(--jr-line-subtle);
+  border-color: var(--jr-line-subtle);
   color: var(--jr-text);
 }
-
 .jr-btn--light-outline {
   background-color: transparent;
-  border-color: rgba(255,255,255,.45);
-  color: #FFFFFF;
+  border-color: var(--jr-line-dark-strong);
+  color: var(--jr-text-on-color);
 }
 .jr-btn--light-outline:hover {
-  background-color: #FFFFFF;
-  border-color: #FFFFFF;
+  background-color: var(--jr-surface);
+  border-color: var(--jr-surface);
   color: var(--jr-text);
 }
 
-/* ---- 5.7 Maten ---------------------------------------------------------- */
-.jr-btn--sm, .elementor-button.elementor-size-sm {
-  font-size: 15px; padding: 9px 20px; min-height: 40px;
-}
-.jr-btn--md, .elementor-button.elementor-size-md {
-  font-size: 17px; padding: 13px 26px; min-height: 48px;
-}
-.jr-btn--lg, .elementor-button.elementor-size-lg {
-  font-size: 19px; padding: 16px 34px; min-height: 56px;
-}
-.jr-btn--xl, .elementor-button.elementor-size-xl {
-  font-size: 21px; padding: 20px 42px; min-height: 64px;
-}
+/* Maten */
+.jr-btn--sm, .elementor-button.elementor-size-sm { font-size: 15px; padding: var(--jr-pad-btn-sm); min-height: var(--jr-h-btn-sm); }
+.jr-btn--md, .elementor-button.elementor-size-md { font-size: var(--jr-fs-button); padding: var(--jr-pad-btn-md); min-height: var(--jr-h-btn-md); }
+.jr-btn--lg, .elementor-button.elementor-size-lg { font-size: 19px; padding: var(--jr-pad-btn-lg); min-height: var(--jr-h-btn-lg); }
+.jr-btn--xl, .elementor-button.elementor-size-xl { font-size: 21px; padding: var(--jr-pad-btn-xl); min-height: var(--jr-h-btn-xl); }
 
-/* ---- 5.8 Toestanden ----------------------------------------------------- */
+/* Toestanden */
 .jr-btn--block, .elementor-button.jr-btn--block { width: 100%; }
-
-.jr-btn:disabled,
-.jr-btn.is-disabled,
-.elementor-button:disabled {
-  opacity: .4;
-  cursor: not-allowed;
-  pointer-events: none;
+.jr-btn:disabled, .jr-btn.is-disabled, .elementor-button:disabled {
+  opacity: .4; cursor: not-allowed; pointer-events: none;
 }
-
 .jr-btn.is-loading { color: transparent !important; position: relative; pointer-events: none; }
 .jr-btn.is-loading::before {
   content: "";
   position: absolute;
   width: 18px; height: 18px;
-  border: 2px solid rgba(255,255,255,.35);
-  border-top-color: #FFFFFF;
+  border: var(--jr-stroke-medium) solid var(--jr-alpha-spinner);
+  border-top-color: var(--jr-text-on-color);
   border-radius: var(--jr-radius-round);
   animation: jr-spin .7s linear infinite;
 }
 @keyframes jr-spin { to { transform: rotate(360deg); } }
 
-/* Knopgroep */
+/* Knopgroep — staat standaard 32px onder de tekst erboven */
 .jr-btn-group {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--jr-space-4) var(--jr-space-5);
+  margin-top: var(--jr-gap-body-cta);
 }
+.jr-btn-group--flush { margin-top: 0; }
 
 
 /* ==========================================================================
    06. VLAKKEN, CARDS & SCHADUWEN
-   ==========================================================================
-   Apple-regel: een vlak onderscheidt zich bij voorkeur door kleur of radius,
-   niet door schaduw. Schaduw alleen als iets echt "boven" de pagina zweeft.
    ========================================================================== */
 
 .jr-card {
   background-color: var(--jr-surface);
   border-radius: var(--jr-radius-md);
-  padding: var(--jr-space-7);
+  padding: var(--jr-pad-card-md);
   overflow: hidden;
   transition: box-shadow var(--jr-dur-base) var(--jr-ease),
-              transform var(--jr-dur-base) var(--jr-ease-out);
+              transform var(--jr-dur-base) var(--jr-ease-out),
+              border-color var(--jr-dur-base) var(--jr-ease);
 }
+.jr-card > *:last-child { margin-bottom: 0; }
+
+/* Maten — padding én radius schalen mee */
+.jr-card--sm { padding: var(--jr-pad-card-sm); border-radius: var(--jr-radius-sm); }
+.jr-card--lg { padding: var(--jr-pad-card-lg); border-radius: var(--jr-radius-lg); }
+.jr-card--xl { padding: var(--jr-pad-card-xl); border-radius: var(--jr-radius-2xl); }
 
 /* Varianten */
 .jr-card--subtle   { background-color: var(--jr-surface-subtle); }
 .jr-card--tint     { background-color: var(--jr-surface-tint); }
-.jr-card--outline  { border: 1px solid var(--jr-border); }
+.jr-card--lime     { background-color: var(--jr-lime-tint); }
+.jr-card--outline  { border: var(--jr-stroke-hairline) solid var(--jr-line); background-color: transparent; }
+.jr-card--outline:hover { border-color: var(--jr-line-strong); }
 .jr-card--elevated { box-shadow: var(--jr-shadow-md); }
 .jr-card--floating { box-shadow: var(--jr-shadow-lg); }
 .jr-card--dark     { background-color: var(--jr-surface-dark); color: var(--jr-text-inverse); }
 .jr-card--dark h1, .jr-card--dark h2, .jr-card--dark h3,
 .jr-card--dark h4, .jr-card--dark h5, .jr-card--dark h6 { color: var(--jr-text-inverse); }
+.jr-card--dark p, .jr-card--dark li { color: var(--jr-text-inverse-sec); }
 
-/* Maten */
-.jr-card--sm { padding: var(--jr-space-6); border-radius: var(--jr-radius-sm); }
-.jr-card--lg { padding: var(--jr-space-9); border-radius: var(--jr-radius-lg); }
-.jr-card--xl { padding: var(--jr-space-11); border-radius: var(--jr-radius-2xl); }
-
-/* Klikbare card — subtiele lift. Dit is de enige plek waar we transform gebruiken. */
-.jr-card--interactive { cursor: pointer; }
-.jr-card--interactive:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--jr-shadow-card-hover);
-}
-.jr-card--interactive:active { transform: translateY(-1px); }
-
-/* Accentbalkje links — brandbook highlight box */
+/* Accentbalk links */
 .jr-card--accent {
   background-color: var(--jr-surface-tint);
-  border-left: 3px solid var(--jr-blue);
+  border-left: var(--jr-stroke-accent) solid var(--jr-blue);
+  border-radius: 0 var(--jr-radius-sm) var(--jr-radius-sm) 0;
+}
+.jr-card--accent-lime {
+  background-color: var(--jr-lime-tint);
+  border-left: var(--jr-stroke-accent) solid var(--jr-lime);
   border-radius: 0 var(--jr-radius-sm) var(--jr-radius-sm) 0;
 }
 
-/* Glasvlak — Apple's frosted panel over beeld */
+/* Glasvlak */
 .jr-card--glass {
-  background-color: rgba(255,255,255,.72);
+  background-color: var(--jr-alpha-glass);
   -webkit-backdrop-filter: var(--jr-blur-nav);
   backdrop-filter: var(--jr-blur-nav);
-  border: 1px solid rgba(255,255,255,.5);
+  border: var(--jr-stroke-hairline) solid var(--jr-alpha-glass-border);
 }
 
-/* Losse vlak-utilities (ook toe te passen op Elementor containers) */
+/* Klikbaar — de enige transform in het systeem */
+.jr-card--interactive { cursor: pointer; }
+.jr-card--interactive:hover { transform: translateY(-4px); box-shadow: var(--jr-shadow-card-hover); }
+.jr-card--interactive:active { transform: translateY(-1px); }
+
+/* Vlak-utilities */
 .jr-surface           { background-color: var(--jr-surface); }
 .jr-surface--subtle   { background-color: var(--jr-surface-subtle); }
 .jr-surface--gray     { background-color: var(--jr-surface-gray); }
+.jr-surface--sunk     { background-color: var(--jr-surface-sunk); }
 .jr-surface--tint     { background-color: var(--jr-surface-tint); }
+.jr-surface--lime     { background-color: var(--jr-lime); color: var(--jr-text-on-lime); }
+.jr-surface--lime-tint{ background-color: var(--jr-lime-tint); }
 .jr-surface--dark     { background-color: var(--jr-surface-dark); color: var(--jr-text-inverse); }
-.jr-surface--blue     { background-color: var(--jr-blue); color: #FFFFFF; }
-.jr-surface--gradient { background: linear-gradient(160deg, #F5F5F7 0%, #E2EBF3 100%); }
-.jr-surface--gradient-dark { background: linear-gradient(160deg, #1C1C1E 0%, #003967 140%); }
+.jr-surface--blue     { background-color: var(--jr-blue); color: var(--jr-text-on-color); }
+.jr-surface--gradient { background: linear-gradient(160deg, var(--jr-surface-subtle) 0%, var(--jr-surface-tint) 100%); }
+.jr-surface--gradient-dark { background: linear-gradient(160deg, var(--jr-surface-dark) 0%, var(--jr-blue-action-hov) 140%); }
 
-/* Schaduw-utilities */
+/* Schaduw- en radius-utilities */
 .jr-shadow-none { box-shadow: none; }
-.jr-shadow-xs   { box-shadow: var(--jr-shadow-xs); }
-.jr-shadow-sm   { box-shadow: var(--jr-shadow-sm); }
-.jr-shadow-md   { box-shadow: var(--jr-shadow-md); }
-.jr-shadow-lg   { box-shadow: var(--jr-shadow-lg); }
-.jr-shadow-xl   { box-shadow: var(--jr-shadow-xl); }
+.jr-shadow-xs { box-shadow: var(--jr-shadow-xs); }
+.jr-shadow-sm { box-shadow: var(--jr-shadow-sm); }
+.jr-shadow-md { box-shadow: var(--jr-shadow-md); }
+.jr-shadow-lg { box-shadow: var(--jr-shadow-lg); }
+.jr-shadow-xl { box-shadow: var(--jr-shadow-xl); }
 .jr-shadow-blue { box-shadow: var(--jr-shadow-blue); }
+.jr-shadow-lime { box-shadow: var(--jr-shadow-lime); }
 
-/* Radius-utilities */
-.jr-radius-xs  { border-radius: var(--jr-radius-xs); }
-.jr-radius-sm  { border-radius: var(--jr-radius-sm); }
-.jr-radius-md  { border-radius: var(--jr-radius-md); }
-.jr-radius-lg  { border-radius: var(--jr-radius-lg); }
-.jr-radius-xl  { border-radius: var(--jr-radius-xl); }
-.jr-radius-2xl { border-radius: var(--jr-radius-2xl); }
+.jr-radius-xs { border-radius: var(--jr-radius-xs); }
+.jr-radius-sm { border-radius: var(--jr-radius-sm); }
+.jr-radius-md { border-radius: var(--jr-radius-md); }
+.jr-radius-lg { border-radius: var(--jr-radius-lg); }
+.jr-radius-xl { border-radius: var(--jr-radius-xl); }
+.jr-radius-2xl{ border-radius: var(--jr-radius-2xl); }
 .jr-radius-pill{ border-radius: var(--jr-radius-pill); }
+
+/* Rand-utilities — lijndikte los van kleur */
+.jr-border         { border: var(--jr-stroke-hairline) solid var(--jr-line); }
+.jr-border-subtle  { border: var(--jr-stroke-hairline) solid var(--jr-line-subtle); }
+.jr-border-strong  { border: var(--jr-stroke-medium) solid var(--jr-line); }
+.jr-border-top     { border-top: var(--jr-stroke-hairline) solid var(--jr-line-subtle); }
+.jr-border-bottom  { border-bottom: var(--jr-stroke-hairline) solid var(--jr-line-subtle); }
 
 
 /* ==========================================================================
-   07. SECTIES & CONTAINERS
-   ==========================================================================
-   Dit hoofdstuk levert het grootste deel van de "rust". Ademruimte is geen
-   decoratie — het is de belangrijkste designbeslissing op de pagina.
+   07. SECTIES, CONTAINERS & RUIMTE
    ========================================================================== */
 
-.jr-section,
-.e-con.jr-section {
+.jr-section, .e-con.jr-section {
   padding-top: var(--jr-section-y);
   padding-bottom: var(--jr-section-y);
 }
-
-.jr-section--lg  { padding-top: var(--jr-section-y-lg); padding-bottom: var(--jr-section-y-lg); }
-.jr-section--sm  { padding-top: var(--jr-section-y-sm); padding-bottom: var(--jr-section-y-sm); }
+.jr-section--lg { padding-top: var(--jr-section-y-lg); padding-bottom: var(--jr-section-y-lg); }
+.jr-section--sm { padding-top: var(--jr-section-y-sm); padding-bottom: var(--jr-section-y-sm); }
 .jr-section--flush { padding-top: 0; padding-bottom: 0; }
 .jr-section--flush-top { padding-top: 0; }
 .jr-section--flush-bottom { padding-bottom: 0; }
 
-/* Afwisselende sectiekleur */
 .jr-section--subtle { background-color: var(--jr-surface-subtle); }
 .jr-section--tint   { background-color: var(--jr-surface-tint); }
+.jr-section--lime   { background-color: var(--jr-lime-tint); }
 .jr-section--dark   { background-color: var(--jr-surface-dark); color: var(--jr-text-inverse); }
 
-/* Containerbreedtes — als CSS-class op een Elementor container */
-.jr-container        { width: 100%; max-width: var(--jr-container);        margin-inline: auto; padding-inline: var(--jr-gutter); }
+/* Containerbreedtes */
+.jr-container        { width: 100%; max-width: var(--jr-container); margin-inline: auto; padding-inline: var(--jr-gutter); }
 .jr-container--wide  { max-width: var(--jr-container-wide); }
 .jr-container--full  { max-width: var(--jr-container-full); }
 .jr-container--text  { max-width: var(--jr-container-text); }
 .jr-container--narrow{ max-width: var(--jr-container-narrow); }
 .jr-container--bleed { max-width: none; padding-inline: 0; }
 
-/* Sectiekop — kop + intro gecentreerd, met vaste ademruimte eronder */
+/* Sectiekop — eyebrow, kop en intro als één blok, met vaste ruimte eronder */
 .jr-section-head {
   max-width: var(--jr-container-text);
   margin-inline: auto;
-  margin-bottom: var(--jr-section-gap);
+  margin-bottom: var(--jr-gap-head-content);
   text-align: center;
 }
 .jr-section-head--left { text-align: left; margin-inline: 0; }
 .jr-section-head > *:last-child { margin-bottom: 0; }
 
-/* Verticale ritme-utilities */
-.jr-stack > * + * { margin-top: var(--jr-space-5); }
+/* Ruimte tussen containers — deze waarden vul je in bij Container → Gap */
+.jr-gap-xs { gap: var(--jr-gap-container-xs); }
+.jr-gap-sm { gap: var(--jr-gap-container-sm); }
+.jr-gap    { gap: var(--jr-gap-container); }
+.jr-gap-lg { gap: var(--jr-gap-container-lg); }
+.jr-gap-xl { gap: var(--jr-gap-container-xl); }
+
+/* Afstand tussen contentblokken bínnen één sectie */
+.jr-blocks > * + *    { margin-top: var(--jr-gap-block); }
+.jr-blocks--lg > * + *{ margin-top: var(--jr-gap-block-lg); }
+
+/* Verticaal ritme binnen een blok */
+.jr-stack > * + *     { margin-top: var(--jr-space-5); }
 .jr-stack--sm > * + * { margin-top: var(--jr-space-3); }
 .jr-stack--lg > * + * { margin-top: var(--jr-space-7); }
 .jr-stack--xl > * + * { margin-top: var(--jr-space-9); }
 
-/* Grid — voor feature-blokken, cases, teamleden */
-.jr-grid { display: grid; gap: var(--jr-space-7); }
+/* Grid */
+.jr-grid    { display: grid; gap: var(--jr-gap-container); }
 .jr-grid--2 { grid-template-columns: repeat(2, 1fr); }
 .jr-grid--3 { grid-template-columns: repeat(3, 1fr); }
 .jr-grid--4 { grid-template-columns: repeat(4, 1fr); }
-.jr-grid--gap-sm { gap: var(--jr-space-4); }
-.jr-grid--gap-lg { gap: var(--jr-space-9); }
+.jr-grid--auto { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+.jr-grid--gap-sm { gap: var(--jr-gap-container-sm); }
+.jr-grid--gap-lg { gap: var(--jr-gap-container-lg); }
+.jr-grid--gap-xl { gap: var(--jr-gap-container-xl); }
 
-/* Apple's signature: twee gelijke tegels naast elkaar, full-bleed */
-.jr-tiles {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--jr-space-3);
-}
+/* Twee tegels die bijna aan elkaar plakken */
+.jr-tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--jr-gap-container-xs); }
 
 
 /* ==========================================================================
    08. NAVIGATIE & HEADER
-   ==========================================================================
-   Apple's navbalk: 44–72px hoog, halftransparant, blurred, dunne onderrand.
    ========================================================================== */
 
 .jr-nav {
@@ -822,68 +993,72 @@ input[type="submit"],
   min-height: var(--jr-nav-height);
   display: flex;
   align-items: center;
-  background-color: rgba(255,255,255,.80);
+  background-color: var(--jr-alpha-nav);
   -webkit-backdrop-filter: var(--jr-blur-nav);
   backdrop-filter: var(--jr-blur-nav);
-  border-bottom: 1px solid var(--jr-border-subtle);
-  transition: background-color var(--jr-dur-base) var(--jr-ease),
-              box-shadow var(--jr-dur-base) var(--jr-ease);
+  border-bottom: var(--jr-stroke-hairline) solid var(--jr-line-subtle);
+  transition: background-color var(--jr-dur-base) var(--jr-ease);
 }
 .jr-nav--dark {
-  background-color: rgba(28,28,30,.80);
-  border-bottom-color: var(--jr-border-dark);
+  background-color: var(--jr-alpha-nav-dark);
+  border-bottom-color: var(--jr-line-dark);
 }
 
-/* Menu-items */
-.jr-nav .elementor-nav-menu a,
-.jr-nav-link {
+.jr-nav .elementor-nav-menu a, .jr-nav-link {
+  font-family: var(--jr-font-text);
   font-size: var(--jr-fs-small);
   font-weight: var(--jr-weight-regular);
-  letter-spacing: 0;
   color: var(--jr-text);
-  padding: 10px 14px;
+  padding: var(--jr-pad-navlink);
   border-radius: var(--jr-radius-xs);
   text-decoration: none;
   transition: color var(--jr-dur-fast) var(--jr-ease),
               background-color var(--jr-dur-fast) var(--jr-ease);
 }
-.jr-nav .elementor-nav-menu a:hover,
-.jr-nav-link:hover { color: var(--jr-text-secondary); text-decoration: none; }
-
-.jr-nav .elementor-nav-menu a.elementor-item-active,
-.jr-nav-link.is-active { color: var(--jr-text); font-weight: var(--jr-weight-medium); }
-
+.jr-nav .elementor-nav-menu a:hover, .jr-nav-link:hover {
+  color: var(--jr-text-secondary);
+  background-color: transparent;
+  text-decoration: none;
+}
+.jr-nav .elementor-nav-menu a.elementor-item-active, .jr-nav-link.is-active {
+  color: var(--jr-text);
+  font-weight: var(--jr-weight-medium);
+}
 .jr-nav--dark .elementor-nav-menu a { color: var(--jr-text-inverse); }
 .jr-nav--dark .elementor-nav-menu a:hover { color: var(--jr-text-inverse-sec); }
 
-/* Dropdown-paneel */
-.jr-nav .elementor-nav-menu--dropdown,
-.jr-dropdown {
-  background-color: rgba(255,255,255,.94);
+.jr-nav .elementor-nav-menu--dropdown, .jr-dropdown {
+  background-color: var(--jr-alpha-dropdown);
   -webkit-backdrop-filter: var(--jr-blur-nav);
   backdrop-filter: var(--jr-blur-nav);
   border-radius: 0 0 var(--jr-radius-md) var(--jr-radius-md);
   box-shadow: var(--jr-shadow-md);
   border: none;
+  padding: var(--jr-pad-dropdown);
 }
 
 /* Footer */
 .jr-footer {
   background-color: var(--jr-surface-subtle);
-  padding-top: var(--jr-space-11);
-  padding-bottom: var(--jr-space-9);
+  padding: var(--jr-pad-footer);
   font-size: var(--jr-fs-small);
   color: var(--jr-text-secondary);
 }
 .jr-footer a { color: var(--jr-text-secondary); text-decoration: none; }
-.jr-footer a:hover { color: var(--jr-text); text-decoration: underline; text-underline-offset: 3px; }
-.jr-footer h5, .jr-footer h6 { font-size: var(--jr-fs-small); color: var(--jr-text); margin-bottom: var(--jr-space-3); }
+.jr-footer a:hover { color: var(--jr-text); text-decoration: underline;
+                     text-underline-offset: var(--jr-underline-offset); }
+.jr-footer h5, .jr-footer h6 {
+  font-family: var(--jr-font-text);
+  font-size: var(--jr-fs-small);
+  color: var(--jr-text);
+  margin-bottom: var(--jr-space-3);
+}
 .jr-footer--dark { background-color: var(--jr-surface-dark); color: var(--jr-text-inverse-sec); }
 .jr-footer--dark a { color: var(--jr-text-inverse-sec); }
 .jr-footer--dark a:hover { color: var(--jr-text-inverse); }
 
 .jr-footer-legal {
-  border-top: 1px solid var(--jr-border);
+  border-top: var(--jr-stroke-hairline) solid var(--jr-line);
   margin-top: var(--jr-space-8);
   padding-top: var(--jr-space-6);
   font-size: var(--jr-fs-caption);
@@ -893,55 +1068,46 @@ input[type="submit"],
 
 /* ==========================================================================
    09. FORMULIEREN
-   ==========================================================================
-   Werkt op Elementor Pro Forms én op losse HTML-velden.
    ========================================================================== */
 
-.jr-form .elementor-field-group > label,
-.jr-label,
-label {
+.jr-form .elementor-field-group, .jr-field { margin-bottom: var(--jr-gap-field-field); }
+.jr-form .elementor-field-group:last-child, .jr-field:last-child { margin-bottom: 0; }
+
+.jr-form .elementor-field-group > label, .jr-label, label {
   display: block;
+  font-family: var(--jr-font-text);
   font-size: var(--jr-fs-small);
   font-weight: var(--jr-weight-medium);
-  letter-spacing: 0;
   color: var(--jr-text);
-  margin-bottom: var(--jr-space-2);
+  margin-bottom: var(--jr-gap-label-field);
 }
 
-.jr-input,
-.elementor-field-textual,
+.jr-input, .elementor-field-textual,
 input[type="text"], input[type="email"], input[type="tel"],
 input[type="url"], input[type="number"], input[type="password"],
-input[type="search"], input[type="date"],
-select, textarea {
+input[type="search"], input[type="date"], select, textarea {
   width: 100%;
-  font-family: var(--jr-font-sans);
+  font-family: var(--jr-font-text);
   font-size: var(--jr-fs-body);
   font-weight: var(--jr-weight-regular);
   line-height: 1.4;
   color: var(--jr-text);
   background-color: var(--jr-surface);
-  border: 1px solid var(--jr-border);
+  border: var(--jr-stroke-hairline) solid var(--jr-line);
   border-radius: var(--jr-radius-sm);
-  padding: 13px 16px;
-  min-height: 48px;
+  padding: var(--jr-pad-field);
+  min-height: var(--jr-h-field);
   appearance: none;
   transition: border-color var(--jr-dur-fast) var(--jr-ease),
-              box-shadow var(--jr-dur-fast) var(--jr-ease),
-              background-color var(--jr-dur-fast) var(--jr-ease);
+              box-shadow var(--jr-dur-fast) var(--jr-ease);
 }
 
-/* iOS zoomt in op velden onder 16px — daarom nooit kleiner dan 16px op mobiel */
-
-.jr-input::placeholder,
-.elementor-field-textual::placeholder,
+.jr-input::placeholder, .elementor-field-textual::placeholder,
 textarea::placeholder { color: var(--jr-text-tertiary); }
 
-.jr-input:hover,
-.elementor-field-textual:hover { border-color: var(--jr-border-strong); }
+.jr-input:hover, .elementor-field-textual:hover { border-color: var(--jr-line-strong); }
 
-.jr-input:focus,
-.elementor-field-textual:focus,
+.jr-input:focus, .elementor-field-textual:focus,
 input:focus, select:focus, textarea:focus {
   outline: none;
   border-color: var(--jr-blue);
@@ -949,71 +1115,63 @@ input:focus, select:focus, textarea:focus {
 }
 
 textarea, .elementor-field-textual.elementor-field-type-textarea {
-  min-height: 140px;
-  padding-top: 14px;
+  min-height: var(--jr-h-textarea);
+  padding: var(--jr-pad-textarea);
   resize: vertical;
   line-height: var(--jr-lh-body);
 }
 
-/* Select met eigen chevron */
 select, .elementor-field-type-select select {
-  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='none' stroke='%236E6E73' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round' d='M1 1.5 6 6.5l5-5'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='none' stroke='%236E6E73' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' d='M1 1.5 6 6.5l5-5'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 16px center;
   padding-right: 44px;
   cursor: pointer;
 }
 
-/* Checkbox & radio */
-.jr-form input[type="checkbox"],
-.jr-form input[type="radio"] {
+.jr-form input[type="checkbox"], .jr-form input[type="radio"] {
   width: 20px; height: 20px;
   min-height: 0;
   margin-right: var(--jr-space-3);
   accent-color: var(--jr-blue);
   cursor: pointer;
 }
-.jr-form input[type="radio"] { border-radius: var(--jr-radius-round); }
 
 /* Toestanden */
-.jr-input.is-invalid,
-.elementor-field-textual.elementor-error {
+.jr-input.is-invalid, .elementor-field-textual.elementor-error {
   border-color: var(--jr-red);
-  box-shadow: 0 0 0 4px rgba(255,59,48,.18);
+  box-shadow: var(--jr-focus-ring-error);
 }
 .jr-input.is-valid { border-color: var(--jr-green); }
-.jr-input:disabled,
-.elementor-field-textual:disabled {
+.jr-input:disabled, .elementor-field-textual:disabled {
   background-color: var(--jr-surface-subtle);
-  color: var(--jr-text-tertiary);
+  color: var(--jr-text-disabled);
   cursor: not-allowed;
 }
 
-.jr-form-help  { font-size: var(--jr-fs-caption); color: var(--jr-text-tertiary); margin-top: var(--jr-space-2); }
-.jr-form-error { font-size: var(--jr-fs-caption); color: var(--jr-red);         margin-top: var(--jr-space-2); }
+.jr-form-help  { font-size: var(--jr-fs-caption); color: var(--jr-text-tertiary); margin-top: var(--jr-gap-field-help); }
+.jr-form-error { font-size: var(--jr-fs-caption); color: var(--jr-red-text);      margin-top: var(--jr-gap-field-help); }
 
-/* Elementor form berichten */
 .elementor-message.elementor-message-success {
-  color: var(--jr-green-dark);
-  background-color: rgba(52,199,89,.10);
+  color: var(--jr-green-text);
+  background-color: var(--jr-green-tint);
   border-radius: var(--jr-radius-sm);
-  padding: var(--jr-space-4) var(--jr-space-5);
+  padding: var(--jr-pad-message);
 }
 .elementor-message.elementor-message-danger {
-  color: var(--jr-red-dark);
-  background-color: rgba(255,59,48,.10);
+  color: var(--jr-red-text);
+  background-color: var(--jr-red-tint);
   border-radius: var(--jr-radius-sm);
-  padding: var(--jr-space-4) var(--jr-space-5);
+  padding: var(--jr-pad-message);
 }
 
 /* Velden op donkere achtergrond */
-.jr-section--dark .jr-input,
-.jr-section--dark .elementor-field-textual {
-  background-color: rgba(255,255,255,.08);
-  border-color: var(--jr-border-dark);
+.jr-section--dark .jr-input, .jr-section--dark .elementor-field-textual {
+  background-color: var(--jr-alpha-field-dark);
+  border-color: var(--jr-line-dark);
   color: var(--jr-text-inverse);
 }
-.jr-section--dark .jr-input::placeholder { color: var(--jr-text-inverse-sec); }
+.jr-section--dark .jr-input::placeholder { color: var(--jr-text-inverse-ter); }
 .jr-section--dark label { color: var(--jr-text-inverse); }
 
 
@@ -1023,59 +1181,59 @@ select, .elementor-field-type-select select {
 
 img, video, svg, picture { max-width: 100%; height: auto; display: block; }
 
-.jr-img            { border-radius: var(--jr-radius-md); overflow: hidden; }
-.jr-img--sm        { border-radius: var(--jr-radius-sm); }
-.jr-img--lg        { border-radius: var(--jr-radius-lg); }
-.jr-img--xl        { border-radius: var(--jr-radius-2xl); }
-.jr-img--round     { border-radius: var(--jr-radius-round); }
-.jr-img--shadow    { box-shadow: var(--jr-shadow-lg); }
-.jr-img--bleed     { border-radius: 0; width: 100%; }
+.jr-img        { border-radius: var(--jr-radius-md); overflow: hidden; }
+.jr-img--sm    { border-radius: var(--jr-radius-sm); }
+.jr-img--lg    { border-radius: var(--jr-radius-lg); }
+.jr-img--xl    { border-radius: var(--jr-radius-2xl); }
+.jr-img--round { border-radius: var(--jr-radius-round); }
+.jr-img--shadow{ box-shadow: var(--jr-shadow-lg); }
+.jr-img--bleed { border-radius: 0; width: 100%; }
+.jr-img--border{ border: var(--jr-stroke-hairline) solid var(--jr-line-subtle); }
 
-/* Beeldverhoudingen */
 .jr-ratio-1-1  { aspect-ratio: 1 / 1;  object-fit: cover; width: 100%; }
 .jr-ratio-4-3  { aspect-ratio: 4 / 3;  object-fit: cover; width: 100%; }
 .jr-ratio-3-2  { aspect-ratio: 3 / 2;  object-fit: cover; width: 100%; }
 .jr-ratio-16-9 { aspect-ratio: 16 / 9; object-fit: cover; width: 100%; }
 .jr-ratio-21-9 { aspect-ratio: 21 / 9; object-fit: cover; width: 100%; }
 
-/* Ken Burns-achtige zoom bij hover — subtiel, Apple-tempo */
 .jr-img-zoom { overflow: hidden; border-radius: var(--jr-radius-md); }
-.jr-img-zoom img {
-  transition: transform var(--jr-dur-slow) var(--jr-ease-out);
-  will-change: transform;
-}
+.jr-img-zoom img { transition: transform var(--jr-dur-slow) var(--jr-ease-out); will-change: transform; }
 .jr-img-zoom:hover img { transform: scale(1.04); }
 
-/* Donkere overlay over beeld, zodat witte tekst leesbaar blijft */
 .jr-overlay { position: relative; }
 .jr-overlay::after {
   content: "";
   position: absolute; inset: 0;
-  background: linear-gradient(180deg, rgba(0,0,0,.05) 0%, rgba(0,0,0,.55) 100%);
+  background: linear-gradient(180deg, var(--jr-alpha-overlay-top) 0%, var(--jr-alpha-overlay-bot) 100%);
   pointer-events: none;
 }
 .jr-overlay > * { position: relative; z-index: 1; }
 
-/* Logo — minimale hoogte uit het brandbook */
+/* Iconen — lijndikte hoort bij het systeem, niet bij het icoon */
+.jr-icon        { width: 24px; height: 24px; stroke-width: var(--jr-stroke-icon); fill: none; stroke: currentColor; }
+.jr-icon--sm    { width: 18px; height: 18px; }
+.jr-icon--lg    { width: 32px; height: 32px; stroke-width: var(--jr-stroke-icon-lg); }
+.jr-icon--xl    { width: 48px; height: 48px; stroke-width: var(--jr-stroke-icon-lg); }
+.jr-icon--blue  { color: var(--jr-blue); }
+.jr-icon--lime  { color: var(--jr-lime-text); }
+
 .jr-logo img { min-height: 70px; }
-.jr-logo--sm img { min-height: 36px; }   /* uitzondering: navbalk */
+.jr-logo--sm img { min-height: 36px; }
 
 
 /* ==========================================================================
-   11. LIJSTEN, TABELLEN, QUOTES & DIVIDERS
+   11. LIJSTEN, TABELLEN, QUOTES & LIJNEN
    ========================================================================== */
 
-ul, ol { padding-left: 1.25em; margin-top: 0; margin-bottom: var(--jr-space-5); }
-li { margin-bottom: var(--jr-space-2); }
+ul, ol { padding-left: 1.25em; margin-top: 0; margin-bottom: var(--jr-gap-paragraph); }
+li { margin-bottom: var(--jr-gap-list-item); }
+li:last-child { margin-bottom: 0; }
 li::marker { color: var(--jr-text-tertiary); }
+p + ul, p + ol { margin-top: calc(var(--jr-gap-body-list) - var(--jr-gap-paragraph)); }
 
-/* Vinklijst — voor USP's en pakketinhoud */
+/* Vinklijst */
 .jr-list-check { list-style: none; padding-left: 0; }
-.jr-list-check li {
-  position: relative;
-  padding-left: 30px;
-  margin-bottom: var(--jr-space-3);
-}
+.jr-list-check li { position: relative; padding-left: 30px; margin-bottom: var(--jr-gap-list-item); }
 .jr-list-check li::before {
   content: "";
   position: absolute; left: 0; top: .42em;
@@ -1086,24 +1244,29 @@ li::marker { color: var(--jr-text-tertiary); }
   background-repeat: no-repeat;
   background-position: center;
 }
+.jr-list-check--lime li::before {
+  background-color: var(--jr-lime);
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='9' viewBox='0 0 11 9'%3E%3Cpath fill='none' stroke='%231D1D1F' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round' d='M1 4.6 3.9 7.5 10 1.4'/%3E%3C/svg%3E");
+}
 
-/* Genummerde stappenlijst */
+/* Stappenlijst */
 .jr-list-steps { list-style: none; padding-left: 0; counter-reset: jr-step; }
 .jr-list-steps li {
   position: relative;
-  padding-left: 48px;
+  padding-left: 46px;
   margin-bottom: var(--jr-space-6);
   counter-increment: jr-step;
 }
 .jr-list-steps li::before {
   content: counter(jr-step);
   position: absolute; left: 0; top: -2px;
-  width: 32px; height: 32px;
+  width: 30px; height: 30px;
   display: flex; align-items: center; justify-content: center;
+  font-family: var(--jr-font-text);
   font-size: var(--jr-fs-small);
   font-weight: var(--jr-weight-semibold);
-  color: var(--jr-blue);
-  background-color: var(--jr-surface-tint);
+  color: var(--jr-blue-action);
+  background-color: var(--jr-blue-tint-mid);
   border-radius: var(--jr-radius-round);
 }
 
@@ -1111,19 +1274,21 @@ li::marker { color: var(--jr-text-tertiary); }
 table { width: 100%; border-collapse: collapse; font-size: var(--jr-fs-body); }
 th, td {
   text-align: left;
-  padding: var(--jr-space-4) var(--jr-space-4);
-  border-bottom: 1px solid var(--jr-border-subtle);
+  padding: var(--jr-pad-cell);
+  border-bottom: var(--jr-stroke-hairline) solid var(--jr-line-subtle);
 }
 th {
+  font-family: var(--jr-font-text);
   font-weight: var(--jr-weight-semibold);
   font-size: var(--jr-fs-small);
   color: var(--jr-text-secondary);
-  border-bottom-color: var(--jr-border);
+  border-bottom: var(--jr-stroke-hairline) solid var(--jr-line);
 }
 tbody tr:last-child td { border-bottom: none; }
 .jr-table--striped tbody tr:nth-child(odd) { background-color: var(--jr-surface-subtle); }
+.jr-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
-/* Quote — groot, dun, ruim. Geen aanhalingstekens-icoon. */
+/* Quote */
 .jr-quote {
   font-size: var(--jr-fs-quote);
   font-weight: var(--jr-weight-semibold);
@@ -1131,91 +1296,101 @@ tbody tr:last-child td { border-bottom: none; }
   letter-spacing: var(--jr-ls-h3);
   color: var(--jr-text);
   max-width: var(--jr-container-text);
-  margin: 0 0 var(--jr-space-6);
+  margin: 0 0 var(--jr-gap-quote-author);
   border: none;
   padding: 0;
 }
 .jr-quote-author {
+  font-family: var(--jr-font-text);
   font-size: var(--jr-fs-body);
   font-weight: var(--jr-weight-regular);
   color: var(--jr-text-secondary);
 }
 .jr-quote-author strong { color: var(--jr-text); font-weight: var(--jr-weight-medium); }
+blockquote { margin: 0 0 var(--jr-gap-paragraph); padding: 0; border: none; }
 
-blockquote { margin: 0 0 var(--jr-space-6); padding: 0; border: none; }
-
-/* Divider — 1px, licht, nooit zwaarder */
-.jr-divider,
-hr {
-  height: 1px;
+/* Lijnen — vier soorten, elk met een eigen dikte */
+.jr-divider, hr {
+  height: var(--jr-stroke-hairline);
   border: none;
-  background-color: var(--jr-border-subtle);
+  background-color: var(--jr-line-subtle);
   margin: var(--jr-space-9) 0;
 }
-.jr-divider--strong { background-color: var(--jr-border); }
-.jr-divider--dark   { background-color: var(--jr-border-dark); }
-.jr-divider--short  { width: 64px; height: 3px; background-color: var(--jr-blue); border-radius: 2px; }
+.jr-divider--strong { background-color: var(--jr-line); }
+.jr-divider--heavy  { height: var(--jr-stroke-medium); background-color: var(--jr-line); }
+.jr-divider--dark   { background-color: var(--jr-line-dark); }
+.jr-divider--rule {
+  width: var(--jr-rule-width);
+  height: var(--jr-stroke-rule);
+  background-color: var(--jr-blue);
+  border-radius: 2px;
+  margin: 0 0 var(--jr-space-6);
+}
+.jr-divider--rule-lime { background-color: var(--jr-lime); }
 
-/* Groot kengetal — "150+ klanten" */
+/* Kengetal */
 .jr-stat { display: block; }
 .jr-stat-value {
   display: block;
-  font-size: 64px;
+  font-size: var(--jr-fs-stat);
   font-weight: var(--jr-weight-bold);
   line-height: 1;
   letter-spacing: var(--jr-ls-h1);
   color: var(--jr-blue);
-  margin-bottom: var(--jr-space-2);
+  font-variant-numeric: tabular-nums;
+  margin-bottom: var(--jr-gap-stat-label);
 }
+.jr-stat-value--lime { color: var(--jr-lime-text); }
 .jr-stat-label {
+  font-family: var(--jr-font-text);
   font-size: var(--jr-fs-small);
   color: var(--jr-text-secondary);
 }
 
 
 /* ==========================================================================
-   12. ACCORDION / TABS / TOGGLES
+   12. ACCORDION / TABS / SEGMENTED
    ========================================================================== */
 
-.elementor-accordion .elementor-accordion-item,
-.jr-accordion-item {
+.elementor-accordion .elementor-accordion-item, .jr-accordion-item {
   border: none;
-  border-bottom: 1px solid var(--jr-border-subtle);
+  border-bottom: var(--jr-stroke-hairline) solid var(--jr-line-subtle);
 }
+.elementor-accordion .elementor-accordion-item:last-child, .jr-accordion-item:last-child { border-bottom: none; }
 
-.elementor-accordion .elementor-tab-title,
-.jr-accordion-title {
+.elementor-accordion .elementor-tab-title, .jr-accordion-title {
+  font-family: var(--jr-font-display);
   font-size: var(--jr-fs-h5);
   font-weight: var(--jr-weight-semibold);
   letter-spacing: var(--jr-ls-h5);
   color: var(--jr-text);
   background: transparent;
   border: none;
-  padding: var(--jr-space-6) 0;
+  padding: var(--jr-pad-accordion);
   cursor: pointer;
   transition: color var(--jr-dur-fast) var(--jr-ease);
 }
-.elementor-accordion .elementor-tab-title:hover { color: var(--jr-blue-link); }
+.elementor-accordion .elementor-tab-title:hover { color: var(--jr-blue-link-hover); }
 .elementor-accordion .elementor-tab-title.elementor-active { color: var(--jr-text); }
 
-.elementor-accordion .elementor-tab-content,
-.jr-accordion-content {
+.elementor-accordion .elementor-tab-content, .jr-accordion-content {
   border: none;
-  padding: 0 0 var(--jr-space-6);
+  padding: 0 0 var(--jr-space-5);
   font-size: var(--jr-fs-body);
   color: var(--jr-text-secondary);
+  max-width: var(--jr-container-text);
 }
-
 .elementor-accordion-icon { color: var(--jr-text-tertiary); transition: transform var(--jr-dur-base) var(--jr-ease); }
 
 /* Tabs */
 .elementor-tabs .elementor-tab-desktop-title {
+  font-family: var(--jr-font-text);
   font-size: var(--jr-fs-body);
   font-weight: var(--jr-weight-medium);
   color: var(--jr-text-secondary);
   border: none;
-  border-bottom: 2px solid transparent;
-  padding: var(--jr-space-4) var(--jr-space-5);
+  border-bottom: var(--jr-stroke-medium) solid transparent;
+  padding: var(--jr-pad-tab);
   transition: color var(--jr-dur-fast) var(--jr-ease),
               border-color var(--jr-dur-fast) var(--jr-ease);
 }
@@ -1227,23 +1402,23 @@ hr {
 .elementor-tabs .elementor-tabs-content-wrapper { border: none; }
 .elementor-tabs .elementor-tab-content { border: none; padding: var(--jr-space-7) 0 0; }
 
-/* Segmented control — Apple's pill-toggle, bijv. maand/jaar bij prijzen */
+/* Segmented control */
 .jr-segmented {
   display: inline-flex;
-  padding: 4px;
-  background-color: var(--jr-surface-subtle);
+  padding: var(--jr-pad-segment-track);
+  background-color: var(--jr-surface-sunk);
   border-radius: var(--jr-radius-pill);
   gap: 2px;
 }
-.jr-segmented button,
-.jr-segmented .jr-segmented-item {
+.jr-segmented button, .jr-segmented .jr-segmented-item {
+  font-family: var(--jr-font-text);
   font-size: var(--jr-fs-small);
   font-weight: var(--jr-weight-medium);
   color: var(--jr-text-secondary);
   background: transparent;
   border: none;
   border-radius: var(--jr-radius-pill);
-  padding: 8px 18px;
+  padding: var(--jr-pad-segment);
   min-height: 0;
   cursor: pointer;
   transition: background-color var(--jr-dur-fast) var(--jr-ease),
@@ -1258,150 +1433,149 @@ hr {
 
 /* ==========================================================================
    13. BADGES, LABELS & EYEBROWS
+   ==========================================================================
+   Eyebrow deelt zijn kleur met links (--jr-blue-link). Zo vloeken een
+   eyebrow en een "Meer weten ›" in dezelfde card niet met elkaar.
    ========================================================================== */
 
-/* Eyebrow — het gekleurde labeltje bóven een kop. Sentence case, nooit caps. */
 .jr-eyebrow {
   display: block;
+  font-family: var(--jr-font-text);
   font-size: var(--jr-fs-eyebrow);
   font-weight: var(--jr-weight-semibold);
+  line-height: 1.3;
   letter-spacing: 0;
-  color: var(--jr-blue);
-  margin-bottom: var(--jr-space-3);
+  color: var(--jr-blue-link);
+  margin-bottom: var(--jr-gap-eyebrow-title);
 }
 .jr-eyebrow--muted { color: var(--jr-text-tertiary); }
-.jr-section--dark .jr-eyebrow { color: #2997FF; }
+.jr-eyebrow--lime  { color: var(--jr-lime-text); }
+.jr-section--dark .jr-eyebrow { color: var(--jr-blue-dm); }
+.jr-section--dark .jr-eyebrow--lime { color: var(--jr-lime-dm); }
 
+/* Badge — elke variant heeft een gedefinieerde tint en tekstkleur */
 .jr-badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  font-family: var(--jr-font-text);
   font-size: var(--jr-fs-caption);
   font-weight: var(--jr-weight-medium);
   line-height: 1;
   letter-spacing: 0;
-  padding: 6px 12px;
+  padding: var(--jr-pad-badge);
   border-radius: var(--jr-radius-pill);
-  background-color: var(--jr-surface-subtle);
-  color: var(--jr-text-secondary);
+  background-color: var(--jr-neutral-tint);
+  color: var(--jr-neutral-text);
 }
-.jr-badge--blue   { background-color: rgba(0,122,255,.12);  color: var(--jr-blue-action); }
-.jr-badge--green  { background-color: rgba(52,199,89,.14);  color: var(--jr-green-dark); }
-.jr-badge--orange { background-color: rgba(246,160,39,.16); color: #B36D00; }
-.jr-badge--red    { background-color: rgba(255,59,48,.12);  color: var(--jr-red-dark); }
-.jr-badge--purple { background-color: rgba(175,82,222,.12); color: var(--jr-purple-dark); }
-.jr-badge--solid  { background-color: var(--jr-blue-action); color: #FFFFFF; }
+.jr-badge--blue   { background-color: var(--jr-blue-tint-mid); color: var(--jr-blue-action); }
+.jr-badge--green  { background-color: var(--jr-green-tint);    color: var(--jr-green-text); }
+.jr-badge--orange { background-color: var(--jr-orange-tint);   color: var(--jr-orange-text); }
+.jr-badge--yellow { background-color: var(--jr-yellow-tint);   color: var(--jr-yellow-text); }
+.jr-badge--red    { background-color: var(--jr-red-tint);      color: var(--jr-red-text); }
+.jr-badge--purple { background-color: var(--jr-purple-tint);   color: var(--jr-purple-text); }
+.jr-badge--lime   { background-color: var(--jr-lime-tint);     color: var(--jr-lime-text); }
+.jr-badge--solid  { background-color: var(--jr-blue-action);   color: var(--jr-text-on-color); }
+.jr-badge--solid-lime { background-color: var(--jr-lime);      color: var(--jr-text-on-lime); }
 
-/* Tag — voor branches, diensten */
+/* Tag */
 .jr-tag {
   display: inline-block;
+  font-family: var(--jr-font-text);
   font-size: var(--jr-fs-small);
   color: var(--jr-text-secondary);
-  border: 1px solid var(--jr-border);
+  border: var(--jr-stroke-hairline) solid var(--jr-line);
   border-radius: var(--jr-radius-pill);
-  padding: 7px 16px;
+  padding: var(--jr-pad-tag);
   transition: border-color var(--jr-dur-fast) var(--jr-ease),
               color var(--jr-dur-fast) var(--jr-ease);
 }
 a.jr-tag:hover { border-color: var(--jr-text); color: var(--jr-text); text-decoration: none; }
+.jr-tag.is-active { border-color: var(--jr-blue-action); color: var(--jr-blue-action); }
+
+/* Rij badges of tags — vaste tussenruimte */
+.jr-chips { display: flex; flex-wrap: wrap; gap: var(--jr-space-2); }
 
 
 /* ==========================================================================
    14. DONKERE SECTIES
-   ==========================================================================
-   Eén klasse op de Elementor-container zet de hele sectie om.
    ========================================================================== */
 
-.jr-section--dark,
-.jr-surface--dark {
-  color: var(--jr-text-inverse);
-}
+.jr-section--dark, .jr-surface--dark { color: var(--jr-text-inverse); }
 .jr-section--dark h1, .jr-section--dark h2, .jr-section--dark h3,
 .jr-section--dark h4, .jr-section--dark h5, .jr-section--dark h6,
 .jr-section--dark .elementor-heading-title,
-.jr-section--dark .jr-display { color: var(--jr-text-inverse); }
+.jr-section--dark .jr-display, .jr-section--dark .jr-quote { color: var(--jr-text-inverse); }
 
-.jr-section--dark p,
-.jr-section--dark .jr-lead,
-.jr-section--dark li { color: var(--jr-text-inverse-sec); }
+.jr-section--dark p, .jr-section--dark .jr-lead,
+.jr-section--dark li, .jr-section--dark .jr-quote-author { color: var(--jr-text-inverse-sec); }
+.jr-section--dark .jr-small, .jr-section--dark .jr-caption,
+.jr-section--dark .jr-stat-label { color: var(--jr-text-inverse-ter); }
 
-.jr-section--dark .jr-small,
-.jr-section--dark .jr-caption { color: var(--jr-text-inverse-sec); }
-
-.jr-section--dark .jr-card {
-  background-color: var(--jr-surface-dark-alt);
-  color: var(--jr-text-inverse);
-}
-.jr-section--dark .jr-card--outline { border-color: var(--jr-border-dark); background-color: transparent; }
-.jr-section--dark .jr-divider, .jr-section--dark hr { background-color: var(--jr-border-dark); }
-.jr-section--dark th, .jr-section--dark td { border-bottom-color: var(--jr-border-dark); }
-.jr-section--dark .jr-badge { background-color: rgba(255,255,255,.10); color: var(--jr-text-inverse); }
-.jr-section--dark .jr-tag { border-color: var(--jr-border-dark); color: var(--jr-text-inverse-sec); }
+.jr-section--dark .jr-card { background-color: var(--jr-surface-dark-alt); color: var(--jr-text-inverse); }
+.jr-section--dark .jr-card--outline { border-color: var(--jr-line-dark); background-color: transparent; }
+.jr-section--dark .jr-divider, .jr-section--dark hr { background-color: var(--jr-line-dark); }
+.jr-section--dark th, .jr-section--dark td { border-bottom-color: var(--jr-line-dark); }
+.jr-section--dark th { color: var(--jr-text-inverse-sec); }
+.jr-section--dark .jr-badge { background-color: var(--jr-alpha-chip-dark); color: var(--jr-text-inverse); }
+.jr-section--dark .jr-badge--lime { background-color: var(--jr-alpha-lime-dark); color: var(--jr-lime-dm); }
+.jr-section--dark .jr-tag { border-color: var(--jr-line-dark); color: var(--jr-text-inverse-sec); }
+.jr-section--dark .jr-tag:hover { border-color: var(--jr-line-dark-strong); color: var(--jr-text-inverse); }
+.jr-section--dark .jr-stat-value { color: var(--jr-blue-dm); }
+.jr-section--dark .jr-stat-value--lime { color: var(--jr-lime-dm); }
+.jr-section--dark .jr-segmented { background-color: var(--jr-surface-dark-sunk); }
+.jr-section--dark .jr-segmented .is-active { background-color: var(--jr-surface-dark-alt); color: var(--jr-text-inverse); }
 
 
 /* ==========================================================================
    15. UTILITIES
    ========================================================================== */
 
-/* Uitlijning */
-.jr-text-left   { text-align: left; }
+.jr-text-left { text-align: left; }
 .jr-text-center { text-align: center; }
-.jr-text-right  { text-align: right; }
+.jr-text-right { text-align: right; }
 
-/* Marges — top */
-.jr-mt-0  { margin-top: 0 !important; }
-.jr-mt-2  { margin-top: var(--jr-space-2); }
-.jr-mt-4  { margin-top: var(--jr-space-4); }
-.jr-mt-6  { margin-top: var(--jr-space-6); }
-.jr-mt-8  { margin-top: var(--jr-space-8); }
-.jr-mt-10 { margin-top: var(--jr-space-10); }
-.jr-mt-12 { margin-top: var(--jr-space-12); }
+.jr-mt-0 { margin-top: 0 !important; }
+.jr-mt-2 { margin-top: var(--jr-space-2); }
+.jr-mt-4 { margin-top: var(--jr-space-4); }
+.jr-mt-6 { margin-top: var(--jr-space-6); }
+.jr-mt-8 { margin-top: var(--jr-space-8); }
+.jr-mt-10{ margin-top: var(--jr-space-10); }
+.jr-mt-12{ margin-top: var(--jr-space-12); }
 
-/* Marges — bottom */
-.jr-mb-0  { margin-bottom: 0 !important; }
-.jr-mb-2  { margin-bottom: var(--jr-space-2); }
-.jr-mb-4  { margin-bottom: var(--jr-space-4); }
-.jr-mb-6  { margin-bottom: var(--jr-space-6); }
-.jr-mb-8  { margin-bottom: var(--jr-space-8); }
-.jr-mb-10 { margin-bottom: var(--jr-space-10); }
-.jr-mb-12 { margin-bottom: var(--jr-space-12); }
+.jr-mb-0 { margin-bottom: 0 !important; }
+.jr-mb-2 { margin-bottom: var(--jr-space-2); }
+.jr-mb-4 { margin-bottom: var(--jr-space-4); }
+.jr-mb-6 { margin-bottom: var(--jr-space-6); }
+.jr-mb-8 { margin-bottom: var(--jr-space-8); }
+.jr-mb-10{ margin-bottom: var(--jr-space-10); }
+.jr-mb-12{ margin-bottom: var(--jr-space-12); }
 
-/* Padding */
 .jr-p-6  { padding: var(--jr-space-6); }
 .jr-p-8  { padding: var(--jr-space-8); }
 .jr-p-10 { padding: var(--jr-space-10); }
 
-/* Breedte-beperking van tekst binnen een widget */
 .jr-measure        { max-width: var(--jr-container-text); }
 .jr-measure--narrow{ max-width: var(--jr-container-narrow); }
 .jr-measure-center { max-width: var(--jr-container-text); margin-inline: auto; }
 
-/* Zichtbaarheid */
-.jr-hide           { display: none !important; }
+.jr-hide { display: none !important; }
 .jr-sr-only {
   position: absolute; width: 1px; height: 1px;
   padding: 0; margin: -1px; overflow: hidden;
   clip: rect(0,0,0,0); white-space: nowrap; border: 0;
 }
 
-/* Flex-helpers */
-.jr-flex        { display: flex; }
+.jr-flex { display: flex; }
 .jr-flex-center { display: flex; align-items: center; justify-content: center; }
-.jr-flex-between{ display: flex; align-items: center; justify-content: space-between; }
-.jr-flex-wrap   { flex-wrap: wrap; }
-.jr-gap-2 { gap: var(--jr-space-2); }
-.jr-gap-4 { gap: var(--jr-space-4); }
-.jr-gap-6 { gap: var(--jr-space-6); }
+.jr-flex-between { display: flex; align-items: center; justify-content: space-between; }
+.jr-flex-wrap { flex-wrap: wrap; }
 
-/* Sticky element binnen een lange sectie */
 .jr-sticky { position: sticky; top: calc(var(--jr-nav-height) + var(--jr-space-6)); }
 
 
 /* ==========================================================================
    16. MOTION & SCROLL REVEAL
-   ==========================================================================
-   Apple beweegt weinig, maar altijd met dezelfde easing en altijd subtiel:
-   16px omhoog, geen schaal, geen bounce.
    ========================================================================== */
 
 .jr-reveal {
@@ -1411,13 +1585,13 @@ a.jr-tag:hover { border-color: var(--jr-text); color: var(--jr-text); text-decor
               transform var(--jr-dur-reveal) var(--jr-ease-out);
   will-change: opacity, transform;
 }
-.jr-reveal.is-visible,
-.jr-reveal.elementor-motion-effects-element { opacity: 1; transform: none; }
+.jr-reveal.is-visible, .jr-reveal.elementor-motion-effects-element { opacity: 1; transform: none; }
 
-/* Gestaffelde reveal binnen een grid */
-.jr-reveal-stagger > *   { opacity: 0; transform: translateY(16px);
+.jr-reveal-stagger > * {
+  opacity: 0; transform: translateY(16px);
   transition: opacity var(--jr-dur-reveal) var(--jr-ease-out),
-              transform var(--jr-dur-reveal) var(--jr-ease-out); }
+              transform var(--jr-dur-reveal) var(--jr-ease-out);
+}
 .jr-reveal-stagger.is-visible > * { opacity: 1; transform: none; }
 .jr-reveal-stagger.is-visible > *:nth-child(1) { transition-delay: 0ms; }
 .jr-reveal-stagger.is-visible > *:nth-child(2) { transition-delay: 80ms; }
@@ -1426,161 +1600,174 @@ a.jr-tag:hover { border-color: var(--jr-text); color: var(--jr-text); text-decor
 .jr-reveal-stagger.is-visible > *:nth-child(5) { transition-delay: 320ms; }
 .jr-reveal-stagger.is-visible > *:nth-child(6) { transition-delay: 400ms; }
 
-/* Fallback: zonder JS blijft alles gewoon zichtbaar */
-.no-js .jr-reveal,
-.no-js .jr-reveal-stagger > * { opacity: 1; transform: none; }
+.no-js .jr-reveal, .no-js .jr-reveal-stagger > * { opacity: 1; transform: none; }
 
 
 /* ==========================================================================
    17. RESPONSIVE
    ==========================================================================
-   Breakpoints komen overeen met apple.com. Zet Elementor's breakpoints op
-   dezelfde waarden (Site Settings → Layout → Breakpoints):
-     Mobile     ≤ 734px
-     Tablet     ≤ 1068px
-     Laptop     ≤ 1440px
-   Wijk je daarvan af, pas dan de drie getallen hieronder aan.
+   Breakpoints gelijk aan apple.com. Zet ze zo in Elementor:
+     Mobile ≤ 734px · Tablet ≤ 1068px · Laptop ≤ 1440px
    ========================================================================== */
 
-/* ---- 17.1 Laptop (≤1440px) --------------------------------------------- */
+/* ---- Laptop ------------------------------------------------------------- */
 @media (max-width: 1440px) {
   :root {
     --jr-fs-display: 72px;
-    --jr-fs-h1:      52px;
-    --jr-section-y:  104px;
+    --jr-fs-h1: 52px;
+    --jr-section-y: 104px;
     --jr-section-y-lg: 136px;
+    --jr-pad-card-xl: 64px;
   }
 }
 
-/* ---- 17.2 Tablet (≤1068px) --------------------------------------------- */
+/* ---- Tablet ------------------------------------------------------------- */
 @media (max-width: 1068px) {
   :root {
     /* Typografie */
     --jr-fs-display: 56px;
-    --jr-fs-h1:      44px;
-    --jr-fs-h2:      34px;
-    --jr-fs-h3:      26px;
-    --jr-fs-h4:      22px;
-    --jr-fs-h5:      20px;
-    --jr-fs-h6:      17px;
-    --jr-fs-lead:    20px;
-    --jr-fs-body:    17px;
-    --jr-fs-quote:   28px;
+    --jr-fs-h1: 44px;
+    --jr-fs-h2: 34px;
+    --jr-fs-h3: 26px;
+    --jr-fs-h4: 22px;
+    --jr-fs-h5: 20px;
+    --jr-fs-h6: 17px;
+    --jr-fs-lead: 20px;
+    --jr-fs-body: 17px;
+    --jr-fs-quote: 28px;
+    --jr-fs-stat: 52px;
+
+    /* Verticaal ritme */
+    --jr-gap-display-lead: 20px;
+    --jr-gap-title-lead: 14px;
+    --jr-gap-title-body: 18px;
+    --jr-gap-lead-body: 20px;
+    --jr-gap-body-cta: 28px;
+    --jr-gap-head-content: 48px;
 
     /* Ruimte */
-    --jr-section-y:    88px;
+    --jr-section-y: 88px;
     --jr-section-y-lg: 112px;
     --jr-section-y-sm: 56px;
-    --jr-section-gap:  48px;
+    --jr-gap-block: 48px;
+    --jr-gap-block-lg: 72px;
+    --jr-gap-container-xl: 32px;
+
+    /* Component-padding */
+    --jr-pad-card-lg: 40px;
+    --jr-pad-card-xl: 48px;
+    --jr-pad-footer: 64px 0 40px;
 
     /* Layout */
-    --jr-gutter:       24px;
-    --jr-container:    100%;
-    --jr-nav-height:   64px;
+    --jr-gutter: 24px;
+    --jr-container: 100%;
+    --jr-nav-height: 64px;
   }
 
-  .jr-grid--3,
-  .jr-grid--4 { grid-template-columns: repeat(2, 1fr); }
-
-  .jr-stat-value { font-size: 52px; }
-  .jr-card--xl { padding: var(--jr-space-9); }
+  .jr-grid--3, .jr-grid--4 { grid-template-columns: repeat(2, 1fr); }
 }
 
-/* ---- 17.3 Mobiel (≤734px) ---------------------------------------------- */
+/* ---- Mobiel ------------------------------------------------------------- */
 @media (max-width: 734px) {
   :root {
-    /* Typografie — let op: body blijft 16px+, anders zoomt iOS in op velden */
+    /* Typografie — body en velden blijven op 16px, anders zoomt iOS in */
     --jr-fs-display: 40px;
-    --jr-fs-h1:      34px;
-    --jr-fs-h2:      28px;
-    --jr-fs-h3:      22px;
-    --jr-fs-h4:      20px;
-    --jr-fs-h5:      18px;
-    --jr-fs-h6:      16px;
-    --jr-fs-lead:    18px;
-    --jr-fs-body:    16px;
-    --jr-fs-small:   14px;
+    --jr-fs-h1: 34px;
+    --jr-fs-h2: 28px;
+    --jr-fs-h3: 22px;
+    --jr-fs-h4: 20px;
+    --jr-fs-h5: 18px;
+    --jr-fs-h6: 16px;
+    --jr-fs-lead: 18px;
+    --jr-fs-body: 16px;
+    --jr-fs-small: 14px;
     --jr-fs-caption: 12px;
-    --jr-fs-button:  16px;
-    --jr-fs-quote:   22px;
+    --jr-fs-button: 16px;
+    --jr-fs-quote: 22px;
+    --jr-fs-stat: 40px;
 
-    /* Tracking mag op kleine schermen iets losser */
+    /* Tracking iets losser — op klein formaat werkt −0.028em tegen je */
     --jr-ls-display: -0.022em;
-    --jr-ls-h1:      -0.018em;
-    --jr-ls-h2:      -0.014em;
+    --jr-ls-h1: -0.018em;
+    --jr-ls-h2: -0.014em;
 
-    /* Ruimte — ongeveer de helft van desktop, maar nooit krap */
-    --jr-section-y:    64px;
+    /* Verticaal ritme */
+    --jr-gap-eyebrow-title: 6px;
+    --jr-gap-display-lead: 16px;
+    --jr-gap-title-lead: 12px;
+    --jr-gap-title-body: 16px;
+    --jr-gap-subtitle-body: 10px;
+    --jr-gap-lead-body: 20px;
+    --jr-gap-paragraph: 16px;
+    --jr-gap-body-cta: 24px;
+    --jr-gap-head-content: 32px;
+
+    /* Ruimte */
+    --jr-section-y: 64px;
     --jr-section-y-lg: 80px;
     --jr-section-y-sm: 40px;
-    --jr-section-gap:  32px;
+    --jr-gap-block: 40px;
+    --jr-gap-block-lg: 56px;
+    --jr-gap-container: 16px;
+    --jr-gap-container-lg: 20px;
+    --jr-gap-container-xl: 24px;
+
+    /* Component-padding */
+    --jr-pad-card-sm: 20px;
+    --jr-pad-card-md: 24px;
+    --jr-pad-card-lg: 28px;
+    --jr-pad-card-xl: 32px;
+    --jr-pad-btn-lg: 15px 28px;
+    --jr-pad-btn-xl: 17px 32px;
+    --jr-pad-footer: 48px 0 32px;
+
+    /* Radius schaalt mee, anders ogen vlakken te rond */
+    --jr-radius-2xl: 28px;
+    --jr-radius-xl: 24px;
+    --jr-radius-lg: 20px;
 
     /* Layout */
-    --jr-gutter:     20px;
+    --jr-gutter: 20px;
     --jr-nav-height: 56px;
-
-    /* Radius schaalt mee, anders ogen vlakken te rond op klein scherm */
-    --jr-radius-2xl: 28px;
-    --jr-radius-xl:  24px;
-    --jr-radius-lg:  20px;
+    --jr-dur-reveal: 600ms;
   }
 
-  /* Alles onder elkaar */
-  .jr-grid--2,
-  .jr-grid--3,
-  .jr-grid--4,
-  .jr-tiles { grid-template-columns: 1fr; }
+  .jr-grid--2, .jr-grid--3, .jr-grid--4, .jr-tiles { grid-template-columns: 1fr; }
 
-  .jr-grid { gap: var(--jr-space-5); }
-
-  /* Knoppen: vol de breedte, gestapeld */
+  /* Knoppen vullen de breedte en stapelen */
   .jr-btn-group { flex-direction: column; align-items: stretch; width: 100%; gap: var(--jr-space-3); }
-  .jr-btn-group .jr-btn,
-  .jr-btn-group .elementor-button { width: 100%; }
+  .jr-btn-group .jr-btn, .jr-btn-group .elementor-button { width: 100%; }
   .jr-btn-group .jr-btn--text { width: auto; align-self: center; }
 
-  .jr-card    { padding: var(--jr-space-6); }
-  .jr-card--lg,
-  .jr-card--xl { padding: var(--jr-space-7); }
-
-  .jr-stat-value { font-size: 40px; }
-
-  /* Tekstkolommen mogen op mobiel altijd de volle breedte */
+  /* Tekst mag de volle breedte */
   p, .jr-lead, .jr-measure { max-width: 100%; }
 
-  /* Tabellen scrollen horizontaal in plaats van te breken */
-  .jr-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-
-  /* Sticky nav niet te veel ruimte laten innemen */
   .jr-sticky { position: static; }
-
-  /* Reveal-animaties korter op mobiel */
-  :root { --jr-dur-reveal: 600ms; }
 }
 
-/* ---- 17.4 Kleine telefoons (≤374px) ------------------------------------ */
+/* ---- Kleine telefoons --------------------------------------------------- */
 @media (max-width: 374px) {
   :root {
     --jr-fs-display: 34px;
-    --jr-fs-h1:      30px;
-    --jr-fs-h2:      25px;
-    --jr-gutter:     16px;
+    --jr-fs-h1: 30px;
+    --jr-fs-h2: 25px;
+    --jr-gutter: 16px;
+    --jr-pad-card-md: 20px;
   }
 }
 
-/* ---- 17.5 Zichtbaarheid per breakpoint --------------------------------- */
+/* ---- Zichtbaarheid per breakpoint --------------------------------------- */
 .jr-only-desktop { display: none; }
 @media (min-width: 1069px) { .jr-only-desktop { display: block; } }
-@media (max-width: 1068px) { .jr-hide-tablet  { display: none !important; } }
-@media (max-width: 734px)  { .jr-hide-mobile  { display: none !important; } }
-@media (min-width: 735px)  { .jr-only-mobile  { display: none !important; } }
+@media (max-width: 1068px) { .jr-hide-tablet { display: none !important; } }
+@media (max-width: 734px)  { .jr-hide-mobile { display: none !important; } }
+@media (min-width: 735px)  { .jr-only-mobile { display: none !important; } }
 
 
 /* ==========================================================================
    18. TOEGANKELIJKHEID & PRINT
    ========================================================================== */
 
-/* Respecteer de systeeminstelling "verminder beweging" — verplicht */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: .01ms !important;
@@ -1588,25 +1775,22 @@ a.jr-tag:hover { border-color: var(--jr-text); color: var(--jr-text); text-decor
     transition-duration: .01ms !important;
     scroll-behavior: auto !important;
   }
-  .jr-reveal,
-  .jr-reveal-stagger > * { opacity: 1 !important; transform: none !important; }
+  .jr-reveal, .jr-reveal-stagger > * { opacity: 1 !important; transform: none !important; }
 }
 
-/* Hoog contrast */
 @media (prefers-contrast: more) {
   :root {
     --jr-text-secondary: #4A4A4F;
     --jr-text-tertiary:  #5A5A5F;
-    --jr-border:         #8E8E93;
+    --jr-line:           #8E8E93;
+    --jr-line-subtle:    #C8C8CD;
   }
   a { text-decoration: underline; }
 }
 
-/* Skip-link */
 .jr-skip-link {
   position: absolute;
-  left: -9999px;
-  top: 0;
+  left: -9999px; top: 0;
   z-index: var(--jr-z-modal);
   background: var(--jr-surface);
   color: var(--jr-text);
@@ -1616,22 +1800,20 @@ a.jr-tag:hover { border-color: var(--jr-text); color: var(--jr-text); text-decor
 }
 .jr-skip-link:focus { left: var(--jr-space-4); top: var(--jr-space-4); }
 
-/* Minimale tapdoelen op touch */
 @media (pointer: coarse) {
   a, button, .jr-btn, .elementor-button, [role="button"] { min-height: 44px; }
 }
 
-/* Print */
 @media print {
-  body { background: #FFFFFF; color: #000000; font-size: 10pt; line-height: 1.4; }
+  body { background: var(--jr-print-bg); color: var(--jr-print-text); font-size: 10pt; line-height: 1.4; }
   .jr-nav, .jr-footer, .jr-btn, .elementor-button, video { display: none !important; }
   .jr-section { padding: 12mm 0; }
-  a { color: #000000; text-decoration: underline; }
-  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 8pt; color: #555; }
-  .jr-card { box-shadow: none; border: 1px solid #CCCCCC; break-inside: avoid; }
+  a { color: var(--jr-print-text); text-decoration: underline; }
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 8pt; color: var(--jr-print-muted); }
+  .jr-card { box-shadow: none; border: var(--jr-stroke-hairline) solid var(--jr-print-line); break-inside: avoid; }
   h1, h2, h3 { break-after: avoid; }
 }
 
 /* ==========================================================================
-   EINDE — James Robinson global stylesheet v1.0
+   EINDE — James Robinson global stylesheet v2.0
    ========================================================================== */
