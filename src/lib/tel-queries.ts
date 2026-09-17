@@ -125,6 +125,15 @@ async function main() {
     await (await import('./tijdlijn')).getTijdlijn(id, { limiet: 40 })
   })
 
+  const pijplijn = await import('./pijplijn')
+  await meet('PIJPLIJN', async () => {
+    await pijplijn.getBord({ status: 'open' })
+    await pijplijn.getScorekaart({})
+    await pijplijn.listDealEigenaren()
+    await pijplijn.listBedrijfsnamen()
+    await team.listTeam()
+  })
+
   console.log('')
   await client.end()
 }

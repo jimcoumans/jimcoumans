@@ -93,6 +93,12 @@ const icons = {
       <rect x="16" y="4" width="5" height="7" rx="1.5" />
     </svg>
   ),
+  /* Een trechter: breed erin, smal eruit. Precies wat een pijplijn doet. */
+  pijplijn: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
+      <path d="M3 5h18l-7 8v6l-4 2v-8z" />
+    </svg>
+  ),
   sync: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
       <path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5" />
@@ -104,6 +110,7 @@ const TEAM_NAV: NavItem[] = [
   { href: '/beheer', label: 'Dashboard', key: 'dashboard', icon: icons.dashboard },
   { href: '/beheer/klanten', label: 'Klanten', key: 'klanten', icon: icons.clients },
   { href: '/beheer/crm', label: 'CRM', key: 'crm', icon: icons.contacts },
+  { href: '/beheer/pijplijn', label: 'Pijplijn', key: 'pijplijn', icon: icons.pijplijn },
   { href: '/beheer/offertes', label: 'Offertes', key: 'offertes', icon: icons.quotes },
   { href: '/beheer/abonnementen', label: 'Abonnementen', key: 'abonnementen', icon: icons.subs },
   { href: '/beheer/diensten', label: 'Diensten', key: 'diensten', icon: icons.services },

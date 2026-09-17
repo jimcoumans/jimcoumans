@@ -12,6 +12,7 @@ import { listOrganizations } from '@/lib/admin'
 import { komendeVerjaardagen } from '@/lib/verjaardagen'
 import { getCockpit } from '@/lib/cockpit'
 import { metGeheugen } from '@/lib/cache'
+import { telAchterstand } from '@/lib/pijplijn'
 import { MAANDNAMEN } from '@/lib/dates'
 import { formatCents } from '@/lib/money'
 import { formatDate, formatRelative } from '@/lib/dates'
@@ -70,6 +71,7 @@ export default async function DashboardPage() {
   const cockpit = await metGeheugen('dash:cockpit', getCockpit)
 
   const jarig = await metGeheugen('dash:jarig', () => komendeVerjaardagen(7))
+  const dealsAchter = await metGeheugen('dash:dealsachter', () => telAchterstand())
 
   const openOffertes = offertes.filter(
     (q) => q.status === 'sent' || q.status === 'awaiting_partner',
@@ -100,6 +102,18 @@ export default async function DashboardPage() {
     aandacht.push({
       tekst: `${q.number} wacht op een offerte van ${q.partnerNames.join(', ') || 'een partner'}`,
       href: `/beheer/offertes/${q.id}`,
+    })
+  }
+
+  // Deals zonder vervolgstap horen bij "waar aandacht nodig is": een deal
+  // die niemand meer aanraakt is het stilste verlies dat er is.
+  if (dealsAchter > 0) {
+    aandacht.push({
+      tekst:
+        dealsAchter === 1
+          ? '1 deal wacht op een vervolgstap'
+          : `${dealsAchter} deals wachten op een vervolgstap`,
+      href: '/beheer/pijplijn',
     })
   }
 
