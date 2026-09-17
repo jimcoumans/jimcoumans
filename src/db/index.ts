@@ -105,11 +105,22 @@ function maakClient(): ReturnType<typeof postgres> {
     // Zie connection-options.ts: een pooler in transactiemodus (Supabase)
     // kan geen prepared statements aan.
     prepare: opties.prepare,
-    // Meetellen hoeveel queries er langskomen. Kost niets en maakt het
-    // mogelijk om per pagina te zien hoeveel netwerkrondes hij doet.
-    debug: () => {
-      globalForDb.jrWalletQueries = (globalForDb.jrWalletQueries ?? 0) + 1
-    },
+    /* De querieteller staat ALLEEN lokaal aan.
+
+       Een debug-functie meegeven zet in postgres-js de debugmodus aan, en
+       die hoort niet in productie. Ik had dit wel in productie aangezet, in
+       het ene bestand dat deze site al drie keer heeft platgelegd, voor een
+       teller die alleen bij het ontwikkelen nut heeft. Dat was dom.
+
+       Lokaal heb ik hem nodig voor npm run tel:queries, want daar kost een
+       query niets en zie je zonder tellen niet dat een pagina te ver gaat. */
+    ...(process.env.NODE_ENV === 'production'
+      ? {}
+      : {
+          debug: () => {
+            globalForDb.jrWalletQueries = (globalForDb.jrWalletQueries ?? 0) + 1
+          },
+        }),
   })
 
   globalForDb.jrWalletClient = nieuw
