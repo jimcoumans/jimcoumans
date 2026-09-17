@@ -31,6 +31,25 @@ import { connectionOptionsFor, readConnectionString } from './connection-options
  */
 const globalForDb = globalThis as unknown as {
   jrWalletClient?: ReturnType<typeof postgres>
+  jrWalletQueries?: number
+}
+
+/**
+ * Hoeveel queries er zijn gedaan sinds de laatste keer nullen.
+ *
+ * Dit bestaat omdat het aantal queries per pagina het enige is dat er echt
+ * toe doet voor de snelheid. Elke query is een netwerkronde, en die kost
+ * vanaf de server bijna honderd milliseconde. Of een pagina snel of traag is
+ * hangt dus niet af van hoe zwaar de queries zijn, maar van hoeveel het er
+ * zijn. Lokaal merk je dat verschil niet — daar kost een query niets — dus
+ * zonder tellen zie je pas op de live omgeving dat een pagina te ver gaat.
+ */
+export function nulQueryTeller(): void {
+  globalForDb.jrWalletQueries = 0
+}
+
+export function queryTeller(): number {
+  return globalForDb.jrWalletQueries ?? 0
 }
 
 /**
@@ -86,6 +105,11 @@ function maakClient(): ReturnType<typeof postgres> {
     // Zie connection-options.ts: een pooler in transactiemodus (Supabase)
     // kan geen prepared statements aan.
     prepare: opties.prepare,
+    // Meetellen hoeveel queries er langskomen. Kost niets en maakt het
+    // mogelijk om per pagina te zien hoeveel netwerkrondes hij doet.
+    debug: () => {
+      globalForDb.jrWalletQueries = (globalForDb.jrWalletQueries ?? 0) + 1
+    },
   })
 
   globalForDb.jrWalletClient = nieuw

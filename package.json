@@ -18,7 +18,8 @@
     "billing": "tsx --env-file-if-exists=.env.local src/lib/run-billing.ts",
     "setup": "node scripts/setup.mjs",
     "db:reset": "tsx --env-file-if-exists=.env.local src/db/reset.ts",
-    "db:bundel": "node scripts/bundel-migraties.mjs"
+    "db:bundel": "node scripts/bundel-migraties.mjs",
+    "tel:queries": "tsx --env-file-if-exists=.env.local src/lib/tel-queries.ts"
   },
   "dependencies": {
     "drizzle-orm": "^0.45.2",
