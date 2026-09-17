@@ -15,12 +15,19 @@ import { services, partners } from '@/db/schema'
 import { eq } from 'drizzle-orm'
 import type { ActionResult } from './actions'
 import type { Quote } from '@/db/schema'
+import { vergeet } from '@/lib/cache'
 
 /* Acties voor offertes. Elke actie begint met requireStaff(). */
 
 async function veilig(fn: () => Promise<void>): Promise<ActionResult> {
   try {
     await fn()
+    // Er is iets gewijzigd, dus het onthouden dashboard klopt niet meer.
+    // Weggooien is hier het goede antwoord: bijwerken zou betekenen dat je
+    // per actie moet weten welke cijfers erdoor veranderen, en dat vergeet
+    // iemand een keer. Opnieuw ophalen kost een seconde; een verkeerd cijfer
+    // op een dashboard kost vertrouwen.
+    vergeet()
     return { ok: true }
   } catch (error) {
     if (error instanceof QuoteError) return { ok: false, error: error.message }

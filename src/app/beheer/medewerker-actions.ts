@@ -9,6 +9,7 @@ import { volledigeNaam, type Aanhef } from '@/lib/namen'
 
 const AANHEF_WAARDEN: readonly Aanhef[] = ['heer', 'mevrouw', 'neutraal']
 import type { ActionResult } from './actions'
+import { vergeet } from '@/lib/cache'
 
 /* -------------------------------------------------------------------------
    Acties op het medewerkerprofiel.
@@ -22,6 +23,12 @@ import type { ActionResult } from './actions'
 async function veilig(fn: () => Promise<void>): Promise<ActionResult> {
   try {
     await fn()
+    // Er is iets gewijzigd, dus het onthouden dashboard klopt niet meer.
+    // Weggooien is hier het goede antwoord: bijwerken zou betekenen dat je
+    // per actie moet weten welke cijfers erdoor veranderen, en dat vergeet
+    // iemand een keer. Opnieuw ophalen kost een seconde; een verkeerd cijfer
+    // op een dashboard kost vertrouwen.
+    vergeet()
     return { ok: true }
   } catch (error) {
     if (error instanceof TeamError) return { ok: false, error: error.message }

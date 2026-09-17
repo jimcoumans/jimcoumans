@@ -11,6 +11,7 @@ import { listQuotes, getQuoteFigures, quoteStatusLabels, quoteStatusStyles } fro
 import { listOrganizations } from '@/lib/admin'
 import { komendeVerjaardagen } from '@/lib/verjaardagen'
 import { getCockpit } from '@/lib/cockpit'
+import { metGeheugen } from '@/lib/cache'
 import { MAANDNAMEN } from '@/lib/dates'
 import { formatCents } from '@/lib/money'
 import { formatDate, formatRelative } from '@/lib/dates'
@@ -30,7 +31,20 @@ export default async function DashboardPage() {
   if (!user) redirect('/login')
   if (user.role !== 'staff' && user.role !== 'admin') redirect('/')
 
-  /* Achter elkaar en niet met Promise.all.
+  /* Achter elkaar, en onthouden voor een minuut.
+
+     Twee dingen die hier samenkomen. Elke query kost vanaf de server zo'n
+     honderd milliseconde reistijd, en deze database accepteert geen handvol
+     verbindingen tegelijk (gemeten: bij vijf loopt hij vast). Alles wat
+     hieronder staat gaat dus achter elkaar over een verbinding.
+
+     Dat zou elke keer twee seconden kosten, ook als er niets veranderd is.
+     Daarom onthoudt metGeheugen het antwoord een minuut. Wie het dashboard
+     opent terwijl een collega dat net deed, krijgt het uit het geheugen en
+     ziet het meteen. Deze cijfers veranderen niet van seconde tot seconde,
+     dus een minuut speling kan niemand iets schelen.
+
+     De oorspronkelijke opzet stond hier met Promise.all.
 
      Dit stond hier met Promise.all over tien functies, en dat leek logisch:
      ze hebben elkaar niet nodig, dus waarom wachten. Maar elk van die tien
@@ -44,18 +58,18 @@ export default async function DashboardPage() {
      de helft blijft wachten op een verbinding. Bij tien overzichten van een
      paar honderd milliseconde is dat een paar seconden; een 502 is de hele
      pagina. */
-  const overall = await getOverallFigures()
-  const mrr = await getMonthlyRecurringCents()
-  const maandbudget = await getMonthlyBudgetCents()
-  const quoteFigures = await getQuoteFigures()
-  const offertes = await listQuotes()
-  const abonnementen = await listSubscriptions()
-  const openstaand = await getOutstandingInvoices()
-  const klanten = await listOrganizations()
-  const perKlant = await getFiguresByOrganization()
-  const cockpit = await getCockpit()
+  const overall = await metGeheugen('dash:overall', getOverallFigures)
+  const mrr = await metGeheugen('dash:mrr', getMonthlyRecurringCents)
+  const maandbudget = await metGeheugen('dash:budget', getMonthlyBudgetCents)
+  const quoteFigures = await metGeheugen('dash:offertecijfers', getQuoteFigures)
+  const offertes = await metGeheugen('dash:offertes', () => listQuotes())
+  const abonnementen = await metGeheugen('dash:abonnementen', () => listSubscriptions())
+  const openstaand = await metGeheugen('dash:openstaand', getOutstandingInvoices)
+  const klanten = await metGeheugen('dash:klanten', listOrganizations)
+  const perKlant = await metGeheugen('dash:perklant', () => getFiguresByOrganization())
+  const cockpit = await metGeheugen('dash:cockpit', getCockpit)
 
-  const jarig = await komendeVerjaardagen(7)
+  const jarig = await metGeheugen('dash:jarig', () => komendeVerjaardagen(7))
 
   const openOffertes = offertes.filter(
     (q) => q.status === 'sent' || q.status === 'awaiting_partner',

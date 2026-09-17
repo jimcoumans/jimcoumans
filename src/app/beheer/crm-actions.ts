@@ -15,6 +15,7 @@ import type { ContactPatch, NewPartner, NewAccount } from '@/lib/crm'
 import { volledigeNaam, type Aanhef } from '@/lib/namen'
 import type { ActionResult } from './actions'
 import type { Partner } from '@/db/schema'
+import { vergeet } from '@/lib/cache'
 
 const AANHEF_WAARDEN: readonly Aanhef[] = ['heer', 'mevrouw', 'neutraal']
 
@@ -24,6 +25,12 @@ const AANHEF_WAARDEN: readonly Aanhef[] = ['heer', 'mevrouw', 'neutraal']
 async function veilig(fn: () => Promise<void>): Promise<ActionResult> {
   try {
     await fn()
+    // Er is iets gewijzigd, dus het onthouden dashboard klopt niet meer.
+    // Weggooien is hier het goede antwoord: bijwerken zou betekenen dat je
+    // per actie moet weten welke cijfers erdoor veranderen, en dat vergeet
+    // iemand een keer. Opnieuw ophalen kost een seconde; een verkeerd cijfer
+    // op een dashboard kost vertrouwen.
+    vergeet()
     return { ok: true }
   } catch (error) {
     // Een bewuste weigering heeft een reden die de gebruiker moet lezen.

@@ -6,6 +6,7 @@ import { describeDbError } from '@/lib/db-errors'
 import { createActivity, deleteActivity, ActivityError } from '@/lib/tijdlijn'
 import type { Activity } from '@/db/schema'
 import type { ActionResult } from './actions'
+import { vergeet } from '@/lib/cache'
 
 /* Notities, gesprekken en afspraken op de tijdlijn van een klant. */
 
@@ -14,6 +15,12 @@ const SOORTEN: readonly Activity['kind'][] = ['note', 'call', 'meeting', 'email'
 async function veilig(fn: () => Promise<void>): Promise<ActionResult> {
   try {
     await fn()
+    // Er is iets gewijzigd, dus het onthouden dashboard klopt niet meer.
+    // Weggooien is hier het goede antwoord: bijwerken zou betekenen dat je
+    // per actie moet weten welke cijfers erdoor veranderen, en dat vergeet
+    // iemand een keer. Opnieuw ophalen kost een seconde; een verkeerd cijfer
+    // op een dashboard kost vertrouwen.
+    vergeet()
     return { ok: true }
   } catch (error) {
     if (error instanceof ActivityError) return { ok: false, error: error.message }

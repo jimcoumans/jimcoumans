@@ -5,12 +5,19 @@ import { requireStaff } from '@/lib/auth'
 import { describeDbError } from '@/lib/db-errors'
 import { bewaarAfbeelding, wisAfbeelding, AfbeeldingError, type Doel } from '@/lib/afbeeldingen'
 import type { ActionResult } from './actions'
+import { vergeet } from '@/lib/cache'
 
 /* Logo's en profielfoto's uploaden. */
 
 async function veilig(fn: () => Promise<void>): Promise<ActionResult> {
   try {
     await fn()
+    // Er is iets gewijzigd, dus het onthouden dashboard klopt niet meer.
+    // Weggooien is hier het goede antwoord: bijwerken zou betekenen dat je
+    // per actie moet weten welke cijfers erdoor veranderen, en dat vergeet
+    // iemand een keer. Opnieuw ophalen kost een seconde; een verkeerd cijfer
+    // op een dashboard kost vertrouwen.
+    vergeet()
     return { ok: true }
   } catch (error) {
     if (error instanceof AfbeeldingError) return { ok: false, error: error.message }
