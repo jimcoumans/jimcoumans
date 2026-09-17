@@ -2,6 +2,7 @@ import { and, asc, desc, eq, isNull, lt, or, sql } from 'drizzle-orm'
 import { db } from '@/db'
 import { deals, pipelineStages, organizations, contacts, users } from '@/db/schema'
 import type { Deal, PipelineStage } from '@/db/schema'
+import { uniekeSlug } from './admin'
 
 /* -------------------------------------------------------------------------
    De salespijplijn.
@@ -36,6 +37,14 @@ export const BRON_LABELS: Record<string, string> = {
 export const SOORT_LABELS = {
   retainer: 'Retainer',
   project: 'Project',
+} as const
+
+/** Hoe de status van een bedrijf in een keuzelijst leest. */
+export const BEDRIJF_STATUS_LABELS = {
+  lead: 'lead',
+  prospect: 'prospect',
+  client: 'klant',
+  former: 'oud-klant',
 } as const
 
 /** Twee totalen die niet bij elkaar opgeteld mogen worden. */
@@ -321,13 +330,66 @@ export async function listDealEigenaren(): Promise<{ id: string; naam: string }[
  * dropdown waar je twee velden gebruikt. Vier netwerkrondes voor niets is
  * vanaf de server bijna een halve seconde.
  */
-export async function listBedrijfsnamen(): Promise<{ id: string; naam: string }[]> {
+export type Bedrijfsnaam = {
+  id: string
+  naam: string
+  status: 'lead' | 'prospect' | 'client' | 'former'
+}
+
+export async function listBedrijfsnamen(): Promise<Bedrijfsnaam[]> {
   const rijen = await db
-    .select({ id: organizations.id, naam: organizations.name })
+    .select({ id: organizations.id, naam: organizations.name, status: organizations.status })
     .from(organizations)
     .orderBy(asc(organizations.name))
 
   return rijen
+}
+
+/**
+ * Een bedrijf aanmaken vanuit de pijplijn, als lead.
+ *
+ * Dit hoort hier omdat een deal vaak eerder bestaat dan het bedrijf. Je
+ * krijgt een naam op een borrel en wilt die kwijt voordat je hem vergeet.
+ * Moet je daarvoor eerst naar Klanten om een klant aan te maken die geen
+ * klant is, dan doe je het niet en staat de deal nergens.
+ *
+ * Status lead en niet client: het is nog geen klant. De kolom heeft client
+ * als standaardwaarde omdat bijna alles in dit systeem een klant is, dus
+ * moet die hier expliciet meegegeven worden.
+ *
+ * Verder blijft dit leeg. Adres, kvk en facturatie vul je in als het een
+ * klant wordt; op dit moment weet je die dingen nog niet en een half
+ * ingevuld formulier houdt je alleen maar op.
+ */
+export async function maakBedrijfAlsLead(naam: string): Promise<{ id: string; naam: string }> {
+  const schoon = naam.trim()
+  if (schoon === '') {
+    throw new PijplijnError('Geef het nieuwe bedrijf een naam.')
+  }
+
+  /* Eerst kijken of het er al staat. Twee keer "Brouwer Horeca Groep" in de
+     lijst is erger dan een melding: de deals verdelen zich dan over twee
+     bedrijven en geen van beide overzichten klopt nog. Hoofdletters negeren,
+     want dat is precies hoe zo'n dubbele ontstaat. */
+  const [bestaat] = await db
+    .select({ id: organizations.id, naam: organizations.name })
+    .from(organizations)
+    .where(sql`lower(${organizations.name}) = lower(${schoon})`)
+    .limit(1)
+
+  if (bestaat) {
+    throw new PijplijnError(
+      `${bestaat.naam} staat al in het systeem. Kies het bedrijf in de lijst in plaats van het opnieuw aan te maken.`,
+    )
+  }
+
+  const [org] = await db
+    .insert(organizations)
+    .values({ slug: await uniekeSlug(schoon), name: schoon, status: 'lead' })
+    .returning({ id: organizations.id, naam: organizations.name })
+
+  if (!org) throw new PijplijnError('Het bedrijf kon niet worden opgeslagen.')
+  return org
 }
 
 /** Deals bij één klant, voor de klantpagina. */

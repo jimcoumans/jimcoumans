@@ -23,6 +23,8 @@ import {
   verliesDeal,
   heropenDeal,
   wisDeal,
+  maakBedrijfAlsLead,
+  listBedrijfsnamen,
   getBord,
   getScorekaart,
   listDeals,
@@ -37,6 +39,7 @@ let eersteFase: string
 let tweedeFase: string
 let collegaId: string
 const gemaakteDeals: string[] = []
+const gemaakteBedrijven: string[] = []
 
 before(async () => {
   const fases = await db
@@ -79,6 +82,10 @@ after(async () => {
     await db.delete(deals).where(inArray(deals.id, gemaakteDeals))
   }
   await db.delete(users).where(eq(users.id, collegaId))
+  if (gemaakteBedrijven.length > 0) {
+    await db.delete(deals).where(inArray(deals.organizationId, gemaakteBedrijven))
+    await db.delete(organizations).where(inArray(organizations.id, gemaakteBedrijven))
+  }
   await db.delete(organizations).where(inArray(organizations.id, [prospectId, klantId]))
   await client.end()
 })
@@ -386,4 +393,95 @@ test('een verwijderde deal is echt weg', async () => {
 
   const rijen = await db.select().from(deals).where(eq(deals.id, deal.id))
   assert.equal(rijen.length, 0)
+})
+
+/* --- Een bedrijf aanmaken vanuit de pijplijn ------------------------- */
+
+test('een nieuw bedrijf uit de pijplijn is een lead en geen klant', async () => {
+  /* De kolom heeft client als standaardwaarde, want bijna alles in dit
+     systeem is een klant. Precies daarom moet dit expliciet: iemand die je
+     op een borrel tegenkomt is nog geen klant, en als hij als klant in de
+     lijst staat kloppen de cockpitcijfers niet meer. */
+  const org = await maakBedrijfAlsLead(`${merk} Verse Lead BV`)
+  gemaakteBedrijven.push(org.id)
+
+  const [rij] = await db.select().from(organizations).where(eq(organizations.id, org.id))
+  assert.ok(rij)
+  assert.equal(rij.status, 'lead')
+  assert.equal(rij.name, `${merk} Verse Lead BV`)
+  assert.ok(rij.slug.length > 0, 'zonder slug is de klantpagina niet te openen')
+})
+
+test('dezelfde naam twee keer wordt geweigerd', async () => {
+  /* Twee keer hetzelfde bedrijf is erger dan een melding: de deals verdelen
+     zich dan over twee bedrijven en geen van beide overzichten klopt nog. */
+  const org = await maakBedrijfAlsLead(`${merk} Dubbel BV`)
+  gemaakteBedrijven.push(org.id)
+
+  await assert.rejects(
+    () => maakBedrijfAlsLead(`${merk} Dubbel BV`),
+    (f: unknown) => f instanceof PijplijnError && /staat al in het systeem/.test(f.message),
+  )
+})
+
+test('hoofdletters maken geen tweede bedrijf', async () => {
+  // Zo ontstaat een dubbele in de praktijk: iemand typt het net anders.
+  const org = await maakBedrijfAlsLead(`${merk} Hoofdletter BV`)
+  gemaakteBedrijven.push(org.id)
+
+  await assert.rejects(
+    () => maakBedrijfAlsLead(`${merk} HOOFDLETTER bv`),
+    (f: unknown) => f instanceof PijplijnError,
+  )
+})
+
+test('een bedrijf zonder naam wordt geweigerd', async () => {
+  await assert.rejects(
+    () => maakBedrijfAlsLead('   '),
+    (f: unknown) => f instanceof PijplijnError,
+  )
+})
+
+test('een deal kan meteen op het nieuwe bedrijf', async () => {
+  // Dit is waarom het bestaat: de deal bestaat eerder dan het bedrijf.
+  const org = await maakBedrijfAlsLead(`${merk} Borrel BV`)
+  gemaakteBedrijven.push(org.id)
+
+  const deal = await maakDeal({ organizationId: org.id, title: 'Kennismaking' })
+  assert.equal(deal.organizationId, org.id)
+  assert.equal(deal.status, 'open')
+})
+
+test('de keuzelijst laat ook leads zien, met hun status', async () => {
+  /* Jim kon alleen bedrijven kiezen die als klant in het systeem stonden.
+     Niet omdat de lijst filterde, maar omdat een bedrijf alleen via Klanten
+     aangemaakt kon worden en dat zette hem op klant. De lijst moet alles
+     laten zien, met de status erbij zodat je een lead van een klant kunt
+     onderscheiden. */
+  const org = await maakBedrijfAlsLead(`${merk} In De Lijst BV`)
+  gemaakteBedrijven.push(org.id)
+
+  /* Een eigen prospect, niet de gedeelde uit before(): die wordt door de
+     test over het winnen van een deal omgezet naar klant, en dan hangt deze
+     test aan de volgorde waarin de tests draaien. */
+  const [eigenProspect] = await db
+    .insert(organizations)
+    .values({
+      slug: `${merk}-lijst-prospect`,
+      name: `${merk} Lijst Prospect BV`,
+      status: 'prospect',
+    })
+    .returning({ id: organizations.id })
+  gemaakteBedrijven.push(eigenProspect!.id)
+
+  const lijst = await listBedrijfsnamen()
+  const lead = lijst.find((b) => b.id === org.id)
+  const prospect = lijst.find((b) => b.id === eigenProspect!.id)
+  const klant = lijst.find((b) => b.id === klantId)
+
+  assert.ok(lead, 'een lead hoort in de keuzelijst te staan')
+  assert.equal(lead.status, 'lead')
+  assert.ok(prospect, 'een prospect hoort in de keuzelijst te staan')
+  assert.equal(prospect.status, 'prospect')
+  assert.ok(klant, 'een klant hoort in de keuzelijst te staan')
 })

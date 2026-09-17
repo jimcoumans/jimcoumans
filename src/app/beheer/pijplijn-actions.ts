@@ -13,6 +13,7 @@ import {
   verliesDeal,
   heropenDeal,
   wisDeal,
+  maakBedrijfAlsLead,
   PijplijnError,
 } from '@/lib/pijplijn'
 import type { ActionResult } from './actions'
@@ -56,8 +57,25 @@ function datum(formData: FormData, naam: string): Date | null {
 export async function nieuweDeal(formData: FormData): Promise<ActionResult> {
   await requireStaff()
 
+  /* Twee manieren om het bedrijf aan te wijzen: kiezen uit de lijst, of de
+     naam van een nieuw bedrijf typen. Precies één van de twee, want beide
+     tegelijk is niet te raden: wilde iemand een nieuw bedrijf, of was de
+     keuzelijst blijven staan op de vorige? */
   const organizationId = tekst(formData, 'organizationId')
-  if (!organizationId) return { ok: false, error: 'Kies bij welk bedrijf deze deal hoort.' }
+  const nieuwBedrijf = tekst(formData, 'nieuwBedrijf')
+
+  if (organizationId === '' && nieuwBedrijf === '') {
+    return {
+      ok: false,
+      error: 'Kies een bedrijf uit de lijst, of vul de naam van een nieuw bedrijf in.',
+    }
+  }
+  if (organizationId !== '' && nieuwBedrijf !== '') {
+    return {
+      ok: false,
+      error: `Je hebt een bedrijf gekozen en ook "${nieuwBedrijf}" ingevuld als nieuw bedrijf. Doe er een van de twee.`,
+    }
+  }
 
   const soort = tekst(formData, 'soort')
   const bedrag = tekst(formData, 'bedrag')
@@ -72,8 +90,20 @@ export async function nieuweDeal(formData: FormData): Promise<ActionResult> {
   }
 
   return veilig(async () => {
+    /* Een nieuw bedrijf wordt hier aangemaakt als lead. Gaat het aanmaken
+       fout, dan komt er geen deal; dat is de goede kant om het fout te doen.
+       Een deal zonder bedrijf kan de database niet opslaan. */
+    let bijBedrijf = organizationId
+    if (nieuwBedrijf !== '') {
+      const org = await maakBedrijfAlsLead(nieuwBedrijf)
+      bijBedrijf = org.id
+      // Het bedrijf staat nu ook in de klantenlijst en het CRM.
+      revalidatePath('/beheer/klanten')
+      revalidatePath('/beheer/crm')
+    }
+
     await maakDeal({
-      organizationId,
+      organizationId: bijBedrijf,
       title: tekst(formData, 'titel'),
       kind: soort === 'project' ? 'project' : 'retainer',
       valueCents,

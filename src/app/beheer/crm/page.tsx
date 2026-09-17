@@ -10,6 +10,7 @@ import {
 import { AppShell } from '@/components/AppShell'
 import { Avatar } from '@/components/Avatar'
 import { MAANDNAMEN } from '@/lib/dates'
+import { leeftijd } from '@/lib/leeftijd'
 import { metGeheugen } from '@/lib/cache'
 
 /**
@@ -173,8 +174,8 @@ export default async function CrmPage({
             <thead>
               <tr className="border-b border-gray-200 text-left text-xs text-gray-600">
                 <th className="px-4 py-2.5 font-normal">Naam</th>
-                <th className="px-4 py-2.5 font-normal">Functie</th>
                 <th className="px-4 py-2.5 font-normal">Waar</th>
+                <th className="px-4 py-2.5 font-normal">Functie</th>
                 <th className="px-4 py-2.5 font-normal">Bereikbaar</th>
                 <th className="px-4 py-2.5 font-normal">Verjaardag</th>
               </tr>
@@ -211,13 +212,13 @@ export default async function CrmPage({
                   </td>
 
                   <td className="px-4 py-3">
-                    {m.functie ?? <span className="text-gray-400">&mdash;</span>}
-                  </td>
-
-                  <td className="px-4 py-3">
                     <a href={m.href} className="hover:text-jr-blue">
                       {m.bijNaam}
                     </a>
+                  </td>
+
+                  <td className="px-4 py-3">
+                    {m.functie ?? <span className="text-gray-400">&mdash;</span>}
                   </td>
 
                   <td className="px-4 py-3 text-xs">
@@ -243,9 +244,9 @@ export default async function CrmPage({
                     {m.birthDay !== null && m.birthMonth !== null ? (
                       <>
                         {m.birthDay} {MAANDNAMEN[m.birthMonth - 1]}
-                        {m.birthYear !== null && (
+                        {leeftijd(m.birthDay, m.birthMonth, m.birthYear) !== null && (
                           <span className="block text-gray-500">
-                            wordt {new Date().getFullYear() - m.birthYear}
+                            {leeftijd(m.birthDay, m.birthMonth, m.birthYear)} jaar
                           </span>
                         )}
                       </>

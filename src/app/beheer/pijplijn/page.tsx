@@ -9,6 +9,7 @@ import {
   listDealEigenaren,
   listBedrijfsnamen,
   BRON_LABELS,
+  BEDRIJF_STATUS_LABELS,
   type Bedragen,
   type DealKaart,
 } from '@/lib/pijplijn'
@@ -251,11 +252,27 @@ export default async function PijplijnPage({
             dan hoeft hij nooit in de achterstand te staan.
           </p>
           <ActionForm action={nieuweDeal} submitLabel="Deal aanmaken">
+            {/* Kiezen uit de lijst, of de naam van een nieuw bedrijf typen. Een
+                deal bestaat vaak eerder dan het bedrijf: je krijgt een naam op
+                een borrel en wilt die kwijt voordat je hem vergeet. Het nieuwe
+                bedrijf krijgt status lead, want klant is het nog niet. */}
             <Select
               label="Bedrijf"
               name="organizationId"
-              options={bedrijven.map((b) => ({ value: b.id, label: b.naam }))}
-              hint="Staat het bedrijf er nog niet bij? Maak het eerst aan als lead bij Klanten."
+              defaultValue=""
+              options={[
+                { value: '', label: 'Nieuw bedrijf — naam hieronder invullen' },
+                ...bedrijven.map((b) => ({
+                  value: b.id,
+                  label: `${b.naam} · ${BEDRIJF_STATUS_LABELS[b.status]}`,
+                })),
+              ]}
+            />
+            <Field
+              label="Nieuw bedrijf"
+              name="nieuwBedrijf"
+              placeholder="Brouwer Horeca Groep"
+              hint="Alleen invullen als het bedrijf er nog niet bij staat. Het wordt aangemaakt als lead; de rest van de gegevens vul je later in."
             />
             <Field label="Waar gaat het over" name="titel" required placeholder="Marketing partnership" />
             <Select
