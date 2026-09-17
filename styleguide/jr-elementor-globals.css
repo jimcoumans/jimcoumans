@@ -37,8 +37,15 @@
    14. Donkere secties
    15. Utilities
    16. Motion & scroll reveal
-   17. Responsive
-   18. Toegankelijkheid & print
+   19. Keuzevelden — checkbox, radio, switch
+   20. Filters & zoeken
+   21. Navigatie — mobiel menu, breadcrumbs, paginering
+   22. Content-componenten
+   23. Feedback — meldingen, tooltips, laden, leeg
+   24. Elementor-widgets
+   25. Beeld, iconen & Nederlandse typografie
+   26. Responsive
+   27. Toegankelijkheid & print
    ========================================================================== */
 
 
@@ -69,117 +76,175 @@
   --jr-weight-bold:     700;   /* display, H1, H2 */
 
 
-  /* ---- 1.3 Kleur — merk --------------------------------------------------
-     DRIE BLAUWEN, ÉÉN REGEL:
-       blauw als VORM (icoon, vlak, streep, groot cijfer)  → --jr-blue
-       blauw als TEKST (eyebrow, link, label)              → --jr-blue-link
-       blauw als KNOPVLAK (met witte tekst)                → --jr-blue-action
-     Zo is er nooit twijfel welke je pakt. */
+  /* ---- 1.3 KLEUR — VOLLEDIGE TRAPPEN --------------------------------------
+     Elke kleur heeft acht stappen. Zo hoef je nooit zelf een tint te mengen
+     en staat er nergens een kleurwaarde die hier niet in staat.
 
-  --jr-blue:            #007AFF;   /* merkblauw — vormen en grafische accenten */
-  --jr-blue-link:       #0066CC;   /* blauwe tekst — 5.6:1 op wit */
-  --jr-blue-link-hover: #004C99;   /* link hover */
-  --jr-blue-link-active:#003D7A;   /* link active */
+       50   zachtste vlak (achtergrond van een hele sectie)
+       100  zacht vlak (badge, highlight-blok)
+       200  rand op een gekleurd vlak
+       base HET vlak (knop, icoon, balk)
+       hover / active
+       text kleur die als TEKST op wit leesbaar is (WCAG AA)
+       dark kleur die als tekst op een DONKERE achtergrond werkt
+     ------------------------------------------------------------------------ */
+
+  /* Blauw — de merkkleur.
+     DRIE BASE-BLAUWEN, ÉÉN REGEL:
+       blauw als VORM (icoon, vlak, streep, groot cijfer) → --jr-blue
+       blauw als TEKST (eyebrow, link, label)             → --jr-blue-link
+       blauw als KNOPVLAK (met witte tekst)               → --jr-blue-action  */
+  --jr-blue-50:         #F0F7FF;
+  --jr-blue-100:        #E0EFFF;
+  --jr-blue-150:        #E2EBF3;   /* brandbook "Accent Light Blue" */
+  --jr-blue-200:        #CCE4FF;
+  --jr-blue-300:        #B3D7FF;
+  --jr-blue:            #007AFF;   /* vorm — 4.0:1 op wit */
+  --jr-blue-link:       #0066CC;   /* tekst — 5.6:1 */
+  --jr-blue-link-hover: #004C99;
+  --jr-blue-link-active:#003D7A;
   --jr-blue-action:     #0857C3;   /* knopvlak — 6.7:1 met wit */
-  --jr-blue-action-hov: #003967;   /* knop hover */
-  --jr-blue-action-act: #002E52;   /* knop active */
+  --jr-blue-action-hov: #003967;
+  --jr-blue-action-act: #002E52;
   --jr-blue-deep:       #005CBF;   /* gradients, diepte */
-  --jr-blue-dm:         #2997FF;   /* blauwe tekst op donkere achtergrond */
+  --jr-blue-dm:         #2997FF;   /* tekst op donker */
   --jr-blue-dm-hover:   #66B5FF;
-  --jr-black:           #1C1C1E;   /* merkzwart */
 
-  /* Blauwe tinten voor vlakken */
-  --jr-blue-tint:       #E2EBF3;   /* lichtblauw vlak (brandbook) */
-  --jr-blue-tint-soft:  rgba(0,122,255,.08);
-  --jr-blue-tint-mid:   rgba(0,122,255,.12);
-
-  /* ---- 1.3b Accent — JR Lime ---------------------------------------------
-     Tweede accentkleur. Sportief, herkenbaar, en het complement van blauw.
-     Alleen als VLAK met donkere tekst, of als grafisch element.
-     NOOIT als tekstkleur op wit — daar is de donkere variant voor. */
-
-  --jr-lime:            #C4F000;   /* het vlak — 12.8:1 met --jr-text */
-  --jr-lime-hover:      #B2DA00;   /* hover op een lime vlak */
+  /* Lime — tweede accent. Vlak met donkere tekst, nooit tekst op wit. */
+  --jr-lime-50:         #FAFEEB;
+  --jr-lime-100:        #F2FCCC;
+  --jr-lime-200:        #E7F999;
+  --jr-lime-300:        #DCF666;
+  --jr-lime:            #C4F000;   /* 12.8:1 met --jr-text erop */
+  --jr-lime-hover:      #B2DA00;
   --jr-lime-active:     #9FC200;
   --jr-lime-text:       #5A7000;   /* lime als tekst op wit — 5.6:1 */
-  --jr-lime-tint:       #F2FCCC;   /* zacht lime vlak */
-  --jr-lime-tint-mid:   rgba(196,240,0,.22);
-  --jr-lime-dm:         #D9FF33;   /* lime tekst op donkere achtergrond */
+  --jr-lime-dm:         #D9FF33;
+
+  /* Groen — succes */
+  --jr-green-50:        #EFFAF2;
+  --jr-green-100:       #E6F7EB;
+  --jr-green-200:       #C2EECD;
+  --jr-green:           #34C759;
+  --jr-green-hover:     #25AD42;
+  --jr-green-active:    #1D9436;
+  --jr-green-text:      #1D7D3F;   /* 4.6:1 */
+  --jr-green-dm:        #41C96A;
+
+  /* Oranje — waarschuwing */
+  --jr-orange-50:       #FEF7EE;
+  --jr-orange-100:      #FEF2E0;
+  --jr-orange-200:      #FCE3BE;
+  --jr-orange:          #F6A027;
+  --jr-orange-hover:    #E08A10;
+  --jr-orange-active:   #C4770B;
+  --jr-orange-text:     #94590A;   /* 4.7:1 */
+  --jr-orange-dm:       #F0A040;
+
+  /* Geel — highlight */
+  --jr-yellow-50:       #FFFBEA;
+  --jr-yellow-100:      #FFF8DC;
+  --jr-yellow-200:      #FFF1B7;
+  --jr-yellow:          #FFD631;
+  --jr-yellow-hover:    #F0C400;
+  --jr-yellow-active:   #D6AF00;
+  --jr-yellow-text:     #806400;   /* 5.3:1 */
+  --jr-yellow-dm:       #E0C040;
+
+  /* Rood — fout */
+  --jr-red-50:          #FFEFEE;
+  --jr-red-100:         #FDECEA;
+  --jr-red-200:         #FFC4C1;
+  --jr-red:             #FF3B30;
+  --jr-red-hover:       #EF302B;
+  --jr-red-active:      #D62620;
+  --jr-red-text:        #C02A22;   /* 4.9:1 */
+  --jr-red-dm:          #FF6B61;
+
+  /* Paars — creatief accent */
+  --jr-purple-50:       #F9F1FC;
+  --jr-purple-100:      #F5EAFB;
+  --jr-purple-200:      #E7CBF5;
+  --jr-purple:          #AF52DE;
+  --jr-purple-hover:    #9840CC;
+  --jr-purple-active:   #8232B0;
+  --jr-purple-text:     #7E2FB0;   /* 5.4:1 */
+  --jr-purple-dm:       #C77CE8;
+
+  /* Neutraal — informatie zonder lading */
+  --jr-neutral-50:      #FAFAFB;
+  --jr-neutral-100:     #F5F5F7;
+  --jr-neutral-200:     #E5E5E9;
+  --jr-neutral-text:    #6E6E73;
+  --jr-neutral-dm:      #A1A1A6;
 
 
-  /* ---- 1.4 Kleur — tekst ------------------------------------------------- */
-  --jr-text:            #1D1D1F;   /* primair */
-  --jr-text-secondary:  #6E6E73;   /* intro's, subkoppen */
-  --jr-text-tertiary:   #86868B;   /* captions, metadata */
+  /* ---- 1.4 GRIJSTRAP — 16 stappen ----------------------------------------
+     Van wit naar merkzwart. Dekt zowel Apple's grijzen als het brandbook.
+     Gebruik altijd een stap uit deze trap, nooit een zelfgemengd grijs. */
+  --jr-gray-00:  #FFFFFF;
+  --jr-gray-05:  #FAFAFB;
+  --jr-gray-10:  #F5F5F7;   /* Apple's sectiegrijs */
+  --jr-gray-15:  #F2F2F7;   /* brandbook */
+  --jr-gray-20:  #EBEBF0;   /* verzonken vlak */
+  --jr-gray-25:  #E5E5E9;   /* subtiele lijn */
+  --jr-gray-30:  #D2D2D7;   /* standaard lijn */
+  --jr-gray-35:  #D2D1D7;   /* brandbook */
+  --jr-gray-40:  #C8C8CD;   /* lijn bij hover */
+  --jr-gray-50:  #ADADB2;   /* uitgeschakeld */
+  --jr-gray-60:  #86868B;   /* tekst tertiair */
+  --jr-gray-65:  #6E6E73;   /* tekst secundair */
+  --jr-gray-70:  #636466;   /* brandbook */
+  --jr-gray-80:  #49484A;   /* brandbook */
+  --jr-gray-85:  #3A3A3C;
+  --jr-gray-90:  #2C2D2E;   /* card op donker */
+  --jr-gray-95:  #1D1D1F;   /* tekst primair */
+  --jr-gray-100: #1C1C1E;   /* merkzwart */
+
+  --jr-black:    #1C1C1E;
+
+
+  /* ---- 1.5 Kleur — tekst ------------------------------------------------- */
+  --jr-text:            #1D1D1F;
+  --jr-text-secondary:  #6E6E73;
+  --jr-text-tertiary:   #86868B;
   --jr-text-disabled:   #ADADB2;
-  --jr-text-inverse:    #F5F5F7;   /* op donker */
+  --jr-text-inverse:    #F5F5F7;
   --jr-text-inverse-sec:#A1A1A6;
   --jr-text-inverse-ter:#86868B;
   --jr-text-on-color:   #FFFFFF;   /* op blauw/rood/groen vlak */
   --jr-text-on-lime:    #1D1D1F;   /* op lime vlak */
 
 
-  /* ---- 1.5 Kleur — vlakken ---------------------------------------------- */
+  /* ---- 1.6 Kleur — vlakken ----------------------------------------------- */
   --jr-surface:         #FFFFFF;
-  --jr-surface-subtle:  #F5F5F7;   /* afwisselende secties */
-  --jr-surface-gray:    #F2F2F7;   /* brandbook-grijs */
-  --jr-surface-sunk:    #EBEBF0;   /* verzonken vlak, segmented track */
-  --jr-surface-tint:    #E2EBF3;   /* lichtblauw */
+  --jr-surface-subtle:  #F5F5F7;
+  --jr-surface-gray:    #F2F2F7;
+  --jr-surface-sunk:    #EBEBF0;
+  --jr-surface-tint:    #E2EBF3;
   --jr-surface-dark:    #1C1C1E;
-  --jr-surface-dark-alt:#2C2D2E;   /* card op donkere sectie */
+  --jr-surface-dark-alt:#2C2D2E;
   --jr-surface-dark-sunk:#38383C;
+  --jr-blue-tint:       #E2EBF3;
+  --jr-blue-tint-soft:  rgba(0,122,255,.08);
+  --jr-blue-tint-mid:   rgba(0,122,255,.12);
+  --jr-lime-tint:       #F2FCCC;
+  --jr-lime-tint-mid:   rgba(196,240,0,.22);
+  --jr-green-tint:      #E6F7EB;
+  --jr-orange-tint:     #FEF2E0;
+  --jr-yellow-tint:     #FFF8DC;
+  --jr-red-tint:        #FDECEA;
+  --jr-purple-tint:     #F5EAFB;
+  --jr-neutral-tint:    #F5F5F7;
 
 
-  /* ---- 1.6 Kleur — lijnen ------------------------------------------------ */
-  --jr-line-subtle:     #E5E5E9;   /* dividers binnen een blok */
-  --jr-line:            #D2D2D7;   /* standaard rand, inputs */
-  --jr-line-strong:     #C8C8CD;   /* hover op een rand */
-  --jr-line-contrast:   #86868B;   /* rand die echt moet opvallen */
+  /* ---- 1.7 Kleur — lijnen ------------------------------------------------- */
+  --jr-line-subtle:     #E5E5E9;
+  --jr-line:            #D2D2D7;
+  --jr-line-strong:     #C8C8CD;
+  --jr-line-contrast:   #86868B;
   --jr-line-dark:       rgba(255,255,255,.14);
   --jr-line-dark-strong:rgba(255,255,255,.28);
-
-
-  /* ---- 1.7 Kleur — status ------------------------------------------------
-     Elke status heeft vier tinten: vlak, hover, tekst-op-wit, zacht vlak.
-     Alles wat de stylesheet gebruikt, staat hier. Geen losse rgba's meer. */
-
-  /* Groen — succes */
-  --jr-green:           #34C759;
-  --jr-green-hover:     #25AD42;
-  --jr-green-text:      #1D7D3F;   /* 4.6:1 op wit */
-  --jr-green-tint:      #E6F7EB;
-  --jr-green-dm:        #41C96A;
-
-  /* Oranje — waarschuwing */
-  --jr-orange:          #F6A027;
-  --jr-orange-hover:    #E08A10;
-  --jr-orange-text:     #94590A;   /* 4.7:1 op wit */
-  --jr-orange-tint:     #FEF2E0;
-  --jr-orange-dm:       #F0A040;
-
-  /* Geel — highlight */
-  --jr-yellow:          #FFD631;
-  --jr-yellow-hover:    #F0C400;
-  --jr-yellow-text:     #806400;
-  --jr-yellow-tint:     #FFF8DC;
-
-  /* Rood — fout */
-  --jr-red:             #FF3B30;
-  --jr-red-hover:       #EF302B;
-  --jr-red-text:        #C02A22;   /* 4.9:1 op wit */
-  --jr-red-tint:        #FDECEA;
-  --jr-red-dm:          #FF6B61;
-
-  /* Paars — creatief accent */
-  --jr-purple:          #AF52DE;
-  --jr-purple-hover:    #9840CC;
-  --jr-purple-text:     #7E2FB0;   /* 5.4:1 op wit */
-  --jr-purple-tint:     #F5EAFB;
-  --jr-purple-dm:       #C77CE8;
-
-  /* Neutraal — informatie zonder lading */
-  --jr-neutral-tint:    #F5F5F7;
-  --jr-neutral-text:    #6E6E73;
 
 
   /* ---- 1.8 Lettergroottes (desktop) -------------------------------------- */
@@ -281,6 +346,40 @@
   --jr-pad-tab:         16px 20px;
   --jr-pad-message:     16px 20px;   /* form-melding */
 
+  /* Keuzevelden */
+  --jr-size-checkbox:   20px;
+  --jr-size-radio:      20px;
+  --jr-size-switch-w:   50px;
+  --jr-size-switch-h:   30px;
+  --jr-gap-choice-label:12px;   /* vinkje → label */
+  --jr-gap-choice-row:  14px;   /* keuze → volgende keuze */
+
+  /* Filters */
+  --jr-pad-filter-chip: 9px 16px;
+  --jr-pad-filter-bar:  16px 0;
+  --jr-gap-filter:      10px;
+  --jr-h-search:        48px;
+
+  /* Feedback */
+  --jr-pad-alert:       16px 20px;
+  --jr-pad-toast:       12px 20px;
+  --jr-pad-tooltip:     8px 12px;
+  --jr-h-progress:      6px;
+
+  /* Content-componenten */
+  --jr-pad-iconbox:     32px;
+  --jr-pad-testimonial: 40px;
+  --jr-pad-pricing:     40px 32px;
+  --jr-pad-cta-banner:  64px 48px;
+  --jr-size-avatar:     48px;
+  --jr-size-icon-tile:  56px;
+
+  /* Navigatie */
+  --jr-pad-breadcrumb:  0;
+  --jr-size-page-btn:   44px;
+  --jr-pad-offcanvas:   24px;
+  --jr-w-offcanvas:     min(88vw, 400px);
+
   /* Structuur */
   --jr-pad-footer:      80px 0 48px;
   --jr-pad-dropdown:    12px;
@@ -311,14 +410,45 @@
   --jr-section-y-sm:    80px;
 
 
-  /* ---- 1.12 Breedtes ------------------------------------------------------ */
-  --jr-container:        1024px;
-  --jr-container-wide:   1280px;
-  --jr-container-full:   1440px;
-  --jr-container-text:   692px;   /* lopende tekst — nooit breder */
-  --jr-container-narrow: 540px;
-  --jr-gutter:           32px;
+  /* ---- 1.12 PAGINA-ANATOMIE ----------------------------------------------
+     Zo is elke pagina opgebouwd. Dit is het antwoord op "loopt de content
+     van zijkant tot zijkant?" — nee, nooit.
 
+       viewport  (100% van het scherm, kan 2560px zijn)
+       └─ SECTIE (100% breed — draagt de achtergrondkleur, loopt WEL van
+       │         rand tot rand, zodat een grijze of donkere band doorloopt)
+       │  └─ CONTAINER (max-width + auto-marges + gutter — hier stopt de
+       │     │          content. Groeit het scherm verder, dan groeit
+       │     │          alleen de witruimte links en rechts)
+       │     └─ content
+       └─ volgende sectie
+
+     Op een 2560px-scherm is de content dus 1024px breed met ruim 750px wit
+     aan weerszijden. Dat is precies wat apple.com doet. */
+
+  /* Containerbreedtes — waar de content stopt */
+  --jr-container-narrow: 540px;   /* gecentreerde intro's, formulieren, login */
+  --jr-container-text:   692px;   /* lopende tekst — NOOIT breder */
+  --jr-container:        1024px;  /* STANDAARD voor de meeste secties */
+  --jr-container-wide:   1280px;  /* grids, cases, portfolio, logo-rijen */
+  --jr-container-full:   1440px;  /* full-bleed beeld met marge */
+
+  /* Gutter — de minimale ruimte tussen content en schermrand.
+     Dit is de belangrijkste waarde van de hele pagina-layout: hij zorgt
+     dat tekst op een telefoon nooit tegen het glas aan plakt. */
+  --jr-gutter:      32px;   /* desktop */
+  --jr-gutter-nav:  32px;   /* idem voor de navbalk en footer */
+
+  /* Rekenvoorbeeld: op welke schermbreedte raakt de container zijn maximum?
+       standaard  1024 + 2×32 = 1088px
+       wide       1280 + 2×32 = 1344px
+       full       1440 + 2×32 = 1504px
+     Daarboven blijft de content staan en groeit alleen het wit. */
+
+  /* Minimale paginahoogtes */
+  --jr-min-hero:      560px;   /* hero met kop + intro + knop */
+  --jr-min-hero-full: 720px;   /* hero met beeld */
+  --jr-min-page:      60vh;    /* korte pagina's blijven staan, geen zwevende footer */
 
   /* ---- 1.13 Hoekradius ---------------------------------------------------- */
   --jr-radius-xs:    8px;
@@ -376,9 +506,18 @@
 
   /* ---- 1.17 Overig ---------------------------------------------------------- */
   --jr-blur-nav:    saturate(180%) blur(20px);
-  --jr-nav-height:  72px;
-  --jr-z-nav:       1000;
-  --jr-z-overlay:   1100;
+  --jr-nav-height:      72px;
+  --jr-nav-height-sub:  44px;   /* tweede navbalk / anchor-nav */
+  --jr-bar-height:      64px;   /* sticky CTA-balk op mobiel */
+
+  /* Z-index — één schaal, zodat niets ooit onverwacht onder iets anders valt */
+  --jr-z-base:      1;
+  --jr-z-raised:    10;     /* card die opkomt bij hover */
+  --jr-z-sticky:    100;    /* sticky kolom, filterbalk */
+  --jr-z-dropdown:  500;    /* select, mega menu */
+  --jr-z-nav:       1000;   /* hoofdnavigatie */
+  --jr-z-offcanvas: 1050;   /* mobiel menu */
+  --jr-z-overlay:   1100;   /* verduistering achter een modal */
 
   /* ---- 1.18 Transparante kleuren ------------------------------------------
      Alles wat met doorzichtigheid werkt, ook hier gedefinieerd — zodat geen
@@ -1604,7 +1743,1067 @@ a.jr-tag:hover { border-color: var(--jr-text); color: var(--jr-text); text-decor
 
 
 /* ==========================================================================
-   17. RESPONSIVE
+   19. KEUZEVELDEN — CHECKBOX, RADIO, SWITCH
+   ==========================================================================
+   Native checkboxes zien er op elk besturingssysteem anders uit. Deze
+   vervangen ze door één vorm die overal gelijk is, met behoud van
+   toetsenbordbediening en schermlezer-ondersteuning.
+   ========================================================================== */
+
+.jr-choice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--jr-gap-choice-label);
+  margin-bottom: var(--jr-gap-choice-row);
+  cursor: pointer;
+  font-size: var(--jr-fs-body);
+  line-height: 1.4;
+}
+.jr-choice:last-child { margin-bottom: 0; }
+
+/* Het echte veld blijft bestaan maar wordt onzichtbaar — zo blijven
+   tab-volgorde, schermlezers en formulierafhandeling intact. */
+.jr-choice input[type="checkbox"],
+.jr-choice input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: var(--jr-size-checkbox);
+  height: var(--jr-size-checkbox);
+  margin: 0;
+  cursor: pointer;
+}
+
+.jr-choice-box {
+  flex: none;
+  width: var(--jr-size-checkbox);
+  height: var(--jr-size-checkbox);
+  margin-top: 1px;
+  background-color: var(--jr-surface);
+  border: var(--jr-stroke-hairline) solid var(--jr-line-strong);
+  border-radius: 6px;
+  transition: background-color var(--jr-dur-fast) var(--jr-ease),
+              border-color var(--jr-dur-fast) var(--jr-ease),
+              box-shadow var(--jr-dur-fast) var(--jr-ease);
+}
+.jr-choice--radio .jr-choice-box { border-radius: var(--jr-radius-round); }
+
+.jr-choice input:hover + .jr-choice-box { border-color: var(--jr-blue); }
+
+.jr-choice input:checked + .jr-choice-box {
+  background-color: var(--jr-blue);
+  border-color: var(--jr-blue);
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='10' viewBox='0 0 12 10'%3E%3Cpath fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M1 5.2 4.2 8.4 11 1.6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.jr-choice--radio input:checked + .jr-choice-box {
+  background-image: none;
+  box-shadow: inset 0 0 0 5px var(--jr-surface), inset 0 0 0 20px var(--jr-blue);
+}
+
+/* Half aangevinkt — "alle branches" met een deel geselecteerd */
+.jr-choice input:indeterminate + .jr-choice-box {
+  background-color: var(--jr-blue);
+  border-color: var(--jr-blue);
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='2' viewBox='0 0 10 2'%3E%3Cpath fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' d='M1 1h8'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.jr-choice input:focus-visible + .jr-choice-box { box-shadow: var(--jr-focus-ring); }
+
+.jr-choice input:disabled + .jr-choice-box {
+  background-color: var(--jr-surface-subtle);
+  border-color: var(--jr-line);
+}
+.jr-choice input:disabled ~ .jr-choice-label { color: var(--jr-text-disabled); }
+.jr-choice:has(input:disabled) { cursor: not-allowed; }
+
+.jr-choice-label { flex: 1; }
+.jr-choice-label small {
+  display: block;
+  font-size: var(--jr-fs-small);
+  color: var(--jr-text-secondary);
+  margin-top: 2px;
+}
+
+/* Keuze als kaart — voor "kies je pakket" of een branchekeuze */
+.jr-choice--card {
+  padding: var(--jr-space-4) var(--jr-space-5);
+  border: var(--jr-stroke-hairline) solid var(--jr-line);
+  border-radius: var(--jr-radius-sm);
+  margin-bottom: var(--jr-space-3);
+  transition: border-color var(--jr-dur-fast) var(--jr-ease),
+              background-color var(--jr-dur-fast) var(--jr-ease);
+}
+.jr-choice--card:hover { border-color: var(--jr-line-strong); }
+.jr-choice--card:has(input:checked) {
+  border-color: var(--jr-blue);
+  background-color: var(--jr-blue-50);
+}
+
+/* Switch — voor aan/uit, niet voor keuzes */
+.jr-switch { display: inline-flex; align-items: center; gap: var(--jr-gap-choice-label); cursor: pointer; }
+.jr-switch input { position: absolute; opacity: 0; width: var(--jr-size-switch-w); height: var(--jr-size-switch-h); margin: 0; }
+.jr-switch-track {
+  flex: none;
+  width: var(--jr-size-switch-w);
+  height: var(--jr-size-switch-h);
+  background-color: var(--jr-gray-30);
+  border-radius: var(--jr-radius-pill);
+  position: relative;
+  transition: background-color var(--jr-dur-base) var(--jr-ease);
+}
+.jr-switch-track::after {
+  content: "";
+  position: absolute;
+  top: 2px; left: 2px;
+  width: calc(var(--jr-size-switch-h) - 4px);
+  height: calc(var(--jr-size-switch-h) - 4px);
+  background-color: var(--jr-surface);
+  border-radius: var(--jr-radius-round);
+  box-shadow: 0 2px 6px rgba(0,0,0,.18);
+  transition: transform var(--jr-dur-base) var(--jr-ease-out);
+}
+.jr-switch input:checked + .jr-switch-track { background-color: var(--jr-green); }
+.jr-switch input:checked + .jr-switch-track::after {
+  transform: translateX(calc(var(--jr-size-switch-w) - var(--jr-size-switch-h)));
+}
+.jr-switch input:focus-visible + .jr-switch-track { box-shadow: var(--jr-focus-ring); }
+.jr-switch input:disabled + .jr-switch-track { opacity: .4; }
+
+
+/* ==========================================================================
+   20. FILTERS & ZOEKEN
+   ========================================================================== */
+
+/* Filterbalk — blijft plakken onder de navigatie bij het scrollen */
+.jr-filterbar {
+  position: sticky;
+  top: var(--jr-nav-height);
+  z-index: var(--jr-z-sticky);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--jr-gap-filter);
+  padding: var(--jr-pad-filter-bar);
+  background-color: var(--jr-alpha-nav);
+  -webkit-backdrop-filter: var(--jr-blur-nav);
+  backdrop-filter: var(--jr-blur-nav);
+  border-bottom: var(--jr-stroke-hairline) solid var(--jr-line-subtle);
+}
+.jr-filterbar--static { position: static; background: transparent; backdrop-filter: none; }
+
+/* Filter-chip — klikbaar, met aan/uit-staat */
+.jr-filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--jr-font-text);
+  font-size: var(--jr-fs-small);
+  font-weight: var(--jr-weight-medium);
+  color: var(--jr-text);
+  background-color: var(--jr-surface-subtle);
+  border: var(--jr-stroke-hairline) solid transparent;
+  border-radius: var(--jr-radius-pill);
+  padding: var(--jr-pad-filter-chip);
+  min-height: 40px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color var(--jr-dur-fast) var(--jr-ease),
+              border-color var(--jr-dur-fast) var(--jr-ease),
+              color var(--jr-dur-fast) var(--jr-ease);
+}
+.jr-filter-chip:hover { background-color: var(--jr-surface-sunk); }
+.jr-filter-chip.is-active {
+  background-color: var(--jr-blue-action);
+  border-color: var(--jr-blue-action);
+  color: var(--jr-text-on-color);
+}
+.jr-filter-chip.is-active:hover { background-color: var(--jr-blue-action-hov); border-color: var(--jr-blue-action-hov); }
+.jr-filter-chip[disabled] { opacity: .4; cursor: not-allowed; }
+
+/* Aantal per filter */
+.jr-filter-chip .jr-count {
+  font-size: var(--jr-fs-caption);
+  font-weight: var(--jr-weight-regular);
+  color: var(--jr-text-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+.jr-filter-chip.is-active .jr-count { color: rgba(255,255,255,.75); }
+
+/* Actief filter met kruisje om te verwijderen */
+.jr-filter-active {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--jr-fs-small);
+  color: var(--jr-blue-action);
+  background-color: var(--jr-blue-100);
+  border-radius: var(--jr-radius-pill);
+  padding: 7px 8px 7px 14px;
+}
+.jr-filter-active button {
+  display: flex; align-items: center; justify-content: center;
+  width: 20px; height: 20px;
+  font-size: 15px; line-height: 1;
+  color: var(--jr-blue-action);
+  background: transparent;
+  border: none;
+  border-radius: var(--jr-radius-round);
+  cursor: pointer;
+  transition: background-color var(--jr-dur-fast) var(--jr-ease);
+}
+.jr-filter-active button:hover { background-color: var(--jr-blue-200); }
+
+/* Alles wissen */
+.jr-filter-reset {
+  font-size: var(--jr-fs-small);
+  color: var(--jr-text-secondary);
+  background: none;
+  border: none;
+  padding: 7px 4px;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: var(--jr-underline-offset);
+  transition: color var(--jr-dur-fast) var(--jr-ease);
+}
+.jr-filter-reset:hover { color: var(--jr-text); }
+
+/* Resultaatteller */
+.jr-result-count {
+  font-size: var(--jr-fs-small);
+  color: var(--jr-text-secondary);
+  font-variant-numeric: tabular-nums;
+  margin-left: auto;
+}
+.jr-result-count strong { color: var(--jr-text); font-weight: var(--jr-weight-semibold); }
+
+/* Zoekveld */
+.jr-search { position: relative; display: flex; align-items: center; }
+.jr-search input {
+  width: 100%;
+  height: var(--jr-h-search);
+  min-height: var(--jr-h-search);
+  padding: 0 44px 0 44px;
+  font-family: var(--jr-font-text);
+  font-size: var(--jr-fs-body);
+  color: var(--jr-text);
+  background-color: var(--jr-surface-subtle);
+  border: var(--jr-stroke-hairline) solid transparent;
+  border-radius: var(--jr-radius-pill);
+  transition: background-color var(--jr-dur-fast) var(--jr-ease),
+              border-color var(--jr-dur-fast) var(--jr-ease),
+              box-shadow var(--jr-dur-fast) var(--jr-ease);
+}
+.jr-search input:focus {
+  outline: none;
+  background-color: var(--jr-surface);
+  border-color: var(--jr-blue);
+  box-shadow: var(--jr-focus-ring);
+}
+.jr-search-icon {
+  position: absolute;
+  left: 16px;
+  width: 17px; height: 17px;
+  color: var(--jr-text-tertiary);
+  pointer-events: none;
+}
+.jr-search-clear {
+  position: absolute;
+  right: 12px;
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; line-height: 1;
+  color: var(--jr-text-tertiary);
+  background-color: var(--jr-gray-25);
+  border: none;
+  border-radius: var(--jr-radius-round);
+  cursor: pointer;
+  transition: background-color var(--jr-dur-fast) var(--jr-ease);
+}
+.jr-search-clear:hover { background-color: var(--jr-gray-30); color: var(--jr-text); }
+
+/* Sorteren */
+.jr-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--jr-fs-small);
+  color: var(--jr-text-secondary);
+}
+.jr-sort select {
+  min-height: 40px;
+  padding: 8px 40px 8px 14px;
+  font-size: var(--jr-fs-small);
+  font-weight: var(--jr-weight-medium);
+  color: var(--jr-text);
+  background-color: var(--jr-surface-subtle);
+  border: none;
+  border-radius: var(--jr-radius-pill);
+  background-position: right 14px center;
+}
+
+/* Prijsbereik */
+.jr-range { width: 100%; }
+.jr-range input[type="range"] {
+  width: 100%;
+  height: 4px;
+  min-height: 0;
+  padding: 0;
+  background: var(--jr-gray-25);
+  border: none;
+  border-radius: var(--jr-radius-pill);
+  appearance: none;
+  cursor: pointer;
+}
+.jr-range input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 24px; height: 24px;
+  background: var(--jr-surface);
+  border: var(--jr-stroke-hairline) solid var(--jr-line);
+  border-radius: var(--jr-radius-round);
+  box-shadow: 0 2px 6px rgba(0,0,0,.18);
+  cursor: grab;
+}
+.jr-range input[type="range"]::-moz-range-thumb {
+  width: 24px; height: 24px;
+  background: var(--jr-surface);
+  border: var(--jr-stroke-hairline) solid var(--jr-line);
+  border-radius: var(--jr-radius-round);
+  box-shadow: 0 2px 6px rgba(0,0,0,.18);
+  cursor: grab;
+}
+.jr-range input[type="range"]:focus-visible { box-shadow: var(--jr-focus-ring); }
+.jr-range-values {
+  display: flex; justify-content: space-between;
+  font-size: var(--jr-fs-small);
+  color: var(--jr-text-secondary);
+  font-variant-numeric: tabular-nums;
+  margin-top: var(--jr-space-3);
+}
+
+/* Filterpaneel in de zijbalk */
+.jr-filter-panel { border-top: var(--jr-stroke-hairline) solid var(--jr-line-subtle); padding: var(--jr-space-6) 0; }
+.jr-filter-panel:first-child { border-top: none; padding-top: 0; }
+.jr-filter-panel h4 {
+  font-family: var(--jr-font-text);
+  font-size: var(--jr-fs-small);
+  font-weight: var(--jr-weight-semibold);
+  color: var(--jr-text);
+  margin-bottom: var(--jr-space-4);
+}
+
+
+/* ==========================================================================
+   21. NAVIGATIE — MOBIEL MENU, BREADCRUMBS, PAGINERING
+   ========================================================================== */
+
+/* Hamburger */
+.jr-burger {
+  width: 44px; height: 44px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 5px;
+  background: none; border: none; cursor: pointer;
+  border-radius: var(--jr-radius-xs);
+}
+.jr-burger span {
+  display: block;
+  width: 18px; height: var(--jr-stroke-medium);
+  background-color: var(--jr-text);
+  border-radius: 2px;
+  transition: transform var(--jr-dur-base) var(--jr-ease),
+              opacity var(--jr-dur-fast) var(--jr-ease);
+}
+.jr-burger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.jr-burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.jr-burger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* Off-canvas menu */
+.jr-offcanvas {
+  position: fixed;
+  top: 0; right: 0; bottom: 0;
+  z-index: var(--jr-z-offcanvas);
+  width: var(--jr-w-offcanvas);
+  padding: var(--jr-pad-offcanvas);
+  background-color: var(--jr-surface);
+  box-shadow: var(--jr-shadow-xl);
+  overflow-y: auto;
+  transform: translateX(100%);
+  transition: transform var(--jr-dur-slow) var(--jr-ease-out);
+}
+.jr-offcanvas.is-open { transform: translateX(0); }
+.jr-offcanvas a {
+  display: block;
+  font-family: var(--jr-font-display);
+  font-size: var(--jr-fs-h4);
+  font-weight: var(--jr-weight-semibold);
+  letter-spacing: var(--jr-ls-h4);
+  color: var(--jr-text);
+  padding: var(--jr-space-4) 0;
+  border-bottom: var(--jr-stroke-hairline) solid var(--jr-line-subtle);
+  text-decoration: none;
+}
+.jr-offcanvas a:hover { color: var(--jr-blue-link); text-decoration: none; }
+
+.jr-backdrop {
+  position: fixed; inset: 0;
+  z-index: var(--jr-z-overlay);
+  background-color: rgba(0,0,0,.40);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--jr-dur-base) var(--jr-ease);
+}
+.jr-backdrop.is-open { opacity: 1; pointer-events: auto; }
+
+/* Mega menu */
+.jr-megamenu {
+  position: absolute;
+  left: 0; right: 0;
+  z-index: var(--jr-z-dropdown);
+  background-color: var(--jr-alpha-dropdown);
+  -webkit-backdrop-filter: var(--jr-blur-nav);
+  backdrop-filter: var(--jr-blur-nav);
+  border-bottom: var(--jr-stroke-hairline) solid var(--jr-line-subtle);
+  box-shadow: var(--jr-shadow-md);
+  padding: var(--jr-space-9) 0;
+}
+.jr-megamenu h5 {
+  font-family: var(--jr-font-text);
+  font-size: var(--jr-fs-caption);
+  font-weight: var(--jr-weight-semibold);
+  color: var(--jr-text-tertiary);
+  margin-bottom: var(--jr-space-4);
+}
+.jr-megamenu a {
+  display: block;
+  font-size: var(--jr-fs-h5);
+  font-weight: var(--jr-weight-semibold);
+  color: var(--jr-text);
+  padding: 5px 0;
+  text-decoration: none;
+}
+.jr-megamenu a:hover { color: var(--jr-blue-link); text-decoration: none; }
+
+/* Breadcrumbs */
+.jr-breadcrumbs {
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: 8px;
+  font-size: var(--jr-fs-small);
+  color: var(--jr-text-tertiary);
+  padding: var(--jr-pad-breadcrumb);
+  margin-bottom: var(--jr-space-6);
+}
+.jr-breadcrumbs a { color: var(--jr-text-secondary); text-decoration: none; }
+.jr-breadcrumbs a:hover { color: var(--jr-text); text-decoration: underline; text-underline-offset: var(--jr-underline-offset); }
+.jr-breadcrumbs li { margin: 0; list-style: none; display: flex; align-items: center; gap: 8px; }
+.jr-breadcrumbs li + li::before { content: "›"; color: var(--jr-text-tertiary); }
+.jr-breadcrumbs [aria-current="page"] { color: var(--jr-text); }
+
+/* Paginering */
+.jr-pagination { display: flex; align-items: center; gap: var(--jr-space-2); justify-content: center; }
+.jr-page-btn {
+  min-width: var(--jr-size-page-btn);
+  height: var(--jr-size-page-btn);
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0 var(--jr-space-3);
+  font-family: var(--jr-font-text);
+  font-size: var(--jr-fs-small);
+  font-weight: var(--jr-weight-medium);
+  font-variant-numeric: tabular-nums;
+  color: var(--jr-text-secondary);
+  background: transparent;
+  border: none;
+  border-radius: var(--jr-radius-round);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color var(--jr-dur-fast) var(--jr-ease),
+              color var(--jr-dur-fast) var(--jr-ease);
+}
+.jr-page-btn:hover { background-color: var(--jr-surface-subtle); color: var(--jr-text); text-decoration: none; }
+.jr-page-btn[aria-current="page"] { background-color: var(--jr-blue-action); color: var(--jr-text-on-color); }
+.jr-page-btn[disabled] { opacity: .3; pointer-events: none; }
+
+/* Anchor-navigatie — tweede balk onder de hoofdnavigatie */
+.jr-anchornav {
+  position: sticky;
+  top: var(--jr-nav-height);
+  z-index: var(--jr-z-sticky);
+  min-height: var(--jr-nav-height-sub);
+  display: flex; align-items: center; gap: var(--jr-space-6);
+  background-color: var(--jr-alpha-nav);
+  -webkit-backdrop-filter: var(--jr-blur-nav);
+  backdrop-filter: var(--jr-blur-nav);
+  border-bottom: var(--jr-stroke-hairline) solid var(--jr-line-subtle);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.jr-anchornav::-webkit-scrollbar { display: none; }
+.jr-anchornav a {
+  font-size: var(--jr-fs-small);
+  color: var(--jr-text-secondary);
+  white-space: nowrap;
+  padding: var(--jr-space-3) 0;
+  border-bottom: var(--jr-stroke-medium) solid transparent;
+  text-decoration: none;
+}
+.jr-anchornav a:hover { color: var(--jr-text); text-decoration: none; }
+.jr-anchornav a.is-active { color: var(--jr-text); border-bottom-color: var(--jr-blue); }
+
+/* Sticky CTA-balk op mobiel — alleen daar */
+.jr-sticky-cta {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: var(--jr-z-sticky);
+  display: none;
+  align-items: center;
+  gap: var(--jr-space-3);
+  min-height: var(--jr-bar-height);
+  padding: var(--jr-space-3) var(--jr-gutter);
+  padding-bottom: calc(var(--jr-space-3) + env(safe-area-inset-bottom, 0px));
+  background-color: var(--jr-alpha-nav);
+  -webkit-backdrop-filter: var(--jr-blur-nav);
+  backdrop-filter: var(--jr-blur-nav);
+  border-top: var(--jr-stroke-hairline) solid var(--jr-line-subtle);
+}
+
+/* Terug naar boven */
+.jr-to-top {
+  position: fixed;
+  right: var(--jr-space-6);
+  bottom: var(--jr-space-6);
+  z-index: var(--jr-z-sticky);
+  width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--jr-text);
+  background-color: var(--jr-alpha-glass);
+  -webkit-backdrop-filter: var(--jr-blur-nav);
+  backdrop-filter: var(--jr-blur-nav);
+  border: var(--jr-stroke-hairline) solid var(--jr-line-subtle);
+  border-radius: var(--jr-radius-round);
+  box-shadow: var(--jr-shadow-sm);
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--jr-dur-base) var(--jr-ease);
+}
+.jr-to-top.is-visible { opacity: 1; pointer-events: auto; }
+
+
+/* ==========================================================================
+   22. CONTENT-COMPONENTEN
+   ========================================================================== */
+
+/* Icon box — icoon, kop, tekst. De werkpaard-component van elke dienstenpagina. */
+.jr-iconbox { padding: var(--jr-pad-iconbox); background-color: var(--jr-surface); border-radius: var(--jr-radius-md); }
+.jr-iconbox--flush { padding: 0; background: transparent; }
+.jr-icon-tile {
+  width: var(--jr-size-icon-tile);
+  height: var(--jr-size-icon-tile);
+  display: flex; align-items: center; justify-content: center;
+  background-color: var(--jr-blue-100);
+  color: var(--jr-blue-action);
+  border-radius: var(--jr-radius-sm);
+  margin-bottom: var(--jr-space-5);
+}
+.jr-icon-tile--lime  { background-color: var(--jr-lime-100);   color: var(--jr-lime-text); }
+.jr-icon-tile--green { background-color: var(--jr-green-100);  color: var(--jr-green-text); }
+.jr-icon-tile--round { border-radius: var(--jr-radius-round); }
+.jr-icon-tile--solid { background-color: var(--jr-blue); color: var(--jr-text-on-color); }
+
+/* Testimonial */
+.jr-testimonial {
+  padding: var(--jr-pad-testimonial);
+  background-color: var(--jr-surface-subtle);
+  border-radius: var(--jr-radius-lg);
+}
+.jr-testimonial-quote {
+  font-family: var(--jr-font-display);
+  font-size: var(--jr-fs-h4);
+  font-weight: var(--jr-weight-semibold);
+  line-height: 1.35;
+  letter-spacing: var(--jr-ls-h4);
+  margin-bottom: var(--jr-space-6);
+}
+.jr-testimonial-person { display: flex; align-items: center; gap: var(--jr-space-4); }
+.jr-avatar {
+  width: var(--jr-size-avatar);
+  height: var(--jr-size-avatar);
+  border-radius: var(--jr-radius-round);
+  object-fit: cover;
+  flex: none;
+  background-color: var(--jr-gray-20);
+}
+.jr-avatar--sm { width: 32px; height: 32px; }
+.jr-avatar--lg { width: 72px; height: 72px; }
+.jr-testimonial-name { font-size: var(--jr-fs-body); font-weight: var(--jr-weight-medium); display: block; }
+.jr-testimonial-role { font-size: var(--jr-fs-small); color: var(--jr-text-secondary); }
+
+/* Sterren */
+.jr-stars { display: inline-flex; gap: 2px; color: var(--jr-yellow); }
+.jr-stars svg { width: 16px; height: 16px; fill: currentColor; stroke: none; }
+.jr-stars .is-empty { color: var(--jr-gray-30); }
+
+/* Prijstabel */
+.jr-pricing {
+  padding: var(--jr-pad-pricing);
+  background-color: var(--jr-surface);
+  border: var(--jr-stroke-hairline) solid var(--jr-line);
+  border-radius: var(--jr-radius-lg);
+  display: flex;
+  flex-direction: column;
+  transition: border-color var(--jr-dur-base) var(--jr-ease),
+              box-shadow var(--jr-dur-base) var(--jr-ease);
+}
+.jr-pricing:hover { border-color: var(--jr-line-strong); }
+.jr-pricing--featured {
+  border-color: var(--jr-blue);
+  border-width: var(--jr-stroke-medium);
+  box-shadow: var(--jr-shadow-lg);
+  position: relative;
+}
+.jr-pricing-badge {
+  position: absolute;
+  top: calc(var(--jr-stroke-medium) * -1);
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.jr-pricing-name { font-size: var(--jr-fs-h5); font-weight: var(--jr-weight-semibold); margin-bottom: var(--jr-space-2); }
+.jr-pricing-price {
+  font-family: var(--jr-font-display);
+  font-size: 44px;
+  font-weight: var(--jr-weight-bold);
+  line-height: 1;
+  letter-spacing: var(--jr-ls-h2);
+  font-variant-numeric: tabular-nums;
+  margin-bottom: var(--jr-space-1);
+}
+.jr-pricing-period { font-size: var(--jr-fs-small); color: var(--jr-text-secondary); margin-bottom: var(--jr-space-6); display: block; }
+.jr-pricing ul { flex: 1; margin-bottom: var(--jr-space-7); }
+.jr-pricing .jr-btn { width: 100%; }
+
+/* Case- of blogkaart */
+.jr-post {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--jr-surface);
+  border-radius: var(--jr-radius-md);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: transform var(--jr-dur-base) var(--jr-ease-out),
+              box-shadow var(--jr-dur-base) var(--jr-ease);
+}
+.jr-post:hover { transform: translateY(-4px); box-shadow: var(--jr-shadow-card-hover); text-decoration: none; }
+.jr-post-media { aspect-ratio: 3 / 2; overflow: hidden; background-color: var(--jr-gray-20); }
+.jr-post-media img { width: 100%; height: 100%; object-fit: cover; transition: transform var(--jr-dur-slow) var(--jr-ease-out); }
+.jr-post:hover .jr-post-media img { transform: scale(1.04); }
+.jr-post-body { padding: var(--jr-space-6); display: flex; flex-direction: column; gap: var(--jr-space-3); flex: 1; }
+.jr-post-meta {
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--jr-space-3);
+  font-size: var(--jr-fs-caption);
+  color: var(--jr-text-tertiary);
+}
+.jr-post-meta > * + *::before { content: "·"; margin-right: var(--jr-space-3); color: var(--jr-text-tertiary); }
+.jr-post-title {
+  font-family: var(--jr-font-display);
+  font-size: var(--jr-fs-h5);
+  font-weight: var(--jr-weight-semibold);
+  line-height: 1.25;
+  letter-spacing: var(--jr-ls-h5);
+  margin: 0;
+}
+.jr-post-excerpt { font-size: var(--jr-fs-small); color: var(--jr-text-secondary); margin: 0; }
+
+/* Logo-rij — klantenlogo's in grijs, kleur bij hover */
+.jr-logos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--jr-space-9) var(--jr-space-7);
+  align-items: center;
+}
+.jr-logos img {
+  max-height: 40px;
+  width: auto;
+  margin: 0 auto;
+  filter: grayscale(100%);
+  opacity: .55;
+  transition: filter var(--jr-dur-base) var(--jr-ease), opacity var(--jr-dur-base) var(--jr-ease);
+}
+.jr-logos img:hover { filter: grayscale(0); opacity: 1; }
+.jr-section--dark .jr-logos img { filter: grayscale(100%) brightness(0) invert(1); opacity: .5; }
+
+/* CTA-banner */
+.jr-cta-banner {
+  padding: var(--jr-pad-cta-banner);
+  background-color: var(--jr-surface-dark);
+  color: var(--jr-text-inverse);
+  border-radius: var(--jr-radius-2xl);
+  text-align: center;
+}
+.jr-cta-banner--blue { background-color: var(--jr-blue-action); }
+.jr-cta-banner--lime { background-color: var(--jr-lime); color: var(--jr-text-on-lime); }
+.jr-cta-banner--lime .jr-eyebrow { color: var(--jr-lime-text); }
+.jr-cta-banner h2, .jr-cta-banner h3 { color: inherit; }
+.jr-cta-banner p { color: inherit; opacity: .78; margin-inline: auto; }
+
+/* Tijdlijn */
+.jr-timeline { list-style: none; padding: 0; margin: 0; position: relative; }
+.jr-timeline::before {
+  content: "";
+  position: absolute;
+  left: 7px; top: 8px; bottom: 8px;
+  width: var(--jr-stroke-medium);
+  background-color: var(--jr-line-subtle);
+}
+.jr-timeline li { position: relative; padding-left: 36px; padding-bottom: var(--jr-space-8); margin: 0; }
+.jr-timeline li:last-child { padding-bottom: 0; }
+.jr-timeline li::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 6px;
+  width: 16px; height: 16px;
+  background-color: var(--jr-surface);
+  border: var(--jr-stroke-accent) solid var(--jr-blue);
+  border-radius: var(--jr-radius-round);
+}
+.jr-timeline-date {
+  display: block;
+  font-size: var(--jr-fs-caption);
+  font-weight: var(--jr-weight-semibold);
+  color: var(--jr-blue-link);
+  margin-bottom: var(--jr-space-1);
+}
+
+/* Vergelijkingstabel */
+.jr-compare th:first-child { width: 40%; }
+.jr-compare td { text-align: center; }
+.jr-compare td:first-child { text-align: left; font-weight: var(--jr-weight-medium); }
+.jr-compare .jr-yes { color: var(--jr-green-text); font-weight: var(--jr-weight-semibold); }
+.jr-compare .jr-no  { color: var(--jr-text-tertiary); }
+
+/* Video-kaart met afspeelknop */
+.jr-video { position: relative; border-radius: var(--jr-radius-md); overflow: hidden; cursor: pointer; }
+.jr-video-play {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 72px; height: 72px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--jr-text);
+  background-color: var(--jr-alpha-glass);
+  -webkit-backdrop-filter: var(--jr-blur-nav);
+  backdrop-filter: var(--jr-blur-nav);
+  border: none;
+  border-radius: var(--jr-radius-round);
+  cursor: pointer;
+  transition: transform var(--jr-dur-base) var(--jr-ease-out),
+              background-color var(--jr-dur-fast) var(--jr-ease);
+}
+.jr-video:hover .jr-video-play { transform: translate(-50%, -50%) scale(1.06); background-color: var(--jr-surface); }
+
+/* Social-iconen */
+.jr-social { display: flex; gap: var(--jr-space-2); }
+.jr-social a {
+  width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--jr-text-secondary);
+  border-radius: var(--jr-radius-round);
+  transition: background-color var(--jr-dur-fast) var(--jr-ease), color var(--jr-dur-fast) var(--jr-ease);
+}
+.jr-social a:hover { background-color: var(--jr-surface-subtle); color: var(--jr-text); text-decoration: none; }
+
+
+/* ==========================================================================
+   23. FEEDBACK — MELDINGEN, TOOLTIPS, LADEN, LEEG
+   ========================================================================== */
+
+/* Melding in de pagina */
+.jr-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--jr-space-3);
+  padding: var(--jr-pad-alert);
+  border-radius: var(--jr-radius-sm);
+  font-size: var(--jr-fs-small);
+  line-height: 1.5;
+}
+.jr-alert-icon { flex: none; width: 20px; height: 20px; margin-top: 1px; }
+.jr-alert strong { display: block; margin-bottom: 2px; font-weight: var(--jr-weight-semibold); }
+.jr-alert--info    { background-color: var(--jr-blue-100);   color: var(--jr-blue-action); }
+.jr-alert--success { background-color: var(--jr-green-100);  color: var(--jr-green-text); }
+.jr-alert--warning { background-color: var(--jr-orange-100); color: var(--jr-orange-text); }
+.jr-alert--error   { background-color: var(--jr-red-100);    color: var(--jr-red-text); }
+.jr-alert--neutral { background-color: var(--jr-neutral-100);color: var(--jr-neutral-text); }
+
+/* Toast — zwevende bevestiging */
+.jr-toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--jr-space-7) + env(safe-area-inset-bottom, 0px));
+  transform: translate(-50%, 16px);
+  z-index: var(--jr-z-modal);
+  padding: var(--jr-pad-toast);
+  font-size: var(--jr-fs-small);
+  color: var(--jr-text-inverse);
+  background-color: var(--jr-surface-dark);
+  border-radius: var(--jr-radius-pill);
+  box-shadow: var(--jr-shadow-lg);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--jr-dur-base) var(--jr-ease),
+              transform var(--jr-dur-base) var(--jr-ease-out);
+}
+.jr-toast.is-visible { opacity: 1; transform: translate(-50%, 0); }
+
+/* Tooltip */
+.jr-tooltip { position: relative; display: inline-flex; }
+.jr-tooltip::after {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translate(-50%, 4px);
+  z-index: var(--jr-z-dropdown);
+  padding: var(--jr-pad-tooltip);
+  font-size: var(--jr-fs-caption);
+  line-height: 1.35;
+  white-space: nowrap;
+  color: var(--jr-text-inverse);
+  background-color: var(--jr-surface-dark);
+  border-radius: var(--jr-radius-xs);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--jr-dur-fast) var(--jr-ease), transform var(--jr-dur-fast) var(--jr-ease-out);
+}
+.jr-tooltip:hover::after, .jr-tooltip:focus-visible::after { opacity: 1; transform: translate(-50%, 0); }
+
+/* Voortgangsbalk */
+.jr-progress {
+  height: var(--jr-h-progress);
+  background-color: var(--jr-gray-25);
+  border-radius: var(--jr-radius-pill);
+  overflow: hidden;
+}
+.jr-progress-bar {
+  height: 100%;
+  background-color: var(--jr-blue);
+  border-radius: var(--jr-radius-pill);
+  transition: width var(--jr-dur-slow) var(--jr-ease-out);
+}
+.jr-progress-bar--lime  { background-color: var(--jr-lime); }
+.jr-progress-bar--green { background-color: var(--jr-green); }
+
+/* Stappenindicator — voor een formulier in meerdere stappen */
+.jr-steps-bar { display: flex; align-items: center; gap: var(--jr-space-2); margin-bottom: var(--jr-space-8); }
+.jr-steps-bar li { flex: 1; margin: 0; list-style: none; }
+.jr-steps-bar .jr-step-track { height: var(--jr-stroke-rule); background-color: var(--jr-gray-25); border-radius: 2px; margin-bottom: var(--jr-space-2); }
+.jr-steps-bar .is-done .jr-step-track,
+.jr-steps-bar .is-current .jr-step-track { background-color: var(--jr-blue); }
+.jr-steps-bar .jr-step-label { font-size: var(--jr-fs-caption); color: var(--jr-text-tertiary); }
+.jr-steps-bar .is-current .jr-step-label { color: var(--jr-text); font-weight: var(--jr-weight-medium); }
+
+/* Skeleton — grijze blokken tijdens het laden */
+.jr-skeleton {
+  background: linear-gradient(90deg, var(--jr-gray-20) 25%, var(--jr-gray-25) 37%, var(--jr-gray-20) 63%);
+  background-size: 400% 100%;
+  border-radius: var(--jr-radius-xs);
+  animation: jr-shimmer 1.4s ease-in-out infinite;
+}
+@keyframes jr-shimmer { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
+.jr-skeleton--text   { height: 14px; margin-bottom: var(--jr-space-2); }
+.jr-skeleton--title  { height: 24px; width: 60%; margin-bottom: var(--jr-space-4); }
+.jr-skeleton--media  { aspect-ratio: 3 / 2; border-radius: var(--jr-radius-md); }
+.jr-skeleton--avatar { width: var(--jr-size-avatar); height: var(--jr-size-avatar); border-radius: var(--jr-radius-round); }
+
+/* Lege staat — geen resultaten, geen cases in deze branche */
+.jr-empty { text-align: center; padding: var(--jr-space-12) var(--jr-space-6); max-width: var(--jr-container-narrow); margin-inline: auto; }
+.jr-empty-icon { width: 48px; height: 48px; margin: 0 auto var(--jr-space-5); color: var(--jr-text-tertiary); }
+.jr-empty h3 { margin-bottom: var(--jr-space-3); }
+.jr-empty p { color: var(--jr-text-secondary); margin-inline: auto; margin-bottom: var(--jr-space-6); }
+
+/* Teller op een icoon */
+.jr-dot-badge { position: relative; display: inline-flex; }
+.jr-dot-badge::after {
+  content: attr(data-count);
+  position: absolute;
+  top: -4px; right: -6px;
+  min-width: 18px; height: 18px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 5px;
+  font-size: 11px;
+  font-weight: var(--jr-weight-semibold);
+  font-variant-numeric: tabular-nums;
+  color: var(--jr-text-on-color);
+  background-color: var(--jr-red);
+  border-radius: var(--jr-radius-pill);
+}
+
+
+/* ==========================================================================
+   24. ELEMENTOR-WIDGETS
+   ==========================================================================
+   Overrides voor widgets die Elementor zelf rendert, zodat ze binnen het
+   systeem blijven. Zonder dit vallen ze terug op Elementor's eigen stijl.
+   ========================================================================== */
+
+/* Slider & carousel — pijlen en bolletjes */
+.elementor-swiper-button, .swiper-button-next, .swiper-button-prev {
+  width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--jr-text);
+  background-color: var(--jr-alpha-glass);
+  -webkit-backdrop-filter: var(--jr-blur-nav);
+  backdrop-filter: var(--jr-blur-nav);
+  border: var(--jr-stroke-hairline) solid var(--jr-line-subtle);
+  border-radius: var(--jr-radius-round);
+  box-shadow: var(--jr-shadow-sm);
+  transition: background-color var(--jr-dur-fast) var(--jr-ease);
+}
+.elementor-swiper-button:hover, .swiper-button-next:hover, .swiper-button-prev:hover { background-color: var(--jr-surface); }
+.swiper-button-next::after, .swiper-button-prev::after { font-size: 15px; }
+.swiper-button-disabled { opacity: .3; }
+
+.swiper-pagination-bullet {
+  width: 8px; height: 8px;
+  background-color: var(--jr-gray-30);
+  opacity: 1;
+  transition: width var(--jr-dur-base) var(--jr-ease-out), background-color var(--jr-dur-fast) var(--jr-ease);
+}
+.swiper-pagination-bullet-active { width: 24px; border-radius: var(--jr-radius-pill); background-color: var(--jr-blue); }
+
+/* Popup / modal */
+.elementor-popup-modal .dialog-widget-content, .jr-modal {
+  border-radius: var(--jr-radius-lg);
+  box-shadow: var(--jr-shadow-xl);
+  overflow: hidden;
+  background-color: var(--jr-surface);
+}
+.elementor-popup-modal .dialog-close-button, .jr-modal-close {
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--jr-text-secondary);
+  background-color: var(--jr-surface-subtle);
+  border: none;
+  border-radius: var(--jr-radius-round);
+  cursor: pointer;
+  opacity: 1;
+  transition: background-color var(--jr-dur-fast) var(--jr-ease), color var(--jr-dur-fast) var(--jr-ease);
+}
+.elementor-popup-modal .dialog-close-button:hover, .jr-modal-close:hover {
+  background-color: var(--jr-surface-sunk);
+  color: var(--jr-text);
+}
+.jr-modal-body { padding: var(--jr-space-9); }
+.jr-modal-header { padding: var(--jr-space-7) var(--jr-space-9); border-bottom: var(--jr-stroke-hairline) solid var(--jr-line-subtle); }
+.jr-modal-footer {
+  padding: var(--jr-space-6) var(--jr-space-9);
+  border-top: var(--jr-stroke-hairline) solid var(--jr-line-subtle);
+  display: flex; justify-content: flex-end; gap: var(--jr-space-3);
+  background-color: var(--jr-surface-subtle);
+}
+
+/* Lightbox */
+.elementor-lightbox .dialog-lightbox-close-button { color: var(--jr-text-inverse); }
+.elementor-lightbox .elementor-lightbox-image { border-radius: var(--jr-radius-md); }
+
+/* Cookiebalk */
+.jr-cookiebar {
+  position: fixed;
+  left: var(--jr-space-4); right: var(--jr-space-4);
+  bottom: calc(var(--jr-space-4) + env(safe-area-inset-bottom, 0px));
+  z-index: var(--jr-z-modal);
+  max-width: 480px;
+  padding: var(--jr-space-6);
+  background-color: var(--jr-surface);
+  border-radius: var(--jr-radius-md);
+  box-shadow: var(--jr-shadow-xl);
+  font-size: var(--jr-fs-small);
+}
+.jr-cookiebar p { font-size: var(--jr-fs-small); color: var(--jr-text-secondary); margin-bottom: var(--jr-space-5); max-width: none; }
+.jr-cookiebar .jr-btn-group { margin-top: 0; }
+
+/* Loop grid & posts-widget */
+.elementor-loop-container { gap: var(--jr-gap-container); }
+.elementor-posts .elementor-post__card {
+  border: none;
+  border-radius: var(--jr-radius-md);
+  box-shadow: none;
+  overflow: hidden;
+  transition: transform var(--jr-dur-base) var(--jr-ease-out), box-shadow var(--jr-dur-base) var(--jr-ease);
+}
+.elementor-posts .elementor-post__card:hover { transform: translateY(-4px); box-shadow: var(--jr-shadow-card-hover); }
+.elementor-post__title { font-family: var(--jr-font-display); letter-spacing: var(--jr-ls-h5); }
+.elementor-post__meta-data { font-size: var(--jr-fs-caption); color: var(--jr-text-tertiary); }
+
+/* Icon box & image box */
+.elementor-icon-box-title { font-family: var(--jr-font-display); letter-spacing: var(--jr-ls-h5); }
+.elementor-icon-box-description, .elementor-image-box-description { color: var(--jr-text-secondary); }
+.elementor-image-box-img img { border-radius: var(--jr-radius-md); }
+
+/* Counter & progress */
+.elementor-counter-number-wrapper {
+  font-family: var(--jr-font-display);
+  font-weight: var(--jr-weight-bold);
+  letter-spacing: var(--jr-ls-h1);
+  font-variant-numeric: tabular-nums;
+  color: var(--jr-blue);
+}
+.elementor-progress-wrapper { height: var(--jr-h-progress); background-color: var(--jr-gray-25); border-radius: var(--jr-radius-pill); }
+.elementor-progress-bar { background-color: var(--jr-blue); border-radius: var(--jr-radius-pill); }
+
+/* Toggle & tabs op mobiel */
+.elementor-tabs .elementor-tab-mobile-title {
+  font-family: var(--jr-font-text);
+  font-size: var(--jr-fs-body);
+  font-weight: var(--jr-weight-medium);
+  padding: var(--jr-pad-accordion);
+  border-bottom: var(--jr-stroke-hairline) solid var(--jr-line-subtle);
+}
+
+/* Breadcrumbs-widget */
+.elementor-widget-breadcrumbs { font-size: var(--jr-fs-small); color: var(--jr-text-tertiary); }
+.elementor-widget-breadcrumbs a { color: var(--jr-text-secondary); }
+
+/* Zoekformulier-widget */
+.elementor-search-form__container { border-radius: var(--jr-radius-pill); background-color: var(--jr-surface-subtle); }
+.elementor-search-form__input { font-family: var(--jr-font-text); font-size: var(--jr-fs-body); }
+
+/* Sticky header bij het scrollen — Elementor zet zelf .elementor-sticky--effects */
+.jr-nav.elementor-sticky--effects { box-shadow: var(--jr-shadow-sm); }
+
+
+/* ==========================================================================
+   25. BEELD, ICONEN & NEDERLANDSE TYPOGRAFIE
+   ========================================================================== */
+
+/* Beeldverhoudingen — kies er één per soort en houd je eraan */
+.jr-ratio-hero   { aspect-ratio: 21 / 9; object-fit: cover; width: 100%; }  /* hero-beeld */
+.jr-ratio-case   { aspect-ratio: 3 / 2;  object-fit: cover; width: 100%; }  /* case, blog */
+.jr-ratio-team   { aspect-ratio: 4 / 5;  object-fit: cover; width: 100%; }  /* portret */
+.jr-ratio-square { aspect-ratio: 1 / 1;  object-fit: cover; width: 100%; }  /* social, avatar */
+.jr-ratio-video  { aspect-ratio: 16 / 9; object-fit: cover; width: 100%; }
+
+/* Beeld dat nog laadt houdt zijn plek — voorkomt springende pagina's */
+.jr-img-placeholder { background-color: var(--jr-gray-20); }
+
+/* Nederlandse typografie */
+.jr-nums    { font-variant-numeric: tabular-nums; }        /* cijfers die uitlijnen */
+.jr-price   { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.jr-nowrap  { white-space: nowrap; }                        /* "€ 1.250", "24/7" */
+.jr-hyphens { hyphens: auto; -webkit-hyphens: auto; }       /* lange NL-woorden op mobiel */
+
+/* Afbreekpunten voor samenstellingen die op mobiel niet passen */
+@media (max-width: 734px) {
+  .jr-hyphens-mobile { hyphens: auto; -webkit-hyphens: auto; word-break: break-word; }
+}
+
+
+/* ==========================================================================
+   26. RESPONSIVE
    ==========================================================================
    Breakpoints gelijk aan apple.com. Zet ze zo in Elementor:
      Mobile ≤ 734px · Tablet ≤ 1068px · Laptop ≤ 1440px
@@ -1665,6 +2864,9 @@ a.jr-tag:hover { border-color: var(--jr-text); color: var(--jr-text); text-decor
   }
 
   .jr-grid--3, .jr-grid--4 { grid-template-columns: repeat(2, 1fr); }
+  .jr-cta-banner { padding: var(--jr-space-11) var(--jr-space-8); }
+  .jr-testimonial { padding: var(--jr-space-8); }
+  .jr-pricing { padding: var(--jr-space-8) var(--jr-space-7); }
 }
 
 /* ---- Mobiel ------------------------------------------------------------- */
@@ -1743,6 +2945,27 @@ a.jr-tag:hover { border-color: var(--jr-text); color: var(--jr-text); text-decor
   p, .jr-lead, .jr-measure { max-width: 100%; }
 
   .jr-sticky { position: static; }
+
+  /* Nieuwe componenten op mobiel */
+  .jr-sticky-cta { display: flex; }          /* verschijnt alleen hier */
+  .jr-sticky-cta .jr-btn { flex: 1; }
+  .jr-filterbar { gap: var(--jr-space-2); overflow-x: auto; flex-wrap: nowrap; scrollbar-width: none; }
+  .jr-filterbar::-webkit-scrollbar { display: none; }
+  .jr-result-count { margin-left: 0; width: 100%; order: -1; }
+  .jr-pricing { padding: var(--jr-space-7) var(--jr-space-6); }
+  .jr-pricing-price { font-size: 36px; }
+  .jr-testimonial { padding: var(--jr-space-7); }
+  .jr-testimonial-quote { font-size: var(--jr-fs-h5); }
+  .jr-cta-banner { padding: var(--jr-space-9) var(--jr-space-6); }
+  .jr-iconbox { padding: var(--jr-space-6); }
+  .jr-modal-body { padding: var(--jr-space-6); }
+  .jr-modal-header, .jr-modal-footer { padding: var(--jr-space-5) var(--jr-space-6); }
+  .jr-megamenu { display: none; }            /* op mobiel gebruik je off-canvas */
+  .jr-to-top { right: var(--jr-space-4); bottom: calc(var(--jr-bar-height) + var(--jr-space-4)); }
+  .jr-cookiebar { max-width: none; }
+  .jr-logos { gap: var(--jr-space-7) var(--jr-space-5); }
+  .jr-logos img { max-height: 32px; }
+  .jr-empty { padding: var(--jr-space-10) var(--jr-space-4); }
 }
 
 /* ---- Kleine telefoons --------------------------------------------------- */
@@ -1765,7 +2988,7 @@ a.jr-tag:hover { border-color: var(--jr-text); color: var(--jr-text); text-decor
 
 
 /* ==========================================================================
-   18. TOEGANKELIJKHEID & PRINT
+   27. TOEGANKELIJKHEID & PRINT
    ========================================================================== */
 
 @media (prefers-reduced-motion: reduce) {

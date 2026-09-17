@@ -2,93 +2,74 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@600;700&display=swap">
 <style>
-/* ========== Pagina-tokens ========== */
 :root{
-  /* Chrome — thema-bewust */
   --bg:#ffffff; --bg-alt:#f5f5f7; --bg-sunk:#ebebf0; --chip:#ffffff;
   --tx:#1d1d1f; --tx2:#6e6e73; --tx3:#86868b;
   --ln:#d2d2d7; --ln-soft:#e5e5e9;
   --nav-bg:rgba(255,255,255,.82);
-
-  /* Merk — vast in beide thema's */
   --blue:#007aff; --blue-link:#0066cc; --blue-link-h:#004c99; --blue-link-a:#003d7a;
   --blue-action:#0857c3; --blue-action-h:#003967; --blue-action-a:#002e52;
-  --blue-deep:#005cbf; --blue-dm:#2997ff; --blue-dm-h:#66b5ff;
-  --blue-tint:#e2ebf3; --blue-tint-mid:rgba(0,122,255,.12);
-  --black:#1c1c1e; --dark-alt:#2c2d2e;
-
-  /* Lime */
-  --lime:#c4f000; --lime-h:#b2da00; --lime-a:#9fc200;
-  --lime-text:#5a7000; --lime-tint:#f2fccc; --lime-dm:#d9ff33;
-
-  /* Status — vlak / tekst-op-wit / zachte tint */
-  --green:#34c759; --green-tx:#1d7d3f; --green-tint:#e6f7eb;
-  --orange:#f6a027; --orange-tx:#94590a; --orange-tint:#fef2e0;
-  --yellow:#ffd631; --yellow-tx:#806400; --yellow-tint:#fff8dc;
-  --red:#ff3b30; --red-tx:#c02a22; --red-tint:#fdecea;
-  --purple:#af52de; --purple-tx:#7e2fb0; --purple-tint:#f5eafb;
-  --neutral-tx:#6e6e73; --neutral-tint:#f5f5f7;
-
-  /* Lijndiktes */
-  --s-hair:1px; --s-icon:1.5px; --s-med:2px; --s-accent:3px; --s-rule:4px; --s-focus:4px;
-
+  --blue-50:#f0f7ff; --blue-100:#e0efff; --blue-200:#cce4ff; --blue-tint:#e2ebf3;
+  --blue-dm:#2997ff; --black:#1c1c1e;
+  --lime:#c4f000; --lime-h:#b2da00; --lime-a:#9fc200; --lime-text:#5a7000;
+  --lime-50:#fafeeb; --lime-100:#f2fccc; --lime-200:#e7f999; --lime-dm:#d9ff33;
+  --green:#34c759; --green-tx:#1d7d3f; --green-100:#e6f7eb; --green-200:#c2eecd;
+  --orange:#f6a027; --orange-tx:#94590a; --orange-100:#fef2e0;
+  --yellow:#ffd631; --yellow-tx:#806400; --yellow-100:#fff8dc;
+  --red:#ff3b30; --red-tx:#c02a22; --red-100:#fdecea;
+  --purple:#af52de; --purple-tx:#7e2fb0; --purple-100:#f5eafb;
+  --neutral-tx:#6e6e73; --neutral-100:#f5f5f7;
+  --g20:#ebebf0; --g25:#e5e5e9; --g30:#d2d2d7;
+  --s-hair:1px; --s-icon:1.5px; --s-med:2px; --s-accent:3px; --s-rule:4px;
   --f-disp:"Inter Tight","Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
   --f-text:"Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
   --f-mono:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-
-  --ease:cubic-bezier(.25,.1,.25,1);
-  --ease-out:cubic-bezier(.16,1,.3,1);
+  --ease:cubic-bezier(.25,.1,.25,1); --ease-out:cubic-bezier(.16,1,.3,1);
   --maxw:1024px; --gutter:32px;
-  --focus:0 0 0 var(--s-focus) rgba(0,122,255,.40);
+  --focus:0 0 0 4px rgba(0,122,255,.40);
 }
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]){
-    --bg:#000; --bg-alt:#111113; --bg-sunk:#1c1c1e; --chip:#1c1c1e;
-    --tx:#f5f5f7; --tx2:#a1a1a6; --tx3:#86868b;
-    --ln:#38383c; --ln-soft:#2a2a2d;
-    --nav-bg:rgba(0,0,0,.72);
-    --green-tx:#41c96a; --orange-tx:#f0a040; --yellow-tx:#e0c040;
-    --red-tx:#ff6b61; --purple-tx:#c77ce8; --neutral-tx:#a1a1a6;
-    --green-tint:rgba(52,199,89,.16); --orange-tint:rgba(246,160,39,.18);
-    --yellow-tint:rgba(255,214,49,.18); --red-tint:rgba(255,59,48,.14);
-    --purple-tint:rgba(175,82,222,.16); --neutral-tint:rgba(255,255,255,.08);
-    --lime-text:#d9ff33; --lime-tint:rgba(196,240,0,.16);
-    --blue-link:#2997ff; --blue-link-h:#66b5ff;
-  }
-}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#000; --bg-alt:#111113; --bg-sunk:#1c1c1e; --chip:#1c1c1e;
+  --tx:#f5f5f7; --tx2:#a1a1a6; --tx3:#86868b; --ln:#38383c; --ln-soft:#2a2a2d;
+  --nav-bg:rgba(0,0,0,.72); --blue-link:#2997ff; --blue-link-h:#66b5ff;
+  --green-tx:#41c96a; --orange-tx:#f0a040; --yellow-tx:#e0c040; --red-tx:#ff6b61;
+  --purple-tx:#c77ce8; --neutral-tx:#a1a1a6; --lime-text:#d9ff33;
+  --green-100:rgba(52,199,89,.16); --orange-100:rgba(246,160,39,.18);
+  --yellow-100:rgba(255,214,49,.18); --red-100:rgba(255,59,48,.14);
+  --purple-100:rgba(175,82,222,.16); --neutral-100:rgba(255,255,255,.08);
+  --lime-100:rgba(196,240,0,.16); --blue-100:rgba(0,122,255,.16); --blue-50:rgba(0,122,255,.08);
+  --g20:#2c2d2e; --g25:#38383c; --g30:#48484c;
+}}
 :root[data-theme="dark"]{
   --bg:#000; --bg-alt:#111113; --bg-sunk:#1c1c1e; --chip:#1c1c1e;
-  --tx:#f5f5f7; --tx2:#a1a1a6; --tx3:#86868b;
-  --ln:#38383c; --ln-soft:#2a2a2d;
-  --nav-bg:rgba(0,0,0,.72);
-  --green-tx:#41c96a; --orange-tx:#f0a040; --yellow-tx:#e0c040;
-  --red-tx:#ff6b61; --purple-tx:#c77ce8; --neutral-tx:#a1a1a6;
-  --green-tint:rgba(52,199,89,.16); --orange-tint:rgba(246,160,39,.18);
-  --yellow-tint:rgba(255,214,49,.18); --red-tint:rgba(255,59,48,.14);
-  --purple-tint:rgba(175,82,222,.16); --neutral-tint:rgba(255,255,255,.08);
-  --lime-text:#d9ff33; --lime-tint:rgba(196,240,0,.16);
-  --blue-link:#2997ff; --blue-link-h:#66b5ff;
+  --tx:#f5f5f7; --tx2:#a1a1a6; --tx3:#86868b; --ln:#38383c; --ln-soft:#2a2a2d;
+  --nav-bg:rgba(0,0,0,.72); --blue-link:#2997ff; --blue-link-h:#66b5ff;
+  --green-tx:#41c96a; --orange-tx:#f0a040; --yellow-tx:#e0c040; --red-tx:#ff6b61;
+  --purple-tx:#c77ce8; --neutral-tx:#a1a1a6; --lime-text:#d9ff33;
+  --green-100:rgba(52,199,89,.16); --orange-100:rgba(246,160,39,.18);
+  --yellow-100:rgba(255,214,49,.18); --red-100:rgba(255,59,48,.14);
+  --purple-100:rgba(175,82,222,.16); --neutral-100:rgba(255,255,255,.08);
+  --lime-100:rgba(196,240,0,.16); --blue-100:rgba(0,122,255,.16); --blue-50:rgba(0,122,255,.08);
+  --g20:#2c2d2e; --g25:#38383c; --g30:#48484c;
 }
 
 *,*::before,*::after{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--tx);font-family:var(--f-text);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
-html{scroll-behavior:smooth;scroll-padding-top:88px}
+html{scroll-behavior:smooth;scroll-padding-top:92px}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important}}
 :focus-visible{outline:none;box-shadow:var(--focus);border-radius:8px}
 
-/* ========== Nav ========== */
 .nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:var(--nav-bg);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:var(--s-hair) solid var(--ln-soft)}
-.nav-inner{max-width:var(--maxw);margin:0 auto;padding:0 var(--gutter);display:flex;align-items:center;gap:6px;min-height:52px;overflow-x:auto;scrollbar-width:none}
+.nav-inner{max-width:var(--maxw);margin:0 auto;padding:0 var(--gutter);display:flex;align-items:center;gap:4px;min-height:52px;overflow-x:auto;scrollbar-width:none}
 .nav-inner::-webkit-scrollbar{display:none}
 .nav-brand{font-family:var(--f-disp);font-size:14px;font-weight:600;letter-spacing:-.01em;white-space:nowrap;margin-right:10px;color:var(--tx)}
-.nav a{font-size:13px;color:var(--tx2);text-decoration:none;white-space:nowrap;padding:6px 9px;border-radius:8px;transition:color .15s var(--ease)}
+.nav a{font-size:13px;color:var(--tx2);text-decoration:none;white-space:nowrap;padding:6px 8px;border-radius:8px;transition:color .15s var(--ease)}
 .nav a:hover{color:var(--tx)}
 .theme-btn{margin-left:auto;flex:none;font:inherit;font-size:13px;cursor:pointer;background:transparent;border:var(--s-hair) solid var(--ln);color:var(--tx2);border-radius:980px;padding:5px 14px;transition:all .15s var(--ease)}
 .theme-btn:hover{color:var(--tx);border-color:var(--tx3)}
 
-/* ========== Layout ========== */
 .wrap{max-width:var(--maxw);margin:0 auto;padding-inline:var(--gutter)}
-.sec{padding-block:96px;border-top:var(--s-hair) solid var(--ln-soft)}
+.sec{padding-block:88px;border-top:var(--s-hair) solid var(--ln-soft)}
 .sec:first-of-type{border-top:none}
 .sec--alt{background:var(--bg-alt)}
 h1,h2,h3,h4{font-family:var(--f-disp);text-wrap:balance;margin:0}
@@ -96,65 +77,81 @@ h2{font-size:40px;font-weight:700;line-height:1.12;letter-spacing:-.018em;margin
 h3{font-size:24px;font-weight:600;line-height:1.2;letter-spacing:-.01em;margin:0 0 12px}
 h4{font-family:var(--f-text);font-size:15px;font-weight:600;letter-spacing:-.004em;margin:0 0 8px;color:var(--tx)}
 .eyebrow{display:block;font-family:var(--f-text);font-size:13px;font-weight:600;line-height:1.3;color:var(--blue-link);margin-bottom:8px}
-.lead{font-size:21px;line-height:1.45;color:var(--tx2);max-width:640px;margin:0}
-.sec-head{margin-bottom:56px}
-p{margin:0 0 20px;max-width:660px}
+.lead{font-size:21px;line-height:1.45;color:var(--tx2);max-width:660px;margin:0}
+.sec-head{margin-bottom:52px}
+p{margin:0 0 20px;max-width:680px}
 p:last-child{margin-bottom:0}
-.note{font-size:15px;color:var(--tx2);max-width:680px}
+.note{font-size:15px;color:var(--tx2);max-width:700px}
 .note b{color:var(--tx)}
 code{font-family:var(--f-mono);font-size:.85em;background:var(--bg-sunk);padding:2px 6px;border-radius:5px;color:var(--tx)}
 a{color:var(--blue-link);text-decoration:none;transition:color .15s var(--ease)}
 a:hover{color:var(--blue-link-h);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
-a:active{color:var(--blue-link-a)}
+h3+.note,h3+.tbl-wrap,h3+.grid3{margin-top:0}
+.sub{margin-top:48px}
 
-/* ========== Hero ========== */
-.hero{padding-block:104px 88px}
+.hero{padding-block:96px 80px}
 .hero h1{font-size:72px;font-weight:700;line-height:1.05;letter-spacing:-.028em;margin-bottom:24px}
-.hero .lead{font-size:24px;max-width:640px}
+.hero .lead{font-size:24px;max-width:660px}
 .hero-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:36px}
 .pill{font-size:13px;color:var(--tx2);border:var(--s-hair) solid var(--ln);border-radius:980px;padding:6px 15px}
 .pill--lime{background:var(--lime);border-color:var(--lime);color:#1d1d1f;font-weight:500}
 
-/* ========== Wijzigingen ========== */
-.changes{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--s-hair);background:var(--ln-soft);border-radius:18px;overflow:hidden}
-.change{background:var(--bg);padding:22px 24px}
-.sec--alt .change{background:var(--bg-alt)}
-.change h4{margin-bottom:4px}
-.change p{font-size:14px;color:var(--tx2);margin:0;max-width:none}
-
-/* ========== Principes ========== */
-.principles{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--s-hair);background:var(--ln-soft);border-radius:18px;overflow:hidden}
-.principle{background:var(--bg);padding:28px}
-.sec--alt .principle{background:var(--bg-alt)}
-.principle h4{font-size:17px;margin-bottom:8px}
-.principle p{font-size:15px;color:var(--tx2);margin:0;max-width:none}
-
-/* ========== Kleur ========== */
-.swatches{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:36px}
-.sw{border:none;padding:0;font:inherit;text-align:left;cursor:pointer;background:none;border-radius:14px;overflow:hidden;box-shadow:0 0 0 var(--s-hair) var(--ln-soft);transition:transform .2s var(--ease-out),box-shadow .2s var(--ease)}
-.sw:hover{transform:translateY(-3px);box-shadow:0 0 0 var(--s-hair) var(--ln),0 8px 24px rgba(0,0,0,.10)}
-.sw-chip{height:68px;display:block}
-.sw-body{padding:12px 14px 14px;background:var(--chip)}
-.sw-name{display:block;font-size:14px;font-weight:600;letter-spacing:-.004em}
-.sw-hex{display:block;font-family:var(--f-mono);font-size:12px;color:var(--tx2);margin-top:3px;text-transform:uppercase}
-.sw-use{display:block;font-size:12px;color:var(--tx3);margin-top:6px;line-height:1.35}
-
+/* tabellen */
 .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:8px}
 .tbl{width:100%;border-collapse:collapse;font-size:15px}
-.tbl th,.tbl td{text-align:left;padding:13px 14px;border-bottom:var(--s-hair) solid var(--ln-soft);vertical-align:top}
+.tbl th,.tbl td{text-align:left;padding:12px 14px;border-bottom:var(--s-hair) solid var(--ln-soft);vertical-align:top}
 .tbl th{font-size:13px;font-weight:600;color:var(--tx2);border-bottom:var(--s-hair) solid var(--ln);white-space:nowrap}
 .tbl tr:last-child td{border-bottom:none}
 .tbl .num{font-family:var(--f-mono);font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap}
-.tbl .name{font-weight:500;white-space:nowrap}
+.tbl .name{font-weight:500}
 .tbl--nums{min-width:560px}
 .tbl--nums td:not(:first-child),.tbl--nums th:not(:first-child){font-family:var(--f-mono);font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tbl--wide{min-width:680px}
+.hl{background:rgba(0,122,255,.07)}
 .ok{color:var(--green-tx);font-weight:600}
 .warn{color:var(--orange-tx);font-weight:600}
-.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px}
-.hl{background:var(--blue-tint-mid)}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;flex:none}
 
-/* ========== Typografie ========== */
-.type-row{display:grid;grid-template-columns:118px 1fr;gap:28px;align-items:baseline;padding-block:22px;border-bottom:var(--s-hair) solid var(--ln-soft)}
+/* grids */
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.demo{border:var(--s-hair) solid var(--ln-soft);border-radius:18px;padding:26px;background:var(--chip)}
+.demo>.lbl{display:block;font-family:var(--f-mono);font-size:11px;color:var(--tx3);margin-bottom:16px}
+
+/* PAGINA-ANATOMIE */
+.anat{border:var(--s-hair) dashed var(--ln);border-radius:16px;padding:14px;position:relative;background:var(--chip)}
+.anat-tag{position:absolute;top:-9px;left:16px;background:var(--chip);padding:0 8px;font-family:var(--f-mono);font-size:11px;color:var(--tx3)}
+.anat-sec{background:var(--bg-alt);border-radius:12px;padding:14px;position:relative}
+:root[data-theme="dark"] .anat-sec,:root:not([data-theme="light"]) .anat-sec{background:var(--g20)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .anat-sec{background:var(--bg-alt)}}
+.anat-sec .anat-tag{background:var(--bg-alt);color:var(--tx2)}
+.anat-con{background:rgba(0,122,255,.12);border:var(--s-hair) solid rgba(0,122,255,.35);border-radius:10px;padding:22px 14px;position:relative;text-align:center;font-family:var(--f-mono);font-size:12px;color:var(--blue-action)}
+:root[data-theme="dark"] .anat-con,:root:not([data-theme="light"]) .anat-con{color:var(--blue-dm)}
+.anat-gut{background:repeating-linear-gradient(45deg,rgba(196,240,0,.35) 0 4px,transparent 4px 8px);border-radius:6px;font-family:var(--f-mono);font-size:10px;color:var(--lime-text);display:flex;align-items:center;justify-content:center;writing-mode:vertical-rl;padding:4px 0}
+.anat-row{display:grid;grid-template-columns:28px 1fr 28px;gap:10px;align-items:stretch}
+.anat-note{font-family:var(--f-mono);font-size:11px;color:var(--tx3);text-align:center;margin-top:10px}
+
+/* KLEUR */
+.ramp{display:grid;grid-template-columns:repeat(8,1fr);gap:0;border-radius:12px;overflow:hidden;margin-bottom:10px;box-shadow:0 0 0 var(--s-hair) var(--ln-soft)}
+.ramp button{border:none;padding:0;cursor:pointer;background:none;display:flex;flex-direction:column;font:inherit;transition:transform .15s var(--ease)}
+.ramp button:hover{transform:translateY(-2px);z-index:2}
+.ramp .c{height:56px;display:block}
+.ramp .t{padding:7px 4px 9px;background:var(--chip);text-align:center}
+.ramp .t b{display:block;font-size:11px;font-weight:600;letter-spacing:-.004em}
+.ramp .t span{display:block;font-family:var(--f-mono);font-size:9.5px;color:var(--tx2);margin-top:2px;text-transform:uppercase}
+.ramp-label{display:flex;align-items:baseline;gap:10px;margin-bottom:8px;margin-top:22px}
+.ramp-label h4{margin:0}
+.ramp-label span{font-size:13px;color:var(--tx3)}
+.grayramp{display:grid;grid-template-columns:repeat(9,1fr);gap:0;border-radius:12px;overflow:hidden;box-shadow:0 0 0 var(--s-hair) var(--ln-soft)}
+.grayramp button{border:none;padding:0;cursor:pointer;background:none;display:flex;flex-direction:column;font:inherit}
+.grayramp .c{height:44px}
+.grayramp .t{padding:6px 2px 8px;background:var(--chip);text-align:center}
+.grayramp .t b{display:block;font-size:10px;font-weight:600}
+.grayramp .t span{display:block;font-family:var(--f-mono);font-size:9px;color:var(--tx2);text-transform:uppercase}
+
+/* TYPO */
+.type-row{display:grid;grid-template-columns:118px 1fr;gap:28px;align-items:baseline;padding-block:20px;border-bottom:var(--s-hair) solid var(--ln-soft)}
 .type-row:last-of-type{border-bottom:none}
 .type-meta{font-family:var(--f-mono);font-size:12px;color:var(--tx3);line-height:1.5;font-variant-numeric:tabular-nums}
 .type-meta b{display:block;font-family:var(--f-text);font-size:13px;font-weight:600;color:var(--tx);margin-bottom:3px}
@@ -165,38 +162,29 @@ a:active{color:var(--blue-link-a)}
 .sp-h3{font-family:var(--f-disp);font-size:28px;font-weight:600;line-height:1.12;letter-spacing:-.014em}
 .sp-h4{font-family:var(--f-disp);font-size:24px;font-weight:600;line-height:1.25;letter-spacing:-.01em}
 .sp-h5{font-family:var(--f-disp);font-size:21px;font-weight:600;line-height:1.25;letter-spacing:-.008em}
-.sp-h6{font-family:var(--f-text);font-size:17px;font-weight:600;line-height:1.25;letter-spacing:-.004em}
-.sp-lead{font-family:var(--f-text);font-size:21px;font-weight:400;line-height:1.45;color:var(--tx2)}
-.sp-body{font-family:var(--f-text);font-size:17px;font-weight:400;line-height:1.55}
-.sp-small{font-family:var(--f-text);font-size:14px;font-weight:400;line-height:1.45;color:var(--tx2)}
-.sp-cap{font-family:var(--f-text);font-size:12px;font-weight:400;line-height:1.4;color:var(--tx3)}
-
-.duo{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-hair);background:var(--ln-soft);border-radius:16px;overflow:hidden;margin-top:28px}
+.sp-h6{font-size:17px;font-weight:600;line-height:1.25;letter-spacing:-.004em}
+.sp-lead{font-size:21px;line-height:1.45;color:var(--tx2)}
+.sp-body{font-size:17px;line-height:1.55}
+.sp-small{font-size:14px;line-height:1.45;color:var(--tx2)}
+.sp-cap{font-size:12px;line-height:1.4;color:var(--tx3)}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-hair);background:var(--ln-soft);border-radius:16px;overflow:hidden;margin-top:24px}
 .duo>div{background:var(--bg);padding:26px}
 .sec--alt .duo>div{background:var(--bg-alt)}
 .duo .lbl{font-size:12px;color:var(--tx3);font-family:var(--f-mono);display:block;margin-top:10px}
-.duo .bad{color:var(--red-tx)}
-.duo .good{color:var(--green-tx)}
-.duo p{font-family:var(--f-disp);font-size:36px;font-weight:700;line-height:1.1;margin:0;max-width:none}
-.t-off{letter-spacing:0}
-.t-on{letter-spacing:-.022em}
-
-/* Ritme-demo */
-.rhythm{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-hair);background:var(--ln-soft);border-radius:16px;overflow:hidden;margin-top:28px}
-.rhythm>div{background:var(--bg);padding:32px 28px}
+.duo .bad{color:var(--red-tx)}.duo .good{color:var(--green-tx)}
+.duo p{font-family:var(--f-disp);font-size:34px;font-weight:700;line-height:1.1;margin:0;max-width:none}
+.rhythm{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-hair);background:var(--ln-soft);border-radius:16px;overflow:hidden;margin-top:24px}
+.rhythm>div{background:var(--bg);padding:30px 26px}
 .sec--alt .rhythm>div{background:var(--bg-alt)}
 .rhythm .eb{display:block;font-size:13px;font-weight:600;color:var(--blue-link)}
-.rhythm h3{font-size:26px;margin:0}
-.rhythm .sub{font-size:16px;color:var(--tx2);margin:0}
-.r-loose .eb{margin-bottom:20px}
-.r-loose h3{margin-bottom:24px}
-.r-tight .eb{margin-bottom:8px}
-.r-tight h3{margin-bottom:16px}
+.rhythm h3{font-size:25px;margin:0}
+.rhythm .s{font-size:16px;color:var(--tx2);margin:0}
+.r-loose .eb{margin-bottom:20px}.r-loose h3{margin-bottom:24px}
+.r-tight .eb{margin-bottom:8px}.r-tight h3{margin-bottom:16px}
 
-/* ========== Knoppen ========== */
+/* KNOPPEN */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--f-text);font-size:17px;font-weight:500;line-height:1.2;letter-spacing:-.008em;padding:13px 26px;min-height:48px;border:var(--s-hair) solid transparent;border-radius:980px;text-decoration:none;cursor:pointer;white-space:nowrap;transition:background-color .15s var(--ease),border-color .15s var(--ease),color .15s var(--ease),transform .15s var(--ease)}
-.btn:active{transform:scale(.98)}
-.btn:hover{text-decoration:none}
+.btn:active{transform:scale(.98)}.btn:hover{text-decoration:none}
 .btn--primary{background:var(--blue-action);border-color:var(--blue-action);color:#fff}
 .btn--primary:hover{background:var(--blue-action-h);border-color:var(--blue-action-h);color:#fff}
 .btn--primary:active{background:var(--blue-action-a);border-color:var(--blue-action-a)}
@@ -206,7 +194,6 @@ a:active{color:var(--blue-link-a)}
 .btn--tertiary:hover{background:var(--ln-soft);border-color:var(--ln-soft)}
 .btn--lime{background:var(--lime);border-color:var(--lime);color:#1d1d1f;font-weight:600}
 .btn--lime:hover{background:var(--lime-h);border-color:var(--lime-h);color:#1d1d1f}
-.btn--lime:active{background:var(--lime-a);border-color:var(--lime-a)}
 .btn--text{background:none;border:none;color:var(--blue-link);padding:4px 0;min-height:0;font-weight:400}
 .btn--text::after{content:"›";font-size:1.25em;line-height:1;transform:translateY(-1px);transition:transform .25s var(--ease-out)}
 .btn--text:hover{color:var(--blue-link-h);text-decoration:underline;text-underline-offset:3px}
@@ -215,237 +202,452 @@ a:active{color:var(--blue-link-a)}
 .btn--sm{font-size:15px;padding:9px 20px;min-height:40px}
 .btn--lg{font-size:19px;padding:16px 34px;min-height:56px}
 .btn--xl{font-size:21px;padding:20px 42px;min-height:64px}
-.btn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:24px;margin-bottom:40px}
+.btn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:22px;margin-bottom:36px}
 .btn-cell{display:flex;flex-direction:column;align-items:flex-start;gap:10px}
 .btn-cell .cap{font-size:12px;color:var(--tx3);font-family:var(--f-mono)}
-.btn-sizes{display:flex;flex-wrap:wrap;align-items:center;gap:16px;margin-bottom:40px}
-.ondark{background:var(--black);border-radius:20px;padding:40px;display:flex;flex-wrap:wrap;gap:16px;align-items:center}
+.btn-sizes{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-bottom:32px}
+.ondark{background:var(--black);border-radius:20px;padding:36px;display:flex;flex-wrap:wrap;gap:14px;align-items:center}
 .btn--light{background:#fff;border-color:#fff;color:#1d1d1f}
 .btn--light:hover{background:#e5e5e9;border-color:#e5e5e9;color:#1d1d1f}
 .btn--lightout{background:transparent;border-color:rgba(255,255,255,.28);color:#fff}
 .btn--lightout:hover{background:#fff;border-color:#fff;color:#1d1d1f}
 .ondark .lbl{color:#a1a1a6;font-size:13px;width:100%;margin-bottom:2px}
-
-.rules{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
-.rule{display:flex;gap:14px;align-items:flex-start}
-.rule-n{flex:none;width:26px;height:26px;border-radius:50%;background:var(--blue-tint-mid);color:var(--blue-action);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600}
+.rules{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.rule{display:flex;gap:13px;align-items:flex-start}
+.rule-n{flex:none;width:25px;height:25px;border-radius:50%;background:var(--blue-100);color:var(--blue-action);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600}
 .rule p{font-size:15px;color:var(--tx2);margin:0;max-width:none}
 .rule b{color:var(--tx);font-weight:600}
 
-/* ========== Vlakken ========== */
-.surface-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:40px}
-.card{background:var(--chip);border-radius:18px;padding:26px;transition:box-shadow .25s var(--ease),transform .25s var(--ease-out),border-color .25s var(--ease)}
+/* VLAKKEN */
+.card{background:var(--chip);border-radius:18px;padding:24px;transition:box-shadow .25s var(--ease),transform .25s var(--ease-out),border-color .25s var(--ease)}
 .card p{font-size:14px;color:var(--tx2);margin:0;max-width:none}
 .card--outline{border:var(--s-hair) solid var(--ln);background:transparent}
-.card--outline:hover{border-color:var(--tx3)}
 .card--sub{background:var(--bg-sunk)}
-.card--tint{background:var(--blue-tint)}
-.card--tint h4,.card--tint p{color:#1d1d1f}
-.card--lime{background:var(--lime-tint)}
+.card--tint{background:var(--blue-tint)}.card--tint h4,.card--tint p{color:#1d1d1f}
+.card--lime{background:var(--lime-100)}
 .card--accent{background:var(--blue-tint);border-left:var(--s-accent) solid var(--blue);border-radius:0 12px 12px 0}
 .card--accent h4,.card--accent p{color:#1d1d1f}
-.card--accent-lime{background:var(--lime-tint);border-left:var(--s-accent) solid var(--lime);border-radius:0 12px 12px 0}
+.card--accent-lime{background:var(--lime-100);border-left:var(--s-accent) solid var(--lime);border-radius:0 12px 12px 0}
 .card--dark{background:var(--black);color:#f5f5f7}
 .card--dark h4{color:#f5f5f7}.card--dark p{color:#a1a1a6}
 .card--inter{cursor:pointer;border:var(--s-hair) solid var(--ln-soft)}
 .card--inter:hover{transform:translateY(-4px);box-shadow:0 6px 16px rgba(0,0,0,.07),0 24px 56px rgba(0,0,0,.11)}
-
-.shadow-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:20px}
-.sh{background:var(--chip);border-radius:16px;height:92px;display:flex;align-items:center;justify-content:center;font-family:var(--f-mono);font-size:12px;color:var(--tx2)}
+.shadow-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:18px}
+.sh{background:var(--chip);border-radius:16px;height:88px;display:flex;align-items:center;justify-content:center;font-family:var(--f-mono);font-size:12px;color:var(--tx2)}
 .sh-xs{box-shadow:0 1px 2px rgba(0,0,0,.04)}
 .sh-sm{box-shadow:0 1px 3px rgba(0,0,0,.05),0 2px 8px rgba(0,0,0,.04)}
 .sh-md{box-shadow:0 2px 6px rgba(0,0,0,.05),0 8px 20px rgba(0,0,0,.06)}
 .sh-lg{box-shadow:0 4px 12px rgba(0,0,0,.06),0 16px 40px rgba(0,0,0,.08)}
 .sh-xl{box-shadow:0 8px 24px rgba(0,0,0,.08),0 32px 72px rgba(0,0,0,.10)}
-
-.radius-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:14px}
-.rd{aspect-ratio:1;background:var(--blue-tint-mid);border:var(--s-hair) solid rgba(0,122,255,.3);display:flex;align-items:flex-end;justify-content:center;padding-bottom:10px;font-family:var(--f-mono);font-size:11px;color:var(--blue-action);max-width:100%}
+.sh-compare{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px}
+.sh-one{box-shadow:0 8px 20px rgba(0,0,0,.10)}
+.radius-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:12px}
+.rd{aspect-ratio:1;background:var(--blue-100);border:var(--s-hair) solid rgba(0,122,255,.3);display:flex;align-items:flex-end;justify-content:center;padding-bottom:9px;font-family:var(--f-mono);font-size:11px;color:var(--blue-action);max-width:100%}
 .r-xs{border-radius:8px}.r-sm{border-radius:12px}.r-md{border-radius:18px}.r-lg{border-radius:24px}
 .r-xl{border-radius:32px}.r-2xl{border-radius:44px}.r-pill{border-radius:980px}
 
-/* ========== Lijndiktes ========== */
-.stroke-list{display:flex;flex-direction:column;gap:0;border:var(--s-hair) solid var(--ln-soft);border-radius:16px;overflow:hidden;margin-top:8px}
-.stroke-row{display:grid;grid-template-columns:120px 130px 1fr;gap:20px;align-items:center;padding:18px 24px;border-bottom:var(--s-hair) solid var(--ln-soft);background:var(--chip)}
+/* LIJNEN */
+.stroke-list{border:var(--s-hair) solid var(--ln-soft);border-radius:16px;overflow:hidden;margin-top:8px}
+.stroke-row{display:grid;grid-template-columns:110px 130px 1fr;gap:20px;align-items:center;padding:16px 22px;border-bottom:var(--s-hair) solid var(--ln-soft);background:var(--chip)}
 .stroke-row:last-child{border-bottom:none}
-.stroke-row .val{font-family:var(--f-mono);font-size:13px;color:var(--tx);font-variant-numeric:tabular-nums}
+.stroke-row .val{font-family:var(--f-mono);font-size:13px;font-variant-numeric:tabular-nums}
 .stroke-vis{width:100%;background:var(--tx)}
 .stroke-row .use{font-size:14px;color:var(--tx2)}
 .sv-1{height:1px}.sv-15{height:1.5px}.sv-2{height:2px}.sv-3{height:3px}.sv-4{height:4px}
-.sv-focus{height:20px;background:transparent;border-radius:6px;box-shadow:0 0 0 4px rgba(0,122,255,.40);width:80%}
+.sv-focus{height:20px;background:transparent;border-radius:6px;box-shadow:var(--focus);width:80%}
 
-/* ========== Ruimte ========== */
-.space-scale{display:flex;flex-direction:column;gap:9px;margin-top:8px}
-.space-row{display:grid;grid-template-columns:52px 1fr;gap:16px;align-items:center}
+/* RUIMTE */
+.space-scale{display:flex;flex-direction:column;gap:8px}
+.space-row{display:grid;grid-template-columns:48px 1fr;gap:14px;align-items:center}
 .space-row span{font-family:var(--f-mono);font-size:12px;color:var(--tx3);font-variant-numeric:tabular-nums;text-align:right}
-.space-bar{height:14px;border-radius:3px;background:linear-gradient(90deg,var(--blue),rgba(0,122,255,.35));max-width:100%}
-.section-space{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:32px}
+.space-bar{height:13px;border-radius:3px;background:linear-gradient(90deg,var(--blue),rgba(0,122,255,.35));max-width:100%}
+.section-space{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 .ss{border:var(--s-hair) solid var(--ln-soft);border-radius:14px;overflow:hidden;background:var(--chip)}
-.ss-head{font-size:13px;font-weight:600;padding:12px 16px;border-bottom:var(--s-hair) solid var(--ln-soft)}
-.ss-vis{padding:16px;display:flex;flex-direction:column;gap:6px}
-.ss-pad{background:var(--blue-tint-mid);border-radius:4px;font-family:var(--f-mono);font-size:10px;color:var(--blue-action);display:flex;align-items:center;justify-content:center}
-.ss-body{background:var(--bg-sunk);border-radius:4px;height:30px}
+.ss-head{font-size:13px;font-weight:600;padding:11px 15px;border-bottom:var(--s-hair) solid var(--ln-soft)}
+.ss-vis{padding:14px;display:flex;flex-direction:column;gap:6px}
+.ss-pad{background:var(--blue-100);border-radius:4px;font-family:var(--f-mono);font-size:10px;color:var(--blue-action);display:flex;align-items:center;justify-content:center}
+.ss-body{background:var(--bg-sunk);border-radius:4px;height:28px}
 
-/* ========== Componenten ========== */
-.comp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
-.comp{border:var(--s-hair) solid var(--ln-soft);border-radius:18px;padding:26px;background:var(--chip)}
-.comp>.lbl{display:block;font-family:var(--f-mono);font-size:11px;color:var(--tx3);margin-bottom:16px}
+/* KEUZEVELDEN */
+.choice{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;cursor:pointer;font-size:16px;line-height:1.4}
+.choice:last-child{margin-bottom:0}
+.choice input{position:absolute;opacity:0;width:20px;height:20px;margin:0;cursor:pointer}
+.choice-box{flex:none;width:20px;height:20px;margin-top:1px;background:var(--bg);border:var(--s-hair) solid #c8c8cd;border-radius:6px;transition:background-color .15s var(--ease),border-color .15s var(--ease),box-shadow .15s var(--ease)}
+.choice--radio .choice-box{border-radius:50%}
+.choice input:hover+.choice-box{border-color:var(--blue)}
+.choice input:checked+.choice-box{background:var(--blue) url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='10' viewBox='0 0 12 10'%3E%3Cpath fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M1 5.2 4.2 8.4 11 1.6'/%3E%3C/svg%3E") no-repeat center;border-color:var(--blue)}
+.choice--radio input:checked+.choice-box{background-image:none;box-shadow:inset 0 0 0 5px var(--bg),inset 0 0 0 20px var(--blue)}
+.choice input:indeterminate+.choice-box{background:var(--blue) url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='2' viewBox='0 0 10 2'%3E%3Cpath fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' d='M1 1h8'/%3E%3C/svg%3E") no-repeat center;border-color:var(--blue)}
+.choice input:focus-visible+.choice-box{box-shadow:var(--focus)}
+.choice input:disabled+.choice-box{background:var(--bg-alt);border-color:var(--ln)}
+.choice input:disabled~.choice-label{color:#adadb2}
+.choice-label{flex:1}
+.choice-label small{display:block;font-size:14px;color:var(--tx2);margin-top:2px}
+.choice--card{padding:16px 20px;border:var(--s-hair) solid var(--ln);border-radius:12px;margin-bottom:12px}
+.choice--card:hover{border-color:#c8c8cd}
+.choice--card:has(input:checked){border-color:var(--blue);background:var(--blue-50)}
+.switch{display:inline-flex;align-items:center;gap:12px;cursor:pointer}
+.switch input{position:absolute;opacity:0;width:50px;height:30px;margin:0}
+.switch-track{flex:none;width:50px;height:30px;background:var(--g30);border-radius:980px;position:relative;transition:background-color .25s var(--ease)}
+.switch-track::after{content:"";position:absolute;top:2px;left:2px;width:26px;height:26px;background:#fff;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,.18);transition:transform .25s var(--ease-out)}
+.switch input:checked+.switch-track{background:var(--green)}
+.switch input:checked+.switch-track::after{transform:translateX(20px)}
+.switch input:focus-visible+.switch-track{box-shadow:var(--focus)}
+
+/* FILTERS */
+.filterbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:16px;background:var(--bg-alt);border-radius:14px}
+.fchip{display:inline-flex;align-items:center;gap:8px;font-family:var(--f-text);font-size:14px;font-weight:500;color:var(--tx);background:var(--chip);border:var(--s-hair) solid transparent;border-radius:980px;padding:9px 16px;min-height:40px;cursor:pointer;white-space:nowrap;transition:background-color .15s var(--ease),color .15s var(--ease)}
+.fchip:hover{background:var(--bg-sunk)}
+.fchip.on{background:var(--blue-action);border-color:var(--blue-action);color:#fff}
+.fchip .cnt{font-size:12px;font-weight:400;color:var(--tx3);font-variant-numeric:tabular-nums}
+.fchip.on .cnt{color:rgba(255,255,255,.75)}
+.factive{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--blue-action);background:var(--blue-100);border-radius:980px;padding:7px 8px 7px 14px}
+.factive button{display:flex;align-items:center;justify-content:center;width:20px;height:20px;font-size:15px;line-height:1;color:var(--blue-action);background:none;border:none;border-radius:50%;cursor:pointer;transition:background-color .15s var(--ease)}
+.factive button:hover{background:var(--blue-200)}
+.freset{font-size:14px;color:var(--tx2);background:none;border:none;padding:7px 4px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.freset:hover{color:var(--tx)}
+.fcount{font-size:14px;color:var(--tx2);font-variant-numeric:tabular-nums;margin-left:auto}
+.fcount strong{color:var(--tx);font-weight:600}
+.search{position:relative;display:flex;align-items:center}
+.search input{width:100%;height:48px;padding:0 44px;font-family:var(--f-text);font-size:17px;color:var(--tx);background:var(--bg-alt);border:var(--s-hair) solid transparent;border-radius:980px;transition:background-color .15s var(--ease),box-shadow .15s var(--ease)}
+.search input:focus{outline:none;background:var(--bg);border-color:var(--blue);box-shadow:var(--focus)}
+.search-icon{position:absolute;left:16px;width:17px;height:17px;color:var(--tx3);pointer-events:none}
+.search-clear{position:absolute;right:12px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--tx3);background:var(--g25);border:none;border-radius:50%;cursor:pointer}
+.search-clear:hover{background:var(--g30);color:var(--tx)}
+.rangewrap input[type=range]{width:100%;height:4px;padding:0;background:var(--g25);border:none;border-radius:980px;appearance:none;cursor:pointer}
+.rangewrap input[type=range]::-webkit-slider-thumb{appearance:none;width:24px;height:24px;background:#fff;border:var(--s-hair) solid var(--ln);border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,.18)}
+.rangewrap input[type=range]::-moz-range-thumb{width:24px;height:24px;background:#fff;border:var(--s-hair) solid var(--ln);border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,.18)}
+.range-vals{display:flex;justify-content:space-between;font-size:14px;color:var(--tx2);font-variant-numeric:tabular-nums;margin-top:12px}
+
+/* VELDEN */
+.field{margin-bottom:16px}.field:last-child{margin-bottom:0}
+.field label{display:block;font-size:14px;font-weight:500;margin-bottom:8px}
+.field input,.field select{width:100%;font-family:var(--f-text);font-size:17px;color:var(--tx);background:var(--bg);border:var(--s-hair) solid var(--ln);border-radius:12px;padding:13px 16px;min-height:48px;appearance:none;transition:border-color .15s var(--ease),box-shadow .15s var(--ease)}
+.field input::placeholder{color:var(--tx3)}
+.field input:focus,.field select:focus{outline:none;border-color:var(--blue);box-shadow:var(--focus)}
+.field input.err{border-color:var(--red);box-shadow:0 0 0 4px rgba(255,59,48,.20)}
+.field .msg{font-size:12px;color:var(--red-tx);margin-top:7px}
+.field .hint{font-size:12px;color:var(--tx3);margin-top:7px}
+
+/* NAVIGATIE-DEMO */
+.crumbs{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:14px;color:var(--tx3);list-style:none;padding:0;margin:0}
+.crumbs li{display:flex;align-items:center;gap:8px;margin:0}
+.crumbs li+li::before{content:"›";color:var(--tx3)}
+.crumbs a{color:var(--tx2)}
+.crumbs [aria-current]{color:var(--tx)}
+.pagi{display:flex;align-items:center;gap:8px;justify-content:center;flex-wrap:wrap}
+.pbtn{min-width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;padding:0 12px;font-family:var(--f-text);font-size:14px;font-weight:500;font-variant-numeric:tabular-nums;color:var(--tx2);background:none;border:none;border-radius:50%;cursor:pointer;transition:background-color .15s var(--ease),color .15s var(--ease)}
+.pbtn:hover{background:var(--bg-alt);color:var(--tx)}
+.pbtn.on{background:var(--blue-action);color:#fff}
+.pbtn[disabled]{opacity:.3;pointer-events:none}
+.burger{width:44px;height:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;background:none;border:none;cursor:pointer;border-radius:8px}
+.burger span{display:block;width:18px;height:2px;background:var(--tx);border-radius:2px;transition:transform .25s var(--ease),opacity .15s var(--ease)}
+.burger[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.burger[aria-expanded="true"] span:nth-child(2){opacity:0}
+.burger[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* CONTENT */
+.icontile{width:56px;height:56px;display:flex;align-items:center;justify-content:center;background:var(--blue-100);color:var(--blue-action);border-radius:12px;margin-bottom:20px}
+.icontile--lime{background:var(--lime-100);color:var(--lime-text)}
+.icontile--round{border-radius:50%}
+.icontile svg{width:24px;height:24px;stroke-width:1.5;fill:none;stroke:currentColor}
+.testi{padding:32px;background:var(--bg-alt);border-radius:24px}
+.testi-q{font-family:var(--f-disp);font-size:24px;font-weight:600;line-height:1.35;letter-spacing:-.01em;margin:0 0 24px}
+.testi-p{display:flex;align-items:center;gap:16px}
+.avatar{width:48px;height:48px;border-radius:50%;background:var(--g20);flex:none;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:var(--tx2)}
+.testi-n{font-size:16px;font-weight:500;display:block}
+.testi-r{font-size:14px;color:var(--tx2)}
+.stars{display:inline-flex;gap:2px;color:var(--yellow)}
+.stars svg{width:16px;height:16px;fill:currentColor}
+.stars .e{color:var(--g30)}
+.pricing{padding:32px 26px;background:var(--chip);border:var(--s-hair) solid var(--ln);border-radius:24px;display:flex;flex-direction:column;position:relative}
+.pricing--feat{border-color:var(--blue);border-width:2px;box-shadow:0 4px 12px rgba(0,0,0,.06),0 16px 40px rgba(0,0,0,.08)}
+.pricing-badge{position:absolute;top:-2px;left:50%;transform:translate(-50%,-50%)}
+.pricing-name{font-size:19px;font-weight:600;margin-bottom:6px}
+.pricing-price{font-family:var(--f-disp);font-size:40px;font-weight:700;line-height:1;letter-spacing:-.018em;font-variant-numeric:tabular-nums;margin-bottom:4px}
+.pricing-per{font-size:14px;color:var(--tx2);display:block;margin-bottom:22px}
+.pricing ul{flex:1;margin:0 0 24px;padding:0}
+.post{display:flex;flex-direction:column;background:var(--chip);border-radius:18px;overflow:hidden;text-decoration:none;color:inherit;border:var(--s-hair) solid var(--ln-soft);transition:transform .25s var(--ease-out),box-shadow .25s var(--ease)}
+.post:hover{transform:translateY(-4px);box-shadow:0 6px 16px rgba(0,0,0,.07),0 24px 56px rgba(0,0,0,.11);text-decoration:none}
+.post-media{aspect-ratio:3/2;background:linear-gradient(135deg,var(--blue-100),var(--lime-100));display:flex;align-items:center;justify-content:center;font-family:var(--f-mono);font-size:12px;color:var(--tx2)}
+.post-body{padding:22px;display:flex;flex-direction:column;gap:10px}
+.post-meta{display:flex;flex-wrap:wrap;align-items:center;gap:10px;font-size:12px;color:var(--tx3)}
+.post-title{font-family:var(--f-disp);font-size:20px;font-weight:600;line-height:1.25;letter-spacing:-.008em;margin:0}
+.post-ex{font-size:14px;color:var(--tx2);margin:0}
+.timeline{list-style:none;padding:0;margin:0;position:relative}
+.timeline::before{content:"";position:absolute;left:7px;top:8px;bottom:8px;width:2px;background:var(--ln-soft)}
+.timeline li{position:relative;padding-left:34px;padding-bottom:28px;margin:0}
+.timeline li:last-child{padding-bottom:0}
+.timeline li::before{content:"";position:absolute;left:0;top:5px;width:16px;height:16px;background:var(--bg);border:3px solid var(--blue);border-radius:50%}
+.tl-date{display:block;font-size:12px;font-weight:600;color:var(--blue-link);margin-bottom:2px}
+.ctaban{padding:48px 36px;background:var(--black);color:#f5f5f7;border-radius:32px;text-align:center}
+.ctaban--lime{background:var(--lime);color:#1d1d1f}
+.ctaban h3{color:inherit;margin-bottom:10px}
+.ctaban p{color:inherit;opacity:.78;margin:0 auto 24px;max-width:420px;font-size:15px}
+.logos{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:28px 22px;align-items:center}
+.logos div{height:36px;display:flex;align-items:center;justify-content:center;font-family:var(--f-disp);font-weight:700;font-size:15px;color:var(--tx3);filter:grayscale(100%);opacity:.55;transition:opacity .25s var(--ease),color .25s var(--ease)}
+.logos div:hover{opacity:1;color:var(--tx)}
+.videoc{position:relative;aspect-ratio:16/9;background:linear-gradient(135deg,var(--blue-100),var(--blue-200));border-radius:18px;overflow:hidden;cursor:pointer}
+.videop{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:64px;height:64px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.72);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border:none;border-radius:50%;cursor:pointer;transition:transform .25s var(--ease-out),background-color .15s var(--ease)}
+.videoc:hover .videop{transform:translate(-50%,-50%) scale(1.06);background:#fff}
+.videop svg{width:20px;height:20px;fill:#1d1d1f;margin-left:3px}
+
+/* BADGES/LIJSTEN */
 .badge{display:inline-flex;align-items:center;font-size:12px;font-weight:500;line-height:1;padding:6px 12px;border-radius:980px}
-.b-blue{background:var(--blue-tint-mid);color:var(--blue-action)}
-.b-green{background:var(--green-tint);color:var(--green-tx)}
-.b-orange{background:var(--orange-tint);color:var(--orange-tx)}
-.b-yellow{background:var(--yellow-tint);color:var(--yellow-tx)}
-.b-red{background:var(--red-tint);color:var(--red-tx)}
-.b-purple{background:var(--purple-tint);color:var(--purple-tx)}
-.b-lime{background:var(--lime-tint);color:var(--lime-text)}
-.b-neutral{background:var(--neutral-tint);color:var(--neutral-tx)}
+.b-blue{background:var(--blue-100);color:var(--blue-action)}
+.b-green{background:var(--green-100);color:var(--green-tx)}
+.b-orange{background:var(--orange-100);color:var(--orange-tx)}
+.b-yellow{background:var(--yellow-100);color:var(--yellow-tx)}
+.b-red{background:var(--red-100);color:var(--red-tx)}
+.b-purple{background:var(--purple-100);color:var(--purple-tx)}
+.b-lime{background:var(--lime-100);color:var(--lime-text)}
+.b-neutral{background:var(--neutral-100);color:var(--neutral-tx)}
 .b-solid{background:var(--blue-action);color:#fff}
 .b-solid-lime{background:var(--lime);color:#1d1d1f}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
-.tag{display:inline-block;font-size:14px;color:var(--tx2);border:var(--s-hair) solid var(--ln);border-radius:980px;padding:7px 16px;transition:border-color .15s var(--ease),color .15s var(--ease)}
+.tag{display:inline-block;font-size:14px;color:var(--tx2);border:var(--s-hair) solid var(--ln);border-radius:980px;padding:7px 16px}
 .tag.on{border-color:var(--blue-action);color:var(--blue-action)}
-
 .check{list-style:none;padding:0;margin:0}
 .check li{position:relative;padding-left:30px;margin-bottom:12px;font-size:15px}
 .check li:last-child{margin-bottom:0}
 .check li::before{content:"";position:absolute;left:0;top:.35em;width:18px;height:18px;border-radius:50%;background:var(--blue) url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='9' viewBox='0 0 11 9'%3E%3Cpath fill='none' stroke='%23fff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round' d='M1 4.6 3.9 7.5 10 1.4'/%3E%3C/svg%3E") no-repeat center}
 .check--lime li::before{background:var(--lime) url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='9' viewBox='0 0 11 9'%3E%3Cpath fill='none' stroke='%231D1D1F' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round' d='M1 4.6 3.9 7.5 10 1.4'/%3E%3C/svg%3E") no-repeat center}
 .steps{list-style:none;padding:0;margin:0;counter-reset:s}
-.steps li{position:relative;padding-left:46px;margin-bottom:18px;font-size:15px;counter-increment:s}
+.steps li{position:relative;padding-left:44px;margin-bottom:18px;font-size:15px;counter-increment:s}
 .steps li:last-child{margin-bottom:0}
-.steps li::before{content:counter(s);position:absolute;left:0;top:-3px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:var(--blue-action);background:var(--blue-tint-mid);border-radius:50%}
-.quote{font-family:var(--f-disp);font-size:28px;font-weight:600;line-height:1.25;letter-spacing:-.014em;margin:0 0 16px;max-width:none}
+.steps li::before{content:counter(s);position:absolute;left:0;top:-3px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:var(--blue-action);background:var(--blue-100);border-radius:50%}
+.quote{font-family:var(--f-disp);font-size:26px;font-weight:600;line-height:1.25;letter-spacing:-.014em;margin:0 0 16px;max-width:none}
 .quote-by{font-size:15px;color:var(--tx2)}
 .quote-by b{color:var(--tx);font-weight:500}
-.stat-row{display:flex;gap:44px;flex-wrap:wrap}
-.stat-v{display:block;font-family:var(--f-disp);font-size:52px;font-weight:700;line-height:1;letter-spacing:-.022em;color:var(--blue);font-variant-numeric:tabular-nums;margin-bottom:8px}
+.stat-row{display:flex;gap:40px;flex-wrap:wrap}
+.stat-v{display:block;font-family:var(--f-disp);font-size:48px;font-weight:700;line-height:1;letter-spacing:-.022em;color:var(--blue);font-variant-numeric:tabular-nums;margin-bottom:8px}
 .stat-v--lime{color:var(--lime-text)}
 .stat-l{font-size:14px;color:var(--tx2)}
-.field{margin-bottom:16px}
-.field:last-child{margin-bottom:0}
-.field label{display:block;font-size:14px;font-weight:500;margin-bottom:8px}
-.field input,.field select{width:100%;font-family:var(--f-text);font-size:17px;color:var(--tx);background:var(--bg);border:var(--s-hair) solid var(--ln);border-radius:12px;padding:13px 16px;min-height:48px;transition:border-color .15s var(--ease),box-shadow .15s var(--ease);appearance:none}
-.field input::placeholder{color:var(--tx3)}
-.field input:focus,.field select:focus{outline:none;border-color:var(--blue);box-shadow:var(--focus)}
-.field input.err{border-color:var(--red);box-shadow:0 0 0 4px rgba(255,59,48,.20)}
-.field .msg{font-size:12px;color:var(--red-tx);margin-top:7px}
-.field .hint{font-size:12px;color:var(--tx3);margin-top:7px}
+.ruleline{width:64px;height:4px;background:var(--blue);border-radius:2px;margin-bottom:16px}
+.ruleline--lime{background:var(--lime)}
 .segmented{display:inline-flex;padding:4px;background:var(--bg-sunk);border-radius:980px;gap:2px}
 .segmented button{font:inherit;font-family:var(--f-text);font-size:14px;font-weight:500;color:var(--tx2);background:none;border:none;border-radius:980px;padding:8px 18px;cursor:pointer;transition:background-color .15s var(--ease),color .15s var(--ease)}
 .segmented button.on{background:var(--chip);color:var(--tx);box-shadow:0 1px 2px rgba(0,0,0,.06)}
 .acc-item{border-bottom:var(--s-hair) solid var(--ln-soft)}
 .acc-item:last-child{border-bottom:none}
-.acc-btn{width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;text-align:left;font:inherit;font-family:var(--f-disp);font-size:19px;font-weight:600;letter-spacing:-.008em;color:var(--tx);background:none;border:none;padding:20px 0;cursor:pointer;transition:color .15s var(--ease)}
+.acc-btn{width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;text-align:left;font:inherit;font-family:var(--f-disp);font-size:19px;font-weight:600;letter-spacing:-.008em;color:var(--tx);background:none;border:none;padding:20px 0;cursor:pointer}
 .acc-btn:hover{color:var(--blue-link-h)}
 .acc-btn span{flex:none;font-size:22px;font-weight:300;color:var(--tx3);transition:transform .25s var(--ease)}
 .acc-btn[aria-expanded="true"] span{transform:rotate(45deg)}
 .acc-panel{padding:0 0 20px;font-size:15px;color:var(--tx2);max-width:620px}
-.arrowlink{display:inline-flex;align-items:center;gap:4px;color:var(--blue-link);text-decoration:none;font-size:17px}
+.arrowlink{display:inline-flex;align-items:center;gap:4px;color:var(--blue-link);font-size:17px}
 .arrowlink::after{content:"›";font-size:1.25em;line-height:1;transform:translateY(-1px);transition:transform .25s var(--ease-out)}
-.arrowlink:hover{color:var(--blue-link-h);text-decoration:underline;text-underline-offset:3px}
 .arrowlink:hover::after{transform:translate(3px,-1px)}
-.rule-line{width:64px;height:var(--s-rule);background:var(--blue);border-radius:2px;margin-bottom:16px}
-.rule-line--lime{background:var(--lime)}
 
-/* ========== Motion ========== */
-.motion-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:8px}
-.mc{border:var(--s-hair) solid var(--ln-soft);border-radius:16px;padding:22px;background:var(--chip)}
-.mc code{display:block;background:none;padding:0;font-size:12px;color:var(--tx2);margin-bottom:10px;word-break:break-all}
-.mc p{font-size:14px;color:var(--tx2);margin:0;max-width:none}
+/* FEEDBACK */
+.alert{display:flex;align-items:flex-start;gap:12px;padding:16px 20px;border-radius:12px;font-size:14px;line-height:1.5;margin-bottom:12px}
+.alert:last-child{margin-bottom:0}
+.alert strong{display:block;margin-bottom:2px;font-weight:600}
+.alert svg{flex:none;width:20px;height:20px;margin-top:1px;stroke-width:1.5;fill:none;stroke:currentColor}
+.a-info{background:var(--blue-100);color:var(--blue-action)}
+.a-success{background:var(--green-100);color:var(--green-tx)}
+.a-warning{background:var(--orange-100);color:var(--orange-tx)}
+.a-error{background:var(--red-100);color:var(--red-tx)}
+.a-neutral{background:var(--neutral-100);color:var(--neutral-tx)}
+.tip{position:relative;display:inline-flex}
+.tip::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translate(-50%,4px);padding:8px 12px;font-size:12px;line-height:1.35;white-space:nowrap;color:#f5f5f7;background:var(--black);border-radius:8px;opacity:0;pointer-events:none;transition:opacity .15s var(--ease),transform .15s var(--ease-out);z-index:5}
+.tip:hover::after,.tip:focus-visible::after{opacity:1;transform:translate(-50%,0)}
+.prog{height:6px;background:var(--g25);border-radius:980px;overflow:hidden;margin-bottom:10px}
+.prog-bar{height:100%;background:var(--blue);border-radius:980px}
+.prog-bar--lime{background:var(--lime)}
+.stepsbar{display:flex;align-items:center;gap:8px;list-style:none;padding:0;margin:0}
+.stepsbar li{flex:1;margin:0}
+.step-track{height:4px;background:var(--g25);border-radius:2px;margin-bottom:8px}
+.stepsbar .done .step-track,.stepsbar .cur .step-track{background:var(--blue)}
+.step-label{font-size:12px;color:var(--tx3)}
+.stepsbar .cur .step-label{color:var(--tx);font-weight:500}
+.skel{background:linear-gradient(90deg,var(--g20) 25%,var(--g25) 37%,var(--g20) 63%);background-size:400% 100%;border-radius:8px;animation:shim 1.4s ease-in-out infinite}
+@keyframes shim{0%{background-position:100% 50%}100%{background-position:0 50%}}
+.skel-t{height:14px;margin-bottom:8px}
+.skel-ti{height:22px;width:60%;margin-bottom:14px}
+.skel-m{aspect-ratio:3/2;border-radius:14px;margin-bottom:16px}
+.empty{text-align:center;padding:40px 20px}
+.empty svg{width:44px;height:44px;margin:0 auto 18px;color:var(--tx3);stroke-width:1.5;fill:none;stroke:currentColor;display:block}
+.empty p{color:var(--tx2);margin:0 auto 20px;font-size:15px;max-width:340px}
+.dotbadge{position:relative;display:inline-flex;width:40px;height:40px;align-items:center;justify-content:center;background:var(--bg-alt);border-radius:50%;color:var(--tx2)}
+.dotbadge svg{width:20px;height:20px;stroke-width:1.5;fill:none;stroke:currentColor}
+.dotbadge::after{content:attr(data-count);position:absolute;top:-2px;right:-4px;min-width:18px;height:18px;display:flex;align-items:center;justify-content:center;padding:0 5px;font-size:11px;font-weight:600;color:#fff;background:var(--red);border-radius:980px}
+.swiper-dots{display:flex;gap:6px;align-items:center}
+.swiper-dots i{width:8px;height:8px;background:var(--g30);border-radius:980px;transition:width .25s var(--ease-out)}
+.swiper-dots i.on{width:24px;background:var(--blue)}
+.arrowbtn{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;background:rgba(255,255,255,.72);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border:var(--s-hair) solid var(--ln-soft);border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,.05),0 2px 8px rgba(0,0,0,.04);cursor:pointer;color:var(--tx)}
+:root[data-theme="dark"] .arrowbtn,:root:not([data-theme="light"]) .arrowbtn{background:rgba(40,40,44,.72)}
+.arrowbtn svg{width:16px;height:16px;stroke-width:2;fill:none;stroke:currentColor}
 
-/* ========== Slot ========== */
-.files{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-top:8px}
-.file{border:var(--s-hair) solid var(--ln);border-radius:16px;padding:24px}
-.file h4{font-family:var(--f-mono);font-size:14px;margin-bottom:8px;word-break:break-all}
-.file p{font-size:14px;color:var(--tx2);margin:0;max-width:none}
-.foot{padding-block:48px 64px;border-top:var(--s-hair) solid var(--ln-soft);font-size:13px;color:var(--tx3)}
+.foot{padding-block:44px 60px;border-top:var(--s-hair) solid var(--ln-soft);font-size:13px;color:var(--tx3)}
 .toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,16px);background:var(--black);color:#fff;font-size:14px;padding:11px 20px;border-radius:980px;opacity:0;pointer-events:none;transition:opacity .2s var(--ease),transform .2s var(--ease-out);z-index:99}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 
-/* ========== Responsive ========== */
 @media (max-width:1068px){
   :root{--gutter:24px}
-  .sec{padding-block:72px}.hero{padding-block:72px 64px}
+  .sec{padding-block:68px}.hero{padding-block:68px 60px}
   .hero h1{font-size:52px}.hero .lead{font-size:21px}h2{font-size:34px}
-  .swatches{grid-template-columns:repeat(3,1fr)}
+  .ramp{grid-template-columns:repeat(4,1fr)}
+  .grayramp{grid-template-columns:repeat(5,1fr)}
   .shadow-grid{grid-template-columns:repeat(3,1fr)}
   .radius-grid{grid-template-columns:repeat(4,1fr)}
-  .motion-grid,.surface-grid,.section-space{grid-template-columns:repeat(2,1fr)}
+  .grid3,.grid4,.section-space{grid-template-columns:repeat(2,1fr)}
   .sp-display{font-size:56px}.sp-h1{font-size:44px}.sp-h2{font-size:34px}
-  .stroke-row{grid-template-columns:100px 110px 1fr;gap:16px}
+  .stroke-row{grid-template-columns:96px 104px 1fr;gap:16px}
 }
 @media (max-width:734px){
   :root{--gutter:20px}
   body{font-size:16px}
-  .sec{padding-block:56px}.hero{padding-block:56px 48px}
+  .sec{padding-block:52px}.hero{padding-block:52px 44px}
   .hero h1{font-size:38px}.hero .lead{font-size:18px}
   h2{font-size:28px}h3{font-size:21px}.lead{font-size:18px}
-  .sec-head{margin-bottom:36px}
-  .principles,.changes,.comp-grid,.rules,.files,.duo,.rhythm{grid-template-columns:1fr}
-  .swatches{grid-template-columns:repeat(2,1fr)}
-  .surface-grid,.shadow-grid,.motion-grid,.section-space{grid-template-columns:1fr}
+  .sec-head{margin-bottom:32px}
+  .grid2,.grid3,.grid4,.rules,.duo,.rhythm,.section-space,.shadow-grid,.sh-compare{grid-template-columns:1fr}
+  .ramp{grid-template-columns:repeat(2,1fr)}
+  .grayramp{grid-template-columns:repeat(3,1fr)}
   .radius-grid{grid-template-columns:repeat(3,1fr)}
-  .type-row{grid-template-columns:1fr;gap:10px;padding-block:18px}
+  .type-row{grid-template-columns:1fr;gap:10px;padding-block:16px}
   .sp-display{font-size:40px}.sp-h1{font-size:34px}.sp-h2{font-size:28px}
   .sp-h3{font-size:22px}.sp-h4{font-size:20px}.sp-h5{font-size:18px}.sp-h6{font-size:16px}
   .sp-lead{font-size:18px}.sp-body{font-size:16px}
   .duo p{font-size:26px}
-  .ondark{padding:28px}
-  .stat-row{gap:28px}.stat-v{font-size:40px}
-  .quote{font-size:22px}
-  .btn-sizes{gap:12px}
-  .stroke-row{grid-template-columns:1fr;gap:10px;padding:16px 20px}
+  .ondark,.testi,.ctaban{padding:24px}
+  .stat-row{gap:24px}.stat-v{font-size:38px}
+  .quote{font-size:21px}
+  .stroke-row{grid-template-columns:1fr;gap:10px;padding:16px 18px}
   .stroke-vis{max-width:160px}
-  .tbl{min-width:0}
-  .tbl--nums{min-width:520px}
+  .anat-row{grid-template-columns:20px 1fr 20px;gap:6px}
+  .tbl{min-width:0}.tbl--nums,.tbl--wide{min-width:520px}
+  .pricing{padding:26px 22px}
 }
 </style>
 
 <nav class="nav">
   <div class="nav-inner">
     <span class="nav-brand">JR Designsysteem</span>
+    <a href="#anatomie">Anatomie</a>
     <a href="#kleur">Kleur</a>
     <a href="#typografie">Typografie</a>
     <a href="#ritme">Ritme</a>
+    <a href="#ruimte">Ruimte</a>
     <a href="#knoppen">Knoppen</a>
     <a href="#vlakken">Vlakken</a>
+    <a href="#schaduw">Schaduw</a>
     <a href="#lijnen">Lijnen</a>
-    <a href="#ruimte">Ruimte</a>
-    <a href="#componenten">Componenten</a>
-    <a href="#responsive">Responsive</a>
+    <a href="#formulier">Formulier</a>
+    <a href="#filters">Filters</a>
+    <a href="#navigatie">Navigatie</a>
+    <a href="#content">Content</a>
+    <a href="#feedback">Feedback</a>
+    <a href="#elementor">Elementor</a>
+    <a href="#beeld">Beeld</a>
+    <a href="#taal">Taal</a>
     <button class="theme-btn" id="themeBtn" type="button">Donker</button>
   </div>
 </nav>
 
 <header class="wrap hero">
-  <span class="eyebrow">Designsysteem v2.0 · september 2026</span>
+  <span class="eyebrow">Designsysteem v3.0 · september 2026</span>
   <h1>De rust van Apple, in het blauw van James&nbsp;Robinson.</h1>
-  <p class="lead">Elke kleur, lettergrootte, marge, padding, lijndikte en schaduw voor de nieuwe website — vastgelegd voor desktop, tablet en mobiel, en klaar om in Elementor Pro te zetten.</p>
+  <p class="lead">Het complete systeem voor de nieuwe website: pagina-opbouw, kleurtrappen, typografie, ruimte, lijndiktes, schaduwen en 50+ componenten — met de exacte waarden om vandaag in Elementor Pro te beginnen.</p>
   <div class="hero-meta">
+    <span class="pill">327 tokens</span>
+    <span class="pill">3.043 regels CSS</span>
     <span class="pill">Inter Tight + Inter</span>
-    <span class="pill">240 tokens</span>
     <span class="pill">3 breakpoints</span>
     <span class="pill">WCAG AA</span>
-    <span class="pill pill--lime">Nieuw: JR Lime</span>
+    <span class="pill pill--lime">JR Lime</span>
   </div>
 </header>
 
-<section class="sec sec--alt">
+<section class="sec sec--alt" id="anatomie">
   <div class="wrap">
     <div class="sec-head">
-      <span class="eyebrow">Versie 2.0</span>
-      <h2>Wat er is veranderd</h2>
-      <p class="lead">Naar aanleiding van je feedbackronde.</p>
+      <span class="eyebrow">Pagina-opbouw</span>
+      <h2>Loopt de content van zijkant tot zijkant?</h2>
+      <p class="lead">Nee. Nooit. De sectie-achtergrond wel, de content niet. Dit is het fundament van de hele layout.</p>
     </div>
-    <div class="changes">
-      <div class="change"><h4>Lettertype: Inter Tight + Inter</h4><p>Geen systeemstack meer, dus geen Roboto op Android. Iedereen ziet hetzelfde. Twee optische maten van één familie — net als Apple's SF Pro Display en Text.</p></div>
-      <div class="change"><h4>Verticaal ritme vastgelegd</h4><p>Zeventien marge-tokens, van eyebrow→kop tot veld→foutmelding. De eyebrow staat nu op 8px, niet op 16.</p></div>
-      <div class="change"><h4>Padding per component</h4><p>Knoppen, cards, velden, badges, tags, tabellen, dropdowns — alles heeft nu een waarde per maat en per breakpoint.</p></div>
-      <div class="change"><h4>Lijndiktes toegevoegd</h4><p>Zes diktes, elk met één taak. Inclusief 1.5px voor icoonlijnen, Apple's SF Symbols-standaard.</p></div>
-      <div class="change"><h4>Alle kleuren gedefinieerd</h4><p>De badge-tinten stonden los in de code. Nu heeft elke statuskleur een vlak, een hover, een tekstkleur en een tint. Nul losse waarden.</p></div>
-      <div class="change"><h4>Eyebrow = linkkleur</h4><p>Beide op #0066CC. In v1 vloekten ze in dezelfde card.</p></div>
-      <div class="change"><h4>Ruimte tussen containers</h4><p>Zeven waarden voor Container → Gap. Standaard is 24.</p></div>
-      <div class="change"><h4>Teal eruit, JR Lime erin</h4><p>Teal kwam uit het brandbook maar deed geen werk. Lime is de nieuwe tweede accentkleur.</p></div>
+
+    <div class="anat">
+      <span class="anat-tag">viewport — 100% van het scherm</span>
+      <div class="anat-sec">
+        <span class="anat-tag">sectie — draagt de achtergrondkleur, loopt WEL van rand tot rand</span>
+        <div class="anat-row">
+          <div class="anat-gut">gutter 32</div>
+          <div class="anat-con">container — max 1024px, gecentreerd<br>hier stopt de content</div>
+          <div class="anat-gut">gutter 32</div>
+        </div>
+      </div>
     </div>
+    <p class="anat-note">Groeit het scherm verder, dan groeit alleen de witruimte links en rechts.</p>
+
+    <h3 class="sub">Wat dat concreet betekent</h3>
+    <div class="tbl-wrap">
+      <table class="tbl tbl--nums">
+        <thead><tr><th>Scherm</th><th>Sectie-achtergrond</th><th>Content</th><th>Wit per kant</th></tr></thead>
+        <tbody>
+          <tr><td class="name">375 px — iPhone SE</td><td>375</td><td>335</td><td>20</td></tr>
+          <tr><td class="name">768 px — iPad</td><td>768</td><td>720</td><td>24</td></tr>
+          <tr><td class="name">1440 px — MacBook</td><td>1440</td><td>1024</td><td>208</td></tr>
+          <tr><td class="name">1920 px — monitor</td><td>1920</td><td>1024</td><td>448</td></tr>
+          <tr class="hl"><td class="name">2560 px — 5K</td><td>2560</td><td>1024</td><td>768</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note" style="margin-top:18px">Op een 5K-scherm is de content 1024px breed met 768px wit ernaast. Dat voelt misschien leeg, maar het is precies wat apple.com doet — en het is de reden dat hun pagina's op elk scherm rustig blijven. <b>Tekst die meegroeit met het scherm wordt onleesbaar.</b></p>
+
+    <h3 class="sub">Containerbreedtes</h3>
+    <div class="tbl-wrap">
+      <table class="tbl tbl--wide">
+        <thead><tr><th>Naam</th><th>Max</th><th>Waarvoor</th><th>Vol bij viewport</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Narrow</td><td class="num">540</td><td>gecentreerde intro's, formulieren, login</td><td class="num">604</td></tr>
+          <tr class="hl"><td class="name">Text</td><td class="num">692</td><td>lopende tekst — nooit breder</td><td class="num">756</td></tr>
+          <tr class="hl"><td class="name">Standaard</td><td class="num">1024</td><td>de meeste secties</td><td class="num">1088</td></tr>
+          <tr><td class="name">Wide</td><td class="num">1280</td><td>grids, cases, portfolio, logo-rijen</td><td class="num">1344</td></tr>
+          <tr><td class="name">Full</td><td class="num">1440</td><td>full-bleed beeld met marge</td><td class="num">1504</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="sub">Gutter — de ruimte tot de schermrand</h3>
+    <div class="tbl-wrap">
+      <table class="tbl tbl--nums">
+        <thead><tr><th>Breakpoint</th><th>Gutter</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Desktop &gt; 1068</td><td>32</td></tr>
+          <tr><td class="name">Tablet ≤ 1068</td><td>24</td></tr>
+          <tr><td class="name">Mobiel ≤ 734</td><td>20</td></tr>
+          <tr><td class="name">Klein ≤ 374</td><td>16</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note" style="margin-top:18px">Dit is de belangrijkste waarde van de hele layout: hij zorgt dat tekst op een telefoon nooit tegen het glas aan plakt.</p>
+
+    <h3 class="sub">Zo bouw je het in Elementor</h3>
+    <div class="grid2">
+      <div class="demo">
+        <span class="lbl">sectie met achtergrondkleur</span>
+        <p class="note" style="margin:0">Buitenste container op <b>Full Width</b> met de achtergrondkleur. Daarin een tweede container op <b>Boxed</b>, content width <b>1024</b>, padding links/rechts <b>32 / 24 / 20</b>. Dat is de enige juiste opbouw.</p>
+      </div>
+      <div class="demo">
+        <span class="lbl">full-bleed beeld</span>
+        <p class="note" style="margin:0">Buitenste container <b>Full Width</b>, padding links/rechts op <b>0</b>, klasse <code>jr-container--bleed</code>. Alleen voor beeld — nooit voor tekst.</p>
+      </div>
+    </div>
+
+    <h3 class="sub">Minimale hoogtes</h3>
+    <div class="tbl-wrap">
+      <table class="tbl tbl--nums">
+        <thead><tr><th>Element</th><th>Waarde</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Hero met kop, intro en knop</td><td>560</td></tr>
+          <tr><td class="name">Hero met beeld</td><td>720</td></tr>
+          <tr><td class="name">Korte pagina (voorkomt zwevende footer)</td><td>60vh</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note" style="margin-top:18px">Gebruik <b>nooit <code>100vh</code></b> voor een hero: op mobiel telt de adresbalk mee en springt de hoogte tijdens het scrollen.</p>
   </div>
 </section>
 
@@ -453,77 +655,151 @@ a:active{color:var(--blue-link-a)}
   <div class="wrap">
     <div class="sec-head">
       <span class="eyebrow">Kleur</span>
-      <h2>Het palet</h2>
-      <p class="lead">Klik op een kleur om de hexcode te kopiëren.</p>
+      <h2>Acht stappen per kleur</h2>
+      <p class="lead">Zo hoef je nooit zelf een tint te mengen. Klik op een kleur om de hexcode te kopiëren.</p>
     </div>
 
-    <h3>Merk — drie blauwen, één regel</h3>
-    <p class="note" style="margin-bottom:24px">Blauw als <b>vorm</b> → <code>#007AFF</code>. Blauw als <b>tekst</b> → <code>#0066CC</code>. Blauw als <b>knopvlak</b> → <code>#0857C3</code>. Zo hoef je nooit te twijfelen.</p>
-    <div class="swatches">
-      <button class="sw" data-hex="#007AFF"><span class="sw-chip" style="background:#007AFF"></span><span class="sw-body"><span class="sw-name">JR Blue</span><span class="sw-hex">#007AFF</span><span class="sw-use">Vorm: icoon, vlak, streep, groot cijfer</span></span></button>
-      <button class="sw" data-hex="#0066CC"><span class="sw-chip" style="background:#0066CC"></span><span class="sw-body"><span class="sw-name">Link Blue</span><span class="sw-hex">#0066CC</span><span class="sw-use">Tekst: eyebrow, link, tekstknop</span></span></button>
-      <button class="sw" data-hex="#0857C3"><span class="sw-chip" style="background:#0857C3"></span><span class="sw-body"><span class="sw-name">Action Blue</span><span class="sw-hex">#0857C3</span><span class="sw-use">Knopvlak met witte tekst</span></span></button>
-      <button class="sw" data-hex="#004C99"><span class="sw-chip" style="background:#004C99"></span><span class="sw-body"><span class="sw-name">Link Hover</span><span class="sw-hex">#004C99</span><span class="sw-use">Link bij hover</span></span></button>
-      <button class="sw" data-hex="#003D7A"><span class="sw-chip" style="background:#003D7A"></span><span class="sw-body"><span class="sw-name">Link Active</span><span class="sw-hex">#003D7A</span><span class="sw-use">Link bij klik</span></span></button>
-      <button class="sw" data-hex="#003967"><span class="sw-chip" style="background:#003967"></span><span class="sw-body"><span class="sw-name">Action Hover</span><span class="sw-hex">#003967</span><span class="sw-use">Knop bij hover</span></span></button>
-      <button class="sw" data-hex="#2997FF"><span class="sw-chip" style="background:#2997FF"></span><span class="sw-body"><span class="sw-name">Blue on Dark</span><span class="sw-hex">#2997FF</span><span class="sw-use">Blauwe tekst op donker</span></span></button>
-      <button class="sw" data-hex="#1C1C1E"><span class="sw-chip" style="background:#1C1C1E"></span><span class="sw-body"><span class="sw-name">JR Black</span><span class="sw-hex">#1C1C1E</span><span class="sw-use">Donkere secties</span></span></button>
-    </div>
-
-    <h3>JR Lime — de nieuwe accentkleur</h3>
-    <p class="note" style="margin-bottom:24px"><b>Eén regel: lime is een vlak, nooit een tekstkleur op wit.</b> Wil je lime als tekst, gebruik dan de donkere variant. Lime en blauw zijn bijna complementair — dat maakt ze sterk naast elkaar, maar luidruchtig als je ze allebei groot inzet. Blauw draagt de pagina, lime zet één ding in het zonnetje.</p>
-    <div class="swatches">
-      <button class="sw" data-hex="#C4F000"><span class="sw-chip" style="background:#C4F000"></span><span class="sw-body"><span class="sw-name">JR Lime</span><span class="sw-hex">#C4F000</span><span class="sw-use">Vlak met donkere tekst — 12.8:1</span></span></button>
-      <button class="sw" data-hex="#B2DA00"><span class="sw-chip" style="background:#B2DA00"></span><span class="sw-body"><span class="sw-name">Lime Hover</span><span class="sw-hex">#B2DA00</span><span class="sw-use">Hover op een lime vlak</span></span></button>
-      <button class="sw" data-hex="#9FC200"><span class="sw-chip" style="background:#9FC200"></span><span class="sw-body"><span class="sw-name">Lime Active</span><span class="sw-hex">#9FC200</span><span class="sw-use">Bij klik</span></span></button>
-      <button class="sw" data-hex="#5A7000"><span class="sw-chip" style="background:#5A7000"></span><span class="sw-body"><span class="sw-name">Lime Text</span><span class="sw-hex">#5A7000</span><span class="sw-use">Lime als tekst op wit — 5.6:1</span></span></button>
-      <button class="sw" data-hex="#F2FCCC"><span class="sw-chip" style="background:#F2FCCC"></span><span class="sw-body"><span class="sw-name">Lime Tint</span><span class="sw-hex">#F2FCCC</span><span class="sw-use">Zacht vlak, badge</span></span></button>
-      <button class="sw" data-hex="#D9FF33"><span class="sw-chip" style="background:#D9FF33"></span><span class="sw-body"><span class="sw-name">Lime on Dark</span><span class="sw-hex">#D9FF33</span><span class="sw-use">Lime tekst op donker</span></span></button>
-    </div>
-
-    <h3>Status — elk vier tinten</h3>
-    <p class="note" style="margin-bottom:24px">Vlak, hover, tekstkleur die op wit leesbaar is, en een zachte tint voor badges. Elke waarde die de stylesheet gebruikt, staat hier.</p>
-    <div class="tbl-wrap">
+    <div class="tbl-wrap" style="margin-bottom:8px">
       <table class="tbl">
-        <thead><tr><th>Status</th><th>Vlak</th><th>Hover</th><th>Tekst op wit</th><th>Zachte tint</th></tr></thead>
+        <thead><tr><th>Stap</th><th>Waarvoor</th></tr></thead>
         <tbody>
-          <tr><td class="name"><span class="dot" style="background:#34C759"></span>Groen</td><td class="num">#34C759</td><td class="num">#25AD42</td><td class="num">#1D7D3F</td><td class="num">#E6F7EB</td></tr>
-          <tr><td class="name"><span class="dot" style="background:#F6A027"></span>Oranje</td><td class="num">#F6A027</td><td class="num">#E08A10</td><td class="num">#94590A</td><td class="num">#FEF2E0</td></tr>
-          <tr><td class="name"><span class="dot" style="background:#FFD631"></span>Geel</td><td class="num">#FFD631</td><td class="num">#F0C400</td><td class="num">#806400</td><td class="num">#FFF8DC</td></tr>
-          <tr><td class="name"><span class="dot" style="background:#FF3B30"></span>Rood</td><td class="num">#FF3B30</td><td class="num">#EF302B</td><td class="num">#C02A22</td><td class="num">#FDECEA</td></tr>
-          <tr><td class="name"><span class="dot" style="background:#AF52DE"></span>Paars</td><td class="num">#AF52DE</td><td class="num">#9840CC</td><td class="num">#7E2FB0</td><td class="num">#F5EAFB</td></tr>
-          <tr class="hl"><td class="name"><span class="dot" style="background:#C4F000"></span>Lime</td><td class="num">#C4F000</td><td class="num">#B2DA00</td><td class="num">#5A7000</td><td class="num">#F2FCCC</td></tr>
-          <tr><td class="name"><span class="dot" style="background:#6E6E73"></span>Neutraal</td><td class="num">—</td><td class="num">—</td><td class="num">#6E6E73</td><td class="num">#F5F5F7</td></tr>
+          <tr><td class="name">50</td><td>zachtste vlak — achtergrond van een hele sectie</td></tr>
+          <tr><td class="name">100</td><td>zacht vlak — badge, highlight-blok, melding</td></tr>
+          <tr><td class="name">200</td><td>rand op een gekleurd vlak</td></tr>
+          <tr><td class="name">base</td><td>HET vlak — knop, icoon, balk</td></tr>
+          <tr><td class="name">hover / active</td><td>interactie</td></tr>
+          <tr><td class="name">text</td><td>kleur die als tekst op wit leesbaar is</td></tr>
+          <tr><td class="name">dark</td><td>kleur die als tekst op donker werkt</td></tr>
         </tbody>
       </table>
     </div>
 
-    <h3 style="margin-top:52px">Vlakken, tekst en lijnen</h3>
-    <div class="swatches">
-      <button class="sw" data-hex="#FFFFFF"><span class="sw-chip" style="background:#FFFFFF;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)"></span><span class="sw-body"><span class="sw-name">Surface</span><span class="sw-hex">#FFFFFF</span><span class="sw-use">Basisvlak</span></span></button>
-      <button class="sw" data-hex="#F5F5F7"><span class="sw-chip" style="background:#F5F5F7"></span><span class="sw-body"><span class="sw-name">Surface Subtle</span><span class="sw-hex">#F5F5F7</span><span class="sw-use">Afwisselende sectie</span></span></button>
-      <button class="sw" data-hex="#EBEBF0"><span class="sw-chip" style="background:#EBEBF0"></span><span class="sw-body"><span class="sw-name">Surface Sunk</span><span class="sw-hex">#EBEBF0</span><span class="sw-use">Verzonken vlak</span></span></button>
-      <button class="sw" data-hex="#E2EBF3"><span class="sw-chip" style="background:#E2EBF3"></span><span class="sw-body"><span class="sw-name">Surface Tint</span><span class="sw-hex">#E2EBF3</span><span class="sw-use">Lichtblauwe highlight</span></span></button>
-      <button class="sw" data-hex="#2C2D2E"><span class="sw-chip" style="background:#2C2D2E"></span><span class="sw-body"><span class="sw-name">Dark Alt</span><span class="sw-hex">#2C2D2E</span><span class="sw-use">Card op donkere sectie</span></span></button>
-      <button class="sw" data-hex="#1D1D1F"><span class="sw-chip" style="background:#1D1D1F"></span><span class="sw-body"><span class="sw-name">Text Primary</span><span class="sw-hex">#1D1D1F</span><span class="sw-use">Lopende tekst</span></span></button>
-      <button class="sw" data-hex="#6E6E73"><span class="sw-chip" style="background:#6E6E73"></span><span class="sw-body"><span class="sw-name">Text Secondary</span><span class="sw-hex">#6E6E73</span><span class="sw-use">Intro's, subkoppen</span></span></button>
-      <button class="sw" data-hex="#86868B"><span class="sw-chip" style="background:#86868B"></span><span class="sw-body"><span class="sw-name">Text Tertiary</span><span class="sw-hex">#86868B</span><span class="sw-use">Captions, metadata</span></span></button>
-      <button class="sw" data-hex="#ADADB2"><span class="sw-chip" style="background:#ADADB2"></span><span class="sw-body"><span class="sw-name">Text Disabled</span><span class="sw-hex">#ADADB2</span><span class="sw-use">Uitgeschakeld</span></span></button>
-      <button class="sw" data-hex="#E5E5E9"><span class="sw-chip" style="background:#E5E5E9"></span><span class="sw-body"><span class="sw-name">Line Subtle</span><span class="sw-hex">#E5E5E9</span><span class="sw-use">Dividers</span></span></button>
-      <button class="sw" data-hex="#D2D2D7"><span class="sw-chip" style="background:#D2D2D7"></span><span class="sw-body"><span class="sw-name">Line</span><span class="sw-hex">#D2D2D7</span><span class="sw-use">Randen, velden</span></span></button>
-      <button class="sw" data-hex="#C8C8CD"><span class="sw-chip" style="background:#C8C8CD"></span><span class="sw-body"><span class="sw-name">Line Strong</span><span class="sw-hex">#C8C8CD</span><span class="sw-use">Rand bij hover</span></span></button>
+    <div class="ramp-label"><h4>Blauw</h4><span>vorm · tekst · knopvlak — drie base-kleuren, één regel</span></div>
+    <div class="ramp">
+      <button data-hex="#F0F7FF"><span class="c" style="background:#F0F7FF"></span><span class="t"><b>50</b><span>#F0F7FF</span></span></button>
+      <button data-hex="#E0EFFF"><span class="c" style="background:#E0EFFF"></span><span class="t"><b>100</b><span>#E0EFFF</span></span></button>
+      <button data-hex="#E2EBF3"><span class="c" style="background:#E2EBF3"></span><span class="t"><b>150</b><span>#E2EBF3</span></span></button>
+      <button data-hex="#CCE4FF"><span class="c" style="background:#CCE4FF"></span><span class="t"><b>200</b><span>#CCE4FF</span></span></button>
+      <button data-hex="#B3D7FF"><span class="c" style="background:#B3D7FF"></span><span class="t"><b>300</b><span>#B3D7FF</span></span></button>
+      <button data-hex="#007AFF"><span class="c" style="background:#007AFF"></span><span class="t"><b>vorm</b><span>#007AFF</span></span></button>
+      <button data-hex="#0066CC"><span class="c" style="background:#0066CC"></span><span class="t"><b>tekst</b><span>#0066CC</span></span></button>
+      <button data-hex="#0857C3"><span class="c" style="background:#0857C3"></span><span class="t"><b>knop</b><span>#0857C3</span></span></button>
+    </div>
+    <div class="ramp">
+      <button data-hex="#004C99"><span class="c" style="background:#004C99"></span><span class="t"><b>link hover</b><span>#004C99</span></span></button>
+      <button data-hex="#003D7A"><span class="c" style="background:#003D7A"></span><span class="t"><b>link active</b><span>#003D7A</span></span></button>
+      <button data-hex="#003967"><span class="c" style="background:#003967"></span><span class="t"><b>knop hover</b><span>#003967</span></span></button>
+      <button data-hex="#002E52"><span class="c" style="background:#002E52"></span><span class="t"><b>knop active</b><span>#002E52</span></span></button>
+      <button data-hex="#005CBF"><span class="c" style="background:#005CBF"></span><span class="t"><b>deep</b><span>#005CBF</span></span></button>
+      <button data-hex="#2997FF"><span class="c" style="background:#2997FF"></span><span class="t"><b>dark</b><span>#2997FF</span></span></button>
+      <button data-hex="#66B5FF"><span class="c" style="background:#66B5FF"></span><span class="t"><b>dark hover</b><span>#66B5FF</span></span></button>
+      <button data-hex="#1C1C1E"><span class="c" style="background:#1C1C1E"></span><span class="t"><b>JR Black</b><span>#1C1C1E</span></span></button>
     </div>
 
-    <h3 style="margin-top:52px">Contrast</h3>
+    <div class="ramp-label"><h4>Lime</h4><span>vlak met donkere tekst — nooit tekst op wit</span></div>
+    <div class="ramp">
+      <button data-hex="#FAFEEB"><span class="c" style="background:#FAFEEB"></span><span class="t"><b>50</b><span>#FAFEEB</span></span></button>
+      <button data-hex="#F2FCCC"><span class="c" style="background:#F2FCCC"></span><span class="t"><b>100</b><span>#F2FCCC</span></span></button>
+      <button data-hex="#E7F999"><span class="c" style="background:#E7F999"></span><span class="t"><b>200</b><span>#E7F999</span></span></button>
+      <button data-hex="#DCF666"><span class="c" style="background:#DCF666"></span><span class="t"><b>300</b><span>#DCF666</span></span></button>
+      <button data-hex="#C4F000"><span class="c" style="background:#C4F000"></span><span class="t"><b>base</b><span>#C4F000</span></span></button>
+      <button data-hex="#B2DA00"><span class="c" style="background:#B2DA00"></span><span class="t"><b>hover</b><span>#B2DA00</span></span></button>
+      <button data-hex="#9FC200"><span class="c" style="background:#9FC200"></span><span class="t"><b>active</b><span>#9FC200</span></span></button>
+      <button data-hex="#5A7000"><span class="c" style="background:#5A7000"></span><span class="t"><b>text</b><span>#5A7000</span></span></button>
+    </div>
+
+    <div class="ramp-label"><h4>Groen</h4><span>succes</span></div>
+    <div class="ramp">
+      <button data-hex="#EFFAF2"><span class="c" style="background:#EFFAF2"></span><span class="t"><b>50</b><span>#EFFAF2</span></span></button>
+      <button data-hex="#E6F7EB"><span class="c" style="background:#E6F7EB"></span><span class="t"><b>100</b><span>#E6F7EB</span></span></button>
+      <button data-hex="#C2EECD"><span class="c" style="background:#C2EECD"></span><span class="t"><b>200</b><span>#C2EECD</span></span></button>
+      <button data-hex="#34C759"><span class="c" style="background:#34C759"></span><span class="t"><b>base</b><span>#34C759</span></span></button>
+      <button data-hex="#25AD42"><span class="c" style="background:#25AD42"></span><span class="t"><b>hover</b><span>#25AD42</span></span></button>
+      <button data-hex="#1D9436"><span class="c" style="background:#1D9436"></span><span class="t"><b>active</b><span>#1D9436</span></span></button>
+      <button data-hex="#1D7D3F"><span class="c" style="background:#1D7D3F"></span><span class="t"><b>text</b><span>#1D7D3F</span></span></button>
+      <button data-hex="#41C96A"><span class="c" style="background:#41C96A"></span><span class="t"><b>dark</b><span>#41C96A</span></span></button>
+    </div>
+
+    <div class="ramp-label"><h4>Oranje</h4><span>waarschuwing</span></div>
+    <div class="ramp">
+      <button data-hex="#FEF7EE"><span class="c" style="background:#FEF7EE"></span><span class="t"><b>50</b><span>#FEF7EE</span></span></button>
+      <button data-hex="#FEF2E0"><span class="c" style="background:#FEF2E0"></span><span class="t"><b>100</b><span>#FEF2E0</span></span></button>
+      <button data-hex="#FCE3BE"><span class="c" style="background:#FCE3BE"></span><span class="t"><b>200</b><span>#FCE3BE</span></span></button>
+      <button data-hex="#F6A027"><span class="c" style="background:#F6A027"></span><span class="t"><b>base</b><span>#F6A027</span></span></button>
+      <button data-hex="#E08A10"><span class="c" style="background:#E08A10"></span><span class="t"><b>hover</b><span>#E08A10</span></span></button>
+      <button data-hex="#C4770B"><span class="c" style="background:#C4770B"></span><span class="t"><b>active</b><span>#C4770B</span></span></button>
+      <button data-hex="#94590A"><span class="c" style="background:#94590A"></span><span class="t"><b>text</b><span>#94590A</span></span></button>
+      <button data-hex="#F0A040"><span class="c" style="background:#F0A040"></span><span class="t"><b>dark</b><span>#F0A040</span></span></button>
+    </div>
+
+    <div class="ramp-label"><h4>Geel</h4><span>highlight</span></div>
+    <div class="ramp">
+      <button data-hex="#FFFBEA"><span class="c" style="background:#FFFBEA"></span><span class="t"><b>50</b><span>#FFFBEA</span></span></button>
+      <button data-hex="#FFF8DC"><span class="c" style="background:#FFF8DC"></span><span class="t"><b>100</b><span>#FFF8DC</span></span></button>
+      <button data-hex="#FFF1B7"><span class="c" style="background:#FFF1B7"></span><span class="t"><b>200</b><span>#FFF1B7</span></span></button>
+      <button data-hex="#FFD631"><span class="c" style="background:#FFD631"></span><span class="t"><b>base</b><span>#FFD631</span></span></button>
+      <button data-hex="#F0C400"><span class="c" style="background:#F0C400"></span><span class="t"><b>hover</b><span>#F0C400</span></span></button>
+      <button data-hex="#D6AF00"><span class="c" style="background:#D6AF00"></span><span class="t"><b>active</b><span>#D6AF00</span></span></button>
+      <button data-hex="#806400"><span class="c" style="background:#806400"></span><span class="t"><b>text</b><span>#806400</span></span></button>
+      <button data-hex="#E0C040"><span class="c" style="background:#E0C040"></span><span class="t"><b>dark</b><span>#E0C040</span></span></button>
+    </div>
+
+    <div class="ramp-label"><h4>Rood</h4><span>fout</span></div>
+    <div class="ramp">
+      <button data-hex="#FFEFEE"><span class="c" style="background:#FFEFEE"></span><span class="t"><b>50</b><span>#FFEFEE</span></span></button>
+      <button data-hex="#FDECEA"><span class="c" style="background:#FDECEA"></span><span class="t"><b>100</b><span>#FDECEA</span></span></button>
+      <button data-hex="#FFC4C1"><span class="c" style="background:#FFC4C1"></span><span class="t"><b>200</b><span>#FFC4C1</span></span></button>
+      <button data-hex="#FF3B30"><span class="c" style="background:#FF3B30"></span><span class="t"><b>base</b><span>#FF3B30</span></span></button>
+      <button data-hex="#EF302B"><span class="c" style="background:#EF302B"></span><span class="t"><b>hover</b><span>#EF302B</span></span></button>
+      <button data-hex="#D62620"><span class="c" style="background:#D62620"></span><span class="t"><b>active</b><span>#D62620</span></span></button>
+      <button data-hex="#C02A22"><span class="c" style="background:#C02A22"></span><span class="t"><b>text</b><span>#C02A22</span></span></button>
+      <button data-hex="#FF6B61"><span class="c" style="background:#FF6B61"></span><span class="t"><b>dark</b><span>#FF6B61</span></span></button>
+    </div>
+
+    <div class="ramp-label"><h4>Paars</h4><span>creatief accent</span></div>
+    <div class="ramp">
+      <button data-hex="#F9F1FC"><span class="c" style="background:#F9F1FC"></span><span class="t"><b>50</b><span>#F9F1FC</span></span></button>
+      <button data-hex="#F5EAFB"><span class="c" style="background:#F5EAFB"></span><span class="t"><b>100</b><span>#F5EAFB</span></span></button>
+      <button data-hex="#E7CBF5"><span class="c" style="background:#E7CBF5"></span><span class="t"><b>200</b><span>#E7CBF5</span></span></button>
+      <button data-hex="#AF52DE"><span class="c" style="background:#AF52DE"></span><span class="t"><b>base</b><span>#AF52DE</span></span></button>
+      <button data-hex="#9840CC"><span class="c" style="background:#9840CC"></span><span class="t"><b>hover</b><span>#9840CC</span></span></button>
+      <button data-hex="#8232B0"><span class="c" style="background:#8232B0"></span><span class="t"><b>active</b><span>#8232B0</span></span></button>
+      <button data-hex="#7E2FB0"><span class="c" style="background:#7E2FB0"></span><span class="t"><b>text</b><span>#7E2FB0</span></span></button>
+      <button data-hex="#C77CE8"><span class="c" style="background:#C77CE8"></span><span class="t"><b>dark</b><span>#C77CE8</span></span></button>
+    </div>
+
+    <div class="ramp-label"><h4>Grijstrap</h4><span>18 stappen — gebruik altijd een stap uit deze trap, nooit een zelfgemengd grijs</span></div>
+    <div class="grayramp">
+      <button data-hex="#FFFFFF"><span class="c" style="background:#FFFFFF;box-shadow:inset 0 0 0 1px rgba(0,0,0,.07)"></span><span class="t"><b>00</b><span>FFFFFF</span></span></button>
+      <button data-hex="#FAFAFB"><span class="c" style="background:#FAFAFB"></span><span class="t"><b>05</b><span>FAFAFB</span></span></button>
+      <button data-hex="#F5F5F7"><span class="c" style="background:#F5F5F7"></span><span class="t"><b>10</b><span>F5F5F7</span></span></button>
+      <button data-hex="#F2F2F7"><span class="c" style="background:#F2F2F7"></span><span class="t"><b>15</b><span>F2F2F7</span></span></button>
+      <button data-hex="#EBEBF0"><span class="c" style="background:#EBEBF0"></span><span class="t"><b>20</b><span>EBEBF0</span></span></button>
+      <button data-hex="#E5E5E9"><span class="c" style="background:#E5E5E9"></span><span class="t"><b>25</b><span>E5E5E9</span></span></button>
+      <button data-hex="#D2D2D7"><span class="c" style="background:#D2D2D7"></span><span class="t"><b>30</b><span>D2D2D7</span></span></button>
+      <button data-hex="#D2D1D7"><span class="c" style="background:#D2D1D7"></span><span class="t"><b>35</b><span>D2D1D7</span></span></button>
+      <button data-hex="#C8C8CD"><span class="c" style="background:#C8C8CD"></span><span class="t"><b>40</b><span>C8C8CD</span></span></button>
+      <button data-hex="#ADADB2"><span class="c" style="background:#ADADB2"></span><span class="t"><b>50</b><span>ADADB2</span></span></button>
+      <button data-hex="#86868B"><span class="c" style="background:#86868B"></span><span class="t"><b>60</b><span>86868B</span></span></button>
+      <button data-hex="#6E6E73"><span class="c" style="background:#6E6E73"></span><span class="t"><b>65</b><span>6E6E73</span></span></button>
+      <button data-hex="#636466"><span class="c" style="background:#636466"></span><span class="t"><b>70</b><span>636466</span></span></button>
+      <button data-hex="#49484A"><span class="c" style="background:#49484A"></span><span class="t"><b>80</b><span>49484A</span></span></button>
+      <button data-hex="#3A3A3C"><span class="c" style="background:#3A3A3C"></span><span class="t"><b>85</b><span>3A3A3C</span></span></button>
+      <button data-hex="#2C2D2E"><span class="c" style="background:#2C2D2E"></span><span class="t"><b>90</b><span>2C2D2E</span></span></button>
+      <button data-hex="#1D1D1F"><span class="c" style="background:#1D1D1F"></span><span class="t"><b>95</b><span>1D1D1F</span></span></button>
+      <button data-hex="#1C1C1E"><span class="c" style="background:#1C1C1E"></span><span class="t"><b>100</b><span>1C1C1E</span></span></button>
+    </div>
+
+    <h3 class="sub">De blauw-regel</h3>
     <div class="tbl-wrap">
-      <table class="tbl">
-        <thead><tr><th>Kleur</th><th>Op wit</th><th>Gebruik hiervoor</th></tr></thead>
+      <table class="tbl tbl--wide">
+        <thead><tr><th>Blauw als…</th><th>Hex</th><th>Contrast op wit</th><th>Waarvoor</th></tr></thead>
         <tbody>
-          <tr><td class="name"><span class="dot" style="background:#007AFF"></span>#007AFF</td><td class="num"><span class="warn">4.0 : 1</span></td><td>Vormen, iconen, vlakken, koppen vanaf 24px. <b>Niet</b> voor lopende tekst.</td></tr>
-          <tr><td class="name"><span class="dot" style="background:#0066CC"></span>#0066CC</td><td class="num"><span class="ok">5.6 : 1</span></td><td>Eyebrows, tekstlinks, tekstknoppen.</td></tr>
-          <tr><td class="name"><span class="dot" style="background:#0857C3"></span>#0857C3</td><td class="num"><span class="ok">6.7 : 1</span></td><td>Knopvlakken met witte tekst.</td></tr>
-          <tr><td class="name"><span class="dot" style="background:#C4F000"></span>#C4F000</td><td class="num"><span class="warn">1.3 : 1</span></td><td>Alleen als vlak, met <code>#1D1D1F</code> erop (12.8:1). Nooit als tekst.</td></tr>
-          <tr><td class="name"><span class="dot" style="background:#5A7000"></span>#5A7000</td><td class="num"><span class="ok">5.6 : 1</span></td><td>Lime als tekst op wit.</td></tr>
+          <tr><td class="name"><span class="dot" style="background:#007AFF"></span>vorm</td><td class="num">#007AFF</td><td class="num"><span class="warn">4.0 : 1</span></td><td>icoon, vlak, streep, groot cijfer, vinkje. Niet voor tekst onder 24px.</td></tr>
+          <tr><td class="name"><span class="dot" style="background:#0066CC"></span>tekst</td><td class="num">#0066CC</td><td class="num"><span class="ok">5.6 : 1</span></td><td>eyebrow, link, tekstknop, label</td></tr>
+          <tr><td class="name"><span class="dot" style="background:#0857C3"></span>knopvlak</td><td class="num">#0857C3</td><td class="num"><span class="ok">6.7 : 1</span></td><td>gevulde knop met witte tekst</td></tr>
+          <tr><td class="name"><span class="dot" style="background:#C4F000"></span>lime als vlak</td><td class="num">#C4F000</td><td class="num"><span class="ok">12.8 : 1</span></td><td>met #1D1D1F erop. Als tekst op wit: 1.3:1 — onleesbaar.</td></tr>
+          <tr><td class="name"><span class="dot" style="background:#5A7000"></span>lime als tekst</td><td class="num">#5A7000</td><td class="num"><span class="ok">5.6 : 1</span></td><td>lime-gekleurde tekst op wit</td></tr>
         </tbody>
       </table>
     </div>
@@ -534,20 +810,19 @@ a:active{color:var(--blue-link-a)}
   <div class="wrap">
     <div class="sec-head">
       <span class="eyebrow">Typografie</span>
-      <h2>Eén familie, twee maten</h2>
-      <p class="lead">Precies zoals Apple het doet.</p>
+      <h2>Eén familie, twee optische maten</h2>
+      <p class="lead">Precies zoals Apple het doet met SF Pro Display en SF Pro Text.</p>
     </div>
-
-    <div class="tbl-wrap" style="margin-bottom:40px">
-      <table class="tbl">
+    <div class="tbl-wrap" style="margin-bottom:32px">
+      <table class="tbl tbl--wide">
         <thead><tr><th>Apple</th><th>Wij</th><th>Vanaf</th><th>Waarom</th></tr></thead>
         <tbody>
-          <tr><td class="name">SF Pro Display</td><td class="name">Inter Tight</td><td class="num">21px+</td><td>Strakker, smallere letters, minder ruimte tussen tekens</td></tr>
-          <tr><td class="name">SF Pro Text</td><td class="name">Inter</td><td class="num">&lt; 21px</td><td>Ruimer en opener, beter leesbaar op klein formaat</td></tr>
+          <tr><td class="name">SF Pro Display</td><td class="name">Inter Tight</td><td class="num">21px+</td><td>strakker, smallere letters, minder ruimte tussen tekens</td></tr>
+          <tr><td class="name">SF Pro Text</td><td class="name">Inter</td><td class="num">&lt; 21px</td><td>ruimer en opener, beter leesbaar op klein formaat</td></tr>
         </tbody>
       </table>
     </div>
-    <p class="note" style="margin-bottom:44px">Dat is geen tweede lettertype — het zijn twee optische maten van dezelfde familie. Laad <b>Inter Tight in 600 en 700</b> en <b>Inter in 400, 500 en 600</b>. Verder niets.</p>
+    <p class="note" style="margin-bottom:36px">Laad <b>Inter Tight in 600 en 700</b> en <b>Inter in 400, 500 en 600</b>. Verder niets — elk extra gewicht kost laadtijd.</p>
 
     <div class="type-row"><div class="type-meta"><b>Display</b>80 / 1.05<br>700 · −.028em<i>Inter Tight</i></div><div class="sp-display">Marketing die klopt</div></div>
     <div class="type-row"><div class="type-meta"><b>H1</b>56 / 1.08<br>700 · −.022em<i>Inter Tight</i></div><div class="sp-h1">Jouw externe marketingafdeling</div></div>
@@ -556,16 +831,16 @@ a:active{color:var(--blue-link-a)}
     <div class="type-row"><div class="type-meta"><b>H4</b>24 / 1.25<br>600 · −.010em<i>Inter Tight</i></div><div class="sp-h4">Van horeca tot zorg</div></div>
     <div class="type-row"><div class="type-meta"><b>H5</b>21 / 1.25<br>600 · −.008em<i>Inter Tight</i></div><div class="sp-h5">Tien mensen, één team</div></div>
     <div class="type-row"><div class="type-meta"><b>H6</b>17 / 1.25<br>600 · −.004em<i>Inter</i></div><div class="sp-h6">Onze werkwijze</div></div>
-    <div class="type-row"><div class="type-meta"><b>Lead</b>21 / 1.45<br>400 · 0<i>Inter</i></div><div class="sp-lead">De intro-zin onder een kop. Grijs, ruimer gezet, en nooit langer dan drie regels — daarna gaat de lezer scrollen in plaats van lezen.</div></div>
+    <div class="type-row"><div class="type-meta"><b>Lead</b>21 / 1.45<br>400 · 0<i>Inter</i></div><div class="sp-lead">De intro-zin onder een kop. Grijs, ruimer gezet, en nooit langer dan drie regels.</div></div>
     <div class="type-row"><div class="type-meta"><b>Body</b>17 / 1.55<br>400 · 0<i>Inter</i></div><div class="sp-body">Lopende tekst staat op 17px, niet op 16. Dat is Apple's standaard en het leest merkbaar rustiger. De regellengte blijft onder de 692px, zodat het oog bij elke regelovergang vanzelf de juiste volgende regel vindt.</div></div>
     <div class="type-row"><div class="type-meta"><b>Small</b>14 / 1.45<br>400 · .004em<i>Inter</i></div><div class="sp-small">Bijschriften, voorwaarden, labels bij formuliervelden.</div></div>
     <div class="type-row"><div class="type-meta"><b>Caption</b>12 / 1.4<br>400 · .004em<i>Inter</i></div><div class="sp-cap">Metadata, copyright, kleine lettertjes.</div></div>
 
-    <h3 style="margin-top:52px">Wat letterafstand doet</h3>
-    <p class="note">Hetzelfde woord, dezelfde grootte, hetzelfde gewicht. Alleen de tracking verschilt.</p>
+    <h3 class="sub">Wat letterafstand doet</h3>
+    <p class="note">Hetzelfde woord, dezelfde grootte, hetzelfde gewicht.</p>
     <div class="duo">
-      <div><p class="t-off">Marketing partnership</p><span class="lbl bad">letter-spacing: 0 — los, amateuristisch</span></div>
-      <div><p class="t-on">Marketing partnership</p><span class="lbl good">letter-spacing: −0.022em — strak</span></div>
+      <div><p class="t-off" style="letter-spacing:0">Marketing partnership</p><span class="lbl bad">letter-spacing: 0 — los</span></div>
+      <div><p style="letter-spacing:-.022em">Marketing partnership</p><span class="lbl good">letter-spacing: −0.022em — strak</span></div>
     </div>
   </div>
 </section>
@@ -577,15 +852,14 @@ a:active{color:var(--blue-link-a)}
       <h2>De afstand tussen tekstelementen</h2>
       <p class="lead">Elk token beschrijft: wat staat erboven → wat staat eronder.</p>
     </div>
-
-    <h3>Eyebrow → kop: 8px, niet 16</h3>
-    <p class="note">Een eyebrow is geen zelfstandig element. Het is het eerste woord van de kop, in een andere kleur. Op 16px of meer gaat hij er los boven zweven.</p>
+    <h3>Eyebrow → kop: 8px, niet 20</h3>
+    <p class="note">Een eyebrow is geen zelfstandig element. Het is het eerste woord van de kop, in een andere kleur.</p>
     <div class="rhythm">
-      <div class="r-loose"><span class="eb">Marketing partnership</span><h3>Jouw externe marketingafdeling</h3><p class="sub">Geen losse projecten, maar een vast team.</p><span class="lbl" style="display:block;margin-top:16px;font-family:var(--f-mono);font-size:12px;color:var(--red-tx)">20px — twee losse dingen</span></div>
-      <div class="r-tight"><span class="eb">Marketing partnership</span><h3>Jouw externe marketingafdeling</h3><p class="sub">Geen losse projecten, maar een vast team.</p><span class="lbl" style="display:block;margin-top:16px;font-family:var(--f-mono);font-size:12px;color:var(--green-tx)">8px — één blok</span></div>
+      <div class="r-loose"><span class="eb">Marketing partnership</span><h3>Jouw externe marketingafdeling</h3><p class="s">Geen losse projecten, maar een vast team.</p><span style="display:block;margin-top:16px;font-family:var(--f-mono);font-size:12px;color:var(--red-tx)">20px — twee losse dingen</span></div>
+      <div class="r-tight"><span class="eb">Marketing partnership</span><h3>Jouw externe marketingafdeling</h3><p class="s">Geen losse projecten, maar een vast team.</p><span style="display:block;margin-top:16px;font-family:var(--f-mono);font-size:12px;color:var(--green-tx)">8px — één blok</span></div>
     </div>
 
-    <h3 style="margin-top:52px">Alle zeventien waarden</h3>
+    <h3 class="sub">Alle negentien waarden</h3>
     <div class="tbl-wrap">
       <table class="tbl tbl--nums">
         <thead><tr><th>Van → naar</th><th>Desktop</th><th>Tablet</th><th>Mobiel</th></tr></thead>
@@ -604,148 +878,35 @@ a:active{color:var(--blue-link-a)}
           <tr><td class="name">Label → invoerveld</td><td>8</td><td>8</td><td>8</td></tr>
           <tr><td class="name">Veld → hulptekst</td><td>7</td><td>7</td><td>7</td></tr>
           <tr><td class="name">Veld → volgend veld</td><td>16</td><td>16</td><td>16</td></tr>
+          <tr><td class="name">Vinkje → label</td><td>12</td><td>12</td><td>12</td></tr>
+          <tr><td class="name">Keuze → volgende keuze</td><td>14</td><td>14</td><td>14</td></tr>
           <tr><td class="name">Kengetal → bijschrift</td><td>8</td><td>8</td><td>8</td></tr>
           <tr><td class="name">Citaat → naam</td><td>16</td><td>16</td><td>16</td></tr>
           <tr class="hl"><td class="name">Sectiekop → content</td><td>64</td><td>48</td><td>32</td></tr>
         </tbody>
       </table>
     </div>
-    <p class="note" style="margin-top:20px">Let op het verschil tussen <b>kop → intro</b> (16px) en <b>kop → lopende tekst</b> (20px). Een intro hoort visueel bij de kop en staat dus krapper; lopende tekst is een nieuw blok en krijgt meer lucht.</p>
+    <p class="note" style="margin-top:18px">Let op het verschil tussen <b>kop → intro</b> (16) en <b>kop → lopende tekst</b> (20): een intro hoort bij de kop, lopende tekst is een nieuw blok.</p>
   </div>
 </section>
 
-<section class="sec sec--alt" id="knoppen">
-  <div class="wrap">
-    <div class="sec-head">
-      <span class="eyebrow">Knoppen</span>
-      <h2>Varianten, maten en padding</h2>
-      <p class="lead">Beweeg eroverheen en klik erop — hover en active zijn live.</p>
-    </div>
-
-    <div class="btn-grid">
-      <div class="btn-cell"><button class="btn btn--primary">Plan een gesprek</button><span class="cap">primary</span></div>
-      <div class="btn-cell"><button class="btn btn--secondary">Bekijk cases</button><span class="cap">secondary</span></div>
-      <div class="btn-cell"><button class="btn btn--tertiary">Download</button><span class="cap">tertiary</span></div>
-      <div class="btn-cell"><button class="btn btn--lime">Start je gameplan</button><span class="cap">lime</span></div>
-      <div class="btn-cell"><button class="btn btn--text">Meer weten</button><span class="cap">text</span></div>
-      <div class="btn-cell"><button class="btn btn--dis" disabled>Niet beschikbaar</button><span class="cap">disabled</span></div>
-    </div>
-
-    <h3>Maten en padding</h3>
-    <div class="btn-sizes">
-      <button class="btn btn--primary btn--sm">Small</button>
-      <button class="btn btn--primary">Medium</button>
-      <button class="btn btn--primary btn--lg">Large</button>
-      <button class="btn btn--primary btn--xl">XL</button>
-    </div>
-    <div class="tbl-wrap" style="margin-bottom:44px">
-      <table class="tbl tbl--nums">
-        <thead><tr><th>Maat</th><th>Padding</th><th>Min-hoogte</th><th>Fontgrootte</th><th>Mobiel</th></tr></thead>
-        <tbody>
-          <tr><td class="name">Small</td><td>9 / 20</td><td>40</td><td>15</td><td>gelijk</td></tr>
-          <tr class="hl"><td class="name">Medium — standaard</td><td>13 / 26</td><td>48</td><td>17</td><td>16px font</td></tr>
-          <tr><td class="name">Large</td><td>16 / 34</td><td>56</td><td>19</td><td>15 / 28</td></tr>
-          <tr><td class="name">XL</td><td>20 / 42</td><td>64</td><td>21</td><td>17 / 32</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <h3>Op donkere achtergrond</h3>
-    <div class="ondark">
-      <span class="lbl">Op #1C1C1E draait de logica om: het gevulde vlak wordt wit. Lime werkt hier ook — en valt dan nog harder op.</span>
-      <button class="btn btn--light">Plan een gesprek</button>
-      <button class="btn btn--lightout">Bekijk cases</button>
-      <button class="btn btn--lime">Start je gameplan</button>
-    </div>
-
-    <h3 style="margin-top:52px">Vier regels</h3>
-    <div class="rules">
-      <div class="rule"><span class="rule-n">1</span><p><b>Geen lift, geen schaduw bij hover.</b> Alleen de kleur verandert.</p></div>
-      <div class="rule"><span class="rule-n">2</span><p><b>Eén gevulde knop per scherm.</b> Lime telt mee: lime <b>of</b> blauw gevuld, niet allebei.</p></div>
-      <div class="rule"><span class="rule-n">3</span><p><b>Active is <code>scale(0.98)</code>.</b> Meer niet.</p></div>
-      <div class="rule"><span class="rule-n">4</span><p><b>Minimaal 48px hoog, 44px op touch.</b> Geen uitzonderingen.</p></div>
-    </div>
-  </div>
-</section>
-
-<section class="sec" id="vlakken">
-  <div class="wrap">
-    <div class="sec-head">
-      <span class="eyebrow">Vlakken</span>
-      <h2>Cards, padding en schaduwen</h2>
-      <p class="lead">De laatste card is klikbaar — dat is de enige plek waar we een element laten bewegen.</p>
-    </div>
-
-    <div class="surface-grid">
-      <div class="card"><h4>Standaard</h4><p>Wit vlak, radius 18, padding 32.</p></div>
-      <div class="card card--outline"><h4>Outline</h4><p>1px rand in plaats van vulling.</p></div>
-      <div class="card card--sub"><h4>Subtiel</h4><p>Grijs vlak binnen een witte sectie.</p></div>
-      <div class="card card--tint"><h4>Tint</h4><p>Lichtblauw uit het brandbook.</p></div>
-      <div class="card card--lime"><h4>Lime tint</h4><p>Voor een uitgelicht cijfer of aanbod.</p></div>
-      <div class="card card--dark"><h4>Donker</h4><p>Voor contrast binnen een lichte pagina.</p></div>
-      <div class="card card--accent"><h4>Accent blauw</h4><p>3px balkje links.</p></div>
-      <div class="card card--accent-lime"><h4>Accent lime</h4><p>Zelfde balkje, andere lading.</p></div>
-      <div class="card card--inter"><h4>Klikbaar — hover</h4><p>4px omhoog met tweelaagse schaduw.</p></div>
-    </div>
-
-    <h3>Card-padding per maat</h3>
-    <div class="tbl-wrap" style="margin-bottom:44px">
-      <table class="tbl tbl--nums">
-        <thead><tr><th>Maat</th><th>Radius</th><th>Desktop</th><th>Tablet</th><th>Mobiel</th></tr></thead>
-        <tbody>
-          <tr><td class="name">Small</td><td>12</td><td>24</td><td>24</td><td>20</td></tr>
-          <tr class="hl"><td class="name">Medium — standaard</td><td>18</td><td>32</td><td>32</td><td>24</td></tr>
-          <tr><td class="name">Large</td><td>24</td><td>48</td><td>40</td><td>28</td></tr>
-          <tr><td class="name">XL</td><td>44</td><td>80</td><td>48</td><td>32</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <h3>Schaduwschaal</h3>
-    <p class="note" style="margin-bottom:24px">Twee lagen per schaduw: kort en hard voor de rand, lang en zacht voor de diepte.</p>
-    <div class="shadow-grid">
-      <div class="sh sh-xs">xs</div><div class="sh sh-sm">sm</div><div class="sh sh-md">md</div><div class="sh sh-lg">lg</div><div class="sh sh-xl">xl</div>
-    </div>
-
-    <h3 style="margin-top:52px">Hoekradius</h3>
-    <div class="radius-grid">
-      <div class="rd r-xs">8</div><div class="rd r-sm">12</div><div class="rd r-md">18</div><div class="rd r-lg">24</div>
-      <div class="rd r-xl">32</div><div class="rd r-2xl">44</div><div class="rd r-pill">pill</div>
-    </div>
-    <p class="note" style="margin-top:20px">18 is de standaard voor cards en afbeeldingen, 980 voor knoppen. Op mobiel schalen 24/32/44 terug naar 20/24/28.</p>
-  </div>
-</section>
-
-<section class="sec sec--alt" id="lijnen">
-  <div class="wrap">
-    <div class="sec-head">
-      <span class="eyebrow">Lijnen</span>
-      <h2>Zes diktes, elk met één taak</h2>
-      <p class="lead">Eén dikte per soort element. Een 2px rand om een card naast een 1px rand om een invoerveld leest als een fout, niet als hiërarchie.</p>
-    </div>
-    <div class="stroke-list">
-      <div class="stroke-row"><span class="val">1 px</span><div class="stroke-vis sv-1"></div><span class="use">Randen, dividers, invoervelden, tabelregels, kaartranden</span></div>
-      <div class="stroke-row"><span class="val">1.5 px</span><div class="stroke-vis sv-15"></div><span class="use">Icoonlijnen tot 24px — Apple's SF Symbols-dikte</span></div>
-      <div class="stroke-row"><span class="val">2 px</span><div class="stroke-vis sv-2"></div><span class="use">Actieve tab-onderstreping, iconen vanaf 32px</span></div>
-      <div class="stroke-row"><span class="val">3 px</span><div class="stroke-vis sv-3" style="background:var(--blue)"></div><span class="use">Accentbalk links van een card</span></div>
-      <div class="stroke-row"><span class="val">4 px</span><div class="stroke-vis sv-4" style="background:var(--blue);width:64px;border-radius:2px"></div><span class="use">Korte decoratieve streep onder een kop — 64px breed</span></div>
-      <div class="stroke-row"><span class="val">4 px ring</span><div class="stroke-vis sv-focus"></div><span class="use">Focusring — nooit dunner, nooit uitzetten</span></div>
-    </div>
-    <p class="note" style="margin-top:24px">Linkonderstreping: <b>1px</b>, met <b>3px</b> offset. In een alinea altijd onderstreept, los staand alleen bij hover.</p>
-  </div>
-</section>
-
-<section class="sec" id="ruimte">
+<section class="sec sec--alt" id="ruimte">
   <div class="wrap">
     <div class="sec-head">
       <span class="eyebrow">Ruimte</span>
-      <h2>Containers, secties en het 8pt-raster</h2>
+      <h2>Secties, containers en het 8pt-raster</h2>
       <p class="lead">Twijfel je over de ruimte tussen containers? Pak 24.</p>
     </div>
 
-    <h3>Ruimte tussen containers</h3>
-    <p class="note" style="margin-bottom:24px">Dit vul je in bij Container → Layout → Gap.</p>
-    <div class="tbl-wrap" style="margin-bottom:44px">
+    <h3>Sectie-ademruimte</h3>
+    <div class="section-space">
+      <div class="ss"><div class="ss-head">Ruim</div><div class="ss-vis"><div class="ss-pad" style="height:48px">160 / 112 / 80</div><div class="ss-body"></div><div class="ss-pad" style="height:48px">160 / 112 / 80</div></div></div>
+      <div class="ss"><div class="ss-head">Standaard</div><div class="ss-vis"><div class="ss-pad" style="height:36px">120 / 88 / 64</div><div class="ss-body"></div><div class="ss-pad" style="height:36px">120 / 88 / 64</div></div></div>
+      <div class="ss"><div class="ss-head">Compact</div><div class="ss-vis"><div class="ss-pad" style="height:24px">80 / 56 / 40</div><div class="ss-body"></div><div class="ss-pad" style="height:24px">80 / 56 / 40</div></div></div>
+    </div>
+
+    <h3 class="sub">Ruimte tussen containers — Container → Layout → Gap</h3>
+    <div class="tbl-wrap">
       <table class="tbl tbl--nums">
         <thead><tr><th>Situatie</th><th>Desktop</th><th>Tablet</th><th>Mobiel</th></tr></thead>
         <tbody>
@@ -760,16 +921,8 @@ a:active{color:var(--blue-link-a)}
       </table>
     </div>
 
-    <h3>Sectie-ademruimte</h3>
-    <div class="section-space">
-      <div class="ss"><div class="ss-head">Ruim</div><div class="ss-vis"><div class="ss-pad" style="height:52px">160 / 112 / 80</div><div class="ss-body"></div><div class="ss-pad" style="height:52px">160 / 112 / 80</div></div></div>
-      <div class="ss"><div class="ss-head">Standaard</div><div class="ss-vis"><div class="ss-pad" style="height:40px">120 / 88 / 64</div><div class="ss-body"></div><div class="ss-pad" style="height:40px">120 / 88 / 64</div></div></div>
-      <div class="ss"><div class="ss-head">Compact</div><div class="ss-vis"><div class="ss-pad" style="height:26px">80 / 56 / 40</div><div class="ss-body"></div><div class="ss-pad" style="height:26px">80 / 56 / 40</div></div></div>
-    </div>
-    <p class="note" style="margin-top:20px">Desktop / tablet / mobiel. Zijmarge: 32 · 24 · 20, en 16 onder 375px.</p>
-
-    <h3 style="margin-top:52px">Het 8pt-raster</h3>
-    <p class="note" style="margin-bottom:20px">Veertien waarden. Geen 15, geen 37, geen 50.</p>
+    <h3 class="sub">Het 8pt-raster</h3>
+    <p class="note" style="margin-bottom:18px">Veertien waarden. Geen 15, geen 37, geen 50.</p>
     <div class="space-scale">
       <div class="space-row"><span>4</span><div class="space-bar" style="width:4px"></div></div>
       <div class="space-row"><span>8</span><div class="space-bar" style="width:8px"></div></div>
@@ -786,41 +939,416 @@ a:active{color:var(--blue-link-a)}
       <div class="space-row"><span>120</span><div class="space-bar" style="width:120px"></div></div>
       <div class="space-row"><span>160</span><div class="space-bar" style="width:160px"></div></div>
     </div>
+  </div>
+</section>
 
-    <h3 style="margin-top:52px">Containerbreedtes</h3>
-    <div class="tbl-wrap">
-      <table class="tbl">
-        <thead><tr><th>Naam</th><th>Max</th><th>Waarvoor</th></tr></thead>
+<section class="sec" id="knoppen">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Knoppen</span>
+      <h2>Varianten, maten en padding</h2>
+      <p class="lead">Beweeg eroverheen en klik erop — alle toestanden zijn live.</p>
+    </div>
+    <div class="btn-grid">
+      <div class="btn-cell"><button class="btn btn--primary">Plan een gesprek</button><span class="cap">primary</span></div>
+      <div class="btn-cell"><button class="btn btn--secondary">Bekijk cases</button><span class="cap">secondary</span></div>
+      <div class="btn-cell"><button class="btn btn--tertiary">Download</button><span class="cap">tertiary</span></div>
+      <div class="btn-cell"><button class="btn btn--lime">Start je gameplan</button><span class="cap">lime</span></div>
+      <div class="btn-cell"><button class="btn btn--text">Meer weten</button><span class="cap">text</span></div>
+      <div class="btn-cell"><button class="btn btn--dis" disabled>Niet beschikbaar</button><span class="cap">disabled</span></div>
+    </div>
+    <h3>Maten en padding</h3>
+    <div class="btn-sizes">
+      <button class="btn btn--primary btn--sm">Small</button>
+      <button class="btn btn--primary">Medium</button>
+      <button class="btn btn--primary btn--lg">Large</button>
+      <button class="btn btn--primary btn--xl">XL</button>
+    </div>
+    <div class="tbl-wrap" style="margin-bottom:36px">
+      <table class="tbl tbl--nums">
+        <thead><tr><th>Maat</th><th>Padding</th><th>Min-hoogte</th><th>Font</th><th>Mobiel</th></tr></thead>
         <tbody>
-          <tr><td class="name">Narrow</td><td class="num">540</td><td>Gecentreerde intro's, formulieren</td></tr>
-          <tr class="hl"><td class="name">Text</td><td class="num">692</td><td>Lopende tekst — nooit breder</td></tr>
-          <tr><td class="name">Standaard</td><td class="num">1024</td><td>De meeste secties</td></tr>
-          <tr><td class="name">Wide</td><td class="num">1280</td><td>Grids, cases, portfolio</td></tr>
-          <tr><td class="name">Full</td><td class="num">1440</td><td>Full-bleed met marge</td></tr>
+          <tr><td class="name">Small</td><td>9 / 20</td><td>40</td><td>15</td><td>gelijk</td></tr>
+          <tr class="hl"><td class="name">Medium — standaard</td><td>13 / 26</td><td>48</td><td>17</td><td>16px font</td></tr>
+          <tr><td class="name">Large</td><td>16 / 34</td><td>56</td><td>19</td><td>15 / 28</td></tr>
+          <tr><td class="name">XL</td><td>20 / 42</td><td>64</td><td>21</td><td>17 / 32</td></tr>
         </tbody>
       </table>
+    </div>
+    <h3>Op donkere achtergrond</h3>
+    <div class="ondark">
+      <span class="lbl">Op #1C1C1E draait de logica om: het gevulde vlak wordt wit.</span>
+      <button class="btn btn--light">Plan een gesprek</button>
+      <button class="btn btn--lightout">Bekijk cases</button>
+      <button class="btn btn--lime">Start je gameplan</button>
+    </div>
+    <h3 class="sub">Vier regels</h3>
+    <div class="rules">
+      <div class="rule"><span class="rule-n">1</span><p><b>Geen lift, geen schaduw bij hover.</b> Alleen kleur.</p></div>
+      <div class="rule"><span class="rule-n">2</span><p><b>Eén gevulde knop per scherm.</b> Lime telt mee.</p></div>
+      <div class="rule"><span class="rule-n">3</span><p><b>Active is <code>scale(0.98)</code>.</b> Meer niet.</p></div>
+      <div class="rule"><span class="rule-n">4</span><p><b>Minimaal 48px hoog, 44px op touch.</b></p></div>
     </div>
   </div>
 </section>
 
-<section class="sec sec--alt" id="componenten">
+<section class="sec sec--alt" id="vlakken">
   <div class="wrap">
     <div class="sec-head">
-      <span class="eyebrow">Componenten</span>
-      <h2>De bouwstenen</h2>
-      <p class="lead">Alles is live. Klik, tab erdoorheen, probeer het uit.</p>
+      <span class="eyebrow">Vlakken</span>
+      <h2>Cards, padding en radius</h2>
+      <p class="lead">De laatste card is klikbaar — de enige plek waar we een element laten bewegen.</p>
+    </div>
+    <div class="grid3" style="margin-bottom:36px">
+      <div class="card"><h4>Standaard</h4><p>Wit, radius 18, padding 32.</p></div>
+      <div class="card card--outline"><h4>Outline</h4><p>1px rand in plaats van vulling.</p></div>
+      <div class="card card--sub"><h4>Subtiel</h4><p>Grijs vlak binnen een witte sectie.</p></div>
+      <div class="card card--tint"><h4>Tint</h4><p>Lichtblauw uit het brandbook.</p></div>
+      <div class="card card--lime"><h4>Lime tint</h4><p>Voor een uitgelicht cijfer of aanbod.</p></div>
+      <div class="card card--dark"><h4>Donker</h4><p>Contrast binnen een lichte pagina.</p></div>
+      <div class="card card--accent"><h4>Accent blauw</h4><p>3px balkje links.</p></div>
+      <div class="card card--accent-lime"><h4>Accent lime</h4><p>Zelfde balkje, andere lading.</p></div>
+      <div class="card card--inter"><h4>Klikbaar — hover</h4><p>4px omhoog met tweelaagse schaduw.</p></div>
+    </div>
+    <h3>Card-padding per maat</h3>
+    <div class="tbl-wrap" style="margin-bottom:36px">
+      <table class="tbl tbl--nums">
+        <thead><tr><th>Maat</th><th>Radius</th><th>Desktop</th><th>Tablet</th><th>Mobiel</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Small</td><td>12</td><td>24</td><td>24</td><td>20</td></tr>
+          <tr class="hl"><td class="name">Medium — standaard</td><td>18</td><td>32</td><td>32</td><td>24</td></tr>
+          <tr><td class="name">Large</td><td>24</td><td>48</td><td>40</td><td>28</td></tr>
+          <tr><td class="name">XL</td><td>44</td><td>80</td><td>48</td><td>32</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h3>Hoekradius</h3>
+    <div class="radius-grid">
+      <div class="rd r-xs">8</div><div class="rd r-sm">12</div><div class="rd r-md">18</div><div class="rd r-lg">24</div>
+      <div class="rd r-xl">32</div><div class="rd r-2xl">44</div><div class="rd r-pill">pill</div>
+    </div>
+    <p class="note" style="margin-top:18px">18 voor cards en beeld, 980 voor knoppen, 6 voor de checkbox. Op mobiel schalen 24/32/44 terug naar 20/24/28.</p>
+  </div>
+</section>
+
+<section class="sec" id="schaduw">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Schaduw</span>
+      <h2>Met de exacte Elementor-waarden</h2>
+      <p class="lead">Let op: Elementor's schaduwveld doet maar één laag. Dit systeem gebruikt er twee.</p>
     </div>
 
-    <div class="comp-grid">
-      <div class="comp">
-        <span class="lbl">eyebrow + kop + link — één blauw</span>
-        <span class="eyebrow">Marketing partnership</span>
-        <h3 style="margin-bottom:12px">Jouw externe marketingafdeling</h3>
-        <p style="font-size:15px;color:var(--tx2);margin-bottom:16px">Geen losse projecten, maar een vast team dat jouw markt kent.</p>
-        <a href="#componenten" class="arrowlink">Zo werken we</a>
-      </div>
+    <div class="shadow-grid" style="margin-bottom:36px">
+      <div class="sh sh-xs">xs</div><div class="sh sh-sm">sm</div><div class="sh sh-md">md</div><div class="sh sh-lg">lg</div><div class="sh sh-xl">xl</div>
+    </div>
 
-      <div class="comp">
+    <h3>Waarom twee lagen</h3>
+    <div class="sh-compare">
+      <div class="card" style="background:var(--chip);padding:28px" ><div class="sh sh-one" style="margin-bottom:16px">één laag</div><p class="note" style="margin:0;font-size:14px">Eén laag is óf te hard (scherpe rand, geen diepte) óf te wazig (zwevend, geen contour).</p></div>
+      <div class="card" style="background:var(--chip);padding:28px"><div class="sh sh-lg" style="margin-bottom:16px">twee lagen</div><p class="note" style="margin:0;font-size:14px">De korte laag tekent de rand, de lange geeft de diepte. Dit is wat Apple doet.</p></div>
+    </div>
+
+    <h3 class="sub">Elementor-invulwaarden — Box Shadow</h3>
+    <p class="note" style="margin-bottom:18px"><b>Gebruik bij voorkeur de CSS-klasse</b> (<code>jr-shadow-md</code> bij Advanced → CSS Classes) — dan krijg je beide lagen. Vul je het toch in Elementor's veld in, gebruik dan deze enkele-laag-waarden.</p>
+    <div class="tbl-wrap">
+      <table class="tbl tbl--wide">
+        <thead><tr><th>Token</th><th>Color</th><th>H</th><th>V</th><th>Blur</th><th>Spread</th><th>Position</th></tr></thead>
+        <tbody>
+          <tr><td class="name">xs</td><td class="num">rgba(0,0,0,0.04)</td><td class="num">0</td><td class="num">1</td><td class="num">2</td><td class="num">0</td><td>Outline</td></tr>
+          <tr><td class="name">sm</td><td class="num">rgba(0,0,0,0.06)</td><td class="num">0</td><td class="num">2</td><td class="num">8</td><td class="num">0</td><td>Outline</td></tr>
+          <tr><td class="name">md</td><td class="num">rgba(0,0,0,0.08)</td><td class="num">0</td><td class="num">8</td><td class="num">20</td><td class="num">0</td><td>Outline</td></tr>
+          <tr><td class="name">lg</td><td class="num">rgba(0,0,0,0.10)</td><td class="num">0</td><td class="num">16</td><td class="num">40</td><td class="num">0</td><td>Outline</td></tr>
+          <tr><td class="name">xl</td><td class="num">rgba(0,0,0,0.12)</td><td class="num">0</td><td class="num">32</td><td class="num">72</td><td class="num">0</td><td>Outline</td></tr>
+          <tr><td class="name">card-hover</td><td class="num">rgba(0,0,0,0.13)</td><td class="num">0</td><td class="num">24</td><td class="num">56</td><td class="num">0</td><td>Outline</td></tr>
+          <tr><td class="name">blue</td><td class="num">rgba(0,122,255,0.22)</td><td class="num">0</td><td class="num">8</td><td class="num">28</td><td class="num">0</td><td>Outline</td></tr>
+          <tr><td class="name">lime</td><td class="num">rgba(196,240,0,0.30)</td><td class="num">0</td><td class="num">8</td><td class="num">28</td><td class="num">0</td><td>Outline</td></tr>
+          <tr class="hl"><td class="name">focus</td><td class="num">rgba(0,122,255,0.40)</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">4</td><td>Outline</td></tr>
+          <tr><td class="name">focus op donker</td><td class="num">rgba(255,255,255,0.55)</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">4</td><td>Outline</td></tr>
+          <tr><td class="name">focus bij fout</td><td class="num">rgba(255,59,48,0.20)</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">4</td><td>Outline</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note" style="margin-top:18px"><b>Horizontaal is altijd nul.</b> Apple's schaduwen vallen recht naar beneden, nooit schuin. Een schaduw met een X-waarde suggereert een lichtbron van opzij en oogt onmiddellijk goedkoop.</p>
+    <p class="note"><b>Regel: liever een vlak dan een schaduw.</b> Onderscheid maak je met kleur en radius; schaduw is alleen voor iets dat echt boven de pagina zweeft.</p>
+  </div>
+</section>
+
+<section class="sec sec--alt" id="lijnen">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Lijnen</span>
+      <h2>Zes diktes, elk met één taak</h2>
+      <p class="lead">Een 2px rand om een card naast een 1px rand om een invoerveld leest als een fout, niet als hiërarchie.</p>
+    </div>
+    <div class="stroke-list">
+      <div class="stroke-row"><span class="val">1 px</span><div class="stroke-vis sv-1"></div><span class="use">Randen, dividers, invoervelden, tabelregels, kaartranden</span></div>
+      <div class="stroke-row"><span class="val">1.5 px</span><div class="stroke-vis sv-15"></div><span class="use">Icoonlijnen tot 24px — Apple's SF Symbols-dikte</span></div>
+      <div class="stroke-row"><span class="val">2 px</span><div class="stroke-vis sv-2"></div><span class="use">Actieve tab, iconen vanaf 32px, hamburger, rand uitgelichte kaart</span></div>
+      <div class="stroke-row"><span class="val">3 px</span><div class="stroke-vis sv-3" style="background:var(--blue)"></div><span class="use">Accentbalk links van een card, tijdlijn-punt</span></div>
+      <div class="stroke-row"><span class="val">4 px</span><div class="stroke-vis sv-4" style="background:var(--blue);width:64px;border-radius:2px"></div><span class="use">Korte streep onder een kop (64px breed), stappenbalk</span></div>
+      <div class="stroke-row"><span class="val">4 px ring</span><div class="stroke-vis sv-focus"></div><span class="use">Focusring — nooit dunner, nooit uitzetten</span></div>
+    </div>
+    <p class="note" style="margin-top:18px">Linkonderstreping: <b>1px</b> met <b>3px</b> offset. In een alinea altijd onderstreept, los staand alleen bij hover.</p>
+  </div>
+</section>
+
+<section class="sec" id="formulier">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Formulier</span>
+      <h2>Velden, checkboxes en switches</h2>
+      <p class="lead">Native checkboxes zien er op elk besturingssysteem anders uit. Deze zijn overal gelijk — en blijven bedienbaar met het toetsenbord. Tab er maar doorheen.</p>
+    </div>
+    <div class="grid2">
+      <div class="demo">
+        <span class="lbl">invoervelden — 13/16 padding, 48 hoog, radius 12</span>
+        <div class="field"><label for="f1">Naam</label><input id="f1" type="text" placeholder="Jouw naam"></div>
+        <div class="field"><label for="f2">E-mailadres</label><input id="f2" type="email" value="geen-geldig-adres" class="err"><div class="msg">Vul een geldig e-mailadres in, bijvoorbeeld naam@bedrijf.nl</div></div>
+        <div class="field"><label for="f3">Branche</label><select id="f3"><option>Horeca</option><option>Makelaardij</option><option>Automotive</option><option>Zorg</option></select><div class="hint">Klik in een veld om de focusring te zien.</div></div>
+      </div>
+      <div class="demo">
+        <span class="lbl">checkbox — 20×20, radius 6</span>
+        <label class="choice"><input type="checkbox" checked><span class="choice-box"></span><span class="choice-label">Aangevinkt</span></label>
+        <label class="choice"><input type="checkbox"><span class="choice-box"></span><span class="choice-label">Uitgevinkt<small>met hulptekst eronder</small></span></label>
+        <label class="choice"><input type="checkbox" id="indet"><span class="choice-box"></span><span class="choice-label">Half aangevinkt — "alle branches" met een deel geselecteerd</span></label>
+        <label class="choice"><input type="checkbox" disabled><span class="choice-box"></span><span class="choice-label">Uitgeschakeld</span></label>
+        <div style="height:1px;background:var(--ln-soft);margin:20px 0"></div>
+        <span class="lbl" style="display:block;font-family:var(--f-mono);font-size:11px;color:var(--tx3);margin-bottom:14px">radio — zelfde maten, ronde vorm</span>
+        <label class="choice choice--radio"><input type="radio" name="r1" checked><span class="choice-box"></span><span class="choice-label">Maandelijks</span></label>
+        <label class="choice choice--radio"><input type="radio" name="r1"><span class="choice-box"></span><span class="choice-label">Per kwartaal</span></label>
+        <div style="height:1px;background:var(--ln-soft);margin:20px 0"></div>
+        <span class="lbl" style="display:block;font-family:var(--f-mono);font-size:11px;color:var(--tx3);margin-bottom:14px">switch — 50×30, alleen voor aan/uit</span>
+        <label class="switch"><input type="checkbox" checked><span class="switch-track"></span><span>Nieuwsbrief ontvangen</span></label>
+      </div>
+      <div class="demo">
+        <span class="lbl">keuze als kaart — 16/20 padding</span>
+        <label class="choice choice--card"><input type="radio" name="pk" checked><span class="choice-box"></span><span class="choice-label">Groeipakket<small>Vanaf € 2.500 per maand</small></span></label>
+        <label class="choice choice--card"><input type="radio" name="pk"><span class="choice-box"></span><span class="choice-label">Basispakket<small>Vanaf € 1.250 per maand</small></span></label>
+      </div>
+      <div class="demo">
+        <span class="lbl">stappenindicator</span>
+        <ol class="stepsbar">
+          <li class="done"><div class="step-track"></div><span class="step-label">Gegevens</span></li>
+          <li class="cur"><div class="step-track"></div><span class="step-label">Doelen</span></li>
+          <li><div class="step-track"></div><span class="step-label">Afspraak</span></li>
+        </ol>
+        <div style="margin-top:28px">
+          <span class="lbl" style="display:block;font-family:var(--f-mono);font-size:11px;color:var(--tx3);margin-bottom:12px">voortgang</span>
+          <div class="prog"><div class="prog-bar" style="width:64%"></div></div>
+          <div class="prog"><div class="prog-bar prog-bar--lime" style="width:38%"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec sec--alt" id="filters">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Filters</span>
+      <h2>Filteren, zoeken en sorteren</h2>
+      <p class="lead">Klik op de chips — ze werken. Op mobiel scrollt de balk horizontaal in plaats van af te breken.</p>
+    </div>
+
+    <div class="filterbar" style="margin-bottom:24px" id="fbar">
+      <button class="fchip on">Alle<span class="cnt">42</span></button>
+      <button class="fchip">Horeca<span class="cnt">12</span></button>
+      <button class="fchip">Makelaardij<span class="cnt">8</span></button>
+      <button class="fchip">Automotive<span class="cnt">7</span></button>
+      <button class="fchip">Zorg<span class="cnt">6</span></button>
+      <button class="fchip">B2B<span class="cnt">9</span></button>
+      <span class="fcount"><strong>42</strong> cases</span>
+    </div>
+
+    <div class="grid2">
+      <div class="demo">
+        <span class="lbl">actieve filters met wisknop</span>
+        <div class="chips" style="margin-bottom:14px">
+          <span class="factive">Horeca <button type="button" aria-label="Verwijder filter Horeca">×</button></span>
+          <span class="factive">Zuid-Limburg <button type="button" aria-label="Verwijder filter Zuid-Limburg">×</button></span>
+          <span class="factive">2025 <button type="button" aria-label="Verwijder filter 2025">×</button></span>
+        </div>
+        <button class="freset" type="button">Alles wissen</button>
+      </div>
+      <div class="demo">
+        <span class="lbl">zoekveld — pill, 48 hoog</span>
+        <div class="search">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input type="search" value="marketing" aria-label="Zoeken">
+          <button class="search-clear" type="button" aria-label="Zoekopdracht wissen">×</button>
+        </div>
+      </div>
+      <div class="demo">
+        <span class="lbl">sorteren</span>
+        <div class="field" style="margin:0"><select aria-label="Sorteren"><option>Nieuwste eerst</option><option>Oudste eerst</option><option>Op branche</option></select></div>
+      </div>
+      <div class="demo rangewrap">
+        <span class="lbl">prijsbereik — 4px track, 24px knop</span>
+        <input type="range" min="500" max="10000" value="3500" step="250" aria-label="Maximaal budget">
+        <div class="range-vals"><span>€ 500</span><span>€ 3.500</span><span>€ 10.000</span></div>
+      </div>
+    </div>
+
+    <p class="note" style="margin-top:26px"><b>Praktisch in Elementor:</b> voor filters op een Loop Grid gebruik je Elementor's eigen Taxonomy Filter, JetSmartFilters of Search &amp; Filter Pro. Zet deze klassen op de filterwidget via "CSS Classes", of overschrijf hun klassen in Custom CSS.</p>
+  </div>
+</section>
+
+<section class="sec" id="navigatie">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Navigatie</span>
+      <h2>Menu, kruimelpad en paginering</h2>
+      <p class="lead">De hamburger werkt — klik erop.</p>
+    </div>
+    <div class="grid2">
+      <div class="demo">
+        <span class="lbl">kruimelpad</span>
+        <ol class="crumbs"><li><a href="#navigatie">Home</a></li><li><a href="#navigatie">Cases</a></li><li><a href="#navigatie">Horeca</a></li><li aria-current="page">De Zwarte Ruiter</li></ol>
+      </div>
+      <div class="demo">
+        <span class="lbl">hamburger — 2px lijnen, 44×44 tapdoel</span>
+        <button class="burger" id="burger" type="button" aria-expanded="false" aria-label="Menu"><span></span><span></span><span></span></button>
+      </div>
+      <div class="demo">
+        <span class="lbl">paginering — 44×44, rond</span>
+        <div class="pagi">
+          <button class="pbtn" disabled>‹</button>
+          <button class="pbtn on">1</button>
+          <button class="pbtn">2</button>
+          <button class="pbtn">3</button>
+          <span style="color:var(--tx3)">…</span>
+          <button class="pbtn">9</button>
+          <button class="pbtn">›</button>
+        </div>
+      </div>
+      <div class="demo">
+        <span class="lbl">carousel — pijlen en bolletjes</span>
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+          <button class="arrowbtn" aria-label="Vorige"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
+          <button class="arrowbtn" aria-label="Volgende"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button>
+          <div class="swiper-dots"><i class="on"></i><i></i><i></i><i></i></div>
+        </div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:26px">De <b>sticky CTA-balk</b> verschijnt alleen op mobiel (klasse <code>jr-sticky-cta</code>), de <b>terug-naar-boven</b> knop na 600px scrollen (<code>jr-to-top</code>), en het <b>mega menu</b> verdwijnt op mobiel ten gunste van off-canvas.</p>
+  </div>
+</section>
+
+<section class="sec sec--alt" id="content">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Content</span>
+      <h2>De bouwstenen</h2>
+      <p class="lead">Alles is live. Klik, hover, tab erdoorheen.</p>
+    </div>
+
+    <div class="grid3" style="margin-bottom:24px">
+      <div class="demo">
+        <span class="lbl">icon box — tegel 56×56, padding 32</span>
+        <div class="icontile"><svg viewBox="0 0 24 24"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg></div>
+        <h4 style="font-family:var(--f-disp);font-size:19px;margin-bottom:8px">Performance marketing</h4>
+        <p class="note" style="font-size:14px;margin:0">Data-driven campagnes die je omzet meetbaar laten groeien.</p>
+      </div>
+      <div class="demo">
+        <span class="lbl">icon box — lime, rond</span>
+        <div class="icontile icontile--lime icontile--round"><svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/></svg></div>
+        <h4 style="font-family:var(--f-disp);font-size:19px;margin-bottom:8px">Branding</h4>
+        <p class="note" style="font-size:14px;margin:0">Een merk dat blijft hangen, van logo tot tone of voice.</p>
+      </div>
+      <div class="demo">
+        <span class="lbl">icon box — blauw gevuld</span>
+        <div class="icontile" style="background:var(--blue);color:#fff"><svg viewBox="0 0 24 24"><path d="M4 19V9m5 10V5m5 14v-7m5 7V3"/></svg></div>
+        <h4 style="font-family:var(--f-disp);font-size:19px;margin-bottom:8px">Strategie</h4>
+        <p class="note" style="font-size:14px;margin:0">Een gameplan met doelen waar je op kunt sturen.</p>
+      </div>
+    </div>
+
+    <div class="grid2" style="margin-bottom:24px">
+      <div class="testi">
+        <div class="stars" style="margin-bottom:16px"><svg viewBox="0 0 20 20"><path d="M10 1l2.6 5.6 6 .8-4.4 4.2 1.1 6L10 14.8 4.7 17.6l1.1-6L1.4 7.4l6-.8z"/></svg><svg viewBox="0 0 20 20"><path d="M10 1l2.6 5.6 6 .8-4.4 4.2 1.1 6L10 14.8 4.7 17.6l1.1-6L1.4 7.4l6-.8z"/></svg><svg viewBox="0 0 20 20"><path d="M10 1l2.6 5.6 6 .8-4.4 4.2 1.1 6L10 14.8 4.7 17.6l1.1-6L1.4 7.4l6-.8z"/></svg><svg viewBox="0 0 20 20"><path d="M10 1l2.6 5.6 6 .8-4.4 4.2 1.1 6L10 14.8 4.7 17.6l1.1-6L1.4 7.4l6-.8z"/></svg><svg viewBox="0 0 20 20"><path d="M10 1l2.6 5.6 6 .8-4.4 4.2 1.1 6L10 14.8 4.7 17.6l1.1-6L1.4 7.4l6-.8z"/></svg></div>
+        <p class="testi-q">Ze denken mee alsof het hun eigen zaak is.</p>
+        <div class="testi-p"><div class="avatar">MD</div><div><span class="testi-n">Naam klant</span><span class="testi-r">Directeur, bedrijfsnaam</span></div></div>
+      </div>
+      <div class="demo">
+        <span class="lbl">case- of blogkaart — hover voor de lift</span>
+        <a href="#content" class="post" style="text-decoration:none">
+          <div class="post-media">3 : 2</div>
+          <div class="post-body">
+            <div class="post-meta"><span>Horeca</span><span>·</span><span>17 september 2026</span></div>
+            <h4 class="post-title">Van lege dinsdagen naar volgeboekt</h4>
+            <p class="post-ex">Hoe een campagne met één helder aanbod de bezetting doordeweeks verdubbelde.</p>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <h3>Prijstabel</h3>
+    <div class="grid3" style="margin-bottom:36px">
+      <div class="pricing">
+        <span class="pricing-name">Basis</span>
+        <span class="pricing-price">€ 1.250</span>
+        <span class="pricing-per">per maand, maandelijks opzegbaar</span>
+        <ul class="check"><li>Vast aanspreekpunt</li><li>Maandelijkse rapportage</li><li>Realtime dashboard</li></ul>
+        <button class="btn btn--secondary">Meer weten</button>
+      </div>
+      <div class="pricing pricing--feat">
+        <span class="badge b-solid pricing-badge">Meest gekozen</span>
+        <span class="pricing-name">Groei</span>
+        <span class="pricing-price">€ 2.500</span>
+        <span class="pricing-per">per maand, maandelijks opzegbaar</span>
+        <ul class="check"><li>Alles uit Basis</li><li>Wekelijks overleg</li><li>Eigen WhatsApp-groep</li><li>Campagne-optimalisatie</li></ul>
+        <button class="btn btn--primary">Plan een gesprek</button>
+      </div>
+      <div class="pricing">
+        <span class="pricing-name">Partner</span>
+        <span class="pricing-price">Op maat</span>
+        <span class="pricing-per">voor meerdere vestigingen</span>
+        <ul class="check"><li>Alles uit Groei</li><li>Volledig marketingteam</li><li>Kwartaalstrategie</li></ul>
+        <button class="btn btn--secondary">Neem contact op</button>
+      </div>
+    </div>
+
+    <div class="grid2" style="margin-bottom:24px">
+      <div class="demo">
+        <span class="lbl">tijdlijn — 3px punt, 2px lijn</span>
+        <ul class="timeline">
+          <li><span class="tl-date">2017</span><h4 style="margin-bottom:4px">Bedacht</h4><p class="note" style="font-size:14px;margin:0">Het idee voor een ander soort marketingbureau.</p></li>
+          <li><span class="tl-date">2018</span><h4 style="margin-bottom:4px">Opgericht</h4><p class="note" style="font-size:14px;margin:0">James Robinson gaat van start in Hulsberg.</p></li>
+          <li><span class="tl-date">2025</span><h4 style="margin-bottom:4px">BV-structuur</h4><p class="note" style="font-size:14px;margin:0">Klaar voor de volgende groeifase.</p></li>
+        </ul>
+      </div>
+      <div class="demo">
+        <span class="lbl">kengetallen en korte streep</span>
+        <div class="ruleline"></div>
+        <div class="stat-row" style="margin-bottom:28px">
+          <div><span class="stat-v">10</span><span class="stat-l">mensen in het team</span></div>
+          <div><span class="stat-v stat-v--lime">70%</span><span class="stat-l">begon als stagiair</span></div>
+        </div>
+        <div class="ruleline ruleline--lime"></div>
+        <p class="quote">Ze denken mee alsof het hun eigen zaak is.</p>
+        <span class="quote-by"><b>Naam klant</b> · Directeur</span>
+      </div>
+    </div>
+
+    <div class="grid2" style="margin-bottom:24px">
+      <div class="demo">
+        <span class="lbl">video met afspeelknop</span>
+        <div class="videoc"><button class="videop" aria-label="Video afspelen"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></button></div>
+      </div>
+      <div class="demo">
+        <span class="lbl">klantenlogo's — grijs, kleur bij hover</span>
+        <div class="logos"><div>CLIENT</div><div>MERK</div><div>BEDRIJF</div><div>GROEP</div><div>HORECA</div><div>AUTO</div></div>
+      </div>
+    </div>
+
+    <div class="grid2" style="margin-bottom:24px">
+      <div class="ctaban"><h3>Klaar om te beginnen?</h3><p>Plan een vrijblijvend gesprek. We maken eerst een gameplan, en pas daarna een prijs.</p><button class="btn btn--light">Plan een gesprek</button></div>
+      <div class="ctaban ctaban--lime"><h3>Klaar om te beginnen?</h3><p>Dezelfde banner in lime. Gebruik er hooguit één per pagina.</p><button class="btn" style="background:#1d1d1f;border-color:#1d1d1f;color:#fff">Plan een gesprek</button></div>
+    </div>
+
+    <div class="grid2">
+      <div class="demo">
         <span class="lbl">badges — elke tint gedefinieerd</span>
         <div class="chips" style="margin-bottom:20px">
           <span class="badge b-blue">Nieuw</span><span class="badge b-green">Live</span>
@@ -829,141 +1357,280 @@ a:active{color:var(--blue-link-a)}
           <span class="badge b-lime">Uitgelicht</span><span class="badge b-neutral">Archief</span>
           <span class="badge b-solid">Solid</span><span class="badge b-solid-lime">Solid lime</span>
         </div>
-        <span class="lbl" style="display:block;font-family:var(--f-mono);font-size:11px;color:var(--tx3);margin-bottom:12px">tags — padding 7 / 16</span>
+        <span class="lbl" style="display:block;font-family:var(--f-mono);font-size:11px;color:var(--tx3);margin-bottom:12px">tags — 7/16 padding</span>
         <div class="chips"><span class="tag on">Horeca</span><span class="tag">Makelaardij</span><span class="tag">Automotive</span><span class="tag">Zorg</span></div>
       </div>
-
-      <div class="comp">
-        <span class="lbl">vinklijst — blauw en lime</span>
-        <ul class="check" style="margin-bottom:20px">
-          <li>Vast aanspreekpunt, geen accountmanager-carrousel</li>
-          <li>Realtime dashboard, altijd inzicht</li>
-        </ul>
-        <ul class="check check--lime">
-          <li>Maandelijks opzegbaar</li>
-        </ul>
-      </div>
-
-      <div class="comp">
-        <span class="lbl">stappenlijst</span>
-        <ol class="steps">
-          <li>Kennismaking en nulmeting</li>
-          <li>Gameplan met concrete doelen</li>
-          <li>Uitvoeren, meten, bijsturen</li>
-        </ol>
-      </div>
-
-      <div class="comp">
-        <span class="lbl">citaat met korte streep</span>
-        <div class="rule-line"></div>
-        <p class="quote">Ze denken mee alsof het hun eigen zaak is.</p>
-        <span class="quote-by"><b>Naam klant</b> · Directeur, bedrijfsnaam</span>
-      </div>
-
-      <div class="comp">
-        <span class="lbl">kengetallen — blauw en lime</span>
-        <div class="rule-line rule-line--lime"></div>
-        <div class="stat-row">
-          <div><span class="stat-v">10</span><span class="stat-l">mensen in het team</span></div>
-          <div><span class="stat-v stat-v--lime">70%</span><span class="stat-l">begon als stagiair</span></div>
-        </div>
-      </div>
-
-      <div class="comp">
-        <span class="lbl">formuliervelden — 13/16 padding, 48 hoog</span>
-        <div class="field"><label for="f-naam">Naam</label><input id="f-naam" type="text" placeholder="Jouw naam"></div>
-        <div class="field"><label for="f-mail">E-mailadres</label><input id="f-mail" type="email" value="geen-geldig-adres" class="err"><div class="msg">Vul een geldig e-mailadres in, bijvoorbeeld naam@bedrijf.nl</div></div>
-        <div class="field"><label for="f-branche">Branche</label><select id="f-branche"><option>Horeca</option><option>Makelaardij</option><option>Automotive</option><option>Zorg</option></select><div class="hint">Klik in een veld om de focusring te zien.</div></div>
-      </div>
-
-      <div class="comp">
-        <span class="lbl">segmented control — track 4, knop 8/18</span>
-        <div class="segmented" id="seg">
-          <button type="button" class="on">Maandelijks</button>
-          <button type="button">Per kwartaal</button>
-          <button type="button">Jaarlijks</button>
-        </div>
-        <p style="font-size:14px;color:var(--tx2);margin:20px 0 0;max-width:none">Voor prijzen, filters of een wisselweergave — alles waar je anders een dropdown zou pakken.</p>
+      <div class="demo">
+        <span class="lbl">lijsten</span>
+        <ul class="check" style="margin-bottom:16px"><li>Vast aanspreekpunt</li><li>Realtime dashboard</li></ul>
+        <ul class="check check--lime" style="margin-bottom:24px"><li>Maandelijks opzegbaar</li></ul>
+        <ol class="steps"><li>Kennismaking en nulmeting</li><li>Gameplan met concrete doelen</li><li>Uitvoeren, meten, bijsturen</li></ol>
       </div>
     </div>
 
-    <h3 style="margin-top:52px">Accordion</h3>
-    <div style="max-width:720px" id="acc">
-      <div class="acc-item"><button class="acc-btn" type="button" aria-expanded="true" aria-controls="p1">Werken jullie ook met losse projecten?<span>+</span></button><div class="acc-panel" id="p1">Nee. We werken uitsluitend in partnerships, omdat marketing pas gaat werken als je er langer dan drie maanden mee bezig bent.</div></div>
-      <div class="acc-item"><button class="acc-btn" type="button" aria-expanded="false" aria-controls="p2">Wat kost een partnership?<span>+</span></button><div class="acc-panel" id="p2" hidden>Dat hangt af van je doelen en je markt. We maken altijd eerst een gameplan, en pas daarna een prijs.</div></div>
-      <div class="acc-item"><button class="acc-btn" type="button" aria-expanded="false" aria-controls="p3">Hoe houden jullie ons op de hoogte?<span>+</span></button><div class="acc-panel" id="p3" hidden>Via een realtime dashboard, een gedeelde WhatsApp-groep en periodiek overleg.</div></div>
+    <h3 class="sub">Accordion en segmented control</h3>
+    <div class="grid2">
+      <div class="demo">
+        <span class="lbl">accordion</span>
+        <div id="acc">
+          <div class="acc-item"><button class="acc-btn" type="button" aria-expanded="true" aria-controls="p1">Werken jullie met losse projecten?<span>+</span></button><div class="acc-panel" id="p1">Nee. We werken uitsluitend in partnerships, omdat marketing pas gaat werken als je er langer dan drie maanden mee bezig bent.</div></div>
+          <div class="acc-item"><button class="acc-btn" type="button" aria-expanded="false" aria-controls="p2">Wat kost een partnership?<span>+</span></button><div class="acc-panel" id="p2" hidden>Dat hangt af van je doelen en je markt. We maken altijd eerst een gameplan.</div></div>
+        </div>
+      </div>
+      <div class="demo">
+        <span class="lbl">segmented control — track 4, knop 8/18</span>
+        <div class="segmented" id="seg"><button type="button" class="on">Maandelijks</button><button type="button">Per kwartaal</button><button type="button">Jaarlijks</button></div>
+        <p class="note" style="font-size:14px;margin:20px 0 0">Voor prijzen, filters of een wisselweergave — alles waar je anders een dropdown zou pakken.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<section class="sec" id="responsive">
+<section class="sec" id="feedback">
   <div class="wrap">
     <div class="sec-head">
-      <span class="eyebrow">Responsive</span>
-      <h2>Drie breakpoints</h2>
-      <p class="lead">Dezelfde grenzen als apple.com: mobiel ≤734, tablet ≤1068, laptop ≤1440.</p>
+      <span class="eyebrow">Feedback</span>
+      <h2>Meldingen, laden en lege staten</h2>
+      <p class="lead">Wat de bezoeker ziet als er iets gebeurt — of juist niets.</p>
+    </div>
+    <div class="grid2">
+      <div class="demo">
+        <span class="lbl">meldingen — 16/20 padding, radius 12</span>
+        <div class="alert a-info"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg><div><strong>Goed om te weten</strong>Je gegevens worden alleen gebruikt om contact op te nemen.</div></div>
+        <div class="alert a-success"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg><div><strong>Bericht verstuurd</strong>We nemen binnen één werkdag contact met je op.</div></div>
+        <div class="alert a-warning"><svg viewBox="0 0 24 24"><path d="M12 4 3 19h18z"/><path d="M12 10v4M12 17h.01"/></svg><div><strong>Bijna vol</strong>Voor dit kwartaal hebben we nog twee plekken.</div></div>
+        <div class="alert a-error"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/></svg><div><strong>Niet verstuurd</strong>Probeer het opnieuw of bel ons op 045 – 123 4567.</div></div>
+        <div class="alert a-neutral"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg><div>Deze case is afgerond in 2024.</div></div>
+      </div>
+      <div class="demo">
+        <span class="lbl">tooltip — hover of tab</span>
+        <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin-bottom:28px">
+          <span class="tip" data-tip="Zo werkt een retainer" tabindex="0"><span class="badge b-blue" style="cursor:help">Wat is dit?</span></span>
+          <span class="dotbadge" data-count="3"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></span>
+        </div>
+        <span class="lbl" style="display:block;font-family:var(--f-mono);font-size:11px;color:var(--tx3);margin-bottom:14px">skeleton tijdens het laden</span>
+        <div class="skel skel-m"></div>
+        <div class="skel skel-ti"></div>
+        <div class="skel skel-t"></div>
+        <div class="skel skel-t" style="width:80%"></div>
+      </div>
     </div>
 
-    <div class="tbl-wrap">
-      <table class="tbl tbl--nums">
-        <thead><tr><th>Stijl</th><th>Font</th><th>Gewicht</th><th>Desktop</th><th>Tablet</th><th>Mobiel</th></tr></thead>
+    <div class="demo sub">
+      <span class="lbl">lege staat</span>
+      <div class="empty">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <h3 style="margin-bottom:10px">Geen cases in deze branche</h3>
+        <p>We hebben hier nog geen case gepubliceerd. Bekijk al ons werk, of vertel ons waar je mee zit.</p>
+        <button class="btn btn--secondary">Bekijk alle cases</button>
+      </div>
+    </div>
+    <p class="note" style="margin-top:20px">Een lege staat vertelt <b>wat er zou moeten staan</b> en <b>wat de bezoeker nu kan doen</b>. "Geen resultaten" is geen lege staat, dat is een doodlopende weg.</p>
+  </div>
+</section>
+
+<section class="sec sec--alt" id="elementor">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Elementor</span>
+      <h2>Instellingen en widgets</h2>
+      <p class="lead">Wat je aan moet zetten, en welke widgets de stylesheet overschrijft.</p>
+    </div>
+
+    <h3>Zet deze instellingen aan</h3>
+    <div class="tbl-wrap" style="margin-bottom:36px">
+      <table class="tbl tbl--wide">
+        <thead><tr><th>Instelling</th><th>Waar</th><th>Waarom</th></tr></thead>
         <tbody>
-          <tr><td class="name">Display</td><td>Tight</td><td>700</td><td>80</td><td>56</td><td>40</td></tr>
-          <tr><td class="name">H1</td><td>Tight</td><td>700</td><td>56</td><td>44</td><td>34</td></tr>
-          <tr><td class="name">H2</td><td>Tight</td><td>700</td><td>40</td><td>34</td><td>28</td></tr>
-          <tr><td class="name">H3</td><td>Tight</td><td>600</td><td>28</td><td>26</td><td>22</td></tr>
-          <tr><td class="name">H4</td><td>Tight</td><td>600</td><td>24</td><td>22</td><td>20</td></tr>
-          <tr><td class="name">H5</td><td>Tight</td><td>600</td><td>21</td><td>20</td><td>18</td></tr>
-          <tr><td class="name">H6</td><td>Inter</td><td>600</td><td>17</td><td>17</td><td>16</td></tr>
-          <tr><td class="name">Lead</td><td>Inter</td><td>400</td><td>21</td><td>20</td><td>18</td></tr>
-          <tr><td class="name">Body</td><td>Inter</td><td>400</td><td>17</td><td>17</td><td>16</td></tr>
-          <tr><td class="name">Small</td><td>Inter</td><td>400</td><td>14</td><td>14</td><td>14</td></tr>
-          <tr><td class="name">Caption</td><td>Inter</td><td>400</td><td>12</td><td>12</td><td>12</td></tr>
-          <tr><td class="name">Knop</td><td>Inter</td><td>500</td><td>17</td><td>17</td><td>16</td></tr>
-          <tr><td class="name">Quote</td><td>Tight</td><td>600</td><td>32</td><td>28</td><td>22</td></tr>
-          <tr><td class="name">Kengetal</td><td>Tight</td><td>700</td><td>64</td><td>52</td><td>40</td></tr>
-          <tr class="hl"><td class="name">Sectie-padding</td><td>—</td><td>—</td><td>120</td><td>88</td><td>64</td></tr>
-          <tr class="hl"><td class="name">Zijmarge</td><td>—</td><td>—</td><td>32</td><td>24</td><td>20</td></tr>
+          <tr><td class="name">Flexbox Container</td><td>Settings → Features</td><td>de hele stylesheet gaat hiervan uit</td></tr>
+          <tr><td class="name">Grid Container</td><td>Settings → Features</td><td>voor kaartgrids</td></tr>
+          <tr><td class="name">Improved CSS Loading</td><td>Settings → Features</td><td>laadt alleen de CSS die de pagina nodig heeft</td></tr>
+          <tr><td class="name">Optimized Markup</td><td>Settings → Features</td><td>minder wrappers, schonere HTML</td></tr>
+          <tr><td class="name">Custom Breakpoints</td><td>Site Settings → Layout</td><td>734 / 1068 / 1440</td></tr>
+          <tr><td class="name">Content Width</td><td>Site Settings → Layout</td><td>1024 px</td></tr>
         </tbody>
       </table>
     </div>
 
-    <h3 style="margin-top:52px">Wat er verandert op mobiel</h3>
-    <div class="rules">
-      <div class="rule"><span class="rule-n">·</span><p><b>Alles onder elkaar.</b> Grids van 2, 3 en 4 kolommen worden één kolom.</p></div>
-      <div class="rule"><span class="rule-n">·</span><p><b>Knoppen vullen de breedte</b> en stapelen, hoofdactie bovenaan.</p></div>
-      <div class="rule"><span class="rule-n">·</span><p><b>Velden blijven ≥16px.</b> Daaronder zoomt iOS automatisch in.</p></div>
-      <div class="rule"><span class="rule-n">·</span><p><b>Letterafstand wordt losser.</b> Op klein formaat werkt −0.028em tegen je.</p></div>
-      <div class="rule"><span class="rule-n">·</span><p><b>Card-padding en radius schalen terug.</b> 32→24 en 44→28.</p></div>
-      <div class="rule"><span class="rule-n">·</span><p><b>Test op 375px</b> — iPhone SE, de smalste maat die er nog toe doet.</p></div>
+    <h3>Wat de stylesheet overschrijft</h3>
+    <div class="tbl-wrap" style="margin-bottom:36px">
+      <table class="tbl tbl--wide">
+        <thead><tr><th>Widget</th><th>Wat er verandert</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Slider / Carousel</td><td>pijlen worden 44px glasknoppen, het actieve bolletje rekt uit van 8 naar 24px</td></tr>
+          <tr><td class="name">Popup</td><td>radius 24, schaduw xl, sluitknop wordt een grijze ronde knop</td></tr>
+          <tr><td class="name">Lightbox</td><td>beeld krijgt radius 18</td></tr>
+          <tr><td class="name">Loop Grid / Posts</td><td>gap 24, kaart zonder rand, 4px lift bij hover</td></tr>
+          <tr><td class="name">Icon Box / Image Box</td><td>titel in Inter Tight met de juiste letterafstand, beeld radius 18</td></tr>
+          <tr><td class="name">Counter</td><td>Inter Tight bold, uitlijnende cijfers, blauw</td></tr>
+          <tr><td class="name">Progress Bar</td><td>6px hoog, pill, blauw</td></tr>
+          <tr><td class="name">Tabs / Accordion</td><td>eigen typografie, 2px actieve onderstreping, geen kaders</td></tr>
+          <tr><td class="name">Breadcrumbs</td><td>14px, grijs, chevron-scheiding</td></tr>
+          <tr><td class="name">Search Form</td><td>pill, grijs vlak</td></tr>
+          <tr><td class="name">Sticky Header</td><td>schaduw-sm zodra Elementor <code>elementor-sticky--effects</code> toevoegt</td></tr>
+        </tbody>
+      </table>
     </div>
 
-    <h3 style="margin-top:52px">Motion</h3>
-    <div class="motion-grid">
-      <div class="mc"><h4>Standaard</h4><code>cubic-bezier(.25,.1,.25,1)</code><p>Kleur, opacity, alles wat van staat verandert. 150ms.</p></div>
-      <div class="mc"><h4>Uit</h4><code>cubic-bezier(.16,1,.3,1)</code><p>Binnenkomende elementen. 250–400ms.</p></div>
-      <div class="mc"><h4>Scroll reveal</h4><code>16px omhoog + fade</code><p>800ms desktop, 600ms mobiel. Geen schaal, geen bounce.</p></div>
+    <h3>Bouw deze als template</h3>
+    <p class="note" style="margin-bottom:18px">Één keer bouwen, overal bijwerken. Dit is niet alleen sneller — het is de enige manier waarop het systeem overeind blijft als er vier mensen aan de site werken.</p>
+    <div class="chips">
+      <span class="tag">Header</span><span class="tag">Footer</span><span class="tag">CTA-banner</span>
+      <span class="tag">Case-kaart (Loop Item)</span><span class="tag">Prijstabel</span><span class="tag">Testimonial</span>
+      <span class="tag">Contactformulier</span><span class="tag">Cookiebalk</span>
+    </div>
+
+    <h3 class="sub">Z-index — één schaal</h3>
+    <div class="tbl-wrap">
+      <table class="tbl tbl--nums">
+        <thead><tr><th>Laag</th><th>Waarde</th><th>Waarvoor</th></tr></thead>
+        <tbody>
+          <tr><td class="name">base</td><td>1</td><td style="font-family:inherit">normale inhoud</td></tr>
+          <tr><td class="name">raised</td><td>10</td><td style="font-family:inherit">card die opkomt bij hover</td></tr>
+          <tr><td class="name">sticky</td><td>100</td><td style="font-family:inherit">filterbalk, anchor-nav, CTA-balk, terug-naar-boven</td></tr>
+          <tr><td class="name">dropdown</td><td>500</td><td style="font-family:inherit">select, mega menu, tooltip</td></tr>
+          <tr><td class="name">nav</td><td>1000</td><td style="font-family:inherit">hoofdnavigatie</td></tr>
+          <tr><td class="name">offcanvas</td><td>1050</td><td style="font-family:inherit">mobiel menu</td></tr>
+          <tr><td class="name">overlay</td><td>1100</td><td style="font-family:inherit">verduistering achter een modal</td></tr>
+          <tr><td class="name">modal</td><td>1200</td><td style="font-family:inherit">modal, toast, cookiebalk</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note" style="margin-top:18px"><b>Gebruik nooit een eigen z-index.</b> Als iedereen ad hoc 9999 invult, is het binnen een maand onhoudbaar.</p>
+  </div>
+</section>
+
+<section class="sec" id="beeld">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Beeld en iconen</span>
+      <h2>Verhoudingen en lijndiktes</h2>
+      <p class="lead">Kies één ratio per soort en houd je eraan.</p>
+    </div>
+    <div class="tbl-wrap" style="margin-bottom:36px">
+      <table class="tbl tbl--wide">
+        <thead><tr><th>Soort</th><th>Ratio</th><th>Klasse</th><th>Exportformaat</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Hero</td><td class="num">21 : 9</td><td class="num">jr-ratio-hero</td><td class="num">2880 × 1234</td></tr>
+          <tr><td class="name">Case / blog</td><td class="num">3 : 2</td><td class="num">jr-ratio-case</td><td class="num">1200 × 800</td></tr>
+          <tr><td class="name">Portret (team)</td><td class="num">4 : 5</td><td class="num">jr-ratio-team</td><td class="num">800 × 1000</td></tr>
+          <tr><td class="name">Vierkant (social)</td><td class="num">1 : 1</td><td class="num">jr-ratio-square</td><td class="num">1080 × 1080</td></tr>
+          <tr><td class="name">Video</td><td class="num">16 : 9</td><td class="num">jr-ratio-video</td><td class="num">1920 × 1080</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grid2">
+      <div class="demo">
+        <span class="lbl">beeldrichtlijnen</span>
+        <ul class="check" style="font-size:15px">
+          <li>WebP met JPEG-fallback</li>
+          <li>Hero onder 250 kb, kaartbeeld onder 120 kb</li>
+          <li>Lazy loading aan, behalve het hero-beeld</li>
+          <li>Altijd width en height meegeven — anders springt de pagina</li>
+          <li>Alt-tekst beschrijft wat er te zien is, niet "afbeelding van"</li>
+        </ul>
+      </div>
+      <div class="demo">
+        <span class="lbl">iconen</span>
+        <ul class="check" style="font-size:15px">
+          <li>Lijndikte 1.5px tot 24px, 2px vanaf 32px</li>
+          <li>Maten: 18 · 24 · 32 · 48</li>
+          <li>Outline, niet gevuld. Ronde uiteinden.</li>
+          <li>Eén set voor de hele site — geen mix</li>
+          <li>Aanbevolen: Lucide, Feather of Phosphor Regular</li>
+        </ul>
+      </div>
+    </div>
+    <p class="note" style="margin-top:26px"><b>Logo:</b> minimaal 70px hoog op scherm (brandbook), in de navbalk 36px. Vrije ruimte rondom: 1× de hoogte van het beeldmerk. Nooit kantelen, nooit schaduw, nooit meerkleurig.</p>
+    <p class="note"><b>Favicon</b> 512×512 PNG + SVG · <b>Apple touch icon</b> 180×180 · <b>Open Graph deelbeeld</b> 1200×630 met logo en pagina-titel.</p>
+  </div>
+</section>
+
+<section class="sec sec--alt" id="taal">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Taal</span>
+      <h2>Microcopy</h2>
+      <p class="lead">Hier gaat Apple's échte styleguide over — die redactionele PDF. Woorden zijn ontwerpmateriaal, geen versiering.</p>
+    </div>
+
+    <h3>Knopteksten</h3>
+    <div class="tbl-wrap" style="margin-bottom:24px">
+      <table class="tbl tbl--wide">
+        <thead><tr><th>Niet</th><th>Wel</th><th>Waarom</th></tr></thead>
+        <tbody>
+          <tr><td class="name" style="color:var(--red-tx)">Klik hier</td><td class="name" style="color:var(--green-tx)">Plan een gesprek</td><td>zeg wat er gebeurt, niet wat je doet</td></tr>
+          <tr><td class="name" style="color:var(--red-tx)">Verzenden</td><td class="name" style="color:var(--green-tx)">Verstuur aanvraag</td><td>benoem het resultaat</td></tr>
+          <tr><td class="name" style="color:var(--red-tx)">Lees meer</td><td class="name" style="color:var(--green-tx)">Bekijk de case</td><td>specifiek beter dan algemeen</td></tr>
+          <tr><td class="name" style="color:var(--red-tx)">Meer informatie</td><td class="name" style="color:var(--green-tx)">Zo werken we</td><td>actief, niet ambtelijk</td></tr>
+          <tr><td class="name" style="color:var(--red-tx)">OK</td><td class="name" style="color:var(--green-tx)">Begrepen</td><td>zeg wat de knop doet</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note" style="margin-bottom:36px"><b>Sentence case, altijd.</b> "Plan een gesprek", niet "Plan Een Gesprek" en niet "PLAN EEN GESPREK". <b>Maximaal drie woorden.</b> Past het niet, dan is de knop niet het probleem.</p>
+
+    <h3>Foutmeldingen</h3>
+    <p class="note" style="margin-bottom:18px">Drie eisen: zeg <b>wat</b> er mis is, <b>waarom</b>, en <b>hoe je het oplost</b>. Geen excuses, geen uitroeptekens, geen "Oeps!".</p>
+    <div class="tbl-wrap" style="margin-bottom:36px">
+      <table class="tbl tbl--wide">
+        <thead><tr><th>Niet</th><th>Wel</th></tr></thead>
+        <tbody>
+          <tr><td style="color:var(--red-tx)">Ongeldige invoer</td><td style="color:var(--green-tx)">Vul een geldig e-mailadres in, bijvoorbeeld naam@bedrijf.nl</td></tr>
+          <tr><td style="color:var(--red-tx)">Er is iets misgegaan</td><td style="color:var(--green-tx)">Je bericht is niet verstuurd. Probeer het opnieuw of bel ons op 045 – 123 4567.</td></tr>
+          <tr><td style="color:var(--red-tx)">Verplicht veld</td><td style="color:var(--green-tx)">Vul je naam in</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grid2">
+      <div class="demo">
+        <span class="lbl">bevestigingen</span>
+        <p class="note" style="margin:0;font-size:15px">Een knop die <b>"Publiceer"</b> heet, geeft een melding die <b>"Gepubliceerd"</b> heet. Gebruik hetzelfde woord — anders moet de lezer twee keer nadenken.</p>
+      </div>
+      <div class="demo">
+        <span class="lbl">Nederlandse details</span>
+        <ul class="check" style="font-size:15px">
+          <li>Aanhalingstekens: 'enkel' of "dubbel", nooit de rechte "</li>
+          <li>Bedragen: <b>€ 1.250</b> — spatie na het euroteken, punt als duizendtal</li>
+          <li>Datums: <b>17 september 2026</b>, in tabellen 17-09-2026</li>
+          <li>Telefoon: <b>045 – 123 4567</b> met half-kastje-streepje</li>
+          <li>Geen Engelse marketingtermen waar een Nederlands woord bestaat</li>
+        </ul>
+      </div>
     </div>
   </div>
 </section>
 
-<section class="sec sec--alt">
+<section class="sec">
   <div class="wrap">
     <div class="sec-head">
       <span class="eyebrow">Aan de slag</span>
-      <h2>Twee bestanden</h2>
+      <h2>Twee bestanden, één checklist</h2>
       <p class="lead">Beide staan in de repository onder <code>styleguide/</code>.</p>
     </div>
-    <div class="files">
-      <div class="file"><h4>jr-elementor-globals.css</h4><p>240 tokens, 1.820 regels. Alle kleuren, marges, paddings, lijndiktes, componenten en responsive gedrag. Niets wordt gebruikt dat niet als token is gedefinieerd.</p></div>
-      <div class="file"><h4>ELEMENTOR-SETUP.md</h4><p>Welke waarde in welk Elementor-veld hoort, plus de klassenlijst voor de editor en een checklist voor oplevering.</p></div>
+    <div class="grid2" style="margin-bottom:36px">
+      <div class="demo"><h4 style="font-family:var(--f-mono);font-size:14px;margin-bottom:8px">jr-elementor-globals.css</h4><p class="note" style="font-size:14px;margin:0">327 tokens, 3.043 regels. Alle kleuren, marges, paddings, lijndiktes, schaduwen, componenten en responsive gedrag. Niets wordt gebruikt dat niet als token is gedefinieerd.</p></div>
+      <div class="demo"><h4 style="font-family:var(--f-mono);font-size:14px;margin-bottom:8px">ELEMENTOR-SETUP.md</h4><p class="note" style="font-size:14px;margin:0">1.061 regels. Welke waarde in welk Elementor-veld hoort, de volledige klassenlijst, de twee JavaScript-snippets en de opleveringschecklist.</p></div>
     </div>
+
+    <h3>Vandaag beginnen — in deze volgorde</h3>
+    <ol class="steps" style="max-width:640px">
+      <li>Breakpoints op 734 / 1068 / 1440 en Content Width op 1024</li>
+      <li>Flexbox Container, Grid Container, Improved CSS Loading en Optimized Markup aan</li>
+      <li>Inter Tight (600, 700) en Inter (400, 500, 600) laden</li>
+      <li>Global Colors, Global Fonts en Theme Style invullen</li>
+      <li><code>jr-elementor-globals.css</code> in Site Settings → Custom CSS</li>
+      <li>Beide snippets in Custom Code → footer</li>
+      <li>Header, footer en CTA-banner als template bouwen</li>
+      <li>Eerste pagina: buitenste container Full Width met achtergrondkleur, binnenste Boxed met de content</li>
+    </ol>
   </div>
 </section>
 
 <footer class="wrap foot">
   James Robinson — Marketing &amp; Branding · www.jamesrobinson.nl<br>
-  Designsysteem v2.0 · gebaseerd op Brandbook 2024 en Apple's Human Interface Guidelines
+  Designsysteem v3.0 · gebaseerd op Brandbook 2024 en Apple's Human Interface Guidelines
 </footer>
 
 <div class="toast" id="toast">Gekopieerd</div>
@@ -980,7 +1647,7 @@ a:active{color:var(--blue-link-a)}
   var toast = document.getElementById('toast'), timer;
   function flash(msg){ toast.textContent = msg; toast.classList.add('show'); clearTimeout(timer); timer = setTimeout(function(){ toast.classList.remove('show'); }, 1600); }
 
-  document.querySelectorAll('.sw').forEach(function(sw){
+  document.querySelectorAll('.ramp button, .grayramp button').forEach(function(sw){
     sw.addEventListener('click', function(){
       var hex = sw.getAttribute('data-hex');
       if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -989,11 +1656,26 @@ a:active{color:var(--blue-link-a)}
     });
   });
 
+  var indet = document.getElementById('indet');
+  if (indet) indet.indeterminate = true;
+
   var seg = document.getElementById('seg');
-  seg.addEventListener('click', function(e){
+  if (seg) seg.addEventListener('click', function(e){
     var b = e.target.closest('button'); if (!b) return;
     seg.querySelectorAll('button').forEach(function(x){ x.classList.remove('on'); });
     b.classList.add('on');
+  });
+
+  var fbar = document.getElementById('fbar');
+  if (fbar) fbar.addEventListener('click', function(e){
+    var b = e.target.closest('.fchip'); if (!b) return;
+    fbar.querySelectorAll('.fchip').forEach(function(x){ x.classList.remove('on'); });
+    b.classList.add('on');
+  });
+
+  var burger = document.getElementById('burger');
+  if (burger) burger.addEventListener('click', function(){
+    burger.setAttribute('aria-expanded', burger.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');
   });
 
   document.querySelectorAll('.acc-btn').forEach(function(b){
