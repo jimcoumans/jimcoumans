@@ -72,6 +72,65 @@ const OPTIONEEL = [
 ] as const
 
 /**
+ * Welke soort verbinding er gebruikt wordt, zonder iets prijs te geven.
+ *
+ * Supabase geeft je drie connection strings en het maakt nogal uit welke er
+ * in DATABASE_URL staat. De directe verbinding kan er maar een paar aan; de
+ * gedeelde pooler is gebouwd voor serverless. Bovendien is de dedicated
+ * pooler standaard alleen via IPv6 bereikbaar, en Netlify Functions zijn
+ * IPv4-only — dan lopen verbindingen vast zonder dat je ziet waarom.
+ *
+ * In het venster van Supabase staat een schakelaar "Use IPv4 connection",
+ * maar die verandert niets aan je project: hij bepaalt alleen welke string
+ * je te zien krijgt en springt terug zodra je het venster sluit. Wat telt is
+ * wat er in de omgevingsvariabele staat, en dat is precies wat hier gemeten
+ * wordt in plaats van aangenomen.
+ *
+ * Alleen de poort en de soort worden gemeld. Geen hostnaam, geen
+ * gebruikersnaam, geen wachtwoord: dit is een open adres.
+ */
+function soortVerbinding(): { poort: string; soort: string; advies?: string } {
+  const ruw = process.env.DATABASE_URL ?? ''
+  let url: URL
+  try {
+    url = new URL(ruw)
+  } catch {
+    return { poort: 'onleesbaar', soort: 'DATABASE_URL is geen geldige connection string' }
+  }
+
+  const poort = url.port || '5432'
+  const host = url.hostname
+
+  if (host.includes('pooler.supabase.com')) {
+    return {
+      poort,
+      soort: 'gedeelde pooler',
+      advies: 'Goed. Dit is de pooler die voor serverless bedoeld is en via IPv4 bereikbaar is.',
+    }
+  }
+
+  if (host.includes('supabase.co') && poort === '6543') {
+    return {
+      poort,
+      soort: 'dedicated pooler',
+      advies:
+        'Deze is standaard alleen via IPv6 bereikbaar, en Netlify Functions zijn IPv4-only. Zet in het Connect-venster van Supabase "Use IPv4 connection" aan, kopieer die string en zet hem in Netlify onder DATABASE_URL. De host eindigt dan op pooler.supabase.com.',
+    }
+  }
+
+  if (host.includes('supabase.co')) {
+    return {
+      poort,
+      soort: 'directe verbinding',
+      advies:
+        'Een directe verbinding kan maar een handvol gelijktijdige verbindingen aan en is niet bedoeld voor serverless. Gebruik de transaction pooler met IPv4.',
+    }
+  }
+
+  return { poort, soort: 'geen Supabase-host' }
+}
+
+/**
  * Van een databasefout naar iets waar je wat aan hebt.
  *
  * De ruwe melding wordt niet doorgegeven: daar kan een hostnaam of een
@@ -172,6 +231,7 @@ export async function GET(request: Request) {
       database: 'bereikbaar',
       migraties: eerste?.aantal ?? 0,
       duurMs: Date.now() - start,
+      verbinding: soortVerbinding(),
       optioneelUit,
     }
 
