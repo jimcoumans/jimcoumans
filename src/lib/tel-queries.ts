@@ -97,6 +97,34 @@ async function main() {
     await (await import('./kosten')).getPersoneelskosten()
   })
 
+  await meet('OFFERTES', async () => {
+    await quotes.listQuotes()
+    await quotes.getQuoteFigures()
+    await admin.listOrganizations()
+    await crm.listPartners()
+  })
+  await meet('ABONNEMENTEN', async () => {
+    await billing.listSubscriptions()
+    await billing.getMonthlyRecurringCents()
+    await billing.getMonthlyBudgetCents()
+    await billing.getKlantAandelen()
+  })
+  await meet('FINANCIEEL', async () => {
+    await reports.getOverallFigures()
+    await reports.getFiguresByOrganization()
+    await reports.getOutstandingInvoices()
+  })
+  await meet('KLANTPAGINA (een klant)', async () => {
+    const alle = await admin.listOrganizations()
+    const eerste = alle[0]
+    if (!eerste) return
+    const id = eerste.organization.id
+    await crm.listContacts(id)
+    await crm.listAccounts(id)
+    await crm.listPartnersForOrganization(id)
+    await (await import('./tijdlijn')).getTijdlijn(id, { limiet: 40 })
+  })
+
   console.log('')
   await client.end()
 }
