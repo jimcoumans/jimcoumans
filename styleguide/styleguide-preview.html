@@ -479,6 +479,18 @@ h3+.note,h3+.tbl-wrap,h3+.grid3{margin-top:0}
 :root[data-theme="dark"] .arrowbtn,:root:not([data-theme="light"]) .arrowbtn{background:rgba(40,40,44,.72)}
 .arrowbtn svg{width:16px;height:16px;stroke-width:2;fill:none;stroke:currentColor}
 
+.st{display:inline-block;font-family:var(--f-mono);font-size:10px;font-weight:500;line-height:1;color:var(--blue-link);background:var(--blue-100);border-radius:4px;padding:3px 6px;vertical-align:middle;margin-left:8px;white-space:nowrap}
+.st--lime{color:var(--lime-text);background:var(--lime-100)}
+.st-block{display:block;margin:0 0 6px}
+.typo-tbl{min-width:640px}
+.typo-tbl td:first-child{font-weight:600;white-space:nowrap}
+.unit-compare{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-hair);background:var(--ln-soft);border-radius:16px;overflow:hidden;margin:20px 0 32px}
+.unit-compare>div{background:var(--chip);padding:24px}
+.unit-compare h4{margin-bottom:10px}
+.unit-compare .big{font-family:var(--f-mono);font-size:22px;font-weight:600;margin:10px 0 6px}
+.unit-compare .sm{font-size:13px;color:var(--tx2)}
+.unit-compare .win{color:var(--green-tx)}
+.unit-compare .lose{color:var(--orange-tx)}
 .foot{padding-block:44px 60px;border-top:var(--s-hair) solid var(--ln-soft);font-size:13px;color:var(--tx3)}
 .toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,16px);background:var(--black);color:#fff;font-size:14px;padding:11px 20px;border-radius:980px;opacity:0;pointer-events:none;transition:opacity .2s var(--ease),transform .2s var(--ease-out);z-index:99}
 .toast.show{opacity:1;transform:translate(-50%,0)}
@@ -528,6 +540,8 @@ h3+.note,h3+.tbl-wrap,h3+.grid3{margin-top:0}
     <a href="#anatomie">Anatomie</a>
     <a href="#kleur">Kleur</a>
     <a href="#typografie">Typografie</a>
+    <a href="#invulblad">Invulblad</a>
+    <a href="#stijlwaar">Stijl per element</a>
     <a href="#ritme">Ritme</a>
     <a href="#ruimte">Ruimte</a>
     <a href="#knoppen">Knoppen</a>
@@ -547,9 +561,9 @@ h3+.note,h3+.tbl-wrap,h3+.grid3{margin-top:0}
 </nav>
 
 <header class="wrap hero">
-  <span class="eyebrow">Designsysteem v3.0 · september 2026</span>
-  <h1>De rust van Apple, in het blauw van James&nbsp;Robinson.</h1>
-  <p class="lead">Het complete systeem voor de nieuwe website: pagina-opbouw, kleurtrappen, typografie, ruimte, lijndiktes, schaduwen en 50+ componenten — met de exacte waarden om vandaag in Elementor Pro te beginnen.</p>
+  <span class="eyebrow">Designsysteem v3.0 · september 2026<span class="st">Eyebrow</span></span>
+  <h1>De rust van Apple, in het blauw van James&nbsp;Robinson.<span class="st">Display</span></h1>
+  <p class="lead"><span class="st st-block">Lead</span>Het complete systeem voor de nieuwe website: pagina-opbouw, kleurtrappen, typografie, ruimte, lijndiktes, schaduwen en 50+ componenten — met de exacte waarden om vandaag in Elementor Pro te beginnen.</p>
   <div class="hero-meta">
     <span class="pill">327 tokens</span>
     <span class="pill">3.043 regels CSS</span>
@@ -845,6 +859,385 @@ h3+.note,h3+.tbl-wrap,h3+.grid3{margin-top:0}
   </div>
 </section>
 
+<section class="sec" id="invulblad">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Invulblad</span>
+      <h2>Wat je in het Typografie-paneel invult</h2>
+      <p class="lead">Twintig stijlen, per breakpoint. Eén keer invullen kost ongeveer een uur — daarna hoeft niemand in het team ooit nog een lettergrootte te verzinnen.</p>
+    </div>
+
+    <h3>Lees dit eerst — bespaar jezelf twee derde van het werk</h3>
+    <p class="note">Naast <b>Regelafstand</b> en <b>Letterafstand</b> zit een eenheids-dropdown. Die staat standaard op <code>px</code>. Zet hem op <code>em</code>.</p>
+    <div class="unit-compare">
+      <div>
+        <h4>Dropdown op px — standaard</h4>
+        <div class="big lose">6 velden</div>
+        <div class="sm">Per stijl vul je regelafstand en letterafstand drie keer in: desktop, tablet, mobiel. Wijzig je later een lettergrootte, dan moet je alle drie nalopen.</div>
+        <div class="sm" style="margin-top:12px;font-family:var(--f-mono)">H1 regelafstand: 60 / 48 / 37<br>H1 letterafstand: −1.2 / −1 / −0.6</div>
+      </div>
+      <div>
+        <h4>Dropdown op em — aanbevolen</h4>
+        <div class="big win">2 velden</div>
+        <div class="sm">Eén waarde die meeschaalt met de lettergrootte op elk apparaat. Wijzig je later de grootte, dan klopt de rest vanzelf.</div>
+        <div class="sm" style="margin-top:12px;font-family:var(--f-mono)">H1 regelafstand: 1.08<br>H1 letterafstand: −0.022</div>
+      </div>
+    </div>
+    <p class="note" style="margin-bottom:36px">De <b>Afmeting</b> vul je altijd per breakpoint in. Daar is geen ontkomen aan.</p>
+
+    <h3>Vier velden die je overal hetzelfde invult</h3>
+    <div class="tbl-wrap" style="margin-bottom:36px">
+      <table class="tbl tbl--wide">
+        <thead><tr><th>Veld</th><th>Waarde</th><th>Waarom</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Transformeren</td><td class="num">Standaard</td><td>Altijd sentence case. Nooit uppercase — ook niet bij eyebrows en labels. Dat is een van de dingen die Apple's typografie rustig houdt.</td></tr>
+          <tr><td class="name">Stijl</td><td class="num">Standaard</td><td>Geen cursief. Nergens.</td></tr>
+          <tr><td class="name">Decoratie</td><td class="num">Standaard</td><td>Geen onderstreping. De enige uitzondering is een link binnen een alinea; dat regelt de stylesheet.</td></tr>
+          <tr><td class="name">Woordafstand</td><td class="num">leeg laten</td><td>Inter is er al op afgestemd. Zodra je hieraan draait, valt het op.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Het invulblad — em-methode</h3>
+    <p class="note" style="margin-bottom:18px">Zet beide dropdowns op <code>em</code>. Vul dan in: Familie · Dikte · Afmeting (3×) · Regelafstand (1×) · Letterafstand (1×).</p>
+    <div class="tbl-wrap" style="margin-bottom:36px">
+      <table class="tbl typo-tbl">
+        <thead><tr><th>Stijl</th><th>Familie</th><th>Dikte</th><th>Afmeting D / T / M</th><th>Regelafstand</th><th>Letterafstand</th></tr></thead>
+        <tbody>
+          <tr><td>Display</td><td>Inter Tight</td><td class="num">700</td><td class="num">80 / 56 / 40</td><td class="num">1.05</td><td class="num">−0.028 · mob −0.022</td></tr>
+          <tr><td>H1</td><td>Inter Tight</td><td class="num">700</td><td class="num">56 / 44 / 34</td><td class="num">1.08</td><td class="num">−0.022 · mob −0.018</td></tr>
+          <tr><td>H2</td><td>Inter Tight</td><td class="num">700</td><td class="num">40 / 34 / 28</td><td class="num">1.12</td><td class="num">−0.018 · mob −0.014</td></tr>
+          <tr><td>H3</td><td>Inter Tight</td><td class="num">600</td><td class="num">28 / 26 / 22</td><td class="num">1.12</td><td class="num">−0.014</td></tr>
+          <tr><td>H4</td><td>Inter Tight</td><td class="num">600</td><td class="num">24 / 22 / 20</td><td class="num">1.25</td><td class="num">−0.010</td></tr>
+          <tr><td>H5</td><td>Inter Tight</td><td class="num">600</td><td class="num">21 / 20 / 18</td><td class="num">1.25</td><td class="num">−0.008</td></tr>
+          <tr class="hl"><td>H6</td><td>Inter</td><td class="num">600</td><td class="num">17 / 17 / 16</td><td class="num">1.25</td><td class="num">−0.004</td></tr>
+          <tr><td>Lead</td><td>Inter</td><td class="num">400</td><td class="num">21 / 20 / 18</td><td class="num">1.45</td><td class="num">0</td></tr>
+          <tr><td>Body</td><td>Inter</td><td class="num">400</td><td class="num">17 / 17 / 16</td><td class="num">1.55</td><td class="num">0</td></tr>
+          <tr><td>Small</td><td>Inter</td><td class="num">400</td><td class="num">14 / 14 / 14</td><td class="num">1.45</td><td class="num">0.004</td></tr>
+          <tr><td>Caption</td><td>Inter</td><td class="num">400</td><td class="num">12 / 12 / 12</td><td class="num">1.4</td><td class="num">0.004</td></tr>
+          <tr><td>Eyebrow</td><td>Inter</td><td class="num">600</td><td class="num">14 / 14 / 14</td><td class="num">1.3</td><td class="num">0</td></tr>
+          <tr><td>Knop</td><td>Inter</td><td class="num">500</td><td class="num">17 / 17 / 16</td><td class="num">1.2</td><td class="num">−0.008</td></tr>
+          <tr><td>Quote</td><td>Inter Tight</td><td class="num">600</td><td class="num">32 / 28 / 22</td><td class="num">1.25</td><td class="num">−0.014</td></tr>
+          <tr><td>Kengetal</td><td>Inter Tight</td><td class="num">700</td><td class="num">64 / 52 / 40</td><td class="num">1.0</td><td class="num">−0.022</td></tr>
+          <tr><td>Nav</td><td>Inter</td><td class="num">400</td><td class="num">14 / 14 / 14</td><td class="num">1.4</td><td class="num">0</td></tr>
+          <tr><td>Label</td><td>Inter</td><td class="num">500</td><td class="num">14 / 14 / 14</td><td class="num">1.4</td><td class="num">0</td></tr>
+          <tr><td>Badge</td><td>Inter</td><td class="num">500</td><td class="num">12 / 12 / 12</td><td class="num">1.0</td><td class="num">0</td></tr>
+          <tr><td>Tag</td><td>Inter</td><td class="num">400</td><td class="num">14 / 14 / 14</td><td class="num">1.4</td><td class="num">0</td></tr>
+          <tr><td>Menu mobiel</td><td>Inter Tight</td><td class="num">600</td><td class="num">24 / 24 / 24</td><td class="num">1.25</td><td class="num">−0.010</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note" style="margin-bottom:36px"><b>Drie stijlen hebben een afwijkende mobiele letterafstand</b> (Display, H1, H2). Op klein formaat werkt strakke tracking tegen je: de letters kruipen in elkaar.</p>
+
+    <h3>Het invulblad — px-methode</h3>
+    <p class="note" style="margin-bottom:18px">Blijft de dropdown op <code>px</code> staan, vul dan deze waarden in. Afmeting / regelafstand / letterafstand per breakpoint.</p>
+    <div class="tbl-wrap" style="margin-bottom:36px">
+      <table class="tbl typo-tbl">
+        <thead><tr><th rowspan="2">Stijl</th><th colspan="3">Desktop</th><th colspan="3">Tablet</th><th colspan="3">Mobiel</th></tr>
+        <tr><th>Afm</th><th>Regel</th><th>Letter</th><th>Afm</th><th>Regel</th><th>Letter</th><th>Afm</th><th>Regel</th><th>Letter</th></tr></thead>
+        <tbody>
+          <tr><td>Display</td><td class="num">80</td><td class="num">84</td><td class="num">−2.2</td><td class="num">56</td><td class="num">59</td><td class="num">−1.6</td><td class="num">40</td><td class="num">42</td><td class="num">−0.9</td></tr>
+          <tr><td>H1</td><td class="num">56</td><td class="num">60</td><td class="num">−1.2</td><td class="num">44</td><td class="num">48</td><td class="num">−1.0</td><td class="num">34</td><td class="num">37</td><td class="num">−0.6</td></tr>
+          <tr><td>H2</td><td class="num">40</td><td class="num">45</td><td class="num">−0.7</td><td class="num">34</td><td class="num">38</td><td class="num">−0.6</td><td class="num">28</td><td class="num">31</td><td class="num">−0.4</td></tr>
+          <tr><td>H3</td><td class="num">28</td><td class="num">31</td><td class="num">−0.4</td><td class="num">26</td><td class="num">29</td><td class="num">−0.4</td><td class="num">22</td><td class="num">25</td><td class="num">−0.3</td></tr>
+          <tr><td>H4</td><td class="num">24</td><td class="num">30</td><td class="num">−0.2</td><td class="num">22</td><td class="num">28</td><td class="num">−0.2</td><td class="num">20</td><td class="num">25</td><td class="num">−0.2</td></tr>
+          <tr><td>H5</td><td class="num">21</td><td class="num">26</td><td class="num">−0.2</td><td class="num">20</td><td class="num">25</td><td class="num">−0.2</td><td class="num">18</td><td class="num">22</td><td class="num">−0.1</td></tr>
+          <tr><td>H6</td><td class="num">17</td><td class="num">21</td><td class="num">−0.1</td><td class="num">17</td><td class="num">21</td><td class="num">−0.1</td><td class="num">16</td><td class="num">20</td><td class="num">−0.1</td></tr>
+          <tr><td>Lead</td><td class="num">21</td><td class="num">30</td><td class="num">0</td><td class="num">20</td><td class="num">29</td><td class="num">0</td><td class="num">18</td><td class="num">26</td><td class="num">0</td></tr>
+          <tr class="hl"><td>Body</td><td class="num">17</td><td class="num">26</td><td class="num">0</td><td class="num">17</td><td class="num">26</td><td class="num">0</td><td class="num">16</td><td class="num">25</td><td class="num">0</td></tr>
+          <tr><td>Small</td><td class="num">14</td><td class="num">20</td><td class="num">0.1</td><td class="num">14</td><td class="num">20</td><td class="num">0.1</td><td class="num">14</td><td class="num">20</td><td class="num">0.1</td></tr>
+          <tr><td>Caption</td><td class="num">12</td><td class="num">17</td><td class="num">0</td><td class="num">12</td><td class="num">17</td><td class="num">0</td><td class="num">12</td><td class="num">17</td><td class="num">0</td></tr>
+          <tr><td>Eyebrow</td><td class="num">14</td><td class="num">18</td><td class="num">0</td><td class="num">14</td><td class="num">18</td><td class="num">0</td><td class="num">14</td><td class="num">18</td><td class="num">0</td></tr>
+          <tr><td>Knop</td><td class="num">17</td><td class="num">20</td><td class="num">−0.1</td><td class="num">17</td><td class="num">20</td><td class="num">−0.1</td><td class="num">16</td><td class="num">19</td><td class="num">−0.1</td></tr>
+          <tr><td>Quote</td><td class="num">32</td><td class="num">40</td><td class="num">−0.4</td><td class="num">28</td><td class="num">35</td><td class="num">−0.4</td><td class="num">22</td><td class="num">28</td><td class="num">−0.3</td></tr>
+          <tr><td>Kengetal</td><td class="num">64</td><td class="num">64</td><td class="num">−1.4</td><td class="num">52</td><td class="num">52</td><td class="num">−1.1</td><td class="num">40</td><td class="num">40</td><td class="num">−0.9</td></tr>
+          <tr><td>Nav</td><td class="num">14</td><td class="num">20</td><td class="num">0</td><td class="num">14</td><td class="num">20</td><td class="num">0</td><td class="num">14</td><td class="num">20</td><td class="num">0</td></tr>
+          <tr><td>Label</td><td class="num">14</td><td class="num">20</td><td class="num">0</td><td class="num">14</td><td class="num">20</td><td class="num">0</td><td class="num">14</td><td class="num">20</td><td class="num">0</td></tr>
+          <tr><td>Badge</td><td class="num">12</td><td class="num">12</td><td class="num">0</td><td class="num">12</td><td class="num">12</td><td class="num">0</td><td class="num">12</td><td class="num">12</td><td class="num">0</td></tr>
+          <tr><td>Tag</td><td class="num">14</td><td class="num">20</td><td class="num">0</td><td class="num">14</td><td class="num">20</td><td class="num">0</td><td class="num">14</td><td class="num">20</td><td class="num">0</td></tr>
+          <tr><td>Menu mobiel</td><td class="num">24</td><td class="num">30</td><td class="num">−0.2</td><td class="num">24</td><td class="num">30</td><td class="num">−0.2</td><td class="num">24</td><td class="num">30</td><td class="num">−0.2</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note" style="margin-bottom:36px"><b>Body en Knop gaan op mobiel naar 16px en niet lager.</b> Onder 16px zoomt iOS automatisch in zodra iemand in een formulierveld tikt.</p>
+
+    <h3>Waar vul je het in?</h3>
+    <div class="grid2">
+      <div class="demo">
+        <span class="lbl">Theme Style → Typography</span>
+        <p class="note" style="font-size:15px;margin-bottom:14px">Hier zet je de <b>standaard HTML-elementen</b>. Alles wat je daarna als H2 in de editor kiest, krijgt deze stijl automatisch — zonder dat iemand een klasse hoeft in te vullen.</p>
+        <div class="tbl-wrap">
+          <table class="tbl" style="font-size:14px">
+            <tbody>
+              <tr><td class="name">Body</td><td>Body</td></tr>
+              <tr><td class="name">H1 t/m H6</td><td>H1 t/m H6</td></tr>
+              <tr><td class="name">Links</td><td>Body, kleur #0066CC</td></tr>
+              <tr><td class="name">Form Fields</td><td>Body</td></tr>
+              <tr><td class="name">Buttons</td><td>Knop</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="demo">
+        <span class="lbl">Site Settings → Global Fonts</span>
+        <p class="note" style="font-size:15px;margin-bottom:14px">Hier zet je de <b>overige stijlen</b>. Die kies je per widget in de Typografie-dropdown.</p>
+        <div class="tbl-wrap">
+          <table class="tbl" style="font-size:14px">
+            <tbody>
+              <tr><td class="name">Primary</td><td>JR Display → H1</td></tr>
+              <tr><td class="name">Secondary</td><td>JR Heading → H3</td></tr>
+              <tr><td class="name">Text</td><td>JR Body → Body</td></tr>
+              <tr><td class="name">Accent</td><td>JR Action → Knop</td></tr>
+              <tr><td class="name">Custom ×12</td><td>Hero, Lead, Eyebrow, Small, Caption, Quote, Stat, Nav, Label, Badge, Tag, Menu Mobile</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="sub">Drie regels om te onthouden</h3>
+    <div class="rules">
+      <div class="rule"><span class="rule-n">1</span><p><b>Boven 20px is Inter Tight, daaronder Inter.</b> Dat is de grens waarop we Apple's SF Pro Display en Text nabootsen. H6 valt precies eronder en gebruikt dus Inter, ook al is het een kop.</p></div>
+      <div class="rule"><span class="rule-n">2</span><p><b>Hoe groter de tekst, hoe strakker de letterafstand.</b> Van −0.028em op Display tot 0 op Body.</p></div>
+      <div class="rule"><span class="rule-n">3</span><p><b>Transformeren staat altijd op Standaard.</b> Uppercase is de snelste manier om de rust te verpesten die je zoekt.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec sec--alt" id="stijlwaar">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Stijl per element</span>
+      <h2>Welke stijl gebruik je waar?</h2>
+      <p class="lead">Het antwoord op "welke moet ik nou kiezen". Per component, per element, met de bijbehorende tekstkleur.</p>
+    </div>
+      <h3 class="sub">Hero</h3>
+      <div class="tbl-wrap">
+        <table class="tbl tbl--wide">
+          <thead><tr><th>Element</th><th>Stijl</th><th>Kleur</th></tr></thead>
+          <tbody>
+            <tr><td>Labeltje boven de kop</td><td class="name" style="color:var(--blue-link)">Eyebrow</td><td class="num">#0066CC</td></tr>
+            <tr><td>De grote kop</td><td class="name" style="color:var(--blue-link)">Display &middot; H1 op een binnenpagina</td><td class="num">#1D1D1F</td></tr>
+            <tr><td>De zin eronder</td><td class="name" style="color:var(--blue-link)">Lead</td><td class="num">#6E6E73</td></tr>
+            <tr><td>Knop</td><td class="name" style="color:var(--blue-link)">Knop</td><td class="num">wit op #0857C3</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3 class="sub">Sectiekop</h3>
+      <div class="tbl-wrap">
+        <table class="tbl tbl--wide">
+          <thead><tr><th>Element</th><th>Stijl</th><th>Kleur</th></tr></thead>
+          <tbody>
+            <tr><td>Labeltje</td><td class="name" style="color:var(--blue-link)">Eyebrow</td><td class="num">#0066CC</td></tr>
+            <tr><td>Sectiekop</td><td class="name" style="color:var(--blue-link)">H2</td><td class="num">#1D1D1F</td></tr>
+            <tr><td>Intro-zin</td><td class="name" style="color:var(--blue-link)">Lead</td><td class="num">#6E6E73</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3 class="sub">Lopende tekst</h3>
+      <div class="tbl-wrap">
+        <table class="tbl tbl--wide">
+          <thead><tr><th>Element</th><th>Stijl</th><th>Kleur</th></tr></thead>
+          <tbody>
+            <tr><td>Tussenkop</td><td class="name" style="color:var(--blue-link)">H3</td><td class="num">#1D1D1F</td></tr>
+            <tr><td>Kleinere tussenkop</td><td class="name" style="color:var(--blue-link)">H4</td><td class="num">#1D1D1F</td></tr>
+            <tr><td>Alinea</td><td class="name" style="color:var(--blue-link)">Body</td><td class="num">#1D1D1F</td></tr>
+            <tr><td>Opsomming</td><td class="name" style="color:var(--blue-link)">Body</td><td class="num">#1D1D1F</td></tr>
+            <tr><td>Bijschrift onder een afbeelding</td><td class="name" style="color:var(--blue-link)">Caption</td><td class="num">#86868B</td></tr>
+            <tr><td>Voorwaarden, kleine lettertjes</td><td class="name" style="color:var(--blue-link)">Caption</td><td class="num">#86868B</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3 class="sub">Card</h3>
+      <div class="tbl-wrap">
+        <table class="tbl tbl--wide">
+          <thead><tr><th>Element</th><th>Stijl</th><th>Kleur</th></tr></thead>
+          <tbody>
+            <tr><td>Kop in een gewone card</td><td class="name" style="color:var(--blue-link)">H5</td><td class="num">#1D1D1F</td></tr>
+            <tr><td>Kop in een grote card</td><td class="name" style="color:var(--blue-link)">H4</td><td class="num">#1D1D1F</td></tr>
+            <tr><td>Tekst</td><td class="name" style="color:var(--blue-link)">Small</td><td class="num">#6E6E73</td></tr>
+            <tr><td>Link onderin</td><td class="name" style="color:var(--blue-link)">Knop (tekstknop)</td><td class="num">#0066CC</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3 class="sub">Icon box</h3>
+      <div class="tbl-wrap">
+        <table class="tbl tbl--wide">
+          <thead><tr><th>Element</th><th>Stijl</th><th>Kleur</th></tr></thead>
+          <tbody>
+            <tr><td>Kop</td><td class="name" style="color:var(--blue-link)">H5</td><td class="num">#1D1D1F</td></tr>
+            <tr><td>Tekst</td><td class="name" style="color:var(--blue-link)">Small</td><td class="num">#6E6E73</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3 class="sub">Case- of blogkaart</h3>
+      <div class="tbl-wrap">
+        <table class="tbl tbl--wide">
+          <thead><tr><th>Element</th><th>Stijl</th><th>Kleur</th></tr></thead>
+          <tbody>
+            <tr><td>Metadata (branche &middot; datum)</td><td class="name" style="color:var(--blue-link)">Caption</td><td class="num">#86868B</td></tr>
+            <tr><td>Titel</td><td class="name" style="color:var(--blue-link)">H5</td><td class="num">#1D1D1F</td></tr>
+            <tr><td>Samenvatting</td><td class="name" style="color:var(--blue-link)">Small</td><td class="num">#6E6E73</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3 class="sub">Testimonial</h3>
+      <div class="tbl-wrap">
+        <table class="tbl tbl--wide">
+          <thead><tr><th>Element</th><th>Stijl</th><th>Kleur</th></tr></thead>
+          <tbody>
+            <tr><td>Het citaat</td><td class="name" style="color:var(--blue-link)">Quote &middot; H4 in een smalle kolom</td><td class="num">#1D1D1F</td></tr>
+            <tr><td>Naam</td><td class="name" style="color:var(--blue-link)">Body, dikte 500</td><td class="num">#1D1D1F</td></tr>
+            <tr><td>Functie en bedrijf</td><td class="name" style="color:var(--blue-link)">Small</td><td class="num">#6E6E73</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3 class="sub">Prijstabel</h3>
+      <div class="tbl-wrap">
+        <table class="tbl tbl--wide">
+          <thead><tr><th>Element</th><th>Stijl</th><th>Kleur</th></tr></thead>
+          <tbody>
+            <tr><td>Pakketnaam</td><td class="name" style="color:var(--blue-link)">H5</td><td class="num">#1D1D1F</td></tr>
+            <tr><td>Het bedrag</td><td class="name" style="color:var(--blue-link)">Kengetal, afmeting 44 / 40 / 36</td><td class="num">#1D1D1F</td></tr>
+            <tr><td>&quot;per maand&quot;</td><td class="name" style="color:var(--blue-link)">Small</td><td class="num">#6E6E73</td></tr>
+            <tr><td>Opsomming</td><td class="name" style="color:var(--blue-link)">Body</td><td class="num">#1D1D1F</td></tr>
+            <tr><td>Knop</td><td class="name" style="color:var(--blue-link)">Knop</td><td class="num">wit op #0857C3</td></tr>
+            <tr><td>&quot;Meest gekozen&quot;</td><td class="name" style="color:var(--blue-link)">Badge</td><td class="num">#0857C3</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3 class="sub">Kengetallen</h3>
+      <div class="tbl-wrap">
+        <table class="tbl tbl--wide">
+          <thead><tr><th>Element</th><th>Stijl</th><th>Kleur</th></tr></thead>
+          <tbody>
+            <tr><td>Het cijfer</td><td class="name" style="color:var(--blue-link)">Kengetal</td><td class="num">#007AFF of #5A7000</td></tr>
+            <tr><td>Bijschrift</td><td class="name" style="color:var(--blue-link)">Small</td><td class="num">#6E6E73</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3 class="sub">Navigatie</h3>
+      <div class="tbl-wrap">
+        <table class="tbl tbl--wide">
+          <thead><tr><th>Element</th><th>Stijl</th><th>Kleur</th></tr></thead>
+          <tbody>
+            <tr><td>Menu-item</td><td class="name" style="color:var(--blue-link)">Nav</td><td class="num">#1D1D1F</td></tr>
+            <tr><td>Actief menu-item</td><td class="name" style="color:var(--blue-link)">Nav, dikte 500</td><td class="num">#1D1D1F</td></tr>
+            <tr><td>Kolomkop in een mega menu</td><td class="name" style="color:var(--blue-link)">Caption, dikte 600</td><td class="num">#86868B</td></tr>
+            <tr><td>Link in een mega menu</td><td class="name" style="color:var(--blue-link)">H5</td><td class="num">#1D1D1F</td></tr>
+            <tr><td>Item in het mobiele menu</td><td class="name" style="color:var(--blue-link)">Menu mobiel</td><td class="num">#1D1D1F</td></tr>
+            <tr><td>Kruimelpad</td><td class="name" style="color:var(--blue-link)">Small</td><td class="num">#6E6E73</td></tr>
+            <tr><td>Paginanummer</td><td class="name" style="color:var(--blue-link)">Small, dikte 500</td><td class="num">#6E6E73</td></tr>
+            <tr><td>Anchor-nav</td><td class="name" style="color:var(--blue-link)">Small</td><td class="num">#6E6E73</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3 class="sub">Footer</h3>
+      <div class="tbl-wrap">
+        <table class="tbl tbl--wide">
+          <thead><tr><th>Element</th><th>Stijl</th><th>Kleur</th></tr></thead>
+          <tbody>
+            <tr><td>Kolomkop</td><td class="name" style="color:var(--blue-link)">Small, dikte 600</td><td class="num">#1D1D1F</td></tr>
+            <tr><td>Link</td><td class="name" style="color:var(--blue-link)">Small</td><td class="num">#6E6E73</td></tr>
+            <tr><td>Adres, KvK, copyright</td><td class="name" style="color:var(--blue-link)">Caption</td><td class="num">#86868B</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3 class="sub">Formulier</h3>
+      <div class="tbl-wrap">
+        <table class="tbl tbl--wide">
+          <thead><tr><th>Element</th><th>Stijl</th><th>Kleur</th></tr></thead>
+          <tbody>
+            <tr><td>Label boven een veld</td><td class="name" style="color:var(--blue-link)">Label</td><td class="num">#1D1D1F</td></tr>
+            <tr><td>Ingevulde tekst</td><td class="name" style="color:var(--blue-link)">Body</td><td class="num">#1D1D1F</td></tr>
+            <tr><td>Placeholder</td><td class="name" style="color:var(--blue-link)">Body</td><td class="num">#86868B</td></tr>
+            <tr><td>Hulptekst onder een veld</td><td class="name" style="color:var(--blue-link)">Caption</td><td class="num">#86868B</td></tr>
+            <tr><td>Foutmelding</td><td class="name" style="color:var(--blue-link)">Caption</td><td class="num">#C02A22</td></tr>
+            <tr><td>Label bij een checkbox</td><td class="name" style="color:var(--blue-link)">Body</td><td class="num">#1D1D1F</td></tr>
+            <tr><td>Hulptekst bij een checkbox</td><td class="name" style="color:var(--blue-link)">Small</td><td class="num">#6E6E73</td></tr>
+            <tr><td>Stap-label</td><td class="name" style="color:var(--blue-link)">Caption</td><td class="num">#86868B</td></tr>
+            <tr><td>Verstuurknop</td><td class="name" style="color:var(--blue-link)">Knop</td><td class="num">wit op #0857C3</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3 class="sub">Filters</h3>
+      <div class="tbl-wrap">
+        <table class="tbl tbl--wide">
+          <thead><tr><th>Element</th><th>Stijl</th><th>Kleur</th></tr></thead>
+          <tbody>
+            <tr><td>Filter-chip</td><td class="name" style="color:var(--blue-link)">Small, dikte 500</td><td class="num">#1D1D1F &middot; wit als actief</td></tr>
+            <tr><td>Aantal in een chip</td><td class="name" style="color:var(--blue-link)">Caption</td><td class="num">#86868B</td></tr>
+            <tr><td>Actief filter</td><td class="name" style="color:var(--blue-link)">Small</td><td class="num">#0857C3</td></tr>
+            <tr><td>&quot;Alles wissen&quot;</td><td class="name" style="color:var(--blue-link)">Small</td><td class="num">#6E6E73</td></tr>
+            <tr><td>Resultaatteller</td><td class="name" style="color:var(--blue-link)">Small</td><td class="num">#6E6E73</td></tr>
+            <tr><td>Sorteer-dropdown</td><td class="name" style="color:var(--blue-link)">Small, dikte 500</td><td class="num">#1D1D1F</td></tr>
+            <tr><td>Kop boven een filterpaneel</td><td class="name" style="color:var(--blue-link)">Small, dikte 600</td><td class="num">#1D1D1F</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3 class="sub">Tabel</h3>
+      <div class="tbl-wrap">
+        <table class="tbl tbl--wide">
+          <thead><tr><th>Element</th><th>Stijl</th><th>Kleur</th></tr></thead>
+          <tbody>
+            <tr><td>Kolomkop</td><td class="name" style="color:var(--blue-link)">Small, dikte 600</td><td class="num">#6E6E73</td></tr>
+            <tr><td>Cel</td><td class="name" style="color:var(--blue-link)">Body</td><td class="num">#1D1D1F</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3 class="sub">Accordion en tabs</h3>
+      <div class="tbl-wrap">
+        <table class="tbl tbl--wide">
+          <thead><tr><th>Element</th><th>Stijl</th><th>Kleur</th></tr></thead>
+          <tbody>
+            <tr><td>Vraag / tabtitel</td><td class="name" style="color:var(--blue-link)">H5</td><td class="num">#1D1D1F</td></tr>
+            <tr><td>Antwoord / tabinhoud</td><td class="name" style="color:var(--blue-link)">Body</td><td class="num">#6E6E73</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3 class="sub">Tijdlijn</h3>
+      <div class="tbl-wrap">
+        <table class="tbl tbl--wide">
+          <thead><tr><th>Element</th><th>Stijl</th><th>Kleur</th></tr></thead>
+          <tbody>
+            <tr><td>Datum</td><td class="name" style="color:var(--blue-link)">Caption, dikte 600</td><td class="num">#0066CC</td></tr>
+            <tr><td>Kop</td><td class="name" style="color:var(--blue-link)">H5</td><td class="num">#1D1D1F</td></tr>
+            <tr><td>Tekst</td><td class="name" style="color:var(--blue-link)">Small</td><td class="num">#6E6E73</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3 class="sub">Meldingen en feedback</h3>
+      <div class="tbl-wrap">
+        <table class="tbl tbl--wide">
+          <thead><tr><th>Element</th><th>Stijl</th><th>Kleur</th></tr></thead>
+          <tbody>
+            <tr><td>Kop in een melding</td><td class="name" style="color:var(--blue-link)">Small, dikte 600</td><td class="num">volgt de statuskleur</td></tr>
+            <tr><td>Tekst in een melding</td><td class="name" style="color:var(--blue-link)">Small</td><td class="num">volgt de statuskleur</td></tr>
+            <tr><td>Tooltip</td><td class="name" style="color:var(--blue-link)">Caption</td><td class="num">#F5F5F7 op #1C1C1E</td></tr>
+            <tr><td>Toast</td><td class="name" style="color:var(--blue-link)">Small</td><td class="num">#F5F5F7 op #1C1C1E</td></tr>
+            <tr><td>Kop van een lege staat</td><td class="name" style="color:var(--blue-link)">H3</td><td class="num">#1D1D1F</td></tr>
+            <tr><td>Tekst van een lege staat</td><td class="name" style="color:var(--blue-link)">Body</td><td class="num">#6E6E73</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3 class="sub">Klein grut</h3>
+      <div class="tbl-wrap">
+        <table class="tbl tbl--wide">
+          <thead><tr><th>Element</th><th>Stijl</th><th>Kleur</th></tr></thead>
+          <tbody>
+            <tr><td>Badge</td><td class="name" style="color:var(--blue-link)">Badge</td><td class="num">volgt de statuskleur</td></tr>
+            <tr><td>Tag</td><td class="name" style="color:var(--blue-link)">Tag</td><td class="num">#6E6E73</td></tr>
+            <tr><td>Sticker &quot;Meest gekozen&quot;</td><td class="name" style="color:var(--blue-link)">Badge</td><td class="num">wit op #0857C3</td></tr>
+            <tr><td>Teller op een icoon</td><td class="name" style="color:var(--blue-link)">Badge, afmeting 11</td><td class="num">wit op #FF3B30</td></tr>
+            <tr><td>Cookiebalk</td><td class="name" style="color:var(--blue-link)">Small</td><td class="num">#6E6E73</td></tr>
+            <tr><td>CTA-banner kop</td><td class="name" style="color:var(--blue-link)">H2 &middot; H3</td><td class="num">wit of #1D1D1F</td></tr>
+            <tr><td>CTA-banner tekst</td><td class="name" style="color:var(--blue-link)">Body</td><td class="num">wit of #1D1D1F op 78%</td></tr>
+          </tbody>
+        </table>
+      </div>
+  </div>
+</section>
+
 <section class="sec" id="ritme">
   <div class="wrap">
     <div class="sec-head">
@@ -1103,14 +1496,14 @@ h3+.note,h3+.tbl-wrap,h3+.grid3{margin-top:0}
     <div class="grid2">
       <div class="demo">
         <span class="lbl">invoervelden — 13/16 padding, 48 hoog, radius 12</span>
-        <div class="field"><label for="f1">Naam</label><input id="f1" type="text" placeholder="Jouw naam"></div>
-        <div class="field"><label for="f2">E-mailadres</label><input id="f2" type="email" value="geen-geldig-adres" class="err"><div class="msg">Vul een geldig e-mailadres in, bijvoorbeeld naam@bedrijf.nl</div></div>
-        <div class="field"><label for="f3">Branche</label><select id="f3"><option>Horeca</option><option>Makelaardij</option><option>Automotive</option><option>Zorg</option></select><div class="hint">Klik in een veld om de focusring te zien.</div></div>
+        <div class="field"><label for="f1">Naam<span class="st">Label</span></label><input id="f1" type="text" placeholder="Jouw naam"></div>
+        <div class="field"><label for="f2">E-mailadres</label><input id="f2" type="email" value="geen-geldig-adres" class="err"><div class="msg">Vul een geldig e-mailadres in, bijvoorbeeld naam@bedrijf.nl<span class="st">Caption</span></div></div>
+        <div class="field"><label for="f3">Branche</label><select id="f3"><option>Horeca</option><option>Makelaardij</option><option>Automotive</option><option>Zorg</option></select><div class="hint">Klik in een veld om de focusring te zien.<span class="st">Caption</span></div></div>
       </div>
       <div class="demo">
         <span class="lbl">checkbox — 20×20, radius 6</span>
         <label class="choice"><input type="checkbox" checked><span class="choice-box"></span><span class="choice-label">Aangevinkt</span></label>
-        <label class="choice"><input type="checkbox"><span class="choice-box"></span><span class="choice-label">Uitgevinkt<small>met hulptekst eronder</small></span></label>
+        <label class="choice"><input type="checkbox"><span class="choice-box"></span><span class="choice-label">Uitgevinkt<span class="st">Body</span><small>met hulptekst eronder<span class="st">Small</span></small></span></label>
         <label class="choice"><input type="checkbox" id="indet"><span class="choice-box"></span><span class="choice-label">Half aangevinkt — "alle branches" met een deel geselecteerd</span></label>
         <label class="choice"><input type="checkbox" disabled><span class="choice-box"></span><span class="choice-label">Uitgeschakeld</span></label>
         <div style="height:1px;background:var(--ln-soft);margin:20px 0"></div>
@@ -1152,13 +1545,13 @@ h3+.note,h3+.tbl-wrap,h3+.grid3{margin-top:0}
     </div>
 
     <div class="filterbar" style="margin-bottom:24px" id="fbar">
-      <button class="fchip on">Alle<span class="cnt">42</span></button>
+      <button class="fchip on">Alle<span class="cnt">42</span><span class="st" style="background:rgba(255,255,255,.22);color:#fff">Small 500</span></button>
       <button class="fchip">Horeca<span class="cnt">12</span></button>
       <button class="fchip">Makelaardij<span class="cnt">8</span></button>
       <button class="fchip">Automotive<span class="cnt">7</span></button>
       <button class="fchip">Zorg<span class="cnt">6</span></button>
       <button class="fchip">B2B<span class="cnt">9</span></button>
-      <span class="fcount"><strong>42</strong> cases</span>
+      <span class="fcount"><strong>42</strong> cases<span class="st">Small</span></span>
     </div>
 
     <div class="grid2">
@@ -1204,7 +1597,7 @@ h3+.note,h3+.tbl-wrap,h3+.grid3{margin-top:0}
     <div class="grid2">
       <div class="demo">
         <span class="lbl">kruimelpad</span>
-        <ol class="crumbs"><li><a href="#navigatie">Home</a></li><li><a href="#navigatie">Cases</a></li><li><a href="#navigatie">Horeca</a></li><li aria-current="page">De Zwarte Ruiter</li></ol>
+        <ol class="crumbs"><li><a href="#navigatie">Home</a></li><li><a href="#navigatie">Cases</a></li><li><a href="#navigatie">Horeca</a></li><li aria-current="page">De Zwarte Ruiter<span class="st">Small</span></li></ol>
       </div>
       <div class="demo">
         <span class="lbl">hamburger — 2px lijnen, 44×44 tapdoel</span>
@@ -1238,28 +1631,28 @@ h3+.note,h3+.tbl-wrap,h3+.grid3{margin-top:0}
 <section class="sec sec--alt" id="content">
   <div class="wrap">
     <div class="sec-head">
-      <span class="eyebrow">Content</span>
-      <h2>De bouwstenen</h2>
-      <p class="lead">Alles is live. Klik, hover, tab erdoorheen.</p>
+      <span class="eyebrow">Content<span class="st">Eyebrow</span></span>
+      <h2>De bouwstenen<span class="st">H2</span></h2>
+      <p class="lead"><span class="st st-block">Lead</span>Alles is live. Klik, hover, tab erdoorheen. De blauwe labels laten zien welke typografie-stijl elk element gebruikt.</p>
     </div>
 
     <div class="grid3" style="margin-bottom:24px">
       <div class="demo">
         <span class="lbl">icon box — tegel 56×56, padding 32</span>
         <div class="icontile"><svg viewBox="0 0 24 24"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg></div>
-        <h4 style="font-family:var(--f-disp);font-size:19px;margin-bottom:8px">Performance marketing</h4>
-        <p class="note" style="font-size:14px;margin:0">Data-driven campagnes die je omzet meetbaar laten groeien.</p>
+        <h4 style="font-family:var(--f-disp);font-size:19px;margin-bottom:8px">Performance marketing<span class="st">H5</span></h4>
+        <p class="note" style="font-size:14px;margin:0"><span class="st st-block">Small</span>Data-driven campagnes die je omzet meetbaar laten groeien.</p>
       </div>
       <div class="demo">
         <span class="lbl">icon box — lime, rond</span>
         <div class="icontile icontile--lime icontile--round"><svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/></svg></div>
-        <h4 style="font-family:var(--f-disp);font-size:19px;margin-bottom:8px">Branding</h4>
+        <h4 style="font-family:var(--f-disp);font-size:19px;margin-bottom:8px">Branding<span class="st">H5</span></h4>
         <p class="note" style="font-size:14px;margin:0">Een merk dat blijft hangen, van logo tot tone of voice.</p>
       </div>
       <div class="demo">
         <span class="lbl">icon box — blauw gevuld</span>
         <div class="icontile" style="background:var(--blue);color:#fff"><svg viewBox="0 0 24 24"><path d="M4 19V9m5 10V5m5 14v-7m5 7V3"/></svg></div>
-        <h4 style="font-family:var(--f-disp);font-size:19px;margin-bottom:8px">Strategie</h4>
+        <h4 style="font-family:var(--f-disp);font-size:19px;margin-bottom:8px">Strategie<span class="st">H5</span></h4>
         <p class="note" style="font-size:14px;margin:0">Een gameplan met doelen waar je op kunt sturen.</p>
       </div>
     </div>
@@ -1267,17 +1660,17 @@ h3+.note,h3+.tbl-wrap,h3+.grid3{margin-top:0}
     <div class="grid2" style="margin-bottom:24px">
       <div class="testi">
         <div class="stars" style="margin-bottom:16px"><svg viewBox="0 0 20 20"><path d="M10 1l2.6 5.6 6 .8-4.4 4.2 1.1 6L10 14.8 4.7 17.6l1.1-6L1.4 7.4l6-.8z"/></svg><svg viewBox="0 0 20 20"><path d="M10 1l2.6 5.6 6 .8-4.4 4.2 1.1 6L10 14.8 4.7 17.6l1.1-6L1.4 7.4l6-.8z"/></svg><svg viewBox="0 0 20 20"><path d="M10 1l2.6 5.6 6 .8-4.4 4.2 1.1 6L10 14.8 4.7 17.6l1.1-6L1.4 7.4l6-.8z"/></svg><svg viewBox="0 0 20 20"><path d="M10 1l2.6 5.6 6 .8-4.4 4.2 1.1 6L10 14.8 4.7 17.6l1.1-6L1.4 7.4l6-.8z"/></svg><svg viewBox="0 0 20 20"><path d="M10 1l2.6 5.6 6 .8-4.4 4.2 1.1 6L10 14.8 4.7 17.6l1.1-6L1.4 7.4l6-.8z"/></svg></div>
-        <p class="testi-q">Ze denken mee alsof het hun eigen zaak is.</p>
-        <div class="testi-p"><div class="avatar">MD</div><div><span class="testi-n">Naam klant</span><span class="testi-r">Directeur, bedrijfsnaam</span></div></div>
+        <p class="testi-q">Ze denken mee alsof het hun eigen zaak is.<span class="st">Quote</span></p>
+        <div class="testi-p"><div class="avatar">MD</div><div><span class="testi-n">Naam klant<span class="st">Body 500</span></span><span class="testi-r">Directeur, bedrijfsnaam<span class="st">Small</span></span></div></div>
       </div>
       <div class="demo">
         <span class="lbl">case- of blogkaart — hover voor de lift</span>
         <a href="#content" class="post" style="text-decoration:none">
           <div class="post-media">3 : 2</div>
           <div class="post-body">
-            <div class="post-meta"><span>Horeca</span><span>·</span><span>17 september 2026</span></div>
-            <h4 class="post-title">Van lege dinsdagen naar volgeboekt</h4>
-            <p class="post-ex">Hoe een campagne met één helder aanbod de bezetting doordeweeks verdubbelde.</p>
+            <div class="post-meta"><span>Horeca</span><span>·</span><span>17 september 2026</span><span class="st">Caption</span></div>
+            <h4 class="post-title">Van lege dinsdagen naar volgeboekt<span class="st">H5</span></h4>
+            <p class="post-ex"><span class="st st-block">Small</span>Hoe een campagne met één helder aanbod de bezetting doordeweeks verdubbelde.</p>
           </div>
         </a>
       </div>
@@ -1293,10 +1686,10 @@ h3+.note,h3+.tbl-wrap,h3+.grid3{margin-top:0}
         <button class="btn btn--secondary">Meer weten</button>
       </div>
       <div class="pricing pricing--feat">
-        <span class="badge b-solid pricing-badge">Meest gekozen</span>
-        <span class="pricing-name">Groei</span>
-        <span class="pricing-price">€ 2.500</span>
-        <span class="pricing-per">per maand, maandelijks opzegbaar</span>
+        <span class="badge b-solid pricing-badge">Meest gekozen<span class="st" style="background:rgba(255,255,255,.22);color:#fff">Badge</span></span>
+        <span class="pricing-name">Groei<span class="st">H5</span></span>
+        <span class="pricing-price">€ 2.500<span class="st">Kengetal 44</span></span>
+        <span class="pricing-per">per maand<span class="st">Small</span></span>
         <ul class="check"><li>Alles uit Basis</li><li>Wekelijks overleg</li><li>Eigen WhatsApp-groep</li><li>Campagne-optimalisatie</li></ul>
         <button class="btn btn--primary">Plan een gesprek</button>
       </div>
@@ -1313,7 +1706,7 @@ h3+.note,h3+.tbl-wrap,h3+.grid3{margin-top:0}
       <div class="demo">
         <span class="lbl">tijdlijn — 3px punt, 2px lijn</span>
         <ul class="timeline">
-          <li><span class="tl-date">2017</span><h4 style="margin-bottom:4px">Bedacht</h4><p class="note" style="font-size:14px;margin:0">Het idee voor een ander soort marketingbureau.</p></li>
+          <li><span class="tl-date">2017<span class="st">Caption 600</span></span><h4 style="margin-bottom:4px">Bedacht<span class="st">H5</span></h4><p class="note" style="font-size:14px;margin:0"><span class="st st-block">Small</span>Het idee voor een ander soort marketingbureau.</p></li>
           <li><span class="tl-date">2018</span><h4 style="margin-bottom:4px">Opgericht</h4><p class="note" style="font-size:14px;margin:0">James Robinson gaat van start in Hulsberg.</p></li>
           <li><span class="tl-date">2025</span><h4 style="margin-bottom:4px">BV-structuur</h4><p class="note" style="font-size:14px;margin:0">Klaar voor de volgende groeifase.</p></li>
         </ul>
@@ -1322,12 +1715,12 @@ h3+.note,h3+.tbl-wrap,h3+.grid3{margin-top:0}
         <span class="lbl">kengetallen en korte streep</span>
         <div class="ruleline"></div>
         <div class="stat-row" style="margin-bottom:28px">
-          <div><span class="stat-v">10</span><span class="stat-l">mensen in het team</span></div>
+          <div><span class="stat-v">10<span class="st">Kengetal</span></span><span class="stat-l">mensen in het team<span class="st">Small</span></span></div>
           <div><span class="stat-v stat-v--lime">70%</span><span class="stat-l">begon als stagiair</span></div>
         </div>
         <div class="ruleline ruleline--lime"></div>
-        <p class="quote">Ze denken mee alsof het hun eigen zaak is.</p>
-        <span class="quote-by"><b>Naam klant</b> · Directeur</span>
+        <p class="quote">Ze denken mee alsof het hun eigen zaak is.<span class="st">Quote</span></p>
+        <span class="quote-by"><b>Naam klant</b> · Directeur<span class="st">Small</span></span>
       </div>
     </div>
 
@@ -1343,7 +1736,7 @@ h3+.note,h3+.tbl-wrap,h3+.grid3{margin-top:0}
     </div>
 
     <div class="grid2" style="margin-bottom:24px">
-      <div class="ctaban"><h3>Klaar om te beginnen?</h3><p>Plan een vrijblijvend gesprek. We maken eerst een gameplan, en pas daarna een prijs.</p><button class="btn btn--light">Plan een gesprek</button></div>
+      <div class="ctaban"><h3>Klaar om te beginnen?<span class="st" style="background:rgba(255,255,255,.14);color:#fff">H3</span></h3><p><span class="st st-block" style="background:rgba(255,255,255,.14);color:#fff">Body</span>Plan een vrijblijvend gesprek. We maken eerst een gameplan, en pas daarna een prijs.</p><button class="btn btn--light">Plan een gesprek</button></div>
       <div class="ctaban ctaban--lime"><h3>Klaar om te beginnen?</h3><p>Dezelfde banner in lime. Gebruik er hooguit één per pagina.</p><button class="btn" style="background:#1d1d1f;border-color:#1d1d1f;color:#fff">Plan een gesprek</button></div>
     </div>
 
@@ -1351,14 +1744,14 @@ h3+.note,h3+.tbl-wrap,h3+.grid3{margin-top:0}
       <div class="demo">
         <span class="lbl">badges — elke tint gedefinieerd</span>
         <div class="chips" style="margin-bottom:20px">
-          <span class="badge b-blue">Nieuw</span><span class="badge b-green">Live</span>
+          <span class="badge b-blue">Nieuw<span class="st">Badge</span></span><span class="badge b-green">Live</span>
           <span class="badge b-orange">In behandeling</span><span class="badge b-yellow">Let op</span>
           <span class="badge b-red">Actie nodig</span><span class="badge b-purple">Concept</span>
           <span class="badge b-lime">Uitgelicht</span><span class="badge b-neutral">Archief</span>
           <span class="badge b-solid">Solid</span><span class="badge b-solid-lime">Solid lime</span>
         </div>
         <span class="lbl" style="display:block;font-family:var(--f-mono);font-size:11px;color:var(--tx3);margin-bottom:12px">tags — 7/16 padding</span>
-        <div class="chips"><span class="tag on">Horeca</span><span class="tag">Makelaardij</span><span class="tag">Automotive</span><span class="tag">Zorg</span></div>
+        <div class="chips"><span class="tag on">Horeca<span class="st">Tag</span></span><span class="tag">Makelaardij</span><span class="tag">Automotive</span><span class="tag">Zorg</span></div>
       </div>
       <div class="demo">
         <span class="lbl">lijsten</span>
@@ -1373,7 +1766,7 @@ h3+.note,h3+.tbl-wrap,h3+.grid3{margin-top:0}
       <div class="demo">
         <span class="lbl">accordion</span>
         <div id="acc">
-          <div class="acc-item"><button class="acc-btn" type="button" aria-expanded="true" aria-controls="p1">Werken jullie met losse projecten?<span>+</span></button><div class="acc-panel" id="p1">Nee. We werken uitsluitend in partnerships, omdat marketing pas gaat werken als je er langer dan drie maanden mee bezig bent.</div></div>
+          <div class="acc-item"><button class="acc-btn" type="button" aria-expanded="true" aria-controls="p1">Werken jullie met losse projecten?<span class="st">H5</span><span>+</span></button><div class="acc-panel" id="p1"><span class="st st-block">Body</span>Nee. We werken uitsluitend in partnerships, omdat marketing pas gaat werken als je er langer dan drie maanden mee bezig bent.</div></div>
           <div class="acc-item"><button class="acc-btn" type="button" aria-expanded="false" aria-controls="p2">Wat kost een partnership?<span>+</span></button><div class="acc-panel" id="p2" hidden>Dat hangt af van je doelen en je markt. We maken altijd eerst een gameplan.</div></div>
         </div>
       </div>
@@ -1396,7 +1789,7 @@ h3+.note,h3+.tbl-wrap,h3+.grid3{margin-top:0}
     <div class="grid2">
       <div class="demo">
         <span class="lbl">meldingen — 16/20 padding, radius 12</span>
-        <div class="alert a-info"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg><div><strong>Goed om te weten</strong>Je gegevens worden alleen gebruikt om contact op te nemen.</div></div>
+        <div class="alert a-info"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg><div><strong>Goed om te weten<span class="st">Small 600</span></strong>Je gegevens worden alleen gebruikt om contact op te nemen.<span class="st">Small</span></div></div>
         <div class="alert a-success"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg><div><strong>Bericht verstuurd</strong>We nemen binnen één werkdag contact met je op.</div></div>
         <div class="alert a-warning"><svg viewBox="0 0 24 24"><path d="M12 4 3 19h18z"/><path d="M12 10v4M12 17h.01"/></svg><div><strong>Bijna vol</strong>Voor dit kwartaal hebben we nog twee plekken.</div></div>
         <div class="alert a-error"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/></svg><div><strong>Niet verstuurd</strong>Probeer het opnieuw of bel ons op 045 – 123 4567.</div></div>
@@ -1420,7 +1813,7 @@ h3+.note,h3+.tbl-wrap,h3+.grid3{margin-top:0}
       <span class="lbl">lege staat</span>
       <div class="empty">
         <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-        <h3 style="margin-bottom:10px">Geen cases in deze branche</h3>
+        <h3 style="margin-bottom:10px">Geen cases in deze branche<span class="st">H3</span></h3>
         <p>We hebben hier nog geen case gepubliceerd. Bekijk al ons werk, of vertel ons waar je mee zit.</p>
         <button class="btn btn--secondary">Bekijk alle cases</button>
       </div>
