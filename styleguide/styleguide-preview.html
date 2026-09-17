@@ -491,6 +491,30 @@ h3+.note,h3+.tbl-wrap,h3+.grid3{margin-top:0}
 .unit-compare .sm{font-size:13px;color:var(--tx2)}
 .unit-compare .win{color:var(--green-tx)}
 .unit-compare .lose{color:var(--orange-tx)}
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-hair);background:var(--ln-soft);border-radius:16px;overflow:hidden;margin-bottom:16px}
+.vs>div{background:var(--chip);padding:22px 24px;font-size:15px;line-height:1.5}
+.vs .tag-no,.vs .tag-yes{display:block;font-family:var(--f-mono);font-size:10px;font-weight:600;margin-bottom:10px;letter-spacing:.02em}
+.vs .tag-no{color:var(--red-tx)}
+.vs .tag-yes{color:var(--green-tx)}
+.vs .no{color:var(--tx2)}
+.vs .yes{color:var(--tx);font-weight:500}
+.banlist{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.ban{display:inline-flex;align-items:center;gap:7px;font-size:14px;color:var(--red-tx);background:var(--red-100);border-radius:980px;padding:8px 15px}
+.ban::before{content:"✕";font-size:11px;opacity:.7}
+.rhythm-demo{background:var(--chip);border:var(--s-hair) solid var(--ln-soft);border-radius:16px;padding:28px;margin:18px 0 8px}
+.rhythm-demo p{font-family:var(--f-disp);font-size:24px;font-weight:600;line-height:1.35;letter-spacing:-.01em;margin:0;max-width:none}
+.rhythm-demo .mark{font-family:var(--f-mono);font-size:11px;color:var(--tx3);display:block;margin-top:14px}
+.metrics td:not(:first-child){font-family:var(--f-mono);font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.sample{background:var(--chip);border-left:var(--s-accent) solid var(--blue);border-radius:0 12px 12px 0;padding:22px 24px;margin-bottom:16px}
+.sample .k{font-family:var(--f-disp);font-size:22px;font-weight:700;line-height:1.2;letter-spacing:-.014em;margin:0 0 8px;display:block}
+.sample .s{font-size:15px;color:var(--tx2);margin:0 0 14px;max-width:none}
+.sample .b{display:inline-flex;align-items:center;font-size:13px;font-weight:500;color:#fff;background:var(--blue-action);border-radius:980px;padding:8px 16px}
+.sample .lbl2{display:block;font-family:var(--f-mono);font-size:10px;color:var(--tx3);margin-bottom:12px}
+.testq{display:flex;gap:14px;align-items:flex-start;padding:16px 0;border-bottom:var(--s-hair) solid var(--ln-soft)}
+.testq:last-child{border-bottom:none}
+.testq .n{flex:none;width:26px;height:26px;border-radius:50%;background:var(--blue-100);color:var(--blue-action);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600}
+.testq p{margin:0;font-size:15px;max-width:none}
+.testq b{font-weight:600}
 .foot{padding-block:44px 60px;border-top:var(--s-hair) solid var(--ln-soft);font-size:13px;color:var(--tx3)}
 .toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,16px);background:var(--black);color:#fff;font-size:14px;padding:11px 20px;border-radius:980px;opacity:0;pointer-events:none;transition:opacity .2s var(--ease),transform .2s var(--ease-out);z-index:99}
 .toast.show{opacity:1;transform:translate(-50%,0)}
@@ -509,6 +533,8 @@ h3+.note,h3+.tbl-wrap,h3+.grid3{margin-top:0}
 }
 @media (max-width:734px){
   :root{--gutter:20px}
+  .vs{grid-template-columns:1fr}
+  .rhythm-demo p{font-size:19px}
   body{font-size:16px}
   .sec{padding-block:52px}.hero{padding-block:52px 44px}
   .hero h1{font-size:38px}.hero .lead{font-size:18px}
@@ -555,7 +581,8 @@ h3+.note,h3+.tbl-wrap,h3+.grid3{margin-top:0}
     <a href="#feedback">Feedback</a>
     <a href="#elementor">Elementor</a>
     <a href="#beeld">Beeld</a>
-    <a href="#taal">Taal</a>
+    <a href="#toon">Tone of voice</a>
+    <a href="#taal">Microcopy</a>
     <button class="theme-btn" id="themeBtn" type="button">Donker</button>
   </div>
 </nav>
@@ -1940,12 +1967,186 @@ h3+.note,h3+.tbl-wrap,h3+.grid3{margin-top:0}
   </div>
 </section>
 
+<section class="sec" id="toon">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Tone of voice</span>
+      <h2>Hoe we klinken</h2>
+      <p class="lead">Typografie bepaalt hoe de site eruitziet. Dit bepaalt hoe hij klinkt. Apple's zinsbouw, Limburgse nuchterheid.</p>
+    </div>
+
+    <div class="sample" style="margin-bottom:44px">
+      <span class="lbl2">de kern in één zin</span>
+      <span class="k">We schrijven zoals we aan tafel praten: kort, concreet en zonder gebakken lucht — maar met de discipline van iemand die elk woord heeft gewogen.</span>
+    </div>
+
+    <h3>Wat we van Apple overnemen</h3>
+    <div class="tbl-wrap" style="margin-bottom:44px">
+      <table class="tbl tbl--wide">
+        <thead><tr><th>Wat Apple doet</th><th>Wat dat bij ons wordt</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Kort. Declaratief. Punt.</td><td>Gemiddeld 12–15 woorden, nooit boven 25</td></tr>
+          <tr><td class="name">"Zo dun. Zo licht. Zo sterk."</td><td>"Tien mensen in Hulsberg. Zeven begonnen hier als stagiair."</td></tr>
+          <tr><td class="name">Wat er níet staat is de helft van het werk</td><td>Elke zin die je kunt schrappen, schrap je</td></tr>
+          <tr><td class="name">Elke superlatief wordt onderbouwd</td><td>Geen "de beste" zonder cijfer of voorbeeld erachter</td></tr>
+          <tr><td class="name">Tegenwoordige tijd, actieve vorm</td><td>"We bouwen", niet "er wordt gebouwd"</td></tr>
+          <tr class="hl"><td class="name">Nul uitroeptekens, in hun hele communicatie</td><td>Nul. Ook niet in een succesmelding.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Wat we bewust níet overnemen</h3>
+    <p class="note" style="margin-bottom:20px">Dit is het belangrijkste deel. Apple's toon werkt voor Apple, om redenen die voor ons niet gelden.</p>
+    <div class="grid3" style="margin-bottom:44px">
+      <div class="demo">
+        <h4 style="font-family:var(--f-disp);font-size:18px;margin-bottom:8px">Apple zegt nooit "wij"</h4>
+        <p class="note" style="font-size:14px;margin:0">Apple schrijft over het product, nooit over zichzelf. Dat kan, want iedereen weet wie ze zijn. Wij verkopen een samenwerking — een bureau dat nooit "we" zegt, klinkt als een leverancier. <b>We gebruiken "we" en "je".</b></p>
+      </div>
+      <div class="demo">
+        <h4 style="font-family:var(--f-disp);font-size:18px;margin-bottom:8px">Apple mag superlatieven</h4>
+        <p class="note" style="font-size:14px;margin:0">"The most advanced iPhone ever" kan, want ze hebben het krediet. Een bureau uit Hulsberg dat "het meest toonaangevende" schrijft, klinkt als gebakken lucht. <b>Onze ambitie mag je nergens lezen. Je moet het merken.</b></p>
+      </div>
+      <div class="demo">
+        <h4 style="font-family:var(--f-disp);font-size:18px;margin-bottom:8px">Apple is koel</h4>
+        <p class="note" style="font-size:14px;margin:0">Afstandelijkheid werkt bij een merk dat je bewondert. Bij een bureau waar je straks wekelijks mee belt, leest dezelfde toon als arrogant. <b>Neem hun zinsbouw over, niet hun temperatuur.</b></p>
+      </div>
+    </div>
+
+    <h3>Zeg het concreet of zeg het niet</h3>
+    <div class="vs">
+      <div><span class="tag-no">NIET</span><span class="no">Wij zijn James Robinson, jouw innovatieve partner in marketing en branding. Met passie en persoonlijke aandacht helpen wij bedrijven groeien.</span></div>
+      <div><span class="tag-yes">WEL</span><span class="yes">Je eigen marketingafdeling. Zonder de vaste lasten.</span></div>
+    </div>
+    <div class="vs">
+      <div><span class="tag-no">NIET</span><span class="no">Al meer dan zeven jaar dé marketingpartner van Zuid-Limburg met een team van gepassioneerde professionals.</span></div>
+      <div><span class="tag-yes">WEL</span><span class="yes">Tien mensen in Hulsberg. Zeven begonnen hier als stagiair.</span></div>
+    </div>
+    <div class="vs" style="margin-bottom:20px">
+      <div><span class="tag-no">NIET</span><span class="no">Korte lijnen en persoonlijke aandacht staan bij ons hoog in het vaandel.</span></div>
+      <div><span class="tag-yes">WEL</span><span class="yes">Je ziet in ClickUp waar we mee bezig zijn. Ook als het tegenvalt.</span></div>
+    </div>
+    <p class="note" style="margin-bottom:44px">Die laatste is de maatstaf. <b>"Korte lijnen" kan iedereen schrijven. "Ook als het tegenvalt" kan bijna niemand waarmaken</b> — dus dat is wat je opschrijft.</p>
+
+    <h3>Claim, bewijs, betekenis</h3>
+    <p class="note" style="margin-bottom:6px">Apple's vaste bouwsteen. Claim in vier woorden, bewijs in één zin, klaar.</p>
+    <div class="rhythm-demo">
+      <p><b>Maandelijks opzegbaar.</b> Omdat een partnership niet moet draaien op een contract, maar op resultaat.</p>
+      <span class="mark">claim · bewijs</span>
+    </div>
+    <div class="rhythm-demo" style="margin-bottom:44px">
+      <p><b>Geen losse projecten.</b> Marketing gaat pas werken na drie maanden. Daarom werken we alleen in partnerships.</p>
+      <span class="mark">claim · bewijs · betekenis</span>
+    </div>
+
+    <h3>Ritme: kort, kort, lang</h3>
+    <div class="rhythm-demo">
+      <p>Geen projecten. Geen losse uren. Een vast team dat je markt kent en elke maand verder bouwt aan wat werkt.</p>
+      <span class="mark">2 woorden · 3 woorden · 18 woorden</span>
+    </div>
+    <p class="note" style="margin-bottom:44px">De techniek waarmee Apple hun pagina's laat ademen, en de reden dat hun tekst nooit dreunt. Gebruik het waar je een punt wil laten landen — niet in elke alinea, dan wordt het een tic.</p>
+
+    <h3>Schrijf wat het voor hén betekent</h3>
+    <div class="tbl-wrap" style="margin-bottom:44px">
+      <table class="tbl tbl--wide">
+        <thead><tr><th>Niet — wat wij doen</th><th>Wel — wat zij eraan hebben</th></tr></thead>
+        <tbody>
+          <tr><td style="color:var(--tx2)">Wij verzorgen data-driven performance marketing.</td><td style="font-weight:500">We zetten je budget in waar het rendeert. Elke week zie je waar het naartoe ging.</td></tr>
+          <tr><td style="color:var(--tx2)">Wij bieden realtime dashboards.</td><td style="font-weight:500">Je hoeft nooit te vragen hoe het ervoor staat.</td></tr>
+          <tr><td style="color:var(--tx2)">Wij werken met een retainermodel.</td><td style="font-weight:500">Je betaalt een vast bedrag per maand. Geen verrassingen op de factuur.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>De verbodslijst</h3>
+    <p class="note" style="margin-bottom:20px">Dit is het jargon waar élk marketingbureau in Nederland zijn website mee vult. Als wij het ook doen, zijn we niet te onderscheiden — en dan klopt onze eigen belofte niet.</p>
+    <div class="banlist">
+      <span class="ban">ontzorgen</span><span class="ban">oplossingen op maat</span><span class="ban">uw partner in…</span>
+      <span class="ban">wij denken graag met u mee</span><span class="ban">innovatief</span><span class="ban">uniek</span>
+      <span class="ban">onderscheidend</span><span class="ban">passie voor…</span><span class="ban">resultaatgericht</span>
+      <span class="ban">korte lijnen</span><span class="ban">persoonlijke aandacht</span><span class="ban">kwaliteit staat voorop</span>
+      <span class="ban">al meer dan X jaar</span><span class="ban">tevreden klanten</span><span class="ban">impact maken</span>
+      <span class="ban">synergie</span><span class="ban">de beste</span><span class="ban">dé specialist</span>
+      <span class="ban">verrassend</span><span class="ban">bijzonder</span><span class="ban">vrijblijvend</span><span class="ban">Oeps!</span>
+    </div>
+    <p class="note" style="margin-bottom:44px"><b>Uitroeptekens: nul.</b> In de hele communicatie. Als een zin een uitroepteken nodig heeft om te landen, is de zin niet goed genoeg.</p>
+
+    <h3>De sportmetafoor — spaarzaam</h3>
+    <p class="note" style="margin-bottom:20px">Het brandbook noemt een sportieve twist. Dat werkt — maar <b>maximaal één sportbeeld per pagina</b>, en alleen als het iets verklaart wat anders meer woorden kost.</p>
+    <div class="vs" style="margin-bottom:20px">
+      <div><span class="tag-yes">WERKT</span><span class="yes">Gameplan<br><span style="font-weight:400;color:var(--tx2);font-size:14px">Het is letterlijk hoe we onze strategie noemen. Iedereen snapt het meteen.</span></span><br><br><span class="yes">On top of your game<br><span style="font-weight:400;color:var(--tx2);font-size:14px">Als tagline. Niet in lopende tekst.</span></span></div>
+      <div><span class="tag-no">WERKT NIET</span><span class="no">"Onze spelers staan klaar in de kleedkamer"<br>"We spelen Champions League in Limburg"<br>"Samen naar de winst"</span></div>
+    </div>
+    <p class="note" style="margin-bottom:44px">Zodra de metafoor uitgerekt moet worden om te passen, laat je hem los. <b>Drie sportbeelden op één pagina maakt van een positionering een gimmick.</b></p>
+
+    <h3>Aanspreekvorm</h3>
+    <div class="tbl-wrap" style="margin-bottom:44px">
+      <table class="tbl tbl--wide">
+        <thead><tr><th></th><th>Keuze</th><th>Waarom</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Klant</td><td class="num">je / jouw</td><td>Nooit "u". We zijn een team van tien in Zuid-Limburg, geen advocatenkantoor.</td></tr>
+          <tr><td class="name">Onszelf</td><td class="num">we / ons</td><td>Niet "wij" — dat klinkt formeler dan het is.</td></tr>
+          <tr><td class="name">Uitzondering</td><td class="num">u</td><td>Privacyverklaring en algemene voorwaarden</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Meetbare regels</h3>
+    <p class="note" style="margin-bottom:18px">Een tone of voice die je niet kunt nameten, is een mening. Deze kun je nameten.</p>
+    <div class="tbl-wrap" style="margin-bottom:44px">
+      <table class="tbl metrics tbl--nums">
+        <thead><tr><th>Element</th><th>Maximum</th><th>Streef naar</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Hero-kop</td><td>8 woorden</td><td>4–6</td></tr>
+          <tr><td class="name">Sectiekop (H2)</td><td>8 woorden</td><td>4–6</td></tr>
+          <tr><td class="name">Intro / lead</td><td>30 woorden</td><td>15–25</td></tr>
+          <tr class="hl"><td class="name">Alinea</td><td>60 woorden</td><td>35–50</td></tr>
+          <tr class="hl"><td class="name">Zin</td><td>25 woorden</td><td>12–15 gemiddeld</td></tr>
+          <tr><td class="name">Zinnen per alinea</td><td>3</td><td>2–3</td></tr>
+          <tr><td class="name">Knoptekst</td><td>3 woorden</td><td>2–3</td></tr>
+          <tr><td class="name">Eyebrow</td><td>4 woorden</td><td>2–3</td></tr>
+          <tr><td class="name">Card-tekst</td><td>25 woorden</td><td>15–20</td></tr>
+          <tr><td class="name">Meta-omschrijving</td><td>155 tekens</td><td>140–155</td></tr>
+          <tr><td class="name">Paginatitel</td><td>60 tekens</td><td>45–60</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note" style="margin-bottom:44px"><b>Wordt een alinea langer dan 60 woorden?</b> Dan staan er twee gedachten in. Knip hem.</p>
+
+    <h3>Per soort tekst</h3>
+    <div class="grid2" style="margin-bottom:44px">
+      <div class="sample"><span class="lbl2">hero</span><span class="k">Je eigen marketingafdeling. Zonder de vaste lasten.</span><p class="s">Een vast team dat je markt kent, je merk bewaakt en elke maand verder bouwt aan wat werkt.</p><span class="b">Plan een gesprek</span></div>
+      <div class="sample"><span class="lbl2">dienstenpagina — begin bij het probleem, niet bij de dienst</span><span class="k">Je adverteert al. Alleen weet je niet wat het oplevert.</span><p class="s">We zetten je budget in waar het rendeert, en je ziet elke week waar het naartoe ging.</p></div>
+      <div class="sample"><span class="lbl2">case — cijfer, context, aanpak</span><span class="k">+64% bezetting op doordeweekse avonden</span><p class="s">De Zwarte Ruiter zat vol in het weekend en leeg op dinsdag. We maakten één helder aanbod en zetten dat op de plekken waar hun gasten al waren.</p></div>
+      <div class="sample"><span class="lbl2">over ons — feiten, geen zelfportret</span><span class="k">Tien mensen in Hulsberg. Zeven begonnen hier als stagiair.</span><p class="s">Dat zegt meer over hoe we werken dan welke pay-off dan ook.</p></div>
+      <div class="sample"><span class="lbl2">prijzen</span><span class="k">We maken eerst een gameplan. Daarna pas een prijs.</span><p class="s">Wat je betaalt hangt af van je doelen en je markt. Wat vaststaat: een vast bedrag per maand, maandelijks opzegbaar.</p></div>
+      <div class="sample"><span class="lbl2">contact</span><span class="k">Plan een gesprek.</span><p class="s">Een half uur, geen verkooppraatje. Je hoort wat we zouden doen en wat dat ongeveer kost.</p></div>
+    </div>
+
+    <h3>De schrijftest</h3>
+    <p class="note" style="margin-bottom:8px">Vijf vragen. Faalt je tekst er één, dan herschrijf je.</p>
+    <div style="max-width:700px">
+      <div class="testq"><span class="n">1</span><p>Staat er een <b>woord uit de verbodslijst</b> in?</p></div>
+      <div class="testq"><span class="n">2</span><p>Zou je deze zin <b>zo uitspreken aan tafel</b>?</p></div>
+      <div class="testq"><span class="n">3</span><p>Kan ik er <b>een derde uit schrappen</b> zonder betekenis te verliezen? Zo ja: doen.</p></div>
+      <div class="testq"><span class="n">4</span><p>Staat er een <b>claim zonder bewijs</b>?</p></div>
+      <div class="testq"><span class="n">5</span><p>Zou <b>een concurrent dit ook kunnen schrijven</b>? Als het antwoord ja is, staat er niets.</p></div>
+    </div>
+    <p class="note" style="margin-top:24px">Die laatste is de scherpste. Het hele punt van deze tone of voice is dat niemand anders het kan overschrijven.</p>
+
+    <div class="sample" style="margin-top:44px;border-left-color:var(--lime)">
+      <span class="lbl2">waarom dit ertoe doet</span>
+      <p class="s" style="font-size:16px;color:var(--tx)">Een marketingbureau wordt op twee dingen beoordeeld: het werk dat het voor anderen doet, en de manier waarop het over zichzelf praat. Het tweede is het eerste wat een potentiële klant ziet.</p>
+      <p class="s" style="font-size:16px;color:var(--tx);margin-bottom:0">Als onze site dezelfde woorden gebruikt als elk ander bureau in Limburg, is elke belofte over onderscheidend vermogen meteen weerlegd — op de homepage, nog voor iemand een case heeft gezien. Dit is dus geen stijlvoorkeur. Het is het bewijsmateriaal.</p>
+    </div>
+  </div>
+</section>
+
 <section class="sec sec--alt" id="taal">
   <div class="wrap">
     <div class="sec-head">
-      <span class="eyebrow">Taal</span>
-      <h2>Microcopy</h2>
-      <p class="lead">Hier gaat Apple's échte styleguide over — die redactionele PDF. Woorden zijn ontwerpmateriaal, geen versiering.</p>
+      <span class="eyebrow">Microcopy</span>
+      <h2>Knoppen, meldingen en details</h2>
+      <p class="lead">De tone of voice toegepast op de kleinste teksten. Hier gaat Apple's échte styleguide over — die redactionele PDF.</p>
     </div>
 
     <h3>Knopteksten</h3>
