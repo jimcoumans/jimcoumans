@@ -1,0 +1,1637 @@
+/* ==========================================================================
+   JAMES ROBINSON — GLOBAL STYLESHEET
+   Voor Elementor Pro · Site Settings → Custom CSS
+   --------------------------------------------------------------------------
+   Designtaal : Apple (rust, ruimte, terughoudendheid)
+   Merkbasis  : James Robinson Brandbook 2024
+   Versie     : 1.0
+   --------------------------------------------------------------------------
+   INHOUD
+   01. Design tokens (kleur, type, ruimte, radius, schaduw, motion)
+   02. Basis & reset
+   03. Typografie
+   04. Links
+   05. Knoppen
+   06. Vlakken, cards & schaduwen
+   07. Secties & containers
+   08. Navigatie & header
+   09. Formulieren
+   10. Media & afbeeldingen
+   11. Lijsten, tabellen, quotes, dividers
+   12. Accordion / tabs / toggles
+   13. Badges, labels & eyebrows
+   14. Donkere secties
+   15. Utilities
+   16. Motion & scroll reveal
+   17. Responsive overrides (tablet / mobiel)
+   18. Toegankelijkheid & print
+   ========================================================================== */
+
+
+/* ==========================================================================
+   01. DESIGN TOKENS
+   ========================================================================== */
+
+:root {
+
+  /* ---- 1.1 Lettertypen ---------------------------------------------------
+     KEUZE: één regel wisselen verandert de hele site.
+     A (actief) = systeemstack. Op Mac/iPhone/iPad rendert dit in SF Pro —
+       letterlijk de Apple-look. Op Windows valt hij op Helvetica Neue /
+       Segoe UI, op Android op Roboto.
+     B = Inter (webfont, identiek op élk apparaat, ~95% SF Pro-gevoel).
+     C = strikt brandbook (Helvetica Neue met Arial-fallback).
+     Zie ELEMENTOR-SETUP.md §2 voor de afweging. */
+
+  --jr-font-sans:
+    -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+    "Helvetica Neue", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  /* B: --jr-font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif; */
+  /* C: --jr-font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif; */
+
+  --jr-font-display: var(--jr-font-sans);
+  --jr-font-mono: "SF Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+
+  /* ---- 1.2 Lettergewichten ---------------------------------------------- */
+  --jr-weight-light:    300;   /* alleen grote intro-tekst, nooit onder 21px */
+  --jr-weight-regular:  400;   /* body */
+  --jr-weight-medium:   500;   /* knoppen, labels */
+  --jr-weight-semibold: 600;   /* H3–H6, eyebrows */
+  --jr-weight-bold:     700;   /* H1, H2, display */
+
+
+  /* ---- 1.3 Kleur — merk -------------------------------------------------- */
+  --jr-blue:            #007AFF;   /* merkblauw. Accent, iconen, grote koppen */
+  --jr-blue-deep:       #005CBF;   /* diepte, gradients */
+  --jr-blue-action:     #0857C3;   /* knopvlakken — WCAG-veilig met wit (6.7:1) */
+  --jr-blue-action-hov: #003967;   /* knop hover */
+  --jr-blue-link:       #0066CC;   /* tekstlinks — WCAG-veilig op wit (5.6:1) */
+  --jr-black:           #1C1C1E;   /* merkzwart */
+
+  /* ---- 1.4 Kleur — tekst ------------------------------------------------- */
+  --jr-text:            #1D1D1F;   /* primaire tekst */
+  --jr-text-secondary:  #6E6E73;   /* subkoppen, intro's */
+  --jr-text-tertiary:   #86868B;   /* captions, metadata */
+  --jr-text-inverse:    #F5F5F7;   /* tekst op donker */
+  --jr-text-inverse-sec:#A1A1A6;   /* subtekst op donker */
+
+  /* ---- 1.5 Kleur — vlakken ---------------------------------------------- */
+  --jr-surface:         #FFFFFF;   /* basis */
+  --jr-surface-subtle:  #F5F5F7;   /* afwisselende secties — Apple's grijs */
+  --jr-surface-gray:    #F2F2F7;   /* brandbook-grijs */
+  --jr-surface-tint:    #E2EBF3;   /* lichtblauwe highlight */
+  --jr-surface-dark:    #1C1C1E;   /* donkere sectie */
+  --jr-surface-dark-alt:#2C2D2E;   /* card op donker */
+
+  /* ---- 1.6 Kleur — randen ------------------------------------------------ */
+  --jr-border:          #D2D2D7;   /* standaard rand */
+  --jr-border-subtle:   #E5E5E9;   /* zeer subtiel */
+  --jr-border-strong:   #C8C8CD;
+  --jr-border-dark:     rgba(255,255,255,.14);
+
+  /* ---- 1.7 Kleur — status ------------------------------------------------ */
+  --jr-green:           #34C759;
+  --jr-green-dark:      #25AD42;
+  --jr-orange:          #F6A027;
+  --jr-orange-dark:     #F4971A;
+  --jr-yellow:          #FFD631;
+  --jr-red:             #FF3B30;
+  --jr-red-dark:        #EF302B;
+  --jr-purple:          #AF52DE;
+  --jr-purple-dark:     #9840CC;
+  --jr-teal:            #00B48F;   /* secundaire knop uit brandbook */
+  --jr-teal-hover:      #008F72;
+
+  /* ---- 1.8 Kleur — grijstrap --------------------------------------------- */
+  --jr-gray-05: #F2F2F7;
+  --jr-gray-10: #E5E5E9;
+  --jr-gray-20: #D2D1D7;
+  --jr-gray-30: #C8C8CD;
+  --jr-gray-50: #ADADB2;
+  --jr-gray-60: #636466;
+  --jr-gray-70: #49484A;
+  --jr-gray-80: #3A3A3C;
+  --jr-gray-90: #2C2D2E;
+  --jr-gray-99: #1C1C1E;
+
+
+  /* ---- 1.9 Lettergroottes (desktop) --------------------------------------
+     Mobiel/tablet worden overschreven in §17. Zie ELEMENTOR-SETUP.md §3
+     voor de exacte px-waarden per breakpoint om in Elementor in te vullen. */
+
+  --jr-fs-display:  80px;   /* hero */
+  --jr-fs-h1:       56px;
+  --jr-fs-h2:       40px;
+  --jr-fs-h3:       28px;
+  --jr-fs-h4:       24px;
+  --jr-fs-h5:       21px;
+  --jr-fs-h6:       17px;
+  --jr-fs-lead:     21px;   /* intro / chapeau onder een kop */
+  --jr-fs-body:     17px;   /* Apple's body is 17px, niet 16 */
+  --jr-fs-small:    14px;
+  --jr-fs-caption:  12px;
+  --jr-fs-eyebrow:  14px;
+  --jr-fs-button:   17px;
+  --jr-fs-quote:    32px;
+
+  /* ---- 1.10 Regelhoogtes -------------------------------------------------- */
+  --jr-lh-display:  1.05;
+  --jr-lh-tight:    1.08;
+  --jr-lh-heading:  1.12;
+  --jr-lh-snug:     1.25;
+  --jr-lh-body:     1.55;
+  --jr-lh-lead:     1.45;
+  --jr-lh-relaxed:  1.7;
+
+  /* ---- 1.11 Letterafstand -------------------------------------------------
+     Het Apple-geheim: hoe groter de tekst, hoe strakker de tracking. */
+  --jr-ls-display:  -0.028em;
+  --jr-ls-h1:       -0.022em;
+  --jr-ls-h2:       -0.018em;
+  --jr-ls-h3:       -0.014em;
+  --jr-ls-h4:       -0.010em;
+  --jr-ls-h5:       -0.008em;
+  --jr-ls-h6:       -0.004em;
+  --jr-ls-body:      0em;
+  --jr-ls-small:     0.004em;
+  --jr-ls-button:   -0.008em;
+
+
+  /* ---- 1.12 Ruimte (8pt-raster) ------------------------------------------- */
+  --jr-space-0:   0;
+  --jr-space-1:   4px;
+  --jr-space-2:   8px;
+  --jr-space-3:   12px;
+  --jr-space-4:   16px;
+  --jr-space-5:   20px;
+  --jr-space-6:   24px;
+  --jr-space-7:   32px;
+  --jr-space-8:   40px;
+  --jr-space-9:   48px;
+  --jr-space-10:  64px;
+  --jr-space-11:  80px;
+  --jr-space-12:  96px;
+  --jr-space-13:  120px;
+  --jr-space-14:  160px;
+
+  /* Sectie-ademruimte — dit is waar "rust" vandaan komt */
+  --jr-section-y:       120px;
+  --jr-section-y-lg:    160px;
+  --jr-section-y-sm:    80px;
+  --jr-section-gap:     64px;   /* ruimte tussen blokken bínnen een sectie */
+
+
+  /* ---- 1.13 Breedtes ------------------------------------------------------ */
+  --jr-container:        1024px;  /* standaard contentbreedte */
+  --jr-container-wide:   1280px;  /* brede secties, grids */
+  --jr-container-full:   1440px;  /* full-bleed met marge */
+  --jr-container-text:   692px;   /* leesbare tekstkolom — max ~75 tekens */
+  --jr-container-narrow: 540px;   /* centrale intro's, formulieren */
+  --jr-gutter:           32px;
+
+
+  /* ---- 1.14 Hoekradius ---------------------------------------------------- */
+  --jr-radius-xs:    8px;
+  --jr-radius-sm:    12px;
+  --jr-radius-md:    18px;   /* Apple's standaard card */
+  --jr-radius-lg:    24px;
+  --jr-radius-xl:    32px;
+  --jr-radius-2xl:   44px;   /* grote feature-blokken */
+  --jr-radius-pill:  980px;  /* knoppen — Apple's exacte waarde */
+  --jr-radius-round: 50%;
+
+
+  /* ---- 1.15 Schaduwen -----------------------------------------------------
+     Apple gebruikt schaduw spaarzaam. Liever een vlak dan een schaduw. */
+  --jr-shadow-none: none;
+  --jr-shadow-xs:   0 1px 2px rgba(0,0,0,.04);
+  --jr-shadow-sm:   0 1px 3px rgba(0,0,0,.05), 0 2px 8px rgba(0,0,0,.04);
+  --jr-shadow-md:   0 2px 6px rgba(0,0,0,.05), 0 8px 20px rgba(0,0,0,.06);
+  --jr-shadow-lg:   0 4px 12px rgba(0,0,0,.06), 0 16px 40px rgba(0,0,0,.08);
+  --jr-shadow-xl:   0 8px 24px rgba(0,0,0,.08), 0 32px 72px rgba(0,0,0,.10);
+  --jr-shadow-card-hover: 0 6px 16px rgba(0,0,0,.07), 0 24px 56px rgba(0,0,0,.11);
+  --jr-shadow-nav:  0 1px 0 rgba(0,0,0,.06);
+  --jr-shadow-dark: 0 8px 32px rgba(0,0,0,.40);
+  --jr-shadow-blue: 0 8px 28px rgba(0,122,255,.22);
+
+  /* Focusring — verplicht voor toegankelijkheid */
+  --jr-focus-ring:  0 0 0 4px rgba(0,122,255,.40);
+  --jr-focus-ring-dark: 0 0 0 4px rgba(255,255,255,.55);
+
+
+  /* ---- 1.16 Motion --------------------------------------------------------
+     Apple's signatuur-easing. Nooit bouncy, nooit traag. */
+  --jr-ease:        cubic-bezier(0.25, 0.1, 0.25, 1);
+  --jr-ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --jr-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --jr-dur-fast:    150ms;
+  --jr-dur-base:    250ms;
+  --jr-dur-slow:    400ms;
+  --jr-dur-reveal:  800ms;
+
+
+  /* ---- 1.17 Overig -------------------------------------------------------- */
+  --jr-blur-nav:    saturate(180%) blur(20px);   /* Apple's glazen navbalk */
+  --jr-nav-height:  72px;
+  --jr-z-nav:       1000;
+  --jr-z-overlay:   1100;
+  --jr-z-modal:     1200;
+}
+
+
+/* ==========================================================================
+   02. BASIS & RESET
+   ========================================================================== */
+
+html {
+  -webkit-font-smoothing: antialiased;         /* zonder dit ziet niets er Apple uit */
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--jr-nav-height) + 24px);
+}
+
+body {
+  font-family: var(--jr-font-sans);
+  font-size: var(--jr-fs-body);
+  font-weight: var(--jr-weight-regular);
+  line-height: var(--jr-lh-body);
+  letter-spacing: var(--jr-ls-body);
+  color: var(--jr-text);
+  background-color: var(--jr-surface);
+  font-synthesis: none;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+::selection {
+  background: rgba(0,122,255,.18);
+  color: var(--jr-text);
+}
+
+/* Schaalt beeld en tekst nooit ongevraagd op iOS bij draaien */
+body, html { -webkit-text-size-adjust: 100%; }
+
+
+/* ==========================================================================
+   03. TYPOGRAFIE
+   ========================================================================== */
+
+h1, h2, h3, h4, h5, h6,
+.elementor-heading-title {
+  font-family: var(--jr-font-display);
+  color: var(--jr-text);
+  margin-top: 0;
+  text-wrap: balance;               /* voorkomt lelijke weeskindjes in koppen */
+}
+
+h1, .jr-h1, .elementor-widget-heading h1.elementor-heading-title {
+  font-size: var(--jr-fs-h1);
+  font-weight: var(--jr-weight-bold);
+  line-height: var(--jr-lh-tight);
+  letter-spacing: var(--jr-ls-h1);
+  margin-bottom: var(--jr-space-6);
+}
+
+h2, .jr-h2, .elementor-widget-heading h2.elementor-heading-title {
+  font-size: var(--jr-fs-h2);
+  font-weight: var(--jr-weight-bold);
+  line-height: var(--jr-lh-heading);
+  letter-spacing: var(--jr-ls-h2);
+  margin-bottom: var(--jr-space-5);
+}
+
+h3, .jr-h3, .elementor-widget-heading h3.elementor-heading-title {
+  font-size: var(--jr-fs-h3);
+  font-weight: var(--jr-weight-semibold);
+  line-height: var(--jr-lh-heading);
+  letter-spacing: var(--jr-ls-h3);
+  margin-bottom: var(--jr-space-4);
+}
+
+h4, .jr-h4, .elementor-widget-heading h4.elementor-heading-title {
+  font-size: var(--jr-fs-h4);
+  font-weight: var(--jr-weight-semibold);
+  line-height: var(--jr-lh-snug);
+  letter-spacing: var(--jr-ls-h4);
+  margin-bottom: var(--jr-space-3);
+}
+
+h5, .jr-h5, .elementor-widget-heading h5.elementor-heading-title {
+  font-size: var(--jr-fs-h5);
+  font-weight: var(--jr-weight-semibold);
+  line-height: var(--jr-lh-snug);
+  letter-spacing: var(--jr-ls-h5);
+  margin-bottom: var(--jr-space-3);
+}
+
+h6, .jr-h6, .elementor-widget-heading h6.elementor-heading-title {
+  font-size: var(--jr-fs-h6);
+  font-weight: var(--jr-weight-semibold);
+  line-height: var(--jr-lh-snug);
+  letter-spacing: var(--jr-ls-h6);
+  margin-bottom: var(--jr-space-2);
+}
+
+/* Hero / display — de grote statement-kop bovenaan een pagina */
+.jr-display {
+  font-size: var(--jr-fs-display);
+  font-weight: var(--jr-weight-bold);
+  line-height: var(--jr-lh-display);
+  letter-spacing: var(--jr-ls-display);
+  margin-bottom: var(--jr-space-6);
+}
+
+/* Intro / lead — de zin onder de kop. Grijs, lichter, ruimer. */
+.jr-lead,
+.elementor-widget-text-editor.jr-lead p {
+  font-size: var(--jr-fs-lead);
+  font-weight: var(--jr-weight-regular);
+  line-height: var(--jr-lh-lead);
+  letter-spacing: 0;
+  color: var(--jr-text-secondary);
+  max-width: var(--jr-container-text);
+}
+
+/* Lichte variant — alleen bij 21px en groter, anders wordt hij te dun */
+.jr-lead--light { font-weight: var(--jr-weight-light); }
+
+p {
+  margin-top: 0;
+  margin-bottom: var(--jr-space-5);
+  max-width: var(--jr-container-text);
+}
+p:last-child { margin-bottom: 0; }
+
+/* Gecentreerde tekstblokken krijgen hun marge automatisch */
+.jr-text-center p,
+.jr-text-center .jr-lead { margin-left: auto; margin-right: auto; }
+
+.jr-small,
+small {
+  font-size: var(--jr-fs-small);
+  line-height: 1.45;
+  letter-spacing: var(--jr-ls-small);
+  color: var(--jr-text-secondary);
+}
+
+.jr-caption {
+  font-size: var(--jr-fs-caption);
+  line-height: 1.4;
+  letter-spacing: var(--jr-ls-small);
+  color: var(--jr-text-tertiary);
+}
+
+strong, b { font-weight: var(--jr-weight-semibold); }
+em, i    { font-style: italic; }
+
+/* Tekstkleur-varianten */
+.jr-text--primary   { color: var(--jr-text); }
+.jr-text--secondary { color: var(--jr-text-secondary); }
+.jr-text--tertiary  { color: var(--jr-text-tertiary); }
+.jr-text--blue      { color: var(--jr-blue); }
+.jr-text--inverse   { color: var(--jr-text-inverse); }
+
+/* Gradient-tekst — spaarzaam, hooguit één per pagina */
+.jr-text--gradient {
+  background: linear-gradient(92deg, var(--jr-blue) 0%, var(--jr-purple) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+
+/* ==========================================================================
+   04. LINKS
+   ========================================================================== */
+
+a {
+  color: var(--jr-blue-link);
+  text-decoration: none;
+  transition: color var(--jr-dur-fast) var(--jr-ease),
+              opacity var(--jr-dur-fast) var(--jr-ease);
+}
+
+a:hover { text-decoration: underline; text-underline-offset: 3px; }
+a:active { opacity: .7; }
+
+a:focus-visible,
+button:focus-visible,
+.elementor-button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: none;
+  box-shadow: var(--jr-focus-ring);
+  border-radius: var(--jr-radius-xs);
+}
+
+/* Link binnen een lopende alinea: onderstreept blijven voor herkenbaarheid */
+p a, li a {
+  text-decoration: underline;
+  text-decoration-color: rgba(0,102,204,.35);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+p a:hover, li a:hover { text-decoration-color: currentColor; }
+
+/* Apple's chevron-link — de "Meer weten ›" */
+.jr-link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--jr-fs-body);
+  font-weight: var(--jr-weight-regular);
+  color: var(--jr-blue-link);
+  text-decoration: none;
+}
+.jr-link-arrow::after {
+  content: "›";
+  font-size: 1.25em;
+  line-height: 1;
+  transform: translateY(-1px);
+  transition: transform var(--jr-dur-base) var(--jr-ease-out);
+}
+.jr-link-arrow:hover { text-decoration: underline; text-underline-offset: 3px; }
+.jr-link-arrow:hover::after { transform: translate(3px, -1px); }
+
+/* Stille link — navigatie, footer */
+.jr-link-quiet {
+  color: var(--jr-text-secondary);
+  text-decoration: none;
+}
+.jr-link-quiet:hover { color: var(--jr-text); text-decoration: none; }
+
+/* Links op donkere achtergrond */
+.jr-section--dark a,
+.jr-surface--dark a { color: #2997FF; }          /* Apple's donkere-modus blauw */
+.jr-section--dark a:focus-visible { box-shadow: var(--jr-focus-ring-dark); }
+
+
+/* ==========================================================================
+   05. KNOPPEN
+   ==========================================================================
+   Apple-regels die we volgen:
+   · pill-vorm (radius 980px)
+   · geen transform, geen lift, geen schaduw bij hover — alleen kleur
+   · alleen de hoofdactie is gevuld; al het andere is outline of tekstlink
+   · nooit meer dan één gevulde knop per scherm
+   ========================================================================== */
+
+.jr-btn,
+.elementor-button,
+.elementor-button-link,
+button.elementor-button,
+input[type="submit"],
+.elementor-field-type-submit .elementor-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--jr-font-sans);
+  font-size: var(--jr-fs-button);
+  font-weight: var(--jr-weight-medium);
+  line-height: 1.2;
+  letter-spacing: var(--jr-ls-button);
+  padding: 13px 26px;
+  min-height: 48px;                 /* tapdoel — nooit kleiner */
+  border: 1px solid transparent;
+  border-radius: var(--jr-radius-pill);
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color var(--jr-dur-fast) var(--jr-ease),
+              border-color var(--jr-dur-fast) var(--jr-ease),
+              color var(--jr-dur-fast) var(--jr-ease),
+              opacity var(--jr-dur-fast) var(--jr-ease),
+              transform var(--jr-dur-fast) var(--jr-ease);
+}
+
+.jr-btn:hover, .elementor-button:hover { text-decoration: none; }
+.jr-btn:active, .elementor-button:active { transform: scale(.98); }
+
+/* ---- 5.1 Primair — gevuld blauw ---------------------------------------- */
+.jr-btn--primary,
+.elementor-button:not([class*="jr-btn--"]) {
+  background-color: var(--jr-blue-action);
+  border-color: var(--jr-blue-action);
+  color: #FFFFFF;
+}
+.jr-btn--primary:hover,
+.elementor-button:not([class*="jr-btn--"]):hover {
+  background-color: var(--jr-blue-action-hov);
+  border-color: var(--jr-blue-action-hov);
+  color: #FFFFFF;
+}
+.jr-btn--primary:active,
+.elementor-button:not([class*="jr-btn--"]):active {
+  background-color: #002E52;
+  border-color: #002E52;
+}
+
+/* ---- 5.2 Secundair — outline ------------------------------------------- */
+.jr-btn--secondary {
+  background-color: transparent;
+  border-color: var(--jr-blue-action);
+  color: var(--jr-blue-action);
+}
+.jr-btn--secondary:hover {
+  background-color: var(--jr-blue-action);
+  border-color: var(--jr-blue-action);
+  color: #FFFFFF;
+}
+.jr-btn--secondary:active {
+  background-color: var(--jr-blue-action-hov);
+  border-color: var(--jr-blue-action-hov);
+}
+
+/* ---- 5.3 Tertiair — zacht grijs ---------------------------------------- */
+.jr-btn--tertiary {
+  background-color: var(--jr-surface-subtle);
+  border-color: var(--jr-surface-subtle);
+  color: var(--jr-text);
+}
+.jr-btn--tertiary:hover {
+  background-color: var(--jr-gray-10);
+  border-color: var(--jr-gray-10);
+}
+.jr-btn--tertiary:active { background-color: var(--jr-gray-20); }
+
+/* ---- 5.4 Tekstknop — Apple's meest gebruikte CTA ------------------------ */
+.jr-btn--text {
+  background: transparent;
+  border-color: transparent;
+  color: var(--jr-blue-link);
+  padding: 4px 0;
+  min-height: 0;
+  font-weight: var(--jr-weight-regular);
+}
+.jr-btn--text::after {
+  content: "›";
+  font-size: 1.25em;
+  line-height: 1;
+  transform: translateY(-1px);
+  transition: transform var(--jr-dur-base) var(--jr-ease-out);
+}
+.jr-btn--text:hover { text-decoration: underline; text-underline-offset: 3px; }
+.jr-btn--text:hover::after { transform: translate(3px, -1px); }
+.jr-btn--text:active { transform: none; opacity: .7; }
+
+/* ---- 5.5 Groen — secundaire actie uit het brandbook --------------------- */
+.jr-btn--green {
+  background-color: var(--jr-teal);
+  border-color: var(--jr-teal);
+  color: #FFFFFF;
+}
+.jr-btn--green:hover {
+  background-color: var(--jr-teal-hover);
+  border-color: var(--jr-teal-hover);
+}
+
+/* ---- 5.6 Op donkere achtergrond ---------------------------------------- */
+.jr-btn--light,
+.jr-section--dark .elementor-button:not([class*="jr-btn--"]) {
+  background-color: #FFFFFF;
+  border-color: #FFFFFF;
+  color: var(--jr-text);
+}
+.jr-btn--light:hover,
+.jr-section--dark .elementor-button:not([class*="jr-btn--"]):hover {
+  background-color: var(--jr-gray-10);
+  border-color: var(--jr-gray-10);
+  color: var(--jr-text);
+}
+
+.jr-btn--light-outline {
+  background-color: transparent;
+  border-color: rgba(255,255,255,.45);
+  color: #FFFFFF;
+}
+.jr-btn--light-outline:hover {
+  background-color: #FFFFFF;
+  border-color: #FFFFFF;
+  color: var(--jr-text);
+}
+
+/* ---- 5.7 Maten ---------------------------------------------------------- */
+.jr-btn--sm, .elementor-button.elementor-size-sm {
+  font-size: 15px; padding: 9px 20px; min-height: 40px;
+}
+.jr-btn--md, .elementor-button.elementor-size-md {
+  font-size: 17px; padding: 13px 26px; min-height: 48px;
+}
+.jr-btn--lg, .elementor-button.elementor-size-lg {
+  font-size: 19px; padding: 16px 34px; min-height: 56px;
+}
+.jr-btn--xl, .elementor-button.elementor-size-xl {
+  font-size: 21px; padding: 20px 42px; min-height: 64px;
+}
+
+/* ---- 5.8 Toestanden ----------------------------------------------------- */
+.jr-btn--block, .elementor-button.jr-btn--block { width: 100%; }
+
+.jr-btn:disabled,
+.jr-btn.is-disabled,
+.elementor-button:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.jr-btn.is-loading { color: transparent !important; position: relative; pointer-events: none; }
+.jr-btn.is-loading::before {
+  content: "";
+  position: absolute;
+  width: 18px; height: 18px;
+  border: 2px solid rgba(255,255,255,.35);
+  border-top-color: #FFFFFF;
+  border-radius: var(--jr-radius-round);
+  animation: jr-spin .7s linear infinite;
+}
+@keyframes jr-spin { to { transform: rotate(360deg); } }
+
+/* Knopgroep */
+.jr-btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--jr-space-4) var(--jr-space-5);
+}
+
+
+/* ==========================================================================
+   06. VLAKKEN, CARDS & SCHADUWEN
+   ==========================================================================
+   Apple-regel: een vlak onderscheidt zich bij voorkeur door kleur of radius,
+   niet door schaduw. Schaduw alleen als iets echt "boven" de pagina zweeft.
+   ========================================================================== */
+
+.jr-card {
+  background-color: var(--jr-surface);
+  border-radius: var(--jr-radius-md);
+  padding: var(--jr-space-7);
+  overflow: hidden;
+  transition: box-shadow var(--jr-dur-base) var(--jr-ease),
+              transform var(--jr-dur-base) var(--jr-ease-out);
+}
+
+/* Varianten */
+.jr-card--subtle   { background-color: var(--jr-surface-subtle); }
+.jr-card--tint     { background-color: var(--jr-surface-tint); }
+.jr-card--outline  { border: 1px solid var(--jr-border); }
+.jr-card--elevated { box-shadow: var(--jr-shadow-md); }
+.jr-card--floating { box-shadow: var(--jr-shadow-lg); }
+.jr-card--dark     { background-color: var(--jr-surface-dark); color: var(--jr-text-inverse); }
+.jr-card--dark h1, .jr-card--dark h2, .jr-card--dark h3,
+.jr-card--dark h4, .jr-card--dark h5, .jr-card--dark h6 { color: var(--jr-text-inverse); }
+
+/* Maten */
+.jr-card--sm { padding: var(--jr-space-6); border-radius: var(--jr-radius-sm); }
+.jr-card--lg { padding: var(--jr-space-9); border-radius: var(--jr-radius-lg); }
+.jr-card--xl { padding: var(--jr-space-11); border-radius: var(--jr-radius-2xl); }
+
+/* Klikbare card — subtiele lift. Dit is de enige plek waar we transform gebruiken. */
+.jr-card--interactive { cursor: pointer; }
+.jr-card--interactive:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--jr-shadow-card-hover);
+}
+.jr-card--interactive:active { transform: translateY(-1px); }
+
+/* Accentbalkje links — brandbook highlight box */
+.jr-card--accent {
+  background-color: var(--jr-surface-tint);
+  border-left: 3px solid var(--jr-blue);
+  border-radius: 0 var(--jr-radius-sm) var(--jr-radius-sm) 0;
+}
+
+/* Glasvlak — Apple's frosted panel over beeld */
+.jr-card--glass {
+  background-color: rgba(255,255,255,.72);
+  -webkit-backdrop-filter: var(--jr-blur-nav);
+  backdrop-filter: var(--jr-blur-nav);
+  border: 1px solid rgba(255,255,255,.5);
+}
+
+/* Losse vlak-utilities (ook toe te passen op Elementor containers) */
+.jr-surface           { background-color: var(--jr-surface); }
+.jr-surface--subtle   { background-color: var(--jr-surface-subtle); }
+.jr-surface--gray     { background-color: var(--jr-surface-gray); }
+.jr-surface--tint     { background-color: var(--jr-surface-tint); }
+.jr-surface--dark     { background-color: var(--jr-surface-dark); color: var(--jr-text-inverse); }
+.jr-surface--blue     { background-color: var(--jr-blue); color: #FFFFFF; }
+.jr-surface--gradient { background: linear-gradient(160deg, #F5F5F7 0%, #E2EBF3 100%); }
+.jr-surface--gradient-dark { background: linear-gradient(160deg, #1C1C1E 0%, #003967 140%); }
+
+/* Schaduw-utilities */
+.jr-shadow-none { box-shadow: none; }
+.jr-shadow-xs   { box-shadow: var(--jr-shadow-xs); }
+.jr-shadow-sm   { box-shadow: var(--jr-shadow-sm); }
+.jr-shadow-md   { box-shadow: var(--jr-shadow-md); }
+.jr-shadow-lg   { box-shadow: var(--jr-shadow-lg); }
+.jr-shadow-xl   { box-shadow: var(--jr-shadow-xl); }
+.jr-shadow-blue { box-shadow: var(--jr-shadow-blue); }
+
+/* Radius-utilities */
+.jr-radius-xs  { border-radius: var(--jr-radius-xs); }
+.jr-radius-sm  { border-radius: var(--jr-radius-sm); }
+.jr-radius-md  { border-radius: var(--jr-radius-md); }
+.jr-radius-lg  { border-radius: var(--jr-radius-lg); }
+.jr-radius-xl  { border-radius: var(--jr-radius-xl); }
+.jr-radius-2xl { border-radius: var(--jr-radius-2xl); }
+.jr-radius-pill{ border-radius: var(--jr-radius-pill); }
+
+
+/* ==========================================================================
+   07. SECTIES & CONTAINERS
+   ==========================================================================
+   Dit hoofdstuk levert het grootste deel van de "rust". Ademruimte is geen
+   decoratie — het is de belangrijkste designbeslissing op de pagina.
+   ========================================================================== */
+
+.jr-section,
+.e-con.jr-section {
+  padding-top: var(--jr-section-y);
+  padding-bottom: var(--jr-section-y);
+}
+
+.jr-section--lg  { padding-top: var(--jr-section-y-lg); padding-bottom: var(--jr-section-y-lg); }
+.jr-section--sm  { padding-top: var(--jr-section-y-sm); padding-bottom: var(--jr-section-y-sm); }
+.jr-section--flush { padding-top: 0; padding-bottom: 0; }
+.jr-section--flush-top { padding-top: 0; }
+.jr-section--flush-bottom { padding-bottom: 0; }
+
+/* Afwisselende sectiekleur */
+.jr-section--subtle { background-color: var(--jr-surface-subtle); }
+.jr-section--tint   { background-color: var(--jr-surface-tint); }
+.jr-section--dark   { background-color: var(--jr-surface-dark); color: var(--jr-text-inverse); }
+
+/* Containerbreedtes — als CSS-class op een Elementor container */
+.jr-container        { width: 100%; max-width: var(--jr-container);        margin-inline: auto; padding-inline: var(--jr-gutter); }
+.jr-container--wide  { max-width: var(--jr-container-wide); }
+.jr-container--full  { max-width: var(--jr-container-full); }
+.jr-container--text  { max-width: var(--jr-container-text); }
+.jr-container--narrow{ max-width: var(--jr-container-narrow); }
+.jr-container--bleed { max-width: none; padding-inline: 0; }
+
+/* Sectiekop — kop + intro gecentreerd, met vaste ademruimte eronder */
+.jr-section-head {
+  max-width: var(--jr-container-text);
+  margin-inline: auto;
+  margin-bottom: var(--jr-section-gap);
+  text-align: center;
+}
+.jr-section-head--left { text-align: left; margin-inline: 0; }
+.jr-section-head > *:last-child { margin-bottom: 0; }
+
+/* Verticale ritme-utilities */
+.jr-stack > * + * { margin-top: var(--jr-space-5); }
+.jr-stack--sm > * + * { margin-top: var(--jr-space-3); }
+.jr-stack--lg > * + * { margin-top: var(--jr-space-7); }
+.jr-stack--xl > * + * { margin-top: var(--jr-space-9); }
+
+/* Grid — voor feature-blokken, cases, teamleden */
+.jr-grid { display: grid; gap: var(--jr-space-7); }
+.jr-grid--2 { grid-template-columns: repeat(2, 1fr); }
+.jr-grid--3 { grid-template-columns: repeat(3, 1fr); }
+.jr-grid--4 { grid-template-columns: repeat(4, 1fr); }
+.jr-grid--gap-sm { gap: var(--jr-space-4); }
+.jr-grid--gap-lg { gap: var(--jr-space-9); }
+
+/* Apple's signature: twee gelijke tegels naast elkaar, full-bleed */
+.jr-tiles {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--jr-space-3);
+}
+
+
+/* ==========================================================================
+   08. NAVIGATIE & HEADER
+   ==========================================================================
+   Apple's navbalk: 44–72px hoog, halftransparant, blurred, dunne onderrand.
+   ========================================================================== */
+
+.jr-nav {
+  position: sticky;
+  top: 0;
+  z-index: var(--jr-z-nav);
+  min-height: var(--jr-nav-height);
+  display: flex;
+  align-items: center;
+  background-color: rgba(255,255,255,.80);
+  -webkit-backdrop-filter: var(--jr-blur-nav);
+  backdrop-filter: var(--jr-blur-nav);
+  border-bottom: 1px solid var(--jr-border-subtle);
+  transition: background-color var(--jr-dur-base) var(--jr-ease),
+              box-shadow var(--jr-dur-base) var(--jr-ease);
+}
+.jr-nav--dark {
+  background-color: rgba(28,28,30,.80);
+  border-bottom-color: var(--jr-border-dark);
+}
+
+/* Menu-items */
+.jr-nav .elementor-nav-menu a,
+.jr-nav-link {
+  font-size: var(--jr-fs-small);
+  font-weight: var(--jr-weight-regular);
+  letter-spacing: 0;
+  color: var(--jr-text);
+  padding: 10px 14px;
+  border-radius: var(--jr-radius-xs);
+  text-decoration: none;
+  transition: color var(--jr-dur-fast) var(--jr-ease),
+              background-color var(--jr-dur-fast) var(--jr-ease);
+}
+.jr-nav .elementor-nav-menu a:hover,
+.jr-nav-link:hover { color: var(--jr-text-secondary); text-decoration: none; }
+
+.jr-nav .elementor-nav-menu a.elementor-item-active,
+.jr-nav-link.is-active { color: var(--jr-text); font-weight: var(--jr-weight-medium); }
+
+.jr-nav--dark .elementor-nav-menu a { color: var(--jr-text-inverse); }
+.jr-nav--dark .elementor-nav-menu a:hover { color: var(--jr-text-inverse-sec); }
+
+/* Dropdown-paneel */
+.jr-nav .elementor-nav-menu--dropdown,
+.jr-dropdown {
+  background-color: rgba(255,255,255,.94);
+  -webkit-backdrop-filter: var(--jr-blur-nav);
+  backdrop-filter: var(--jr-blur-nav);
+  border-radius: 0 0 var(--jr-radius-md) var(--jr-radius-md);
+  box-shadow: var(--jr-shadow-md);
+  border: none;
+}
+
+/* Footer */
+.jr-footer {
+  background-color: var(--jr-surface-subtle);
+  padding-top: var(--jr-space-11);
+  padding-bottom: var(--jr-space-9);
+  font-size: var(--jr-fs-small);
+  color: var(--jr-text-secondary);
+}
+.jr-footer a { color: var(--jr-text-secondary); text-decoration: none; }
+.jr-footer a:hover { color: var(--jr-text); text-decoration: underline; text-underline-offset: 3px; }
+.jr-footer h5, .jr-footer h6 { font-size: var(--jr-fs-small); color: var(--jr-text); margin-bottom: var(--jr-space-3); }
+.jr-footer--dark { background-color: var(--jr-surface-dark); color: var(--jr-text-inverse-sec); }
+.jr-footer--dark a { color: var(--jr-text-inverse-sec); }
+.jr-footer--dark a:hover { color: var(--jr-text-inverse); }
+
+.jr-footer-legal {
+  border-top: 1px solid var(--jr-border);
+  margin-top: var(--jr-space-8);
+  padding-top: var(--jr-space-6);
+  font-size: var(--jr-fs-caption);
+  color: var(--jr-text-tertiary);
+}
+
+
+/* ==========================================================================
+   09. FORMULIEREN
+   ==========================================================================
+   Werkt op Elementor Pro Forms én op losse HTML-velden.
+   ========================================================================== */
+
+.jr-form .elementor-field-group > label,
+.jr-label,
+label {
+  display: block;
+  font-size: var(--jr-fs-small);
+  font-weight: var(--jr-weight-medium);
+  letter-spacing: 0;
+  color: var(--jr-text);
+  margin-bottom: var(--jr-space-2);
+}
+
+.jr-input,
+.elementor-field-textual,
+input[type="text"], input[type="email"], input[type="tel"],
+input[type="url"], input[type="number"], input[type="password"],
+input[type="search"], input[type="date"],
+select, textarea {
+  width: 100%;
+  font-family: var(--jr-font-sans);
+  font-size: var(--jr-fs-body);
+  font-weight: var(--jr-weight-regular);
+  line-height: 1.4;
+  color: var(--jr-text);
+  background-color: var(--jr-surface);
+  border: 1px solid var(--jr-border);
+  border-radius: var(--jr-radius-sm);
+  padding: 13px 16px;
+  min-height: 48px;
+  appearance: none;
+  transition: border-color var(--jr-dur-fast) var(--jr-ease),
+              box-shadow var(--jr-dur-fast) var(--jr-ease),
+              background-color var(--jr-dur-fast) var(--jr-ease);
+}
+
+/* iOS zoomt in op velden onder 16px — daarom nooit kleiner dan 16px op mobiel */
+
+.jr-input::placeholder,
+.elementor-field-textual::placeholder,
+textarea::placeholder { color: var(--jr-text-tertiary); }
+
+.jr-input:hover,
+.elementor-field-textual:hover { border-color: var(--jr-border-strong); }
+
+.jr-input:focus,
+.elementor-field-textual:focus,
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--jr-blue);
+  box-shadow: var(--jr-focus-ring);
+}
+
+textarea, .elementor-field-textual.elementor-field-type-textarea {
+  min-height: 140px;
+  padding-top: 14px;
+  resize: vertical;
+  line-height: var(--jr-lh-body);
+}
+
+/* Select met eigen chevron */
+select, .elementor-field-type-select select {
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='none' stroke='%236E6E73' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round' d='M1 1.5 6 6.5l5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 44px;
+  cursor: pointer;
+}
+
+/* Checkbox & radio */
+.jr-form input[type="checkbox"],
+.jr-form input[type="radio"] {
+  width: 20px; height: 20px;
+  min-height: 0;
+  margin-right: var(--jr-space-3);
+  accent-color: var(--jr-blue);
+  cursor: pointer;
+}
+.jr-form input[type="radio"] { border-radius: var(--jr-radius-round); }
+
+/* Toestanden */
+.jr-input.is-invalid,
+.elementor-field-textual.elementor-error {
+  border-color: var(--jr-red);
+  box-shadow: 0 0 0 4px rgba(255,59,48,.18);
+}
+.jr-input.is-valid { border-color: var(--jr-green); }
+.jr-input:disabled,
+.elementor-field-textual:disabled {
+  background-color: var(--jr-surface-subtle);
+  color: var(--jr-text-tertiary);
+  cursor: not-allowed;
+}
+
+.jr-form-help  { font-size: var(--jr-fs-caption); color: var(--jr-text-tertiary); margin-top: var(--jr-space-2); }
+.jr-form-error { font-size: var(--jr-fs-caption); color: var(--jr-red);         margin-top: var(--jr-space-2); }
+
+/* Elementor form berichten */
+.elementor-message.elementor-message-success {
+  color: var(--jr-green-dark);
+  background-color: rgba(52,199,89,.10);
+  border-radius: var(--jr-radius-sm);
+  padding: var(--jr-space-4) var(--jr-space-5);
+}
+.elementor-message.elementor-message-danger {
+  color: var(--jr-red-dark);
+  background-color: rgba(255,59,48,.10);
+  border-radius: var(--jr-radius-sm);
+  padding: var(--jr-space-4) var(--jr-space-5);
+}
+
+/* Velden op donkere achtergrond */
+.jr-section--dark .jr-input,
+.jr-section--dark .elementor-field-textual {
+  background-color: rgba(255,255,255,.08);
+  border-color: var(--jr-border-dark);
+  color: var(--jr-text-inverse);
+}
+.jr-section--dark .jr-input::placeholder { color: var(--jr-text-inverse-sec); }
+.jr-section--dark label { color: var(--jr-text-inverse); }
+
+
+/* ==========================================================================
+   10. MEDIA & AFBEELDINGEN
+   ========================================================================== */
+
+img, video, svg, picture { max-width: 100%; height: auto; display: block; }
+
+.jr-img            { border-radius: var(--jr-radius-md); overflow: hidden; }
+.jr-img--sm        { border-radius: var(--jr-radius-sm); }
+.jr-img--lg        { border-radius: var(--jr-radius-lg); }
+.jr-img--xl        { border-radius: var(--jr-radius-2xl); }
+.jr-img--round     { border-radius: var(--jr-radius-round); }
+.jr-img--shadow    { box-shadow: var(--jr-shadow-lg); }
+.jr-img--bleed     { border-radius: 0; width: 100%; }
+
+/* Beeldverhoudingen */
+.jr-ratio-1-1  { aspect-ratio: 1 / 1;  object-fit: cover; width: 100%; }
+.jr-ratio-4-3  { aspect-ratio: 4 / 3;  object-fit: cover; width: 100%; }
+.jr-ratio-3-2  { aspect-ratio: 3 / 2;  object-fit: cover; width: 100%; }
+.jr-ratio-16-9 { aspect-ratio: 16 / 9; object-fit: cover; width: 100%; }
+.jr-ratio-21-9 { aspect-ratio: 21 / 9; object-fit: cover; width: 100%; }
+
+/* Ken Burns-achtige zoom bij hover — subtiel, Apple-tempo */
+.jr-img-zoom { overflow: hidden; border-radius: var(--jr-radius-md); }
+.jr-img-zoom img {
+  transition: transform var(--jr-dur-slow) var(--jr-ease-out);
+  will-change: transform;
+}
+.jr-img-zoom:hover img { transform: scale(1.04); }
+
+/* Donkere overlay over beeld, zodat witte tekst leesbaar blijft */
+.jr-overlay { position: relative; }
+.jr-overlay::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,.05) 0%, rgba(0,0,0,.55) 100%);
+  pointer-events: none;
+}
+.jr-overlay > * { position: relative; z-index: 1; }
+
+/* Logo — minimale hoogte uit het brandbook */
+.jr-logo img { min-height: 70px; }
+.jr-logo--sm img { min-height: 36px; }   /* uitzondering: navbalk */
+
+
+/* ==========================================================================
+   11. LIJSTEN, TABELLEN, QUOTES & DIVIDERS
+   ========================================================================== */
+
+ul, ol { padding-left: 1.25em; margin-top: 0; margin-bottom: var(--jr-space-5); }
+li { margin-bottom: var(--jr-space-2); }
+li::marker { color: var(--jr-text-tertiary); }
+
+/* Vinklijst — voor USP's en pakketinhoud */
+.jr-list-check { list-style: none; padding-left: 0; }
+.jr-list-check li {
+  position: relative;
+  padding-left: 30px;
+  margin-bottom: var(--jr-space-3);
+}
+.jr-list-check li::before {
+  content: "";
+  position: absolute; left: 0; top: .42em;
+  width: 18px; height: 18px;
+  background-color: var(--jr-blue);
+  border-radius: var(--jr-radius-round);
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='9' viewBox='0 0 11 9'%3E%3Cpath fill='none' stroke='%23fff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round' d='M1 4.6 3.9 7.5 10 1.4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* Genummerde stappenlijst */
+.jr-list-steps { list-style: none; padding-left: 0; counter-reset: jr-step; }
+.jr-list-steps li {
+  position: relative;
+  padding-left: 48px;
+  margin-bottom: var(--jr-space-6);
+  counter-increment: jr-step;
+}
+.jr-list-steps li::before {
+  content: counter(jr-step);
+  position: absolute; left: 0; top: -2px;
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: var(--jr-fs-small);
+  font-weight: var(--jr-weight-semibold);
+  color: var(--jr-blue);
+  background-color: var(--jr-surface-tint);
+  border-radius: var(--jr-radius-round);
+}
+
+/* Tabellen */
+table { width: 100%; border-collapse: collapse; font-size: var(--jr-fs-body); }
+th, td {
+  text-align: left;
+  padding: var(--jr-space-4) var(--jr-space-4);
+  border-bottom: 1px solid var(--jr-border-subtle);
+}
+th {
+  font-weight: var(--jr-weight-semibold);
+  font-size: var(--jr-fs-small);
+  color: var(--jr-text-secondary);
+  border-bottom-color: var(--jr-border);
+}
+tbody tr:last-child td { border-bottom: none; }
+.jr-table--striped tbody tr:nth-child(odd) { background-color: var(--jr-surface-subtle); }
+
+/* Quote — groot, dun, ruim. Geen aanhalingstekens-icoon. */
+.jr-quote {
+  font-size: var(--jr-fs-quote);
+  font-weight: var(--jr-weight-semibold);
+  line-height: 1.25;
+  letter-spacing: var(--jr-ls-h3);
+  color: var(--jr-text);
+  max-width: var(--jr-container-text);
+  margin: 0 0 var(--jr-space-6);
+  border: none;
+  padding: 0;
+}
+.jr-quote-author {
+  font-size: var(--jr-fs-body);
+  font-weight: var(--jr-weight-regular);
+  color: var(--jr-text-secondary);
+}
+.jr-quote-author strong { color: var(--jr-text); font-weight: var(--jr-weight-medium); }
+
+blockquote { margin: 0 0 var(--jr-space-6); padding: 0; border: none; }
+
+/* Divider — 1px, licht, nooit zwaarder */
+.jr-divider,
+hr {
+  height: 1px;
+  border: none;
+  background-color: var(--jr-border-subtle);
+  margin: var(--jr-space-9) 0;
+}
+.jr-divider--strong { background-color: var(--jr-border); }
+.jr-divider--dark   { background-color: var(--jr-border-dark); }
+.jr-divider--short  { width: 64px; height: 3px; background-color: var(--jr-blue); border-radius: 2px; }
+
+/* Groot kengetal — "150+ klanten" */
+.jr-stat { display: block; }
+.jr-stat-value {
+  display: block;
+  font-size: 64px;
+  font-weight: var(--jr-weight-bold);
+  line-height: 1;
+  letter-spacing: var(--jr-ls-h1);
+  color: var(--jr-blue);
+  margin-bottom: var(--jr-space-2);
+}
+.jr-stat-label {
+  font-size: var(--jr-fs-small);
+  color: var(--jr-text-secondary);
+}
+
+
+/* ==========================================================================
+   12. ACCORDION / TABS / TOGGLES
+   ========================================================================== */
+
+.elementor-accordion .elementor-accordion-item,
+.jr-accordion-item {
+  border: none;
+  border-bottom: 1px solid var(--jr-border-subtle);
+}
+
+.elementor-accordion .elementor-tab-title,
+.jr-accordion-title {
+  font-size: var(--jr-fs-h5);
+  font-weight: var(--jr-weight-semibold);
+  letter-spacing: var(--jr-ls-h5);
+  color: var(--jr-text);
+  background: transparent;
+  border: none;
+  padding: var(--jr-space-6) 0;
+  cursor: pointer;
+  transition: color var(--jr-dur-fast) var(--jr-ease);
+}
+.elementor-accordion .elementor-tab-title:hover { color: var(--jr-blue-link); }
+.elementor-accordion .elementor-tab-title.elementor-active { color: var(--jr-text); }
+
+.elementor-accordion .elementor-tab-content,
+.jr-accordion-content {
+  border: none;
+  padding: 0 0 var(--jr-space-6);
+  font-size: var(--jr-fs-body);
+  color: var(--jr-text-secondary);
+}
+
+.elementor-accordion-icon { color: var(--jr-text-tertiary); transition: transform var(--jr-dur-base) var(--jr-ease); }
+
+/* Tabs */
+.elementor-tabs .elementor-tab-desktop-title {
+  font-size: var(--jr-fs-body);
+  font-weight: var(--jr-weight-medium);
+  color: var(--jr-text-secondary);
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: var(--jr-space-4) var(--jr-space-5);
+  transition: color var(--jr-dur-fast) var(--jr-ease),
+              border-color var(--jr-dur-fast) var(--jr-ease);
+}
+.elementor-tabs .elementor-tab-desktop-title.elementor-active {
+  color: var(--jr-text);
+  border-bottom-color: var(--jr-blue);
+  background: transparent;
+}
+.elementor-tabs .elementor-tabs-content-wrapper { border: none; }
+.elementor-tabs .elementor-tab-content { border: none; padding: var(--jr-space-7) 0 0; }
+
+/* Segmented control — Apple's pill-toggle, bijv. maand/jaar bij prijzen */
+.jr-segmented {
+  display: inline-flex;
+  padding: 4px;
+  background-color: var(--jr-surface-subtle);
+  border-radius: var(--jr-radius-pill);
+  gap: 2px;
+}
+.jr-segmented button,
+.jr-segmented .jr-segmented-item {
+  font-size: var(--jr-fs-small);
+  font-weight: var(--jr-weight-medium);
+  color: var(--jr-text-secondary);
+  background: transparent;
+  border: none;
+  border-radius: var(--jr-radius-pill);
+  padding: 8px 18px;
+  min-height: 0;
+  cursor: pointer;
+  transition: background-color var(--jr-dur-fast) var(--jr-ease),
+              color var(--jr-dur-fast) var(--jr-ease);
+}
+.jr-segmented .is-active {
+  background-color: var(--jr-surface);
+  color: var(--jr-text);
+  box-shadow: var(--jr-shadow-xs);
+}
+
+
+/* ==========================================================================
+   13. BADGES, LABELS & EYEBROWS
+   ========================================================================== */
+
+/* Eyebrow — het gekleurde labeltje bóven een kop. Sentence case, nooit caps. */
+.jr-eyebrow {
+  display: block;
+  font-size: var(--jr-fs-eyebrow);
+  font-weight: var(--jr-weight-semibold);
+  letter-spacing: 0;
+  color: var(--jr-blue);
+  margin-bottom: var(--jr-space-3);
+}
+.jr-eyebrow--muted { color: var(--jr-text-tertiary); }
+.jr-section--dark .jr-eyebrow { color: #2997FF; }
+
+.jr-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--jr-fs-caption);
+  font-weight: var(--jr-weight-medium);
+  line-height: 1;
+  letter-spacing: 0;
+  padding: 6px 12px;
+  border-radius: var(--jr-radius-pill);
+  background-color: var(--jr-surface-subtle);
+  color: var(--jr-text-secondary);
+}
+.jr-badge--blue   { background-color: rgba(0,122,255,.12);  color: var(--jr-blue-action); }
+.jr-badge--green  { background-color: rgba(52,199,89,.14);  color: var(--jr-green-dark); }
+.jr-badge--orange { background-color: rgba(246,160,39,.16); color: #B36D00; }
+.jr-badge--red    { background-color: rgba(255,59,48,.12);  color: var(--jr-red-dark); }
+.jr-badge--purple { background-color: rgba(175,82,222,.12); color: var(--jr-purple-dark); }
+.jr-badge--solid  { background-color: var(--jr-blue-action); color: #FFFFFF; }
+
+/* Tag — voor branches, diensten */
+.jr-tag {
+  display: inline-block;
+  font-size: var(--jr-fs-small);
+  color: var(--jr-text-secondary);
+  border: 1px solid var(--jr-border);
+  border-radius: var(--jr-radius-pill);
+  padding: 7px 16px;
+  transition: border-color var(--jr-dur-fast) var(--jr-ease),
+              color var(--jr-dur-fast) var(--jr-ease);
+}
+a.jr-tag:hover { border-color: var(--jr-text); color: var(--jr-text); text-decoration: none; }
+
+
+/* ==========================================================================
+   14. DONKERE SECTIES
+   ==========================================================================
+   Eén klasse op de Elementor-container zet de hele sectie om.
+   ========================================================================== */
+
+.jr-section--dark,
+.jr-surface--dark {
+  color: var(--jr-text-inverse);
+}
+.jr-section--dark h1, .jr-section--dark h2, .jr-section--dark h3,
+.jr-section--dark h4, .jr-section--dark h5, .jr-section--dark h6,
+.jr-section--dark .elementor-heading-title,
+.jr-section--dark .jr-display { color: var(--jr-text-inverse); }
+
+.jr-section--dark p,
+.jr-section--dark .jr-lead,
+.jr-section--dark li { color: var(--jr-text-inverse-sec); }
+
+.jr-section--dark .jr-small,
+.jr-section--dark .jr-caption { color: var(--jr-text-inverse-sec); }
+
+.jr-section--dark .jr-card {
+  background-color: var(--jr-surface-dark-alt);
+  color: var(--jr-text-inverse);
+}
+.jr-section--dark .jr-card--outline { border-color: var(--jr-border-dark); background-color: transparent; }
+.jr-section--dark .jr-divider, .jr-section--dark hr { background-color: var(--jr-border-dark); }
+.jr-section--dark th, .jr-section--dark td { border-bottom-color: var(--jr-border-dark); }
+.jr-section--dark .jr-badge { background-color: rgba(255,255,255,.10); color: var(--jr-text-inverse); }
+.jr-section--dark .jr-tag { border-color: var(--jr-border-dark); color: var(--jr-text-inverse-sec); }
+
+
+/* ==========================================================================
+   15. UTILITIES
+   ========================================================================== */
+
+/* Uitlijning */
+.jr-text-left   { text-align: left; }
+.jr-text-center { text-align: center; }
+.jr-text-right  { text-align: right; }
+
+/* Marges — top */
+.jr-mt-0  { margin-top: 0 !important; }
+.jr-mt-2  { margin-top: var(--jr-space-2); }
+.jr-mt-4  { margin-top: var(--jr-space-4); }
+.jr-mt-6  { margin-top: var(--jr-space-6); }
+.jr-mt-8  { margin-top: var(--jr-space-8); }
+.jr-mt-10 { margin-top: var(--jr-space-10); }
+.jr-mt-12 { margin-top: var(--jr-space-12); }
+
+/* Marges — bottom */
+.jr-mb-0  { margin-bottom: 0 !important; }
+.jr-mb-2  { margin-bottom: var(--jr-space-2); }
+.jr-mb-4  { margin-bottom: var(--jr-space-4); }
+.jr-mb-6  { margin-bottom: var(--jr-space-6); }
+.jr-mb-8  { margin-bottom: var(--jr-space-8); }
+.jr-mb-10 { margin-bottom: var(--jr-space-10); }
+.jr-mb-12 { margin-bottom: var(--jr-space-12); }
+
+/* Padding */
+.jr-p-6  { padding: var(--jr-space-6); }
+.jr-p-8  { padding: var(--jr-space-8); }
+.jr-p-10 { padding: var(--jr-space-10); }
+
+/* Breedte-beperking van tekst binnen een widget */
+.jr-measure        { max-width: var(--jr-container-text); }
+.jr-measure--narrow{ max-width: var(--jr-container-narrow); }
+.jr-measure-center { max-width: var(--jr-container-text); margin-inline: auto; }
+
+/* Zichtbaarheid */
+.jr-hide           { display: none !important; }
+.jr-sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
+/* Flex-helpers */
+.jr-flex        { display: flex; }
+.jr-flex-center { display: flex; align-items: center; justify-content: center; }
+.jr-flex-between{ display: flex; align-items: center; justify-content: space-between; }
+.jr-flex-wrap   { flex-wrap: wrap; }
+.jr-gap-2 { gap: var(--jr-space-2); }
+.jr-gap-4 { gap: var(--jr-space-4); }
+.jr-gap-6 { gap: var(--jr-space-6); }
+
+/* Sticky element binnen een lange sectie */
+.jr-sticky { position: sticky; top: calc(var(--jr-nav-height) + var(--jr-space-6)); }
+
+
+/* ==========================================================================
+   16. MOTION & SCROLL REVEAL
+   ==========================================================================
+   Apple beweegt weinig, maar altijd met dezelfde easing en altijd subtiel:
+   16px omhoog, geen schaal, geen bounce.
+   ========================================================================== */
+
+.jr-reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity var(--jr-dur-reveal) var(--jr-ease-out),
+              transform var(--jr-dur-reveal) var(--jr-ease-out);
+  will-change: opacity, transform;
+}
+.jr-reveal.is-visible,
+.jr-reveal.elementor-motion-effects-element { opacity: 1; transform: none; }
+
+/* Gestaffelde reveal binnen een grid */
+.jr-reveal-stagger > *   { opacity: 0; transform: translateY(16px);
+  transition: opacity var(--jr-dur-reveal) var(--jr-ease-out),
+              transform var(--jr-dur-reveal) var(--jr-ease-out); }
+.jr-reveal-stagger.is-visible > * { opacity: 1; transform: none; }
+.jr-reveal-stagger.is-visible > *:nth-child(1) { transition-delay: 0ms; }
+.jr-reveal-stagger.is-visible > *:nth-child(2) { transition-delay: 80ms; }
+.jr-reveal-stagger.is-visible > *:nth-child(3) { transition-delay: 160ms; }
+.jr-reveal-stagger.is-visible > *:nth-child(4) { transition-delay: 240ms; }
+.jr-reveal-stagger.is-visible > *:nth-child(5) { transition-delay: 320ms; }
+.jr-reveal-stagger.is-visible > *:nth-child(6) { transition-delay: 400ms; }
+
+/* Fallback: zonder JS blijft alles gewoon zichtbaar */
+.no-js .jr-reveal,
+.no-js .jr-reveal-stagger > * { opacity: 1; transform: none; }
+
+
+/* ==========================================================================
+   17. RESPONSIVE
+   ==========================================================================
+   Breakpoints komen overeen met apple.com. Zet Elementor's breakpoints op
+   dezelfde waarden (Site Settings → Layout → Breakpoints):
+     Mobile     ≤ 734px
+     Tablet     ≤ 1068px
+     Laptop     ≤ 1440px
+   Wijk je daarvan af, pas dan de drie getallen hieronder aan.
+   ========================================================================== */
+
+/* ---- 17.1 Laptop (≤1440px) --------------------------------------------- */
+@media (max-width: 1440px) {
+  :root {
+    --jr-fs-display: 72px;
+    --jr-fs-h1:      52px;
+    --jr-section-y:  104px;
+    --jr-section-y-lg: 136px;
+  }
+}
+
+/* ---- 17.2 Tablet (≤1068px) --------------------------------------------- */
+@media (max-width: 1068px) {
+  :root {
+    /* Typografie */
+    --jr-fs-display: 56px;
+    --jr-fs-h1:      44px;
+    --jr-fs-h2:      34px;
+    --jr-fs-h3:      26px;
+    --jr-fs-h4:      22px;
+    --jr-fs-h5:      20px;
+    --jr-fs-h6:      17px;
+    --jr-fs-lead:    20px;
+    --jr-fs-body:    17px;
+    --jr-fs-quote:   28px;
+
+    /* Ruimte */
+    --jr-section-y:    88px;
+    --jr-section-y-lg: 112px;
+    --jr-section-y-sm: 56px;
+    --jr-section-gap:  48px;
+
+    /* Layout */
+    --jr-gutter:       24px;
+    --jr-container:    100%;
+    --jr-nav-height:   64px;
+  }
+
+  .jr-grid--3,
+  .jr-grid--4 { grid-template-columns: repeat(2, 1fr); }
+
+  .jr-stat-value { font-size: 52px; }
+  .jr-card--xl { padding: var(--jr-space-9); }
+}
+
+/* ---- 17.3 Mobiel (≤734px) ---------------------------------------------- */
+@media (max-width: 734px) {
+  :root {
+    /* Typografie — let op: body blijft 16px+, anders zoomt iOS in op velden */
+    --jr-fs-display: 40px;
+    --jr-fs-h1:      34px;
+    --jr-fs-h2:      28px;
+    --jr-fs-h3:      22px;
+    --jr-fs-h4:      20px;
+    --jr-fs-h5:      18px;
+    --jr-fs-h6:      16px;
+    --jr-fs-lead:    18px;
+    --jr-fs-body:    16px;
+    --jr-fs-small:   14px;
+    --jr-fs-caption: 12px;
+    --jr-fs-button:  16px;
+    --jr-fs-quote:   22px;
+
+    /* Tracking mag op kleine schermen iets losser */
+    --jr-ls-display: -0.022em;
+    --jr-ls-h1:      -0.018em;
+    --jr-ls-h2:      -0.014em;
+
+    /* Ruimte — ongeveer de helft van desktop, maar nooit krap */
+    --jr-section-y:    64px;
+    --jr-section-y-lg: 80px;
+    --jr-section-y-sm: 40px;
+    --jr-section-gap:  32px;
+
+    /* Layout */
+    --jr-gutter:     20px;
+    --jr-nav-height: 56px;
+
+    /* Radius schaalt mee, anders ogen vlakken te rond op klein scherm */
+    --jr-radius-2xl: 28px;
+    --jr-radius-xl:  24px;
+    --jr-radius-lg:  20px;
+  }
+
+  /* Alles onder elkaar */
+  .jr-grid--2,
+  .jr-grid--3,
+  .jr-grid--4,
+  .jr-tiles { grid-template-columns: 1fr; }
+
+  .jr-grid { gap: var(--jr-space-5); }
+
+  /* Knoppen: vol de breedte, gestapeld */
+  .jr-btn-group { flex-direction: column; align-items: stretch; width: 100%; gap: var(--jr-space-3); }
+  .jr-btn-group .jr-btn,
+  .jr-btn-group .elementor-button { width: 100%; }
+  .jr-btn-group .jr-btn--text { width: auto; align-self: center; }
+
+  .jr-card    { padding: var(--jr-space-6); }
+  .jr-card--lg,
+  .jr-card--xl { padding: var(--jr-space-7); }
+
+  .jr-stat-value { font-size: 40px; }
+
+  /* Tekstkolommen mogen op mobiel altijd de volle breedte */
+  p, .jr-lead, .jr-measure { max-width: 100%; }
+
+  /* Tabellen scrollen horizontaal in plaats van te breken */
+  .jr-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+  /* Sticky nav niet te veel ruimte laten innemen */
+  .jr-sticky { position: static; }
+
+  /* Reveal-animaties korter op mobiel */
+  :root { --jr-dur-reveal: 600ms; }
+}
+
+/* ---- 17.4 Kleine telefoons (≤374px) ------------------------------------ */
+@media (max-width: 374px) {
+  :root {
+    --jr-fs-display: 34px;
+    --jr-fs-h1:      30px;
+    --jr-fs-h2:      25px;
+    --jr-gutter:     16px;
+  }
+}
+
+/* ---- 17.5 Zichtbaarheid per breakpoint --------------------------------- */
+.jr-only-desktop { display: none; }
+@media (min-width: 1069px) { .jr-only-desktop { display: block; } }
+@media (max-width: 1068px) { .jr-hide-tablet  { display: none !important; } }
+@media (max-width: 734px)  { .jr-hide-mobile  { display: none !important; } }
+@media (min-width: 735px)  { .jr-only-mobile  { display: none !important; } }
+
+
+/* ==========================================================================
+   18. TOEGANKELIJKHEID & PRINT
+   ========================================================================== */
+
+/* Respecteer de systeeminstelling "verminder beweging" — verplicht */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .jr-reveal,
+  .jr-reveal-stagger > * { opacity: 1 !important; transform: none !important; }
+}
+
+/* Hoog contrast */
+@media (prefers-contrast: more) {
+  :root {
+    --jr-text-secondary: #4A4A4F;
+    --jr-text-tertiary:  #5A5A5F;
+    --jr-border:         #8E8E93;
+  }
+  a { text-decoration: underline; }
+}
+
+/* Skip-link */
+.jr-skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: var(--jr-z-modal);
+  background: var(--jr-surface);
+  color: var(--jr-text);
+  padding: var(--jr-space-3) var(--jr-space-5);
+  border-radius: var(--jr-radius-sm);
+  box-shadow: var(--jr-shadow-md);
+}
+.jr-skip-link:focus { left: var(--jr-space-4); top: var(--jr-space-4); }
+
+/* Minimale tapdoelen op touch */
+@media (pointer: coarse) {
+  a, button, .jr-btn, .elementor-button, [role="button"] { min-height: 44px; }
+}
+
+/* Print */
+@media print {
+  body { background: #FFFFFF; color: #000000; font-size: 10pt; line-height: 1.4; }
+  .jr-nav, .jr-footer, .jr-btn, .elementor-button, video { display: none !important; }
+  .jr-section { padding: 12mm 0; }
+  a { color: #000000; text-decoration: underline; }
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 8pt; color: #555; }
+  .jr-card { box-shadow: none; border: 1px solid #CCCCCC; break-inside: avoid; }
+  h1, h2, h3 { break-after: avoid; }
+}
+
+/* ==========================================================================
+   EINDE — James Robinson global stylesheet v1.0
+   ========================================================================== */
