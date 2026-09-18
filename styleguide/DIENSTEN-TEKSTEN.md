@@ -102,11 +102,11 @@ Elke nacht een back-up. Elke minuut een controle. Verder niets te melden.
 
 ---
 
-### Landingspagina's
+### Websites
 
-**Eén pagina. Eén ding.**
+**Vier jaar in gebruik. Elke dag open.**
 
-Een homepage doet twaalf dingen tegelijk. Een landingspagina doet er één, en meet of dat lukt.
+Een website is het enige onderdeel van je marketing dat nooit dichtgaat. Wat erop staat, staat er ook om half drie 's nachts.
 
 ---
 

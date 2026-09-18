@@ -146,6 +146,21 @@ code{font-family:var(--fm);font-size:.86em;background:var(--alt);padding:2px 6px
   .key{padding:24px 22px}.key p{font-size:16px}
   .cpt,.au{padding:18px 18px}
 }
+
+/* spelersprofiel */
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--ln-s);border:1px solid var(--ln-s);border-radius:18px;overflow:hidden;margin:26px 0 8px}
+.stats div{background:var(--card);padding:22px 16px;text-align:center}
+.stats .v{display:block;font-family:var(--fd);font-size:40px;font-weight:700;letter-spacing:-.024em;line-height:1;margin-bottom:8px}
+.stats .l{display:block;font-family:var(--fm);font-size:10px;color:var(--tx3);letter-spacing:.04em}
+.stats .calc{color:var(--lime-tx)}
+.pg-stack{counter-reset:pg;margin:26px 0 0;padding:0;list-style:none;max-width:820px}
+.pg-stack li{counter-increment:pg;position:relative;padding:18px 0 18px 54px;border-bottom:1px solid var(--ln-s)}
+.pg-stack li:last-child{border-bottom:none}
+.pg-stack li::before{content:counter(pg,decimal-leading-zero);position:absolute;left:0;top:19px;font-family:var(--fm);font-size:12px;color:var(--tx3)}
+.pg-stack b{display:block;font-family:var(--fd);font-size:18px;font-weight:600;letter-spacing:-.01em;margin-bottom:4px}
+.pg-stack span{font-size:15px;color:var(--tx2);line-height:1.5}
+.pg-stack .src{display:inline-block;font-family:var(--fm);font-size:10.5px;background:var(--b100);color:var(--act);border-radius:5px;padding:3px 7px;margin-top:8px}
+@media (max-width:734px){.stats{grid-template-columns:repeat(2,1fr)}.stats .v{font-size:30px}.pg-stack li{padding-left:42px}}
 </style>
 
 <div class="bar">
@@ -153,8 +168,10 @@ code{font-family:var(--fm);font-size:.86em;background:var(--alt);padding:2px 6px
     <b>Datamodel</b>
     <a href="#principe">Principe</a>
     <a href="#tax">Taxonomieën</a>
+    <a href="#jet">In JetEngine</a>
     <a href="#stan">Het Stan-voorbeeld</a>
     <a href="#cpt">Post types</a>
+    <a href="#profiel">Spelersprofiel</a>
     <a href="#auto">Wat waar verschijnt</a>
     <a href="#groei">Groeipad</a>
     <a href="#vragen">Open vragen</a>
@@ -176,7 +193,23 @@ code{font-family:var(--fm);font-size:.86em;background:var(--alt);padding:2px 6px
     <p>Een post type kun je in maand acht toevoegen zonder iets te breken. Een taxonomie achteraf toevoegen betekent dat je alle bestaande content opnieuw moet taggen — handmatig, honderden items.</p>
     <p>Dus: maak alle taxonomieën aan bij de lancering, ook die je pas in fase vier gebruikt. Een lege taxonomie kost niets.</p>
   </div>
-  <p class="note"><b>Waarom taxonomie en geen relatievelden?</b> Een taxonomie is geïndexeerd in de database en een query erop is snel. Post-to-post-relaties via ACF slaan hun waarde op als geserialiseerde array, waardoor je een <code>LIKE</code>-query nodig hebt — traag en kwetsbaar zodra er volume komt. Voor "hoort bij deze groep" is de taxonomie altijd het juiste gereedschap.</p>
+  <h3 style="margin-top:34px">Taxonomie of relatie — wanneer welke</h3>
+  <p class="note">Dit is de vraag die het model maakt of breekt, en JetEngine geeft je allebei. <b>De keuze gaat niet over snelheid.</b> JetEngine-relaties staan in een eigen, geïndexeerde tabel en zijn prima snel; dat is precies het verschil met de losse relatievelden die je in andere setups tegenkomt en die hun waarde als geserialiseerde tekst opslaan.</p>
+  <p class="note">De keuze gaat over <b>of iets een eigen adres verdient</b>.</p>
+  <div class="mx-wrap">
+    <table class="mx">
+      <thead><tr><th>Vraag</th><th>Taxonomie</th><th>Relatie</th></tr></thead>
+      <tbody>
+        <tr><td>Eigen URL en archiefpagina</td><td class="y">ja</td><td class="o">nee</td></tr>
+        <tr><td>Filterbaar met JetSmartFilters</td><td class="y">direct</td><td class="f">via query</td></tr>
+        <tr><td>SEO-plugin ziet het</td><td class="y">ja</td><td class="o">nee</td></tr>
+        <tr><td>Extra info op de koppeling zelf</td><td class="o">nee</td><td class="y">ja</td></tr>
+        <tr><td>Geschikt voor "hoort bij deze groep"</td><td class="y">ja</td><td class="o">nee</td></tr>
+        <tr><td>Geschikt voor "deze twee dingen horen bij elkaar"</td><td class="o">nee</td><td class="y">ja</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note" style="margin-top:20px"><b>Dus:</b> <code>specialisme</code>, <code>branche</code> en <code>laag</code> worden taxonomieën — die classificeren en verdienen een pagina. Case&nbsp;↔&nbsp;medewerker, dienst&nbsp;↔&nbsp;dienst en medewerker&nbsp;↔&nbsp;tool worden JetEngine-relaties — die verbinden twee concrete dingen en hoeven geen eigen adres.</p>
 </section>
 
 <section class="wrap sec" id="tax">
@@ -213,6 +246,59 @@ code{font-family:var(--fm);font-size:.86em;background:var(--alt);padding:2px 6px
   </div>
 </section>
 
+
+<section class="wrap sec" id="jet">
+  <h2>Hoe dit in JetEngine wordt gebouwd</h2>
+  <p class="note">Alles hierboven is modelwerk. Hieronder staat per onderdeel welk stuk JetEngine je ervoor gebruikt, zodat er tijdens het bouwen geen discussie meer over is.</p>
+  <div class="mx-wrap">
+    <table class="mx">
+      <thead><tr><th>Wat je wilt</th><th style="text-align:left">Waar het zit</th><th style="text-align:left">Let op</th></tr></thead>
+      <tbody>
+        <tr class="hl"><td>Post types</td><td style="text-align:left">JetEngine&nbsp;› Post Types</td><td style="text-align:left" class="f">Slug nooit meer wijzigen</td></tr>
+        <tr class="hl"><td>Taxonomieën</td><td style="text-align:left">JetEngine&nbsp;› Taxonomies</td><td style="text-align:left" class="f">Alle drie nu aanmaken</td></tr>
+        <tr><td>Velden per type</td><td style="text-align:left">Meta Fields in het post type zelf</td><td style="text-align:left" class="f">Voor wat alleen dáár hoort</td></tr>
+        <tr><td>Gedeelde velden</td><td style="text-align:left">JetEngine&nbsp;› Meta Boxes</td><td style="text-align:left" class="f">Eén box aan meerdere types hangen</td></tr>
+        <tr><td>Sitebrede instellingen</td><td style="text-align:left">JetEngine&nbsp;› Options Pages</td><td style="text-align:left" class="f">Hier staat de terugval&shy;contactpersoon</td></tr>
+        <tr><td>Herbruikbare keuzelijsten</td><td style="text-align:left">JetEngine&nbsp;› Glossaries</td><td style="text-align:left" class="f">Eén lijst, overal dezelfde opties</td></tr>
+        <tr class="hl"><td>Koppelingen tussen items</td><td style="text-align:left">JetEngine&nbsp;› Relations</td><td style="text-align:left" class="f">Eigen tabel, ook velden óp de koppeling</td></tr>
+        <tr class="hl"><td>Dynamische lijsten</td><td style="text-align:left">Listing Item + Listing Grid</td><td style="text-align:left" class="f">De kaart bouw je één keer</td></tr>
+        <tr><td>Slimme queries</td><td style="text-align:left">JetEngine&nbsp;› Query Builder</td><td style="text-align:left" class="f">Macro's voor "de termen van dit item"</td></tr>
+        <tr><td>Blok tonen of verbergen</td><td style="text-align:left">Dynamic Visibility</td><td style="text-align:left" class="f">De terugval hangt hieraan</td></tr>
+        <tr><td>Filters op /cases/</td><td style="text-align:left">JetSmartFilters</td><td style="text-align:left" class="f">Werkt op Listing Grid</td></tr>
+        <tr><td>Berekende getallen</td><td style="text-align:left">Query Builder + Dynamic Field</td><td style="text-align:left" class="f">Het 70%-cijfer telt zichzelf</td></tr>
+        <tr><td>Formulieren</td><td style="text-align:left">JetFormBuilder</td><td style="text-align:left" class="f">Los te koppelen aan ClickUp</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="key">
+    <span class="k">DE ENIGE BOUWKEUZE DIE JE NU MOET MAKEN</span>
+    <p><strong>Eén loop-engine. Niet twee.</strong></p>
+    <p>Elementor Pro heeft een Loop Grid, JetEngine heeft een Listing Grid. Ze doen hetzelfde en ze werken niet samen. Bouw je de casekaart in de ene en de teamkaart in de andere, dan heb je twee onderhoudssystemen, twee sets stijlen en filters die maar op de helft van je site werken.</p>
+    <p><strong>Advies: alles in JetEngine Listing Items.</strong> De Loop Grid van Elementor kan niet queryen op een relatie en kent de macro's niet die je nodig hebt om "toon items met hetzelfde specialisme als dit item" te bouwen. Precies dat is waar de hele site op draait.</p>
+  </div>
+
+  <h3 style="margin-top:44px">Het Stan-blok, concreet</h3>
+  <p class="note">Zo ziet die automatische koppeling er in de praktijk uit, van klik tot blok:</p>
+  <ul class="qs">
+    <li><span class="n">1</span><p><b>Query Builder › nieuwe Posts Query.</b> Post type: <code>medewerker</code>. Tax Query op <code>specialisme</code>, waarbij de termen dynamisch uit het huidige item komen. Extra filter op het veld <b>toon in contactblokken</b>. Aantal: 1. Sorteren op <b>volgorde</b>.</p></li>
+    <li><span class="n">2</span><p><b>Listing Item › medewerker-contactkaart.</b> Portret, naam, functie, specialisme, mailadres, telefoon. Eén keer bouwen, daarna overal herbruikt.</p></li>
+    <li><span class="n">3</span><p><b>Listing Grid op de pagina</b>, gekoppeld aan die query. Klaar.</p></li>
+    <li><span class="n">4</span><p><b>De terugval.</b> Zet onder de grid een tweede blok met de contactpersoon uit de Options Page, en laat Dynamic Visibility dat alleen tonen als de query niets oplevert. Test het door tijdelijk de tag weg te halen — niet door erop te vertrouwen.</p></li>
+  </ul>
+
+  <div class="ok-box">
+    <h3>Custom Content Types: verleidelijk, maar niet hier</h3>
+    <p>JetEngine kent naast post types ook CCT's, die in een eigen databasetabel staan en daardoor lichter zijn. Aantrekkelijk bij volume — maar ze hebben geen volwaardige permalink-structuur en SEO-plugins zien ze niet. <b>Alles wat moet ranken blijft een gewoon post type.</b> CCT's zijn er hooguit voor interne data die nooit hoeft te ranken, zoals een downloadlogboek. Twijfel je: neem het post type.</p>
+  </div>
+
+  <div class="warn">
+    <h3>Je datamodel staat in de database, niet in de code</h3>
+    <p>JetEngine slaat post types, taxonomieën, meta boxes, relaties en listings op in WordPress zelf. Eén verkeerde migratie of een terugzetactie van een back-up, en je model is weg terwijl je content er nog staat.</p>
+    <p><b>Exporteer na elke wijziging de JSON</b> van post types, taxonomieën, meta boxes en relaties, en zet die in de repository naast dit document. Kost twee minuten en is het verschil tussen een ongelukje en een week opnieuw opbouwen.</p>
+  </div>
+</section>
+
 <section class="wrap sec" id="stan">
   <h2>Het Stan-voorbeeld</h2>
   <p class="note">Precies wat je beschreef: koppel Stan aan SEO, en hij verschijnt overal waar SEO aan de orde is. Zonder dat iemand hem daar handmatig neerzet.</p>
@@ -246,7 +332,7 @@ code{font-family:var(--fm);font-size:.86em;background:var(--alt);padding:2px 6px
   </div>
   <div class="warn">
     <h3>Bouw altijd een terugval in</h3>
-    <p>Wat als er geen medewerker met dat specialisme is, of als degene die er is net uit dienst gaat? Dan moet het blok niet leeg blijven. <b>Stel één standaard-contactpersoon in</b> in de sitebrede opties, die verschijnt als de query niets oplevert. Dit is het detail dat in de praktijk altijd vergeten wordt en waardoor er een half jaar een leeg blok op de site staat.</p>
+    <p>Wat als er geen medewerker met dat specialisme is, of als degene die er is net uit dienst gaat? Dan moet het blok niet leeg blijven. <b>Stel één standaard-contactpersoon in</b> op een JetEngine Options Page, die verschijnt als de query niets oplevert. Dit is het detail dat in de praktijk altijd vergeten wordt en waardoor er een half jaar een leeg blok op de site staat.</p>
     <p>Geef medewerkers ook een veld <b>"toon in contactblokken"</b> — niet iedereen wil gebeld worden door onbekenden, en een stagiair hoort niet als eerste aanspreekpunt voor SEO te verschijnen.</p>
   </div>
 </section>
@@ -265,7 +351,7 @@ code{font-family:var(--fm);font-size:.86em;background:var(--alt);padding:2px 6px
         <li><b>lead</b> · het verklarende feit</li>
         <li><b>primair</b> · true/false — menu of tweede laag</li>
         <li><b>volgorde</b> · getal</li>
-        <li><b>versterkt</b> · relatie naar andere diensten, voedt het ecosysteem-diagram</li>
+        <li><b>versterkt</b> · JetEngine-relatie dienst ↔ dienst, voedt het ecosysteem-diagram</li>
         <li><b>title, meta, og</b> · SEO-velden</li>
       </ul>
       <span class="lb">TAXONOMIEËN</span>
@@ -280,9 +366,9 @@ code{font-family:var(--fm);font-size:.86em;background:var(--alt);padding:2px 6px
         <li><b>klantnaam, logo</b></li>
         <li><b>cijfer</b> · getal + eenheid + label, apart opgeslagen</li>
         <li><b>situatie, aanpak, resultaat</b> · drie tekstvelden</li>
-        <li><b>extra cijfers</b> · repeater</li>
+        <li><b>extra cijfers</b> · repeater-veld</li>
         <li><b>quote</b> · tekst + naam + functie</li>
-        <li><b>betrokken medewerkers</b> · relatie</li>
+        <li><b>betrokken medewerkers</b> · JetEngine-relatie, met "rol" als veld óp de koppeling</li>
         <li><b>doorlooptijd, startjaar</b></li>
       </ul>
       <span class="warn-f"><b>Verplicht veld: cijfer geverifieerd (ja/nee).</b> Staat het op nee, dan publiceert de case niet. Zo bouw je de getallentest uit de tone of voice in het systeem in plaats van in een afspraak.</span>
@@ -292,16 +378,26 @@ code{font-family:var(--fm);font-size:.86em;background:var(--alt);padding:2px 6px
 
     <div class="cpt">
       <div class="cpt-hd"><span class="sl">medewerker</span><span class="ph f1">FASE 1</span></div>
-      <p class="d">Het team. Voedt de contactblokken, de teampagina en de cases.</p>
+      <p class="d">Het team. Het zwaarste post type van de site: elke medewerker krijgt een eigen pagina in de vorm van een spelersprofiel.</p>
       <span class="lb">VELDEN</span>
       <ul>
-        <li><b>naam, functie, portret, bio</b></li>
+        <li><b>naam, functie, rol in één zin</b></li>
+        <li><b>portret</b> · staand 3:4, donkere achtergrond</li>
+        <li><b>actiefoto</b> · liggend, aan het werk</li>
+        <li><b>in dienst sinds</b> · datum, rekent zichzelf om naar jaren</li>
+        <li><b>begonnen als stagiair</b> · true/false — voedt het 70%-cijfer</li>
+        <li><b>certificeringen</b> · repeater: naam, uitgever, jaar, geldig tot</li>
+        <li><b>trots op</b> · relatie naar één case</li>
+        <li><b>quote</b> · eigen woorden</li>
+        <li><b>volgens een collega</b> · repeater: tekst + relatie naar medewerker</li>
+        <li><b>buiten het werk</b> · één zin, geen hobbylijst</li>
+        <li><b>gekoppelde WP-gebruiker</b> · voor auteurschap van artikelen</li>
         <li><b>e-mail, telefoon, linkedin</b></li>
-        <li><b>startjaar</b> · getal</li>
-        <li><b>begonnen als stagiair</b> · true/false — voedt het 70%-cijfer automatisch</li>
         <li><b>toon in contactblokken</b> · true/false</li>
-        <li><b>volgorde</b> · bepaalt wie als eerste verschijnt</li>
+        <li><b>in dienst</b> · true/false — uit dienst betekent uit alle queries</li>
+        <li><b>volgorde</b></li>
       </ul>
+      <span class="warn-f"><b>Relaties:</b> medewerker ↔ case (waar werkte hij aan), medewerker ↔ tool (waar werkt hij dagelijks mee), medewerker ↔ medewerker (wie zegt iets over wie).</span>
       <span class="lb">TAXONOMIEËN</span>
       <div class="taxes"><span class="tx">specialisme (meerdere)</span><span class="tx br">branche</span></div>
     </div>
@@ -416,6 +512,53 @@ code{font-family:var(--fm);font-size:.86em;background:var(--alt);padding:2px 6px
   </div>
 </section>
 
+
+<section class="wrap sec" id="profiel">
+  <h2>De medewerkerspagina als spelersprofiel</h2>
+  <p class="note">Je wilt laten zien dat je trots op ze bent. Dat lukt niet met een portret, een functietitel en drie regels bio — dat is een personeelspagina en die staat op elke bureausite.</p>
+  <div class="key">
+    <span class="k">WAT EEN SPELERSPROFIEL ANDERS MAAKT</span>
+    <p><strong>Cijfers.</strong> Een spelerspagina opent niet met een verhaal maar met een rij getallen: wedstrijden, doelpunten, seizoenen. Daarna pas het verhaal.</p>
+    <p>Zonder die getallen is het geen profiel maar een voorstelrondje. En jullie hebben de cijfers al: ze zitten in de cases, geverifieerd, en in de datum waarop iemand begon.</p>
+  </div>
+
+  <h3 style="margin-top:44px">De statistiekbalk</h3>
+  <p class="note">Bovenaan elke medewerkerspagina, direct onder de naam. Geen van deze getallen wordt ingetikt.</p>
+  <div class="stats">
+    <div><span class="v calc">7</span><span class="l">JAAR IN DIENST</span></div>
+    <div><span class="v calc">2</span><span class="l">SPECIALISMEN</span></div>
+    <div><span class="v calc">14</span><span class="l">CASES</span></div>
+    <div><span class="v calc">4</span><span class="l">CERTIFICERINGEN</span></div>
+    <div><span class="v">JRNXT</span><span class="l">BEGON ALS STAGIAIR</span></div>
+  </div>
+  <p class="note" style="margin-top:14px">Jaren uit <code>in dienst sinds</code>. Specialismen uit de taxonomie. Cases geteld over de relatie. Certificeringen geteld over de repeater, waarbij verlopen certificeringen vanzelf wegvallen. De vijfde is een badge die alleen verschijnt als het waar is — en meteen doorlinkt naar JRNXT.</p>
+
+  <h3 style="margin-top:44px">De opbouw van de pagina</h3>
+  <ul class="pg-stack">
+    <li><b>Het scherm</b><span>Volledig donker, zoals het kantoor. Portret groot en staand, naam in het formaat van een productnaam, functie als eyebrow, specialismen als links eronder. Geen kader, geen kaart, geen knop.</span><span class="src">portret · naam · functie · specialisme</span></li>
+    <li><b>De statistiekbalk</b><span>Vijf getallen op een rij. Dit is het moment waarop de pagina zich onderscheidt van elke andere teampagina in de regio.</span><span class="src">berekend, niet ingetikt</span></li>
+    <li><b>Waar hij het meest trots op is</b><span>Eén case, door hemzelf gekozen, groot uitgelicht met het geverifieerde cijfer. Niet de beste case van het bureau — de case die híj kiest. Dat verschil is het hele punt.</span><span class="src">relatie · trots op</span></li>
+    <li><b>Alles waar hij aan werkte</b><span>Alle cases waar hij aan gekoppeld is, met zijn rol erbij. Die rol staat op de koppeling zelf, niet op de case — daarom is dit een relatie en geen taxonomie.</span><span class="src">relatie medewerker ↔ case</span></li>
+    <li><b>Wat hij schrijft</b><span>Artikelen, handleidingen en kennisbanktermen van zijn hand. Verschijnt vanzelf zodra de WP-gebruiker gekoppeld is, en maakt van de pagina een echte auteurspagina in plaats van een visitekaartje.</span><span class="src">gekoppelde WP-gebruiker</span></li>
+    <li><b>Volgens een collega</b><span>Eén of twee zinnen van iemand anders uit het team, met naam en portret. Dit is het onderdeel dat het verschil maakt tussen trots zijn op iemand en over iemand vertellen.</span><span class="src">relatie medewerker ↔ medewerker</span></li>
+    <li><b>Waar hij dagelijks mee werkt</b><span>De tools uit zijn stack, gelinkt aan de toolspagina. Kost niets, want die pagina staat er toch.</span><span class="src">relatie medewerker ↔ tool</span></li>
+    <li><b>Contact</b><span>Direct, met foto en mailadres. Alleen zichtbaar als "toon in contactblokken" aan staat.</span><span class="src">veld · toon in contactblokken</span></li>
+  </ul>
+
+  <div class="warn">
+    <h3>Drie dingen die je nu moet regelen, niet over een jaar</h3>
+    <p><b>Wat er gebeurt als iemand weggaat.</b> Zet <code>in dienst</code> op nee: de pagina gaat naar concept, verdwijnt uit alle queries, en de URL krijgt een 301 naar <code>/team/</code>. Wat je nooit doet is de pagina laten staan met "werkt hier niet meer" — dat is de meest gelezen pagina van je site voor precies de verkeerde reden. Regel die redirect in het model, want anders gebeurt het op het moment zelf niet.</p>
+    <p><b>De cijfers moeten kloppen op dag één.</b> Een profiel met "0 cases" is erger dan geen profiel. Iemand krijgt pas een eigen pagina als hij aan minimaal twee gepubliceerde cases gekoppeld is. Tot die tijd staat hij wel op het teamoverzicht, zonder doorklik.</p>
+    <p><b>Person-schema, gekoppeld aan de organisatie.</b> Zonder dat is het voor Google een gewone pagina. Mét dat wordt het een auteursentiteit, en dat telt mee bij artikelen die hij schrijft. Dit is het enige stukje SEO dat een teampagina echt oplevert.</p>
+  </div>
+
+  <div class="ok-box">
+    <h3>De keerzijde, hardop</h3>
+    <p>Tien profielen betekent dat elke concurrent in de regio precies ziet wie wat kan, hoelang hij er zit en waar hij aan werkt. Dat is een wervingsrisico en het is reëel.</p>
+    <p>Het is ook de reden dat het werkt. Een bureau dat zijn mensen verstopt omdat ze weggekocht kunnen worden, gelooft niet in zijn eigen verhaal. En JRNXT leunt volledig op zichtbare mensen: een stagiair kiest voor wie hij naast komt te zitten, niet voor een logo.</p>
+  </div>
+</section>
+
 <section class="wrap sec" id="auto">
   <h2>Wat waar automatisch verschijnt</h2>
   <p class="note">Dit is de opbrengst van het model. Geen van deze blokken wordt met de hand gevuld — ze volgen uit de taxonomie.</p>
@@ -452,11 +595,14 @@ code{font-family:var(--fm);font-size:.86em;background:var(--alt);padding:2px 6px
       </ul>
     </div>
     <div class="au">
-      <span class="pg">/team/stan/</span>
+      <span class="pg">/team/stan/ — het spelersprofiel</span>
       <ul>
+        <li>Statistiekbalk: jaren, cases, certificeringen</li>
         <li>Zijn specialismen, met links</li>
-        <li>Cases waar hij aan werkte</li>
-        <li>Blogartikelen die hij schreef</li>
+        <li>Cases waar hij aan werkte, met zijn rol</li>
+        <li>Artikelen en handleidingen van zijn hand</li>
+        <li>Tools waar hij mee werkt</li>
+        <li>Wat een collega over hem zegt</li>
         <li>Vacatures waarvoor hij contactpersoon is</li>
       </ul>
     </div>
@@ -489,23 +635,24 @@ code{font-family:var(--fm);font-size:.86em;background:var(--alt);padding:2px 6px
   <ul class="qs">
     <li><span class="n">1</span><p><b>Alle drie de taxonomieën aanmaken</b>, inclusief <code>laag</code> die je pas later gebruikt. Achteraf toevoegen kost je honderden handmatige koppelingen.</p></li>
     <li><span class="n">2</span><p><b>Alle specialisme-termen aanmaken</b>, ook die van de tweede laag. Een term zonder content kost niets.</p></li>
-    <li><span class="n">3</span><p><b>Slugs vastleggen en nooit meer wijzigen.</b> <code>seo</code>, <code>google-ads</code>, <code>social-advertising</code>, <code>e-mailmarketing</code>, <code>conversie-optimalisatie</code>, <code>landingspaginas</code>, <code>fotografie</code>, <code>videografie</code>. Een slug wijzigen breekt elke query die erop filtert.</p></li>
-    <li><span class="n">4</span><p><b>ACF-veldgroepen exporteren naar code</b> en in de repository zetten. Dan is je datamodel versiebeheerd in plaats van alleen in de database.</p></li>
-    <li><span class="n">5</span><p><b>Eén Elementor-loop-template per contenttype.</b> Een casekaart bouw je één keer; hij wordt hergebruikt op de dienstenpagina, de branchepagina, de homepage en het overzicht. Verander je hem, dan verandert hij overal.</p></li>
+    <li><span class="n">3</span><p><b>Alle relaties aanmaken</b>, ook die je pas in fase drie vult. Een relatie achteraf toevoegen is niet erg — maar een relatie die je halverwege omzet van "één op veel" naar "veel op veel" verlies je onderweg.</p></li>
+    <li><span class="n">4</span><p><b>Slugs vastleggen en nooit meer wijzigen.</b> <code>seo</code>, <code>google-ads</code>, <code>social-advertising</code>, <code>e-mailmarketing</code>, <code>conversie-optimalisatie</code>, <code>websites</code>, <code>fotografie</code>, <code>videografie</code>. Een slug wijzigen breekt elke query die erop filtert.</p></li>
+    <li><span class="n">5</span><p><b>De JetEngine-export in de repository zetten.</b> Post types, taxonomieën, meta boxes en relaties als JSON, opnieuw geëxporteerd na elke wijziging. Dan is je datamodel versiebeheerd in plaats van alleen in de database van één server.</p></li>
+    <li><span class="n">6</span><p><b>Eén Listing Item per contenttype, in JetEngine.</b> Een casekaart bouw je één keer; hij wordt hergebruikt op de dienstenpagina, de branchepagina, de homepage en het overzicht. Verander je hem, dan verandert hij overal. Niet mengen met de Loop Grid van Elementor.</p></li>
   </ul>
   <div class="warn">
     <h3>Performance is het echte risico</h3>
-    <p>Een dienstenpagina met zeven dynamische blokken doet zeven database-queries. Bij tien zulke pagina's en een paar honderd bezoekers per dag gaat dat merkbaar tellen — en je eigen Core Web Vitals zijn precies wat je op de site claimt te beheersen.</p>
+    <p>Een dienstenpagina met zeven Listing Grids doet zeven database-queries, en een relatie-query kost er nog een extra. Bij tien zulke pagina's en een paar honderd bezoekers per dag gaat dat merkbaar tellen — en je eigen Core Web Vitals zijn precies wat je op de site claimt te beheersen.</p>
     <p><b>Zet object caching aan</b> (Redis of Memcached, Kinsta biedt dit), <b>beperk elke loop tot drie tot zes items</b>, en laad blokken onder de vouw pas bij het scrollen. Meet het voor je live gaat, niet erna.</p>
   </div>
 </section>
 
 <section class="wrap sec" id="vragen">
-  <h2>Drie dingen die ik moet weten</h2>
+  <h2>Wat er nog open staat</h2>
   <ul class="qs">
-    <li><span class="n">1</span><p><b>Landingspagina's naast conversie-optimalisatie — of ook websites?</b> Je noemt landingspagina's als dienst. Maar je bouwt ook complete websites in WordPress, en "website laten maken" is een van de grootste zoektermen in je regio. Mis je die bewust, of hoort daar een pagina bij?</p></li>
-    <li><span class="n">2</span><p><b>Fotografie en videografie apart: ook apart in het ecosysteem?</b> Ze worden twee dienstenpagina's, maar in het diagram op de werkwijze-pagina worden het dan twee bollen die vrijwel dezelfde verbindingen hebben. Samenvoegen in het diagram, of echt los?</p></li>
-    <li><span class="n">3</span><p><b>Krijgt elke medewerker een eigen pagina?</b> Dat is beter voor SEO en voor het merk, maar bij tien mensen met verloop is het ook tien pagina's die bijgehouden moeten worden. Alternatief: alleen een blok op de teampagina, met een detailpagina voor wie er langer dan een jaar zit.</p></li>
+    <li><span class="n">1</span><p><b>Wat zegt de websitepagina tegen iemand die alléén een website wil?</b> Dat wordt de bestbezochte dienstenpagina en tegelijk de pagina die het meeste verkeer trekt dat niet bij het model past. Twee routes: hard kwalificeren ("we leveren geen site op die we daarna loslaten") en dus omzet laten lopen, of de losse websitebouw accepteren als voordeur naar een partnership. Allebei verdedigbaar, maar de pagina kan er maar één kiezen.</p></li>
+    <li><span class="n">2</span><p><b>Fotografie en videografie apart: ook apart in het ecosysteem?</b> Ze worden twee dienstenpagina's, maar in het diagram op de werkwijze-pagina worden het dan twee bollen met vrijwel dezelfde verbindingen. Samenvoegen in het diagram, of echt los?</p></li>
+    <li><span class="n">3</span><p><b>Welke cijfers mogen op een spelersprofiel staan?</b> Jaren, cases en certificeringen zijn veilig. De verleiding is om verder te gaan — behaalde resultaten, behaalde groei per medewerker. Dat maakt het profiel sterker en het maakt iemand ook afrekenbaar op een pagina die iedereen kan lezen. Waar ligt jullie grens?</p></li>
   </ul>
 </section>
 

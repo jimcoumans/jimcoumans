@@ -47,13 +47,15 @@ In het menu, in `/diensten/`, met een eigen landingspagina:
 3. Social advertising
 4. E-mailmarketing (nieuwsbrieven en automation)
 5. Conversie-optimalisatie
-6. Landingspagina's
+6. Websites
 7. Fotografie
 8. Videografie
 
 Schaalbaar, niet persoonsafhankelijk. Dit is de etalage.
 
-**Waarom acht en niet zes.** Landingspagina's zitten al in maand 1 van elk partnership, maar hadden geen pagina — terwijl er wél op gezocht wordt. Fotografie en videografie waren samengevoegd omdat het één team is; dat is een interne reden, geen reden voor de bezoeker. Iemand die een bedrijfsfilm zoekt en iemand die productfoto's zoekt, zoeken niet hetzelfde en willen niet hetzelfde zien. Eén gedeelde pagina wint geen van beide.
+**Waarom acht en niet zes.** Websites zitten al in maand 1 van elk partnership, maar hadden geen pagina — terwijl "website laten maken" veruit de grootste commerciële zoekterm in dit vak is. Landingspagina's zijn daar een onderdeel van, geen aparte dienst; die term wordt binnen de websitepagina bediend. Fotografie en videografie waren samengevoegd omdat het één team is; dat is een interne reden, geen reden voor de bezoeker. Iemand die een bedrijfsfilm zoekt en iemand die productfoto's zoekt, zoeken niet hetzelfde en willen niet hetzelfde zien. Eén gedeelde pagina wint geen van beide.
+
+**De prijs van de websitepagina.** Het wordt de bestbezochte dienstenpagina van de site, en hij trekt precies het verkeer dat het slechtst bij het model past: mensen die één project willen kopen en daarna weg zijn. Dat is geen reden om hem niet te maken — het is de reden om er op de pagina zelf iets over te zeggen. De pagina verkoopt geen website. Hij verkoopt het fundament waar een website onderdeel van is, en zegt hardop dat we een site niet los opleveren en daarna loslaten. Wie alleen een website wil, leest dat en haakt zelf af. Dat is de bedoeling.
 
 ### De tweede laag
 
@@ -74,7 +76,7 @@ Wel een landingspagina voor de vindbaarheid. **Niet** in het menu, **niet** in h
   /social-advertising/
   /e-mailmarketing/
   /conversie-optimalisatie/
-  /landingspaginas/
+  /websites/
   /fotografie/
   /videografie/
 /cases/  +  /cases/[case]/
