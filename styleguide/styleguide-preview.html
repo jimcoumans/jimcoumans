@@ -562,13 +562,32 @@ h3+.note,h3+.tbl-wrap,h3+.grid3{margin-top:0}
 .corr{border:var(--s-hair) solid var(--orange-200,#FCE3BE);background:var(--orange-100);border-radius:16px;padding:24px 26px;margin-bottom:36px}
 .corr h4{color:var(--orange-tx);margin-bottom:10px;font-family:var(--f-disp);font-size:18px}
 .corr p{color:var(--orange-tx);font-size:15px;margin:0;max-width:none;opacity:.9}
+.h1tag{display:inline-block;font-family:var(--f-mono);font-size:9px;font-weight:500;color:var(--blue-link);background:var(--blue-100);border-radius:4px;padding:2px 5px;margin-left:8px;vertical-align:middle}
+.layers{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:20px 0 32px}
+.layer{border:var(--s-hair) solid var(--ln-soft);border-radius:14px;padding:20px;background:var(--chip)}
+.layer .who{display:block;font-family:var(--f-mono);font-size:10px;font-weight:600;color:var(--tx3);margin-bottom:10px;letter-spacing:.02em}
+.layer h4{font-family:var(--f-disp);font-size:17px;margin-bottom:6px}
+.layer p{font-size:14px;color:var(--tx2);margin:0;max-width:none}
+.code{background:var(--black);color:#f5f5f7;border-radius:14px;padding:22px 24px;font-family:var(--f-mono);font-size:13.5px;line-height:1.8;overflow-x:auto;margin:18px 0 28px}
+.code .t{color:#7fb5ff}.code .c{color:#86868b}
+.arch{border:var(--s-hair) solid var(--ln-soft);border-radius:16px;overflow:hidden;margin:20px 0 28px;background:var(--chip)}
+.arch-top{padding:36px 28px;text-align:center;border-bottom:var(--s-hair) dashed var(--ln)}
+.arch-top .h{font-family:var(--f-disp);font-size:30px;font-weight:700;letter-spacing:-.018em;margin:0 0 10px}
+.arch-top .l{font-size:17px;color:var(--tx2);margin:0 0 20px;max-width:none}
+.arch-mark{display:block;font-family:var(--f-mono);font-size:10px;color:var(--blue-link);margin-bottom:14px;letter-spacing:.02em}
+.arch-bot{padding:24px 28px;background:var(--bg-alt)}
+.arch-bot .arch-mark{color:var(--tx3)}
+.arch-bot ul{list-style:none;padding:0;margin:0}
+.arch-bot li{font-family:var(--f-disp);font-size:17px;font-weight:600;color:var(--tx2);padding:7px 0;margin:0;border-bottom:var(--s-hair) solid var(--ln-soft)}
+.arch-bot li:last-child{border-bottom:none}
+.arch-fold{text-align:center;font-family:var(--f-mono);font-size:10px;color:var(--tx3);padding:8px;background:var(--bg-alt)}
 .foot{padding-block:44px 60px;border-top:var(--s-hair) solid var(--ln-soft);font-size:13px;color:var(--tx3)}
 .toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,16px);background:var(--black);color:#fff;font-size:14px;padding:11px 20px;border-radius:980px;opacity:0;pointer-events:none;transition:opacity .2s var(--ease),transform .2s var(--ease-out);z-index:99}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 
 @media (max-width:1068px){
   :root{--gutter:24px}
-  .steps4{grid-template-columns:repeat(2,1fr)}
+  .steps4,.layers{grid-template-columns:repeat(2,1fr)}
   .sec{padding-block:68px}.hero{padding-block:68px 60px}
   .hero h1{font-size:52px}.hero .lead{font-size:21px}h2{font-size:34px}
   .ramp{grid-template-columns:repeat(4,1fr)}
@@ -581,7 +600,9 @@ h3+.note,h3+.tbl-wrap,h3+.grid3{margin-top:0}
 }
 @media (max-width:734px){
   :root{--gutter:20px}
-  .vs,.steps4,.ipod,.bigvs,.never{grid-template-columns:1fr}
+  .vs,.steps4,.ipod,.bigvs,.never,.layers{grid-template-columns:1fr}
+  .arch-top .h{font-size:24px}
+  .code{font-size:11.5px;padding:18px 16px}
   .dsvc .lead2{font-size:26px}
   .dsvc .body2{font-size:16px}
   .dsvc{padding-block:36px}
@@ -638,6 +659,7 @@ h3+.note,h3+.tbl-wrap,h3+.grid3{margin-top:0}
     <a href="#beeld">Beeld</a>
     <a href="#toon">Tone of voice</a>
     <a href="#diensten">Diensten</a>
+    <a href="#seo">SEO &amp; merk</a>
     <a href="#taal">Microcopy</a>
     <button class="theme-btn" id="themeBtn" type="button">Donker</button>
   </div>
@@ -2250,72 +2272,72 @@ h3+.note,h3+.tbl-wrap,h3+.grid3{margin-top:0}
     <h3 style="margin-bottom:8px">De veertien diensten</h3>
     <p class="note" style="margin-bottom:40px">Hieronder staan ze zoals ze op de site komen te staan. Geen kaders, geen uitleg, geen knop.</p>
     <div class="dsvc">
-      <span class="nm">Vindbaarheid</span>
+      <span class="nm">SEO<span class="h1tag">H1</span></span>
       <p class="lead2">Maanden werk. Daarna stopt het niet meer.</p>
       <p class="body2">Zoekmachines belonen wat er al lang staat. Dat is de reden dat het traag begint, en de reden dat het blijft.</p>
     </div>
     <div class="dsvc">
-      <span class="nm">Zoekadvertenties</span>
+      <span class="nm">Google Ads<span class="h1tag">H1</span></span>
       <p class="lead2">Zichtbaar vanaf dag één. Weg op de dag dat je stopt.</p>
       <p class="body2">Iemand die &ldquo;kozijnen vervangen prijs&rdquo; typt is verder dan iemand die &ldquo;kozijnen&rdquo; typt. Het verschil zit in die twee woorden.</p>
     </div>
     <div class="dsvc">
-      <span class="nm">Social</span>
+      <span class="nm">Social advertising<span class="h1tag">H1</span></span>
       <p class="lead2">Bereik vóór de vraag.</p>
       <p class="body2">Niemand zoekt op een keuken tot hij er een wil. Wat daarvoor gebeurt, gebeurt hier.</p>
     </div>
     <div class="dsvc">
-      <span class="nm">De lijst</span>
+      <span class="nm">E-mailmarketing<span class="h1tag">H1</span></span>
       <p class="lead2">Van jou. Niet geleend.</p>
       <p class="body2">Volgers staan bij Meta. Posities staan bij Google. Een adressenlijst staat bij jou.</p>
     </div>
     <div class="dsvc">
-      <span class="nm">Conversie</span>
+      <span class="nm">Conversie-optimalisatie<span class="h1tag">H1</span></span>
       <p class="lead2">Hetzelfde verkeer. Ander resultaat.</p>
       <p class="body2">Twee van de honderd doen iets. De andere achtennegentig waren er ook.</p>
     </div>
     <div class="dsvc">
-      <span class="nm">Hosting</span>
+      <span class="nm">Hosting en onderhoud<span class="h1tag">H1</span></span>
       <p class="lead2">Merkbaar alleen als het misgaat.</p>
       <p class="body2">Elke nacht een back-up. Elke minuut een controle. Verder niets te melden.</p>
     </div>
     <div class="dsvc">
-      <span class="nm">Fotografie</span>
+      <span class="nm">Bedrijfsfotografie<span class="h1tag">H1</span></span>
       <p class="lead2">De eerste twee seconden.</p>
       <p class="body2">Mensen kijken voordat ze lezen. Dat is geen voorkeur, dat is volgorde.</p>
     </div>
     <div class="dsvc">
-      <span class="nm">Video</span>
+      <span class="nm">Videografie<span class="h1tag">H1</span></span>
       <p class="lead2">Twintig seconden. Drie alinea's minder.</p>
       <p class="body2">Sommige vakken zijn lastig uit te leggen en eenvoudig te laten zien.</p>
     </div>
     <div class="dsvc">
-      <span class="nm">Merk</span>
+      <span class="nm">Branding<span class="h1tag">H1</span></span>
       <p class="lead2">Wat overblijft als de prijs gelijk is.</p>
       <p class="body2">Levert op korte termijn niets op. Bepaalt op lange termijn alles.</p>
     </div>
     <div class="dsvc">
-      <span class="nm">Belettering</span>
+      <span class="nm">Belettering<span class="h1tag">H1</span></span>
       <p class="lead2">Eén keer aangebracht. Jaren onderweg.</p>
       <p class="body2">Vinyl op een gevel gaat jaren mee. Vinyl op een bus rijdt elke dag een andere route.</p>
     </div>
     <div class="dsvc">
-      <span class="nm">Drukwerk</span>
+      <span class="nm">Drukwerk<span class="h1tag">H1</span></span>
       <p class="lead2">Blijft liggen.</p>
       <p class="body2">Een folder op de keukentafel heeft geen sluitknop.</p>
     </div>
     <div class="dsvc">
-      <span class="nm">Automatisering</span>
+      <span class="nm">Marketing automation<span class="h1tag">H1</span></span>
       <p class="lead2">Werkt door na vijven.</p>
       <p class="body2">Een herinnering die vanzelf verstuurd wordt, wordt ook verstuurd in een drukke week.</p>
     </div>
     <div class="dsvc">
-      <span class="nm">Leadinfo</span>
+      <span class="nm">Leadinfo<span class="h1tag">H1</span></span>
       <p class="lead2">Bedrijven laten sporen achter.</p>
       <p class="body2">Eén op de honderd bezoekende bedrijven neemt contact op. De rest bezocht je site ook.</p>
     </div>
     <div class="dsvc">
-      <span class="nm">Het partnership</span>
+      <span class="nm">Marketingpartnership<span class="h1tag">H1</span></span>
       <p class="lead2">Een marketingafdeling. Zonder de afdeling.</p>
       <p class="body2">Vast bedrag per maand. Maandelijks opzegbaar. Alles zichtbaar in ClickUp, ook wat tegenvalt.</p>
     </div>
@@ -2363,6 +2385,160 @@ h3+.note,h3+.tbl-wrap,h3+.grid3{margin-top:0}
       <p class="s" style="font-size:16px;color:var(--tx)">Deze teksten zijn kaal. Sommige klanten haken erop af, omdat ze willen dat je uitlegt waarom je goed bent.</p>
       <p class="s" style="font-size:16px;color:var(--tx)">Dat is de bedoeling. Een bureau dat op alles ja zegt en alles uitlegt, trekt klanten aan die overtuigd moeten worden — en die blijven overtuigd moeten worden, elke maand opnieuw.</p>
       <p class="s" style="font-size:16px;color:var(--tx);margin-bottom:0"><b>De vraag is niet of dit te gewaagd is. De vraag is of je de klanten die afhaken had willen hebben.</b></p>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="seo">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">SEO &amp; merk</span>
+      <h2>Waar ze botsen en waar niet</h2>
+      <p class="lead">De merkkoppen hoeven niet te veranderen. Eén ding wel — en dat kost niets aan merk.</p>
+    </div>
+
+    <h3>Apple lost dit zelf al op</h3>
+    <p class="note" style="margin-bottom:0">Kijk naar een productpagina van Apple. Wat is daar de H1?</p>
+    <div class="code"><span class="c">&lt;!-- apple.com --&gt;</span><br>
+<span class="t">&lt;h1&gt;</span>MacBook Pro<span class="t">&lt;/h1&gt;</span><br>
+<span class="t">&lt;p class="tagline"&gt;</span>Mind-blowing. Head-turning.<span class="t">&lt;/p&gt;</span></div>
+    <p class="note" style="margin-bottom:36px"><b>Niet de poëzie. De productnaam.</b> Apple zet het ding in de H1 en de poëzie in de regel eronder — en die tagline is geen heading, gewoon een alinea met een grote lettergrootte. Twee elementen, elk met één taak.</p>
+
+    <h3>Waarom dit ertoe doet</h3>
+    <p class="note" style="margin-bottom:24px">In mijn eerste opzet was <i>"Maanden werk. Daarna stopt het niet meer."</i> de H1. Dan staat op je SEO-pagina nergens het woord waar mensen op zoeken. Niet fataal — de title-tag doet het zware werk — maar er is een tweede effect: <b>als je title-tag en je H1 te ver uiteenlopen, herschrijft Google je title vaker.</b> Dan verlies je de controle over wat er in de zoekresultaten staat.</p>
+
+    <h3>De drie lagen</h3>
+    <div class="layers">
+      <div class="layer"><span class="who">ALLEEN GOOGLE ZIET DIT</span><h4>Title-tag</h4><p>Ranken en geklikt worden. Volledig zoekgericht — de bezoeker ziet hem nooit op de pagina zelf. Dit is vrije ruimte.</p></div>
+      <div class="layer"><span class="who">DE BEZOEKER ZIET DIT</span><h4>H1</h4><p>De dienstnaam. Zegt waar de pagina over gaat, in het woord waar mensen op zoeken.</p></div>
+      <div class="layer"><span class="who">DE BEZOEKER ZIET DIT</span><h4>De lead eronder</h4><p>Volledig merk. Geen heading, gewoon een grote alinea. Hier verandert niets.</p></div>
+    </div>
+
+    <h3>De herziene koppen</h3>
+    <p class="note" style="margin-bottom:18px">Alleen de bovenste regel verandert. De constateringen blijven exact zoals ze zijn.</p>
+    <div class="tbl-wrap" style="margin-bottom:24px">
+      <table class="tbl tbl--wide">
+        <thead><tr><th>Title-tag</th><th>Tekens</th><th>H1</th><th>Lead (ongewijzigd)</th></tr></thead>
+        <tbody>
+          <tr><td class="num">SEO-bureau Zuid-Limburg | James Robinson</td><td class="num">40</td><td class="name" style="color:var(--blue-link)">SEO</td><td style="color:var(--tx2)">Maanden werk. Daarna stopt het niet meer.</td></tr>
+          <tr><td class="num">Google Ads-bureau Limburg | James Robinson</td><td class="num">42</td><td class="name" style="color:var(--blue-link)">Google Ads</td><td style="color:var(--tx2)">Zichtbaar vanaf dag één. Weg op de dag dat je stopt.</td></tr>
+          <tr><td class="num">Social advertising bureau | James Robinson</td><td class="num">42</td><td class="name" style="color:var(--blue-link)">Social advertising</td><td style="color:var(--tx2)">Bereik vóór de vraag.</td></tr>
+          <tr><td class="num">E-mailmarketing bureau Limburg | James Robinson</td><td class="num">47</td><td class="name" style="color:var(--blue-link)">E-mailmarketing</td><td style="color:var(--tx2)">Van jou. Niet geleend.</td></tr>
+          <tr><td class="num">Conversie-optimalisatie (CRO) | James Robinson</td><td class="num">46</td><td class="name" style="color:var(--blue-link)">Conversie-optimalisatie</td><td style="color:var(--tx2)">Hetzelfde verkeer. Ander resultaat.</td></tr>
+          <tr><td class="num">WordPress hosting en onderhoud | James Robinson</td><td class="num">47</td><td class="name" style="color:var(--blue-link)">Hosting en onderhoud</td><td style="color:var(--tx2)">Merkbaar alleen als het misgaat.</td></tr>
+          <tr><td class="num">Bedrijfsfotografie Limburg | James Robinson</td><td class="num">43</td><td class="name" style="color:var(--blue-link)">Bedrijfsfotografie</td><td style="color:var(--tx2)">De eerste twee seconden.</td></tr>
+          <tr><td class="num">Bedrijfsvideo laten maken | James Robinson</td><td class="num">42</td><td class="name" style="color:var(--blue-link)">Videografie</td><td style="color:var(--tx2)">Twintig seconden. Drie alinea's minder.</td></tr>
+          <tr><td class="num">Branding en huisstijl bureau | James Robinson</td><td class="num">45</td><td class="name" style="color:var(--blue-link)">Branding</td><td style="color:var(--tx2)">Wat overblijft als de prijs gelijk is.</td></tr>
+          <tr><td class="num">Belettering en gevelreclame | James Robinson</td><td class="num">44</td><td class="name" style="color:var(--blue-link)">Belettering</td><td style="color:var(--tx2)">Eén keer aangebracht. Jaren onderweg.</td></tr>
+          <tr><td class="num">Drukwerk laten maken | James Robinson</td><td class="num">37</td><td class="name" style="color:var(--blue-link)">Drukwerk</td><td style="color:var(--tx2)">Blijft liggen.</td></tr>
+          <tr><td class="num">Marketing automation | James Robinson</td><td class="num">37</td><td class="name" style="color:var(--blue-link)">Marketing automation</td><td style="color:var(--tx2)">Werkt door na vijven.</td></tr>
+          <tr><td class="num">Leadinfo implementatie | James Robinson</td><td class="num">39</td><td class="name" style="color:var(--blue-link)">Leadinfo</td><td style="color:var(--tx2)">Bedrijven laten sporen achter.</td></tr>
+          <tr><td class="num">Marketingbureau Zuid-Limburg | James Robinson</td><td class="num">45</td><td class="name" style="color:var(--blue-link)">Marketingpartnership</td><td style="color:var(--tx2)">Een marketingafdeling. Zonder de afdeling.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note" style="margin-bottom:44px">Alle title-tags blijven onder de 60 tekens, dus ze worden niet afgekapt. <b>Twee poëtische namen sneuvelen als H1:</b> <i>De lijst</i> en <i>Merk</i>. Gebruik ze als H2 binnen de pagina — "De lijst is van jou" is een prima tussenkop halverwege.</p>
+
+    <h3>De pagina-architectuur</h3>
+    <p class="note" style="margin-bottom:8px">Een pagina met twintig woorden rankt niet op "SEO-bureau Limburg", hoe mooi die twintig woorden ook zijn. Apple heeft dit ook opgelost: de marketingpagina is kaal en poëtisch, daarnaast staat een uitputtende Tech Specs-pagina. Twee registers, twee doelen.</p>
+    <div class="arch">
+      <div class="arch-top">
+        <span class="arch-mark">BOVEN DE VOUW — MERK · 20 WOORDEN</span>
+        <p class="h">SEO</p>
+        <p class="l">Maanden werk. Daarna stopt het niet meer.</p>
+        <button class="btn btn--primary btn--sm">Plan een gesprek</button>
+      </div>
+      <div class="arch-fold">↓ scrollen ↓</div>
+      <div class="arch-bot">
+        <span class="arch-mark">DAARONDER — VINDBAARHEID · 600–1.200 WOORDEN</span>
+        <ul>
+          <li>Hoe lang duurt SEO?</li>
+          <li>Wat is technische SEO?</li>
+          <li>SEO voor bedrijven in Zuid-Limburg</li>
+          <li>Cases</li>
+          <li>Veelgestelde vragen &nbsp;<span style="font-family:var(--f-mono);font-size:11px;font-weight:400;color:var(--blue-link)">[accordion]</span></li>
+        </ul>
+      </div>
+    </div>
+    <p class="note" style="margin-bottom:44px"><b>De accordion is je beste vriend.</b> Veel tekst, bijna geen visuele ruimte. Google indexeert die inhoud volledig zolang hij in de HTML staat en niet pas na een klik wordt ingeladen — precies zoals Elementor's accordion werkt. Zo krijg je zeshonderd woorden op een pagina die er kaal uitziet.</p>
+
+    <h3>Waar je zoekwoorden kwijt kunt</h3>
+    <div class="tbl-wrap" style="margin-bottom:44px">
+      <table class="tbl tbl--wide">
+        <thead><tr><th>Plek</th><th>Zichtbaar voor de bezoeker</th><th>Vrij voor SEO</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Title-tag</td><td style="color:var(--tx2)">alleen in Google</td><td class="ok">volledig</td></tr>
+          <tr><td class="name">Meta-omschrijving</td><td style="color:var(--tx2)">alleen in Google</td><td class="ok">volledig</td></tr>
+          <tr><td class="name">URL-slug</td><td style="color:var(--tx2)">in de adresbalk</td><td class="ok">volledig</td></tr>
+          <tr><td class="name">H2's en H3's</td><td style="color:var(--tx2)">ja</td><td style="color:var(--tx2)">grotendeels</td></tr>
+          <tr class="hl"><td class="name">FAQ-accordion</td><td style="color:var(--tx2)">alleen als je klikt</td><td class="ok">volledig</td></tr>
+          <tr><td class="name">Alt-teksten</td><td style="color:var(--tx2)">nee</td><td class="ok">volledig</td></tr>
+          <tr><td class="name">Ankertekst interne links</td><td style="color:var(--tx2)">ja, klein</td><td style="color:var(--tx2)">grotendeels</td></tr>
+          <tr><td class="name">Schema markup</td><td style="color:var(--tx2)">nee</td><td class="ok">volledig</td></tr>
+          <tr><td class="name">Breadcrumbs</td><td style="color:var(--tx2)">ja, klein</td><td style="color:var(--tx2)">grotendeels</td></tr>
+          <tr class="hl"><td class="name">H1 en lead</td><td style="color:var(--tx2)">ja, groot</td><td class="warn">merk beslist</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>H2's per dienst — waar de longtail zit</h3>
+    <p class="note" style="margin-bottom:18px">Drie tot vijf per pagina, in de taal waarin mensen zoeken. Dit is niet het merkregister.</p>
+    <div class="tbl-wrap" style="margin-bottom:44px">
+      <table class="tbl tbl--wide">
+        <tbody>
+          <tr><td class="name">SEO</td><td style="color:var(--tx2)">Hoe lang duurt SEO? · Wat is technische SEO? · SEO voor bedrijven in Zuid-Limburg · Wat kost SEO per maand?</td></tr>
+          <tr><td class="name">Google Ads</td><td style="color:var(--tx2)">Wat kost adverteren in Google? · Het verschil tussen SEO en Google Ads · Google Ads voor lokale bedrijven</td></tr>
+          <tr><td class="name">Social advertising</td><td style="color:var(--tx2)">Adverteren op Instagram en Facebook · Wanneer werkt social beter dan Google? · Wat kost een campagne?</td></tr>
+          <tr><td class="name">E-mailmarketing</td><td style="color:var(--tx2)">Een nieuwsbrief opzetten · De lijst is van jou · Hoe vaak moet je mailen? · E-mailautomatisering</td></tr>
+          <tr><td class="name">Conversie-optimalisatie</td><td style="color:var(--tx2)">Wat is conversie-optimalisatie? · Hoe meet je conversie? · A/B-testen in de praktijk</td></tr>
+          <tr><td class="name">Hosting en onderhoud</td><td style="color:var(--tx2)">WordPress hosting en onderhoud · Wat gebeurt er bij een storing? · Back-ups en beveiliging</td></tr>
+          <tr><td class="name">Bedrijfsfotografie</td><td style="color:var(--tx2)">Bedrijfsfotografie in Limburg · Wat kost een fotoshoot? · Productfotografie</td></tr>
+          <tr><td class="name">Videografie</td><td style="color:var(--tx2)">Een bedrijfsvideo laten maken · Wat kost een bedrijfsfilm? · Video voor social</td></tr>
+          <tr><td class="name">Branding</td><td style="color:var(--tx2)">Wat is branding? · Een nieuwe huisstijl laten maken · Logo-ontwerp · Rebranding</td></tr>
+          <tr><td class="name">Belettering</td><td style="color:var(--tx2)">Autobelettering en wagenparkbestickering · Gevelreclame en lichtbakken · Wat kost belettering?</td></tr>
+          <tr><td class="name">Drukwerk</td><td style="color:var(--tx2)">Drukwerk laten maken · Visitekaartjes, folders en brochures · Levertijden en oplages</td></tr>
+          <tr><td class="name">Marketing automation</td><td style="color:var(--tx2)">Wat is marketing automation? · Automatiseren in ClickUp · Voorbeelden uit de praktijk</td></tr>
+          <tr><td class="name">Leadinfo</td><td style="color:var(--tx2)">Zien welke bedrijven je site bezoeken · Hoe werkt Leadinfo? · Wat mag wel en niet met AVG</td></tr>
+          <tr><td class="name">Marketingpartnership</td><td style="color:var(--tx2)">Wat kost een marketingpartnership? · Waarom geen losse projecten? · Hoe werkt de samenwerking?</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Wat je niet moet doen</h3>
+    <div class="tbl-wrap" style="margin-bottom:44px">
+      <table class="tbl tbl--wide">
+        <thead><tr><th>Niet doen</th><th>Waarom</th></tr></thead>
+        <tbody>
+          <tr><td style="color:var(--red-tx)">De lead volstoppen met zoekwoorden</td><td>De enige plek waar het merk het voor het zeggen heeft</td></tr>
+          <tr><td style="color:var(--red-tx)">H1 en title-tag identiek maken</td><td>Verspilde ruimte — de title mag lokaler en specifieker</td></tr>
+          <tr><td style="color:var(--red-tx)">Meerdere H1's op één pagina</td><td>Verwart de structuur, ook voor schermlezers</td></tr>
+          <tr><td style="color:var(--red-tx)">"SEO die écht werkt voor jouw bedrijf in Limburg"</td><td>Precies het register dat je afwees</td></tr>
+          <tr><td style="color:var(--red-tx)">De diepte-content weglaten omdat hij niet mooi is</td><td>Dan rank je niet en ziet niemand het mooie deel</td></tr>
+          <tr><td style="color:var(--red-tx)">Uitleg boven de vouw zetten</td><td>De eerste indruk is merk. Altijd.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>De check per pagina</h3>
+    <ul class="check" style="max-width:660px;margin-bottom:44px">
+      <li>Title-tag onder 60 tekens, zoekwoord vooraan</li>
+      <li>Meta-omschrijving 140–155 tekens</li>
+      <li>Eén H1, gelijk aan of dicht bij het zoekwoord uit de title</li>
+      <li>De lead eronder is volledig merkregister</li>
+      <li>Drie tot vijf H2's in zoektaal</li>
+      <li>Minimaal 600 woorden onder de vouw</li>
+      <li>FAQ-accordion met minstens vier vragen</li>
+      <li>URL-slug kort: <code>/seo/</code>, niet <code>/onze-diensten/seo-optimalisatie/</code></li>
+      <li>Service- en FAQPage-schema ingevuld</li>
+      <li>Interne links met beschrijvende ankertekst, niet "lees meer"</li>
+      <li>Alt-teksten bij elk beeld</li>
+      <li>Pagina laadt onder 2,5 seconden</li>
+    </ul>
+
+    <div class="sample" style="border-left-color:var(--lime)">
+      <span class="lbl2">nog één observatie</span>
+      <p class="s" style="font-size:16px;color:var(--tx)">Een groeiend deel van het zoekverkeer loopt via AI-samenvattingen. Die pakken bij voorkeur korte, feitelijke, declaratieve zinnen op — precies het register waar we voor gekozen hebben.</p>
+      <p class="s" style="font-size:16px;color:var(--tx);margin-bottom:0">"Maanden werk. Daarna stopt het niet meer." is makkelijker te citeren dan "Onze data-driven SEO-aanpak zorgt voor duurzame groei in relevante zoekresultaten." Geen reden om voor deze stijl te kiezen — die keuze stond al. Maar het maakt hem goedkoper dan hij eruitziet.</p>
     </div>
   </div>
 </section>
