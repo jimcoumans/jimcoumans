@@ -1,0 +1,523 @@
+<title>Datamodel James Robinson</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@600;700&display=swap">
+<style>
+:root{
+  --page:#fbfbfd;--card:#fff;--alt:#f5f5f7;--tx:#1d1d1f;--tx2:#6e6e73;--tx3:#86868b;
+  --ln:#d2d2d7;--ln-s:#e5e5e9;--blue:#007aff;--link:#0066cc;--act:#0857c3;
+  --b100:#e0efff;--b50:#f0f7ff;--lime:#c4f000;--lime-tx:#5a7000;--lime100:#f2fccc;
+  --green:#34c759;--green-tx:#1d7d3f;--green100:#e6f7eb;
+  --orange-tx:#94590a;--orange100:#fef2e0;--red-tx:#c02a22;--red100:#fdecea;
+  --purple-tx:#7e2fb0;--purple100:#f5eafb;--black:#1c1c1e;--dark2:#2c2d2e;--inv:#f5f5f7;--inv2:#a1a1a6;
+  --fd:"Inter Tight","Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --ft:"Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --fm:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --e:cubic-bezier(.25,.1,.25,1);--g:32px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--green-tx:#41c96a;--orange-tx:#f0a040;
+  --red-tx:#ff6b61;--purple-tx:#c77ce8;--lime-tx:#d9ff33;
+  --b100:rgba(0,122,255,.18);--b50:rgba(0,122,255,.07);--lime100:rgba(196,240,0,.16);
+  --green100:rgba(52,199,89,.16);--orange100:rgba(246,160,39,.18);--red100:rgba(255,59,48,.14);
+  --purple100:rgba(175,82,222,.16);
+}}
+:root[data-theme="dark"]{
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--green-tx:#41c96a;--orange-tx:#f0a040;
+  --red-tx:#ff6b61;--purple-tx:#c77ce8;--lime-tx:#d9ff33;
+  --b100:rgba(0,122,255,.18);--b50:rgba(0,122,255,.07);--lime100:rgba(196,240,0,.16);
+  --green100:rgba(52,199,89,.16);--orange100:rgba(246,160,39,.18);--red100:rgba(255,59,48,.14);
+  --purple100:rgba(175,82,222,.16);
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--tx);font-family:var(--ft);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition-duration:.01ms!important}}
+:focus-visible{outline:none;box-shadow:0 0 0 4px rgba(0,122,255,.4);border-radius:8px}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:60;background:rgba(251,251,253,.8);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--ln-s)}
+:root[data-theme="dark"] .bar,:root:not([data-theme="light"]) .bar{background:rgba(0,0,0,.72)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .bar{background:rgba(251,251,253,.8)}}
+.bar-in{max-width:1180px;margin:0 auto;padding:0 var(--g);display:flex;align-items:center;gap:6px;min-height:48px;overflow-x:auto;scrollbar-width:none}
+.bar-in::-webkit-scrollbar{display:none}
+.bar b{font-family:var(--fd);font-size:15px;font-weight:700;letter-spacing:-.016em;margin-right:8px;white-space:nowrap}
+.bar a{font-size:13px;color:var(--tx2);text-decoration:none;padding:6px 9px;border-radius:8px;white-space:nowrap;transition:color .15s var(--e)}
+.bar a:hover{color:var(--tx)}
+.bar button{margin-left:auto;flex:none;font:inherit;font-size:12px;cursor:pointer;background:transparent;border:1px solid var(--ln);color:var(--tx2);border-radius:980px;padding:5px 13px}
+.bar button:hover{color:var(--tx);border-color:var(--tx3)}
+
+.wrap{max-width:1180px;margin:0 auto;padding-inline:var(--g)}
+.narrow{max-width:760px}
+.hero{padding-block:72px 40px}
+h1{font-family:var(--fd);font-size:56px;font-weight:700;line-height:1.07;letter-spacing:-.024em;margin:0 0 18px;text-wrap:balance}
+h2{font-family:var(--fd);font-size:36px;font-weight:700;line-height:1.12;letter-spacing:-.02em;margin:0 0 14px;text-wrap:balance}
+h3{font-family:var(--fd);font-size:22px;font-weight:600;line-height:1.2;letter-spacing:-.01em;margin:0 0 10px}
+.lead{font-size:21px;line-height:1.45;color:var(--tx2);max-width:700px;margin:0 0 26px}
+p{margin:0 0 18px;max-width:720px}
+p:last-child{margin-bottom:0}
+code{font-family:var(--fm);font-size:.86em;background:var(--alt);padding:2px 6px;border-radius:5px;color:var(--tx)}
+.sec{padding-block:64px;border-top:1px solid var(--ln-s)}
+.note{font-size:15.5px;color:var(--tx2);max-width:720px}
+.note b{color:var(--tx)}
+
+.key{background:var(--black);color:var(--inv);border-radius:24px;padding:36px 34px;margin:28px 0}
+.key .k{display:block;font-family:var(--fm);font-size:11px;letter-spacing:.04em;color:var(--lime);margin-bottom:14px}
+.key p{color:var(--inv2);font-size:18px;max-width:none;margin-bottom:14px}
+.key p:last-child{margin-bottom:0}
+.key strong{color:var(--inv);font-weight:600}
+
+/* matrix */
+.mx-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:8px}
+.mx{border-collapse:collapse;font-size:14px;min-width:760px;width:100%}
+.mx th,.mx td{padding:11px 12px;border-bottom:1px solid var(--ln-s);text-align:center}
+.mx th:first-child,.mx td:first-child{text-align:left;white-space:nowrap}
+.mx thead th{font-family:var(--fm);font-size:11px;font-weight:600;color:var(--tx2);border-bottom:1px solid var(--ln);letter-spacing:.02em;vertical-align:bottom}
+.mx tbody td:first-child{font-family:var(--fm);font-size:13px;color:var(--tx)}
+.mx tbody tr:last-child td{border-bottom:none}
+.mx .y{color:var(--green-tx);font-weight:600}
+.mx .o{color:var(--tx3)}
+.mx .f{font-size:11px;font-family:var(--fm);color:var(--tx3)}
+.mx tr.hl td{background:var(--b50)}
+
+/* stan-voorbeeld */
+.flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:16px;align-items:center;margin:26px 0}
+.fl-box{background:var(--card);border:1px solid var(--ln-s);border-radius:18px;padding:22px}
+.fl-box .t{display:block;font-family:var(--fm);font-size:10.5px;color:var(--tx3);margin-bottom:8px;letter-spacing:.03em}
+.fl-box .n{display:block;font-family:var(--fd);font-size:19px;font-weight:600;letter-spacing:-.01em;margin-bottom:8px}
+.fl-box .m{font-size:13.5px;color:var(--tx2);line-height:1.4}
+.fl-box .tax{display:inline-block;font-family:var(--fm);font-size:11px;background:var(--b100);color:var(--act);border-radius:5px;padding:3px 7px;margin-top:8px}
+.fl-ar{font-size:24px;color:var(--tx3);text-align:center}
+.fl-mid{background:var(--act);color:#fff;border-color:var(--act)}
+.fl-mid .t{color:rgba(255,255,255,.6)}
+.fl-mid .n{color:#fff}
+.fl-mid .m{color:rgba(255,255,255,.78)}
+.fl-out{border-color:var(--lime);box-shadow:0 0 0 1px var(--lime)}
+
+/* cpt-kaarten */
+.cpts{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px;margin-top:8px}
+.cpt{background:var(--card);border:1px solid var(--ln-s);border-radius:18px;padding:22px 24px}
+.cpt-hd{display:flex;align-items:baseline;gap:10px;margin-bottom:6px;flex-wrap:wrap}
+.cpt-hd .sl{font-family:var(--fm);font-size:13.5px;font-weight:600;color:var(--act)}
+.cpt-hd .ph{font-family:var(--fm);font-size:10px;background:var(--alt);color:var(--tx3);border-radius:4px;padding:3px 6px;margin-left:auto}
+.cpt-hd .ph.f1{background:var(--green100);color:var(--green-tx)}
+.cpt .d{font-size:14px;color:var(--tx2);margin-bottom:14px;line-height:1.45}
+.cpt .lb{display:block;font-family:var(--fm);font-size:10px;color:var(--tx3);margin:12px 0 6px;letter-spacing:.03em}
+.cpt ul{list-style:none;padding:0;margin:0}
+.cpt li{font-size:13.5px;color:var(--tx2);padding:4px 0;line-height:1.4}
+.cpt li code{font-size:12px;background:var(--alt);padding:1px 5px}
+.cpt li b{color:var(--tx);font-weight:500}
+.cpt .taxes{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+.cpt .tx{font-family:var(--fm);font-size:10.5px;background:var(--b100);color:var(--act);border-radius:5px;padding:3px 7px}
+.cpt .tx.br{background:var(--purple100);color:var(--purple-tx)}
+.cpt .warn-f{display:block;font-size:12.5px;color:var(--orange-tx);background:var(--orange100);border-radius:8px;padding:9px 11px;margin-top:12px;line-height:1.4}
+
+/* auto-blokken */
+.auto{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin-top:8px}
+.au{background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:20px 22px}
+.au .pg{font-family:var(--fm);font-size:12px;color:var(--link);display:block;margin-bottom:10px}
+.au ul{list-style:none;padding:0;margin:0}
+.au li{position:relative;padding-left:20px;font-size:14px;color:var(--tx2);margin-bottom:7px;line-height:1.4}
+.au li:last-child{margin-bottom:0}
+.au li::before{content:"";position:absolute;left:0;top:.5em;width:7px;height:7px;border-radius:2px;background:var(--blue)}
+
+.warn{background:var(--orange100);border-radius:20px;padding:26px 28px;margin-top:28px}
+.warn h3{color:var(--orange-tx);margin-bottom:8px}
+.warn p{color:var(--orange-tx);font-size:15.5px;opacity:.92;max-width:none}
+.warn b{font-weight:600}
+.ok-box{background:var(--green100);border-radius:20px;padding:26px 28px;margin-top:28px}
+.ok-box h3{color:var(--green-tx);margin-bottom:8px}
+.ok-box p{color:var(--green-tx);font-size:15.5px;opacity:.92;max-width:none}
+
+.qs{list-style:none;padding:0;margin:20px 0 0;max-width:760px}
+.qs li{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--ln-s)}
+.qs li:last-child{border-bottom:none}
+.qs .n{flex:none;width:26px;height:26px;border-radius:50%;background:var(--b100);color:var(--act);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600}
+.qs p{margin:0;font-size:15.5px;max-width:none}
+.qs b{font-weight:600}
+.foot{padding-block:48px 64px;font-size:13px;color:var(--tx3);text-align:center}
+
+@media (max-width:1068px){:root{--g:24px}h1{font-size:42px}h2{font-size:30px}.flow{grid-template-columns:1fr;gap:10px}.fl-ar{transform:rotate(90deg)}}
+@media (max-width:734px){
+  :root{--g:20px}
+  h1{font-size:30px}h2{font-size:24px}h3{font-size:19px}
+  .lead{font-size:18px}.hero{padding-block:44px 28px}.sec{padding-block:48px}
+  .cpts,.auto{grid-template-columns:1fr}
+  .key{padding:24px 22px}.key p{font-size:16px}
+  .cpt,.au{padding:18px 18px}
+}
+</style>
+
+<div class="bar">
+  <div class="bar-in">
+    <b>Datamodel</b>
+    <a href="#principe">Principe</a>
+    <a href="#tax">Taxonomieën</a>
+    <a href="#stan">Het Stan-voorbeeld</a>
+    <a href="#cpt">Post types</a>
+    <a href="#auto">Wat waar verschijnt</a>
+    <a href="#groei">Groeipad</a>
+    <a href="#vragen">Open vragen</a>
+    <button id="themeBtn" type="button">Donker</button>
+  </div>
+</div>
+
+<header class="wrap hero">
+  <h1>Het datamodel</h1>
+  <p class="lead">Hoe de site zelf een ecosysteem wordt: één ruggengraat waar alles aan hangt, zodat content elkaar automatisch vindt en de site kan groeien zonder herbouw.</p>
+</header>
+
+<section class="wrap sec" id="principe">
+  <h2>Het principe</h2>
+  <p class="note">Eén taxonomie verbindt alles: <code>specialisme</code>. Elk contenttype krijgt die taxonomie, en daarmee weet elk stuk content waar het bij hoort. Dat is de hele truc.</p>
+  <div class="key">
+    <span class="k">DE REGEL</span>
+    <p><strong>Taxonomieën leg je nu vast. Post types bouw je gefaseerd.</strong></p>
+    <p>Een post type kun je in maand acht toevoegen zonder iets te breken. Een taxonomie achteraf toevoegen betekent dat je alle bestaande content opnieuw moet taggen — handmatig, honderden items.</p>
+    <p>Dus: maak alle taxonomieën aan bij de lancering, ook die je pas in fase vier gebruikt. Een lege taxonomie kost niets.</p>
+  </div>
+  <p class="note"><b>Waarom taxonomie en geen relatievelden?</b> Een taxonomie is geïndexeerd in de database en een query erop is snel. Post-to-post-relaties via ACF slaan hun waarde op als geserialiseerde array, waardoor je een <code>LIKE</code>-query nodig hebt — traag en kwetsbaar zodra er volume komt. Voor "hoort bij deze groep" is de taxonomie altijd het juiste gereedschap.</p>
+</section>
+
+<section class="wrap sec" id="tax">
+  <h2>Drie taxonomieën</h2>
+  <p class="note">Meer heb je er niet nodig. De blogcategorieën blijven de gewone WordPress-categorieën.</p>
+  <div class="mx-wrap">
+    <table class="mx">
+      <thead>
+        <tr>
+          <th>Post type</th>
+          <th>specialisme<br><span class="f">de ruggengraat</span></th>
+          <th>branche<br><span class="f">horeca, zorg…</span></th>
+          <th>laag<br><span class="f">intern, de toren</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="hl"><td>dienst</td><td class="y">verplicht, 1</td><td class="y">meerdere</td><td class="y">1</td></tr>
+        <tr class="hl"><td>case</td><td class="y">meerdere</td><td class="y">1</td><td class="o">—</td></tr>
+        <tr class="hl"><td>medewerker</td><td class="y">meerdere</td><td class="y">meerdere</td><td class="o">—</td></tr>
+        <tr class="hl"><td>faq</td><td class="y">meerdere</td><td class="y">meerdere</td><td class="o">—</td></tr>
+        <tr><td>kennisterm</td><td class="y">meerdere</td><td class="o">—</td><td class="y">1</td></tr>
+        <tr><td>handleiding</td><td class="y">meerdere</td><td class="o">—</td><td class="y">1</td></tr>
+        <tr><td>tool</td><td class="y">meerdere</td><td class="o">—</td><td class="y">1</td></tr>
+        <tr><td>partner</td><td class="y">meerdere</td><td class="o">—</td><td class="o">—</td></tr>
+        <tr><td>vacature</td><td class="y">meerdere</td><td class="o">—</td><td class="o">—</td></tr>
+        <tr><td>changelog</td><td class="y">optioneel</td><td class="o">—</td><td class="o">—</td></tr>
+        <tr><td>post (blog)</td><td class="y">meerdere</td><td class="y">meerdere</td><td class="o">—</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="ok-box">
+    <h3>De taxonomie <code>laag</code> is puur intern</h3>
+    <p>Niet zichtbaar op de site, niet in de navigatie, geen archiefpagina. Wel de manier om intern te zien of er genoeg content per laag van de toren is — en om straks in de kennisbank te ordenen zonder dat een bezoeker het woord "laag" tegenkomt. Zet <code>public</code> op false, <code>show_in_rest</code> op true.</p>
+  </div>
+</section>
+
+<section class="wrap sec" id="stan">
+  <h2>Het Stan-voorbeeld</h2>
+  <p class="note">Precies wat je beschreef: koppel Stan aan SEO, en hij verschijnt overal waar SEO aan de orde is. Zonder dat iemand hem daar handmatig neerzet.</p>
+  <div class="flow">
+    <div class="fl-box">
+      <span class="t">POST TYPE · medewerker</span>
+      <span class="n">Stan</span>
+      <span class="m">Marketing manager</span>
+      <span class="tax">specialisme: seo, cro</span>
+    </div>
+    <div class="fl-ar">→</div>
+    <div class="fl-box fl-mid">
+      <span class="t">TAXONOMIE</span>
+      <span class="n">specialisme: seo</span>
+      <span class="m">De gedeelde term. Hier komt alles samen.</span>
+    </div>
+    <div class="fl-ar">←</div>
+    <div class="fl-box">
+      <span class="t">POST TYPE · faq</span>
+      <span class="n">"Hoe lang duurt SEO?"</span>
+      <span class="m">Vraag met antwoord</span>
+      <span class="tax">specialisme: seo</span>
+    </div>
+  </div>
+  <div class="flow" style="grid-template-columns:1fr;margin-top:0">
+    <div class="fl-box fl-out">
+      <span class="t">RESULTAAT · AUTOMATISCH BLOK ONDER DE FAQ</span>
+      <span class="n">Vragen over SEO? Praat met Stan.</span>
+      <span class="m">Query: haal medewerkers op waarvan <code>specialisme</code> overlapt met dat van dit item. Sorteer op volgorde. Toon de eerste. Voeg je morgen iemand toe met specialisme SEO, dan verschijnt die vanzelf mee.</span>
+    </div>
+  </div>
+  <div class="warn">
+    <h3>Bouw altijd een terugval in</h3>
+    <p>Wat als er geen medewerker met dat specialisme is, of als degene die er is net uit dienst gaat? Dan moet het blok niet leeg blijven. <b>Stel één standaard-contactpersoon in</b> in de sitebrede opties, die verschijnt als de query niets oplevert. Dit is het detail dat in de praktijk altijd vergeten wordt en waardoor er een half jaar een leeg blok op de site staat.</p>
+    <p>Geef medewerkers ook een veld <b>"toon in contactblokken"</b> — niet iedereen wil gebeld worden door onbekenden, en een stagiair hoort niet als eerste aanspreekpunt voor SEO te verschijnen.</p>
+  </div>
+</section>
+
+<section class="wrap sec" id="cpt">
+  <h2>De post types</h2>
+  <p class="note">Elf in totaal. De vier met een groene markering staan in fase 1; de rest voeg je toe wanneer de fase eraan toe is.</p>
+  <div class="cpts">
+
+    <div class="cpt">
+      <div class="cpt-hd"><span class="sl">dienst</span><span class="ph f1">FASE 1</span></div>
+      <p class="d">De acht primaire diensten plus de tweede laag. Eén dienst hoort bij precies één specialisme.</p>
+      <span class="lb">VELDEN</span>
+      <ul>
+        <li><b>kop</b> · merkregister, de constatering</li>
+        <li><b>lead</b> · het verklarende feit</li>
+        <li><b>primair</b> · true/false — menu of tweede laag</li>
+        <li><b>volgorde</b> · getal</li>
+        <li><b>versterkt</b> · relatie naar andere diensten, voedt het ecosysteem-diagram</li>
+        <li><b>title, meta, og</b> · SEO-velden</li>
+      </ul>
+      <span class="lb">TAXONOMIEËN</span>
+      <div class="taxes"><span class="tx">specialisme (1, verplicht)</span><span class="tx br">branche</span><span class="tx">laag</span></div>
+    </div>
+
+    <div class="cpt">
+      <div class="cpt-hd"><span class="sl">case</span><span class="ph f1">FASE 1</span></div>
+      <p class="d">Klantcases. Het hoofdcijfer is een apart veld zodat je het overal los kunt tonen.</p>
+      <span class="lb">VELDEN</span>
+      <ul>
+        <li><b>klantnaam, logo</b></li>
+        <li><b>cijfer</b> · getal + eenheid + label, apart opgeslagen</li>
+        <li><b>situatie, aanpak, resultaat</b> · drie tekstvelden</li>
+        <li><b>extra cijfers</b> · repeater</li>
+        <li><b>quote</b> · tekst + naam + functie</li>
+        <li><b>betrokken medewerkers</b> · relatie</li>
+        <li><b>doorlooptijd, startjaar</b></li>
+      </ul>
+      <span class="warn-f"><b>Verplicht veld: cijfer geverifieerd (ja/nee).</b> Staat het op nee, dan publiceert de case niet. Zo bouw je de getallentest uit de tone of voice in het systeem in plaats van in een afspraak.</span>
+      <span class="lb">TAXONOMIEËN</span>
+      <div class="taxes"><span class="tx">specialisme (meerdere)</span><span class="tx br">branche (1)</span></div>
+    </div>
+
+    <div class="cpt">
+      <div class="cpt-hd"><span class="sl">medewerker</span><span class="ph f1">FASE 1</span></div>
+      <p class="d">Het team. Voedt de contactblokken, de teampagina en de cases.</p>
+      <span class="lb">VELDEN</span>
+      <ul>
+        <li><b>naam, functie, portret, bio</b></li>
+        <li><b>e-mail, telefoon, linkedin</b></li>
+        <li><b>startjaar</b> · getal</li>
+        <li><b>begonnen als stagiair</b> · true/false — voedt het 70%-cijfer automatisch</li>
+        <li><b>toon in contactblokken</b> · true/false</li>
+        <li><b>volgorde</b> · bepaalt wie als eerste verschijnt</li>
+      </ul>
+      <span class="lb">TAXONOMIEËN</span>
+      <div class="taxes"><span class="tx">specialisme (meerdere)</span><span class="tx br">branche</span></div>
+    </div>
+
+    <div class="cpt">
+      <div class="cpt-hd"><span class="sl">faq</span><span class="ph f1">FASE 1</span></div>
+      <p class="d">Losse vragen, niet per pagina ingetikt. Eén vraag kan op meerdere plekken verschijnen.</p>
+      <span class="lb">VELDEN</span>
+      <ul>
+        <li><b>vraag, antwoord</b></li>
+        <li><b>toon op</b> · checkboxen: dienstenpagina, centrale FAQ, branchepagina, contact</li>
+        <li><b>volgorde</b></li>
+      </ul>
+      <span class="warn-f">Schrijf een FAQ-antwoord nooit twee keer. Eén vraag, meerdere plekken — anders loop je binnen een jaar tegen tegenstrijdige antwoorden aan.</span>
+      <span class="lb">TAXONOMIEËN</span>
+      <div class="taxes"><span class="tx">specialisme</span><span class="tx br">branche</span></div>
+    </div>
+
+    <div class="cpt">
+      <div class="cpt-hd"><span class="sl">vacature</span><span class="ph f1">FASE 1</span></div>
+      <p class="d">Vaste plekken en JRNXT-stageplekken in één type, gescheiden door een veld.</p>
+      <span class="lb">VELDEN</span>
+      <ul>
+        <li><b>titel, uren, niveau</b></li>
+        <li><b>type</b> · vast / stage (JRNXT) / afstuderen</li>
+        <li><b>open</b> · true/false</li>
+        <li><b>contactpersoon</b> · relatie naar medewerker</li>
+      </ul>
+      <span class="lb">TAXONOMIEËN</span>
+      <div class="taxes"><span class="tx">specialisme</span></div>
+    </div>
+
+    <div class="cpt">
+      <div class="cpt-hd"><span class="sl">kennisterm</span><span class="ph">FASE 3</span></div>
+      <p class="d">De kennisbank. Eén term, één pagina, in mensentaal.</p>
+      <span class="lb">VELDEN</span>
+      <ul>
+        <li><b>term, korte definitie</b> · één zin, herbruikbaar als tooltip</li>
+        <li><b>uitleg</b> · de volledige tekst</li>
+        <li><b>synoniemen</b> · voor zoeken en SEO</li>
+        <li><b>verwante termen</b> · relatie</li>
+      </ul>
+      <span class="warn-f">De korte definitie wordt herbruikt als tooltip op dienstenpagina's. Eén keer schrijven, overal gebruiken.</span>
+      <span class="lb">TAXONOMIEËN</span>
+      <div class="taxes"><span class="tx">specialisme</span><span class="tx">laag</span></div>
+    </div>
+
+    <div class="cpt">
+      <div class="cpt-hd"><span class="sl">handleiding</span><span class="ph">FASE 4</span></div>
+      <p class="d">Praktische how-to's, primair om naar klanten door te sturen.</p>
+      <span class="lb">VELDEN</span>
+      <ul>
+        <li><b>titel, inhoud, stappen</b></li>
+        <li><b>geschatte tijd</b></li>
+        <li><b>voor klanten</b> · true/false</li>
+      </ul>
+      <span class="lb">TAXONOMIEËN</span>
+      <div class="taxes"><span class="tx">specialisme</span><span class="tx">laag</span></div>
+    </div>
+
+    <div class="cpt">
+      <div class="cpt-hd"><span class="sl">tool</span><span class="ph">FASE 2</span></div>
+      <p class="d">De stack. Voedt de tools-pagina én de dienstenpagina's.</p>
+      <span class="lb">VELDEN</span>
+      <ul>
+        <li><b>naam, logo, waarvoor, link</b></li>
+        <li><b>wij gebruiken dit omdat</b> · één zin met opinie</li>
+      </ul>
+      <span class="lb">TAXONOMIEËN</span>
+      <div class="taxes"><span class="tx">specialisme</span><span class="tx">laag</span></div>
+    </div>
+
+    <div class="cpt">
+      <div class="cpt-hd"><span class="sl">partner</span><span class="ph">FASE 2</span></div>
+      <p class="d">Partners en accreditaties in één type, gescheiden door een veld.</p>
+      <span class="lb">VELDEN</span>
+      <ul>
+        <li><b>naam, logo, link</b></li>
+        <li><b>type</b> · partner / accreditatie / certificering</li>
+        <li><b>geldig tot</b> · datum, voor accreditaties die verlopen</li>
+      </ul>
+      <span class="warn-f">Het veld "geldig tot" laat een verlopen accreditatie automatisch verdwijnen. Anders staat er over twee jaar een badge waar je geen recht meer op hebt.</span>
+      <span class="lb">TAXONOMIEËN</span>
+      <div class="taxes"><span class="tx">specialisme</span></div>
+    </div>
+
+    <div class="cpt">
+      <div class="cpt-hd"><span class="sl">changelog</span><span class="ph">FASE 2</span></div>
+      <p class="d">Wat er aan de site veranderde en waarom. Half geautomatiseerd.</p>
+      <span class="lb">VELDEN</span>
+      <ul>
+        <li><b>datum, wat</b> · komt uit ClickUp via Zapier</li>
+        <li><b>waarom</b> · met de hand, één zin</li>
+        <li><b>effect</b> · optioneel getal</li>
+      </ul>
+      <span class="lb">TAXONOMIEËN</span>
+      <div class="taxes"><span class="tx">specialisme (optioneel)</span></div>
+    </div>
+
+    <div class="cpt">
+      <div class="cpt-hd"><span class="sl">post</span><span class="ph">FASE 3</span></div>
+      <p class="d">De blog. Gewone posts met de bestaande categorieën, plus de gedeelde taxonomieën.</p>
+      <span class="lb">CATEGORIEËN</span>
+      <ul>
+        <li>agency insights · brand legends</li>
+        <li>later: inside, newsroom, origin stories, the library, f*ck ups</li>
+      </ul>
+      <span class="lb">TAXONOMIEËN</span>
+      <div class="taxes"><span class="tx">specialisme</span><span class="tx br">branche</span></div>
+    </div>
+
+  </div>
+</section>
+
+<section class="wrap sec" id="auto">
+  <h2>Wat waar automatisch verschijnt</h2>
+  <p class="note">Dit is de opbrengst van het model. Geen van deze blokken wordt met de hand gevuld — ze volgen uit de taxonomie.</p>
+  <div class="auto">
+    <div class="au">
+      <span class="pg">/seo/ — een dienstenpagina</span>
+      <ul>
+        <li>Cases met specialisme SEO</li>
+        <li>FAQ's met specialisme SEO</li>
+        <li>De specialist: medewerker met SEO</li>
+        <li>Kennisbanktermen met SEO</li>
+        <li>Tools die we voor SEO gebruiken</li>
+        <li>Blogartikelen over SEO</li>
+        <li>Diensten die SEO versterken</li>
+      </ul>
+    </div>
+    <div class="au">
+      <span class="pg">/horeca/ — een branchepagina</span>
+      <ul>
+        <li>Cases in de horeca</li>
+        <li>Welke diensten hier het zwaarst wegen</li>
+        <li>FAQ's met branche horeca</li>
+        <li>De specialist met horeca-ervaring</li>
+        <li>Blogartikelen over horeca</li>
+      </ul>
+    </div>
+    <div class="au">
+      <span class="pg">/cases/de-zwarte-ruiter/</span>
+      <ul>
+        <li>Links naar de ingezette diensten</li>
+        <li>Link naar de branchepagina</li>
+        <li>De betrokken medewerkers</li>
+        <li>Verwante cases: zelfde branche of specialisme</li>
+      </ul>
+    </div>
+    <div class="au">
+      <span class="pg">/team/stan/</span>
+      <ul>
+        <li>Zijn specialismen, met links</li>
+        <li>Cases waar hij aan werkte</li>
+        <li>Blogartikelen die hij schreef</li>
+        <li>Vacatures waarvoor hij contactpersoon is</li>
+      </ul>
+    </div>
+    <div class="au">
+      <span class="pg">/over-ons/ — het team</span>
+      <ul>
+        <li>Aantal medewerkers: geteld</li>
+        <li>Percentage ex-stagiairs: berekend uit het veld, niet ingetikt</li>
+        <li>Gemiddeld aantal jaren in dienst: berekend</li>
+      </ul>
+    </div>
+    <div class="au">
+      <span class="pg">/werkwijze/ — het ecosysteem-diagram</span>
+      <ul>
+        <li>De zes tot acht kanalen uit de diensten</li>
+        <li>De verbindingen uit het veld "versterkt"</li>
+        <li>Voeg je een dienst toe, dan groeit het diagram mee</li>
+      </ul>
+    </div>
+  </div>
+  <div class="ok-box">
+    <h3>Cijfers die zichzelf bijhouden</h3>
+    <p>"Tien mensen in Hulsberg. Zeven begonnen hier als stagiair." Dat zijn geen ingetikte getallen maar een telling over het post type <code>medewerker</code>. Neem je iemand aan, dan klopt de zin de volgende dag nog steeds. Dit is precies het soort ding dat op een gewone site na een jaar niet meer klopt.</p>
+  </div>
+</section>
+
+<section class="wrap sec" id="groei">
+  <h2>Groeien zonder herbouw</h2>
+  <h3>Wat je nu vastlegt</h3>
+  <ul class="qs">
+    <li><span class="n">1</span><p><b>Alle drie de taxonomieën aanmaken</b>, inclusief <code>laag</code> die je pas later gebruikt. Achteraf toevoegen kost je honderden handmatige koppelingen.</p></li>
+    <li><span class="n">2</span><p><b>Alle specialisme-termen aanmaken</b>, ook die van de tweede laag. Een term zonder content kost niets.</p></li>
+    <li><span class="n">3</span><p><b>Slugs vastleggen en nooit meer wijzigen.</b> <code>seo</code>, <code>google-ads</code>, <code>social-advertising</code>, <code>e-mailmarketing</code>, <code>conversie-optimalisatie</code>, <code>landingspaginas</code>, <code>fotografie</code>, <code>videografie</code>. Een slug wijzigen breekt elke query die erop filtert.</p></li>
+    <li><span class="n">4</span><p><b>ACF-veldgroepen exporteren naar code</b> en in de repository zetten. Dan is je datamodel versiebeheerd in plaats van alleen in de database.</p></li>
+    <li><span class="n">5</span><p><b>Eén Elementor-loop-template per contenttype.</b> Een casekaart bouw je één keer; hij wordt hergebruikt op de dienstenpagina, de branchepagina, de homepage en het overzicht. Verander je hem, dan verandert hij overal.</p></li>
+  </ul>
+  <div class="warn">
+    <h3>Performance is het echte risico</h3>
+    <p>Een dienstenpagina met zeven dynamische blokken doet zeven database-queries. Bij tien zulke pagina's en een paar honderd bezoekers per dag gaat dat merkbaar tellen — en je eigen Core Web Vitals zijn precies wat je op de site claimt te beheersen.</p>
+    <p><b>Zet object caching aan</b> (Redis of Memcached, Kinsta biedt dit), <b>beperk elke loop tot drie tot zes items</b>, en laad blokken onder de vouw pas bij het scrollen. Meet het voor je live gaat, niet erna.</p>
+  </div>
+</section>
+
+<section class="wrap sec" id="vragen">
+  <h2>Drie dingen die ik moet weten</h2>
+  <ul class="qs">
+    <li><span class="n">1</span><p><b>Landingspagina's naast conversie-optimalisatie — of ook websites?</b> Je noemt landingspagina's als dienst. Maar je bouwt ook complete websites in WordPress, en "website laten maken" is een van de grootste zoektermen in je regio. Mis je die bewust, of hoort daar een pagina bij?</p></li>
+    <li><span class="n">2</span><p><b>Fotografie en videografie apart: ook apart in het ecosysteem?</b> Ze worden twee dienstenpagina's, maar in het diagram op de werkwijze-pagina worden het dan twee bollen die vrijwel dezelfde verbindingen hebben. Samenvoegen in het diagram, of echt los?</p></li>
+    <li><span class="n">3</span><p><b>Krijgt elke medewerker een eigen pagina?</b> Dat is beter voor SEO en voor het merk, maar bij tien mensen met verloop is het ook tien pagina's die bijgehouden moeten worden. Alternatief: alleen een blok op de teampagina, met een detailpagina voor wie er langer dan een jaar zit.</p></li>
+  </ul>
+</section>
+
+<footer class="wrap foot">James Robinson — Marketing &amp; Branding · Datamodel, concept september 2026</footer>
+
+<script>
+(function(){
+  var root=document.documentElement,tb=document.getElementById('themeBtn');
+  function cur(){var t=root.getAttribute('data-theme');return t||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}
+  function sync(){tb.textContent=cur()==='dark'?'Licht':'Donker'}
+  sync();
+  tb.addEventListener('click',function(){root.setAttribute('data-theme',cur()==='dark'?'light':'dark');sync()});
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',sync);
+})();
+</script>

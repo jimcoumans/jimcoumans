@@ -50,7 +50,7 @@ De tweede is korter, kouder en blijft langer hangen. Omdat de lezer het zelf moe
 
 ---
 
-## De veertien diensten
+## De vijftien diensten
 
 ---
 
@@ -102,6 +102,14 @@ Elke nacht een back-up. Elke minuut een controle. Verder niets te melden.
 
 ---
 
+### Landingspagina's
+
+**Eén pagina. Eén ding.**
+
+Een homepage doet twaalf dingen tegelijk. Een landingspagina doet er één, en meet of dat lukt.
+
+---
+
 ### Fotografie
 
 **De eerste twee seconden.**
@@ -110,7 +118,7 @@ Mensen kijken voordat ze lezen. Dat is geen voorkeur, dat is volgorde.
 
 ---
 
-### Video
+### Videografie
 
 **Twintig seconden. Drie alinea's minder.**
 

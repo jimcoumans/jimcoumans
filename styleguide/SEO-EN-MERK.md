@@ -58,6 +58,7 @@ Alleen de bovenste regel verandert. De constateringen blijven exact zoals ze zij
 | Social advertising bureau \| James Robinson | 42 | **Social advertising** | Bereik vóór de vraag. |
 | E-mailmarketing bureau Limburg \| James Robinson | 47 | **E-mailmarketing** | Van jou. Niet geleend. |
 | Conversie-optimalisatie (CRO) \| James Robinson | 46 | **Conversie-optimalisatie** | Hetzelfde verkeer. Ander resultaat. |
+| Landingspagina laten maken \| James Robinson | 43 | **Landingspagina's** | Eén pagina. Eén ding. |
 | WordPress hosting en onderhoud \| James Robinson | 47 | **Hosting en onderhoud** | Merkbaar alleen als het misgaat. |
 | Bedrijfsfotografie Limburg \| James Robinson | 43 | **Bedrijfsfotografie** | De eerste twee seconden. |
 | Bedrijfsvideo laten maken \| James Robinson | 42 | **Videografie** | Twintig seconden. Drie alinea's minder. |
@@ -154,6 +155,8 @@ Drie tot vijf per pagina. Helder geformuleerd, in de taal waarin mensen zoeken. 
 **Bedrijfsfotografie** · Bedrijfsfotografie in Limburg · Wat kost een fotoshoot? · Productfotografie
 
 **Videografie** · Een bedrijfsvideo laten maken · Wat kost een bedrijfsfilm? · Video voor social
+
+**Landingspagina's** · Een landingspagina laten maken · Wat is een landingspagina? · Landingspagina of homepage · Landingspagina voor Google Ads
 
 **Branding** · Wat is branding? · Een nieuwe huisstijl laten maken · Logo-ontwerp · Rebranding
 

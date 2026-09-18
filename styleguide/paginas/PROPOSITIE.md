@@ -38,7 +38,7 @@ Die splitsing is niet administratief. Ze lost het verwachtingsprobleem op dat in
 
 ---
 
-## De zes diensten
+## De acht diensten
 
 In het menu, in `/diensten/`, met een eigen landingspagina:
 
@@ -47,9 +47,13 @@ In het menu, in `/diensten/`, met een eigen landingspagina:
 3. Social advertising
 4. E-mailmarketing (nieuwsbrieven en automation)
 5. Conversie-optimalisatie
-6. Fotografie en video
+6. Landingspagina's
+7. Fotografie
+8. Videografie
 
 Schaalbaar, niet persoonsafhankelijk. Dit is de etalage.
+
+**Waarom acht en niet zes.** Landingspagina's zitten al in maand 1 van elk partnership, maar hadden geen pagina — terwijl er wél op gezocht wordt. Fotografie en videografie waren samengevoegd omdat het één team is; dat is een interne reden, geen reden voor de bezoeker. Iemand die een bedrijfsfilm zoekt en iemand die productfoto's zoekt, zoeken niet hetzelfde en willen niet hetzelfde zien. Eén gedeelde pagina wint geen van beide.
 
 ### De tweede laag
 
@@ -64,13 +68,15 @@ Wel een landingspagina voor de vindbaarheid. **Niet** in het menu, **niet** in h
 ```
 /                              Propositie
 /werkwijze/                    Het manifest + het ecosysteem + voor wie niet
-/diensten/                     Overzicht van zes
+/diensten/                     Overzicht van acht
   /seo/
   /google-ads/
   /social-advertising/
   /e-mailmarketing/
   /conversie-optimalisatie/
-  /fotografie-en-video/
+  /landingspaginas/
+  /fotografie/
+  /videografie/
 /cases/  +  /cases/[case]/
 /over-ons/
 /contact/
