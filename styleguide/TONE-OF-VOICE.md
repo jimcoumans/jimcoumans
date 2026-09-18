@@ -48,6 +48,14 @@ Apple's afstandelijkheid werkt bij een merk dat je al bewondert. Bij een bureau 
 
 **Neem Apple's zinsbouw over, niet hun temperatuur.**
 
+### Maar: koel betekent niet warm verkopen in korte zinnen
+
+De verleiding is om Apple's zinslengte over te nemen en er toch gewone verkoopcopy in te gieten. Kort, concreet, met een belofte en een vraag erachter.
+
+Dat is de gevaarlijkste fout, want het ziet er goed uit en leest als elk ander bureau.
+
+Apple's koelheid zit niet in de zinslengte. Hij zit in wat ze weigeren te doen: overtuigen. Zie principe 4.
+
 ---
 
 ## 4. Vijf principes, met voorbeelden
@@ -62,15 +70,17 @@ Apple's afstandelijkheid werkt bij een merk dat je al bewondert. Bij een bureau 
 
 Die laatste is de maatstaf. "Korte lijnen" kan iedereen schrijven. "Ook als het tegenvalt" kan bijna niemand waarmaken — dus dat is wat je opschrijft.
 
-### 2. Claim, bewijs, betekenis
+### 2. Claim, bewijs. Meer niet.
 
-Apple's vaste bouwsteen, en hij werkt in het Nederlands net zo goed.
+Apple's vaste bouwsteen. Let op wat er níet achter staat.
 
-> **Maandelijks opzegbaar.** Omdat een partnership niet moet draaien op een contract, maar op resultaat.
+> **Maandelijks opzegbaar.** Een partnership dat op een contract moet draaien, draait niet.
 
-> **Geen losse projecten.** Marketing gaat pas werken na drie maanden. Daarom werken we alleen in partnerships.
+> **Geen losse projecten.** Marketing gaat pas werken na drie maanden.
 
-Claim in vier woorden. Bewijs in één zin. Klaar.
+Claim in drie woorden. Bewijs in één zin. Dan stoppen.
+
+De verleiding is om er een derde zin achter te zetten die uitlegt waarom dat goed voor de lezer is. Dat is precies de zin die je weglaat.
 
 ### 3. Ritme: kort, kort, lang
 
@@ -80,21 +90,33 @@ Drie zinnen, aflopend in lengte omgekeerd. Dit is de techniek waarmee Apple hun 
 
 Gebruik het waar je een punt wil laten landen. Niet in elke alinea, dan wordt het een tic.
 
-### 4. Schrijf wat het voor hén betekent
+### 4. Leg het feit neer. Trek de conclusie niet.
 
-| Niet (wat wij doen) | Wel (wat zij eraan hebben) |
+Dit is het principe waar bijna elke bureautekst op stukloopt, en het verschil tussen verkopen en overtuigen.
+
+| Verkoper | Wij |
 |---|---|
-| Wij verzorgen data-driven performance marketing. | We zetten je budget in waar het rendeert. Elke week zie je waar het naartoe ging. |
-| Wij bieden realtime dashboards. | Je hoeft nooit te vragen hoe het ervoor staat. |
-| Wij werken met een retainermodel. | Je betaalt een vast bedrag per maand. Geen verrassingen op de factuur. |
+| Twee van de honderd bezoekers doet iets. Worden dat er vier, dan verdubbel je je omzet zonder één euro extra advertentiebudget. | Twee van de honderd doen iets. De andere achtennegentig waren er ook. |
+| Je bus rijdt elke dag langs duizend mensen — de goedkoopste reclame die er is. | Vinyl op een bus rijdt elke dag een andere route. |
+| Je weet welk bedrijf gisteren je prijzen bekeek. Bel je ze of niet? | Eén op de honderd bezoekende bedrijven neemt contact op. De rest bezocht je site ook. |
 
-### 5. Praat zoals je aan tafel praat
+De rechterkolom is korter, koeler en blijft langer hangen. Omdat de lezer het zelf moet afmaken.
+
+**Drie dingen die hieruit volgen:**
+
+- **Geen retorische vragen.** Nooit. Een vraag aan de lezer is een verkoper die aan je mouw trekt.
+- **Geen probleem-agitatie.** "Je adverteert al, maar weet niet wat het oplevert" is de oudste formule in B2B. Wij benoemen niemands pijn.
+- **Durf de nadelen te noemen.** "Maanden werk." "Levert op korte termijn niets op." Dat is het enige signaal op een website dat niet gekocht kan worden.
+
+### 5. Praat zoals je aan tafel praat — niet zoals je verkoopt
 
 De test: **zou je deze zin zo uitspreken tegen een klant?**
 
 Zou je zeggen "wij ontzorgen u volledig op marketinggebied"? Nee. Je zou zeggen: "je hoeft er niet meer over na te denken."
 
-Schrijf dat dan ook op.
+Let op de valkuil: aan tafel ben je soms ook aan het verkopen. Dat deel laat je weg. Wat overblijft is hoe je erover praat met een collega — feitelijk, zonder er iets van te willen.
+
+**De scheidslijn:** een zin die iets van de lezer wil, is verkoop. Een zin die iets vaststelt, is merk.
 
 ---
 

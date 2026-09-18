@@ -548,6 +548,20 @@ h3+.note,h3+.tbl-wrap,h3+.grid3{margin-top:0}
 .bigvs h4{font-family:var(--f-disp);font-size:20px;margin-bottom:14px}
 .bigvs p{font-size:15px;line-height:1.55;margin:0;max-width:none}
 .bigvs .old h4,.bigvs .old p{color:var(--tx3)}
+.dsvc{padding-block:52px;border-top:var(--s-hair) solid var(--ln-soft)}
+.dsvc:first-of-type{border-top:none;padding-top:0}
+.dsvc .nm{display:block;font-family:var(--f-text);font-size:13px;font-weight:600;color:var(--tx3);margin-bottom:14px}
+.dsvc .lead2{font-family:var(--f-disp);font-size:36px;font-weight:700;line-height:1.12;letter-spacing:-.020em;margin:0 0 20px;max-width:760px}
+.dsvc .body2{font-size:18px;line-height:1.55;color:var(--tx2);margin:0;max-width:600px}
+.never{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-hair);background:var(--ln-soft);border-radius:16px;overflow:hidden;margin:20px 0 32px}
+.never>div{background:var(--chip);padding:20px 24px;font-size:15px;line-height:1.5}
+.never .h{display:block;font-family:var(--f-mono);font-size:10px;font-weight:600;margin-bottom:8px;letter-spacing:.02em;color:var(--tx3)}
+.never .bad2{color:var(--red-tx);font-style:normal}
+.formula{background:var(--black);color:#f5f5f7;border-radius:18px;padding:30px 28px;font-family:var(--f-mono);font-size:14px;line-height:1.9;margin:20px 0 32px;overflow-x:auto}
+.formula .dim2{color:#86868b}
+.corr{border:var(--s-hair) solid var(--orange-200,#FCE3BE);background:var(--orange-100);border-radius:16px;padding:24px 26px;margin-bottom:36px}
+.corr h4{color:var(--orange-tx);margin-bottom:10px;font-family:var(--f-disp);font-size:18px}
+.corr p{color:var(--orange-tx);font-size:15px;margin:0;max-width:none;opacity:.9}
 .foot{padding-block:44px 60px;border-top:var(--s-hair) solid var(--ln-soft);font-size:13px;color:var(--tx3)}
 .toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,16px);background:var(--black);color:#fff;font-size:14px;padding:11px 20px;border-radius:980px;opacity:0;pointer-events:none;transition:opacity .2s var(--ease),transform .2s var(--ease-out);z-index:99}
 .toast.show{opacity:1;transform:translate(-50%,0)}
@@ -567,7 +581,11 @@ h3+.note,h3+.tbl-wrap,h3+.grid3{margin-top:0}
 }
 @media (max-width:734px){
   :root{--gutter:20px}
-  .vs,.steps4,.ipod,.bigvs{grid-template-columns:1fr}
+  .vs,.steps4,.ipod,.bigvs,.never{grid-template-columns:1fr}
+  .dsvc .lead2{font-size:26px}
+  .dsvc .body2{font-size:16px}
+  .dsvc{padding-block:36px}
+  .formula{font-size:12px;padding:22px 20px}
   .svc-body .k{font-size:21px}
   .ipod .txt{font-size:20px}
   .ipod>div{padding:24px 20px}
@@ -2065,15 +2083,15 @@ h3+.note,h3+.tbl-wrap,h3+.grid3{margin-top:0}
     </div>
     <p class="note" style="margin-bottom:44px">Die laatste is de maatstaf. <b>"Korte lijnen" kan iedereen schrijven. "Ook als het tegenvalt" kan bijna niemand waarmaken</b> — dus dat is wat je opschrijft.</p>
 
-    <h3>Claim, bewijs, betekenis</h3>
-    <p class="note" style="margin-bottom:6px">Apple's vaste bouwsteen. Claim in vier woorden, bewijs in één zin, klaar.</p>
+    <h3>Claim, bewijs. Meer niet.</h3>
+    <p class="note" style="margin-bottom:6px">Let op wat er níet achter staat. De verleiding is een derde zin die uitlegt waarom dat goed voor de lezer is. Dat is precies de zin die je weglaat.</p>
     <div class="rhythm-demo">
-      <p><b>Maandelijks opzegbaar.</b> Omdat een partnership niet moet draaien op een contract, maar op resultaat.</p>
+      <p><b>Maandelijks opzegbaar.</b> Een partnership dat op een contract moet draaien, draait niet.</p>
       <span class="mark">claim · bewijs</span>
     </div>
     <div class="rhythm-demo" style="margin-bottom:44px">
-      <p><b>Geen losse projecten.</b> Marketing gaat pas werken na drie maanden. Daarom werken we alleen in partnerships.</p>
-      <span class="mark">claim · bewijs · betekenis</span>
+      <p><b>Geen losse projecten.</b> Marketing gaat pas werken na drie maanden.</p>
+      <span class="mark">claim · bewijs · stop</span>
     </div>
 
     <h3>Ritme: kort, kort, lang</h3>
@@ -2083,16 +2101,23 @@ h3+.note,h3+.tbl-wrap,h3+.grid3{margin-top:0}
     </div>
     <p class="note" style="margin-bottom:44px">De techniek waarmee Apple hun pagina's laat ademen, en de reden dat hun tekst nooit dreunt. Gebruik het waar je een punt wil laten landen — niet in elke alinea, dan wordt het een tic.</p>
 
-    <h3>Schrijf wat het voor hén betekent</h3>
-    <div class="tbl-wrap" style="margin-bottom:44px">
+    <h3>Leg het feit neer. Trek de conclusie niet.</h3>
+    <p class="note" style="margin-bottom:18px">Het principe waar bijna elke bureautekst op stukloopt, en het verschil tussen verkopen en overtuigen.</p>
+    <div class="tbl-wrap" style="margin-bottom:24px">
       <table class="tbl tbl--wide">
-        <thead><tr><th>Niet — wat wij doen</th><th>Wel — wat zij eraan hebben</th></tr></thead>
+        <thead><tr><th>Verkoper</th><th>Wij</th></tr></thead>
         <tbody>
-          <tr><td style="color:var(--tx2)">Wij verzorgen data-driven performance marketing.</td><td style="font-weight:500">We zetten je budget in waar het rendeert. Elke week zie je waar het naartoe ging.</td></tr>
-          <tr><td style="color:var(--tx2)">Wij bieden realtime dashboards.</td><td style="font-weight:500">Je hoeft nooit te vragen hoe het ervoor staat.</td></tr>
-          <tr><td style="color:var(--tx2)">Wij werken met een retainermodel.</td><td style="font-weight:500">Je betaalt een vast bedrag per maand. Geen verrassingen op de factuur.</td></tr>
+          <tr><td style="color:var(--red-tx)">Twee van de honderd bezoekers doet iets. Worden dat er vier, dan verdubbel je je omzet zonder één euro extra advertentiebudget.</td><td style="font-weight:500">Twee van de honderd doen iets. De andere achtennegentig waren er ook.</td></tr>
+          <tr><td style="color:var(--red-tx)">Je bus rijdt elke dag langs duizend mensen — de goedkoopste reclame die er is.</td><td style="font-weight:500">Vinyl op een bus rijdt elke dag een andere route.</td></tr>
+          <tr><td style="color:var(--red-tx)">Je weet welk bedrijf gisteren je prijzen bekeek. Bel je ze of niet?</td><td style="font-weight:500">Eén op de honderd bezoekende bedrijven neemt contact op. De rest bezocht je site ook.</td></tr>
         </tbody>
       </table>
+    </div>
+    <div class="rules" style="margin-bottom:44px">
+      <div class="rule"><span class="rule-n">·</span><p><b>Geen retorische vragen.</b> Nooit. Een vraag aan de lezer is een verkoper die aan je mouw trekt.</p></div>
+      <div class="rule"><span class="rule-n">·</span><p><b>Geen probleem-agitatie.</b> "Je adverteert al maar weet niet wat het oplevert" is de oudste formule in B2B.</p></div>
+      <div class="rule"><span class="rule-n">·</span><p><b>Durf de nadelen te noemen.</b> Het enige signaal op een website dat niet gekocht kan worden.</p></div>
+      <div class="rule"><span class="rule-n">·</span><p><b>Koel is niet warm verkopen in korte zinnen.</b> Apple's koelheid zit in wat ze weigeren te doen: overtuigen.</p></div>
     </div>
 
     <h3>De verbodslijst</h3>
@@ -2182,231 +2207,163 @@ h3+.note,h3+.tbl-wrap,h3+.grid3{margin-top:0}
 <section class="sec sec--alt" id="diensten">
   <div class="wrap">
     <div class="sec-head">
-      <span class="eyebrow">Diensten in mensentaal</span>
-      <h2>3.000 nummers in je zak</h2>
-      <p class="lead">Onze klanten zijn ondernemers die uitblinken in hun eigen vak. Ze weten niet wat ROAS betekent, en dat hoeven ze ook niet te weten. Ze moeten het niet alleen snappen — ze moeten het willen hebben.</p>
+      <span class="eyebrow">Diensten</span>
+      <h2>Wat Apple écht doet</h2>
+      <p class="lead">Iedereen citeert "1.000 nummers in je zak" en denkt dat de les is: vertaal specificaties naar voordelen. Dat is de helft, en het is de verkeerde helft.</p>
     </div>
 
     <div class="ipod">
-      <div><span class="lbl3 a">WAT DE CONCURRENTIE ZEI</span><span class="txt dim">5 GB opslagcapaciteit</span></div>
-      <div><span class="lbl3 b2">WAT APPLE ZEI</span><span class="txt">1.000 nummers in je zak</span></div>
+      <div><span class="lbl3 a">DE VERKOPERSVERSIE</span><span class="txt dim">Eindelijk je hele collectie in je broekzak</span></div>
+      <div><span class="lbl3 b2">WAT APPLE SCHREEF</span><span class="txt">1.000 nummers in je zak</span></div>
     </div>
-    <p class="note" style="margin-bottom:44px">Zelfde product. Zelfde vijf gigabyte. Maar het ene is een specificatie en het andere is een beeld dat je meteen wilt hebben.</p>
+    <p class="note" style="margin-bottom:44px">Het is een <b>constatering over het product</b>. Geen belofte, geen appel, geen uitleg waarom dat fijn is. De lezer trekt zelf de conclusie dat het geweldig is. Apple helpt daar niet bij.</p>
 
-    <h3>De vertaalslag in vier stappen</h3>
-    <div class="steps4">
-      <div class="step4"><span class="n">1</span><p><b>Schrijf eerst de jargonversie op.</b> Die gebruiken we niet, maar hij maakt scherp wat we bedoelen.</p></div>
-      <div class="step4"><span class="n">2</span><p><b>Vraag: wat verandert er maandagochtend?</b> Niet in theorie. Concreet, in de dag van deze ondernemer.</p></div>
-      <div class="step4"><span class="n">3</span><p><b>Maak het telbaar of zichtbaar.</b> Een getal dat je je voorstelt. Een moment. Een voorwerp.</p></div>
-      <div class="step4"><span class="n">4</span><p><b>Doe de keukentafeltest.</b> Zou een horecabaas dit snappen zonder uitleg? Nee? Terug naar stap twee.</p></div>
+    <h3>Vijf dingen die Apple nooit doet</h3>
+    <div class="tbl-wrap" style="margin-bottom:44px">
+      <table class="tbl tbl--wide">
+        <thead><tr><th>Wat Apple nooit doet</th><th>Hoe dat er bij een bureau uitziet</th></tr></thead>
+        <tbody>
+          <tr><td class="name">De conclusie trekken</td><td style="color:var(--red-tx)">"Dus verdubbel je je omzet zonder extra budget"</td></tr>
+          <tr><td class="name">Je pijn benoemen</td><td style="color:var(--red-tx)">"Je adverteert al, maar weet niet wat het oplevert"</td></tr>
+          <tr><td class="name">Een vraag stellen</td><td style="color:var(--red-tx)">"Bel je ze of niet?"</td></tr>
+          <tr><td class="name">Jou aanspreken met een belofte</td><td style="color:var(--red-tx)">"Wij zorgen dat de juiste mensen klikken"</td></tr>
+          <tr class="hl"><td class="name">Alleen de voordelen noemen</td><td style="color:var(--red-tx)">Elke dienstenpagina ooit geschreven</td></tr>
+        </tbody>
+      </table>
     </div>
 
+    <h3>De formule</h3>
+    <div class="formula">[Het ding].<br>
+[Constatering]. [Constatering].<br><br>
+<span class="dim2">[Eén of twee zinnen die een feit toevoegen.<br>
+&nbsp;Geen conclusie. Geen belofte. Geen appel.]</span></div>
+    <p class="note" style="margin-bottom:44px">Fragmenten. Punten. Geen "je kunt". Geen "wij zorgen". Geen uitroepteken en zeker geen vraagteken.</p>
+
+    <h3>De enige regel die je hoeft te onthouden</h3>
+    <p class="note" style="margin-bottom:0"><b>Leg het feit neer. Trek de conclusie niet.</b></p>
+    <div class="never">
+      <div><span class="h">VERKOPER</span><span class="bad2">Twee van de honderd bezoekers doet iets. Worden dat er vier, dan verdubbel je je omzet zonder één euro extra advertentiebudget.</span></div>
+      <div><span class="h">WIJ</span><span style="font-weight:500">Twee van de honderd doen iets. De andere achtennegentig waren er ook.</span></div>
+    </div>
+    <p class="note" style="margin-bottom:64px">De tweede is korter, koeler en blijft langer hangen. Omdat de lezer het zelf moet afmaken.</p>
+
+    <h3 style="margin-bottom:8px">De veertien diensten</h3>
+    <p class="note" style="margin-bottom:40px">Hieronder staan ze zoals ze op de site komen te staan. Geen kaders, geen uitleg, geen knop.</p>
+    <div class="dsvc">
+      <span class="nm">Vindbaarheid</span>
+      <p class="lead2">Maanden werk. Daarna stopt het niet meer.</p>
+      <p class="body2">Zoekmachines belonen wat er al lang staat. Dat is de reden dat het traag begint, en de reden dat het blijft.</p>
+    </div>
+    <div class="dsvc">
+      <span class="nm">Zoekadvertenties</span>
+      <p class="lead2">Zichtbaar vanaf dag één. Weg op de dag dat je stopt.</p>
+      <p class="body2">Iemand die &ldquo;kozijnen vervangen prijs&rdquo; typt is verder dan iemand die &ldquo;kozijnen&rdquo; typt. Het verschil zit in die twee woorden.</p>
+    </div>
+    <div class="dsvc">
+      <span class="nm">Social</span>
+      <p class="lead2">Bereik vóór de vraag.</p>
+      <p class="body2">Niemand zoekt op een keuken tot hij er een wil. Wat daarvoor gebeurt, gebeurt hier.</p>
+    </div>
+    <div class="dsvc">
+      <span class="nm">De lijst</span>
+      <p class="lead2">Van jou. Niet geleend.</p>
+      <p class="body2">Volgers staan bij Meta. Posities staan bij Google. Een adressenlijst staat bij jou.</p>
+    </div>
+    <div class="dsvc">
+      <span class="nm">Conversie</span>
+      <p class="lead2">Hetzelfde verkeer. Ander resultaat.</p>
+      <p class="body2">Twee van de honderd doen iets. De andere achtennegentig waren er ook.</p>
+    </div>
+    <div class="dsvc">
+      <span class="nm">Hosting</span>
+      <p class="lead2">Merkbaar alleen als het misgaat.</p>
+      <p class="body2">Elke nacht een back-up. Elke minuut een controle. Verder niets te melden.</p>
+    </div>
+    <div class="dsvc">
+      <span class="nm">Fotografie</span>
+      <p class="lead2">De eerste twee seconden.</p>
+      <p class="body2">Mensen kijken voordat ze lezen. Dat is geen voorkeur, dat is volgorde.</p>
+    </div>
+    <div class="dsvc">
+      <span class="nm">Video</span>
+      <p class="lead2">Twintig seconden. Drie alinea's minder.</p>
+      <p class="body2">Sommige vakken zijn lastig uit te leggen en eenvoudig te laten zien.</p>
+    </div>
+    <div class="dsvc">
+      <span class="nm">Merk</span>
+      <p class="lead2">Wat overblijft als de prijs gelijk is.</p>
+      <p class="body2">Levert op korte termijn niets op. Bepaalt op lange termijn alles.</p>
+    </div>
+    <div class="dsvc">
+      <span class="nm">Belettering</span>
+      <p class="lead2">Eén keer aangebracht. Jaren onderweg.</p>
+      <p class="body2">Vinyl op een gevel gaat jaren mee. Vinyl op een bus rijdt elke dag een andere route.</p>
+    </div>
+    <div class="dsvc">
+      <span class="nm">Drukwerk</span>
+      <p class="lead2">Blijft liggen.</p>
+      <p class="body2">Een folder op de keukentafel heeft geen sluitknop.</p>
+    </div>
+    <div class="dsvc">
+      <span class="nm">Automatisering</span>
+      <p class="lead2">Werkt door na vijven.</p>
+      <p class="body2">Een herinnering die vanzelf verstuurd wordt, wordt ook verstuurd in een drukke week.</p>
+    </div>
+    <div class="dsvc">
+      <span class="nm">Leadinfo</span>
+      <p class="lead2">Bedrijven laten sporen achter.</p>
+      <p class="body2">Eén op de honderd bezoekende bedrijven neemt contact op. De rest bezocht je site ook.</p>
+    </div>
+    <div class="dsvc">
+      <span class="nm">Het partnership</span>
+      <p class="lead2">Een marketingafdeling. Zonder de afdeling.</p>
+      <p class="body2">Vast bedrag per maand. Maandelijks opzegbaar. Alles zichtbaar in ClickUp, ook wat tegenvalt.</p>
+    </div>
+
+    <h3 class="sub">Waarom dit onorthodox is</h3>
     <div class="grid2" style="margin-bottom:44px">
-      <div class="demo" style="border-left:var(--s-accent) solid var(--red);border-radius:0 18px 18px 0">
-        <h4 style="font-family:var(--f-disp);font-size:18px;margin-bottom:8px">Elk getal moet echt zijn</h4>
-        <p class="note" style="font-size:14px;margin:0">Apple's 1.000 nummers klopte. Verzin je een getal, dan is de hele techniek waardeloos en verandert het in precies het soort marketingpraat waar we vanaf willen. Staat er hieronder een getal tussen blokhaken, vul dan je eigen cijfer in — of laat het weg.</p>
+      <div class="demo">
+        <h4 style="font-family:var(--f-disp);font-size:18px;margin-bottom:8px">Het verkoopt niet</h4>
+        <p class="note" style="font-size:14px;margin:0">Er staat nergens een reden om te bellen. Geen voordeel, geen belofte, geen urgentie. Dat is niet nalatigheid — het is de positie. Een bureau dat zijn diensten moet verkopen op de dienstenpagina, verraadt dat de rest van de site het niet redt.</p>
       </div>
-      <div class="demo" style="border-left:var(--s-accent) solid var(--blue);border-radius:0 18px 18px 0">
-        <h4 style="font-family:var(--f-disp);font-size:18px;margin-bottom:8px">De dienst is nooit het onderwerp</h4>
-        <p class="note" style="font-size:14px;margin:0">Niet "SEO zorgt dat je gevonden wordt", maar "Ze zoeken je al". De klant is het onderwerp van de zin. Altijd. Zodra de dienst vooraan staat, schrijf je over jezelf in plaats van over hem.</p>
+      <div class="demo">
+        <h4 style="font-family:var(--f-disp);font-size:18px;margin-bottom:8px">Het noemt de nadelen</h4>
+        <p class="note" style="font-size:14px;margin:0">"Maanden werk." "Weg op de dag dat je stopt." "Levert op korte termijn niets op." Geen enkel bureau in Nederland schrijft dit op. Precies daarom werkt het: het is het enige signaal op de hele pagina dat niet gekocht kan worden.</p>
+      </div>
+      <div class="demo">
+        <h4 style="font-family:var(--f-disp);font-size:18px;margin-bottom:8px">Het legt niets uit</h4>
+        <p class="note" style="font-size:14px;margin:0">Er staat nergens wat SEO is. Wie het niet weet, vraagt het in het gesprek — en dat gesprek is toch het doel. Uitleggen is de reflex van iemand die bang is niet gekozen te worden.</p>
+      </div>
+      <div class="demo">
+        <h4 style="font-family:var(--f-disp);font-size:18px;margin-bottom:8px">Het gaat niet over de klant</h4>
+        <p class="note" style="font-size:14px;margin:0">"Jij", "jouw bedrijf", "je omzet" — bijna nergens. De teksten gaan over het werk zelf. Dat voelt tegennatuurlijk, want elk copywritingboek zegt het omgekeerde. Maar elk copywritingboek is ook gelezen door elk ander bureau.</p>
       </div>
     </div>
 
-    <h3 class="sub">Veertien diensten, vertaald</h3>
-    <p class="note" style="margin-bottom:24px">Elke kaart: de jargonversie die we níet gebruiken, de kop (H2 of H3), de zin eronder (Lead), en een bewijsregel.</p>
-    <div class="svc">
-      <div class="svc-head"><h4>SEO</h4></div>
-      <div class="svc-jargon">Wij optimaliseren uw online vindbaarheid door middel van technische SEO, contentoptimalisatie en autoriteitsopbouw.</div>
-      <div class="svc-body">
-        <span class="k">Ze zoeken je al. Ze vinden je alleen niet.</span>
-        <p class="s">Elke maand typen duizenden mensen in jouw regio precies in wat jij verkoopt. De enige vraag is bij wie ze uitkomen.</p>
-        <span class="svc-proof">In Zuid-Limburg wordt maandelijks [X] keer gezocht op [zoekterm]. Nu staat de buurman bovenaan.</span>
-      </div>
-      <div class="svc-why"><b>Waarom dit werkt:</b> Een ondernemer denkt bij SEO aan een technisch trucje. Dit maakt er een gemiste klant van die letterlijk op zoek was.</div>
-    </div>
-    <div class="svc">
-      <div class="svc-head"><h4>SEA — Google Ads</h4></div>
-      <div class="svc-jargon">Data-driven SEA-campagnes met continue optimalisatie op ROAS en kwaliteitsscore.</div>
-      <div class="svc-body">
-        <span class="k">Bovenaan staan op het moment dat iemand wil kopen.</span>
-        <p class="s">Niet als iemand rondkijkt. Maar als iemand &quot;kozijnen vervangen prijs&quot; intypt. Dat verschil is het hele punt.</p>
-        <span class="svc-proof">Je betaalt pas als iemand klikt. Wij zorgen dat de juiste mensen klikken.</span>
-      </div>
-      <div class="svc-why"><b>Waarom dit werkt:</b> De meeste ondernemers hebben ooit geld in Google Ads gepompt en niets teruggezien. Dit benoemt precies waar dat misging.</div>
-    </div>
-    <div class="svc">
-      <div class="svc-head"><h4>Social ads</h4></div>
-      <div class="svc-jargon">Meta advertising met lookalike audiences, retargeting funnels en creatieve A/B-testing.</div>
-      <div class="svc-body">
-        <span class="k">Mensen bereiken vóórdat ze gaan zoeken.</span>
-        <p class="s">Niemand googelt op een nieuwe keuken tot hij er een wil. Social zorgt dat jij al in zijn hoofd zit als dat moment komt.</p>
-        <span class="svc-proof">Iemand bekeek je prijzen en klikte weg. Volgende week ziet hij jouw werk voorbijkomen op Instagram.</span>
-      </div>
-      <div class="svc-why"><b>Waarom dit werkt:</b> Legt in één zin het verschil met Google uit — iets waar de meeste ondernemers over struikelen.</div>
-    </div>
-    <div class="svc">
-      <div class="svc-head"><h4>Nieuwsbrieven</h4></div>
-      <div class="svc-jargon">E-mailmarketing met segmentatie, automation flows en A/B-getest onderwerpregelbeleid.</div>
-      <div class="svc-body">
-        <span class="k">De enige groep die echt van jou is.</span>
-        <p class="s">Je volgers op Instagram zijn geleend van Meta. Je positie in Google is geleend van Google. Je mailinglijst is van jou — en die kost je niets per bericht.</p>
-        <span class="svc-proof">[X] mensen die ooit ja zeiden. Eén mail, geen advertentiebudget.</span>
-      </div>
-      <div class="svc-why"><b>Waarom dit werkt:</b> Eigendom. Een ondernemer die zijn eigen zaak opbouwde, snapt het verschil tussen huren en bezitten meteen.</div>
-    </div>
-    <div class="svc">
-      <div class="svc-head"><h4>CRO</h4></div>
-      <div class="svc-jargon">Conversion rate optimalisatie op basis van user journey analyse, heatmaps en gestructureerd A/B-testen.</div>
-      <div class="svc-body">
-        <span class="k">Meer klanten, zonder één extra bezoeker.</span>
-        <p class="s">Van de honderd mensen op je site doet er nu twee iets. Worden dat er vier, dan verdubbel je je omzet zonder een euro extra advertentiebudget.</p>
-        <span class="svc-proof">Je hebt het verkeer al. Er lekt alleen te veel weg.</span>
-      </div>
-      <div class="svc-why"><b>Waarom dit werkt:</b> Puur rekenwerk, en een ondernemer rekent. Het is bovendien de enige dienst waarbij meer omzet niets extra's kost.</div>
-    </div>
-    <div class="svc">
-      <div class="svc-head"><h4>Hosting</h4></div>
-      <div class="svc-jargon">Managed WordPress hosting met SSL-certificaat, dagelijkse back-ups en 99,9% gegarandeerde uptime.</div>
-      <div class="svc-body">
-        <span class="k">Je site staat er. Punt.</span>
-        <p class="s">Je merkt hosting alleen als het misgaat. Daarom merk je bij ons niets.</p>
-        <span class="svc-proof">Elke nacht een back-up. Gaat er toch iets mis, dan staat je site binnen een uur weer overeind.</span>
-      </div>
-      <div class="svc-why"><b>Waarom dit werkt:</b> Hosting verkopen op specificaties is onbegonnen werk. Verkoop het op de afwezigheid van zorgen.</div>
-    </div>
-    <div class="svc">
-      <div class="svc-head"><h4>Fotografie</h4></div>
-      <div class="svc-jargon">Professionele bedrijfs- en productfotografie, afgestemd op uw merkidentiteit.</div>
-      <div class="svc-body">
-        <span class="k">De eerste indruk is een foto.</span>
-        <p class="s">Mensen beslissen in twee seconden of ze verder kijken. Dat doen ze op wat ze zien, niet op wat er staat.</p>
-        <span class="svc-proof">Een gast kiest zijn restaurant met zijn ogen. Op Instagram, op Google, op je site — en pas daarna met zijn smaak.</span>
-      </div>
-      <div class="svc-why"><b>Waarom dit werkt:</b> Maakt van fotografie geen kostenpost maar het eerste wat een klant van je ziet.</div>
-    </div>
-    <div class="svc">
-      <div class="svc-head"><h4>Videografie</h4></div>
-      <div class="svc-jargon">Videoproductie voor commerciële, corporate en social doeleinden.</div>
-      <div class="svc-body">
-        <span class="k">Laten zien is sneller dan uitleggen.</span>
-        <p class="s">Wat je in drie alinea's probeert uit te leggen, snapt iemand in twintig seconden. En hij onthoudt het ook nog.</p>
-        <span class="svc-proof">Je vak is moeilijk uit te leggen en makkelijk te laten zien.</span>
-      </div>
-      <div class="svc-why"><b>Waarom dit werkt:</b> Die bewijsregel raakt precies de frustratie van elke installateur, aannemer of specialist die zijn werk niet op papier krijgt.</div>
-    </div>
-    <div class="svc">
-      <div class="svc-head"><h4>Branding</h4></div>
-      <div class="svc-jargon">Merkidentiteit, positionering en visuele vertaling naar een onderscheidend merkverhaal.</div>
-      <div class="svc-body">
-        <span class="k">Waarom ze jou kiezen als de prijs hetzelfde is.</span>
-        <p class="s">Merk is wat overblijft als je niet de goedkoopste wilt zijn. Het is het verschil tussen drie offertes vergelijken en jou bellen.</p>
-        <span class="svc-proof">Zonder merk word je vergeleken op prijs. Dat is een wedstrijd die je niet wilt winnen.</span>
-      </div>
-      <div class="svc-why"><b>Waarom dit werkt:</b> Branding is het moeilijkst te verkopen omdat het abstract is. Dit maakt het een antwoord op de meest concrete pijn die er is.</div>
-    </div>
-    <div class="svc">
-      <div class="svc-head"><h4>Signing</h4></div>
-      <div class="svc-jargon">Bedrijfssignage, gevelbelettering en wagenparkbestickering in full colour.</div>
-      <div class="svc-body">
-        <span class="k">Je bus rijdt elke dag langs duizend mensen.</span>
-        <p class="s">Gevel, bus, bouwbord. De enige reclame die je één keer betaalt en jaren blijft werken.</p>
-        <span class="svc-proof">Een advertentie stopt als je stopt met betalen. Een bus niet.</span>
-      </div>
-      <div class="svc-why"><b>Waarom dit werkt:</b> De zuiverste vertaalslag in de lijst. Belettering is een saai product; bereik is dat niet.</div>
-    </div>
-    <div class="svc">
-      <div class="svc-head"><h4>Drukwerk</h4></div>
-      <div class="svc-jargon">Van visitekaartje tot beursstand: full-colour drukwerk in elke gewenste oplage.</div>
-      <div class="svc-body">
-        <span class="k">Iets dat blijft liggen.</span>
-        <p class="s">Een goede folder ligt drie weken op de keukentafel. Een advertentie is na drie seconden weg.</p>
-        <span class="svc-proof">Wat je in handen geeft, wordt niet weggeklikt.</span>
-      </div>
-      <div class="svc-why"><b>Waarom dit werkt:</b> Drukwerk wordt vaak weggezet als ouderwets. Dit maakt van het fysieke karakter juist het voordeel.</div>
-    </div>
-    <div class="svc">
-      <div class="svc-head"><h4>Automations</h4></div>
-      <div class="svc-jargon">Marketing automation en workflow-automatisering voor efficiëntere processen.</div>
-      <div class="svc-body">
-        <span class="k">Werk dat doorgaat als jij naar huis gaat.</span>
-        <p class="s">Een offerte die vanzelf een herinnering krijgt. Een nieuwe klant die automatisch je welkomstmail ontvangt. Niets meer dat blijft liggen omdat het druk was.</p>
-        <span class="svc-proof">Je vergeet niet meer na te bellen. Het gebeurt gewoon.</span>
-      </div>
-      <div class="svc-why"><b>Waarom dit werkt:</b> &quot;Omdat het druk was&quot; is de meest herkenbare zin in dit document. Elke ondernemer heeft daar deals door verloren.</div>
-    </div>
-    <div class="svc">
-      <div class="svc-head"><h4>Tooling — Leadinfo</h4></div>
-      <div class="svc-jargon">Implementatie van Leadinfo voor B2B lead identificatie en accountbased opvolging.</div>
-      <div class="svc-body">
-        <span class="k">Zien wie er langskwam en niets zei.</span>
-        <p class="s">Van elke honderd bedrijven die je site bezoeken, neemt er één contact op. De andere negenennegentig ken je voortaan ook.</p>
-        <span class="svc-proof">Je weet welk bedrijf gisteren je prijzen bekeek. Bel je ze of niet?</span>
-      </div>
-      <div class="svc-why"><b>Waarom dit werkt:</b> Die laatste vraag maakt het onweerstaanbaar. Het is geen dienst meer, het is een gemiste kans die je vanaf nu ziet.</div>
-    </div>
-    <div class="svc">
-      <div class="svc-head"><h4>De marketing setup</h4></div>
-      <div class="svc-jargon">Een fullservice marketingpartnership op basis van een maandelijks retainermodel met radicale transparantie.</div>
-      <div class="svc-body">
-        <span class="k">Je eigen marketingafdeling. Zonder de vaste lasten.</span>
-        <p class="s">Eén marketeer in dienst kost je een jaarsalaris en dekt één vakgebied. Bij ons krijg je een team dat alles dekt, voor minder.</p>
-        <span class="svc-proof">Je ziet in ClickUp waar we mee bezig zijn. Ook als het tegenvalt.</span>
-      </div>
-      <div class="svc-why"><b>Waarom dit werkt:</b> Vergelijkt met iets dat elke ondernemer kent — iemand aannemen — en maakt de keuze daarmee rekenbaar.</div>
+    <h3>Zo pas je het toe op een nieuwe dienst</h3>
+    <ol class="steps" style="max-width:680px;margin-bottom:44px">
+      <li><b>Noem het ding.</b> Eén woord, twee als het moet. Geen "-oplossingen", geen "-optimalisatie", geen "-strategie".</li>
+      <li><b>Schrijf twee constateringen.</b> Feiten over hoe het werkt. Minstens één ervan mag ongemakkelijk zijn.</li>
+      <li><b>Voeg één zin toe die iets verklaart.</b> Geen conclusie. Geen belofte.</li>
+      <li><b>Schrap elke zin die begint met "je" of "wij".</b></li>
+      <li><b>Schrap elk vraagteken.</b></li>
+      <li><b>Lees het hardop.</b> Klinkt het als iemand die iets wil? Herschrijven.</li>
+    </ol>
+
+    <h3>De vier testen</h3>
+    <div style="max-width:700px;margin-bottom:44px">
+      <div class="testq"><span class="n">1</span><p><b>De verkopertest.</b> Staat er ergens een reden om te bellen? Schrappen.</p></div>
+      <div class="testq"><span class="n">2</span><p><b>De conclusietest.</b> Trek ik iets voor de lezer? Schrappen.</p></div>
+      <div class="testq"><span class="n">3</span><p><b>De ongemaktest.</b> Staat er minstens één ding dat tegen ons werkt? Nee? Dan ben je niet eerlijk genoeg.</p></div>
+      <div class="testq"><span class="n">4</span><p><b>De concurrententest.</b> Zou een ander bureau dit durven publiceren? Als het antwoord ja is, is het nog niet scherp genoeg.</p></div>
     </div>
 
-    <h3 class="sub">Het woordenboek</h3>
-    <p class="note" style="margin-bottom:18px">Links wat wij zeggen, rechts wat de klant hoort. <b>Gebruik de linkerkolom alleen in gesprekken met marketeers.</b> Op de site, in offertes en in e-mails staat de rechterkolom.</p>
-    <div class="grid2">
-      <div class="tbl-wrap"><table class="dict"><tbody>
-            <tr><td>conversie</td><td>mensen die iets doen</td></tr>
-            <tr><td>conversieratio</td><td>hoeveel bezoekers klant worden</td></tr>
-            <tr><td>traffic</td><td>bezoekers</td></tr>
-            <tr><td>ROAS</td><td>wat je terugkrijgt per euro</td></tr>
-            <tr><td>funnel</td><td>de weg van kijken naar kopen</td></tr>
-            <tr><td>impressies</td><td>hoe vaak het gezien is</td></tr>
-            <tr><td>CTR</td><td>hoeveel mensen erop klikken</td></tr>
-            <tr><td>organisch</td><td>zonder ervoor te betalen</td></tr>
-            <tr><td>lead</td><td>iemand die interesse toont</td></tr>
-            <tr><td>retargeting</td><td>mensen die al bij je waren</td></tr>
-            <tr><td>segmentatie</td><td>de juiste mail naar de juiste mensen</td></tr>
-            <tr><td>attributie</td><td>welke advertentie de klant opleverde</td></tr>
-            <tr><td>KPI</td><td>waar je op stuurt</td></tr>
-            <tr><td>engagement</td><td>reacties, likes en shares</td></tr>
-      </tbody></table></div>
-      <div class="tbl-wrap"><table class="dict"><tbody>
-            <tr><td>SERP</td><td>de resultatenpagina van Google</td></tr>
-            <tr><td>bounce rate</td><td>mensen die meteen wegklikken</td></tr>
-            <tr><td>CMS</td><td>waar je je site mee aanpast</td></tr>
-            <tr><td>SSL</td><td>het slotje in de adresbalk</td></tr>
-            <tr><td>uptime</td><td>hoe vaak je site het doet</td></tr>
-            <tr><td>A/B-test</td><td>twee versies naast elkaar leggen</td></tr>
-            <tr><td>UX</td><td>hoe makkelijk je site werkt</td></tr>
-            <tr><td>responsive</td><td>werkt ook op je telefoon</td></tr>
-            <tr><td>indexeren</td><td>opgenomen worden in Google</td></tr>
-            <tr><td>domeinautoriteit</td><td>hoeveel vertrouwen Google in je site heeft</td></tr>
-            <tr><td>customer journey</td><td>wat iemand doet voor hij klant wordt</td></tr>
-            <tr><td>touchpoint</td><td>een moment waarop iemand je tegenkomt</td></tr>
-            <tr><td>brand awareness</td><td>hoeveel mensen je kennen</td></tr>
-            <tr><td>USP</td><td>waarom ze jou kiezen</td></tr>
-      </tbody></table></div>
+    <div class="sample" style="border-left-color:var(--lime)">
+      <span class="lbl2">het risico</span>
+      <p class="s" style="font-size:16px;color:var(--tx)">Deze teksten zijn kaal. Sommige klanten haken erop af, omdat ze willen dat je uitlegt waarom je goed bent.</p>
+      <p class="s" style="font-size:16px;color:var(--tx)">Dat is de bedoeling. Een bureau dat op alles ja zegt en alles uitlegt, trekt klanten aan die overtuigd moeten worden — en die blijven overtuigd moeten worden, elke maand opnieuw.</p>
+      <p class="s" style="font-size:16px;color:var(--tx);margin-bottom:0"><b>De vraag is niet of dit te gewaagd is. De vraag is of je de klanten die afhaken had willen hebben.</b></p>
     </div>
-
-    <h3 class="sub">De vier testen</h3>
-    <div style="max-width:700px">
-      <div class="testq"><span class="n">1</span><p><b>De keukentafeltest.</b> Snapt een horecabaas dit zonder één woord uitleg?</p></div>
-      <div class="testq"><span class="n">2</span><p><b>De getallentest.</b> Klopt elk getal dat er staat? Kun je het bewijzen?</p></div>
-      <div class="testq"><span class="n">3</span><p><b>De onderwerptest.</b> Is de klant het onderwerp van de zin, of onze dienst?</p></div>
-      <div class="testq"><span class="n">4</span><p><b>De concurrententest.</b> Zou een ander bureau dit ook kunnen schrijven?</p></div>
-    </div>
-
-    <h3 class="sub">Nog één keer, naast elkaar</h3>
-    <p class="note">Zelfde dienst, zelfde bureau.</p>
-    <div class="bigvs">
-      <div class="old"><h4>SEO-optimalisatie</h4><p>Wij verbeteren uw organische vindbaarheid door middel van technische optimalisatie, contentstrategie en gerichte autoriteitsopbouw. Onze data-driven aanpak zorgt voor duurzame groei in relevante zoekresultaten.</p></div>
-      <div><h4>Ze zoeken je al. Ze vinden je alleen niet.</h4><p>Elke maand typen duizenden mensen in jouw regio precies in wat jij verkoopt. De enige vraag is bij wie ze uitkomen.</p></div>
-    </div>
-    <p class="note" style="margin-top:20px">De linkerkant is niet fout. Hij is alleen <b>onzichtbaar</b> — want elk bureau in Limburg heeft die pagina al.</p>
   </div>
 </section>
 
