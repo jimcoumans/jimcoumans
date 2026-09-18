@@ -1,0 +1,264 @@
+<title>Website roadmap</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@600;700&display=swap">
+<style>
+:root{
+  --page:#fbfbfd;--white:#fff;--alt:#f5f5f7;--tx:#1d1d1f;--tx2:#6e6e73;--tx3:#86868b;
+  --ln:#d2d2d7;--ln-s:#e5e5e9;--blue:#007aff;--link:#0066cc;--act:#0857c3;--act-h:#003967;
+  --b100:#e0efff;--b50:#f0f7ff;--lime:#c4f000;--lime-tx:#5a7000;--lime100:#f2fccc;
+  --green:#34c759;--green-tx:#1d7d3f;--green100:#e6f7eb;
+  --orange-tx:#94590a;--orange100:#fef2e0;--red-tx:#c02a22;--red100:#fdecea;
+  --purple-tx:#7e2fb0;--purple100:#f5eafb;
+  --black:#1c1c1e;--dark2:#2c2d2e;--inv:#f5f5f7;--inv2:#a1a1a6;
+  --fd:"Inter Tight","Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --ft:"Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --fm:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --e:cubic-bezier(.25,.1,.25,1);--eo:cubic-bezier(.16,1,.3,1);--g:32px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --page:#000;--white:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--green-tx:#41c96a;--orange-tx:#f0a040;
+  --red-tx:#ff6b61;--purple-tx:#c77ce8;--lime-tx:#d9ff33;
+  --b100:rgba(0,122,255,.18);--b50:rgba(0,122,255,.08);--lime100:rgba(196,240,0,.16);
+  --green100:rgba(52,199,89,.16);--orange100:rgba(246,160,39,.18);--red100:rgba(255,59,48,.14);
+  --purple100:rgba(175,82,222,.16);
+}}
+:root[data-theme="dark"]{
+  --page:#000;--white:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--green-tx:#41c96a;--orange-tx:#f0a040;
+  --red-tx:#ff6b61;--purple-tx:#c77ce8;--lime-tx:#d9ff33;
+  --b100:rgba(0,122,255,.18);--b50:rgba(0,122,255,.08);--lime100:rgba(196,240,0,.16);
+  --green100:rgba(52,199,89,.16);--orange100:rgba(246,160,39,.18);--red100:rgba(255,59,48,.14);
+  --purple100:rgba(175,82,222,.16);
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--tx);font-family:var(--ft);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+html{scroll-behavior:smooth;scroll-padding-top:110px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition-duration:.01ms!important}}
+:focus-visible{outline:none;box-shadow:0 0 0 4px rgba(0,122,255,.4);border-radius:8px}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:60;background:var(--page);border-bottom:1px solid var(--ln-s)}
+.bar-in{max-width:1180px;margin:0 auto;padding:12px var(--g);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.bar b{font-family:var(--fd);font-size:15px;font-weight:700;letter-spacing:-.016em;margin-right:6px}
+.bar button{font:inherit;font-size:12.5px;cursor:pointer;background:transparent;border:1px solid var(--ln);color:var(--tx2);border-radius:980px;padding:5px 13px;transition:all .15s var(--e);white-space:nowrap}
+.bar button:hover{color:var(--tx);border-color:var(--tx3)}
+.bar button.on{background:var(--act);border-color:var(--act);color:#fff}
+.bar .sp{margin-left:auto}
+
+.wrap{max-width:1180px;margin:0 auto;padding-inline:var(--g)}
+.hero{padding-block:72px 44px}
+h1{font-family:var(--fd);font-size:56px;font-weight:700;line-height:1.07;letter-spacing:-.024em;margin:0 0 18px;text-wrap:balance}
+.lead{font-size:21px;line-height:1.45;color:var(--tx2);max-width:660px;margin:0 0 28px}
+.meta{display:flex;flex-wrap:wrap;gap:8px}
+.pill{font-size:13px;color:var(--tx2);border:1px solid var(--ln);border-radius:980px;padding:6px 14px}
+.pill.hot{background:var(--lime);border-color:var(--lime);color:#1d1d1f;font-weight:500}
+
+.warn{background:var(--orange100);border-radius:20px;padding:26px 28px;margin:36px 0 0}
+.warn h3{font-family:var(--fd);font-size:19px;font-weight:600;letter-spacing:-.01em;margin:0 0 8px;color:var(--orange-tx)}
+.warn p{margin:0 0 10px;font-size:15.5px;color:var(--orange-tx);max-width:none;opacity:.92}
+.warn p:last-child{margin-bottom:0}
+.warn b{font-weight:600}
+
+.ph{padding-block:44px 0}
+.ph-hd{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:6px}
+.ph-n{font-family:var(--fm);font-size:12px;font-weight:600;letter-spacing:.04em;color:#fff;background:var(--act);border-radius:980px;padding:5px 12px}
+.ph-n.f1{background:var(--green-tx)}
+.ph-n.f2{background:var(--act)}
+.ph-n.f3{background:var(--purple-tx)}
+.ph-n.f4{background:var(--orange-tx)}
+.ph-n.f5{background:var(--tx2)}
+.ph h2{font-family:var(--fd);font-size:34px;font-weight:700;line-height:1.14;letter-spacing:-.02em;margin:0}
+.ph-when{font-family:var(--fm);font-size:12.5px;color:var(--tx3)}
+.ph-int{font-size:17px;color:var(--tx2);max-width:680px;margin:10px 0 22px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
+.it{background:var(--white);border:1px solid var(--ln-s);border-radius:16px;padding:18px 20px;display:flex;flex-direction:column;gap:7px}
+.it .url{font-family:var(--fm);font-size:12px;color:var(--link);word-break:break-all}
+.it .nm{font-family:var(--fd);font-size:17px;font-weight:600;letter-spacing:-.008em}
+.it .ds{font-size:14px;color:var(--tx2);line-height:1.45;flex:1}
+.it .tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:2px}
+.tg{font-family:var(--fm);font-size:10px;font-weight:500;border-radius:4px;padding:3px 6px;line-height:1.3}
+.tg-seo{background:var(--green100);color:var(--green-tx)}
+.tg-conv{background:var(--b100);color:var(--link)}
+.tg-merk{background:var(--lime100);color:var(--lime-tx)}
+.tg-werf{background:var(--purple100);color:var(--purple-tx)}
+.tg-must{background:var(--red100);color:var(--red-tx)}
+.tg-onh{background:var(--orange100);color:var(--orange-tx)}
+.it.new{border-color:var(--lime);box-shadow:0 0 0 1px var(--lime)}
+.it .new-b{font-family:var(--fm);font-size:9.5px;font-weight:600;color:#1d1d1f;background:var(--lime);border-radius:4px;padding:3px 6px;align-self:flex-start;letter-spacing:.03em}
+
+.legend{display:flex;flex-wrap:wrap;gap:16px;margin-top:20px;padding-top:18px;border-top:1px solid var(--ln-s)}
+.legend span{display:inline-flex;align-items:center;gap:7px;font-size:13px;color:var(--tx2)}
+.legend i{width:10px;height:10px;border-radius:3px;font-style:normal}
+
+.sum{background:var(--alt);border-radius:22px;padding:30px;margin-top:56px}
+.sum h3{font-family:var(--fd);font-size:21px;font-weight:600;letter-spacing:-.01em;margin:0 0 16px}
+.sum table{width:100%;border-collapse:collapse;font-size:15px}
+.sum td,.sum th{text-align:left;padding:10px 12px;border-bottom:1px solid var(--ln-s)}
+.sum th{font-size:12.5px;font-weight:600;color:var(--tx2);white-space:nowrap}
+.sum tr:last-child td{border-bottom:none}
+.sum td:first-child{font-weight:500;white-space:nowrap}
+.sum .num{font-family:var(--fm);font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.foot{padding-block:48px 64px;font-size:13px;color:var(--tx3);text-align:center}
+.hidden{display:none}
+
+@media (max-width:1068px){:root{--g:24px}h1{font-size:44px}.ph h2{font-size:28px}}
+@media (max-width:734px){
+  :root{--g:20px}
+  .hero{padding-block:48px 32px}
+  h1{font-size:32px}.lead{font-size:18px}.ph h2{font-size:24px}
+  .grid{grid-template-columns:1fr}
+  .sum{padding:22px 18px}
+  .sum table{font-size:14px}
+  .bar-in{padding:10px var(--g)}
+}
+</style>
+
+<div class="bar">
+  <div class="bar-in">
+    <b>Roadmap</b>
+    <button type="button" data-f="all" class="on">Alles</button>
+    <button type="button" data-f="1">Fase 1</button>
+    <button type="button" data-f="2">Fase 2</button>
+    <button type="button" data-f="3">Fase 3</button>
+    <button type="button" data-f="4">Fase 4</button>
+    <button type="button" data-f="5">Fase 5</button>
+    <button type="button" id="themeBtn" class="sp">Donker</button>
+  </div>
+</div>
+
+<header class="wrap hero">
+  <h1>Vijf fases naar de nieuwe website</h1>
+  <p class="lead">Alles wat tot nu toe genoemd is, geordend naar wat er per 1 januari live moet en wat daarna komt. Zesenveertig pagina's, verdeeld over een jaar.</p>
+  <div class="meta">
+    <span class="pill hot">Fase 1 live: 1 januari</span>
+    <span class="pill">17 pagina's bij lancering</span>
+    <span class="pill">46 pagina's in totaal</span>
+    <span class="pill">8 nieuwe ideeën</span>
+  </div>
+
+  <div class="warn">
+    <h3>Het kritieke pad is niet de bouw. Het is beeld en bewijs.</h3>
+    <p><b>Fotografie.</b> De hele site leunt op donkere, warme foto's van eigen werk en eigen mensen. Die zijn er nog niet. Een opnamedag in <b>oktober</b> is geen wens maar een deadline — in december lukt het niet meer, en zonder beeld valt het ontwerp terug op gradiënten.</p>
+    <p><b>Cases met cijfers.</b> Minimaal vier cases met een hard, aantoonbaar getal. Zonder die cijfers werkt de hele toon niet, want die staat of valt bij bewijs. Dit is het enige onderdeel dat niemand anders dan jullie kan aanleveren.</p>
+    <p><b>Teksten.</b> Zes dienstenpagina's van elk ongeveer duizend woorden, plus werkwijze, home, team en cases. Reken op vijf tot zes volle schrijfdagen.</p>
+  </div>
+</header>
+
+<main class="wrap" id="main"></main>
+
+<div class="wrap">
+  <div class="sum">
+    <h3>Per fase</h3>
+    <table>
+      <thead><tr><th>Fase</th><th>Wanneer</th><th>Pagina's</th><th>Wat het toevoegt</th></tr></thead>
+      <tbody>
+        <tr><td>Fase 1</td><td class="num">1 januari</td><td class="num">17</td><td>Een site die verkoopt en klopt</td></tr>
+        <tr><td>Fase 2</td><td class="num">Q1 2027</td><td class="num">12</td><td>Het merk en de tweede laag diensten</td></tr>
+        <tr><td>Fase 3</td><td class="num">Q2 2027</td><td class="num">6</td><td>De SEO-motor</td></tr>
+        <tr><td>Fase 4</td><td class="num">Q3 2027</td><td class="num">7</td><td>Branche en verdieping</td></tr>
+        <tr><td>Fase 5</td><td class="num">Q4 2027</td><td class="num">4</td><td>Wat niemand anders doet</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<footer class="wrap foot">James Robinson — Marketing &amp; Branding · Roadmap, concept september 2026</footer>
+
+<script>
+(function(){
+  var D=[
+   {f:1,t:"Live per 1 januari",w:"okt — dec 2026",i:"Het minimum dat beter is dan wat er nu staat. Alles hierin is nodig om te verkopen; niets is optioneel.",items:[
+    {u:"/",n:"Home",d:"De propositie: iedereen hetzelfde systeem, het zwaartepunt verschilt. Doorverwijzing naar werkwijze en de zes.",t:["conv","merk","must"]},
+    {u:"/werkwijze/",n:"Werkwijze",d:"Het manifest, het ecosysteem, maand 1 versus maand 2, voor wie het niet is.",t:["conv","merk","must"]},
+    {u:"/diensten/",n:"Diensten",d:"Overzicht van de zes, met het ecosysteem als kader.",t:["conv","seo"]},
+    {u:"/seo/",n:"SEO",d:"Maanden werk. Daarna stopt het niet meer.",t:["seo","conv"]},
+    {u:"/google-ads/",n:"Google Ads",d:"Zichtbaar vanaf dag één. Weg op de dag dat je stopt.",t:["seo","conv"]},
+    {u:"/social-advertising/",n:"Social advertising",d:"Bereik vóór de vraag. Pagina is af.",t:["seo","conv"]},
+    {u:"/e-mailmarketing/",n:"E-mailmarketing",d:"Van jou. Niet geleend. Inclusief automation.",t:["seo","conv"]},
+    {u:"/conversie-optimalisatie/",n:"Conversie-optimalisatie",d:"Hetzelfde verkeer. Ander resultaat.",t:["seo","conv"]},
+    {u:"/fotografie-en-video/",n:"Fotografie en video",d:"De eerste twee seconden.",t:["seo","conv"]},
+    {u:"/cases/",n:"Cases",d:"Overzicht, filterbaar op branche. Minimaal vier gevuld.",t:["conv","must"]},
+    {u:"/cases/[case]/",n:"Case-detail",d:"Cijfer, context, aanpak. Template plus vier ingevuld.",t:["conv","must"]},
+    {u:"/over-ons/",n:"Over ons",d:"Tien mensen in Hulsberg. Zeven begonnen hier als stagiair.",t:["merk","werf"]},
+    {u:"/team/",n:"Team",d:"Portretten in de nieuwe fotografiestijl. Wie doet wat.",t:["merk","werf"]},
+    {u:"/werken-bij/",n:"Werken bij",d:"Vacatures plus wat het is om hier te werken.",t:["werf"]},
+    {u:"/contact/",n:"Contact",d:"Begin met een gesprek. Later uit te breiden met kwalificatievragen.",t:["conv","must"]},
+    {u:"/privacy/ /voorwaarden/",n:"Legal",d:"Privacyverklaring, algemene voorwaarden, cookiebeleid.",t:["must"]},
+    {u:"/404/",n:"404",d:"Foutpagina in de huisstijl, met doorverwijzing.",t:["must"]}
+   ]},
+   {f:2,t:"Het merk en de tweede laag",w:"Q1 2027",i:"Wat je verhaal compleet maakt en de vindbaarheid verbreedt zonder de etalage te vervuilen.",items:[
+    {u:"/ons-kantoor/",n:"Ons kantoor",d:"Donker hout, beton, blauw. Het merk in drie dimensies, gefotografeerd als interieurreportage.",t:["merk","werf"]},
+    {u:"/cultuur/",n:"Cultuur",d:"Hoe het er hier aan toegaat. Voedt werken-bij en onderscheidt in de regio.",t:["merk","werf"]},
+    {u:"/stage/",n:"Stage",d:"Eigen pagina, los van vacatures. Zeventig procent van het team begon hier — dit is het instroomkanaal en hogescholen linken ernaar.",t:["werf","seo"],new:1},
+    {u:"/waar-we-mee-werken/",n:"Partners en accreditaties",d:"Google Partner, Meta, de tools. Eén pagina in plaats van drie.",t:["merk","seo"]},
+    {u:"/tools/",n:"Onze stack",d:"Welke tools we gebruiken en waarom. Vertrouwen plus long-tail.",t:["seo","merk"]},
+    {u:"/veelgestelde-vragen/",n:"FAQ centraal",d:"Naast de FAQ per pagina. Alleen bouwen als er genoeg vragen zijn.",t:["seo","conv"]},
+    {u:"/branding/",n:"Branding",d:"Tweede laag: wel vindbaar, niet in het menu.",t:["seo"]},
+    {u:"/belettering/",n:"Belettering",d:"Eén keer aangebracht. Jaren onderweg.",t:["seo"]},
+    {u:"/drukwerk/",n:"Drukwerk",d:"Blijft liggen.",t:["seo"]},
+    {u:"/hosting/",n:"Hosting en onderhoud",d:"Merkbaar alleen als het misgaat.",t:["seo"]},
+    {u:"/marketing-automation/",n:"Marketing automation",d:"Werkt door na vijven.",t:["seo"]},
+    {u:"/leadinfo/",n:"Leadinfo",d:"Bedrijven laten sporen achter.",t:["seo"]}
+   ]},
+   {f:3,t:"De SEO-motor",w:"Q2 2027",i:"De grootste investering in tijd, en het onderdeel dat over twee jaar het meeste verkeer levert. Pas beginnen als er een vaste schrijver en een vast ritme is.",items:[
+    {u:"/kennisbank/",n:"Kennisbank",d:"Artikelen die de complexiteit tónen, niet oplossen. Start met vijftien. Trekt mensen die beseffen dat ze hulp nodig hebben.",t:["seo"]},
+    {u:"/begrippen/",n:"Begrippenlijst",d:"Wat is ROAS. Wat is een conversie. Veertig termen, veertig pagina's, in jullie taal. Long-tail in bulk, en het lost het jargonprobleem op.",t:["seo"],new:1},
+    {u:"/blog/",n:"Blog",d:"Begin met twee categorieën, niet zes. Een categorie met twee artikelen oogt leeg.",t:["seo","merk"]},
+    {u:"/blog/agency-insights/",n:"Agency insights",d:"Wat wij zien gebeuren in het vak. Categorie één.",t:["seo","merk"]},
+    {u:"/blog/brand-legends/",n:"Brand legends",d:"Analyses van merken die het goed doen. Categorie twee — sterkst voor bereik en delen.",t:["seo","merk"]},
+    {u:"/nieuwsbrief/archief/",n:"Nieuwsbriefarchief",d:"Publiek archief van wat je stuurt. Gratis SEO plus bewijs van kwaliteit vóór inschrijving.",t:["seo","conv"],new:1}
+   ]},
+   {f:4,t:"Branche en verdieping",w:"Q3 2027",i:"Hier wordt het persoonlijk: dezelfde diensten, maar in de taal en met de cases van één branche.",items:[
+    {u:"/horeca/",n:"Horeca",d:"Branchepagina met horeca-cases en horeca-taal. Begin met deze — hier heb je het meeste werk liggen.",t:["seo","conv"]},
+    {u:"/makelaardij/",n:"Makelaardij",d:"Tweede branche.",t:["seo","conv"]},
+    {u:"/automotive/",n:"Automotive",d:"Derde branche.",t:["seo","conv"]},
+    {u:"/zorg/",n:"Zorg",d:"Vierde branche.",t:["seo","conv"]},
+    {u:"/handleidingen/",n:"Handleidingen",d:"Voor klanten, om door te sturen. Gescheiden van de kennisbank: deze lossen op, die tonen.",t:["seo","onh"]},
+    {u:"/duurzaamheid/",n:"Duurzaamheid",d:"Alleen bouwen als er iets concreets te melden is. Anders schaadt het meer dan het helpt.",t:["merk","onh"]},
+    {u:"/blog/inside/ /newsroom/ /origin/ /library/",n:"Blog uitbreiden",d:"De overige vier categorieën, als het volume er is.",t:["seo","merk"]}
+   ]},
+   {f:5,t:"Wat niemand anders doet",w:"Q4 2027",i:"Pas te bouwen als de rest staat en het ritme er is. Dit is waar toonaangevend concreet wordt.",items:[
+    {u:"/cijfers/",n:"Live dashboard",d:"De werkelijke cijfers van jamesrobinson.nl, live uit GA4. Bezoekers, kanalen, aanvragen. Geen enkel bureau in Nederland doet dit — en het dwingt je eigen marketing te kloppen.",t:["merk","conv"],new:1},
+    {u:"/changelog/",n:"Changelog",d:"Wat er deze maand aan de site veranderde en waarom. Je site als product, niet als folder.",t:["merk"],new:1},
+    {u:"/capaciteit/",n:"Capaciteit",d:"Ruimte voor twee partnerships dit kwartaal. Eerlijk, geen schaarstetruc — werkt alleen als het waar is.",t:["conv","merk"],new:1},
+    {u:"/academy/ /events/",n:"Academy en events",d:"Alleen als er een vast ritme is. Een academy met drie modules of een event uit 2026 is erger dan geen.",t:["merk","onh"]}
+   ]}
+  ];
+  var TG={seo:["tg-seo","SEO"],conv:["tg-conv","CONVERSIE"],merk:["tg-merk","MERK"],werf:["tg-werf","WERVING"],must:["tg-must","NOODZAAK"],onh:["tg-onh","ONDERHOUD"]};
+  var m=document.getElementById('main');
+  D.forEach(function(p){
+    var s=document.createElement('section');s.className='ph';s.dataset.f=p.f;
+    var h='<div class="ph-hd"><span class="ph-n f'+p.f+'">FASE '+p.f+'</span><h2>'+p.t+'</h2><span class="ph-when">'+p.w+'</span></div><p class="ph-int">'+p.i+'</p><div class="grid">';
+    p.items.forEach(function(it){
+      h+='<div class="it'+(it.new?' new':'')+'">'+(it.new?'<span class="new-b">NIEUW IDEE</span>':'')+
+         '<span class="url">'+it.u+'</span><span class="nm">'+it.n+'</span><span class="ds">'+it.d+'</span>'+
+         '<span class="tags">'+it.t.map(function(t){return '<span class="tg '+TG[t][0]+'">'+TG[t][1]+'</span>'}).join('')+'</span></div>';
+    });
+    s.innerHTML=h+'</div>';
+    m.appendChild(s);
+  });
+  var lg=document.createElement('div');lg.className='legend';
+  lg.innerHTML=Object.keys(TG).map(function(k){
+    var c={seo:'#34c759',conv:'#007aff',merk:'#c4f000',werf:'#af52de',must:'#ff3b30',onh:'#f6a027'}[k];
+    return '<span><i style="background:'+c+'"></i>'+TG[k][1].charAt(0)+TG[k][1].slice(1).toLowerCase()+'</span>';
+  }).join('')+'<span><i style="background:#c4f000;border-radius:3px"></i>Groene rand = nieuw idee</span>';
+  m.appendChild(lg);
+
+  document.querySelector('.bar').addEventListener('click',function(e){
+    var b=e.target.closest('button[data-f]');if(!b)return;
+    this.querySelectorAll('button[data-f]').forEach(function(x){x.classList.remove('on')});
+    b.classList.add('on');
+    var f=b.dataset.f;
+    document.querySelectorAll('.ph').forEach(function(s){
+      s.classList.toggle('hidden',f!=='all'&&s.dataset.f!==f);
+    });
+  });
+  var root=document.documentElement,tb=document.getElementById('themeBtn');
+  function cur(){var t=root.getAttribute('data-theme');return t||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}
+  function sync(){tb.textContent=cur()==='dark'?'Licht':'Donker'}
+  sync();
+  tb.addEventListener('click',function(){root.setAttribute('data-theme',cur()==='dark'?'light':'dark');sync()});
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',sync);
+})();
+</script>
