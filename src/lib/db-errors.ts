@@ -195,6 +195,39 @@ export function describeDbError(error: unknown): string | null {
       return 'Het aantal contracturen moet boven nul liggen en onder de twintig uur per dag.'
     case 'salary_positive':
       return 'Een salaris moet boven nul liggen.'
+
+    /* Het salarishuis. De meldingen leggen niet alleen uit wat er fout is
+       maar ook waarom de grens er staat: hier worden contracten uit
+       gerekend, en een getal dat er net naast zit valt pas op als het op
+       papier staat. */
+    case 'salary_house_base_positive':
+      return 'De grondslag van het salarishuis moet boven nul liggen. Dat is schaal 1 trede 1 bij een fulltime dienstverband.'
+    case 'salary_house_step_valid':
+      return 'De verhoging per trede moet tussen 0 en 100 procent liggen. Let op dat het per trede is en niet per jaar: de tredes stapelen op elkaar.'
+    case 'salary_house_pension_valid':
+      return 'De OP-toeslag moet tussen 0 en 100 procent liggen.'
+    case 'salary_house_holiday_valid':
+      return 'De vakantietoeslag moet tussen 0 en 100 procent liggen. Wettelijk is het minimaal 8.'
+    case 'salary_house_fulltime_valid':
+      return 'Een fulltime werkweek moet boven nul liggen en onder de tachtig uur.'
+    case 'salary_house_holiday_hours_valid':
+      return 'De vakantie-uren bij fulltime moeten tussen 0 en 2000 uur per jaar liggen. Vijfentwintig dagen is 200 uur.'
+    case 'salary_house_minimum_valid':
+      return 'Het wettelijk minimumuurloon moet boven nul liggen. Laat het leeg als je er niet tegen wilt toetsen.'
+    case 'salary_houses_date_idx':
+      return 'Er staat al een salarishuis met deze ingangsdatum. Pas dat aan in plaats van er een tweede naast te zetten; anders is niet te zeggen welke geldt.'
+    case 'salary_scale_name_not_empty':
+      return 'Geef de schaal een naam, bijvoorbeeld Junior of Medior.'
+    case 'salary_scale_order_positive':
+      return 'De volgorde van een schaal begint bij 1. Die volgorde bepaalt de bedragen: elke schaal is een opslag op de vorige.'
+    case 'salary_scale_multiplier_valid':
+      return 'De opslag van een schaal moet boven nul liggen. Honderd procent betekent gelijk aan de schaal eronder.'
+    case 'salary_scale_steps_valid':
+      return 'Een schaal heeft tussen de 1 en 100 tredes.'
+    case 'salary_scales_order_idx':
+      return 'Er staat al een schaal op deze plek in dit salarishuis. Twee schalen op dezelfde plek maakt de bedragen onvoorspelbaar, want elke schaal rekent door op de vorige.'
+    case 'salary_scales_name_idx':
+      return 'Er bestaat al een schaal met deze naam in dit salarishuis.'
     case 'salary_holiday_allowance_valid':
       return 'Het vakantiegeld moet tussen 0 en 100 procent liggen. Wettelijk is het minimaal 8.'
     case 'salary_hours_valid':

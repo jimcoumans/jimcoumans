@@ -2193,6 +2193,143 @@ export const deals = pgTable(
   ],
 )
 
+/* ------------------------------- Salarishuis -----------------------------
+   Het salarishuis: schalen, tredes en wat daaruit volgt.
+
+   Waarom dit een tabel is en geen constante in de code: het huis wordt
+   geindexeerd. Doe je dat door de getallen te overschrijven, dan verandert
+   met terugwerkende kracht wat er vorig jaar is afgesproken en klopt geen
+   enkel contract uit het verleden meer. Elke indexering is daarom een NIEUW
+   huis met een eigen ingangsdatum, en het oude blijft staan.
+
+   Een contract bewaart bovendien het BEDRAG en niet alleen de verwijzing
+   naar schaal en trede. Dezelfde reden: het bedrag van toen is een feit,
+   de verwijzing is een berekening die morgen anders uitpakt.
+   ------------------------------------------------------------------------- */
+
+/**
+ * Een versie van het salarishuis, geldig vanaf een datum.
+ *
+ * Alle bedragen zijn fulltime en in centen. Wat iemand in deeltijd krijgt is
+ * een berekening, geen opgeslagen getal.
+ */
+export const salaryHouses = pgTable(
+  'salary_houses',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    /** Vanaf wanneer dit huis geldt. Het laatste huis op of voor een datum wint. */
+    effectiveFrom: timestamp('effective_from', { withTimezone: true }).notNull(),
+
+    /** De grondslag: schaal 1 trede 1, fulltime, in centen. */
+    baseCents: integer('base_cents').notNull(),
+    /**
+     * Verhoging per trede in basispunten. 150 is 1,50%.
+     *
+     * Basispunten en geen kommagetal, want de tredes stapelen: trede 20 is
+     * de grondslag maal 1,015 tot de macht 19. Een afrondingsfoutje in het
+     * percentage groeit daarin mee.
+     */
+    stepIncreaseBp: integer('step_increase_bp').notNull(),
+    /** OP-toeslag in basispunten, bij geen pensioenregeling. 1000 is 10%. */
+    pensionAllowanceBp: integer('pension_allowance_bp').notNull().default(1000),
+    /** Vakantietoeslag in basispunten. 800 is 8%, het wettelijk minimum. */
+    holidayAllowanceBp: integer('holiday_allowance_bp').notNull().default(800),
+
+    /** Wat hier fulltime is, in kwartieren. 4000 is 40 uur per week. */
+    fulltimeHoursWeekQuarters: integer('fulltime_hours_week_quarters').notNull().default(4000),
+    /** Vakantie-uren per kalenderjaar bij fulltime. 200 uur is 25 dagen. */
+    holidayHoursFulltime: integer('holiday_hours_fulltime').notNull().default(200),
+
+    /**
+     * Het wettelijk minimumuurloon in centen op dit moment.
+     *
+     * Staat hier om een contract tegen te kunnen toetsen. De onderste trede
+     * zit daar dicht bij: de bodem gaat elk halfjaar omhoog en het huis niet
+     * automatisch mee. Zonder deze toets merk je dat pas als het te laat is.
+     */
+    minimumHourlyCents: integer('minimum_hourly_cents'),
+
+    note: text('note'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    createdByUserId: uuid('created_by_user_id').references(() => users.id, {
+      onDelete: 'set null',
+    }),
+  },
+  (t) => [
+    // Twee huizen op dezelfde dag: dan is niet te zeggen welke geldt.
+    uniqueIndex('salary_houses_date_idx').on(t.effectiveFrom),
+    check('salary_house_base_positive', sql`${t.baseCents} > 0`),
+    check(
+      'salary_house_step_valid',
+      sql`${t.stepIncreaseBp} >= 0 AND ${t.stepIncreaseBp} <= 10000`,
+    ),
+    check(
+      'salary_house_pension_valid',
+      sql`${t.pensionAllowanceBp} >= 0 AND ${t.pensionAllowanceBp} <= 10000`,
+    ),
+    check(
+      'salary_house_holiday_valid',
+      sql`${t.holidayAllowanceBp} >= 0 AND ${t.holidayAllowanceBp} <= 10000`,
+    ),
+    check(
+      'salary_house_fulltime_valid',
+      sql`${t.fulltimeHoursWeekQuarters} > 0 AND ${t.fulltimeHoursWeekQuarters} <= 8000`,
+    ),
+    check(
+      'salary_house_holiday_hours_valid',
+      sql`${t.holidayHoursFulltime} >= 0 AND ${t.holidayHoursFulltime} <= 2000`,
+    ),
+    check(
+      'salary_house_minimum_valid',
+      sql`${t.minimumHourlyCents} IS NULL OR ${t.minimumHourlyCents} > 0`,
+    ),
+  ],
+)
+
+/**
+ * Een schaal binnen een huis: Junior, Medior, Senior.
+ *
+ * LET OP, en dit is de val waar dit hele bestand om draait: de opslag is
+ * TEN OPZICHTE VAN DE VORIGE SCHAAL, niet ten opzichte van de grondslag.
+ * Senior staat op 125%, maar dat is 125% van Medior en niet van de
+ * grondslag. Lees je het als het laatste, dan zit elk seniorcontract er
+ * bijna vijfhonderd euro per maand naast en ziet niemand dat aan de
+ * formule. De volgorde bepaalt dus de uitkomst; vandaar dat sortOrder
+ * verplicht en uniek is.
+ */
+export const salaryScales = pgTable(
+  'salary_scales',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    houseId: uuid('house_id')
+      .notNull()
+      .references(() => salaryHouses.id, { onDelete: 'cascade' }),
+
+    /** Functiegroep: Junior, Medior, Senior. */
+    name: text('name').notNull(),
+    /** 1 is de onderste schaal. Bepaalt op welke schaal de opslag stapelt. */
+    sortOrder: integer('sort_order').notNull(),
+    /**
+     * Opslag ten opzichte van de VORIGE schaal, in basispunten.
+     * 10000 is gelijk aan de vorige, 11500 is 15% erbovenop.
+     */
+    multiplierBp: integer('multiplier_bp').notNull(),
+    /** Hoeveel tredes deze schaal heeft. */
+    steps: integer('steps').notNull(),
+  },
+  (t) => [
+    uniqueIndex('salary_scales_order_idx').on(t.houseId, t.sortOrder),
+    uniqueIndex('salary_scales_name_idx').on(t.houseId, t.name),
+    check('salary_scale_name_not_empty', sql`length(trim(${t.name})) > 0`),
+    check('salary_scale_order_positive', sql`${t.sortOrder} > 0`),
+    check(
+      'salary_scale_multiplier_valid',
+      sql`${t.multiplierBp} > 0 AND ${t.multiplierBp} <= 100000`,
+    ),
+    check('salary_scale_steps_valid', sql`${t.steps} > 0 AND ${t.steps} <= 100`),
+  ],
+)
+
 export type Organization = typeof organizations.$inferSelect
 export type User = typeof users.$inferSelect
 export type Wallet = typeof wallets.$inferSelect
@@ -2222,3 +2359,5 @@ export type Competitor = typeof competitors.$inferSelect
 export type OrganizationGoal = typeof organizationGoals.$inferSelect
 export type PipelineStage = typeof pipelineStages.$inferSelect
 export type Deal = typeof deals.$inferSelect
+export type SalaryHouse = typeof salaryHouses.$inferSelect
+export type SalaryScale = typeof salaryScales.$inferSelect

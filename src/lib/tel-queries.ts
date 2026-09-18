@@ -134,6 +134,11 @@ async function main() {
     await team.listTeam()
   })
 
+  const salarishuis = await import('./salarishuis')
+  await meet('SALARISHUIS', async () => {
+    await salarishuis.listHuizen()
+  })
+
   console.log('')
   await client.end()
 }

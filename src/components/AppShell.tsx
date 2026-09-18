@@ -99,6 +99,11 @@ const icons = {
       <path d="M3 5h18l-7 8v6l-4 2v-8z" />
     </svg>
   ),
+  salarishuis: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
+      <path d="M3 20h4v-4H3zM10 20h4v-9h-4zM17 20h4V5h-4z" strokeLinejoin="round" />
+    </svg>
+  ),
   sync: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
       <path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5" />
@@ -118,6 +123,18 @@ const TEAM_NAV: NavItem[] = [
   { href: '/beheer/portfolio', label: 'Portfolio', key: 'portfolio', icon: icons.portfolio },
   { href: '/beheer/financieel', label: 'Financieel', key: 'financieel', icon: icons.finance },
   { href: '/beheer/medewerkers', label: 'Team', key: 'medewerkers', icon: icons.team },
+]
+
+/**
+ * Wat alleen beheerders zien.
+ *
+ * Het salarishuis staat hier en niet in TEAM_NAV omdat er salarissen in
+ * staan. De pagina controleert dat zelf ook nog een keer - een link
+ * weglaten is geen beveiliging, iemand die het adres kent komt er anders
+ * gewoon op.
+ */
+const ADMIN_NAV: NavItem[] = [
+  { href: '/beheer/salarishuis', label: 'Salarishuis', key: 'salarishuis', icon: icons.salarishuis },
 ]
 
 const CLIENT_NAV: NavItem[] = [
@@ -147,7 +164,11 @@ export function AppShell({
 }) {
   const [open, setOpen] = useState(false)
   const isTeam = user.role === 'staff' || user.role === 'admin'
-  const items = isTeam ? TEAM_NAV : CLIENT_NAV
+  const items = isTeam
+    ? user.role === 'admin'
+      ? [...TEAM_NAV, ...ADMIN_NAV]
+      : TEAM_NAV
+    : CLIENT_NAV
 
   return (
     <div className="min-h-screen lg:flex">
