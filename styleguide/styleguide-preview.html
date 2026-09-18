@@ -581,6 +581,37 @@ h3+.note,h3+.tbl-wrap,h3+.grid3{margin-top:0}
 .arch-bot li{font-family:var(--f-disp);font-size:17px;font-weight:600;color:var(--tx2);padding:7px 0;margin:0;border-bottom:var(--s-hair) solid var(--ln-soft)}
 .arch-bot li:last-child{border-bottom:none}
 .arch-fold{text-align:center;font-family:var(--f-mono);font-size:10px;color:var(--tx3);padding:8px;background:var(--bg-alt)}
+.matpanel{background:#1c1c1e;border-radius:20px;padding:32px 28px;margin:20px 0 32px}
+.matgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.mat{border-radius:12px;overflow:hidden}
+.mat .sw2{height:76px;display:block}
+.mat .info{padding:11px 12px 13px;background:rgba(255,255,255,.06)}
+.mat .n2{display:block;font-size:13px;font-weight:600;color:#f5f5f7}
+.mat .m2{display:block;font-size:11.5px;color:#a1a1a6;margin-top:3px;line-height:1.35}
+.mat .hx{display:block;font-family:var(--f-mono);font-size:10px;color:#86868b;margin-top:5px;text-transform:uppercase}
+.zones{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:20px 0 32px}
+.zone{border-radius:16px;overflow:hidden;border:var(--s-hair) solid var(--ln-soft)}
+.zone .bar{height:64px;display:flex;align-items:center;justify-content:center;font-family:var(--f-mono);font-size:11px;letter-spacing:.02em}
+.zone .z1{background:#1c1c1e;color:#a1a1a6}
+.zone .z2{background:#3a3a3c;color:#c8c8cd}
+.zone .z3{background:#111113;color:#86868b}
+.zone .info2{padding:16px 18px;background:var(--chip)}
+.zone h4{font-family:var(--f-disp);font-size:16px;margin-bottom:6px}
+.zone p{font-size:13.5px;color:var(--tx2);margin:0;max-width:none}
+.bridge td:first-child{font-family:var(--f-mono);font-size:13px;color:var(--tx2);white-space:nowrap}
+.bridge td:last-child{font-weight:500}
+.photo-rules{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--s-hair);background:var(--ln-soft);border-radius:16px;overflow:hidden;margin:18px 0 32px}
+.photo-rules>div{background:var(--chip);padding:22px 24px}
+.photo-rules h4{font-family:var(--f-mono);font-size:10px;font-weight:600;letter-spacing:.02em;margin-bottom:14px}
+.photo-rules .y h4{color:var(--green-tx)}
+.photo-rules .n3 h4{color:var(--red-tx)}
+.photo-rules ul{list-style:none;padding:0;margin:0}
+.photo-rules li{font-size:14.5px;line-height:1.45;padding:7px 0 7px 22px;position:relative;margin:0;color:var(--tx2)}
+.photo-rules .y li::before{content:"";position:absolute;left:0;top:.62em;width:12px;height:12px;border-radius:50%;background:var(--green)}
+.photo-rules .n3 li::before{content:"✕";position:absolute;left:1px;top:.42em;font-size:11px;color:var(--red-tx)}
+.oneliner{background:var(--black);color:#f5f5f7;border-radius:20px;padding:40px 36px;margin-top:8px}
+.oneliner p{font-family:var(--f-disp);font-size:24px;font-weight:600;line-height:1.4;letter-spacing:-.012em;margin:0;max-width:none;color:#f5f5f7}
+.oneliner b{color:#c4f000;font-weight:600}
 .foot{padding-block:44px 60px;border-top:var(--s-hair) solid var(--ln-soft);font-size:13px;color:var(--tx3)}
 .toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,16px);background:var(--black);color:#fff;font-size:14px;padding:11px 20px;border-radius:980px;opacity:0;pointer-events:none;transition:opacity .2s var(--ease),transform .2s var(--ease-out);z-index:99}
 .toast.show{opacity:1;transform:translate(-50%,0)}
@@ -588,6 +619,7 @@ h3+.note,h3+.tbl-wrap,h3+.grid3{margin-top:0}
 @media (max-width:1068px){
   :root{--gutter:24px}
   .steps4,.layers{grid-template-columns:repeat(2,1fr)}
+  .matgrid{grid-template-columns:repeat(3,1fr)}
   .sec{padding-block:68px}.hero{padding-block:68px 60px}
   .hero h1{font-size:52px}.hero .lead{font-size:21px}h2{font-size:34px}
   .ramp{grid-template-columns:repeat(4,1fr)}
@@ -600,7 +632,10 @@ h3+.note,h3+.tbl-wrap,h3+.grid3{margin-top:0}
 }
 @media (max-width:734px){
   :root{--gutter:20px}
-  .vs,.steps4,.ipod,.bigvs,.never,.layers{grid-template-columns:1fr}
+  .vs,.steps4,.ipod,.bigvs,.never,.layers,.zones,.photo-rules{grid-template-columns:1fr}
+  .matgrid{grid-template-columns:repeat(2,1fr)}
+  .oneliner p{font-size:18px}
+  .oneliner{padding:26px 22px}
   .arch-top .h{font-size:24px}
   .code{font-size:11.5px;padding:18px 16px}
   .dsvc .lead2{font-size:26px}
@@ -660,6 +695,7 @@ h3+.note,h3+.tbl-wrap,h3+.grid3{margin-top:0}
     <a href="#toon">Tone of voice</a>
     <a href="#diensten">Diensten</a>
     <a href="#seo">SEO &amp; merk</a>
+    <a href="#buiten">Buiten het scherm</a>
     <a href="#taal">Microcopy</a>
     <button class="theme-btn" id="themeBtn" type="button">Donker</button>
   </div>
@@ -2539,6 +2575,203 @@ h3+.note,h3+.tbl-wrap,h3+.grid3{margin-top:0}
       <span class="lbl2">nog één observatie</span>
       <p class="s" style="font-size:16px;color:var(--tx)">Een groeiend deel van het zoekverkeer loopt via AI-samenvattingen. Die pakken bij voorkeur korte, feitelijke, declaratieve zinnen op — precies het register waar we voor gekozen hebben.</p>
       <p class="s" style="font-size:16px;color:var(--tx);margin-bottom:0">"Maanden werk. Daarna stopt het niet meer." is makkelijker te citeren dan "Onze data-driven SEO-aanpak zorgt voor duurzame groei in relevante zoekresultaten." Geen reden om voor deze stijl te kiezen — die keuze stond al. Maar het maakt hem goedkoper dan hij eruitziet.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec sec--alt" id="buiten">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Buiten het scherm</span>
+      <h2>Fotografie en ruimte</h2>
+      <p class="lead">Donker hout, beton en donkerblauw lijken haaks te staan op een strakke witte website. Dat lijkt zo. Het is niet waar.</p>
+    </div>
+
+    <h3>Apple doet precies dit</h3>
+    <div class="tbl-wrap" style="margin-bottom:24px">
+      <table class="tbl tbl--wide">
+        <thead><tr><th></th><th>Apple</th><th>James Robinson</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Website</td><td>wit, strak, veel witruimte</td><td>wit, strak, veel witruimte</td></tr>
+          <tr><td class="name">Hoofdkantoor</td><td>hout, beton, glas, warm</td><td>hout, beton, donkerblauw, warm</td></tr>
+          <tr><td class="name">Winkels</td><td>houten tafels, leren banken, stenen vloer, bomen</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note" style="margin-bottom:24px">Niemand die apple.com bezoekt en daarna Apple Park binnenloopt, denkt dat er twee merken aan het werk zijn.</p>
+
+    <div class="grid2" style="margin-bottom:24px">
+      <div class="demo"><h4 style="font-family:var(--f-disp);font-size:18px;margin-bottom:8px">Een scherm zendt licht uit</h4><p class="note" style="font-size:14px;margin:0">Wit op een scherm leest als ruimte en helderheid.</p></div>
+      <div class="demo"><h4 style="font-family:var(--f-disp);font-size:18px;margin-bottom:8px">Een ruimte weerkaatst licht</h4><p class="note" style="font-size:14px;margin:0">Wit in een ruimte leest als ziekenhuis, kantoortuin, wachtkamer. Dezelfde kleur gebruiken zou het tegenovergestelde effect hebben.</p></div>
+    </div>
+
+    <h3>De constante is niet de kleur</h3>
+    <p class="note" style="margin-bottom:18px">Wat website en kantoor delen, zijn de vijf uitgangspunten uit dit systeem — vertaald naar drie dimensies.</p>
+    <div class="rules" style="margin-bottom:24px">
+      <div class="rule"><span class="rule-n">1</span><p><b>Terughoudendheid.</b> Weinig dingen, veel ruimte ertussen.</p></div>
+      <div class="rule"><span class="rule-n">2</span><p><b>Materiaaleerlijkheid.</b> Echt hout, echt beton. Geen betonbehang, geen houtprint.</p></div>
+      <div class="rule"><span class="rule-n">3</span><p><b>Detailobsessie.</b> De naad, de overgang, waar twee materialen elkaar raken.</p></div>
+      <div class="rule"><span class="rule-n">4</span><p><b>Weglaten.</b> Geen decoratie zonder functie.</p></div>
+      <div class="rule"><span class="rule-n">5</span><p><b>Eén accent.</b> Nooit twee.</p></div>
+    </div>
+
+    <h3>Het kantoor staat al in de stylesheet</h3>
+    <div class="code"><span class="t">.jr-section--dark</span> {<br>
+&nbsp;&nbsp;background-color: <span class="t">#1C1C1E</span>;<br>
+&nbsp;&nbsp;color: <span class="t">#F5F5F7</span>;<br>
+}</div>
+    <p class="note" style="margin-bottom:64px">Die donkere sectie bestaat al op de website. <b>Het kantoor ís die sectie, driedimensionaal gemaakt.</b> Een bezoeker die op de site een donkere sectie ziet en daarna het kantoor binnenloopt, herkent iets. Dat is de brug.</p>
+
+    <h3>Fotografie — waar de twee elkaar raken</h3>
+    <p class="note" style="margin-bottom:18px">Een donkere, warme foto op een witte pagina met veel witruimte: dat contrast is geen probleem, dat is de compositie. Apple doet exact dit — witte pagina, donker product, dramatisch licht.</p>
+    <div class="photo-rules">
+      <div class="y">
+        <h4>WEL</h4>
+        <ul>
+          <li>Eén dominante lichtbron, daglicht van opzij</li>
+          <li>Diepe schaduwen — zonder schaduw geen vorm</li>
+          <li>Neutrale witbalans, echt zwart in de schaduwen</li>
+          <li>Mensen aan het werk, nooit naar de camera</li>
+          <li>Handen, schetsen, drukproeven, schermranden</li>
+          <li>Ruimte in het kader, onderwerp uit het midden</li>
+          <li>Verticalen loodrecht, horizon waterpas</li>
+          <li>Klantwerk in het echt, niet als PDF-mockup</li>
+        </ul>
+      </div>
+      <div class="n3">
+        <h4>NOOIT</h4>
+        <ul>
+          <li>Stockfoto's</li>
+          <li>High five, duim omhoog, vuistje</li>
+          <li>Mensen die naar een laptop wijzen</li>
+          <li>Vergaderzaal met post-its op een raam</li>
+          <li>Lachende mensen om een tafel met koffie</li>
+          <li>Een handdruk, een headset, een schoolfoto-team</li>
+          <li>Filters, HDR, clarity, gladgestreken huid</li>
+          <li>Abstracte beelden met netwerklijnen</li>
+        </ul>
+      </div>
+    </div>
+    <p class="note" style="margin-bottom:24px"><b>Vuistregel voor de nabewerking:</b> merkt iemand dat er bewerkt is, dan is het te veel.</p>
+
+    <div class="tbl-wrap" style="margin-bottom:24px">
+      <table class="tbl tbl--nums">
+        <thead><tr><th>Technisch</th><th>Waarde</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Diafragma portret</td><td>f/2.0 – f/4</td></tr>
+          <tr><td class="name">Diafragma ruimte</td><td>f/5.6 – f/8</td></tr>
+          <tr><td class="name">Kleurtemperatuur</td><td>3200 – 5000K</td></tr>
+          <tr><td class="name">Aanlevering</td><td>RAW + JPEG sRGB, langste zijde 3000px</td></tr>
+          <tr><td class="name">Web</td><td>WebP, hero &lt; 250 kb, kaart &lt; 120 kb</td></tr>
+          <tr><td class="name">Beheer</td><td>Kive, getagd op branche, type en jaar</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note" style="margin-bottom:64px"><b>De beeldbank per jaar:</b> 10 portretten · 15 werkbeelden · 8 ruimtebeelden · 3 per case · 5 detailbeelden. Zonder vaste voorraad grijpt iedereen na drie maanden weer naar stock.</p>
+
+    <h3>De ruimte — zonering lost het probleem op</h3>
+    <p class="note" style="margin-bottom:18px">Een volledig donker kantoor werkt niet. Je hebt licht nodig om te werken, en designers hebben goed licht nodig om kleur te beoordelen. De oplossing is geen compromis maar drie zones met hetzelfde materiaalpalet en oplopende donkerte.</p>
+    <div class="zones">
+      <div class="zone"><div class="bar z1">donker · warm · luxe</div><div class="info2"><h4>Ontvangst en lounge</h4><p>De eerste indruk. Hier mag het theater zijn.</p></div></div>
+      <div class="zone"><div class="bar z2">lichter · functioneel</div><div class="info2"><h4>Werkvloer</h4><p>Hier wordt gewerkt. Licht is hier gereedschap, geen sfeer.</p></div></div>
+      <div class="zone"><div class="bar z3">het donkerst</div><div class="info2"><h4>Presentatieruimte</h4><p>Hier laat je werk zien. Donker maakt een scherm beter.</p></div></div>
+    </div>
+    <p class="note" style="margin-bottom:24px">Bezoekers zien vooral zone 1 en 3. De werkvloer mag lichter zijn zonder dat het merk breekt, zolang hout, beton en blauw doorlopen.</p>
+
+    <h3>Het materiaalpalet</h3>
+    <p class="note" style="margin-bottom:0">Afgeleid van de designtokens. Dezelfde kleurcodes als op de website.</p>
+    <div class="matpanel">
+      <div class="matgrid">
+        <div class="mat"><span class="sw2" style="background:#1C1C1E"></span><span class="info"><span class="n2">Plafond</span><span class="m2">mat, akoestisch</span><span class="hx">#1C1C1E</span></span></div>
+        <div class="mat"><span class="sw2" style="background:#6E6E73"></span><span class="info"><span class="n2">Wand basis</span><span class="m2">microcement, betonlook</span><span class="hx">#6E6E73</span></span></div>
+        <div class="mat"><span class="sw2" style="background:#2C2D2E"></span><span class="info"><span class="n2">Lamellen</span><span class="m2">gerookt eiken op zwart vilt</span><span class="hx">#2C2D2E</span></span></div>
+        <div class="mat"><span class="sw2" style="background:#003967"></span><span class="info"><span class="n2">Accentwand</span><span class="m2">matte verf of textiel</span><span class="hx">#003967</span></span></div>
+        <div class="mat"><span class="sw2" style="background:#2C2D2E"></span><span class="info"><span class="n2">Vloer</span><span class="m2">donkere eiken plank of beton</span><span class="hx">#2C2D2E</span></span></div>
+        <div class="mat"><span class="sw2" style="background:#1C1C1E"></span><span class="info"><span class="n2">Meubels</span><span class="m2">zwart geanodiseerd aluminium</span><span class="hx">#1C1C1E</span></span></div>
+        <div class="mat"><span class="sw2" style="background:#005CBF"></span><span class="info"><span class="n2">Textiel</span><span class="m2">wol of bouclé, donkerblauw</span><span class="hx">#005CBF</span></span></div>
+        <div class="mat"><span class="sw2" style="background:#C4F000"></span><span class="info"><span class="n2">Eén accent</span><span class="m2">één lime object in het pand</span><span class="hx">#C4F000</span></span></div>
+      </div>
+    </div>
+    <div class="grid3" style="margin-bottom:32px">
+      <div class="demo"><h4 style="font-family:var(--f-disp);font-size:17px;margin-bottom:8px">Echt of niet</h4><p class="note" style="font-size:14px;margin:0">Betonbehang, houtprint-laminaat en nepplanten breken het hele verhaal. Een bureau dat over authenticiteit adviseert, kan zich geen namaak veroorloven. Liever minder oppervlak echt dan alles nep.</p></div>
+      <div class="demo"><h4 style="font-family:var(--f-disp);font-size:17px;margin-bottom:8px">De lattenwand heeft een functie</h4><p class="note" style="font-size:14px;margin:0">Akoestische lamellen zijn nu overal, en daarmee een trend die over twee jaar gedateerd is. Ze werken alleen waar de akoestiek erom vraagt — niet als decoratie in de gang.</p></div>
+      <div class="demo"><h4 style="font-family:var(--f-disp);font-size:17px;margin-bottom:8px">Eén lime ding</h4><p class="note" style="font-size:14px;margin:0">Niet een lime stoel én een lime neon én lime accenten in de koffiehoek. Eén. Dezelfde regel als op de website: één gevulde knop per scherm.</p></div>
+    </div>
+
+    <h3>Licht is het echte materiaal</h3>
+    <p class="note" style="margin-bottom:18px">In een donker interieur bepaalt verlichting het verschil tussen luxe hotel en donkere kelder. Hier moet het meeste budget naartoe.</p>
+    <div class="tbl-wrap" style="margin-bottom:24px">
+      <table class="tbl tbl--wide">
+        <tbody>
+          <tr><td class="name">Kleurtemperatuur</td><td>2700K in lounge en ontvangst, 3000–3500K op de werkvloer</td></tr>
+          <tr class="hl"><td class="name">Kleurweergave</td><td><b>CRI 95+ op de designwerkplekken.</b> Niet onderhandelbaar.</td></tr>
+          <tr><td class="name">Werkplekniveau</td><td>500 lux op het werkblad, individueel dimbaar</td></tr>
+          <tr><td class="name">Sfeer</td><td>indirect: uplights, lichtlijnen achter lamellen, wandwassers</td></tr>
+          <tr><td class="name">Zichtbaarheid</td><td>geen enkele lichtbron mag in het zicht schitteren</td></tr>
+          <tr><td class="name">Dimmen</td><td>alles dimbaar, in scènes: ochtend, werk, presentatie, avond</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note" style="margin-bottom:32px"><b>Waarom CRI 95+ geen luxe is:</b> jullie beoordelen drukproeven, kleurstalen en beeldmateriaal. Onder goedkope LED zie je kleuren verkeerd, en dan keur je werk goed dat bij de klant anders uitpakt. Voor een bureau is dit gereedschap, geen sfeer.</p>
+
+    <h3>Wat de ruimte moet uitstralen</h3>
+    <div class="photo-rules">
+      <div class="y">
+        <h4>WEL</h4>
+        <ul>
+          <li>Opgeruimd, weinig zichtbare spullen</li>
+          <li>Eén goed stuk beeld per wand</li>
+          <li>Kabels weggewerkt</li>
+          <li>Planten: weinig, groot, echt</li>
+          <li>Boeken die echt gelezen worden</li>
+          <li>Stilte als uitgangspunt</li>
+          <li>Eigen werk groot aan de wand, zonder uitleg</li>
+        </ul>
+      </div>
+      <div class="n3">
+        <h4>NIET</h4>
+        <ul>
+          <li>Een muur vol prijzen en certificaten</li>
+          <li>Motivatieteksten op de muur</li>
+          <li>Zichtbare bekabeling en stekkerdozen</li>
+          <li>Veel kleine potjes</li>
+          <li>Boeken op kleur gesorteerd</li>
+          <li>Radio aan op de achtergrond</li>
+          <li>Een collage van klantlogo's</li>
+        </ul>
+      </div>
+    </div>
+    <p class="note" style="margin-bottom:32px"><b>Een logowall is een verkoopargument aan de muur.</b> Precies wat we op de website ook niet doen. Laat één stuk werk zien, groot, zonder tekst erbij.</p>
+
+    <h3>De detaillijst</h3>
+    <p class="note" style="margin-bottom:18px">De dingen die niemand benoemt maar iedereen voelt.</p>
+    <div class="chips" style="margin-bottom:32px">
+      <span class="tag">Deurkrukken zwart, geen chroom</span><span class="tag">Stopcontacten in lijn met de wand</span>
+      <span class="tag">Plinten gelijk met de wand of afwezig</span><span class="tag">De koffie</span>
+      <span class="tag">Geur: subtiel en constant, of geen</span><span class="tag">Muziek: één playlist of stilte</span>
+      <span class="tag">De toiletruimte</span><span class="tag">De entree bij donker</span>
+    </div>
+
+    <h3>Hoe kantoor en website elkaar raken</h3>
+    <div class="tbl-wrap" style="margin-bottom:32px">
+      <table class="tbl bridge tbl--wide">
+        <thead><tr><th>Website</th><th>Kantoor</th></tr></thead>
+        <tbody>
+          <tr><td>#1C1C1E donkere sectie</td><td>plafond, meubels, presentatieruimte</td></tr>
+          <tr><td>#003967 action hover</td><td>accentwand</td></tr>
+          <tr><td>#C4F000 één per scherm</td><td>één lime object in het pand</td></tr>
+          <tr><td>radius 18px op cards</td><td>afgeronde hoeken op tafels en balies</td></tr>
+          <tr><td>120px sectie-padding</td><td>ruimte tussen meubels, niet volzetten</td></tr>
+          <tr><td>twee lagen schaduw</td><td>indirect licht, geen harde slagschaduw</td></tr>
+          <tr><td>één gevulde knop per scherm</td><td>één blikvanger per ruimte</td></tr>
+          <tr><td>Inter Tight</td><td>bewegwijzering in hetzelfde lettertype</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note" style="margin-bottom:44px">Die laatste is concreet en goedkoop: <b>de bewegwijzering in het pand in Inter Tight</b>, in dezelfde gewichten als de website. Het soort detail waar niemand naar vraagt en iedereen op reageert.</p>
+
+    <div class="oneliner">
+      <p>De website is wit omdat een scherm licht uitzendt. Het kantoor is donker omdat een ruimte licht weerkaatst. Beide zijn terughoudend, eerlijk in materiaal en obsessief in detail — <b>en dat is wat het merk maakt, niet de kleur.</b></p>
     </div>
   </div>
 </section>
