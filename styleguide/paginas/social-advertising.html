@@ -3,231 +3,368 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@600;700&display=swap">
 <style>
 :root{
-  --bg:#ffffff; --bg-alt:#f5f5f7; --bg-sunk:#ebebf0; --chip:#ffffff;
+  --page:#fbfbfd; --white:#ffffff; --alt:#f5f5f7; --sunk:#ebebf0;
   --tx:#1d1d1f; --tx2:#6e6e73; --tx3:#86868b;
   --ln:#d2d2d7; --ln-soft:#e5e5e9;
-  --blue:#007aff; --blue-link:#0066cc; --blue-link-h:#004c99;
-  --blue-action:#0857c3; --blue-action-h:#003967;
-  --blue-50:#f0f7ff; --blue-100:#e0efff; --blue-tint:#e2ebf3;
-  --lime:#c4f000; --lime-100:#f2fccc; --lime-text:#5a7000;
+  --blue:#007aff; --link:#0066cc; --link-h:#004c99;
+  --act:#0857c3; --act-h:#003967;
+  --blue-100:#e0efff; --blue-50:#f0f7ff;
+  --lime:#c4f000; --lime-100:#f2fccc; --lime-tx:#5a7000;
   --green:#34c759; --green-tx:#1d7d3f; --green-100:#e6f7eb;
   --red:#ff3b30; --red-tx:#c02a22; --red-100:#fdecea;
-  --orange-tx:#94590a; --orange-100:#fef2e0;
-  --black:#1c1c1e; --g20:#ebebf0; --g25:#e5e5e9; --g30:#d2d2d7;
-  --f-disp:"Inter Tight","Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
-  --f-text:"Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
-  --f-mono:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-  --ease:cubic-bezier(.25,.1,.25,1); --ease-out:cubic-bezier(.16,1,.3,1);
-  --gutter:32px; --focus:0 0 0 4px rgba(0,122,255,.40);
-}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#000; --bg-alt:#111113; --bg-sunk:#1c1c1e; --chip:#1c1c1e;
-  --tx:#f5f5f7; --tx2:#a1a1a6; --tx3:#86868b; --ln:#38383c; --ln-soft:#2a2a2d;
-  --blue-link:#2997ff; --blue-link-h:#66b5ff; --green-tx:#41c96a; --red-tx:#ff6b61;
-  --orange-tx:#f0a040; --lime-text:#d9ff33;
-  --blue-50:rgba(0,122,255,.07); --blue-100:rgba(0,122,255,.16); --blue-tint:rgba(0,122,255,.12);
-  --lime-100:rgba(196,240,0,.16); --green-100:rgba(52,199,89,.16); --red-100:rgba(255,59,48,.14);
-  --orange-100:rgba(246,160,39,.18); --g20:#2c2d2e; --g25:#38383c; --g30:#48484c;
-}}
-:root[data-theme="dark"]{
-  --bg:#000; --bg-alt:#111113; --bg-sunk:#1c1c1e; --chip:#1c1c1e;
-  --tx:#f5f5f7; --tx2:#a1a1a6; --tx3:#86868b; --ln:#38383c; --ln-soft:#2a2a2d;
-  --blue-link:#2997ff; --blue-link-h:#66b5ff; --green-tx:#41c96a; --red-tx:#ff6b61;
-  --orange-tx:#f0a040; --lime-text:#d9ff33;
-  --blue-50:rgba(0,122,255,.07); --blue-100:rgba(0,122,255,.16); --blue-tint:rgba(0,122,255,.12);
-  --lime-100:rgba(196,240,0,.16); --green-100:rgba(52,199,89,.16); --red-100:rgba(255,59,48,.14);
-  --orange-100:rgba(246,160,39,.18); --g20:#2c2d2e; --g25:#38383c; --g30:#48484c;
+  --black:#1c1c1e; --dark2:#2c2d2e; --inv:#f5f5f7; --inv2:#a1a1a6;
+  --f-d:"Inter Tight","Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --f-t:"Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --f-m:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --e:cubic-bezier(.25,.1,.25,1); --eo:cubic-bezier(.16,1,.3,1);
+  --g:32px; --focus:0 0 0 4px rgba(0,122,255,.4);
 }
 *,*::before,*::after{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--tx);font-family:var(--f-text);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
-html{scroll-behavior:smooth;scroll-padding-top:80px}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition-duration:.01ms!important}}
-:focus-visible{outline:none;box-shadow:var(--focus);border-radius:8px}
+body{margin:0;background:var(--page);color:var(--tx);font-family:var(--f-t);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-x:hidden}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+:focus-visible{outline:none;box-shadow:var(--focus);border-radius:10px}
+img{max-width:100%;display:block}
 
-/* bedieningsbalk */
-.ctl{position:sticky;top:env(safe-area-inset-top,0px);z-index:60;background:rgba(255,255,255,.82);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--ln-soft)}
-:root[data-theme="dark"] .ctl,:root:not([data-theme="light"]) .ctl{background:rgba(0,0,0,.72)}
-@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .ctl{background:rgba(255,255,255,.82)}}
-.ctl-in{max-width:1024px;margin:0 auto;padding:0 var(--gutter);display:flex;align-items:center;gap:10px;min-height:50px;flex-wrap:wrap}
-.ctl-t{font-family:var(--f-disp);font-size:13px;font-weight:600;letter-spacing:-.01em;margin-right:6px;white-space:nowrap}
-.ctl button{font:inherit;font-size:12.5px;cursor:pointer;background:transparent;border:1px solid var(--ln);color:var(--tx2);border-radius:980px;padding:5px 13px;transition:all .15s var(--ease);white-space:nowrap}
-.ctl button:hover{color:var(--tx);border-color:var(--tx3)}
-.ctl button.on{background:var(--blue-action);border-color:var(--blue-action);color:#fff}
-.ctl .sp{margin-left:auto}
+/* ---------- reveal ---------- */
+.rv{opacity:0;transform:translateY(24px);transition:opacity .9s var(--eo),transform .9s var(--eo)}
+.rv.in{opacity:1;transform:none}
+.rv-2{transition-delay:.08s}.rv-3{transition-delay:.16s}.rv-4{transition-delay:.24s}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .rv{opacity:1!important;transform:none!important;transition:none}
+  *,*::before,*::after{animation:none!important;transition-duration:.01ms!important}
+}
 
-/* annotaties */
+/* ---------- nav ---------- */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:80;background:rgba(251,251,253,.72);-webkit-backdrop-filter:saturate(180%) blur(22px);backdrop-filter:saturate(180%) blur(22px);border-bottom:1px solid rgba(0,0,0,.07)}
+.nav-in{max-width:1280px;margin:0 auto;padding:0 var(--g);display:flex;align-items:center;gap:10px;min-height:48px}
+.nav-b{font-family:var(--f-d);font-size:15px;font-weight:700;letter-spacing:-.016em}
+.nav-s{font-size:13px;color:var(--tx2);margin-left:4px}
+.nav button{margin-left:auto;font:inherit;font-size:12px;cursor:pointer;background:transparent;border:1px solid var(--ln);color:var(--tx2);border-radius:980px;padding:5px 13px;transition:all .15s var(--e);white-space:nowrap}
+.nav button:hover{color:var(--tx);border-color:var(--tx3)}
+.nav button.on{background:var(--act);border-color:var(--act);color:#fff}
+
+/* ---------- annotaties ---------- */
 .an{display:none}
-body.show-an .an{display:block}
-.an-tag{display:inline-block;font-family:var(--f-mono);font-size:10px;font-weight:500;color:var(--blue-link);background:var(--blue-100);border-radius:4px;padding:3px 7px;margin-bottom:10px;line-height:1.4}
-.an-tag.merk{color:var(--lime-text);background:var(--lime-100)}
-.an-tag.seo{color:var(--green-tx);background:var(--green-100)}
-.an-note{font-family:var(--f-mono);font-size:11.5px;line-height:1.55;color:var(--tx3);border-left:2px solid var(--ln);padding:4px 0 4px 12px;margin:10px 0 0}
-body.show-an .sec{outline:1px dashed var(--ln);outline-offset:-1px}
+body.an-on .an{display:block}
+.an-t{display:inline-block;font-family:var(--f-m);font-size:10px;font-weight:500;color:var(--link);background:var(--blue-100);border-radius:5px;padding:4px 8px;margin-bottom:14px;line-height:1.4}
+.an-t.m{color:var(--lime-tx);background:var(--lime-100)}
+.an-t.s{color:var(--green-tx);background:var(--green-100)}
+.an-n{font-family:var(--f-m);font-size:11.5px;line-height:1.6;color:var(--tx3);border-left:2px solid var(--ln);padding:5px 0 5px 13px;margin:18px auto 0;max-width:620px;text-align:left}
 
-/* pagina */
-.wrap{max-width:1024px;margin:0 auto;padding-inline:var(--gutter)}
-.narrow{max-width:692px}
-.sec{padding-block:96px}
-.sec--alt{background:var(--bg-alt)}
-.sec--sm{padding-block:64px}
-h1,h2,h3{font-family:var(--f-disp);text-wrap:balance;margin:0}
-h1{font-size:56px;font-weight:700;line-height:1.08;letter-spacing:-.022em;margin-bottom:16px}
-h2{font-size:40px;font-weight:700;line-height:1.12;letter-spacing:-.018em;margin-bottom:20px}
-h3{font-size:21px;font-weight:600;line-height:1.25;letter-spacing:-.008em;margin:0 0 8px}
-.eyebrow{display:block;font-family:var(--f-text);font-size:14px;font-weight:600;line-height:1.3;color:var(--blue-link);margin-bottom:8px}
-.lead{font-size:21px;line-height:1.45;color:var(--tx2);max-width:692px;margin:0 0 24px}
-p{margin:0 0 20px;max-width:692px}
+/* ---------- basis ---------- */
+.wrap{max-width:1024px;margin:0 auto;padding-inline:var(--g)}
+.wrap-w{max-width:1280px;margin:0 auto;padding-inline:var(--g)}
+.narrow{max-width:692px;margin-inline:auto}
+.sec{padding-block:140px}
+.sec-s{padding-block:100px}
+.dark{background:var(--black);color:var(--inv)}
+.grey{background:var(--alt)}
+.ctr{text-align:center}
+h1,h2,h3{font-family:var(--f-d);text-wrap:balance;margin:0}
+.kick{display:block;font-family:var(--f-t);font-size:19px;font-weight:600;color:var(--link);margin-bottom:10px}
+.dark .kick{color:#2997ff}
+.disp{font-size:88px;font-weight:700;line-height:1.04;letter-spacing:-.03em;margin:0 0 26px}
+h2{font-size:56px;font-weight:700;line-height:1.07;letter-spacing:-.024em;margin:0 0 22px}
+h3{font-size:26px;font-weight:600;line-height:1.2;letter-spacing:-.012em;margin:0 0 10px}
+.lead{font-size:24px;line-height:1.42;color:var(--tx2);max-width:640px;margin:0 auto 36px}
+.dark .lead{color:var(--inv2)}
+.ctr .lead{margin-inline:auto}
+p{margin:0 0 20px;max-width:640px}
 p:last-child{margin-bottom:0}
-a{color:var(--blue-link);text-decoration:none;transition:color .15s var(--ease)}
-a:hover{color:var(--blue-link-h);text-decoration:underline;text-underline-offset:3px}
-code{font-family:var(--f-mono);font-size:.85em;background:var(--bg-sunk);padding:2px 6px;border-radius:5px}
+a{color:var(--link);text-decoration:none;transition:color .15s var(--e)}
+a:hover{color:var(--link-h);text-decoration:underline;text-underline-offset:4px}
 
-/* hero */
-.hero{padding-block:120px 96px}
-.hero .big{font-family:var(--f-disp);font-size:40px;font-weight:700;line-height:1.12;letter-spacing:-.018em;color:var(--tx);margin:0 0 20px;max-width:760px}
-.hero .sub{font-size:21px;line-height:1.45;color:var(--tx2);max-width:560px;margin:0 0 32px}
-
-/* knoppen */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--f-text);font-size:17px;font-weight:500;line-height:1.2;letter-spacing:-.008em;padding:13px 26px;min-height:48px;border:1px solid transparent;border-radius:980px;cursor:pointer;white-space:nowrap;transition:background-color .15s var(--ease),border-color .15s var(--ease),color .15s var(--ease),transform .15s var(--ease)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--f-t);font-size:19px;font-weight:500;line-height:1.2;letter-spacing:-.008em;padding:16px 34px;min-height:56px;border:1px solid transparent;border-radius:980px;cursor:pointer;white-space:nowrap;transition:background-color .15s var(--e),border-color .15s var(--e),color .15s var(--e),transform .15s var(--e)}
 .btn:active{transform:scale(.98)}
 .btn:hover{text-decoration:none}
-.btn--primary{background:var(--blue-action);border-color:var(--blue-action);color:#fff}
-.btn--primary:hover{background:var(--blue-action-h);border-color:var(--blue-action-h);color:#fff}
-.btn--light{background:#fff;border-color:#fff;color:#1d1d1f}
-.btn--light:hover{background:#e5e5e9;border-color:#e5e5e9;color:#1d1d1f}
-.btn--text{background:none;border:none;color:var(--blue-link);padding:4px 0;min-height:0;font-weight:400}
-.btn--text::after{content:"›";font-size:1.25em;line-height:1;transform:translateY(-1px);transition:transform .25s var(--ease-out)}
-.btn--text:hover{color:var(--blue-link-h);text-decoration:underline;text-underline-offset:3px}
-.btn--text:hover::after{transform:translate(3px,-1px)}
+.btn-p{background:var(--act);border-color:var(--act);color:#fff}
+.btn-p:hover{background:var(--act-h);border-color:var(--act-h);color:#fff}
+.btn-l{background:#fff;border-color:#fff;color:#1d1d1f}
+.btn-l:hover{background:#e5e5e9;border-color:#e5e5e9;color:#1d1d1f}
+.btn-lime{background:var(--lime);border-color:var(--lime);color:#1d1d1f;font-weight:600}
+.btn-lime:hover{background:#b2da00;border-color:#b2da00;color:#1d1d1f}
+.tlink{display:inline-flex;align-items:center;gap:4px;font-size:19px;color:var(--link)}
+.tlink::after{content:"›";font-size:1.3em;line-height:1;transform:translateY(-1px);transition:transform .25s var(--eo)}
+.tlink:hover::after{transform:translate(4px,-1px)}
+.dark .tlink{color:#2997ff}
 
-/* blokken */
-.two{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:32px}
-.card{background:var(--chip);border:1px solid var(--ln-soft);border-radius:18px;padding:28px}
-.card h3{margin-bottom:12px}
-.card p{font-size:15px;color:var(--tx2);margin:0;max-width:none}
-.card ul{list-style:none;padding:0;margin:0}
-.card li{position:relative;padding-left:26px;margin-bottom:11px;font-size:15px;color:var(--tx2)}
-.card li:last-child{margin-bottom:0}
-.card--yes li::before{content:"";position:absolute;left:0;top:.42em;width:16px;height:16px;border-radius:50%;background:var(--green) url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='8' viewBox='0 0 11 9'%3E%3Cpath fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M1 4.6 3.9 7.5 10 1.4'/%3E%3C/svg%3E") no-repeat center}
-.card--no li::before{content:"✕";position:absolute;left:2px;top:.05em;font-size:12px;color:var(--tx3)}
-.steps{list-style:none;padding:0;margin:32px 0 0;counter-reset:s;max-width:692px}
-.steps li{position:relative;padding-left:46px;margin-bottom:20px;counter-increment:s}
-.steps li:last-child{margin-bottom:0}
-.steps li::before{content:counter(s);position:absolute;left:0;top:-2px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:var(--blue-action);background:var(--blue-100);border-radius:50%}
-.steps b{display:block;font-weight:600;margin-bottom:2px}
-.steps span{font-size:15px;color:var(--tx2)}
-.check{list-style:none;padding:0;margin:24px 0 0;max-width:692px}
-.check li{position:relative;padding-left:30px;margin-bottom:12px}
-.check li::before{content:"";position:absolute;left:0;top:.35em;width:18px;height:18px;border-radius:50%;background:var(--blue) url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='9' viewBox='0 0 11 9'%3E%3Cpath fill='none' stroke='%23fff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round' d='M1 4.6 3.9 7.5 10 1.4'/%3E%3C/svg%3E") no-repeat center}
-.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:24px}
-.tbl{width:100%;border-collapse:collapse;font-size:16px;min-width:420px}
-.tbl th,.tbl td{text-align:left;padding:14px;border-bottom:1px solid var(--ln-soft);vertical-align:top}
-.tbl th{font-size:14px;font-weight:600;color:var(--tx2);border-bottom:1px solid var(--ln);white-space:nowrap}
-.tbl tr:last-child td{border-bottom:none}
-.tbl td:first-child{font-weight:500;white-space:nowrap}
+/* ---------- hero ---------- */
+.hero{position:relative;padding-block:120px 0;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:-20% -20% auto -20%;height:70%;background:radial-gradient(60% 70% at 50% 0%,rgba(0,122,255,.13),transparent 70%);pointer-events:none}
+.hero-in{position:relative;text-align:center}
+.hero .sub{font-size:24px;line-height:1.42;color:var(--tx2);max-width:560px;margin:0 auto 40px}
+.hero-stage{margin-top:64px;display:flex;justify-content:center;align-items:flex-end;gap:28px;padding-bottom:140px}
 
-/* case */
-.case{background:var(--black);color:#f5f5f7;border-radius:32px;padding:56px 44px;margin-top:8px}
-.case .stat{display:block;font-family:var(--f-disp);font-size:64px;font-weight:700;line-height:1;letter-spacing:-.022em;color:#2997ff;font-variant-numeric:tabular-nums;margin-bottom:8px}
-.case .sl{font-size:14px;color:#a1a1a6;display:block;margin-bottom:28px}
-.case p{color:#a1a1a6;font-size:17px;max-width:560px;margin:0 0 24px}
-.case .who{font-size:15px;color:#f5f5f7}
+/* ---------- telefoon ---------- */
+.ph{position:relative;width:250px;flex:none;border-radius:44px;background:#1c1c1e;padding:9px;box-shadow:0 4px 12px rgba(0,0,0,.08),0 30px 70px rgba(0,0,0,.22)}
+.ph::after{content:"";position:absolute;top:19px;left:50%;transform:translateX(-50%);width:76px;height:22px;background:#1c1c1e;border-radius:99px;z-index:3}
+.ph-scr{border-radius:36px;overflow:hidden;background:#fff;aspect-ratio:9/19.5;position:relative}
+.ph-sm{width:200px}
+.ph-float{animation:fl 7s ease-in-out infinite}
+.ph-float-2{animation:fl 7s ease-in-out .9s infinite}
+.ph-float-3{animation:fl 7s ease-in-out 1.8s infinite}
+@keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 
-/* accordion */
-.acc{max-width:760px;margin-top:24px}
-.acc-item{border-bottom:1px solid var(--ln-soft)}
-.acc-item:last-child{border-bottom:none}
-.acc-btn{width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;text-align:left;font:inherit;font-family:var(--f-disp);font-size:21px;font-weight:600;letter-spacing:-.008em;color:var(--tx);background:none;border:none;padding:20px 0;cursor:pointer;transition:color .15s var(--ease)}
-.acc-btn:hover{color:var(--blue-link-h)}
-.acc-btn span{flex:none;font-size:24px;font-weight:300;color:var(--tx3);transition:transform .25s var(--ease)}
-.acc-btn[aria-expanded="true"] span{transform:rotate(45deg)}
-.acc-panel{padding:0 0 20px;color:var(--tx2);max-width:692px}
-.acc-panel p{font-size:17px;margin-bottom:14px}
+/* ig-feed */
+.ig{height:100%;display:flex;flex-direction:column;background:#fff;font-size:11px}
+.ig-top{height:52px;flex:none}
+.ig-hd{display:flex;align-items:center;gap:8px;padding:9px 11px}
+.ig-av{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#0857c3,#007aff);flex:none}
+.ig-nm{font-weight:600;font-size:11px;line-height:1.2;color:#1d1d1f}
+.ig-sp{font-size:9.5px;color:#86868b}
+.ig-dots{margin-left:auto;color:#86868b;font-size:13px;letter-spacing:1px}
+.ig-img{flex:1;position:relative;overflow:hidden;background:linear-gradient(155deg,#1c1c1e 0%,#2c2d2e 45%,#003967 100%)}
+.ig-img .cap{position:absolute;left:16px;right:16px;bottom:18px;font-family:var(--f-d);font-size:19px;font-weight:700;line-height:1.14;letter-spacing:-.018em;color:#f5f5f7}
+.ig-img .glow{position:absolute;inset:auto -30% -40% -30%;height:70%;background:radial-gradient(50% 60% at 50% 100%,rgba(0,122,255,.45),transparent 70%)}
+.ig-cta{display:flex;align-items:center;justify-content:space-between;padding:9px 11px;background:#f5f5f7;border-top:1px solid #e5e5e9}
+.ig-cta b{font-size:11px;font-weight:600;color:#1d1d1f}
+.ig-cta span{font-size:13px;color:#86868b}
+.ig-act{display:flex;gap:11px;padding:9px 11px 5px;color:#1d1d1f;font-size:14px}
+.ig-act .r{margin-left:auto}
+.ig-txt{padding:0 11px 12px;font-size:10.5px;line-height:1.35;color:#1d1d1f}
+.ig-txt b{font-weight:600}
+.ig-txt em{font-style:normal;color:#86868b}
 
-/* cta */
-.cta{text-align:center;padding-block:96px}
-.cta h2{margin-bottom:12px}
-.cta p{margin-left:auto;margin-right:auto;margin-bottom:32px;color:var(--tx2)}
+/* story/reel */
+.st{height:100%;position:relative;background:linear-gradient(170deg,#1c1c1e 0%,#003967 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:0 18px 62px}
+.st .bars{position:absolute;top:44px;left:12px;right:12px;display:flex;gap:4px}
+.st .bars i{flex:1;height:2.5px;border-radius:2px;background:rgba(255,255,255,.3)}
+.st .bars i:first-child{background:rgba(255,255,255,.95)}
+.st .who{position:absolute;top:58px;left:12px;display:flex;align-items:center;gap:7px;color:#fff;font-size:10.5px;font-weight:500}
+.st .who .av{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#0857c3,#007aff)}
+.st .who em{font-style:normal;color:rgba(255,255,255,.65);font-size:9.5px}
+.st .glow{position:absolute;inset:auto -20% -25% -20%;height:60%;background:radial-gradient(50% 60% at 50% 100%,rgba(196,240,0,.28),transparent 70%)}
+.st h4{position:relative;font-family:var(--f-d);font-size:26px;font-weight:700;line-height:1.1;letter-spacing:-.022em;color:#f5f5f7;margin:0 0 16px}
+.st .swipe{position:relative;display:inline-flex;align-self:flex-start;align-items:center;gap:6px;background:rgba(255,255,255,.95);color:#1d1d1f;font-size:11px;font-weight:600;border-radius:980px;padding:8px 15px}
+.rl .glow{background:radial-gradient(50% 60% at 50% 100%,rgba(0,122,255,.4),transparent 70%)}
+.rl .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.18);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center}
+.rl .play svg{width:15px;height:15px;fill:#fff;margin-left:2px}
+.ph-cap{text-align:center;font-family:var(--f-m);font-size:11px;color:var(--tx3);margin-top:16px}
+.dark .ph-cap{color:var(--inv2)}
 
-/* meta-blok */
-.meta{background:var(--bg-alt);border:1px solid var(--ln-soft);border-radius:18px;padding:26px;margin-bottom:0}
-.meta h3{font-family:var(--f-mono);font-size:12px;font-weight:600;color:var(--tx3);margin-bottom:16px;letter-spacing:.02em}
-.meta dl{display:grid;grid-template-columns:120px 1fr;gap:10px 18px;margin:0;font-size:14px}
-.meta dt{font-family:var(--f-mono);font-size:11.5px;color:var(--tx3);padding-top:2px}
-.meta dd{margin:0;color:var(--tx)}
-.meta .len{font-family:var(--f-mono);font-size:11px;color:var(--green-tx);margin-left:6px}
-.foot{padding-block:40px 60px;border-top:1px solid var(--ln-soft);font-size:13px;color:var(--tx3);text-align:center}
+/* ---------- timing-diagram ---------- */
+.tl{position:relative;max-width:900px;margin:52px auto 0;padding-bottom:8px}
+.tl-line{position:relative;height:3px;background:linear-gradient(90deg,rgba(196,240,0,.35) 0%,rgba(196,240,0,.9) 48%,rgba(0,122,255,.9) 56%,rgba(0,122,255,.35) 100%);border-radius:3px}
+.tl-line::after{content:"";position:absolute;right:-1px;top:-4px;border-left:11px solid rgba(0,122,255,.75);border-top:6px solid transparent;border-bottom:6px solid transparent}
+.tl-mark{position:absolute;top:-7px;left:52%;width:17px;height:17px;border-radius:50%;background:var(--page);border:3px solid var(--tx)}
+.dark .tl-mark{background:var(--black);border-color:var(--inv)}
+.tl-zones{display:grid;grid-template-columns:52% 48%;margin-top:26px;gap:24px}
+.tl-z b{display:block;font-family:var(--f-d);font-size:21px;font-weight:600;letter-spacing:-.01em;margin-bottom:6px}
+.tl-z p{font-size:15.5px;color:var(--tx2);margin:0;max-width:none}
+.dark .tl-z p{color:var(--inv2)}
+.tl-z.a b{color:var(--lime-tx)}
+.dark .tl-z.a b{color:#d9ff33}
+.tl-z.b b{color:var(--link)}
+.dark .tl-z.b b{color:#2997ff}
+.tl-z.b{text-align:right}
+.tl-mark-lbl{position:absolute;top:22px;left:52%;transform:translateX(-50%);font-family:var(--f-m);font-size:11px;color:var(--tx3);white-space:nowrap}
 
+/* ---------- tegels ---------- */
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px}
+.tile{border-radius:28px;padding:44px 40px;min-height:420px;display:flex;flex-direction:column}
+.tile-y{background:var(--white);box-shadow:0 1px 3px rgba(0,0,0,.05),0 12px 36px rgba(0,0,0,.06)}
+.tile-n{background:var(--alt)}
+.tile h3{font-size:30px;letter-spacing:-.016em;margin-bottom:24px}
+.tile-n h3{color:var(--tx2)}
+.tile ul{list-style:none;padding:0;margin:0}
+.tile li{position:relative;padding-left:30px;margin-bottom:16px;font-size:17px;line-height:1.45}
+.tile li:last-child{margin-bottom:0}
+.tile-y li::before{content:"";position:absolute;left:0;top:.4em;width:19px;height:19px;border-radius:50%;background:var(--green) url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='9' viewBox='0 0 11 9'%3E%3Cpath fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M1 4.6 3.9 7.5 10 1.4'/%3E%3C/svg%3E") no-repeat center}
+.tile-n li{color:var(--tx2)}
+.tile-n li::before{content:"";position:absolute;left:0;top:.4em;width:19px;height:19px;border-radius:50%;background:var(--ln) url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9' viewBox='0 0 9 9'%3E%3Cpath fill='none' stroke='%236e6e73' stroke-width='2' stroke-linecap='round' d='M1.5 1.5l6 6M7.5 1.5l-6 6'/%3E%3C/svg%3E") no-repeat center}
+
+/* ---------- groot cijfer ---------- */
+.big-n{font-family:var(--f-d);font-size:180px;font-weight:700;line-height:.92;letter-spacing:-.04em;font-variant-numeric:tabular-nums;margin:0 0 8px;background:linear-gradient(180deg,#2997ff 0%,#0857c3 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.big-l{font-size:24px;color:var(--inv2);margin:0 0 40px}
+
+/* ---------- prijs ---------- */
+.price-row{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:8px}
+.price{background:var(--white);border-radius:28px;padding:44px 40px;box-shadow:0 1px 3px rgba(0,0,0,.05),0 12px 36px rgba(0,0,0,.06)}
+.price .n{display:block;font-family:var(--f-d);font-size:52px;font-weight:700;line-height:1;letter-spacing:-.026em;font-variant-numeric:tabular-nums;margin-bottom:10px}
+.price .w{display:block;font-size:17px;color:var(--tx2);margin-bottom:18px}
+.price p{font-size:15.5px;color:var(--tx2);margin:0;max-width:none}
+
+/* ---------- stappen ---------- */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px}
+.step{background:var(--white);border-radius:24px;padding:34px 30px}
+.dark .step{background:var(--dark2)}
+.step .n{display:flex;width:34px;height:34px;border-radius:50%;background:var(--blue-100);color:var(--act);align-items:center;justify-content:center;font-size:15px;font-weight:600;margin-bottom:18px}
+.dark .step .n{background:rgba(0,122,255,.18);color:#2997ff}
+.step b{display:block;font-family:var(--f-d);font-size:21px;font-weight:600;letter-spacing:-.01em;margin-bottom:7px}
+.step p{font-size:15.5px;color:var(--tx2);margin:0;max-width:none}
+.dark .step p{color:var(--inv2)}
+
+/* ---------- checklijst ---------- */
+.needs{display:grid;grid-template-columns:repeat(2,1fr);gap:0 48px;max-width:860px;margin:44px auto 0;list-style:none;padding:0}
+.needs li{position:relative;padding:18px 0 18px 34px;border-bottom:1px solid var(--ln-soft);font-size:18px}
+.needs li::before{content:"";position:absolute;left:0;top:1.36em;width:20px;height:20px;border-radius:50%;background:var(--blue) url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='9' viewBox='0 0 11 9'%3E%3Cpath fill='none' stroke='%23fff' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round' d='M1 4.6 3.9 7.5 10 1.4'/%3E%3C/svg%3E") no-repeat center}
+
+/* ---------- faq ---------- */
+.acc{max-width:820px;margin:44px auto 0}
+.acc-i{border-bottom:1px solid var(--ln-soft)}
+.acc-i:last-child{border-bottom:none}
+.acc-b{width:100%;display:flex;align-items:center;justify-content:space-between;gap:20px;text-align:left;font:inherit;font-family:var(--f-d);font-size:24px;font-weight:600;letter-spacing:-.012em;color:var(--tx);background:none;border:none;padding:24px 0;cursor:pointer;transition:color .15s var(--e)}
+.acc-b:hover{color:var(--link-h)}
+.acc-b i{flex:none;font-style:normal;font-size:26px;font-weight:300;color:var(--tx3);transition:transform .25s var(--e)}
+.acc-b[aria-expanded="true"] i{transform:rotate(45deg)}
+.acc-p{padding:0 0 26px;color:var(--tx2);max-width:680px;font-size:18px;line-height:1.55}
+
+/* ---------- links ---------- */
+.more{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:8px}
+.more a{display:block;background:var(--white);border-radius:24px;padding:32px 30px;text-decoration:none;color:inherit;transition:transform .25s var(--eo),box-shadow .25s var(--e)}
+.more a:hover{transform:translateY(-4px);box-shadow:0 6px 16px rgba(0,0,0,.07),0 24px 56px rgba(0,0,0,.11);text-decoration:none}
+.more b{display:block;font-family:var(--f-d);font-size:24px;font-weight:600;letter-spacing:-.012em;margin-bottom:6px}
+.more span{font-size:16px;color:var(--tx2)}
+.more .go{display:inline-flex;align-items:center;gap:4px;color:var(--link);font-size:16px;margin-top:14px}
+.more .go::after{content:"›";font-size:1.3em;line-height:1}
+
+/* ---------- meta ---------- */
+.meta{background:var(--alt);border-radius:22px;padding:30px;margin-top:28px;text-align:left}
+.meta h4{font-family:var(--f-m);font-size:11px;font-weight:600;color:var(--tx3);margin:0 0 16px;letter-spacing:.03em}
+.meta dl{display:grid;grid-template-columns:130px 1fr;gap:11px 20px;margin:0;font-size:14px}
+.meta dt{font-family:var(--f-m);font-size:11.5px;color:var(--tx3);padding-top:2px}
+.meta dd{margin:0}
+.meta .ok{font-family:var(--f-m);font-size:11px;color:var(--green-tx);margin-left:6px}
+
+.foot{padding-block:44px 64px;font-size:13px;color:var(--tx3);text-align:center}
+
+/* ---------- responsive ---------- */
 @media (max-width:1068px){
-  :root{--gutter:24px}
-  .sec{padding-block:72px}.hero{padding-block:88px 72px}
-  h1{font-size:44px}h2{font-size:34px}.hero .big{font-size:34px}
-  .case{padding:44px 32px}
+  :root{--g:24px}
+  .sec{padding-block:104px}.sec-s{padding-block:76px}
+  .hero{padding-block:88px 0}
+  .disp{font-size:64px}h2{font-size:44px}
+  .hero .sub,.lead{font-size:21px}
+  .big-n{font-size:128px}
+  .steps{grid-template-columns:1fr 1fr}
+  .hero-stage{gap:20px;padding-bottom:104px}
+  .ph{width:210px}.ph-sm{width:172px}
+  .tile{padding:36px 32px;min-height:0}
+  .tile h3{font-size:26px}
 }
 @media (max-width:734px){
-  :root{--gutter:20px}
+  :root{--g:20px}
   body{font-size:16px}
-  .sec{padding-block:56px}.hero{padding-block:64px 52px}
-  h1{font-size:34px}h2{font-size:28px}h3{font-size:18px}
-  .hero .big{font-size:28px}.hero .sub{font-size:18px}.lead{font-size:18px}
-  .two{grid-template-columns:1fr;gap:16px}
-  .case{padding:32px 24px;border-radius:24px}
-  .case .stat{font-size:40px}
-  .acc-btn{font-size:18px}
-  .meta dl{grid-template-columns:1fr;gap:4px 0}
-  .meta dt{margin-top:8px}
-  .ctl-in{min-height:0;padding-block:8px}
+  .sec{padding-block:72px}.sec-s{padding-block:56px}
+  .hero{padding-block:56px 0}
+  .disp{font-size:40px;letter-spacing:-.024em;margin-bottom:18px}
+  h2{font-size:30px;letter-spacing:-.018em}
+  h3{font-size:21px}
+  .kick{font-size:16px}
+  .hero .sub,.lead{font-size:18px;margin-bottom:28px}
+  .btn{font-size:17px;padding:13px 26px;min-height:48px}
+  .tlink{font-size:17px}
+  .hero-stage{margin-top:44px;padding-bottom:64px;gap:0}
+  .hero-stage .ph-sm{display:none}
+  .ph{width:230px}
+  .plc{flex-direction:column;align-items:center;gap:44px}
+  .plc .ph-sm{width:230px;display:block}
+  .tiles,.price-row,.steps,.more{grid-template-columns:1fr}
+  .needs{grid-template-columns:1fr;gap:0}
+  .big-n{font-size:84px}
+  .big-l{font-size:19px}
+  .price{padding:32px 26px}
+  .price .n{font-size:38px}
+  .acc-b{font-size:19px}
+  .acc-p{font-size:16px}
+  .tl-zones{grid-template-columns:1fr;gap:20px}
+  .tl-z.b{text-align:left}
+  .tl-mark{left:50%}
+  .tl-mark-lbl{left:50%}
+  .meta dl{grid-template-columns:1fr;gap:3px 0}
+  .meta dt{margin-top:10px}
 }
 </style>
 
-<div class="ctl">
-  <div class="ctl-in">
-    <span class="ctl-t">/social-advertising/</span>
+<nav class="nav">
+  <div class="nav-in">
+    <span class="nav-b">James Robinson</span>
+    <span class="nav-s">/social-advertising/</span>
     <button id="anBtn" type="button">Toon opbouw</button>
-    <button id="themeBtn" type="button" class="sp">Donker</button>
   </div>
-</div>
+</nav>
 
-<div class="an">
-  <div class="wrap" style="padding-top:28px">
-    <div class="meta">
-      <h3>SEO-METADATA — IN ELEMENTOR ONDER PAGE SETTINGS / RANK MATH</h3>
-      <dl>
-        <dt>Title-tag</dt><dd>Social advertising bureau | James Robinson<span class="len">42 tekens</span></dd>
-        <dt>Meta-omschrijving</dt><dd>Social advertising voor bedrijven in Limburg. Adverteren op Instagram en Facebook: wat het kost, wanneer het werkt en hoe we een campagne opbouwen.<span class="len">147 tekens</span></dd>
-        <dt>URL-slug</dt><dd>/social-advertising/</dd>
-        <dt>H1</dt><dd>Social advertising</dd>
-        <dt>Schema</dt><dd>Service + FAQPage</dd>
-        <dt>Woorden</dt><dd>± 1.050 onder de vouw</dd>
-        <dt>OG-beeld</dt><dd>1200 × 630, donkere foto uit de beeldbank</dd>
-      </dl>
+<div class="an wrap"><div class="meta">
+  <h4>SEO-METADATA — PAGE SETTINGS / RANK MATH</h4>
+  <dl>
+    <dt>Title-tag</dt><dd>Social advertising bureau | James Robinson<span class="ok">42</span></dd>
+    <dt>Meta-omschrijving</dt><dd>Social advertising voor bedrijven in Limburg. Adverteren op Instagram en Facebook: wat het kost, wanneer het werkt en hoe we een campagne opbouwen.<span class="ok">147</span></dd>
+    <dt>URL-slug</dt><dd>/social-advertising/</dd>
+    <dt>H1</dt><dd>Social advertising</dd>
+    <dt>Schema</dt><dd>Service + FAQPage</dd>
+    <dt>Woorden</dt><dd>± 1.000 onder de vouw</dd>
+  </dl>
+</div></div>
+
+<!-- ===== HERO ===== -->
+<header class="hero">
+  <div class="wrap hero-in">
+    <div class="an"><span class="an-t m">BOVEN DE VOUW · MERK · 21 WOORDEN · GECENTREERD</span></div>
+    <span class="kick rv">Social advertising</span>
+    <h1 class="disp rv rv-2">Bereik vóór de vraag.</h1>
+    <p class="sub rv rv-3">Niemand zoekt op een keuken tot hij er een wil. Wat daarvoor gebeurt, gebeurt hier.</p>
+    <div class="rv rv-4"><button class="btn btn-p">Plan een gesprek</button></div>
+  </div>
+  <div class="hero-stage">
+    <div class="ph ph-sm ph-float-2 rv rv-2">
+      <div class="ph-scr"><div class="st">
+        <div class="bars"><i></i><i></i><i></i></div>
+        <div class="who"><span class="av"></span>dezwarteruiter <em>Gesponsord</em></div>
+        <div class="glow"></div>
+        <h4>Dinsdag is de nieuwe zaterdag.</h4>
+        <span class="swipe">Reserveer →</span>
+      </div></div>
+    </div>
+    <div class="ph ph-float rv">
+      <div class="ph-scr"><div class="ig">
+        <div class="ig-top"></div>
+        <div class="ig-hd"><span class="ig-av"></span><span><span class="ig-nm">dezwarteruiter</span><br><span class="ig-sp">Gesponsord</span></span><span class="ig-dots">•••</span></div>
+        <div class="ig-img"><div class="glow"></div><span class="cap">Dinsdag is de<br>nieuwe zaterdag.</span></div>
+        <div class="ig-cta"><b>Reserveer een tafel</b><span>›</span></div>
+        <div class="ig-act"><span>♡</span><span>💬</span><span class="r">🔖</span></div>
+        <div class="ig-txt"><b>dezwarteruiter</b> Doordeweeks drie gangen voor € 32,50. <em>Meer</em></div>
+      </div></div>
+    </div>
+    <div class="ph ph-sm ph-float-3 rv rv-3">
+      <div class="ph-scr"><div class="st rl">
+        <div class="who"><span class="av"></span>dezwarteruiter <em>Gesponsord</em></div>
+        <div class="play"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></div>
+        <div class="glow"></div>
+        <h4>Twintig seconden keuken.</h4>
+        <span class="swipe">Bekijk de kaart →</span>
+      </div></div>
     </div>
   </div>
-</div>
-
-<!-- ======================= BOVEN DE VOUW — MERK ======================= -->
-<header class="wrap hero">
-  <div class="an"><span class="an-tag merk">BOVEN DE VOUW · MERKREGISTER · 21 WOORDEN</span></div>
-  <div class="an"><span class="an-tag">H1 · Inter Tight 700 · 56/44/34</span></div>
-  <h1>Social advertising</h1>
-  <div class="an"><span class="an-tag">Lead · geen heading · Inter Tight 700 · 40/34/28</span></div>
-  <p class="big">Bereik vóór de vraag.</p>
-  <div class="an"><span class="an-tag">Body · Inter 400 · 21/20/18 · kleur #6E6E73</span></div>
-  <p class="sub">Niemand zoekt op een keuken tot hij er een wil. Wat daarvoor gebeurt, gebeurt hier.</p>
-  <button class="btn btn--primary">Plan een gesprek</button>
-  <div class="an"><p class="an-note">Eén gevulde knop. Geen tweede CTA, geen uitleg, geen opsomming van voordelen. Wie hier al weet wat hij zoekt, klikt. Wie via Google op een vraag binnenkwam, scrollt.</p></div>
 </header>
 
-<!-- ======================= ONDER DE VOUW — VINDBAARHEID ======================= -->
-<section class="sec sec--alt">
-  <div class="wrap">
-    <div class="an"><span class="an-tag seo">ONDER DE VOUW · INFORMATIEF REGISTER · VANAF HIER DOET SEO HET WERK</span></div>
-    <div class="an"><span class="an-tag">H2 · Inter Tight 700 · 40/34/28</span></div>
-    <h2>Wanneer werkt social beter dan Google?</h2>
-    <p>Google Ads vangt vraag die er al is. Iemand typt “zonnepanelen offerte” en jij verschijnt. Dat werkt goed, maar alleen bij mensen die al weten dat ze iets willen.</p>
-    <p>Social werkt vóór dat moment. Niemand zoekt op een nieuwe keuken tot hij besluit dat de oude niet meer bevalt. Tussen dat besluit en de eerste zoekopdracht zitten vaak maanden — en in die maanden zit je doelgroep wel op Instagram.</p>
-    <div class="two">
-      <div class="card card--yes">
+<!-- ===== HET MOMENT ===== -->
+<section class="sec dark">
+  <div class="wrap ctr">
+    <div class="an"><span class="an-t s">ONDER DE VOUW · INFORMATIEF · H2 MET DIAGRAM</span></div>
+    <h2 class="rv">Wanneer werkt social<br>beter dan Google?</h2>
+    <p class="lead rv rv-2">Google vangt vraag die er al is. Social werkt in de maanden daarvóór.</p>
+    <div class="tl rv rv-3">
+      <div class="tl-line"><span class="tl-mark"></span></div>
+      <span class="tl-mark-lbl">eerste zoekopdracht</span>
+      <div class="tl-zones">
+        <div class="tl-z a"><b>Nog geen vraag</b><p>Iemand merkt dat de keuken niet meer bevalt. Denkt er af en toe aan. Zoekt nog nergens op. Scrollt wel elke avond.</p></div>
+        <div class="tl-z b"><b>Vraag</b><p>Nu typt hij “keuken laten plaatsen kosten”. Op dat moment kies je uit de merken die je al kent.</p></div>
+      </div>
+    </div>
+    <div class="an"><p class="an-n">Apple toont graag het mechanisme. Dit diagram legt in één beeld uit waarom social en Google elkaar niet vervangen — de meestgestelde vraag van elke ondernemer over dit kanaal.</p></div>
+  </div>
+</section>
+
+<!-- ===== WEL/NIET ===== -->
+<section class="sec">
+  <div class="wrap-w">
+    <div class="ctr narrow">
+      <h2 class="rv">Niet voor iedereen.</h2>
+      <p class="lead rv rv-2">Twee lijsten. De rechter is voor ons even belangrijk als de linker.</p>
+    </div>
+    <div class="tiles">
+      <div class="tile tile-y rv">
         <h3>Werkt goed voor</h3>
         <ul>
           <li>Producten die mensen niet dagelijks zoeken: keukens, badkamers, zonnepanelen, een nieuwe auto</li>
@@ -236,7 +373,7 @@ code{font-family:var(--f-mono);font-size:.85em;background:var(--bg-sunk);padding
           <li>Werving van personeel</li>
         </ul>
       </div>
-      <div class="card card--no">
+      <div class="tile tile-n rv rv-2">
         <h3>Werkt minder goed voor</h3>
         <ul>
           <li>Acute nood — bij een lekkage zoekt iemand een loodgieter, die scrollt niet</li>
@@ -245,187 +382,199 @@ code{font-family:var(--f-mono);font-size:.85em;background:var(--bg-sunk);padding
         </ul>
       </div>
     </div>
-    <div class="an"><p class="an-note">De rechterkolom is de ongemaktest uit de tone of voice. Zeggen wanneer het niet werkt is het enige signaal op deze pagina dat niet gekocht kan worden — en het is het snelste filter voor de verkeerde aanvragen.</p></div>
+    <div class="an"><p class="an-n">De ongemaktest uit de tone of voice, hier als gelijkwaardige tegel in plaats van als voetnoot. Het is het snelste filter voor aanvragen die je toch niet had willen aannemen.</p></div>
   </div>
 </section>
 
-<section class="sec">
-  <div class="wrap">
-    <h2>Adverteren op Instagram en Facebook</h2>
-    <p>Meta beheert beide platformen. Eén advertentieaccount, één budget. Je advertenties verschijnen in de Instagram-feed, in Stories en Reels, in de Facebook-feed en op Marketplace.</p>
-    <div class="an"><span class="an-tag">Tabel · header Small 600 · cel Body</span></div>
-    <div class="tbl-wrap">
-      <table class="tbl">
-        <thead><tr><th>Plaatsing</th><th>Formaat</th><th>Waarvoor</th></tr></thead>
-        <tbody>
-          <tr><td>Feed</td><td>4:5 of 1:1</td><td>Het meeste bereik, werkt met en zonder geluid</td></tr>
-          <tr><td>Stories en Reels</td><td>9:16</td><td>Video, hele scherm, vraagt om beweging</td></tr>
-          <tr><td>Carousel</td><td>1:1</td><td>Meerdere producten of stappen in één advertentie</td></tr>
-        </tbody>
-      </table>
+<!-- ===== PLAATSINGEN ===== -->
+<section class="sec grey">
+  <div class="wrap ctr">
+    <h2 class="rv">Drie plaatsingen.<br>Eén budget.</h2>
+    <p class="lead rv rv-2">Meta beheert Instagram en Facebook. Eén account, één budget, drie soorten advertenties.</p>
+  </div>
+  <div class="wrap-w">
+    <div class="plc" style="display:flex;justify-content:center;align-items:flex-start;gap:40px;margin-top:56px">
+      <div class="rv">
+        <div class="ph ph-sm">
+          <div class="ph-scr"><div class="ig">
+            <div class="ig-top"></div>
+            <div class="ig-hd"><span class="ig-av"></span><span><span class="ig-nm">dezwarteruiter</span><br><span class="ig-sp">Gesponsord</span></span><span class="ig-dots">•••</span></div>
+            <div class="ig-img"><div class="glow"></div><span class="cap">Dinsdag is de<br>nieuwe zaterdag.</span></div>
+            <div class="ig-cta"><b>Reserveer een tafel</b><span>›</span></div>
+            <div class="ig-act"><span>♡</span><span>💬</span><span class="r">🔖</span></div>
+            <div class="ig-txt"><b>dezwarteruiter</b> Doordeweeks drie gangen voor € 32,50.</div>
+          </div></div>
+        </div>
+        <p class="ph-cap">FEED · 4:5 of 1:1<br>meeste bereik, werkt zonder geluid</p>
+      </div>
+      <div class="rv rv-2">
+        <div class="ph ph-sm">
+          <div class="ph-scr"><div class="st">
+            <div class="bars"><i></i><i></i><i></i></div>
+            <div class="who"><span class="av"></span>dezwarteruiter <em>Gesponsord</em></div>
+            <div class="glow"></div>
+            <h4>Dinsdag is de nieuwe zaterdag.</h4>
+            <span class="swipe">Reserveer →</span>
+          </div></div>
+        </div>
+        <p class="ph-cap">STORIES · 9:16<br>hele scherm, vraagt om beweging</p>
+      </div>
+      <div class="rv rv-3">
+        <div class="ph ph-sm">
+          <div class="ph-scr"><div class="st rl">
+            <div class="who"><span class="av"></span>dezwarteruiter <em>Gesponsord</em></div>
+            <div class="play"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></div>
+            <div class="glow"></div>
+            <h4>Twintig seconden keuken.</h4>
+            <span class="swipe">Bekijk de kaart →</span>
+          </div></div>
+        </div>
+        <p class="ph-cap">REELS · 9:16<br>video, hoogste bereik onder 35</p>
+      </div>
     </div>
-    <p style="margin-top:28px">Wat er nodig is: beeld dat op een telefoon werkt. De meeste advertenties worden bekeken op een scherm van zes inch, met het geluid uit, in ongeveer twee seconden. Een bedrijfsfilm van twee minuten is daar niet voor gemaakt.</p>
-  </div>
-</section>
-
-<section class="sec sec--alt">
-  <div class="wrap">
-    <h2>Wat kost een social campagne?</h2>
-    <p>Twee kostenposten: het mediabudget dat naar Meta gaat, en het werk dat wij eraan doen.</p>
-    <div class="tbl-wrap">
-      <table class="tbl">
-        <thead><tr><th>Post</th><th>Richtbedrag</th><th>Toelichting</th></tr></thead>
-        <tbody>
-          <tr><td>Mediabudget</td><td>€ 750 – € 3.000 p/m</td><td>Onder € 500 per maand is testen lastig: te weinig data om op te sturen</td></tr>
-          <tr><td>Werk</td><td>in het maandbedrag</td><td>Opzet, beeld, teksten, wekelijkse optimalisatie</td></tr>
-          <tr><td>Eenmalig</td><td>afhankelijk</td><td>Pixel plaatsen, account inrichten, eerste beeldproductie</td></tr>
-        </tbody>
-      </table>
+    <div class="ctr narrow" style="margin-top:56px">
+      <p class="rv" style="font-size:19px;color:var(--tx2);margin-inline:auto">Zes inch scherm. Geluid uit. Twee seconden. Een bedrijfsfilm van twee minuten is daar niet voor gemaakt.</p>
     </div>
-    <p style="margin-top:28px">Wat je terugkrijgt hangt af van je marge, je aanbod en je markt. We rekenen vooraf uit bij welke kostprijs per aanvraag het voor jou rendabel wordt. Komt daar een bedrag uit dat niet haalbaar is, dan zeggen we dat voordat we beginnen.</p>
-    <div class="an"><p class="an-note">Prijzen noemen is zeldzaam op bureauwebsites en daarmee een sterk vertrouwenssignaal. Het is ook het meest gezochte onderdeel van deze pagina: “wat kost adverteren op Instagram” is een van de grootste zoektermen in dit thema.</p></div>
   </div>
 </section>
 
+<!-- ===== CASE ===== -->
+<section class="sec dark">
+  <div class="wrap ctr">
+    <div class="an"><span class="an-t m">CASE · MERK · CIJFER EERST</span></div>
+    <p class="big-n rv">+64%</p>
+    <p class="big-l rv rv-2">bezetting op doordeweekse avonden</p>
+    <p class="lead rv rv-3" style="margin-bottom:28px">De Zwarte Ruiter zat vol in het weekend en leeg op dinsdag. Eén aanbod, één doelgroep, drie maanden. De campagne draait nog steeds.</p>
+    <a href="#" class="tlink rv rv-4">Bekijk de case</a>
+    <div class="an"><p class="an-n">Voorbeeldcase. Elk getal moet aantoonbaar zijn. Is er nog geen case met een hard cijfer, laat dit blok dan weg — een geschat percentage ondermijnt de rest van de pagina.</p></div>
+  </div>
+</section>
+
+<!-- ===== PRIJS ===== -->
 <section class="sec">
-  <div class="wrap">
-    <h2>Hoe we een campagne opbouwen</h2>
-    <p>Zes stappen. De eerste vier duren samen ongeveer drie weken.</p>
-    <div class="an"><span class="an-tag">Stappenlijst · jr-list-steps</span></div>
-    <ol class="steps">
-      <li><b>Nulmeting</b><span>Wat draait er nu, wat leverde het op, wat staat er al aan data klaar.</span></li>
-      <li><b>Doelgroep en aanbod</b><span>Wie krijgt het te zien, en wat krijgen ze precies te zien.</span></li>
-      <li><b>Beeld en tekst</b><span>Drie tot vijf varianten. Verschillende invalshoeken, niet drie keer dezelfde met een andere kleur.</span></li>
-      <li><b>Testen</b><span>Twee tot vier weken op kleine budgetten. Hier valt af wat niet werkt.</span></li>
-      <li><b>Opschalen</b><span>Wat werkt krijgt budget, de rest gaat uit.</span></li>
-      <li><b>Wekelijks bijsturen</b><span>Advertenties slijten. Zonder vernieuwing zakt het rendement na een week of zes.</span></li>
-    </ol>
+  <div class="wrap-w">
+    <div class="ctr narrow">
+      <h2 class="rv">Wat het kost.</h2>
+      <p class="lead rv rv-2">Twee posten: het budget dat naar Meta gaat, en het werk dat wij eraan doen.</p>
+    </div>
+    <div class="price-row">
+      <div class="price rv">
+        <span class="n">€ 750 – 3.000</span>
+        <span class="w">mediabudget per maand</span>
+        <p>Onder € 500 per maand is testen lastig: te weinig data om op te sturen. Dit bedrag gaat rechtstreeks naar Meta.</p>
+      </div>
+      <div class="price rv rv-2">
+        <span class="n">In het maandbedrag</span>
+        <span class="w">opzet, beeld, teksten, optimalisatie</span>
+        <p>Bij een partnership zit het werk in je vaste maandbedrag. Geen uurtjes, geen meerwerk achteraf.</p>
+      </div>
+    </div>
+    <div class="ctr narrow" style="margin-top:48px">
+      <p class="rv" style="font-size:19px;color:var(--tx2);margin-inline:auto">We rekenen vooraf uit bij welke kostprijs per aanvraag het voor jou rendabel wordt. Komt daar een bedrag uit dat niet haalbaar is, dan zeggen we dat voordat we beginnen.</p>
+    </div>
+    <div class="an"><p class="an-n">Prijzen noemen is zeldzaam op bureauwebsites en daarmee een sterk vertrouwenssignaal. "Wat kost adverteren op Instagram" is bovendien een van de grootste zoektermen in dit thema.</p></div>
   </div>
 </section>
 
-<section class="sec sec--alt">
-  <div class="wrap">
-    <h2>Wat je nodig hebt om te starten</h2>
-    <ul class="check">
-      <li>Toegang tot je Meta Business Manager — of we richten er een in</li>
-      <li>Een Facebook-pagina en een Instagram-account</li>
-      <li>Beeldmateriaal, of we maken het</li>
-      <li>De Meta-pixel op je website</li>
-      <li>Een budget dat minimaal drie maanden vooruit kan</li>
+<!-- ===== PROCES ===== -->
+<section class="sec dark">
+  <div class="wrap-w">
+    <div class="ctr narrow">
+      <h2 class="rv">Zes stappen.<br>Drie weken tot live.</h2>
+      <p class="lead rv rv-2">Wat werkt krijgt budget. De rest gaat uit.</p>
+    </div>
+    <div class="steps">
+      <div class="step rv"><span class="n">1</span><b>Nulmeting</b><p>Wat draait er nu, wat leverde het op, welke data staat al klaar.</p></div>
+      <div class="step rv rv-2"><span class="n">2</span><b>Doelgroep en aanbod</b><p>Wie krijgt het te zien, en wat krijgen ze precies te zien.</p></div>
+      <div class="step rv rv-3"><span class="n">3</span><b>Beeld en tekst</b><p>Drie tot vijf varianten. Verschillende invalshoeken, niet dezelfde in een andere kleur.</p></div>
+      <div class="step rv"><span class="n">4</span><b>Testen</b><p>Twee tot vier weken op kleine budgetten. Hier valt af wat niet werkt.</p></div>
+      <div class="step rv rv-2"><span class="n">5</span><b>Opschalen</b><p>Wat werkt krijgt budget. De rest gaat uit.</p></div>
+      <div class="step rv rv-3"><span class="n">6</span><b>Wekelijks bijsturen</b><p>Advertenties slijten. Zonder vernieuwing zakt het rendement na een week of zes.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== NODIG ===== -->
+<section class="sec-s grey">
+  <div class="wrap ctr">
+    <h2 class="rv">Wat je nodig hebt.</h2>
+    <ul class="needs">
+      <li class="rv">Toegang tot je Meta Business Manager</li>
+      <li class="rv rv-2">Een Facebook-pagina en Instagram-account</li>
+      <li class="rv">Beeldmateriaal, of we maken het</li>
+      <li class="rv rv-2">De Meta-pixel op je website</li>
+      <li class="rv">Een budget dat drie maanden vooruit kan</li>
+      <li class="rv rv-2">Verder niets</li>
     </ul>
-    <p style="margin-top:28px">Heb je hier niets van: geen probleem, dat richten we in. Het kost ongeveer een week voordat er iets live kan.</p>
+    <p class="rv" style="margin:40px auto 0;font-size:18px;color:var(--tx2)">Heb je hier niets van, dan richten we het in. Ongeveer een week voordat er iets live kan.</p>
   </div>
 </section>
 
+<!-- ===== FAQ ===== -->
 <section class="sec">
   <div class="wrap">
-    <div class="an"><span class="an-tag merk">CASE · MERKREGISTER · CIJFER EERST, DAN CONTEXT</span></div>
-    <div class="case">
-      <span class="stat">+64%</span>
-      <span class="sl">bezetting op doordeweekse avonden</span>
-      <p>De Zwarte Ruiter zat vol in het weekend en leeg op dinsdag. Eén aanbod, één doelgroep, drie maanden. De campagne draait nog steeds.</p>
-      <span class="who">De Zwarte Ruiter · Horeca · Zuid-Limburg</span>
+    <div class="ctr">
+      <div class="an"><span class="an-t s">FAQ · 380 WOORDEN · FAQPage-SCHEMA · VISUEEL DRIE SCHERMREGELS</span></div>
+      <h2 class="rv">Veelgestelde vragen</h2>
     </div>
-    <div class="an"><p class="an-note">Voorbeeldcase. Elk getal op deze pagina moet aantoonbaar zijn — zie de getallentest in DIENSTEN-TEKSTEN.md. Is er nog geen case met een hard cijfer, laat dit blok dan weg in plaats van het in te vullen met een schatting.</p></div>
-  </div>
-</section>
-
-<section class="sec sec--alt">
-  <div class="wrap">
-    <div class="an"><span class="an-tag seo">FAQ-ACCORDION · VEEL TEKST, WEINIG VISUELE RUIMTE · FAQPage-SCHEMA</span></div>
-    <h2>Veelgestelde vragen</h2>
     <div class="acc" id="acc">
-      <div class="acc-item">
-        <button class="acc-btn" type="button" aria-expanded="true" aria-controls="p1">Hoe snel zie ik resultaat?<span>+</span></button>
-        <div class="acc-panel" id="p1">
-          <p>De eerste data komt binnen een week. Betrouwbare conclusies duren langer: reken op vier tot zes weken voordat duidelijk is welke aanpak werkt. Wie na twee weken wil oordelen, kijkt naar ruis.</p>
-        </div>
-      </div>
-      <div class="acc-item">
-        <button class="acc-btn" type="button" aria-expanded="false" aria-controls="p2">Moet ik dan ook nog organisch posten?<span>+</span></button>
-        <div class="acc-panel" id="p2" hidden>
-          <p>Niet per se, maar het helpt. Wie op je advertentie klikt, bekijkt vaak eerst je profiel. Staat daar niets van de afgelopen maanden, dan haakt een deel af. Eén post per week is genoeg.</p>
-        </div>
-      </div>
-      <div class="acc-item">
-        <button class="acc-btn" type="button" aria-expanded="false" aria-controls="p3">Werkt LinkedIn beter voor B2B?<span>+</span></button>
-        <div class="acc-panel" id="p3" hidden>
-          <p>Soms. LinkedIn richt scherper op functie en bedrijfsgrootte, maar kost drie tot vijf keer zoveel per klik. Bij een hoge orderwaarde is dat het waard. Bij een lage niet — dan werkt Meta beter, ook voor B2B.</p>
-        </div>
-      </div>
-      <div class="acc-item">
-        <button class="acc-btn" type="button" aria-expanded="false" aria-controls="p4">Wat gebeurt er als ik stop?<span>+</span></button>
-        <div class="acc-panel" id="p4" hidden>
-          <p>Dan stopt het bereik. Social advertising bouwt geen bezit op zoals SEO dat doet: zet je de kraan dicht, dan houdt het diezelfde dag op. Wat blijft is de bekendheid die je hebt opgebouwd en de data in je account.</p>
-        </div>
-      </div>
-      <div class="acc-item">
-        <button class="acc-btn" type="button" aria-expanded="false" aria-controls="p5">Kan ik zelf zien wat er draait?<span>+</span></button>
-        <div class="acc-panel" id="p5" hidden>
-          <p>Ja. Je krijgt beheerderstoegang tot je eigen Meta-account en een dashboard waarin je op elk moment de cijfers ziet. In ClickUp staat waar we mee bezig zijn, ook als iets tegenvalt.</p>
-        </div>
-      </div>
-      <div class="acc-item">
-        <button class="acc-btn" type="button" aria-expanded="false" aria-controls="p6">Hoe zit het met privacy en de pixel?<span>+</span></button>
-        <div class="acc-panel" id="p6" hidden>
-          <p>De Meta-pixel valt onder de AVG en vraagt om toestemming via je cookiebanner. We plaatsen hem achter een consentoplossing en gebruiken waar mogelijk de Conversions API, zodat meting minder afhankelijk is van browserinstellingen.</p>
-        </div>
-      </div>
-      <div class="acc-item">
-        <button class="acc-btn" type="button" aria-expanded="false" aria-controls="p7">Wat als het niet werkt?<span>+</span></button>
-        <div class="acc-panel" id="p7" hidden>
-          <p>Dan zeggen we dat. Soms ligt het aan het aanbod, soms aan de markt, soms is social simpelweg niet het juiste kanaal. In dat laatste geval stoppen we ermee en zetten we het budget ergens in waar het wel rendeert. Een partnership is maandelijks opzegbaar, dus we hebben er niets aan om iets door te laten lopen dat niet werkt.</p>
-        </div>
-      </div>
+      <div class="acc-i"><button class="acc-b" type="button" aria-expanded="true" aria-controls="p1">Hoe snel zie ik resultaat?<i>+</i></button><div class="acc-p" id="p1">De eerste data komt binnen een week. Betrouwbare conclusies duren langer: reken op vier tot zes weken voordat duidelijk is welke aanpak werkt. Wie na twee weken wil oordelen, kijkt naar ruis.</div></div>
+      <div class="acc-i"><button class="acc-b" type="button" aria-expanded="false" aria-controls="p2">Moet ik dan ook nog organisch posten?<i>+</i></button><div class="acc-p" id="p2" hidden>Niet per se, maar het helpt. Wie op je advertentie klikt, bekijkt vaak eerst je profiel. Staat daar niets van de afgelopen maanden, dan haakt een deel af. Eén post per week is genoeg.</div></div>
+      <div class="acc-i"><button class="acc-b" type="button" aria-expanded="false" aria-controls="p3">Werkt LinkedIn beter voor B2B?<i>+</i></button><div class="acc-p" id="p3" hidden>Soms. LinkedIn richt scherper op functie en bedrijfsgrootte, maar kost drie tot vijf keer zoveel per klik. Bij een hoge orderwaarde is dat het waard. Bij een lage niet — dan werkt Meta beter, ook voor B2B.</div></div>
+      <div class="acc-i"><button class="acc-b" type="button" aria-expanded="false" aria-controls="p4">Wat gebeurt er als ik stop?<i>+</i></button><div class="acc-p" id="p4" hidden>Dan stopt het bereik. Social advertising bouwt geen bezit op zoals SEO dat doet: zet je de kraan dicht, dan houdt het diezelfde dag op. Wat blijft is de bekendheid die je hebt opgebouwd en de data in je account.</div></div>
+      <div class="acc-i"><button class="acc-b" type="button" aria-expanded="false" aria-controls="p5">Kan ik zelf zien wat er draait?<i>+</i></button><div class="acc-p" id="p5" hidden>Ja. Je krijgt beheerderstoegang tot je eigen Meta-account en een dashboard waarin je op elk moment de cijfers ziet. In ClickUp staat waar we mee bezig zijn, ook als iets tegenvalt.</div></div>
+      <div class="acc-i"><button class="acc-b" type="button" aria-expanded="false" aria-controls="p6">Hoe zit het met privacy en de pixel?<i>+</i></button><div class="acc-p" id="p6" hidden>De Meta-pixel valt onder de AVG en vraagt om toestemming via je cookiebanner. We plaatsen hem achter een consentoplossing en gebruiken waar mogelijk de Conversions API, zodat meting minder afhankelijk is van browserinstellingen.</div></div>
+      <div class="acc-i"><button class="acc-b" type="button" aria-expanded="false" aria-controls="p7">Wat als het niet werkt?<i>+</i></button><div class="acc-p" id="p7" hidden>Dan zeggen we dat. Soms ligt het aan het aanbod, soms aan de markt, soms is social simpelweg niet het juiste kanaal. In dat laatste geval stoppen we ermee en zetten we het budget ergens in waar het wel rendeert. Een partnership is maandelijks opzegbaar, dus we hebben er niets aan om iets door te laten lopen dat niet werkt.</div></div>
     </div>
-    <div class="an"><p class="an-note">Zeven vragen, ongeveer 380 woorden, visueel drie schermregels. Google indexeert dit volledig omdat de tekst in de HTML staat. Dit is de plek waar je longtail binnenhaalt zonder de pagina vol te schrijven.</p></div>
   </div>
 </section>
 
-<section class="sec">
-  <div class="wrap">
-    <h2>Meer weten over de andere kanalen</h2>
-    <div class="an"><span class="an-tag seo">INTERNE LINKS MET BESCHRIJVENDE ANKERTEKST — NOOIT “LEES MEER”</span></div>
-    <p style="margin-bottom:8px"><a href="#">Zoekadvertenties via Google Ads</a> — voor de mensen die al zoeken.</p>
-    <p style="margin-bottom:8px"><a href="#">SEO en vindbaarheid</a> — bereik dat blijft staan als je stopt met betalen.</p>
-    <p style="margin-bottom:8px"><a href="#">E-mailmarketing</a> — het enige kanaal dat van jou is.</p>
-    <p><a href="#">Het marketingpartnership</a> — hoe alle kanalen samen werken.</p>
+<!-- ===== MEER ===== -->
+<section class="sec-s grey">
+  <div class="wrap-w">
+    <div class="ctr narrow"><h2 class="rv">De andere kanalen</h2></div>
+    <div class="more">
+      <a href="#" class="rv"><b>Google Ads</b><span>Voor de mensen die al zoeken.</span><span class="go">Bekijk</span></a>
+      <a href="#" class="rv rv-2"><b>SEO</b><span>Bereik dat blijft staan als je stopt met betalen.</span><span class="go">Bekijk</span></a>
+      <a href="#" class="rv"><b>E-mailmarketing</b><span>Het enige kanaal dat van jou is.</span><span class="go">Bekijk</span></a>
+      <a href="#" class="rv rv-2"><b>Het partnership</b><span>Hoe alle kanalen samen werken.</span><span class="go">Bekijk</span></a>
+    </div>
+    <div class="an"><p class="an-n">Interne links met beschrijvende ankertekst — nooit "lees meer". Elke kaart draagt het zoekwoord van de doelpagina.</p></div>
   </div>
 </section>
 
-<section class="wrap cta">
-  <div class="an"><span class="an-tag merk">AFSLUITING · MERKREGISTER · TERUG NAAR KORT</span></div>
-  <h2>Plan een gesprek.</h2>
-  <p>Een half uur, geen verkooppraatje. Je hoort wat we zouden doen en wat dat ongeveer kost.</p>
-  <button class="btn btn--primary">Plan een gesprek</button>
+<!-- ===== CTA ===== -->
+<section class="sec dark">
+  <div class="wrap ctr">
+    <div class="an"><span class="an-t m">AFSLUITING · MERK · TERUG NAAR KORT</span></div>
+    <h2 class="rv">Plan een gesprek.</h2>
+    <p class="lead rv rv-2">Een half uur, geen verkooppraatje. Je hoort wat we zouden doen en wat dat ongeveer kost.</p>
+    <div class="rv rv-3"><button class="btn btn-l">Plan een gesprek</button></div>
+  </div>
 </section>
 
-<footer class="wrap foot">
-  James Robinson — Marketing &amp; Branding · www.jamesrobinson.nl<br>
-  Voorbeeldpagina bij designsysteem v3.6
-</footer>
+<footer class="wrap foot">James Robinson — Marketing &amp; Branding · Voorbeeldpagina bij designsysteem v3.6</footer>
 
 <script>
-(function () {
-  var root = document.documentElement, tb = document.getElementById('themeBtn'), ab = document.getElementById('anBtn');
-  function cur(){ var t = root.getAttribute('data-theme'); return t || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); }
-  function sync(){ tb.textContent = cur() === 'dark' ? 'Licht' : 'Donker'; }
-  sync();
-  tb.addEventListener('click', function(){ root.setAttribute('data-theme', cur() === 'dark' ? 'light' : 'dark'); sync(); });
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', sync);
-
-  ab.addEventListener('click', function(){
-    var on = document.body.classList.toggle('show-an');
-    ab.classList.toggle('on', on);
-    ab.textContent = on ? 'Verberg opbouw' : 'Toon opbouw';
+(function(){
+  var ab=document.getElementById('anBtn');
+  ab.addEventListener('click',function(){
+    var on=document.body.classList.toggle('an-on');
+    ab.classList.toggle('on',on);
+    ab.textContent=on?'Verberg opbouw':'Toon opbouw';
   });
-
-  document.querySelectorAll('.acc-btn').forEach(function(b){
-    b.addEventListener('click', function(){
-      var open = b.getAttribute('aria-expanded') === 'true';
-      b.setAttribute('aria-expanded', String(!open));
-      document.getElementById(b.getAttribute('aria-controls')).hidden = open;
+  document.querySelectorAll('.acc-b').forEach(function(b){
+    b.addEventListener('click',function(){
+      var o=b.getAttribute('aria-expanded')==='true';
+      b.setAttribute('aria-expanded',String(!o));
+      document.getElementById(b.getAttribute('aria-controls')).hidden=o;
     });
   });
+  var els=document.querySelectorAll('.rv');
+  if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in')});return;}
+  var io=new IntersectionObserver(function(en){
+    en.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+  },{threshold:.1,rootMargin:'0px 0px -6% 0px'});
+  els.forEach(function(e){io.observe(e)});
 })();
 </script>
