@@ -106,6 +106,12 @@ const icons = {
       <path d="M18 8v6M15 11h6" strokeLinecap="round" />
     </svg>
   ),
+  contracten: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
+      <path d="M6 3h8l4 4v14H6z" strokeLinejoin="round" />
+      <path d="M14 3v4h4M9 12h6M9 16h4" strokeLinecap="round" />
+    </svg>
+  ),
   salarishuis: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
       <path d="M3 20h4v-4H3zM10 20h4v-9h-4zM17 20h4V5h-4z" strokeLinejoin="round" />
@@ -142,6 +148,7 @@ const TEAM_NAV: NavItem[] = [
  * gewoon op.
  */
 const ADMIN_NAV: NavItem[] = [
+  { href: '/beheer/contracten', label: 'Contracten', key: 'contracten', icon: icons.contracten },
   { href: '/beheer/salarishuis', label: 'Salarishuis', key: 'salarishuis', icon: icons.salarishuis },
 ]
 

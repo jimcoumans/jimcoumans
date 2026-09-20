@@ -144,6 +144,16 @@ async function main() {
     await (await import('./salarishuis')).getHuis()
   })
 
+  const contracten = await import('./contracten')
+  await meet('CONTRACTEN', async () => {
+    await contracten.komendeAanzeggingen()
+    await contracten.listFunctieprofielen()
+    await contracten.listKandidatenMetAanbod()
+    await contracten.getWerkgever()
+    await team.listTeam()
+    await (await import('./salarishuis')).getHuis()
+  })
+
   const salarishuis = await import('./salarishuis')
   await meet('SALARISHUIS', async () => {
     await salarishuis.listHuizen()

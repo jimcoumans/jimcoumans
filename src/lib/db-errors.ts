@@ -261,6 +261,39 @@ export function describeDbError(error: unknown): string | null {
       return 'Een bestand bij een kandidaat mag hoogstens vijf megabyte zijn.'
     case 'candidate_document_type_allowed':
       return 'Alleen PDF en Word. Geen SVG of HTML: daar kan script in zitten dat daarna in de browser van een collega draait.'
+
+    /* Contracten. Deze meldingen leggen de wettelijke reden erbij, want dat
+       is precies wat je moet weten als het formulier je tegenhoudt. */
+    case 'employer_name_not_empty':
+      return 'Vul de naam van de werkgever in zoals die in het contract komt.'
+    case 'employer_signatories_not_empty':
+      return 'Vul in wie namens de werkgever tekent.'
+    case 'job_profile_title_not_empty':
+      return 'Geef het functieprofiel een naam.'
+    case 'job_profiles_title_idx':
+      return 'Er bestaat al een functieprofiel met deze naam.'
+    case 'job_profile_relation_needs_motivation':
+      return 'Een relatiebeding heeft een schriftelijke motivering van het zwaarwegend bedrijfsbelang nodig. Zonder die motivering is het beding bij een tijdelijk contract nietig, en dan staat er iets in het contract wat niets voorstelt.'
+    case 'job_profile_relation_months_valid':
+      return 'Een relatiebeding loopt tussen de 0 en 60 maanden door.'
+    case 'contract_template_name_not_empty':
+      return 'Geef het sjabloon een naam.'
+    case 'contract_article_title_not_empty':
+      return 'Geef het artikel een kop.'
+    case 'contract_article_body_not_empty':
+      return 'Een artikel zonder tekst heeft geen zin.'
+    case 'contract_template_articles_order_idx':
+      return 'Er staat al een artikel op deze plek in dit sjabloon.'
+    case 'contract_belongs_to_someone':
+      return 'Een contract hoort bij een kandidaat of bij een collega. Kies er een.'
+    case 'contract_probation_valid':
+      return 'Een proeftijd is wettelijk hoogstens twee maanden.'
+    case 'contract_no_probation_when_short':
+      return 'Bij een contract van zes maanden of korter is een proeftijd niet toegestaan. Een proeftijd die er toch in staat is nietig; dan denk je er een te hebben terwijl je er geen hebt.'
+    case 'contract_salary_positive':
+      return 'Het brutosalaris moet boven nul liggen.'
+    case 'contract_body_not_empty':
+      return 'Er is geen contracttekst opgesteld.'
     case 'salary_holiday_allowance_valid':
       return 'Het vakantiegeld moet tussen 0 en 100 procent liggen. Wettelijk is het minimaal 8.'
     case 'salary_hours_valid':

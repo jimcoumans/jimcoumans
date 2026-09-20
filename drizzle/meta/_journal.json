@@ -169,6 +169,20 @@
       "when": 1789926158525,
       "tag": "0023_sollicitaties",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1789943874994,
+      "tag": "0024_contracten",
+      "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1789944496355,
+      "tag": "0025_contract-opmerkingen",
+      "breakpoints": true
     }
   ]
 }

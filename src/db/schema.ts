@@ -298,6 +298,35 @@ export const candidateSourceEnum = pgEnum('candidate_source', [
   'anders',
 ])
 
+/* -------------------------------- Contracten -----------------------------
+   Bepalingen die van de functie afhangen, en bepalingen die van de looptijd
+   afhangen. Allebei staan ze als voorwaarde bij het artikel, zodat de tekst
+   zelf geen keuzes hoeft te maken.
+   ------------------------------------------------------------------------- */
+
+/**
+ * Wanneer een artikel in het contract komt.
+ *
+ * Een vaste lijst en geen vrije uitdrukking. Een taal waarin je zelf
+ * voorwaarden kunt schrijven is krachtiger, maar dan staat er in de database
+ * code die niemand nakijkt en die een juridisch document bepaalt. Deze
+ * voorwaarden worden in de code uitgerekend en zijn daar getest.
+ */
+export const artikelVoorwaardeEnum = pgEnum('artikel_voorwaarde', [
+  'altijd',
+  'bepaalde_tijd',
+  'onbepaalde_tijd',
+  'proeftijd', // alleen als er een geldige proeftijd is
+  'relatiebeding', // hangt aan het functieprofiel
+  'op_toeslag', // geen pensioenregeling, wel compensatie
+  'pensioenregeling',
+  'vrijetijdsbudget',
+  'extra_afspraken', // het functieprofiel heeft eigen bepalingen
+])
+
+/** Een concept dat je opstuurt, of het stuk dat getekend wordt. */
+export const contractSoortEnum = pgEnum('contract_soort', ['proforma', 'definitief'])
+
 export const candidateDocumentKindEnum = pgEnum('candidate_document_kind', [
   'cv',
   'motivatie',
@@ -2636,6 +2665,284 @@ export const candidateDocuments = pgTable(
   ],
 )
 
+/* -------------------------------- Contracten -----------------------------
+   Een contract wordt opgebouwd uit drie dingen: een sjabloon met artikelen,
+   een functieprofiel met wat per functie verschilt, en de gegevens van deze
+   ene persoon.
+
+   Wat er NIET gebeurt: het sjabloon wordt niet opgezocht als je een oud
+   contract opent. Het contract bewaart zijn eigen uitgeschreven tekst. Een
+   arbeidsovereenkomst is een afspraak tussen twee partijen; die verandert
+   niet omdat iemand later een zin in een sjabloon heeft bijgewerkt.
+   ------------------------------------------------------------------------- */
+
+/**
+ * De gegevens van de werkgever zoals ze in een contract komen.
+ *
+ * Eén rij. Staat in de database en niet in de code omdat er een verhuizing
+ * aan zit te komen: het bezoekadres wordt per 1 oktober 2026 een ander, en
+ * dat wil je aanpassen zonder een nieuwe versie uit te rollen.
+ *
+ * Het vestigingsadres en de werkplek staan apart. In het contract van
+ * Voncken stonden twee verschillende adressen in dezelfde overeenkomst - de
+ * kop zei Klimmenerweg, artikel 4 zei Aalbekerweg. Als het twee velden zijn
+ * kan dat niet meer per ongeluk.
+ */
+export const employerSettings = pgTable(
+  'employer_settings',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    legalName: text('legal_name').notNull(),
+    /** Statutaire vestiging: wat er in de kop van het contract staat. */
+    registeredAddress: text('registered_address').notNull(),
+    registeredPostalCode: text('registered_postal_code').notNull(),
+    registeredCity: text('registered_city').notNull(),
+    /** Waar het werk gedaan wordt. Mag hetzelfde zijn, maar is een eigen veld. */
+    workAddress: text('work_address').notNull(),
+    workPostalCode: text('work_postal_code').notNull(),
+    workCity: text('work_city').notNull(),
+    /** Wie tekent, zoals het onder het contract komt te staan. */
+    signatories: text('signatories').notNull(),
+    kvkNumber: text('kvk_number'),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    check('employer_name_not_empty', sql`length(trim(${t.legalName})) > 0`),
+    check('employer_signatories_not_empty', sql`length(trim(${t.signatories})) > 0`),
+  ],
+)
+
+/**
+ * Wat er per functie verschilt in een contract.
+ *
+ * Dit bestaat vanwege een concreet probleem in het bestaande contract. De
+ * motivering onder het relatiebeding is daar geschreven voor een marketing
+ * manager met een eigen portefeuille opdrachtgevers. Bij een tijdelijk
+ * contract is een relatiebeding zonder zo'n motivering nietig - en die
+ * motivering klopt niet voor een junior ontwerper of een stagiair. Zonder
+ * dit profiel zou die alinea worden hergebruikt en valt het beding om
+ * precies op het moment dat je het nodig hebt.
+ */
+export const jobProfiles = pgTable(
+  'job_profiles',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    title: text('title').notNull(),
+    active: boolean('active').notNull().default(true),
+
+    /** De schaal uit het salarishuis die hier normaal bij hoort. */
+    defaultScaleName: text('default_scale_name'),
+    defaultHoursWeekQuarters: integer('default_hours_week_quarters'),
+
+    /** Krijgt deze functie een relatiebeding? */
+    hasRelationClause: boolean('has_relation_clause').notNull().default(false),
+    /**
+     * De schriftelijke motivering van het zwaarwegend bedrijfsbelang.
+     *
+     * Verplicht zodra er een relatiebeding is: zonder motivering is het
+     * beding bij een tijdelijk contract nietig. De database dwingt dat af.
+     */
+    relationClauseMotivation: text('relation_clause_motivation'),
+    /** Hoeveel maanden het relatiebeding na afloop doorloopt. */
+    relationClauseMonths: integer('relation_clause_months').notNull().default(12),
+
+    /** Bepalingen die alleen voor deze functie gelden. */
+    extraClauses: text('extra_clauses'),
+
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex('job_profiles_title_idx').on(t.title),
+    check('job_profile_title_not_empty', sql`length(trim(${t.title})) > 0`),
+    // Een relatiebeding zonder motivering is bij een tijdelijk contract
+    // nietig. Dan is het er dus niet, en dan moet het er ook niet staan.
+    check(
+      'job_profile_relation_needs_motivation',
+      sql`${t.hasRelationClause} = false OR length(trim(COALESCE(${t.relationClauseMotivation}, ''))) > 0`,
+    ),
+    check(
+      'job_profile_relation_months_valid',
+      sql`${t.relationClauseMonths} >= 0 AND ${t.relationClauseMonths} <= 60`,
+    ),
+  ],
+)
+
+/** Een sjabloon, met een ingangsdatum zodat je het kunt bijwerken. */
+export const contractTemplates = pgTable(
+  'contract_templates',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    name: text('name').notNull(),
+    /** Welke soort overeenkomst dit is; sluit aan op contract_type. */
+    kind: contractTypeEnum('kind').notNull(),
+    effectiveFrom: timestamp('effective_from', { withTimezone: true }).notNull(),
+    active: boolean('active').notNull().default(true),
+    /** De begeleidende tekst boven het contract, met plaatshouders. */
+    intro: text('intro'),
+    notes: text('notes'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('contract_templates_kind_idx').on(t.kind, t.effectiveFrom),
+    check('contract_template_name_not_empty', sql`length(trim(${t.name})) > 0`),
+  ],
+)
+
+/**
+ * Eén artikel uit een sjabloon.
+ *
+ * Artikelen als rijen en niet als één lap tekst met opmaak erin. Zo kun je
+ * een artikel laten vervallen zonder de nummering met de hand bij te werken,
+ * en staat de voorwaarde bij het artikel in plaats van in de tekst.
+ */
+export const contractTemplateArticles = pgTable(
+  'contract_template_articles',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    templateId: uuid('template_id')
+      .notNull()
+      .references(() => contractTemplates.id, { onDelete: 'cascade' }),
+    sortOrder: integer('sort_order').notNull(),
+    title: text('title').notNull(),
+    /** De leden, gescheiden door een lege regel. Met {{plaatshouders}}. */
+    body: text('body').notNull(),
+    voorwaarde: artikelVoorwaardeEnum('voorwaarde').notNull().default('altijd'),
+  },
+  (t) => [
+    uniqueIndex('contract_template_articles_order_idx').on(t.templateId, t.sortOrder),
+    check('contract_article_title_not_empty', sql`length(trim(${t.title})) > 0`),
+    check('contract_article_body_not_empty', sql`length(trim(${t.body})) > 0`),
+  ],
+)
+
+/**
+ * Een uitgeschreven contract voor één persoon.
+ *
+ * De tekst staat hier voluit. Het sjabloon wordt niet opnieuw opgezocht als
+ * je dit later opent: een arbeidsovereenkomst is een afspraak, en die
+ * verandert niet omdat iemand een zin in een sjabloon heeft bijgewerkt.
+ *
+ * De geboortedatum staat hier wel en bij een kandidaat niet. Dat is geen
+ * inconsistentie: voor een arbeidsovereenkomst heb je hem nodig, voor het
+ * beoordelen van een sollicitatie niet.
+ */
+export const generatedContracts = pgTable(
+  'generated_contracts',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    soort: contractSoortEnum('soort').notNull().default('proforma'),
+
+    templateId: uuid('template_id').references(() => contractTemplates.id, {
+      onDelete: 'set null',
+    }),
+    jobProfileId: uuid('job_profile_id').references(() => jobProfiles.id, {
+      onDelete: 'set null',
+    }),
+    /** Een concept voor een kandidaat, of een contract voor een collega. */
+    candidateId: uuid('candidate_id').references(() => candidates.id, {
+      onDelete: 'cascade',
+    }),
+    userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }),
+
+    /* --- De persoon, zoals hij in het contract staat --- */
+    employeeName: text('employee_name').notNull(),
+    employeeAanhef: aanhefEnum('employee_aanhef'),
+    employeeAddress: text('employee_address'),
+    employeePostalCode: text('employee_postal_code'),
+    employeeCity: text('employee_city'),
+    employeeBirthDate: timestamp('employee_birth_date', { withTimezone: true }),
+
+    /* --- De afspraak --- */
+    jobTitle: text('job_title').notNull(),
+    contractType: contractTypeEnum('contract_type').notNull(),
+    startedOn: timestamp('started_on', { withTimezone: true }).notNull(),
+    /** Leeg bij onbepaalde tijd. */
+    endsOn: timestamp('ends_on', { withTimezone: true }),
+    durationMonths: integer('duration_months'),
+    /** Nul betekent geen proeftijd. Bij zes maanden of korter mag het niet. */
+    probationMonths: integer('probation_months').notNull().default(0),
+    hoursWeekQuarters: integer('hours_week_quarters').notNull(),
+
+    /* --- Het geld --- */
+    salaryScaleName: text('salary_scale_name'),
+    salaryStep: integer('salary_step'),
+    grossMonthlyCents: integer('gross_monthly_cents').notNull(),
+    opAllowanceCents: integer('op_allowance_cents').notNull().default(0),
+    holidayAllowanceBp: integer('holiday_allowance_bp').notNull().default(800),
+    holidayHoursPerYear: integer('holiday_hours_per_year'),
+
+    /**
+     * Uiterlijk wanneer er aangezegd moet worden.
+     *
+     * Bij een tijdelijk contract van zes maanden of langer moet je uiterlijk
+     * een maand voor het einde schriftelijk laten weten of je verlengt.
+     * Vergeet je dat, dan ben je een maandsalaris verschuldigd. Daarom staat
+     * die datum hier als veld en niet als opmerking.
+     */
+    aanzeggenVoor: timestamp('aanzeggen_voor', { withTimezone: true }),
+    /** Of er al is aangezegd, en wanneer. */
+    aangezegdOp: timestamp('aangezegd_op', { withTimezone: true }),
+
+    /* --- Het document --- */
+    /** De uitgeschreven artikelen. */
+    body: text('body').notNull(),
+    /** De begeleidende tekst met de hoofdpunten voor de medewerker. */
+    summary: text('summary'),
+    /**
+     * Waarschuwingen bij het opstellen, een per regel.
+     *
+     * Bijvoorbeeld dat de proeftijd is teruggebracht omdat hij bij deze
+     * looptijd niet mag, of dat er uiterlijk op een bepaalde datum moet
+     * worden aangezegd. Deze staan hier en niet alleen in beeld tijdens het
+     * opstellen: wie het contract een maand later opent moet ze ook zien.
+     */
+    remarks: text('remarks'),
+    signedOn: timestamp('signed_on', { withTimezone: true }),
+
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    createdByUserId: uuid('created_by_user_id').references(() => users.id, {
+      onDelete: 'set null',
+    }),
+  },
+  (t) => [
+    index('generated_contracts_candidate_idx').on(t.candidateId),
+    index('generated_contracts_user_idx').on(t.userId),
+    // Waarop de aanzegbewaking zoekt.
+    index('generated_contracts_aanzeggen_idx').on(t.aanzeggenVoor),
+    // Een contract hangt altijd aan iemand. Anders zweeft er een document
+    // met een adres en een geboortedatum in het systeem waar geen
+    // bewaartermijn aan hangt.
+    check(
+      'contract_belongs_to_someone',
+      sql`${t.candidateId} IS NOT NULL OR ${t.userId} IS NOT NULL`,
+    ),
+    check(
+      'contract_permanent_has_no_end',
+      sql`${t.contractType} <> 'onbepaalde_tijd' OR ${t.endsOn} IS NULL`,
+    ),
+    check(
+      'contract_ends_after_start',
+      sql`${t.endsOn} IS NULL OR ${t.endsOn} > ${t.startedOn}`,
+    ),
+    // De proeftijd is wettelijk hoogstens twee maanden. Of hij in dit geval
+    // wel mag hangt af van de looptijd; dat wordt in de code uitgerekend.
+    check(
+      'contract_probation_valid',
+      sql`${t.probationMonths} >= 0 AND ${t.probationMonths} <= 2`,
+    ),
+    // Een proeftijd bij een contract van zes maanden of korter is nietig.
+    // Dan hoort hij er niet te staan, ook niet als iemand hem invult.
+    check(
+      'contract_no_probation_when_short',
+      sql`${t.probationMonths} = 0 OR ${t.contractType} = 'onbepaalde_tijd' OR ${t.durationMonths} IS NULL OR ${t.durationMonths} > 6`,
+    ),
+    check('contract_hours_valid', sql`${t.hoursWeekQuarters} > 0 AND ${t.hoursWeekQuarters} <= 8000`),
+    check('contract_salary_positive', sql`${t.grossMonthlyCents} > 0`),
+    check('contract_body_not_empty', sql`length(trim(${t.body})) > 0`),
+  ],
+)
+
 export type Organization = typeof organizations.$inferSelect
 export type User = typeof users.$inferSelect
 export type Wallet = typeof wallets.$inferSelect
@@ -2670,3 +2977,8 @@ export type SalaryScale = typeof salaryScales.$inferSelect
 export type Vacancy = typeof vacancies.$inferSelect
 export type Candidate = typeof candidates.$inferSelect
 export type CandidateDocument = typeof candidateDocuments.$inferSelect
+export type EmployerSettings = typeof employerSettings.$inferSelect
+export type JobProfile = typeof jobProfiles.$inferSelect
+export type ContractTemplate = typeof contractTemplates.$inferSelect
+export type ContractTemplateArticle = typeof contractTemplateArticles.$inferSelect
+export type GeneratedContract = typeof generatedContracts.$inferSelect
