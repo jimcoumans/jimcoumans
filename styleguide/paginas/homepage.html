@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@600;700&display=swap">
 <style>
 :root{
-  --page:#fbfbfd; --white:#ffffff; --alt:#f5f5f7;
+  --page:#fbfbfd; --white:#fff; --alt:#f5f5f7;
   --tx:#1d1d1f; --tx2:#6e6e73; --tx3:#86868b;
   --ln:#d2d2d7; --ln-soft:#e5e5e9;
   --blue:#007aff; --link:#0066cc; --act:#0857c3; --act-h:#003967;
@@ -20,10 +20,11 @@
 body{margin:0;background:var(--page);color:var(--tx);font-family:var(--ft);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 html{scroll-behavior:smooth}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition-duration:.01ms!important;animation:none!important}}
-:focus-visible{outline:none;box-shadow:0 0 0 4px rgba(0,122,255,.45);border-radius:8px}
+:focus-visible{outline:none;box-shadow:0 0 0 4px rgba(41,151,255,.5);border-radius:10px}
 img{max-width:100%}
 p{margin:0}
 h1,h2,h3{font-family:var(--fd);margin:0;text-wrap:balance}
+button{font:inherit;color:inherit}
 
 .wrap{max-width:var(--max);margin:0 auto;padding-inline:var(--gut)}
 .sec{padding-block:120px}
@@ -33,7 +34,7 @@ h1,h2,h3{font-family:var(--fd);margin:0;text-wrap:balance}
 .eyebrow{font-family:var(--fm);font-size:11.5px;font-weight:500;letter-spacing:.06em;color:var(--tx3);margin:0 0 18px}
 .dark .eyebrow,.stage .eyebrow{color:var(--inv3)}
 .h2{font-size:clamp(30px,4.4vw,52px);font-weight:700;line-height:1.08;letter-spacing:-.022em}
-.lead{font-size:20px;line-height:1.45;color:var(--tx2);margin:18px 0 0;max-width:60ch}
+.lead{font-size:20px;line-height:1.45;color:var(--tx2);margin:18px 0 0;max-width:62ch}
 .dark .lead{color:var(--inv2)}
 .btn{display:inline-block;background:var(--act);color:#fff;font-size:17px;font-weight:500;text-decoration:none;border-radius:980px;padding:14px 28px;transition:background .18s var(--e)}
 .btn:hover{background:var(--act-h)}
@@ -47,41 +48,73 @@ h1,h2,h3{font-family:var(--fd);margin:0;text-wrap:balance}
 .ph{display:inline-flex;font-family:var(--fm);font-size:9.5px;letter-spacing:.05em;color:var(--lime-tx);background:var(--lime-bg);border-radius:4px;padding:3px 6px;vertical-align:middle}
 .dark .ph{color:var(--lime);background:rgba(196,240,0,.14)}
 
-/* nav */
-.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:70;background:rgba(8,8,10,.72);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(255,255,255,.08)}
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:70;background:rgba(8,8,10,.74);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(255,255,255,.08)}
 .nav-in{max-width:var(--max);margin:0 auto;padding-inline:var(--gut);min-height:48px;display:flex;align-items:center;gap:12px}
 .nav-b{font-family:var(--fd);font-size:15px;font-weight:700;letter-spacing:-.016em;color:var(--inv)}
 .nav-s{font-family:var(--fm);font-size:12px;color:var(--inv3)}
 .nav-t{margin-left:auto;font-family:var(--fm);font-size:10px;letter-spacing:.04em;color:var(--lime);background:rgba(196,240,0,.14);border-radius:5px;padding:4px 8px}
 
-/* ============ HERO / PODIUM ============ */
-.stage{position:relative;background:var(--void);color:var(--inv);overflow:hidden;padding-block:92px 0}
-.stage::before{content:"";position:absolute;left:50%;top:-140px;width:min(1280px,150vw);height:760px;transform:translateX(-50%);
-  background:radial-gradient(closest-side,rgba(0,122,255,.30),rgba(0,122,255,.08) 52%,transparent 74%);pointer-events:none}
-.stage-in{position:relative;max-width:var(--max);margin:0 auto;padding-inline:var(--gut);text-align:center}
-.stage h1{font-size:clamp(42px,8.2vw,104px);font-weight:700;line-height:1.02;letter-spacing:-.034em;color:#fff;margin:0}
-.stage h1 .w{transition:opacity .55s var(--e),color .55s var(--e);display:inline-block}
-.stage h1.cycling .w{opacity:.26}
-.stage h1.cycling .w.on{opacity:1}
-.stage .sub{font-size:clamp(18px,2.1vw,23px);color:var(--inv2);margin:26px auto 0;max-width:46ch;line-height:1.45}
-.stage .acts{display:flex;gap:16px;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:36px}
+/* ================= HERO: HET SYSTEEM ================= */
+.stage{position:relative;background:var(--void);color:var(--inv);overflow:hidden;padding-block:92px 104px}
+.stage::before{content:"";position:absolute;left:50%;top:26%;width:min(1180px,150vw);height:620px;transform:translateX(-50%);
+  background:radial-gradient(closest-side,rgba(0,122,255,.26),rgba(0,122,255,.06) 54%,transparent 74%);pointer-events:none}
+.stage-in{position:relative;max-width:var(--max);margin:0 auto;padding-inline:var(--gut)}
+.stage-top{text-align:center;max-width:840px;margin:0 auto}
+.stage h1{font-size:clamp(38px,6.8vw,86px);font-weight:700;line-height:1.03;letter-spacing:-.032em;color:#fff}
+.stage .sub{font-size:clamp(18px,2.1vw,23px);color:var(--inv2);margin:26px auto 0;max-width:48ch;line-height:1.45}
+.stage .acts{display:flex;gap:16px;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:34px}
+
+/* toren */
+.sys{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,400px);gap:56px;align-items:center;margin-top:76px}
+.tower{display:flex;flex-direction:column;align-items:center;gap:7px}
+.lay{position:relative;display:flex;align-items:center;gap:14px;width:100%;text-align:left;cursor:pointer;
+  background:#141418;border:1px solid #26262c;border-radius:14px;padding:16px 20px;transition:background .25s var(--e),border-color .25s var(--e),transform .25s var(--e)}
+.lay:hover{background:#1a1a20;transform:translateY(-1px)}
+.lay .ix{font-family:var(--fm);font-size:10px;color:#5a5a62;flex:none;width:18px}
+.lay .nm{font-family:var(--fd);font-size:17px;font-weight:600;letter-spacing:-.012em;color:#c7c7cc;flex:1}
+.lay .cnt{font-family:var(--fm);font-size:10px;color:#5a5a62;letter-spacing:.04em}
+.lay[aria-selected="true"]{background:#1e2a3c;border-color:rgba(41,151,255,.55);box-shadow:0 0 30px -6px rgba(0,122,255,.5)}
+.lay[aria-selected="true"] .nm{color:#fff}
+.lay[aria-selected="true"] .cnt{color:#2997ff}
+.lay.top{background:linear-gradient(120deg,#123055,#0d1f38);border-color:rgba(41,151,255,.4);padding-block:22px}
+.lay.top .nm{font-size:20px;color:#fff}
+.lay.top .cnt{color:#2997ff}
+.lay.top::after{content:"";position:absolute;inset:-2px;border-radius:16px;pointer-events:none;box-shadow:0 0 44px 2px rgba(0,122,255,.34)}
+.tw-lab{font-family:var(--fm);font-size:10px;letter-spacing:.07em;color:#5a5a62;align-self:flex-start;margin-top:10px}
+.base{width:100%;height:5px;border-radius:3px;background:linear-gradient(90deg,transparent,#33333a 18%,#33333a 82%,transparent);margin-top:4px}
+
+.panel{position:relative}
+.lp{display:none}
+.lp.on{display:block}
+.lp .k{font-family:var(--fm);font-size:10.5px;letter-spacing:.06em;color:#2997ff;margin-bottom:14px}
+.lp h3{font-size:28px;font-weight:700;letter-spacing:-.018em;color:#fff;margin-bottom:14px}
+.lp p{font-size:16.5px;line-height:1.55;color:var(--inv2)}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:20px}
+.chips span{font-family:var(--fm);font-size:11px;color:#c7c7cc;background:#1a1a20;border:1px solid #2a2a31;border-radius:7px;padding:5px 9px}
+
+/* ================= SPEELVELD ================= */
+.zones{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:56px}
+.zone{background:var(--white);border:1px solid var(--ln-soft);border-radius:22px;padding:34px 30px 30px;display:flex;flex-direction:column;gap:12px}
+.zone .zn{font-family:var(--fm);font-size:10.5px;letter-spacing:.06em;color:var(--act)}
+.zone h3{font-size:24px;font-weight:700;letter-spacing:-.018em}
+.zone .zd{font-size:16px;color:var(--tx2);line-height:1.48;flex:1}
+.zone .zl{display:flex;flex-direction:column;gap:2px;padding-top:16px;border-top:1px solid var(--ln-soft)}
+.zone .zl a{color:var(--link);text-decoration:none;font-size:15.5px;font-weight:500;padding:5px 0;display:flex;justify-content:space-between;align-items:center}
+.zone .zl a:hover{text-decoration:underline}
+.zone .zl a span{color:var(--tx3);font-size:13px}
 
 /* rack */
-.rack{position:relative;display:flex;align-items:flex-end;justify-content:center;gap:clamp(8px,1.6vw,22px);margin-top:64px;padding-bottom:0}
-.rack::before{content:"";position:absolute;left:50%;bottom:8px;width:min(860px,94%);height:200px;transform:translateX(-50%);
-  background:radial-gradient(closest-side,rgba(0,122,255,.26),transparent 70%);filter:blur(6px);pointer-events:none}
-.dev{position:relative;flex:none;border-radius:clamp(20px,2.4vw,30px);padding:3px;
-  background:linear-gradient(168deg,#4a4a52 0%,#232328 34%,#121215 100%);
-  box-shadow:0 34px 64px -26px rgba(0,0,0,.95),0 0 0 1px rgba(255,255,255,.05)}
-.dev .scr{position:relative;width:100%;aspect-ratio:9/19;border-radius:clamp(17px,2.1vw,27px);overflow:hidden;background:#fff}
-.dev.far{width:clamp(56px,9vw,104px);opacity:.3;transform:translateY(54px)}
-.dev.near{width:clamp(68px,11vw,126px);opacity:.55;transform:translateY(28px)}
-.dev.main{width:clamp(108px,17vw,196px);z-index:4}
-.dev.main::after{content:"";position:absolute;inset:-1px;border-radius:inherit;pointer-events:none;
-  box-shadow:0 0 0 1px rgba(41,151,255,.55),0 0 34px 2px rgba(0,122,255,.38)}
-.rack .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:34%;height:10px;background:#111;border-radius:0 0 8px 8px;z-index:5}
-
-/* schermen */
+.rack{position:relative;display:flex;align-items:flex-end;justify-content:center;gap:clamp(8px,1.6vw,20px);margin-top:72px}
+.rack::before{content:"";position:absolute;left:50%;bottom:6px;width:min(820px,94%);height:180px;transform:translateX(-50%);
+  background:radial-gradient(closest-side,rgba(0,122,255,.2),transparent 70%);pointer-events:none}
+.dev{position:relative;flex:none;border-radius:clamp(18px,2.2vw,28px);padding:3px;
+  background:linear-gradient(168deg,#4a4a52,#232328 34%,#121215);box-shadow:0 30px 58px -26px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.05)}
+.dev .scr{position:relative;width:100%;aspect-ratio:9/19;border-radius:clamp(15px,1.9vw,25px);overflow:hidden;background:#fff;display:flex;flex-direction:column}
+.dev.far{width:clamp(54px,8.4vw,98px);opacity:.34;transform:translateY(50px)}
+.dev.near{width:clamp(66px,10.4vw,118px);opacity:.6;transform:translateY(26px)}
+.dev.main{width:clamp(104px,16vw,184px);z-index:4}
+.dev.main::after{content:"";position:absolute;inset:-1px;border-radius:inherit;pointer-events:none;box-shadow:0 0 0 1px rgba(41,151,255,.5),0 0 32px 2px rgba(0,122,255,.34)}
+.notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:34%;height:9px;background:#111;border-radius:0 0 8px 8px;z-index:5}
 .s{position:absolute;inset:0;opacity:0;transition:opacity .5s var(--e);background:#fff;display:flex;flex-direction:column}
 .s.on{opacity:1}
 .bar{height:8%;background:#f1f1f4;display:flex;align-items:center;padding:0 8%;gap:5px;flex:none}
@@ -90,7 +123,7 @@ h1,h2,h3{font-family:var(--fd);margin:0;text-wrap:balance}
 .bd{padding:8% 8% 0;display:flex;flex-direction:column;gap:5px;flex:1}
 .ln{height:4px;border-radius:2px;background:#e4e4e9}
 .ln.b{background:#1a73e8;height:6px;width:82%}
-.ln.g{background:#0b8043;width:46%;height:4px}
+.ln.g{background:#0b8043;width:46%}
 .ln.d{background:#c9c9cf}
 .ln.s{width:60%}
 .ln.xs{width:38%}
@@ -98,22 +131,27 @@ h1,h2,h3{font-family:var(--fd);margin:0;text-wrap:balance}
 .gap{height:7px}
 .imgb{width:100%;aspect-ratio:1;border-radius:4px;background:linear-gradient(145deg,#2b3d52,#16202c 62%,#0f1720);position:relative;overflow:hidden}
 .imgb::after{content:"";position:absolute;inset:0;background:radial-gradient(60% 46% at 70% 24%,rgba(0,122,255,.35),transparent 70%)}
-.av{width:16px;height:16px;border-radius:50%;background:linear-gradient(140deg,#0857c3,#2997ff);flex:none}
+.av{width:15px;height:15px;border-radius:50%;background:linear-gradient(140deg,#0857c3,#2997ff);flex:none}
 .row{display:flex;align-items:center;gap:5px}
 .txt{font-family:var(--ft);font-size:7px;line-height:1.35;color:#1d1d1f}
 .txt.mut{color:#86868b}
-.txt.big{font-family:var(--fd);font-size:10.5px;font-weight:600;letter-spacing:-.01em}
-.ok{margin:auto;display:flex;flex-direction:column;align-items:center;gap:7px;padding:0 12%;text-align:center}
-.ok .ring{width:34px;height:34px;border-radius:50%;background:#e6f7eb;display:flex;align-items:center;justify-content:center;color:#1d7d3f;font-size:17px;line-height:1}
-.okbtn{margin-top:6px;font-family:var(--ft);font-size:7px;font-weight:600;color:#fff;background:#0857c3;border-radius:99px;padding:4px 10px}
+.txt.big{font-family:var(--fd);font-size:10px;font-weight:600;letter-spacing:-.01em}
+.ok{margin:auto;display:flex;flex-direction:column;align-items:center;gap:6px;padding:0 12%;text-align:center}
+.ok .ring{width:32px;height:32px;border-radius:50%;background:#e6f7eb;display:flex;align-items:center;justify-content:center;color:#1d7d3f;font-size:16px;line-height:1}
+.okbtn{margin-top:5px;font-family:var(--ft);font-size:6.5px;font-weight:600;color:#fff;background:#0857c3;border-radius:99px;padding:4px 9px}
 .stars{font-size:6px;color:#f6a027;letter-spacing:.5px}
+.rack-cap{text-align:center;font-family:var(--fm);font-size:11px;letter-spacing:.05em;color:var(--inv3);margin-top:40px}
 
-/* caption onder rack */
-.stage-cap{position:relative;padding:34px var(--gut) 44px;text-align:center;font-family:var(--fm);font-size:11px;letter-spacing:.05em;color:var(--inv3)}
-
-/* logostrip */
-.strip{display:flex;gap:clamp(20px,4vw,52px);justify-content:center;align-items:center;flex-wrap:wrap;padding-block:44px;border-bottom:1px solid var(--ln-soft)}
-.strip span{font-family:var(--fd);font-size:16px;font-weight:600;color:var(--tx3);letter-spacing:-.008em}
+/* zwaartepunt */
+.prof{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:52px}
+.pc{background:var(--white);border:1px solid var(--ln-soft);border-radius:22px;padding:30px 28px}
+.pc .pt{font-family:var(--fd);font-size:20px;font-weight:600;letter-spacing:-.014em;margin-bottom:6px}
+.pc .pd{font-size:15px;color:var(--tx2);line-height:1.45;min-height:44px}
+.eq{display:flex;align-items:flex-end;gap:8px;height:104px;margin-top:22px;padding-top:12px;border-top:1px solid var(--ln-soft)}
+.eq div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:8px;height:100%}
+.eq b{display:block;width:100%;border-radius:4px;background:var(--ln);transition:height .4s var(--e)}
+.eq b.hi{background:var(--act)}
+.eq span{font-family:var(--fm);font-size:8.5px;color:var(--tx3);letter-spacing:.03em}
 
 /* vier manieren */
 .opts{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:52px}
@@ -124,16 +162,6 @@ h1,h2,h3{font-family:var(--fd);margin:0;text-wrap:balance}
 .opt.pick{background:var(--black);border-color:var(--black);color:var(--inv)}
 .opt.pick .od{color:var(--inv2)}
 .opt.pick .of{color:var(--lime);border-top-color:var(--dark3)}
-
-/* diensten */
-.dh{display:flex;align-items:flex-end;justify-content:space-between;gap:28px;flex-wrap:wrap;margin-bottom:52px}
-.dgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--ln-soft);border-block:1px solid var(--ln-soft)}
-.dn{background:var(--alt);padding:34px 26px 38px;display:flex;flex-direction:column;gap:9px;text-decoration:none;color:inherit;transition:background .2s var(--e)}
-.dn:hover{background:var(--white)}
-.dn .nm{font-family:var(--fd);font-size:19px;font-weight:600;letter-spacing:-.012em}
-.dn .cn{font-size:15.5px;color:var(--tx2);line-height:1.45;flex:1}
-.dn .ar{font-size:15px;color:var(--link);transition:transform .2s var(--e)}
-.dn:hover .ar{transform:translateX(4px)}
 
 /* transparantie */
 .tr{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:72px;align-items:center}
@@ -184,7 +212,6 @@ h1,h2,h3{font-family:var(--fd);margin:0;text-wrap:balance}
 .fc.yes li::before{content:"\2713";color:var(--lime-tx)}
 .fc.no li::before{content:"\2013";color:var(--tx3)}
 
-/* cta */
 .cta{text-align:center;padding-block:136px}
 .cta .kl{font-size:19px;color:var(--inv2);margin-bottom:16px}
 .cta h2{font-size:clamp(34px,5.6vw,64px);font-weight:700;line-height:1.06;letter-spacing:-.026em;color:var(--inv);max-width:16ch;margin-inline:auto}
@@ -194,22 +221,25 @@ h1,h2,h3{font-family:var(--fd);margin:0;text-wrap:balance}
 @media (max-width:1068px){
   :root{--gut:24px}
   .sec{padding-block:88px}
-  .opts,.dgrid{grid-template-columns:repeat(2,1fr)}
+  .sys{grid-template-columns:1fr;gap:40px}
+  .opts{grid-template-columns:repeat(2,1fr)}
   .tr,.team{grid-template-columns:1fr;gap:44px}
-  .stage{padding-block:68px 0}
+  .zones,.prof{grid-template-columns:1fr}
+  .stage{padding-block:68px 80px}
 }
 @media (max-width:734px){
   :root{--gut:20px}
   body{font-size:16px}
   .sec{padding-block:68px}
   .cta{padding-block:88px}
-  .opts,.dgrid,.cases,.fit{grid-template-columns:1fr}
+  .opts,.cases,.fit{grid-template-columns:1fr}
   .dev.far{display:none}
-  .rack{gap:10px;margin-top:44px}
+  .rack{gap:10px;margin-top:52px}
   .lead{font-size:18px}
   .case .cn{font-size:42px}
   .ts .v{font-size:32px}
   .band{min-height:320px}
+  .lay .cnt{display:none}
 }
 </style>
 
@@ -221,86 +251,175 @@ h1,h2,h3{font-family:var(--fd);margin:0;text-wrap:balance}
   </div>
 </nav>
 
-<!-- ============ HERO ============ -->
+<!-- ============ HERO: HET SYSTEEM ============ -->
 <header class="stage">
   <div class="stage-in">
-    <p class="eyebrow">MARKETINGBUREAU IN ZUID-LIMBURG &middot; SINDS 2018</p>
-    <h1 id="kop"><span class="w" data-i="0">Gevonden.</span> <span class="w" data-i="1">Gezien.</span> <span class="w" data-i="2">Geboekt.</span></h1>
-    <p class="sub">Een complete marketingafdeling voor je bedrijf. Zonder iemand aan te nemen.</p>
-    <div class="acts">
-      <a class="btn btn-w" href="/contact/">Begin met een gesprek</a>
-      <a class="link" href="/werkwijze/">Zo werken we <i>&rarr;</i></a>
+    <div class="stage-top">
+      <p class="eyebrow">MARKETINGBUREAU IN ZUID-LIMBURG &middot; SINDS 2018</p>
+      <h1>Marketing werkt pas als alles werkt.</h1>
+      <p class="sub">Zeven lagen onder elke succesvolle marketing. Wij bouwen ze allemaal. Per bedrijf verschilt alleen waar het zwaartepunt ligt.</p>
+      <div class="acts">
+        <a class="btn btn-w" href="/contact/">Begin met een gesprek</a>
+        <a class="link" href="/werkwijze/">Zo werken we <i>&rarr;</i></a>
+      </div>
     </div>
 
+    <div class="sys">
+      <div>
+        <p class="tw-lab" style="margin-bottom:12px">WAT JE CONCURRENT ZIET &darr;</p>
+        <div class="tower" id="tower" role="tablist" aria-label="De lagen van het systeem">
+          <button class="lay top" role="tab" data-l="6" aria-selected="true" style="width:100%"><span class="ix">07</span><span class="nm">Het speelveld</span><span class="cnt">6 KANALEN</span></button>
+          <button class="lay" role="tab" data-l="5" aria-selected="false" style="width:97%"><span class="ix">06</span><span class="nm">Content</span><span class="cnt">3</span></button>
+          <button class="lay" role="tab" data-l="4" aria-selected="false" style="width:94%"><span class="ix">05</span><span class="nm">Platform</span><span class="cnt">3</span></button>
+          <button class="lay" role="tab" data-l="3" aria-selected="false" style="width:91%"><span class="ix">04</span><span class="nm">Meting</span><span class="cnt">4</span></button>
+          <button class="lay" role="tab" data-l="2" aria-selected="false" style="width:88%"><span class="ix">03</span><span class="nm">Techniek</span><span class="cnt">5</span></button>
+          <button class="lay" role="tab" data-l="1" aria-selected="false" style="width:85%"><span class="ix">02</span><span class="nm">Merk</span><span class="cnt">3</span></button>
+          <button class="lay" role="tab" data-l="0" aria-selected="false" style="width:82%"><span class="ix">01</span><span class="nm">Doel en plan</span><span class="cnt">4</span></button>
+          <span class="base"></span>
+        </div>
+        <p class="tw-lab">&uarr; WAT HET DRAAGT</p>
+      </div>
+
+      <div class="panel" id="panel">
+        <div class="lp on" data-l="6">
+          <p class="k">LAAG 07 &middot; HET SPEELVELD</p>
+          <h3>Hier gebeurt het zichtbare werk.</h3>
+          <p>Mensen vinden je, komen binnen, en komen terug. Dit is de enige laag die je concurrent kan zien — en de enige die niet werkt zonder de zes eronder.</p>
+          <div class="chips"><span>SEO</span><span>Google Ads</span><span>Social advertising</span><span>E-mailmarketing</span><span>Automation</span><span>Conversie-optimalisatie</span></div>
+        </div>
+        <div class="lp" data-l="5">
+          <p class="k">LAAG 06 &middot; CONTENT</p>
+          <h3>Waar elk kanaal uit put.</h3>
+          <p>Eén shoot voedt je advertenties, je site, je nieuwsbrief en je socials. Zonder eigen beeld en eigen woorden adverteer je met de inhoud van iemand anders.</p>
+          <div class="chips"><span>Fotografie</span><span>Videografie</span><span>Copy</span></div>
+        </div>
+        <div class="lp" data-l="4">
+          <p class="k">LAAG 05 &middot; PLATFORM</p>
+          <h3>Alles komt hier terecht.</h3>
+          <p>Een kanaal kan nooit beter presteren dan de pagina waar het op uitkomt. Twee van de honderd bezoekers doen iets. De andere achtennegentig waren er ook.</p>
+          <div class="chips"><span>Website</span><span>Landingspagina&rsquo;s</span><span>Conversiepaden</span></div>
+        </div>
+        <div class="lp" data-l="3">
+          <p class="k">LAAG 04 &middot; METING</p>
+          <h3>Zonder dit is elke keuze een mening.</h3>
+          <p>De laag die het vaakst ontbreekt en het meeste kost. Je weet pas wat je moet stoppen als je weet wat werkt.</p>
+          <div class="chips"><span>Analytics</span><span>Conversiemeting</span><span>Dashboards</span><span>Attributie</span></div>
+        </div>
+        <div class="lp" data-l="2">
+          <p class="k">LAAG 03 &middot; TECHNIEK</p>
+          <h3>Onzichtbaar tot het misgaat.</h3>
+          <p>Een site die drie seconden laadt of een mail die in de spambox belandt, maakt elk onderdeel erboven minder waard.</p>
+          <div class="chips"><span>Domein</span><span>Hosting</span><span>Snelheid</span><span>Beveiliging</span><span>E-mailauthenticatie</span></div>
+        </div>
+        <div class="lp" data-l="1">
+          <p class="k">LAAG 02 &middot; MERK</p>
+          <h3>Wat overblijft als de prijs gelijk is.</h3>
+          <p>Levert op korte termijn niets op. Bepaalt op lange termijn alles — ook wat een klik je kost.</p>
+          <div class="chips"><span>Identiteit</span><span>Tone of voice</span><span>Positionering</span></div>
+        </div>
+        <div class="lp" data-l="0">
+          <p class="k">LAAG 01 &middot; DOEL EN PLAN</p>
+          <h3>Waar we het aan gaan afmeten.</h3>
+          <p>Wat wil je bereiken, voor wie, en waaraan zien we of het lukt. Alles hierboven staat of valt met dit antwoord.</p>
+          <div class="chips"><span>Doelgroep</span><span>Doelstelling</span><span>Meetpunten</span><span>Prioriteit</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ HET SPEELVELD ============ -->
+<section class="sec">
+  <div class="wrap">
+    <p class="eyebrow">LAAG 07 &middot; HET SPEELVELD</p>
+    <h2 class="h2">Drie dingen moeten gebeuren. In deze volgorde.</h2>
+    <p class="lead">Elk kanaal dat we inzetten doet één van deze drie. Wie er één overslaat, betaalt voor de andere twee.</p>
+    <div class="zones">
+      <div class="zone">
+        <p class="zn">01 &middot; ZICHTBAARHEID</p>
+        <h3>Ze moeten je vinden.</h3>
+        <p class="zd">Mensen die vandaag al naar je product zoeken, én mensen die nog niet weten dat je bestaat. Twee verschillende groepen, twee verschillende kanalen.</p>
+        <div class="zl">
+          <a href="/seo/">SEO <span>&rarr;</span></a>
+          <a href="/google-ads/">Google Ads <span>&rarr;</span></a>
+          <a href="/social-advertising/">Social advertising <span>&rarr;</span></a>
+        </div>
+      </div>
+      <div class="zone">
+        <p class="zn">02 &middot; OVERTUIGING</p>
+        <h3>Ze moeten blijven.</h3>
+        <p class="zd">Verkeer kopen is makkelijk. Er iets mee doen is het werk. Dezelfde bezoekers, een andere pagina, een ander resultaat.</p>
+        <div class="zl">
+          <a href="/websites/">Websites <span>&rarr;</span></a>
+          <a href="/conversie-optimalisatie/">Conversie-optimalisatie <span>&rarr;</span></a>
+        </div>
+      </div>
+      <div class="zone">
+        <p class="zn">03 &middot; TERUGKEER</p>
+        <h3>Ze moeten terugkomen.</h3>
+        <p class="zd">Iemand die je al kent, kost je niets meer om te bereiken. De meeste bedrijven laten die groep liggen en kopen liever nieuwe klikken.</p>
+        <div class="zl">
+          <a href="/e-mailmarketing/">E-mailmarketing <span>&rarr;</span></a>
+          <a href="/marketing-automation/">Marketing automation <span>&rarr;</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HET RACK ============ -->
+<section class="bleed" style="background:var(--void);padding-block:96px 104px;overflow:hidden">
+  <div class="wrap" style="text-align:center">
+    <p class="eyebrow">WAT ERVAN TE ZIEN IS</p>
+    <h2 class="h2" style="color:#fff;max-width:18ch;margin-inline:auto">Zes kanalen. Eén verhaal.</h2>
+    <p class="lead" style="color:var(--inv2);margin-inline:auto;max-width:52ch">Dezelfde foto&rsquo;s, dezelfde woorden, dezelfde belofte — of iemand je nu vindt in Google, tegenkomt op Instagram of een mail van je opent.</p>
     <div class="rack" id="rack">
-      <!-- ver links: nieuwsbrief -->
       <div class="dev far"><div class="scr"><div class="s on">
         <div class="bar"><span class="dot"></span><span class="pill"></span></div>
         <div class="bd"><span class="ln b" style="width:64%"></span><span class="gap"></span><span class="ln"></span><span class="ln s"></span><span class="ln xs"></span><span class="gap"></span><span class="imgb" style="aspect-ratio:16/9"></span><span class="gap"></span><span class="ln"></span><span class="ln s"></span></div>
       </div></div></div>
-
-      <!-- links: website -->
       <div class="dev near"><div class="scr"><div class="s on">
         <div class="imgb" style="aspect-ratio:3/4;border-radius:0"></div>
         <div class="bd"><span class="ln b" style="width:74%"></span><span class="ln"></span><span class="ln s"></span><span class="gap"></span><span class="ln d" style="width:42%;height:9px;border-radius:99px"></span></div>
       </div></div></div>
-
-      <!-- MIDDEN -->
-      <div class="dev main">
-        <div class="scr">
-          <span class="notch"></span>
-          <!-- 0 GEVONDEN -->
-          <div class="s on" data-i="0">
-            <div class="bar"><span class="dot"></span><span class="pill"></span></div>
-            <div class="bd">
-              <span class="tagx">Advertentie</span>
-              <span class="ln b"></span>
-              <span class="ln g"></span>
-              <span class="ln"></span><span class="ln s"></span>
-              <span class="gap"></span>
-              <span class="ln b" style="width:70%"></span>
-              <span class="ln g" style="width:52%"></span>
-              <span class="ln"></span><span class="ln xs"></span>
-              <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733; 4,8</span>
-              <span class="gap"></span>
-              <span class="ln b" style="width:64%"></span>
-              <span class="ln g" style="width:40%"></span>
-              <span class="ln s"></span>
-            </div>
-          </div>
-          <!-- 1 GEZIEN -->
-          <div class="s" data-i="1">
-            <div class="bd" style="padding-top:11%">
-              <div class="row"><span class="av"></span><div style="flex:1"><span class="txt" style="font-weight:600;display:block">jouwzaak</span><span class="txt mut" style="font-size:6px">Gesponsord</span></div></div>
-              <span class="gap"></span>
-              <span class="imgb"></span>
-              <span class="gap"></span>
-              <div class="row"><span class="ln d" style="width:11px;height:9px;border-radius:2px"></span><span class="ln d" style="width:11px;height:9px;border-radius:2px"></span><span class="ln d" style="width:11px;height:9px;border-radius:2px"></span></div>
-              <span class="txt"><b>jouwzaak</b> Vanaf vrijdag weer open. Reserveren kan online.</span>
-            </div>
-          </div>
-          <!-- 2 GEBOEKT -->
-          <div class="s" data-i="2">
-            <div class="bar"><span class="dot"></span><span class="pill"></span></div>
-            <div class="ok">
-              <span class="ring">&#10003;</span>
-              <span class="txt big">Tafel gereserveerd</span>
-              <span class="txt mut">Vrijdag 20:00 &middot; 4 personen</span>
-              <span class="okbtn">Bevestiging bekijken</span>
-            </div>
-            <div class="bd" style="flex:none;padding-bottom:9%"><span class="ln xs" style="margin-inline:auto"></span></div>
+      <div class="dev main"><div class="scr">
+        <span class="notch"></span>
+        <div class="s on" data-i="0">
+          <div class="bar"><span class="dot"></span><span class="pill"></span></div>
+          <div class="bd">
+            <span class="tagx">Advertentie</span>
+            <span class="ln b"></span><span class="ln g"></span><span class="ln"></span><span class="ln s"></span>
+            <span class="gap"></span>
+            <span class="ln b" style="width:70%"></span><span class="ln g" style="width:52%"></span><span class="ln"></span><span class="ln xs"></span>
+            <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733; 4,8</span>
+            <span class="gap"></span>
+            <span class="ln b" style="width:64%"></span><span class="ln g" style="width:40%"></span><span class="ln s"></span>
           </div>
         </div>
-      </div>
-
-      <!-- rechts: video -->
+        <div class="s" data-i="1">
+          <div class="bd" style="padding-top:11%">
+            <div class="row"><span class="av"></span><div style="flex:1"><span class="txt" style="font-weight:600;display:block">jouwbedrijf</span><span class="txt mut" style="font-size:6px">Gesponsord</span></div></div>
+            <span class="gap"></span><span class="imgb"></span><span class="gap"></span>
+            <div class="row"><span class="ln d" style="width:11px;height:9px;border-radius:2px"></span><span class="ln d" style="width:11px;height:9px;border-radius:2px"></span><span class="ln d" style="width:11px;height:9px;border-radius:2px"></span></div>
+            <span class="txt"><b>jouwbedrijf</b> Hetzelfde beeld als op de site. Dat is geen toeval.</span>
+          </div>
+        </div>
+        <div class="s" data-i="2">
+          <div class="bar"><span class="dot"></span><span class="pill"></span></div>
+          <div class="ok">
+            <span class="ring">&#10003;</span>
+            <span class="txt big">Aanvraag ontvangen</span>
+            <span class="txt mut">We bellen je binnen een werkdag</span>
+            <span class="okbtn">Bevestiging bekijken</span>
+          </div>
+          <div class="bd" style="flex:none;padding-bottom:9%"><span class="ln xs" style="margin-inline:auto"></span></div>
+        </div>
+      </div></div>
       <div class="dev near"><div class="scr"><div class="s on" style="background:#0f1115">
         <div class="imgb" style="aspect-ratio:9/19;border-radius:0;display:flex;align-items:center;justify-content:center">
           <span style="position:relative;z-index:2;width:0;height:0;border-left:13px solid rgba(255,255,255,.9);border-top:8px solid transparent;border-bottom:8px solid transparent"></span>
         </div>
       </div></div></div>
-
-      <!-- ver rechts: maps -->
       <div class="dev far"><div class="scr"><div class="s on">
         <div class="imgb" style="aspect-ratio:1;border-radius:0;background:linear-gradient(140deg,#dfe6ef,#eef1f5)">
           <span style="position:absolute;left:52%;top:42%;width:9px;height:9px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#ea4335;z-index:2"></span>
@@ -308,56 +427,74 @@ h1,h2,h3{font-family:var(--fd);margin:0;text-wrap:balance}
         <div class="bd"><span class="ln b" style="width:70%"></span><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span class="ln s"></span><span class="ln xs"></span></div>
       </div></div></div>
     </div>
+    <p class="rack-cap">ZOEKRESULTAAT &middot; SOCIAL &middot; AANVRAAG &middot; VIDEO &middot; MAPS</p>
   </div>
-  <p class="stage-cap">ÉÉN SYSTEEM &middot; ACHT KANALEN &middot; ALLES OP ELKAAR AFGESTEMD</p>
-</header>
+</section>
 
-<!-- logostrip -->
-<div class="wrap">
-  <div class="strip">
-    <span>Klantlogo</span><span>Klantlogo</span><span>Klantlogo</span><span>Klantlogo</span><span>Klantlogo</span>
-    <span class="ph">LOGO&rsquo;S IN TE VULLEN</span>
+<!-- ============ HET ZWAARTEPUNT ============ -->
+<section class="grey">
+  <div class="wrap sec">
+    <p class="eyebrow">DE ENIGE VRAAG DIE PER KLANT VERSCHILT</p>
+    <h2 class="h2">Iedereen krijgt het hele systeem. Niet iedereen krijgt dezelfde nadruk.</h2>
+    <p class="lead">De zeven lagen bouwen we altijd. Wat verschilt is waar het geld en de uren heen gaan — en dat bepalen we samen, op basis van wat je cijfers laten zien.</p>
+    <div class="prof">
+      <div class="pc">
+        <p class="pt">Een restaurant</p>
+        <p class="pd">Wordt al gevonden. Moet vooral in beeld blijven bij mensen die in de buurt wonen.</p>
+        <div class="eq">
+          <div><b style="height:38%"></b><span>SEO</span></div>
+          <div><b style="height:52%"></b><span>ADS</span></div>
+          <div><b class="hi" style="height:96%"></b><span>SOC</span></div>
+          <div><b style="height:60%"></b><span>WEB</span></div>
+          <div><b style="height:42%"></b><span>MAIL</span></div>
+          <div><b class="hi" style="height:84%"></b><span>CONT</span></div>
+        </div>
+      </div>
+      <div class="pc">
+        <p class="pt">Een makelaar</p>
+        <p class="pd">Concurreert op zoektermen waar alles van afhangt. Elke bezichtiging telt.</p>
+        <div class="eq">
+          <div><b class="hi" style="height:96%"></b><span>SEO</span></div>
+          <div><b style="height:70%"></b><span>ADS</span></div>
+          <div><b style="height:46%"></b><span>SOC</span></div>
+          <div><b class="hi" style="height:88%"></b><span>WEB</span></div>
+          <div><b style="height:38%"></b><span>MAIL</span></div>
+          <div><b style="height:56%"></b><span>CONT</span></div>
+        </div>
+      </div>
+      <div class="pc">
+        <p class="pt">Een B2B-dienstverlener</p>
+        <p class="pd">Lange trajecten. De aanvraag komt maanden na het eerste contact.</p>
+        <div class="eq">
+          <div><b style="height:66%"></b><span>SEO</span></div>
+          <div><b style="height:44%"></b><span>ADS</span></div>
+          <div><b style="height:34%"></b><span>SOC</span></div>
+          <div><b style="height:58%"></b><span>WEB</span></div>
+          <div><b class="hi" style="height:96%"></b><span>MAIL</span></div>
+          <div><b style="height:62%"></b><span>CONT</span></div>
+        </div>
+      </div>
+    </div>
+    <p class="lead" style="margin-top:40px">Wat we niet doen: één kanaal aanzetten en de rest hopen. Een advertentie naar een trage pagina is weggegooid geld, hoe goed die advertentie ook is.</p>
   </div>
-</div>
+</section>
 
-<!-- vier manieren -->
+<!-- ============ VIER MANIEREN ============ -->
 <section class="sec">
   <div class="wrap">
     <p class="eyebrow">DE KEUZE DIE JE NU HEBT</p>
-    <h2 class="h2">Er zijn vier manieren om je marketing te regelen.</h2>
+    <h2 class="h2">Er zijn vier manieren om dit te regelen.</h2>
     <p class="lead">Ze kosten allemaal iets. Tijd, geld, of aandacht die je ergens anders nodig hebt.</p>
     <div class="opts">
-      <div class="opt"><p class="on2">Zelf doen</p><p class="od">Acht kanalen die elk iets anders van je vragen, naast het runnen van je bedrijf.</p><p class="of">GEMIDDELD 8 UUR PER WEEK</p></div>
+      <div class="opt"><p class="on2">Zelf doen</p><p class="od">Zeven lagen die elk iets anders van je vragen, naast het runnen van je bedrijf.</p><p class="of">GEMIDDELD 8 UUR PER WEEK</p></div>
       <div class="opt"><p class="on2">Iemand aannemen</p><p class="od">&Eacute;&eacute;n marketeer met &eacute;&eacute;n specialisme, die jij moet aansturen en opleiden.</p><p class="of">CA. &euro;4.500 P/M AAN WERKGEVERSLASTEN</p></div>
-      <div class="opt"><p class="on2">Losse bureaus inhuren</p><p class="od">Een SEO-partij, een socialbureau, een fotograaf. Drie facturen, drie aanspreekpunten.</p><p class="of">NIEMAND BEWAAKT HET GEHEEL</p></div>
-      <div class="opt pick"><p class="on2">Een marketingafdeling inhuren</p><p class="od">Eén team dat alles doet, alles op elkaar afstemt en verantwoordelijk is voor het resultaat.</p><p class="of">DIT DOEN WIJ</p></div>
+      <div class="opt"><p class="on2">Losse bureaus inhuren</p><p class="od">Een SEO-partij, een socialbureau, een fotograaf. Drie facturen, en niemand die de lagen eronder bouwt.</p><p class="of">NIEMAND BEWAAKT HET GEHEEL</p></div>
+      <div class="opt pick"><p class="on2">Het systeem laten bouwen</p><p class="od">Eén team dat alle zeven lagen neerzet, op elkaar afstemt en verantwoordelijk is voor het resultaat.</p><p class="of">DIT DOEN WIJ</p></div>
     </div>
   </div>
 </section>
 
-<!-- diensten -->
-<section class="grey">
-  <div class="wrap" style="padding-top:120px">
-    <div class="dh">
-      <div><p class="eyebrow">WAT ER IN DE AFDELING ZIT</p><h2 class="h2">Acht specialismen. Eén team.</h2></div>
-      <a class="link" href="/diensten/">Alle diensten <i>&rarr;</i></a>
-    </div>
-  </div>
-  <div class="wrap" style="padding-bottom:120px">
-    <div class="dgrid">
-      <a class="dn" href="/seo/"><span class="nm">SEO</span><span class="cn">Gevonden worden door mensen die vandaag al naar jouw product zoeken.</span><span class="ar">&rarr;</span></a>
-      <a class="dn" href="/google-ads/"><span class="nm">Google Ads</span><span class="cn">Bovenaan staan op het moment dat iemand klaar is om te kopen.</span><span class="ar">&rarr;</span></a>
-      <a class="dn" href="/social-advertising/"><span class="nm">Social advertising</span><span class="cn">Opvallen bij mensen die je nog niet kennen, voordat ze gaan zoeken.</span><span class="ar">&rarr;</span></a>
-      <a class="dn" href="/e-mailmarketing/"><span class="nm">E-mailmarketing</span><span class="cn">Terugkomen bij mensen die al een keer bij je kochten.</span><span class="ar">&rarr;</span></a>
-      <a class="dn" href="/conversie-optimalisatie/"><span class="nm">Conversie-optimalisatie</span><span class="cn">Meer aanvragen uit het verkeer dat nu al op je site komt.</span><span class="ar">&rarr;</span></a>
-      <a class="dn" href="/websites/"><span class="nm">Websites</span><span class="cn">Een site die verkoopt in plaats van alleen bestaat.</span><span class="ar">&rarr;</span></a>
-      <a class="dn" href="/fotografie/"><span class="nm">Fotografie</span><span class="cn">Beeld van jouw zaak en jouw mensen, niet van een stockbank.</span><span class="ar">&rarr;</span></a>
-      <a class="dn" href="/videografie/"><span class="nm">Videografie</span><span class="cn">Laten zien wat je in drie alinea&rsquo;s niet uitgelegd krijgt.</span><span class="ar">&rarr;</span></a>
-    </div>
-  </div>
-</section>
-
-<!-- transparantie -->
+<!-- ============ TRANSPARANTIE ============ -->
 <section class="bleed dark">
   <div class="wrap sec">
     <div class="tr">
@@ -385,7 +522,7 @@ h1,h2,h3{font-family:var(--fd);margin:0;text-wrap:balance}
   </div>
 </section>
 
-<!-- bewijs -->
+<!-- ============ BEWIJS ============ -->
 <section class="sec">
   <div class="wrap">
     <p class="eyebrow">WAT HET OPLEVERDE</p>
@@ -400,7 +537,7 @@ h1,h2,h3{font-family:var(--fd);margin:0;text-wrap:balance}
   </div>
 </section>
 
-<!-- band -->
+<!-- ============ BAND ============ -->
 <section class="bleed band">
   <div class="band-in">
     <p class="band-lab">HULSBERG, ZUID-LIMBURG <span class="ph">FOTO IN TE VULLEN &middot; OPNAMEDAG OKTOBER</span></p>
@@ -409,7 +546,7 @@ h1,h2,h3{font-family:var(--fd);margin:0;text-wrap:balance}
   </div>
 </section>
 
-<!-- team -->
+<!-- ============ TEAM ============ -->
 <section class="grey">
   <div class="wrap sec team">
     <div>
@@ -427,7 +564,7 @@ h1,h2,h3{font-family:var(--fd);margin:0;text-wrap:balance}
   </div>
 </section>
 
-<!-- voor wie -->
+<!-- ============ VOOR WIE ============ -->
 <section class="sec">
   <div class="wrap">
     <p class="eyebrow">EERLIJK VOORAF</p>
@@ -436,7 +573,7 @@ h1,h2,h3{font-family:var(--fd);margin:0;text-wrap:balance}
     <div class="fit">
       <div class="fc yes"><h3>Dit gaat werken als je&hellip;</h3><ul>
         <li>een bedrijf hebt dat draait en verder wil</li>
-        <li>marketing serieus neemt, ook als het even tegenzit</li>
+        <li>het hele systeem wilt, niet één kanaal</li>
         <li>ons toegang geeft tot je cijfers</li>
         <li>een partner zoekt voor jaren, geen klus voor een maand</li></ul></div>
       <div class="fc no"><h3>Dit gaat niet werken als je&hellip;</h3><ul>
@@ -448,13 +585,13 @@ h1,h2,h3{font-family:var(--fd);margin:0;text-wrap:balance}
   </div>
 </section>
 
-<!-- cta -->
+<!-- ============ CTA ============ -->
 <section class="bleed dark cta">
   <div class="wrap">
     <p class="kl">Bij ons begint het altijd zo.</p>
     <h2>Eén gesprek. Daarna weet je genoeg.</h2>
     <p style="margin-top:36px"><a class="btn btn-w" href="/contact/">Begin met een gesprek</a></p>
-    <p class="fine">Een uur, bij ons of bij jou. We kijken mee met je cijfers en zeggen eerlijk wat we zouden doen.</p>
+    <p class="fine">Een uur, bij ons of bij jou. We kijken mee met je cijfers en zeggen eerlijk wat er onder je marketing wel en niet staat.</p>
   </div>
 </section>
 
@@ -462,19 +599,34 @@ h1,h2,h3{font-family:var(--fd);margin:0;text-wrap:balance}
 
 <script>
 (function(){
+  /* toren */
+  var tower = document.getElementById('tower');
+  var panel = document.getElementById('panel');
+  if (tower && panel) {
+    var tabs = tower.querySelectorAll('.lay');
+    var panes = panel.querySelectorAll('.lp');
+    function pick(l){
+      for (var i = 0; i < tabs.length; i++) tabs[i].setAttribute('aria-selected', tabs[i].dataset.l === l ? 'true' : 'false');
+      for (var j = 0; j < panes.length; j++) panes[j].classList.toggle('on', panes[j].dataset.l === l);
+    }
+    tower.addEventListener('click', function(ev){
+      var b = ev.target.closest('.lay');
+      if (b) pick(b.dataset.l);
+    });
+    tower.addEventListener('mouseover', function(ev){
+      var b = ev.target.closest('.lay');
+      if (b) pick(b.dataset.l);
+    });
+  }
+  /* toestellen */
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (reduce) return;
-  var kop = document.getElementById('kop');
-  var words = kop.querySelectorAll('.w');
   var screens = document.querySelectorAll('.dev.main .s');
-  if (!words.length || screens.length < 3) return;
-  kop.classList.add('cycling');
+  if (screens.length < 3) return;
   var i = 0;
-  function show(n){
-    for (var a = 0; a < words.length; a++) words[a].classList.toggle('on', a === n);
-    for (var b = 0; b < screens.length; b++) screens[b].classList.toggle('on', b === n);
-  }
-  show(0);
-  setInterval(function(){ i = (i + 1) % 3; show(i); }, 3000);
+  setInterval(function(){
+    i = (i + 1) % 3;
+    for (var b = 0; b < screens.length; b++) screens[b].classList.toggle('on', b === i);
+  }, 3200);
 })();
 </script>
