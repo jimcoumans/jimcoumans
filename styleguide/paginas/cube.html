@@ -1,0 +1,367 @@
+<title>CUBE</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@600;700&display=swap">
+<style>
+:root{
+  --page:#fbfbfd; --card:#fff; --alt:#f5f5f7;
+  --tx:#1d1d1f; --tx2:#6e6e73; --tx3:#86868b;
+  --ln:#d2d2d7; --ln-s:#e5e5e9;
+  --blue:#007aff; --link:#0066cc; --act:#0857c3;
+  --b100:#e0efff; --b50:#f4f9ff;
+  --lime:#c4f000; --lime-tx:#5a7000; --lime100:#f2fccc;
+  --green-tx:#1d7d3f; --orange-tx:#94590a; --orange100:#fef2e0;
+  --red-tx:#c02a22; --red100:#fdecea;
+  --black:#1c1c1e; --void:#0a0a0c; --inv:#f5f5f7; --inv2:#a1a1a6;
+  --fd:"Inter Tight","Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --ft:"Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --fm:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --e:cubic-bezier(.4,.02,.2,1);--g:32px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;--blue:#2997ff;
+  --b100:rgba(0,122,255,.22);--b50:rgba(0,122,255,.08);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.16);
+  --green-tx:#41c96a;--orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}}
+:root[data-theme="dark"]{
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;--blue:#2997ff;
+  --b100:rgba(0,122,255,.22);--b50:rgba(0,122,255,.08);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.16);
+  --green-tx:#41c96a;--orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--tx);font-family:var(--ft);font-size:16.5px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition-duration:.01ms!important}}
+:focus-visible{outline:none;box-shadow:0 0 0 4px rgba(0,122,255,.45);border-radius:8px}
+p{margin:0 0 18px;max-width:70ch}
+p:last-child{margin-bottom:0}
+h1,h2,h3,h4{font-family:var(--fd);margin:0;text-wrap:balance}
+button{font:inherit;color:inherit}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:60;background:rgba(251,251,253,.86);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--ln-s)}
+:root[data-theme="dark"] .bar,:root:not([data-theme="light"]) .bar{background:rgba(0,0,0,.74)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .bar{background:rgba(251,251,253,.86)}}
+.bar-in{max-width:1080px;margin:0 auto;padding:0 var(--g);display:flex;align-items:center;gap:5px;min-height:48px;overflow-x:auto;scrollbar-width:none}
+.bar-in::-webkit-scrollbar{display:none}
+.bar b{font-family:var(--fd);font-size:14.5px;font-weight:700;letter-spacing:-.016em;margin-right:8px;white-space:nowrap}
+.bar a{font-size:12.5px;color:var(--tx2);text-decoration:none;padding:6px 8px;border-radius:7px;white-space:nowrap}
+.bar a:hover{color:var(--tx)}
+.bar button{margin-left:auto;flex:none;font-size:12px;cursor:pointer;background:transparent;border:1px solid var(--ln);color:var(--tx2);border-radius:980px;padding:5px 13px}
+
+.wrap{max-width:1080px;margin:0 auto;padding-inline:var(--g)}
+.hero{padding-block:72px 36px}
+h1{font-size:clamp(34px,5.4vw,58px);font-weight:700;line-height:1.06;letter-spacing:-.026em;margin-bottom:20px}
+.lead{font-size:20px;line-height:1.5;color:var(--tx2);max-width:64ch}
+.sec{padding-block:60px;border-top:1px solid var(--ln-s)}
+h2{font-size:clamp(26px,3.4vw,38px);font-weight:700;line-height:1.12;letter-spacing:-.02em;margin-bottom:10px}
+.kicker{font-family:var(--fm);font-size:11px;letter-spacing:.06em;color:var(--tx3);margin-bottom:14px}
+h3{font-size:21px;font-weight:600;line-height:1.24;letter-spacing:-.012em;margin:40px 0 10px}
+h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
+.note{color:var(--tx2)}
+b{color:var(--tx);font-weight:600}
+
+/* ====== KUBUS ====== */
+.stage{background:var(--void);border-radius:26px;padding:44px 24px 34px;margin-top:30px;position:relative;overflow:hidden}
+.stage::before{content:"";position:absolute;left:50%;top:-20%;width:760px;height:560px;transform:translateX(-50%);
+  background:radial-gradient(closest-side,rgba(0,122,255,.22),transparent 72%);pointer-events:none}
+.scene{position:relative;margin:0 auto;perspective:1400px;
+  --S:clamp(58px,13.5vw,118px);
+  width:calc(var(--S)*4);height:calc(var(--S)*3)}
+.rig{position:absolute;inset:0;transform-style:preserve-3d;transition:transform 1.05s var(--e)}
+.cube{position:absolute;left:var(--S);top:var(--S);width:var(--S);height:var(--S);transform-style:preserve-3d}
+.fc{position:absolute;width:var(--S);height:var(--S);
+  background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.24);
+  display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;
+  transition:transform 1.05s var(--e),background .5s var(--e),border-color .5s var(--e);
+  backface-visibility:hidden;padding:6px;text-align:center}
+.fc .n{font-family:var(--fm);font-size:10px;letter-spacing:.08em;color:var(--lime)}
+.fc .l{font-family:var(--fd);font-size:clamp(9px,1.5vw,13.5px);font-weight:600;letter-spacing:-.008em;color:#fff;line-height:1.15}
+/* net-posities */
+.f-b{left:0;top:0;transform-origin:50% 50%}
+.f-c{left:100%;top:0;transform-origin:0% 50%}
+.f-d{left:100%;top:0;transform-origin:0% 50%}
+.f-a{left:-100%;top:0;transform-origin:100% 50%}
+.f-e{left:0;top:-100%;transform-origin:50% 100%}
+.f-f{left:0;top:100%;transform-origin:50% 0%}
+.f-c{transform-style:preserve-3d}
+/* gevouwen */
+.folded .f-c{transform:rotateY(90deg)}
+.folded .f-a{transform:rotateY(-90deg)}
+.folded .f-e{transform:rotateX(90deg)}
+.folded .f-f{transform:rotateX(-90deg)}
+.folded .f-d{transform:rotateY(90deg)}
+.folded .fc{background:rgba(255,255,255,.085);border-color:rgba(255,255,255,.34)}
+.folded .rig{transform:translateX(calc(var(--S)*.5)) scale(1.3) rotateX(-16deg) rotateY(-32deg)}
+/* bovenvlak staat na het vouwen op zijn kop: inhoud terugdraaien */
+.folded .f-e{flex-direction:column-reverse}
+.folded .f-e span{transform:rotate(180deg)}
+.ctl{display:flex;justify-content:center;gap:12px;margin-top:34px;position:relative;flex-wrap:wrap}
+.ctl button{cursor:pointer;background:transparent;border:1px solid rgba(255,255,255,.26);color:var(--inv);border-radius:980px;padding:9px 20px;font-size:14.5px;transition:background .18s var(--e)}
+.ctl button:hover{background:rgba(255,255,255,.1)}
+.ctl button[aria-pressed="true"]{background:#fff;color:#1c1c1e;border-color:#fff}
+.stage-cap{position:relative;text-align:center;font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;color:#6e6e73;margin-top:26px}
+
+/* vlakken-lijst */
+.faces{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:28px}
+.fx{background:var(--card);border:1px solid var(--ln-s);border-radius:18px;padding:24px 22px;display:flex;flex-direction:column;gap:9px}
+.fx .fn{font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;color:var(--act)}
+.fx h4{font-size:19px;margin:0}
+.fx .fd{font-size:15px;color:var(--tx2);flex:1}
+.fx .fi{display:flex;flex-wrap:wrap;gap:5px}
+.fx .fi span{font-family:var(--fm);font-size:10.5px;background:var(--alt);border:1px solid var(--ln-s);border-radius:6px;padding:3px 7px;color:var(--tx2)}
+.fx .fz{font-size:14px;color:var(--red-tx);background:var(--red100);border-radius:9px;padding:10px 12px;line-height:1.4}
+.fx.new{border-color:var(--lime);box-shadow:0 0 0 1px var(--lime)}
+.fx .badge{position:relative;display:inline-block;font-family:var(--fm);font-size:9.5px;letter-spacing:.05em;color:var(--lime-tx);background:var(--lime100);border-radius:5px;padding:3px 7px;align-self:flex-start}
+
+/* gaten */
+.gap{border:1px solid var(--ln-s);border-radius:18px;background:var(--card);padding:26px 28px;margin-top:14px}
+.gap .hd{display:flex;align-items:baseline;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.gap .num{font-family:var(--fm);font-size:11px;color:var(--tx3)}
+.gap h4{font-size:20px;flex:1;min-width:200px;margin:0}
+.gap .tag{font-family:var(--fm);font-size:9.5px;letter-spacing:.05em;border-radius:5px;padding:3px 7px}
+.gap .tag.hard{background:var(--red100);color:var(--red-tx)}
+.gap .tag.mid{background:var(--orange100);color:var(--orange-tx)}
+.gap .tag.soft{background:var(--b100);color:var(--act)}
+.gap p{font-size:15.5px;color:var(--tx2)}
+
+.key{background:var(--black);color:var(--inv);border-radius:22px;padding:34px 32px;margin:30px 0}
+.key .k{display:block;font-family:var(--fm);font-size:10.5px;letter-spacing:.06em;color:var(--lime);margin-bottom:14px}
+.key p{color:var(--inv2);font-size:17.5px;max-width:64ch}
+.key strong{color:#fff;font-weight:600}
+.key .big{font-family:var(--fd);font-size:clamp(22px,3vw,30px);font-weight:600;line-height:1.2;letter-spacing:-.018em;color:#fff;margin-bottom:16px}
+
+.warn{background:var(--orange100);border-radius:18px;padding:24px 26px;margin-top:24px}
+.warn h4{color:var(--orange-tx)}
+.warn p{color:var(--orange-tx);opacity:.94;font-size:15.5px;max-width:none}
+.ok{background:var(--lime100);border-radius:18px;padding:24px 26px;margin-top:24px}
+.ok h4{color:var(--lime-tx)}
+.ok p{color:var(--lime-tx);opacity:.95;font-size:15.5px;max-width:none}
+.foot{padding-block:44px 64px;font-size:13px;color:var(--tx3);text-align:center}
+
+@media (max-width:900px){.faces{grid-template-columns:1fr}}
+@media (max-width:734px){
+  :root{--g:20px}
+  .sec{padding-block:48px}
+  .hero{padding-block:44px 26px}
+  .key,.stage{padding:24px 18px}
+  .stage{padding-block:34px 26px}
+}
+</style>
+
+<div class="bar">
+  <div class="bar-in">
+    <b>CUBE</b>
+    <a href="#gaten">Wat je mist</a>
+    <a href="#vlakken">De zes vlakken</a>
+    <a href="#kubus">De kubus</a>
+    <a href="#klopt">Waarom het klopt</a>
+    <a href="#risico">De risico&rsquo;s</a>
+    <button id="themeBtn" type="button">Donker</button>
+  </div>
+</div>
+
+<header class="wrap hero">
+  <h1>CUBE</h1>
+  <p class="lead">Je vroeg twee dingen: mis ik nog iets, en klopt de kubus. Het antwoord op de tweede is ja — sterker dan je waarschijnlijk dacht, want de kubus bewíjst je eigen argument in plaats van het te illustreren. Het antwoord op de eerste is ook ja, en het zit precies op de plek waar je resultaatbelofte lek is.</p>
+</header>
+
+<!-- ============ WAT JE MIST ============ -->
+<section class="wrap sec" id="gaten">
+  <p class="kicker">DE EERSTE VRAAG</p>
+  <h2>Drie dingen ontbreken. Eén ervan is ernstig.</h2>
+
+  <div class="gap">
+    <div class="hd"><span class="num">01</span><h4>Opvolging</h4><span class="tag hard">DIT IS HET GAT</span></div>
+    <p>Je levert honderdachtenveertig aanvragen. De klant belt er veertig terug, drie dagen te laat, en de rest verdampt. De marketing was goed. Het resultaat niet.</p>
+    <p><b>Zodra je zegt dat je verantwoordelijk bent voor resultaat, kun je niet stoppen bij de aanvraag.</b> Dat is het moment waarop je je eigen belofte overdraagt aan iemand die er niet op gestuurd wordt. Elk bureau doet dit, en elk bureau heeft daarom dezelfde ruzie aan het eind van jaar één: wij leverden leads, jullie deden er niets mee.</p>
+    <p>Het staat ook nergens in je zes. E-mail en automation zitten erin, maar dat is nurturing — niet opvolging. Wat mist: reactietijd, wie belt, wat er in het CRM gebeurt, en of er überhaupt teruggekoppeld wordt of een aanvraag klant werd. Zonder dat laatste kun je niet eens meten wat marketing waard was.</p>
+  </div>
+
+  <div class="gap">
+    <div class="hd"><span class="num">02</span><h4>Het aanbod zelf</h4><span class="tag mid">GEVOELIG, MAAR ECHT</span></div>
+    <p>Marketing versterkt een aanbod. Als de prijs niet klopt, de propositie zwak is of het product niet af is, kun je er miljoenen tegenaan gooien zonder effect.</p>
+    <p>Je raakt dit nu onder "merk", maar dat is positionering — niet: <b>verkoop je het juiste, aan de juiste mensen, voor het juiste bedrag</b>. Dit is ongemakkelijk om te bespreken, en precies daarom doet niemand het. Als je het wél doet, is dat een onderscheid dat niet te kopiëren valt zonder lef.</p>
+  </div>
+
+  <div class="gap">
+    <div class="hd"><span class="num">03</span><h4>Reputatie</h4><span class="tag soft">KLEIN, MAAR ZICHTBAAR</span></div>
+    <p>Google-recensies, beoordelingen, referenties. Voor horeca en makelaardij beslissend: het verschil tussen een 4,2 en een 4,7 verandert de conversie harder dan welke advertentie ook, en het kost bijna niets.</p>
+    <p>Het zit nu nergens. Het hoort bij opvolging, want een review vraag je op het moment dat iemand tevreden is — niet in een campagne.</p>
+  </div>
+
+  <div class="key">
+    <span class="k">WAT DIT BETEKENT</span>
+    <p class="big">Opvolging is geen zevende vlak. Het vervangt er een.</p>
+    <p>"Binding" (e-mail en automation) was te smal. Verbreed het tot <strong>Opvolging</strong>: alles wat er gebeurt nádat iemand zijn hand opsteekt. E-mail, automation, leadopvolging, reviews. Dan sluit de kubus, dan sluit je resultaatbelofte, en dan heb je zes vlakken die alle zes hetzelfde soort ding zijn.</p>
+  </div>
+</section>
+
+<!-- ============ DE ZES VLAKKEN ============ -->
+<section class="wrap sec" id="vlakken">
+  <p class="kicker">HET SYSTEEM</p>
+  <h2>Zes vlakken</h2>
+  <p class="note">Je noemde ze zelf al, en je noemde er precies zes. Dat is geen toeval waar we een metafoor omheen bouwen — het is de reden dat de metafoor werkt.</p>
+
+  <div class="faces">
+    <div class="fx">
+      <p class="fn">VLAK 01</p>
+      <h4>Merk</h4>
+      <p class="fd">Wie je bent en waarom ze jou onthouden als de prijs gelijk is.</p>
+      <div class="fi"><span>positionering</span><span>identiteit</span><span>tone of voice</span></div>
+      <p class="fz"><b>Zonder:</b> je concurreert op prijs.</p>
+    </div>
+    <div class="fx">
+      <p class="fn">VLAK 02</p>
+      <h4>Content</h4>
+      <p class="fd">Waar elk kanaal uit put. Eén shoot voedt advertenties, site, mail en socials.</p>
+      <div class="fi"><span>fotografie</span><span>videografie</span><span>copy</span></div>
+      <p class="fz"><b>Zonder:</b> je adverteert met andermans beeld.</p>
+    </div>
+    <div class="fx">
+      <p class="fn">VLAK 03</p>
+      <h4>Zichtbaarheid</h4>
+      <p class="fd">Gevonden worden door wie zoekt, en gezien worden door wie nog niet zoekt.</p>
+      <div class="fi"><span>SEO</span><span>Google Ads</span><span>social advertising</span></div>
+      <p class="fz"><b>Zonder:</b> niemand komt.</p>
+    </div>
+    <div class="fx">
+      <p class="fn">VLAK 04</p>
+      <h4>Platform</h4>
+      <p class="fd">Waar alles op uitkomt. Een kanaal presteert nooit beter dan de pagina eronder.</p>
+      <div class="fi"><span>website</span><span>landingspagina&rsquo;s</span><span>CRO</span><span>techniek</span></div>
+      <p class="fz"><b>Zonder:</b> je betaalt voor bezoek dat wegklikt.</p>
+    </div>
+    <div class="fx new">
+      <p class="fn">VLAK 05</p>
+      <span class="badge">NIEUW &middot; VERVANGT BINDING</span>
+      <h4>Opvolging</h4>
+      <p class="fd">Alles wat er gebeurt nadat iemand zijn hand opsteekt, tot en met de review.</p>
+      <div class="fi"><span>e-mail</span><span>automation</span><span>leadopvolging</span><span>reviews</span></div>
+      <p class="fz"><b>Zonder:</b> aanvragen worden geen klanten, en niemand weet waarom.</p>
+    </div>
+    <div class="fx">
+      <p class="fn">VLAK 06</p>
+      <h4>Meting</h4>
+      <p class="fd">Of het werkt, en waar het geld volgende maand heen moet.</p>
+      <div class="fi"><span>analytics</span><span>conversiemeting</span><span>dashboards</span><span>attributie</span></div>
+      <p class="fz"><b>Zonder:</b> elke keuze is een mening.</p>
+    </div>
+  </div>
+
+  <div class="ok">
+    <h4>En het plan dan? En de doelen?</h4>
+    <p>Die zijn geen vlak. <b>Die zitten erin.</b> Een kubus heeft een binnenkant, en daar leeft het plan: doel, doelgroep, prioriteit, en hoe dik elk vlak bij deze klant wordt. Zes vlakken bij iedereen, een andere inhoud bij elk bedrijf — dat is exact je "het zwaartepunt verschilt", maar dan zonder dat het klinkt als een standaardpakket.</p>
+  </div>
+</section>
+
+<!-- ============ DE KUBUS ============ -->
+<section class="wrap sec" id="kubus">
+  <p class="kicker">DE VISUALISATIE</p>
+  <h2>Plat plan, of gesloten geheel</h2>
+  <p class="note">Precies zoals je beschreef: vier vlakken naast elkaar, één erboven en één eronder. Klik hem dicht.</p>
+
+  <div class="stage">
+    <div class="scene">
+      <div class="rig" id="rig">
+        <div class="cube">
+          <div class="fc f-b"><span class="n">01</span><span class="l">MERK</span></div>
+          <div class="fc f-e"><span class="n">02</span><span class="l">CONTENT</span></div>
+          <div class="fc f-f"><span class="n">06</span><span class="l">METING</span></div>
+          <div class="fc f-a"><span class="n">05</span><span class="l">OPVOLGING</span></div>
+          <div class="fc f-c"><span class="n">03</span><span class="l">ZICHTBAAR&shy;HEID</span>
+            <div class="fc f-d"><span class="n">04</span><span class="l">PLATFORM</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ctl">
+      <button type="button" id="bOpen" aria-pressed="true">Opengevouwen</button>
+      <button type="button" id="bFold" aria-pressed="false">Gesloten</button>
+    </div>
+    <p class="stage-cap">ZES VLAKKEN &middot; JE ZIET ER ALTIJD MAAR DRIE</p>
+  </div>
+
+  <div class="key">
+    <span class="k">DRIE DINGEN DIE DE KUBUS ZEGT EN EEN LIJSTJE NIET</span>
+    <p class="big">Een kubus met vijf vlakken is geen kubus. Het is een doos.</p>
+    <p><strong>Eén.</strong> Haal er één vlak uit en het ding valt uit elkaar. Dat is letterlijk je "het volledige systeem is noodzakelijk", maar dan als natuurkunde in plaats van als verkoopregel. Niemand kan daar tegenin.</p>
+    <p><strong>Twee.</strong> Van een kubus zie je er altijd maar drie tegelijk. Wat je concurrent van je ziet — de advertenties, de site, de socials — is de helft. De andere helft is waarom het werkt.</p>
+    <p><strong>Drie.</strong> Opengevouwen is het een plan op papier. Dichtgevouwen is het een bouwwerk met inhoud. Dat is maand één tegenover maand twaalf, in één beweging.</p>
+  </div>
+</section>
+
+<!-- ============ WAAROM HET KLOPT ============ -->
+<section class="wrap sec" id="klopt">
+  <p class="kicker">DE TOREN EN DE KUBUS</p>
+  <h2>Twee modellen kan niet. Eén moet weg.</h2>
+  <p class="note">De toren zegt: lagen, volgorde, het een draagt het ander. De kubus zegt: zes gelijkwaardige kanten, geen boven of onder. Dat zijn tegengestelde beweringen, en een klant die er twee krijgt, onthoudt er nul.</p>
+
+  <div class="key">
+    <span class="k">HET ADVIES</span>
+    <p class="big">De kubus naar buiten. De toren blijft binnen.</p>
+    <p>Dat is geen compromis maar een taakverdeling die je zelf al had bedacht: de toren was altijd al intern. <strong>De toren is de bouwvolgorde</strong> — wat we eerst doen, wat daarna, en waar deze klant instapt. Dat is een projectplanning, en daar heeft een ondernemer niets aan in een eerste gesprek.</p>
+    <p><strong>De kubus is het resultaat</strong> — wat er staat als het af is. Dat is wat hij koopt.</p>
+    <p>Je bouwt in lagen. Je levert een kubus.</p>
+  </div>
+
+  <h3>Wat er dan met het speelveld gebeurt</h3>
+  <p class="note">Drie van de zes vlakken zijn het speelveld: zichtbaarheid, platform en opvolging. Dat is de laag waar een klant resultaat van ziet. De andere drie — merk, content, meting — zijn wat die drie laten werken. <b>Dat onderscheid blijft bruikbaar</b>, alleen heet het niet meer "fundament en speelveld" maar gewoon: drie vlakken die verkeer en klanten opleveren, en drie die bepalen hoe goed dat gaat.</p>
+</section>
+
+<!-- ============ RISICO'S ============ -->
+<section class="wrap sec" id="risico">
+  <p class="kicker">EERLIJK OVER DE NAAM</p>
+  <h2>Wat er waar moet zijn voordat je hierin investeert</h2>
+
+  <div class="warn">
+    <h4>Laat de merknaam checken voordat je een letter drukt</h4>
+    <p>"Cube" is een gewoon Engels woord en een populaire bedrijfsnaam. De kans dat er in de Benelux al een merkregistratie in klasse 35 (reclame en marketing) staat, is reëel. <b>Een BOIP-check bij een merkengemachtigde kost een paar honderd euro en een week.</b> Doe dat vóór het logo, de domeinnaam en het drukwerk — niet erna.</p>
+    <p>Beperk het risico door hem nooit alleen te gebruiken: <b>"de CUBE-methode van James Robinson"</b> of <b>"CUBE by James Robinson"</b>. Dan is jouw merk de drager en is CUBE een productnaam, wat zowel juridisch als commercieel steviger is.</p>
+  </div>
+
+  <div class="warn">
+    <h4>Engels woord, Nederlands merk</h4>
+    <p>Je tone of voice zegt: geen jargon, mensentaal. CUBE is Engels, en dat wringt licht. Het redt zich omdat een kubus een concreet voorwerp is dat iedereen kent — een restauranthouder hoeft niets op te zoeken. Maar het blijft een uitzondering die je maar één keer kunt maken. <b>Alle zes de vlakken moeten dan wél Nederlands blijven.</b> CUBE met daarin "brand awareness" en "lead nurturing" is een ander bureau geworden.</p>
+  </div>
+
+  <div class="warn">
+    <h4>De metafoor moet blijven kloppen als je hem uitrekt</h4>
+    <p>Over een jaar wil iemand een zevende vlak. Of een "CUBE Light". Op dat moment is het model dood, want een kubus met zeven vlakken bestaat niet en dat ziet iedereen. <b>Die strengheid is de kracht en tegelijk het risico.</b> Spreek nu af dat het aantal zes is en blijft, en dat uitbreiding altijd binnen een bestaand vlak gebeurt — nooit ernaast.</p>
+  </div>
+
+  <div class="ok">
+    <h4>Wat het je oplevert als het klopt</h4>
+    <p>Een naam en een vorm die een nieuwe medewerker in tien minuten leert, die een klant kan navertellen aan zijn compagnon, en die een concurrent niet kan lenen zonder dat het opvalt. <b>Dat is precies wat je zocht toen je zei dat het bedrijf minder afhankelijk van jou moest worden.</b> Een model met een naam kan zonder jou de deur uit. Een aanpak zonder naam niet.</p>
+  </div>
+</section>
+
+<footer class="wrap foot">James Robinson &mdash; Marketing &amp; Branding &middot; CUBE, werkdocument september 2026</footer>
+
+<script>
+(function(){
+  var root=document.documentElement,tb=document.getElementById('themeBtn');
+  function cur(){var t=root.getAttribute('data-theme');return t||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}
+  function sync(){tb.textContent=cur()==='dark'?'Licht':'Donker'}
+  sync();
+  tb.addEventListener('click',function(){root.setAttribute('data-theme',cur()==='dark'?'light':'dark');sync()});
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',sync);
+
+  var scene=document.querySelector('.scene'),
+      bO=document.getElementById('bOpen'), bF=document.getElementById('bFold');
+  function set(folded){
+    scene.classList.toggle('folded',folded);
+    bF.setAttribute('aria-pressed',folded?'true':'false');
+    bO.setAttribute('aria-pressed',folded?'false':'true');
+  }
+  bO.addEventListener('click',function(){set(false)});
+  bF.addEventListener('click',function(){set(true)});
+  if(!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches)){
+    setTimeout(function(){set(true)},1400);
+  }
+})();
+</script>
