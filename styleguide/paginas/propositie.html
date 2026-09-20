@@ -1,0 +1,437 @@
+<title>De propositie van James Robinson</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@600;700&display=swap">
+<style>
+:root{
+  --page:#fbfbfd; --card:#fff; --alt:#f5f5f7;
+  --tx:#1d1d1f; --tx2:#6e6e73; --tx3:#86868b;
+  --ln:#d2d2d7; --ln-s:#e5e5e9;
+  --blue:#007aff; --link:#0066cc; --act:#0857c3;
+  --b100:#e0efff; --b50:#f4f9ff;
+  --lime:#c4f000; --lime-tx:#5a7000; --lime100:#f2fccc;
+  --green-tx:#1d7d3f; --green100:#e6f7eb;
+  --orange-tx:#94590a; --orange100:#fef2e0;
+  --red-tx:#c02a22; --red100:#fdecea;
+  --black:#1c1c1e; --inv:#f5f5f7; --inv2:#a1a1a6;
+  --fd:"Inter Tight","Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --ft:"Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --fm:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --e:cubic-bezier(.25,.1,.25,1);--g:32px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}}
+:root[data-theme="dark"]{
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--tx);font-family:var(--ft);font-size:16.5px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition-duration:.01ms!important}}
+:focus-visible{outline:none;box-shadow:0 0 0 4px rgba(0,122,255,.4);border-radius:8px}
+p{margin:0 0 18px;max-width:70ch}
+p:last-child{margin-bottom:0}
+h1,h2,h3,h4{font-family:var(--fd);margin:0;text-wrap:balance}
+code{font-family:var(--fm);font-size:.86em;background:var(--alt);padding:2px 6px;border-radius:5px}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:60;background:rgba(251,251,253,.86);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--ln-s)}
+:root[data-theme="dark"] .bar,:root:not([data-theme="light"]) .bar{background:rgba(0,0,0,.74)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .bar{background:rgba(251,251,253,.86)}}
+.bar-in{max-width:1080px;margin:0 auto;padding:0 var(--g);display:flex;align-items:center;gap:5px;min-height:48px;overflow-x:auto;scrollbar-width:none}
+.bar-in::-webkit-scrollbar{display:none}
+.bar b{font-family:var(--fd);font-size:14.5px;font-weight:700;letter-spacing:-.016em;margin-right:8px;white-space:nowrap}
+.bar a{font-size:12.5px;color:var(--tx2);text-decoration:none;padding:6px 8px;border-radius:7px;white-space:nowrap}
+.bar a:hover{color:var(--tx)}
+.bar button{margin-left:auto;flex:none;font:inherit;font-size:12px;cursor:pointer;background:transparent;border:1px solid var(--ln);color:var(--tx2);border-radius:980px;padding:5px 13px}
+
+.wrap{max-width:1080px;margin:0 auto;padding-inline:var(--g)}
+.hero{padding-block:76px 40px}
+h1{font-size:clamp(34px,5.4vw,58px);font-weight:700;line-height:1.06;letter-spacing:-.026em;margin-bottom:20px}
+.lead{font-size:20px;line-height:1.5;color:var(--tx2);max-width:64ch}
+.sec{padding-block:60px;border-top:1px solid var(--ln-s)}
+h2{font-size:clamp(26px,3.4vw,38px);font-weight:700;line-height:1.12;letter-spacing:-.02em;margin-bottom:8px}
+.sec > .kicker{font-family:var(--fm);font-size:11px;letter-spacing:.06em;color:var(--tx3);margin-bottom:14px}
+h3{font-size:21px;font-weight:600;line-height:1.24;letter-spacing:-.012em;margin:38px 0 10px}
+h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
+.note{color:var(--tx2)}
+.note b,b{color:var(--tx);font-weight:600}
+
+/* kernblok */
+.key{background:var(--black);color:var(--inv);border-radius:22px;padding:34px 32px;margin:26px 0}
+.key .k{display:block;font-family:var(--fm);font-size:10.5px;letter-spacing:.06em;color:var(--lime);margin-bottom:14px}
+.key p{color:var(--inv2);font-size:17.5px;max-width:64ch}
+.key strong{color:#fff;font-weight:600}
+.key .big{font-family:var(--fd);font-size:clamp(22px,3vw,30px);font-weight:600;line-height:1.2;letter-spacing:-.018em;color:#fff;margin-bottom:16px}
+
+/* lagen van het aanbod */
+.stack{display:grid;gap:12px;margin-top:24px}
+.st{background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;display:grid;grid-template-columns:132px 1fr;gap:20px;align-items:start}
+.st .lab{font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;color:var(--act);padding-top:3px}
+.st .bd p{margin:0;font-size:15.5px;color:var(--tx2)}
+.st .bd h4{margin-bottom:5px}
+
+/* kandidaten */
+.cands{display:grid;gap:12px;margin-top:22px}
+.cand{border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;background:var(--card)}
+.cand.win{border-color:var(--lime);box-shadow:0 0 0 1px var(--lime)}
+.cand .zin{font-family:var(--fd);font-size:22px;font-weight:600;letter-spacing:-.014em;margin-bottom:8px}
+.cand .why{font-size:15px;color:var(--tx2);margin:0}
+.cand .verdict{display:inline-block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;border-radius:5px;padding:3px 7px;margin-bottom:12px}
+.cand .verdict.no{background:var(--red100);color:var(--red-tx)}
+.cand .verdict.ok{background:var(--lime100);color:var(--lime-tx)}
+.cand .verdict.mid{background:var(--orange100);color:var(--orange-tx)}
+
+/* onderscheid */
+.dist{width:100%;border-collapse:collapse;font-size:15px;margin-top:22px}
+.dist th,.dist td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.dist thead th{font-family:var(--fm);font-size:10.5px;letter-spacing:.04em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.dist td:first-child{font-weight:500;width:34%}
+.dist .v{font-family:var(--fm);font-size:11px;white-space:nowrap}
+.dist .v.y{color:var(--green-tx)}
+.dist .v.n{color:var(--red-tx)}
+.dist tr:last-child td{border-bottom:none}
+.tblwrap{overflow-x:auto}
+
+/* beslissingen */
+.dec{border:1px solid var(--ln-s);border-radius:18px;background:var(--card);padding:26px 28px;margin-top:14px}
+.dec .hd{display:flex;align-items:baseline;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.dec .num{font-family:var(--fm);font-size:11px;color:var(--tx3);flex:none}
+.dec h4{font-size:19px;flex:1;min-width:220px;margin:0}
+.dec .tag{font-family:var(--fm);font-size:9.5px;letter-spacing:.05em;border-radius:5px;padding:3px 7px}
+.dec .tag.blok{background:var(--red100);color:var(--red-tx)}
+.dec .tag.schaal{background:var(--orange100);color:var(--orange-tx)}
+.dec .tag.scherp{background:var(--b100);color:var(--act)}
+.dec .q{font-size:16px;color:var(--tx2);margin:0 0 16px}
+.dec .adv{background:var(--b50);border-left:3px solid var(--act);border-radius:0 10px 10px 0;padding:16px 18px}
+.dec .adv .al{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.06em;color:var(--act);margin-bottom:7px}
+.dec .adv p{font-size:15.5px;margin:0 0 10px}
+.dec .adv p:last-child{margin-bottom:0}
+
+/* vast */
+.locked{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-top:22px}
+.lk{background:var(--card);border:1px solid var(--ln-s);border-radius:14px;padding:18px 20px}
+.lk .t{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--green-tx);margin-bottom:7px}
+.lk .b{font-size:15px;color:var(--tx2);line-height:1.45}
+.lk .b b{color:var(--tx)}
+
+.warn{background:var(--orange100);border-radius:18px;padding:24px 26px;margin-top:26px}
+.warn h4{color:var(--orange-tx)}
+.warn p{color:var(--orange-tx);opacity:.94;font-size:15.5px;max-width:none}
+.foot{padding-block:44px 64px;font-size:13px;color:var(--tx3);text-align:center}
+
+@media (max-width:734px){
+  :root{--g:20px}
+  body{font-size:16px}
+  .sec{padding-block:48px}
+  .hero{padding-block:44px 28px}
+  .st{grid-template-columns:1fr;gap:10px}
+  .key{padding:24px 22px}
+  .dec{padding:22px 20px}
+}
+</style>
+
+<div class="bar">
+  <div class="bar-in">
+    <b>Propositie</b>
+    <a href="#fout">De verwarring</a>
+    <a href="#aanbod">Het aanbod</a>
+    <a href="#zin">De zin</a>
+    <a href="#koper">De koper</a>
+    <a href="#onderscheid">Onderscheid</a>
+    <a href="#beslissingen">Beslissingen</a>
+    <a href="#vast">Wat vastligt</a>
+    <button id="themeBtn" type="button">Donker</button>
+  </div>
+</div>
+
+<header class="wrap hero">
+  <h1>De propositie</h1>
+  <p class="lead">Wat we verkopen, aan wie, en waarom iemand voor ons kiest. Alles hieronder moet vaststaan voordat er een letter website wordt geschreven — want de site is niet meer dan de propositie, netjes opgeschreven.</p>
+</header>
+
+<!-- ================= DE FOUT ================= -->
+<section class="wrap sec" id="fout">
+  <p class="kicker">WAAROM HET DRIE KEER NIET KLOPTE</p>
+  <h2>Propositie, methode en model zijn drie verschillende dingen.</h2>
+  <p class="note">We hebben ze door elkaar gebruikt, en dat is precies waarom elke versie van de homepage niet overtuigde. Alle drie de afkeuringen wezen dezelfde kant op.</p>
+
+  <div class="stack">
+    <div class="st">
+      <span class="lab">DE PROPOSITIE</span>
+      <div class="bd"><h4>Wat de klant krijgt</h4><p>De belofte. Dit is wat iemand wil hebben, in zijn taal. Hier begint elk gesprek en elke pagina.</p></div>
+    </div>
+    <div class="st">
+      <span class="lab">DE METHODE</span>
+      <div class="bd"><h4>Hoe wij het waarmaken</h4><p>De zeven lagen. Dit is het bewijs dat de belofte geen praatje is. Het komt <b>na</b> de belofte, nooit ervoor.</p></div>
+    </div>
+    <div class="st">
+      <span class="lab">HET MODEL</span>
+      <div class="bd"><h4>Hoe het verpakt en gefactureerd is</h4><p>Maand 1 apart, retainer daarna, maandelijks opzegbaar. Dit is de afspraak, niet het verhaal.</p></div>
+    </div>
+  </div>
+
+  <div class="key">
+    <span class="k">DE REGEL DIE DIT OPLOST</span>
+    <p class="big">Het systeem is niet de propositie. Het systeem is de levering.</p>
+    <p>Apple verkoopt geen chip. Apple verkoopt een laptop, en noemt de M-chip als bewijs dat hij snel is. Wij verkoopt geen zeven lagen. Wij verkopen <strong>geregelde marketing</strong>, en noemen de lagen als bewijs dat er niets vergeten wordt.</p>
+  </div>
+</section>
+
+<!-- ================= HET AANBOD ================= -->
+<section class="wrap sec" id="aanbod">
+  <p class="kicker">DE KERN</p>
+  <h2>Wat we verkopen</h2>
+  <p class="note">Eén product. Geen menukaart, geen pakketten met sterren, geen losse diensten die je bij elkaar klikt.</p>
+
+  <div class="key">
+    <span class="k">HET PRODUCT</span>
+    <p class="big">Een marketingpartnership.</p>
+    <p>Eén team neemt je complete marketing over. Alles wat ertoe doet zit erin, van het fundament tot de campagnes. Je hebt één aanspreekpunt, je ziet elke dag wat er gebeurt, en je kunt elke maand stoppen.</p>
+  </div>
+
+  <h3>De vier dingen die de klant koopt</h3>
+  <p class="note">In deze volgorde van belangrijkheid. De eerste is waar hij voor tekent; de andere drie maken hem rustig.</p>
+
+  <div class="stack">
+    <div class="st">
+      <span class="lab">01 &middot; RUST</span>
+      <div class="bd"><h4>Het is geregeld</h4><p>Hij hoeft geen partijen meer te zoeken, niemand meer aan te sturen en zelf niets meer te bedenken. Dit is wat een ondernemer met te weinig tijd werkelijk wil kopen.</p></div>
+    </div>
+    <div class="st">
+      <span class="lab">02 &middot; VOLLEDIGHEID</span>
+      <div class="bd"><h4>Er wordt niets vergeten</h4><p>Geen losse kanalen die langs elkaar heen werken. Geen advertentie naar een trage pagina. Hier bewijst de methode zich — maar pas als hij ernaar vraagt.</p></div>
+    </div>
+    <div class="st">
+      <span class="lab">03 &middot; ZICHT</span>
+      <div class="bd"><h4>Hij kan het volgen</h4><p>Live dashboard, toegang tot ons projectsysteem, een appgroep met zijn eigen team. Hij hoeft niet te vragen hoe het gaat.</p></div>
+    </div>
+    <div class="st">
+      <span class="lab">04 &middot; CONTINU&Iuml;TEIT</span>
+      <div class="bd"><h4>Dezelfde mensen, jaren achtereen</h4><p>Geen wisselende accountmanagers. Het team dat zijn zaak kent, kent hem over drie jaar nog steeds.</p></div>
+    </div>
+  </div>
+
+  <div class="warn">
+    <h4>Let op de volgorde</h4>
+    <p>In alle drie de afgekeurde websiteversies stond nummer 02 bovenaan. Volledigheid is een geruststelling, geen verlangen. Niemand wordt 's ochtends wakker met de wens om een compleet marketingsysteem te bezitten. Ze willen dat het geregeld is.</p>
+  </div>
+</section>
+
+<!-- ================= DE ZIN ================= -->
+<section class="wrap sec" id="zin">
+  <p class="kicker">DE FORMULERING</p>
+  <h2>Twee zinnen, twee verschillende taken</h2>
+  <p class="note">Een propositie heeft een <b>merkregel</b> nodig die blijft hangen, en een <b>werkzin</b> die precies zegt wat er gebeurt. Die twee zijn zelden dezelfde zin, en het is een klassieke fout om er één van te maken.</p>
+
+  <h3>Kandidaten voor de merkregel</h3>
+  <div class="cands">
+    <div class="cand win">
+      <span class="verdict ok">ADVIES</span>
+      <p class="zin">Een marketingafdeling. Zonder de afdeling.</p>
+      <p class="why">Zegt in zes woorden wat het is en wat je bespaart. Past in het register: twee constateringen, geen belofte, geen bijvoeglijk naamwoord. Werkt op een gevel, in een e-mailhandtekening en als eerste zin van een gesprek. Zwakte: het zegt niets over hoe wij het anders doen — daarvoor is de werkzin.</p>
+    </div>
+    <div class="cand">
+      <span class="verdict mid">BRUIKBAAR, ZWAKKER</span>
+      <p class="zin">Je hele marketing. Eén team.</p>
+      <p class="why">Korter en even waar, maar minder eigen. Tientallen bureaus kunnen dit letterlijk overnemen zonder dat iemand het merkt.</p>
+    </div>
+    <div class="cand">
+      <span class="verdict no">AFGEVALLEN</span>
+      <p class="zin">Iedereen krijgt hetzelfde systeem. Het zwaartepunt verschilt.</p>
+      <p class="why">Dit is een productiefeit, geen propositie. Voor ons intern goud waard; voor een ondernemer klinkt het als "je krijgt hetzelfde pakket als de rest". Hoort thuis in het gesprek, niet op de gevel.</p>
+    </div>
+    <div class="cand">
+      <span class="verdict no">AFGEVALLEN</span>
+      <p class="zin">Marketing werkt pas als alles werkt.</p>
+      <p class="why">Waar, maar het is een stelling over het vak in plaats van een aanbod. Perfecte openingszin voor de werkwijzepagina. Als homepagekop laat het de bezoeker met lege handen achter.</p>
+    </div>
+  </div>
+
+  <h3>De werkzin</h3>
+  <p class="note">Dit is wat iedereen in het bedrijf zegt als iemand vraagt wat James Robinson doet. Hij moet uit het hoofd te leren zijn en nergens bij te verzinnen.</p>
+  <div class="key">
+    <span class="k">DE WERKZIN</span>
+    <p class="big">Wij nemen de complete marketing over van ondernemers die daar zelf geen tijd voor hebben — met één vast team, alles inbegrepen, en elke dag inzichtelijk wat het oplevert.</p>
+    <p>Test: laat drie teamleden dit los van elkaar navertellen. Komt er drie keer iets anders uit, dan is de propositie nog niet af — en niet de uitleg.</p>
+  </div>
+</section>
+
+<!-- ================= DE KOPER ================= -->
+<section class="wrap sec" id="koper">
+  <p class="kicker">AAN WIE</p>
+  <h2>De koper is scherper dan we hem nu beschrijven</h2>
+  <p class="note">"Ambitieuze ondernemers die in marketing geloven maar er de tijd niet voor hebben" is waar, maar het sluit niemand uit. Een propositie die niemand uitsluit, overtuigt ook niemand.</p>
+
+  <h3>Wat de prijs al over de koper zegt</h3>
+  <p class="note">De retainer is ongeveer &euro;&thinsp;2.950 per maand, plus een eenmalig fundament. Dat is grofweg &euro;&thinsp;35.000 tot &euro;&thinsp;45.000 per jaar. Een bedrijf besteedt doorgaans vijf tot tien procent van de omzet aan marketing, en het bureau krijgt daar een deel van. <b>Onder ongeveer &euro;&thinsp;1,5 miljoen omzet is dit bedrag niet gezond</b> — dan is het een te groot deel van het budget en wordt de klant nerveus voordat de eerste resultaten binnen zijn.</p>
+  <p class="note">Dat hoeft niet op de site. Het moet wel in het hoofd zitten van iedereen die een gesprek voert, want een klant die het eigenlijk niet kan dragen is de duurste klant die je kunt aannemen.</p>
+
+  <div class="stack">
+    <div class="st">
+      <span class="lab">WEL</span>
+      <div class="bd"><h4>Een bedrijf dat draait en verder wil</h4><p>Omzet die staat, een eigenaar die beslist, en marketing die nu versnipperd of half gedaan wordt. Vaak iemand die al eens een bureau of een marketeer heeft gehad en daar niet tevreden over was.</p></div>
+    </div>
+    <div class="st">
+      <span class="lab">NIET</span>
+      <div class="bd"><h4>Starters, en bedrijven die één ding willen kopen</h4><p>Wie volgende week omzet nodig heeft, of alleen een website wil, past niet in dit model. Dat is geen arrogantie maar rekenwerk: voor hen levert het niets op.</p></div>
+    </div>
+    <div class="st">
+      <span class="lab">DE BESLISSER</span>
+      <div class="bd"><h4>Vrijwel altijd de eigenaar zelf</h4><p>Bij bedrijven van deze omvang is er geen marketingafdeling die meebeslist. Dat betekent: één gesprekspartner, korte besluitvorming, en een site die tegen een ondernemer praat en niet tegen een vakgenoot.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ONDERSCHEID ================= -->
+<section class="wrap sec" id="onderscheid">
+  <p class="kicker">KRITISCH</p>
+  <h2>Wat is er werkelijk onderscheidend?</h2>
+  <p class="note">Dit is het onderdeel waar de meeste bureaus zichzelf voor de gek houden. Hieronder alles wat we claimen, met de vraag erbij of een concurrent in Limburg het morgen ook kan zeggen.</p>
+
+  <div class="tblwrap">
+    <table class="dist">
+      <thead><tr><th>Wat we zeggen</th><th>Kan de buurman dit ook zeggen?</th><th class="v">HOUDT STAND</th></tr></thead>
+      <tbody>
+        <tr><td>Fullservice marketingpartner</td><td>Ja. Elk bureau met meer dan drie man zegt dit.</td><td class="v n">NEE</td></tr>
+        <tr><td>Externe marketingafdeling</td><td>Ja. Het is inmiddels een standaarduitdrukking in het vak.</td><td class="v n">NEE</td></tr>
+        <tr><td>Langdurige partnerships in plaats van projecten</td><td>Zeggen doen ze het allemaal. Doen is iets anders.</td><td class="v n">NEE</td></tr>
+        <tr><td>Wij hebben een eigen methode</td><td>Ja, en iedereen heeft er een met een eigen naam.</td><td class="v n">NEE</td></tr>
+        <tr><td>Radicale transparantie: klant in ons projectsysteem</td><td>Kan wel, doet bijna niemand. Het legt je werkwijze bloot.</td><td class="v y">JA</td></tr>
+        <tr><td>Wij verkopen geen losse kanalen</td><td>Kan, maar het kost direct omzet. Daarom doet niemand het.</td><td class="v y">JA</td></tr>
+        <tr><td>Zeventig procent van het team begon hier als stagiair</td><td>Niet na te vertellen. Dat bouw je in acht jaar of niet.</td><td class="v y">JA</td></tr>
+        <tr><td>Maand 1 levert bewust niets op, en dat zeggen we vooraf</td><td>Kan, maar het is verkooptechnisch eng. Vrijwel niemand doet het.</td><td class="v y">JA</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="key">
+    <span class="k">HET ECHTE ONDERSCHEID</span>
+    <p class="big">Wij zijn het bureau dat je alles laat zien en niets los verkoopt.</p>
+    <p>Die twee horen bij elkaar. Openheid over je werk kan alleen als je voor het geheel verantwoordelijk bent — anders kijkt de klant mee naar de helft van een oplossing. En niets los verkopen kun je alleen volhouden als je laat zien wat je doet, want anders is het gewoon duurder.</p>
+    <p><strong>De mensen zijn het derde been.</strong> Eigen opgeleide mensen die blijven, is wat de andere twee mogelijk maakt. Een bureau met verloop kan geen transparantie aan en kan geen jarenlange verantwoordelijkheid dragen.</p>
+  </div>
+
+  <div class="warn">
+    <h4>Het ongemakkelijke punt</h4>
+    <p>"Het meest toonaangevende bureau van Limburg" is een ambitie, geen propositie. Een klant voelt niets bij toonaangevend. Wat hij wel voelt: dat jullie eigen marketing beter is dan die van hem, en beter dan die van elk ander bureau dat hij bekeek. <b>Practice what you preach is de enige vorm waarin die ambitie naar buiten zichtbaar mag worden</b> — via de site, het kantoor, de fotografie en het changelog. Nooit als uitspraak over onszelf.</p>
+  </div>
+</section>
+
+<!-- ================= BESLISSINGEN ================= -->
+<section class="wrap sec" id="beslissingen">
+  <p class="kicker">WAT JIJ MOET BESLISSEN</p>
+  <h2>Zes knopen die nu door moeten</h2>
+  <p class="note">Elk hiervan verandert de website, de verkoop en de prijslijst. Ik geef per punt mijn advies, zodat je alleen nog ja of nee hoeft te zeggen.</p>
+
+  <div class="dec">
+    <div class="hd"><span class="num">01</span><h4>Is het hele systeem verplicht?</h4><span class="tag blok">BLOKKEERT ALLES</span></div>
+    <p class="q">Je zegt: het volledige systeem is noodzakelijk voor optimale marketing. Betekent dat ook dat iemand géén klant kan worden die alleen SEO wil? Dit is de scharniervraag van de hele propositie.</p>
+    <div class="adv">
+      <span class="al">ADVIES</span>
+      <p><b>Ja, met één grens.</b> Het fundament (maand 1) is altijd verplicht — zonder doel, meting, techniek en platform is de rest gokken en kunnen we nergens verantwoordelijk voor zijn. Het zwaartepunt in het speelveld verschilt per klant en mag zelfs betekenen dat één kanaal dit jaar niet aan staat.</p>
+      <p>Wat dat oplevert: het is de enige claim uit de tabel hierboven die geld kost om waar te maken, en dus de enige die niemand kopieert. Het maakt ook het verkoopgesprek korter — je onderhandelt niet meer over de scope, alleen nog over het zwaartepunt.</p>
+      <p>Wat het kost: je zegt nee tegen aanvragen die je nu nog aanneemt. Reken op een derde van de huidige instroom.</p>
+    </div>
+  </div>
+
+  <div class="dec">
+    <div class="hd"><span class="num">02</span><h4>Wat gebeurt er met fotografie en belettering als losse opdracht?</h4><span class="tag scherp">RAAKT DE SITE DIRECT</span></div>
+    <p class="q">Je wilt geen losse projecten. Maar er komen wel aanvragen voor een shoot, drukwerk of autobelettering, en die zijn winstgevend en makkelijk.</p>
+    <div class="adv">
+      <span class="al">ADVIES</span>
+      <p><b>Splits het expliciet.</b> De zes kanalen van het speelveld plus websites: nooit los. Alles uit de tweede laag — belettering, drukwerk, signing — altijd los te koop, want het maakt geen deel uit van het systeem en het is een prima eerste kennismaking.</p>
+      <p>Fotografie en videografie zijn het lastige geval: ze zitten wél in het systeem maar worden ook los gevraagd. Mijn voorstel: <b>los te koop, tegen een tarief dat hoger is dan binnen een partnership</b>. Dat is eerlijk (je maakt geen schaalvoordeel) en het maakt de partnership vanzelf aantrekkelijker.</p>
+    </div>
+  </div>
+
+  <div class="dec">
+    <div class="hd"><span class="num">03</span><h4>Eén retainer, of niveaus?</h4><span class="tag schaal">RAAKT JOUW SCHAALBAARHEID</span></div>
+    <p class="q">Nu wordt de prijs per klant bepaald in een gesprek dat jij voert. Dat werkt zolang jij elk gesprek voert.</p>
+    <div class="adv">
+      <span class="al">ADVIES</span>
+      <p><b>Drie vaste niveaus plus één vast fundamentbedrag.</b> Niet omdat het meer oplevert, maar omdat een marketing manager het dan zelf kan verkopen. Zolang elke prijs maatwerk is, ben jij de flessenhals — en dat is exact het probleem dat je wilde oplossen.</p>
+      <p>De niveaus verschillen in uren en in hoeveel kanalen tegelijk actief zijn, niet in wat er in het systeem zit. Iedereen krijgt het hele systeem; het niveau bepaalt hoe hard eraan getrokken wordt.</p>
+    </div>
+  </div>
+
+  <div class="dec">
+    <div class="hd"><span class="num">04</span><h4>Krijgt het systeem een naam?</h4><span class="tag schaal">RAAKT JOUW SCHAALBAARHEID</span></div>
+    <p class="q">Je parkeerde dit als "niet zo belangrijk voor nu". Voor de website klopte dat. Voor de propositie niet meer.</p>
+    <div class="adv">
+      <span class="al">ADVIES</span>
+      <p><b>Ja, en nu.</b> Een naamloze methode is "onze aanpak" en verdwijnt zodra degene die hem uitlegt de kamer uitloopt. Een methode met een naam is iets wat een nieuwe medewerker kan leren, een klant kan navertellen en een concurrent niet kan lenen.</p>
+      <p>Eis aan de naam: Nederlands of neutraal, uitspreekbaar aan de telefoon, en geen woord dat op zichzelf al marketingjargon is. Hij hoeft niet slim te zijn — hij moet herhaalbaar zijn.</p>
+    </div>
+  </div>
+
+  <div class="dec">
+    <div class="hd"><span class="num">05</span><h4>Wat betekent "wij zijn verantwoordelijk voor het resultaat"?</h4><span class="tag blok">BLOKKEERT ALLES</span></div>
+    <p class="q">Je zegt dat de marketing manager verantwoordelijk is voor het succes van de klant. Als er niets gebeurt wanneer het tegenvalt, is dat woord leeg — en dat voelt een ondernemer.</p>
+    <div class="adv">
+      <span class="al">ADVIES</span>
+      <p><b>Geen garantie verzinnen. Wijs naar wat er al is.</b> Maandelijks opzegbaar plus volledige inzage ís de zwaarste vorm van verantwoordelijkheid die een bureau kan dragen: we hebben elke maand opnieuw je toestemming nodig, en je kunt zelf zien of we hem verdienen.</p>
+      <p>Dat is eerlijker dan een resultaatgarantie die in de kleine lettertjes wordt teruggenomen, en het is sterker dan het klinkt — de meeste bureaus werken met jaarcontracten juist omdát ze dit niet aandurven.</p>
+    </div>
+  </div>
+
+  <div class="dec">
+    <div class="hd"><span class="num">06</span><h4>Blijft "maand 1 levert niets op" in de verkoop?</h4><span class="tag scherp">RAAKT DE SITE DIRECT</span></div>
+    <p class="q">Je schoot het terecht af als homepagetekst. Maar het is wel de zin die je verwachtingsprobleem oploste.</p>
+    <div class="adv">
+      <span class="al">ADVIES</span>
+      <p><b>Houden, maar verplaatsen.</b> Niet in de etalage, waar het afschrikt. Wel op de werkwijzepagina, in de offerte en als vast onderdeel van het eerste gesprek — daar waar iemand al wil en alleen nog wil weten wanneer.</p>
+      <p>Dit is geen verkoopargument maar een verwachtingsinstrument. Het hoort op de plek waar verwachtingen worden gemaakt: de offerte.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= WAT VASTLIGT ================= -->
+<section class="wrap sec" id="vast">
+  <p class="kicker">GEEN DISCUSSIE MEER OVER</p>
+  <h2>Wat al vastligt</h2>
+  <p class="note">Dit is in de afgelopen weken besloten en blijft staan. Het staat hier zodat we er niet nog een keer over beginnen.</p>
+  <div class="locked">
+    <div class="lk"><span class="t">MODEL</span><p class="b"><b>Maand 1 apart gefactureerd</b>, retainer vanaf maand 2, maandelijks opzegbaar.</p></div>
+    <div class="lk"><span class="t">AANBOD</span><p class="b"><b>Acht diensten in de etalage.</b> Tweede laag alleen vindbaar, niet in het menu.</p></div>
+    <div class="lk"><span class="t">REGISTER</span><p class="b"><b>Manifest, geen diagnose.</b> De site zegt nooit wat de bezoeker fout doet.</p></div>
+    <div class="lk"><span class="t">TOON</span><p class="b"><b>Leg het feit neer, trek de conclusie niet.</b> Geen jargon, geen superlatieven zonder bewijs.</p></div>
+    <div class="lk"><span class="t">INTERN</span><p class="b"><b>De toren en de scan blijven intern.</b> Wel de diagnose maken, niet de diagnose tonen.</p></div>
+    <div class="lk"><span class="t">CIJFERS</span><p class="b"><b>Geen getal zonder bron.</b> Onbewezen cijfers halen de site niet.</p></div>
+    <div class="lk"><span class="t">PRIJS</span><p class="b"><b>Niet bij de voordeur.</b> Prijzen komen in het eerste gesprek ter sprake.</p></div>
+    <div class="lk"><span class="t">CTA</span><p class="b"><b>Begin met een gesprek.</b> Geen gratis scan, geen leadmagnet.</p></div>
+  </div>
+
+  <h3>De volgorde vanaf hier</h3>
+  <p class="note">Zodra de zes beslissingen genomen zijn, volgt de rest bijna vanzelf. In deze volgorde, en niet door elkaar:</p>
+  <div class="stack">
+    <div class="st"><span class="lab">STAP 1</span><div class="bd"><h4>Propositie vast</h4><p>Dit document, met jouw antwoorden op de zes knopen erin verwerkt.</p></div></div>
+    <div class="st"><span class="lab">STAP 2</span><div class="bd"><h4>Marketingstrategie</h4><p>Hoe we onze eigen propositie in de markt zetten: welke kanalen, welke boodschap per fase, welk verkoopproces, en wat de marketing manager zelfstandig moet kunnen.</p></div></div>
+    <div class="st"><span class="lab">STAP 3</span><div class="bd"><h4>Websiteplan</h4><p>Per pagina: welke rol hij speelt in dat verkoopproces, wie er binnenkomt, en wat hij moet doen. Pas hier komt de sitemap terug.</p></div></div>
+    <div class="st"><span class="lab">STAP 4</span><div class="bd"><h4>Webdesign</h4><p>Pas dan schermen. Met de brandguide die er al ligt, is dat het kortste stuk van het traject.</p></div></div>
+  </div>
+</section>
+
+<footer class="wrap foot">James Robinson &mdash; Marketing &amp; Branding &middot; Propositie, werkdocument september 2026</footer>
+
+<script>
+(function(){
+  var root=document.documentElement,tb=document.getElementById('themeBtn');
+  function cur(){var t=root.getAttribute('data-theme');return t||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}
+  function sync(){tb.textContent=cur()==='dark'?'Licht':'Donker'}
+  sync();
+  tb.addEventListener('click',function(){root.setAttribute('data-theme',cur()==='dark'?'light':'dark');sync()});
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',sync);
+})();
+</script>
