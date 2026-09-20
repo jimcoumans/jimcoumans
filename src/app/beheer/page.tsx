@@ -13,6 +13,7 @@ import { komendeVerjaardagen } from '@/lib/verjaardagen'
 import { getCockpit } from '@/lib/cockpit'
 import { metGeheugen } from '@/lib/cache'
 import { telAchterstand } from '@/lib/pijplijn'
+import { telAchterstandWerving } from '@/lib/werving'
 import { MAANDNAMEN } from '@/lib/dates'
 import { formatCents } from '@/lib/money'
 import { formatDate, formatRelative } from '@/lib/dates'
@@ -72,6 +73,7 @@ export default async function DashboardPage() {
 
   const jarig = await metGeheugen('dash:jarig', () => komendeVerjaardagen(7))
   const dealsAchter = await metGeheugen('dash:dealsachter', () => telAchterstand())
+  const wervingAchter = await metGeheugen('dash:wervingachter', () => telAchterstandWerving())
 
   const openOffertes = offertes.filter(
     (q) => q.status === 'sent' || q.status === 'awaiting_partner',
@@ -114,6 +116,19 @@ export default async function DashboardPage() {
           ? '1 deal wacht op een vervolgstap'
           : `${dealsAchter} deals wachten op een vervolgstap`,
       href: '/beheer/pijplijn',
+    })
+  }
+
+  /* Een kandidaat die op antwoord wacht staat boven een factuur die te laat
+     is. Een late factuur kost rente; een sollicitant die drie weken niets
+     hoort vertelt dat door, en dan kost het je de volgende kandidaat ook. */
+  if (wervingAchter > 0) {
+    aandacht.push({
+      tekst:
+        wervingAchter === 1
+          ? '1 kandidaat wacht op antwoord of een vervolgstap'
+          : `${wervingAchter} kandidaten wachten op antwoord of een vervolgstap`,
+      href: '/beheer/werving',
     })
   }
 

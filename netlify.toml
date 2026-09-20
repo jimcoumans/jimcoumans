@@ -20,3 +20,9 @@
 # het geheim. Zie netlify/functions/billing.mts.
 [functions."billing"]
   schedule = "0 6 * * *"
+
+# De dagelijkse opruimtaak: sollicitatiegegevens waarvan de bewaartermijn om
+# is. Apart van het factureren en een uur eerder, want dit is een wettelijke
+# termijn en die mag niet afhangen van of een factuurrun lukt.
+[functions."opruimen"]
+  schedule = "0 5 * * *"

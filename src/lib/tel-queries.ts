@@ -134,6 +134,16 @@ async function main() {
     await team.listTeam()
   })
 
+  const werving = await import('./werving')
+  await meet('WERVING', async () => {
+    await werving.getCijfers()
+    await werving.listVacatures()
+    await werving.getAchterstand()
+    await werving.getAfvalredenen()
+    await team.listTeam()
+    await (await import('./salarishuis')).getHuis()
+  })
+
   const salarishuis = await import('./salarishuis')
   await meet('SALARISHUIS', async () => {
     await salarishuis.listHuizen()

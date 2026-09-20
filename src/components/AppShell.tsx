@@ -99,6 +99,13 @@ const icons = {
       <path d="M3 5h18l-7 8v6l-4 2v-8z" />
     </svg>
   ),
+  werving: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
+      <circle cx="9" cy="8" r="3.2" />
+      <path d="M3.5 20c0-3 2.5-5 5.5-5s5.5 2 5.5 5" strokeLinecap="round" />
+      <path d="M18 8v6M15 11h6" strokeLinecap="round" />
+    </svg>
+  ),
   salarishuis: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
       <path d="M3 20h4v-4H3zM10 20h4v-9h-4zM17 20h4V5h-4z" strokeLinejoin="round" />
@@ -123,6 +130,7 @@ const TEAM_NAV: NavItem[] = [
   { href: '/beheer/portfolio', label: 'Portfolio', key: 'portfolio', icon: icons.portfolio },
   { href: '/beheer/financieel', label: 'Financieel', key: 'financieel', icon: icons.finance },
   { href: '/beheer/medewerkers', label: 'Team', key: 'medewerkers', icon: icons.team },
+  { href: '/beheer/werving', label: 'Werving', key: 'werving', icon: icons.werving },
 ]
 
 /**

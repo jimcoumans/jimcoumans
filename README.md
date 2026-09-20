@@ -267,6 +267,22 @@ De mapping-regels staan in `src/lib/clickup/mapping.ts` en zijn los getest in
 `src/lib/__tests__/mapping.test.ts`. Wil je de regel veranderen (bijvoorbeeld
 `Offerte` in plaats van `Verkoopfactuur`), dan pas je daar één functie aan.
 
+## De dagelijkse opruimtaak
+
+Draait elke ochtend om 5:00 op `/api/cron/opruimen`, een uur voor het
+factureren. Wist sollicitatiegegevens waarvan de bewaartermijn om is: vier
+weken na afloop van de procedure, of een jaar als de kandidaat daar
+toestemming voor gaf.
+
+Het is met opzet een eigen endpoint en niet een stap in de abonnementsrun.
+Wissen en factureren zijn twee losse beloftes; gaat het factureren stuk, dan
+hoort het wissen gewoon door te gaan. "We bewaarden je gegevens te lang omdat
+een factuur niet lukte" is geen verdediging.
+
+Er wordt echt gewist en niet gearchiveerd. In het log staat alleen hoeveel er
+weg zijn, niet wie — dat zou zijn wat we net hebben opgeruimd terugzetten in
+een logbestand.
+
 ## De maandelijkse abonnementsrun
 
 Draait elke ochtend om 6:00 op `/api/cron/billing`. Op Netlify via de

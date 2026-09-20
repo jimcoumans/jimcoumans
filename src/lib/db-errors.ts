@@ -228,6 +228,35 @@ export function describeDbError(error: unknown): string | null {
       return 'Er staat al een schaal op deze plek in dit salarishuis. Twee schalen op dezelfde plek maakt de bedragen onvoorspelbaar, want elke schaal rekent door op de vorige.'
     case 'salary_scales_name_idx':
       return 'Er bestaat al een schaal met deze naam in dit salarishuis.'
+
+    /* Werving. De meldingen over de bewaartermijn leggen de reden erbij:
+       dit zijn de regels die anders stilletjes worden overtreden. */
+    case 'vacancy_title_not_empty':
+      return 'Geef de vacature een titel, bijvoorbeeld Marketing Manager.'
+    case 'vacancy_positions_valid':
+      return 'Een vacature is voor minstens een plek en hoogstens honderd.'
+    case 'vacancy_hours_valid':
+      return 'De uren per week moeten boven nul liggen en onder de tachtig.'
+    case 'vacancy_steps_ordered':
+      return 'De hoogste trede moet boven de laagste liggen. Andersom betekent het iets anders dan bedoeld en dat valt op het scherm niet op.'
+    case 'vacancy_steps_positive':
+      return 'Een trede begint bij 1.'
+    case 'vacancy_closed_after_opened':
+      return 'Een vacature kan niet dicht zijn voordat hij open ging.'
+    case 'candidate_name_not_empty':
+      return 'Geef de kandidaat een naam.'
+    case 'candidate_next_action_complete':
+      return 'Een vervolgstap heeft een omschrijving en een datum. Vul ze allebei in, of laat ze allebei leeg.'
+    case 'candidate_closed_matches_status':
+      return 'Een afgeronde kandidaat heeft een einddatum, en een lopende niet. Zet de status op aangenomen, afgewezen of afgehaakt.'
+    case 'candidate_retention_matches_closed':
+      return 'Een afgeronde kandidaat heeft een bewaartermijn. Zonder die termijn blijven sollicitatiegegevens staan tot iemand er toevallig over struikelt.'
+    case 'candidate_retention_after_closed':
+      return 'De bewaartermijn loopt vanaf het einde van de procedure en kan daar niet voor liggen.'
+    case 'candidate_hired_only_when_hired':
+      return 'Alleen een aangenomen kandidaat kan aan een medewerker gekoppeld worden.'
+    case 'candidate_responded_after_applied':
+      return 'Er kan niet geantwoord zijn voordat er gesolliciteerd is. Controleer de sollicitatiedatum.'
     case 'salary_holiday_allowance_valid':
       return 'Het vakantiegeld moet tussen 0 en 100 procent liggen. Wettelijk is het minimaal 8.'
     case 'salary_hours_valid':

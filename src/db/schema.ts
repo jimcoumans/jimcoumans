@@ -245,6 +245,59 @@ export const dossierKindEnum = pgEnum('dossier_kind', [
   'overig',
 ])
 
+/* ------------------------------- Werving ---------------------------------
+   Wat een vacature is, en waar een kandidaat staat.
+
+   Er staat met opzet GEEN geboortedatum, leeftijd, foto of nationaliteit bij
+   een kandidaat. Die heb je niet nodig om iemand aan te nemen, en zodra ze
+   er staan worden ze gebruikt - bewust of niet. Bij de indiensttreding vul
+   je ze in het personeelsdossier in.
+   ------------------------------------------------------------------------- */
+
+export const vacancyKindEnum = pgEnum('vacancy_kind', [
+  'dienstverband',
+  'stage',
+  'freelance',
+])
+
+export const vacancyStatusEnum = pgEnum('vacancy_status', [
+  'concept', // wordt nog geschreven
+  'open', // staat uit, kandidaten welkom
+  'gepauzeerd', // even niet, maar niet ingetrokken
+  'vervuld', // iemand aangenomen
+  'ingetrokken', // gaat niet door
+])
+
+/**
+ * Waar een kandidaat staat.
+ *
+ * Drie eindstations en die zijn niet hetzelfde: afgewezen is onze keuze,
+ * afgehaakt is die van de kandidaat. Gooi je dat op een hoop, dan kun je
+ * niet meer zien of je te streng selecteert of dat mensen afhaken - en dat
+ * vraagt om twee totaal verschillende maatregelen.
+ */
+export const candidateStatusEnum = pgEnum('candidate_status', [
+  'nieuw',
+  'in_gesprek',
+  'tweede_gesprek',
+  'aanbod',
+  'aangenomen',
+  'afgewezen',
+  'afgehaakt',
+])
+
+/** Waar een kandidaat vandaan komt. Dit is het getal dat werving stuurt. */
+export const candidateSourceEnum = pgEnum('candidate_source', [
+  'website', // sollicitatieformulier op jamesrobinson.nl
+  'linkedin',
+  'indeed',
+  'school', // via een opleiding of stagecoordinator
+  'doorverwijzing', // iemand uit het team of het netwerk bracht hem aan
+  'zelf_benaderd',
+  'open_sollicitatie',
+  'anders',
+])
+
 export const assetKindEnum = pgEnum('asset_kind', [
   'laptop',
   'telefoon',
@@ -2330,6 +2383,193 @@ export const salaryScales = pgTable(
   ],
 )
 
+/* -------------------------------- Werving --------------------------------
+   Vacatures en kandidaten.
+
+   Het mechanisme is hetzelfde als bij de salespijplijn: niet het bord met
+   fases maar de VOLGENDE ACTIE. Met een verschil dat zwaarder weegt. Een
+   deal die blijft liggen kost geld; een kandidaat die blijft liggen zit
+   drie weken op een antwoord te wachten en vertelt dat door. Voor een
+   bureau dat zijn eigen marketing als visitekaartje ziet is stilte het
+   duurste wat er is.
+
+   Daarom staat er bij een kandidaat naast de volgende actie ook wanneer hij
+   gesolliciteerd heeft. Daarmee is te zien hoe lang iemand al wacht, en dat
+   is het enige getal dat er in de eerste week toe doet.
+   ------------------------------------------------------------------------- */
+
+export const vacancies = pgTable(
+  'vacancies',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    title: text('title').notNull(),
+    kind: vacancyKindEnum('kind').notNull().default('dienstverband'),
+    status: vacancyStatusEnum('status').notNull().default('concept'),
+
+    /** Hoeveel mensen we hiervoor zoeken. Twee marketing managers is een vacature. */
+    positions: integer('positions').notNull().default(1),
+    /** Wie hem trekt. Zonder eigenaar blijft een vacature liggen. */
+    ownerUserId: uuid('owner_user_id').references(() => users.id, { onDelete: 'set null' }),
+
+    /* --- Wat we bieden ---
+       Schaal en tredes uit het salarishuis, als tekst en getal en niet als
+       verwijzing. Het huis wordt geindexeerd en krijgt dan een nieuwe versie;
+       wat er in de vacature stond blijft dan staan zoals het er stond. */
+    salaryScaleName: text('salary_scale_name'),
+    salaryStepMin: integer('salary_step_min'),
+    salaryStepMax: integer('salary_step_max'),
+    /** Uren per week in kwartieren. 3200 is 32 uur. */
+    hoursPerWeekQuarters: integer('hours_week_quarters'),
+
+    /** Waarom deze vacature er is: een capaciteitsgat of groei. */
+    reason: text('reason'),
+    description: text('description'),
+
+    openedOn: timestamp('opened_on', { withTimezone: true }),
+    /** Wanneer hij dicht ging, ongeacht of dat vervuld of ingetrokken was. */
+    closedOn: timestamp('closed_on', { withTimezone: true }),
+
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('vacancies_status_idx').on(t.status),
+    index('vacancies_owner_idx').on(t.ownerUserId),
+    check('vacancy_title_not_empty', sql`length(trim(${t.title})) > 0`),
+    check('vacancy_positions_valid', sql`${t.positions} > 0 AND ${t.positions} <= 100`),
+    check(
+      'vacancy_hours_valid',
+      sql`${t.hoursPerWeekQuarters} IS NULL OR (${t.hoursPerWeekQuarters} > 0 AND ${t.hoursPerWeekQuarters} <= 8000)`,
+    ),
+    // Een tredebereik dat achterstevoren staat betekent iets anders dan
+    // bedoeld en valt op het scherm niet op.
+    check(
+      'vacancy_steps_ordered',
+      sql`${t.salaryStepMin} IS NULL OR ${t.salaryStepMax} IS NULL OR ${t.salaryStepMax} >= ${t.salaryStepMin}`,
+    ),
+    check(
+      'vacancy_steps_positive',
+      sql`(${t.salaryStepMin} IS NULL OR ${t.salaryStepMin} > 0) AND (${t.salaryStepMax} IS NULL OR ${t.salaryStepMax} > 0)`,
+    ),
+    check(
+      'vacancy_closed_after_opened',
+      sql`${t.closedOn} IS NULL OR ${t.openedOn} IS NULL OR ${t.closedOn} >= ${t.openedOn}`,
+    ),
+  ],
+)
+
+/**
+ * Een kandidaat.
+ *
+ * De bewaartermijn is geen administratief veldje maar het hart van dit
+ * onderdeel. Sollicitatiegegevens mogen vier weken na afloop van de
+ * procedure bewaard worden, of een jaar als de kandidaat daar expliciet
+ * toestemming voor geeft. Die termijn staat daarom als datum in de tabel en
+ * niet als regel in iemands hoofd, en er is een taak die er ook echt naar
+ * kijkt.
+ *
+ * Gespreksnotities zijn een vrij tekstveld, en dat is een bewuste afweging.
+ * Je hebt ze nodig, en laat je het veld weg dan komen ze in een Word-bestand
+ * te staan waar helemaal geen termijn op zit. De bescherming zit hier dus in
+ * de korte bewaartermijn die echt draait, niet in een ontbrekend veld.
+ */
+export const candidates = pgTable(
+  'candidates',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    /** Leeg bij een open sollicitatie: die hoort nergens specifiek bij. */
+    vacancyId: uuid('vacancy_id').references(() => vacancies.id, { onDelete: 'set null' }),
+
+    /** Samengesteld uit de delen hieronder, net als bij contactpersonen. */
+    name: text('name').notNull(),
+    firstName: text('first_name'),
+    infix: text('infix'),
+    lastName: text('last_name'),
+    email: text('email'),
+    phone: text('phone'),
+    linkedinUrl: text('linkedin_url'),
+
+    source: candidateSourceEnum('source').notNull().default('website'),
+    /** Wie hem heeft aangebracht. Doorverwijzing uit het team is goud waard. */
+    referredByUserId: uuid('referred_by_user_id').references(() => users.id, {
+      onDelete: 'set null',
+    }),
+    /** School en opleiding, bij een stage. */
+    school: text('school'),
+    study: text('study'),
+
+    status: candidateStatusEnum('status').notNull().default('nieuw'),
+    /** Wanneer hij solliciteerde. Hiermee zie je hoe lang iemand wacht. */
+    appliedOn: timestamp('applied_on', { withTimezone: true }).notNull().defaultNow(),
+    /** Wanneer wij voor het eerst geantwoord hebben. Leeg is stilte. */
+    respondedOn: timestamp('responded_on', { withTimezone: true }),
+
+    /** De volgende stap, en wanneer. Samen of geen van beide. */
+    nextAction: text('next_action'),
+    nextActionOn: timestamp('next_action_on', { withTimezone: true }),
+
+    notes: text('notes'),
+
+    /* --- Afloop --- */
+    /** Wanneer de procedure eindigde. Vanaf hier loopt de bewaartermijn. */
+    closedOn: timestamp('closed_on', { withTimezone: true }),
+    /** Waarom afgewezen of waarom afgehaakt. Hier leer je van. */
+    closedReason: text('closed_reason'),
+    /** Bij aangenomen: de medewerker die hij geworden is. */
+    hiredUserId: uuid('hired_user_id').references(() => users.id, { onDelete: 'set null' }),
+
+    /* --- Bewaartermijn --- */
+    /**
+     * Tot wanneer we deze gegevens mogen bewaren. Leeg zolang de procedure
+     * loopt; dan is er een lopend belang en telt de termijn niet.
+     */
+    retentionUntil: timestamp('retention_until', { withTimezone: true }),
+    /** Wanneer de kandidaat toestemming gaf om hem langer te bewaren. */
+    retentionConsentOn: timestamp('retention_consent_on', { withTimezone: true }),
+
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('candidates_vacancy_idx').on(t.vacancyId, t.status),
+    index('candidates_status_idx').on(t.status),
+    // Waarop de opruimtaak zoekt. Zonder index loopt die elke nacht over alles.
+    index('candidates_retention_idx').on(t.retentionUntil),
+    check('candidate_name_not_empty', sql`length(trim(${t.name})) > 0`),
+    // Een volgende actie zonder datum is een voornemen, een datum zonder
+    // actie is een herinnering aan niets. Allebei of geen van beide.
+    check(
+      'candidate_next_action_complete',
+      sql`(length(trim(COALESCE(${t.nextAction}, ''))) > 0) = (${t.nextActionOn} IS NOT NULL)`,
+    ),
+    // De drie eindstations hebben een einddatum, de rest niet. Zonder deze
+    // regel loopt de bewaartermijn nooit af voor wie vergeten is af te sluiten.
+    check(
+      'candidate_closed_matches_status',
+      sql`(${t.status} IN ('aangenomen', 'afgewezen', 'afgehaakt')) = (${t.closedOn} IS NOT NULL)`,
+    ),
+    // Bewaartermijn en einddatum horen bij elkaar: zolang de procedure loopt
+    // is er een belang, daarna telt de klok.
+    check(
+      'candidate_retention_matches_closed',
+      sql`(${t.closedOn} IS NULL) = (${t.retentionUntil} IS NULL)`,
+    ),
+    check(
+      'candidate_retention_after_closed',
+      sql`${t.retentionUntil} IS NULL OR ${t.retentionUntil} >= ${t.closedOn}`,
+    ),
+    // Alleen wie is aangenomen kan een medewerker zijn geworden.
+    check(
+      'candidate_hired_only_when_hired',
+      sql`${t.hiredUserId} IS NULL OR ${t.status} = 'aangenomen'`,
+    ),
+    check(
+      'candidate_responded_after_applied',
+      sql`${t.respondedOn} IS NULL OR ${t.respondedOn} >= ${t.appliedOn}`,
+    ),
+  ],
+)
+
 export type Organization = typeof organizations.$inferSelect
 export type User = typeof users.$inferSelect
 export type Wallet = typeof wallets.$inferSelect
@@ -2361,3 +2601,5 @@ export type PipelineStage = typeof pipelineStages.$inferSelect
 export type Deal = typeof deals.$inferSelect
 export type SalaryHouse = typeof salaryHouses.$inferSelect
 export type SalaryScale = typeof salaryScales.$inferSelect
+export type Vacancy = typeof vacancies.$inferSelect
+export type Candidate = typeof candidates.$inferSelect
