@@ -14,6 +14,7 @@ import {
   type KandidaatKaart,
 } from '@/lib/werving'
 import { getHuis, berekenBeloning } from '@/lib/salarishuis'
+import { listDocumentenPerKandidaat } from '@/lib/sollicitatie'
 import {
   vacatureStatus,
   kandidaatBeantwoord,
@@ -53,6 +54,11 @@ export default async function VacaturePagina({
   if (!detail) notFound()
 
   const { vacature, eigenaar, kandidaten } = detail
+
+  /* De bestanden erbij, in één query voor alle kandidaten tegelijk. Per
+     kandidaat een query zou bij twintig sollicitanten twintig netwerkrondes
+     naar Frankfurt betekenen. */
+  const bestanden = await listDocumentenPerKandidaat(kandidaten.map((k) => k.kandidaat.id))
   const lopend = kandidaten.filter((k) =>
     (LOPENDE_STATUSSEN as readonly string[]).includes(k.kandidaat.status),
   )
@@ -179,7 +185,12 @@ export default async function VacaturePagina({
         ) : (
           <div className="space-y-3">
             {lopend.map((k) => (
-              <Kaart key={k.kandidaat.id} kaart={k} vacatureId={vacature.id} />
+              <Kaart
+                key={k.kandidaat.id}
+                kaart={k}
+                vacatureId={vacature.id}
+                bestanden={bestanden.get(k.kandidaat.id) ?? []}
+              />
             ))}
           </div>
         )}
@@ -195,7 +206,12 @@ export default async function VacaturePagina({
           </p>
           <div className="space-y-3">
             {afgerond.map((k) => (
-              <Kaart key={k.kandidaat.id} kaart={k} vacatureId={vacature.id} />
+              <Kaart
+                key={k.kandidaat.id}
+                kaart={k}
+                vacatureId={vacature.id}
+                bestanden={bestanden.get(k.kandidaat.id) ?? []}
+              />
             ))}
           </div>
         </section>
@@ -204,7 +220,23 @@ export default async function VacaturePagina({
   )
 }
 
-function Kaart({ kaart, vacatureId }: { kaart: KandidaatKaart; vacatureId: string }) {
+type Bestand = {
+  id: string
+  kind: string
+  contentType: string
+  bytes: number
+  filename: string | null
+}
+
+function Kaart({
+  kaart,
+  vacatureId,
+  bestanden,
+}: {
+  kaart: KandidaatKaart
+  vacatureId: string
+  bestanden: Bestand[]
+}) {
   const k = kaart.kandidaat
   const isLopend = (LOPENDE_STATUSSEN as readonly string[]).includes(k.status)
 
@@ -274,6 +306,25 @@ function Kaart({ kaart, vacatureId }: { kaart: KandidaatKaart; vacatureId: strin
           {k.closedReason && <p className="text-gray-500">{k.closedReason}</p>}
         </div>
       </div>
+
+      {(bestanden.length > 0 || k.cvSourceUrl) && (
+        <p className="mb-3 flex flex-wrap items-center gap-3 text-xs">
+          {bestanden.map((b) => (
+            <a
+              key={b.id}
+              href={`/api/kandidaten/${k.id}/bestand/${b.id}`}
+              className="text-jr-blue hover:underline"
+            >
+              {b.filename ?? b.kind} ({Math.round(b.bytes / 1024)} kB)
+            </a>
+          ))}
+          {bestanden.length === 0 && k.cvSourceUrl && (
+            <span className="text-jr-orange">
+              Het cv kon niet worden opgehaald; het staat nog op de website.
+            </span>
+          )}
+        </p>
+      )}
 
       {k.notes && (
         <p className="mb-3 rounded-lg bg-gray-50 p-2.5 text-xs whitespace-pre-wrap text-gray-700">

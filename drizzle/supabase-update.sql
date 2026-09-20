@@ -1253,3 +1253,58 @@ BEGIN
   END IF;
 END $jr_0022_werving$;
 
+-- ---------------------------------------------------------------------------
+-- 0023_sollicitaties
+-- ---------------------------------------------------------------------------
+
+DO $jr_0023_sollicitaties$
+BEGIN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = '87e5a375ac4ea5e4a9a5215788128438c25e4e7548de59d07571074aa7681800') THEN
+    RAISE NOTICE 'Overgeslagen: 0023_sollicitaties stond er al.';
+  ELSE
+    -- Sollicitaties die via de website binnenkomen, met het cv erbij.
+    --
+    -- De bestanden staan in een eigen tabel met ON DELETE CASCADE op de
+    -- kandidaat. Dat is hier geen detail maar de kern: loopt de bewaartermijn af
+    -- en wordt de kandidaat gewist, dan gaat het cv vanzelf mee. Stond het
+    -- bestand ergens anders, dan was er een tweede opruiming nodig die iemand
+    -- vergeet - en dan bewaar je een cv van iemand die je allang uit je systeem
+    -- had moeten hebben.
+
+    CREATE TYPE "public"."candidate_document_kind" AS ENUM('cv', 'motivatie', 'overig');
+
+    CREATE TABLE "candidate_documents" (
+    	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+    	"candidate_id" uuid NOT NULL,
+    	"kind" "candidate_document_kind" DEFAULT 'cv' NOT NULL,
+    	"content_type" text NOT NULL,
+    	"bytes" integer NOT NULL,
+    	"data" text NOT NULL,
+    	"filename" text,
+    	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+    	CONSTRAINT "candidate_document_size_reasonable" CHECK ("candidate_documents"."bytes" > 0 AND "candidate_documents"."bytes" <= 5242880),
+    	CONSTRAINT "candidate_document_type_allowed" CHECK ("candidate_documents"."content_type" IN (
+            'application/pdf',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+          ))
+    );
+
+
+    ALTER TABLE "candidates" ADD COLUMN "cv_source_url" text;
+
+    ALTER TABLE "candidate_documents" ADD CONSTRAINT "candidate_documents_candidate_id_candidates_id_fk" FOREIGN KEY ("candidate_id") REFERENCES "public"."candidates"("id") ON DELETE cascade ON UPDATE no action;
+
+    CREATE INDEX "candidate_documents_candidate_idx" ON "candidate_documents" USING btree ("candidate_id");
+
+
+    -- Row Level Security, net als op alle andere tabellen. Zie 0007_rls. Zeker
+    -- hier: dit zijn cv's van mensen die bij ons solliciteerden.
+    ALTER TABLE "candidate_documents" ENABLE ROW LEVEL SECURITY;
+
+    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+    VALUES ('87e5a375ac4ea5e4a9a5215788128438c25e4e7548de59d07571074aa7681800', 1789926158525);
+    RAISE NOTICE 'Toegepast: 0023_sollicitaties.';
+  END IF;
+END $jr_0023_sollicitaties$;
+

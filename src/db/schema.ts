@@ -298,6 +298,12 @@ export const candidateSourceEnum = pgEnum('candidate_source', [
   'anders',
 ])
 
+export const candidateDocumentKindEnum = pgEnum('candidate_document_kind', [
+  'cv',
+  'motivatie',
+  'overig',
+])
+
 export const assetKindEnum = pgEnum('asset_kind', [
   'laptop',
   'telefoon',
@@ -2488,6 +2494,16 @@ export const candidates = pgTable(
     email: text('email'),
     phone: text('phone'),
     linkedinUrl: text('linkedin_url'),
+    /**
+     * Waar het cv vandaan kwam bij een sollicitatie via de website.
+     *
+     * Elementor zet het bestand op de WordPress-server en stuurt ons een
+     * link. Wij halen het bestand op en slaan het hier op, maar de link
+     * blijft staan: daarmee is te zien welk bestand op jamesrobinson.nl nog
+     * opgeruimd moet worden, en als het ophalen mislukte kun je er alsnog
+     * bij. Hij verdwijnt mee als de kandidaat wordt gewist.
+     */
+    cvSourceUrl: text('cv_source_url'),
 
     source: candidateSourceEnum('source').notNull().default('website'),
     /** Wie hem heeft aangebracht. Doorverwijzing uit het team is goud waard. */
@@ -2570,6 +2586,56 @@ export const candidates = pgTable(
   ],
 )
 
+/**
+ * Bestanden bij een kandidaat: het cv, een motivatiebrief.
+ *
+ * Los van de kandidaat en met ON DELETE CASCADE, en dat is hier geen
+ * detail: als de bewaartermijn afloopt en de kandidaat wordt gewist, gaat
+ * het cv vanzelf mee. Zou het bestand ergens anders staan, dan is er een
+ * tweede opruiming nodig die iemand vergeet.
+ *
+ * Opgeslagen in de database en niet op een schijf, net als bij de logo's.
+ * Een serverless functie heeft geen schijf die blijft bestaan, en een extra
+ * dienst voor dertig cv's per jaar is meer onderhoud dan het oplevert.
+ */
+export const candidateDocuments = pgTable(
+  'candidate_documents',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    candidateId: uuid('candidate_id')
+      .notNull()
+      .references(() => candidates.id, { onDelete: 'cascade' }),
+
+    kind: candidateDocumentKindEnum('kind').notNull().default('cv'),
+    /** application/pdf, of een Word-bestand. */
+    contentType: text('content_type').notNull(),
+    bytes: integer('bytes').notNull(),
+    /** Het bestand zelf, als base64. Zelfde aanpak als bij afbeeldingen. */
+    data: text('data').notNull(),
+    /** Oorspronkelijke bestandsnaam, puur om te tonen. */
+    filename: text('filename'),
+
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('candidate_documents_candidate_idx').on(t.candidateId),
+    // Vijf megabyte is ruim voor een cv en krap genoeg om te voorkomen dat
+    // iemand zijn portfolio van tweehonderd megabyte in de database zet.
+    check('candidate_document_size_reasonable', sql`${t.bytes} > 0 AND ${t.bytes} <= 5242880`),
+    /* Geen SVG en geen HTML: daar kan script in zitten dat daarna in de
+       browser van een collega draait. Geen zip: dan weet je niet wat erin
+       zit. Alleen de formaten waarin een cv daadwerkelijk wordt gestuurd. */
+    check(
+      'candidate_document_type_allowed',
+      sql`${t.contentType} IN (
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      )`,
+    ),
+  ],
+)
+
 export type Organization = typeof organizations.$inferSelect
 export type User = typeof users.$inferSelect
 export type Wallet = typeof wallets.$inferSelect
@@ -2603,3 +2669,4 @@ export type SalaryHouse = typeof salaryHouses.$inferSelect
 export type SalaryScale = typeof salaryScales.$inferSelect
 export type Vacancy = typeof vacancies.$inferSelect
 export type Candidate = typeof candidates.$inferSelect
+export type CandidateDocument = typeof candidateDocuments.$inferSelect

@@ -257,6 +257,10 @@ export function describeDbError(error: unknown): string | null {
       return 'Alleen een aangenomen kandidaat kan aan een medewerker gekoppeld worden.'
     case 'candidate_responded_after_applied':
       return 'Er kan niet geantwoord zijn voordat er gesolliciteerd is. Controleer de sollicitatiedatum.'
+    case 'candidate_document_size_reasonable':
+      return 'Een bestand bij een kandidaat mag hoogstens vijf megabyte zijn.'
+    case 'candidate_document_type_allowed':
+      return 'Alleen PDF en Word. Geen SVG of HTML: daar kan script in zitten dat daarna in de browser van een collega draait.'
     case 'salary_holiday_allowance_valid':
       return 'Het vakantiegeld moet tussen 0 en 100 procent liggen. Wettelijk is het minimaal 8.'
     case 'salary_hours_valid':

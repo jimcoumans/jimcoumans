@@ -267,6 +267,58 @@ De mapping-regels staan in `src/lib/clickup/mapping.ts` en zijn los getest in
 `src/lib/__tests__/mapping.test.ts`. Wil je de regel veranderen (bijvoorbeeld
 `Offerte` in plaats van `Verkoopfactuur`), dan pas je daar één functie aan.
 
+## Sollicitaties vanaf jamesrobinson.nl
+
+Het formulier op de website post naar `/api/sollicitatie`. Dat is het enige
+punt in dit systeem waar iets van buiten naar binnen schrijft zonder dat er
+iemand is ingelogd, en het is daarop gebouwd.
+
+**Instellen in Elementor:** bij het formulier onder *Acties na verzenden*
+**Webhook** toevoegen, met als URL:
+
+```
+https://<site>/api/sollicitatie?sleutel=<SOLLICITATIE_SECRET>
+```
+
+Die URL staat in de instellingen van Elementor en komt nooit in de HTML van
+de site terecht — de bezoeker post naar WordPress, en WordPress post naar
+ons. De sleutel is dus niet zichtbaar voor de bezoeker.
+
+**De velden.** Geef de velden in Elementor deze ID's; ze worden ook herkend
+als `form_fields[naam]`, want dat is wat sommige versies sturen:
+
+| Veld-ID | Waarvoor |
+| --- | --- |
+| `voornaam`, `tussenvoegsel`, `achternaam` | de naam, los |
+| `naam` | of de hele naam in één veld |
+| `email` | e-mailadres |
+| `telefoon` | telefoonnummer |
+| `linkedin` | profiel |
+| `vacature` | de vacature: het id uit dit systeem, of de titel |
+| `school`, `opleiding` | bij een stage |
+| `motivatie` | vrije tekst |
+| `cv` | het uploadveld |
+| `website` | **het lokvakje — verbergen met CSS, nooit invullen** |
+
+Dat laatste veld is de spamfilter. Een mens ziet het niet, een bot vult
+alles. Is het gevuld, dan krijgt de afzender een keurig "gelukt" en wordt er
+niets opgeslagen: een bot die denkt dat het lukte gaat weg, een bot die een
+foutmelding krijgt probeert het anders.
+
+**Het cv.** Elementor zet het bestand op de WordPress-server en stuurt ons
+een link. Dit systeem haalt dat bestand op en slaat het hier op, zodat het
+mee verdwijnt als de bewaartermijn van de kandidaat afloopt. Ophalen gebeurt
+alleen van de host in `SOLLICITATIE_BESTAND_HOST`, alleen over https,
+zonder omleidingen te volgen, met een tijdslimiet en een maximum van vijf
+megabyte, en alleen PDF en Word. Lukt het niet, dan komt de kandidaat er
+gewoon in en blijft de link bewaard — een sollicitant kwijtraken omdat zijn
+bijlage niet deugde is erger dan een ontbrekend cv.
+
+**Let op:** het bestand blijft óók op de WordPress-server staan. Dat is
+Elementor's eigen opslag en daar kan dit systeem niet bij. Ruim die uploads
+daar periodiek op, anders staan er cv's van mensen die hier allang gewist
+zijn.
+
 ## De dagelijkse opruimtaak
 
 Draait elke ochtend om 5:00 op `/api/cron/opruimen`, een uur voor het
