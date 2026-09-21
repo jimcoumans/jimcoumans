@@ -160,78 +160,87 @@ b{color:var(--tx);font-weight:600}
 .s3d{font-size:15px;color:var(--tx2);margin:0}
 @media (max-width:900px){.stack3{grid-template-columns:1fr}}
 
-/* ---------- kubus met schuifdak ---------- */
-.stage{background:var(--void);border-radius:26px;padding:26px 20px 26px;margin-top:28px;position:relative;overflow:hidden}
-.stage::before{content:"";position:absolute;left:50%;top:-14%;width:820px;height:600px;transform:translateX(-50%);
+/* ---------- kubus ---------- */
+.stage{background:var(--void);border-radius:26px;padding:26px 20px;margin-top:28px;position:relative;overflow:hidden}
+.stage::before{content:"";position:absolute;left:50%;top:-14%;width:820px;height:620px;transform:translateX(-50%);
   background:radial-gradient(closest-side,rgba(0,122,255,.24),transparent 72%);pointer-events:none}
 .scene{position:relative;margin:0 auto;perspective:1500px;--S:clamp(58px,13vw,116px);
   width:calc(var(--S)*4);height:calc(var(--S)*3)}
 .rig{position:absolute;inset:0;transform-style:preserve-3d;transition:transform 1.1s var(--e)}
 .cube{position:absolute;left:var(--S);top:var(--S);width:var(--S);height:var(--S);transform-style:preserve-3d}
-.fc{position:absolute;width:var(--S);height:var(--S);background:rgba(255,255,255,.055);
-  border:1px solid rgba(255,255,255,.26);display:flex;flex-direction:column;justify-content:center;
+.fc{position:absolute;width:var(--S);height:var(--S);background:rgba(120,150,190,.1);
+  border:1px solid rgba(255,255,255,.3);display:flex;flex-direction:column;justify-content:center;
   align-items:center;gap:4px;padding:6px;text-align:center;backface-visibility:hidden;
-  transition:transform 1.1s var(--e),background .5s var(--e),border-color .5s var(--e),opacity .5s var(--e)}
+  transition:transform 1.1s var(--e),background .5s var(--e),box-shadow .5s var(--e),opacity .5s var(--e)}
 .fc .n{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.08em;color:var(--lime)}
-.fc .l{display:block;font-family:var(--fd);font-size:clamp(8.5px,1.45vw,13px);font-weight:600;letter-spacing:-.008em;color:#fff;line-height:1.15}
+.fc .l{display:block;font-family:var(--fd);font-size:clamp(8px,1.4vw,12.5px);font-weight:600;color:#fff;line-height:1.15}
 .f-b{left:0;top:0}
 .f-c{left:100%;top:0;transform-origin:0% 50%;transform-style:preserve-3d}
 .f-d{left:100%;top:0;transform-origin:0% 50%}
 .f-a{left:-100%;top:0;transform-origin:100% 50%}
-.f-e{left:0;top:-100%;transform-origin:50% 100%}
+.f-e{left:0;top:-100%;transform-origin:50% 100%;flex-direction:column;gap:0;padding:0;overflow:hidden}
 .f-f{left:0;top:100%;transform-origin:50% 0%}
-.f-g{left:0;top:100%;transform-origin:50% 0%;opacity:0;background:rgba(41,151,255,.3);border-color:rgba(41,151,255,.85)}
-.dicht .f-c,.open .f-c{transform:rotateY(90deg)}
-.dicht .f-d,.open .f-d{transform:rotateY(90deg)}
+.f-g{left:0;top:100%;transform-origin:50% 0%;opacity:0;background:rgba(41,151,255,.32);border-color:rgba(41,151,255,.85)}
+.seg{width:100%;border-bottom:1px solid rgba(10,10,12,.5)}
+.seg:last-child{border-bottom:none}
+.dicht .f-c,.open .f-c,.dicht .f-d,.open .f-d{transform:rotateY(90deg)}
 .dicht .f-a,.open .f-a{transform:rotateY(-90deg)}
 .dicht .f-f,.open .f-f{transform:rotateX(-90deg)}
 .dicht .f-g,.open .f-g{transform:rotateX(-90deg) rotateY(180deg)}
 .open .f-g{opacity:1}
 .dicht .f-e{transform:rotateX(90deg)}
 .open  .f-e{transform:rotateX(90deg) translateY(-88%)}
-.dicht .fc,.open .fc{background:rgba(120,150,190,.16);border-color:rgba(255,255,255,.4)}
-.dicht .f-e,.open .f-e{background:rgba(196,240,0,.22);border-color:rgba(196,240,0,.75)}
-.dicht .f-e .n,.dicht .f-e .l,.open .f-e .n,.open .f-e .l{opacity:0}
-.dicht .f-e .l,.open .f-e .l{color:var(--lime)}
+/* binnenvoering: e-mail */
+.dicht .f-a,.dicht .f-b,.dicht .f-c,.dicht .f-d,
+.open .f-a,.open .f-b,.open .f-c,.open .f-d{box-shadow:inset 0 0 0 7px rgba(196,240,0,.3)}
 .dicht .rig{transform:translateX(calc(var(--S)*.5)) scale(1.3) rotateX(-16deg) rotateY(-32deg)}
 .open  .rig{transform:translateX(calc(var(--S)*.5)) translateY(14%) scale(1.18) rotateX(-40deg) rotateY(-32deg)}
-.ctl{display:flex;justify-content:center;gap:10px;margin-top:38px;position:relative;flex-wrap:wrap}
+.ctl{display:flex;justify-content:center;gap:10px;margin-top:34px;position:relative;flex-wrap:wrap}
 .ctl button{cursor:pointer;background:transparent;border:1px solid rgba(255,255,255,.26);color:var(--inv);
   border-radius:980px;padding:9px 20px;font-size:14.5px;transition:background .18s var(--e)}
 .ctl button:hover{background:rgba(255,255,255,.1)}
 .ctl button[aria-pressed="true"]{background:#fff;color:#1c1c1e;border-color:#fff}
-.stage-cap{position:relative;max-width:none;text-align:center;font-family:var(--fm);font-size:10.5px;
-  letter-spacing:.05em;color:#6e6e73;margin-top:24px}
+.slg{position:relative;display:flex;justify-content:center;gap:22px;flex-wrap:wrap;margin-top:22px;
+  font-family:var(--fm);font-size:10px;letter-spacing:.06em;color:#6e6e73}
+.slg span{display:inline-flex;align-items:center;gap:7px}
+.slg i{width:11px;height:11px;border-radius:3px;display:inline-block}
 
 /* ---------- plattegrond ---------- */
-.plan{position:relative;background:var(--void);border-radius:26px;padding:26px 18px 20px;margin-top:28px;overflow:hidden}
-.plan svg{position:relative;display:block;width:100%;height:auto;max-width:820px;margin:0 auto}
+.plan{position:relative;background:var(--void);border-radius:26px;padding:24px 16px 18px;margin-top:28px;overflow:hidden}
+.plan svg{position:relative;display:block;width:100%;height:auto;max-width:860px;margin:0 auto}
 .pl .rng{fill:none;stroke-width:1.5}
-.pl .rng1{stroke:rgba(255,255,255,.32)}
-.pl .rng2{stroke:rgba(196,240,0,.42)}
-.pl .rng3{stroke:rgba(41,151,255,.42)}
+.pl .rng1{stroke:rgba(255,255,255,.32)}.pl .rng2{stroke:rgba(196,240,0,.42)}.pl .rng3{stroke:rgba(41,151,255,.42)}
 .pl .stand{fill:#161b24;stroke:rgba(41,151,255,.35);stroke-width:1.5}
-.pl .pitch{fill:#1d2a3d;stroke:rgba(41,151,255,.75);stroke-width:2}
-.pl .dak{fill:rgba(196,240,0,.06);stroke:var(--lime);stroke-width:1.5;stroke-dasharray:7 6}
+.pl .liner{fill:none;stroke:var(--lime);stroke-width:13;opacity:.5}
+.pl .pitch{fill:#1d2a3d;stroke:rgba(41,151,255,.8);stroke-width:2}
+.pl .dak{fill:none;stroke:var(--lime);stroke-width:1.5;stroke-dasharray:7 6}
+.pl .band{stroke:none}
 .pl .tk{stroke:#34343a;stroke-width:4;stroke-linecap:round}
 .pl .tk.lit{stroke:var(--lime);opacity:.9}
-.pl .nm{fill:#f5f5f7;font-family:"Inter Tight",sans-serif;font-size:19px;font-weight:600;letter-spacing:-.01em;text-anchor:middle}
-.pl .nm-s{fill:#c7c7cc;font-family:"Inter Tight",sans-serif;font-size:15px;font-weight:600;text-anchor:middle}
+.pl .nm{fill:#f5f5f7;font-family:"Inter Tight",sans-serif;font-size:18px;font-weight:600;text-anchor:middle}
+.pl .nm-s{fill:#c7c7cc;font-family:"Inter Tight",sans-serif;font-size:14.5px;font-weight:600;text-anchor:middle}
 .pl .tl{fill:#6e6e73;font-family:"SF Mono",ui-monospace,monospace;font-size:10px;letter-spacing:.07em;text-anchor:middle}
-.pl .tl-lime{fill:var(--lime)}
+.pl .tl-l{fill:var(--lime)}
 .pl .lblbg{fill:var(--void)}
-.pl .rl{font-family:"SF Mono",ui-monospace,monospace;font-size:11.5px;letter-spacing:.09em;text-anchor:middle}
+.pl .rl{font-family:"SF Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.09em;text-anchor:middle}
 .pl .rl1{fill:#8a8a90}.pl .rl2{fill:#c4f000}.pl .rl3{fill:#2997ff}
-.pl .arr{stroke:var(--lime);stroke-width:1.5;fill:none;stroke-dasharray:4 5}
+.pl .arr{stroke:var(--lime);stroke-width:1.5;fill:none}
 
-.mx{width:100%;border-collapse:collapse;font-size:15.5px;margin-top:22px}
-.mx th,.mx td{padding:14px 16px;border-bottom:1px solid var(--ln-s);text-align:left}
-.mx thead th{font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
-.mx td:first-child{font-family:var(--fm);font-size:11px;color:var(--tx3);width:24%}
-.mx b{font-weight:600}
-.mx .paid{color:var(--tx2)}
-.mx tr:last-child td{border-bottom:none}
+/* tabel */
+.wat{width:100%;border-collapse:collapse;font-size:15px;margin-top:22px}
+.wat th,.wat td{padding:13px 14px;border-bottom:1px solid var(--ln-s);text-align:left;vertical-align:top}
+.wat thead th{font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.wat td:first-child{font-family:var(--fm);font-size:11px;color:var(--act);width:20%;white-space:nowrap}
+.wat td:nth-child(2){font-weight:600;width:26%}
+.wat td:last-child{color:var(--tx2)}
+.wat tr:last-child td{border-bottom:none}
 .tblwrap{overflow-x:auto}
+.found{display:grid;gap:8px;margin-top:22px}
+.fl{background:var(--card);border:1px solid var(--ln-s);border-radius:12px;padding:15px 18px;display:flex;gap:16px;align-items:baseline}
+.fl .fi{font-family:var(--fm);font-size:10.5px;color:var(--tx3);flex:none;width:62px}
+.fl .fn{font-family:var(--fd);font-size:16px;font-weight:600;flex:none;width:180px}
+.fl .fd{font-size:14.5px;color:var(--tx2)}
+@media (max-width:734px){.fl{flex-direction:column;gap:4px}.fl .fn,.fl .fi{width:auto}}
 @media (max-width:900px){.faces{grid-template-columns:1fr}}
 @media (max-width:734px){
   :root{--g:20px}
@@ -246,34 +255,38 @@ b{color:var(--tx);font-weight:600}
   <div class="bar-in">
     <b>Het Stadion</b>
     <a href="#kubus">De kubus</a>
+    <a href="#wat">Wat waar zit</a>
     <a href="#plan">De plattegrond</a>
-    <a href="#matrix">De twee assen</a>
-    <a href="#vorm">Wat de vorm zegt</a>
+    <a href="#plint">Het fundament</a>
     <button id="themeBtn" type="button">Donker</button>
   </div>
 </div>
 
 <header class="wrap hero">
   <h1>Het Stadion</h1>
-  <p class="lead">Zes vlakken: de website als grondvlak, e-mail als dak, en vier wanden die samen de twee assen vormen. Het dak schuift open — dicht is het een compleet systeem, open is het een stadion.</p>
+  <p class="lead">Een holle kubus op een plint van drie lagen, met drie ringen eromheen. Vier wanden, een vloer, een dak &mdash; en een binnenkant. Dit is alles wat we tot nu toe hebben vastgelegd, in &eacute;&eacute;n beeld.</p>
 </header>
 
 <section class="wrap sec" id="kubus">
   <p class="kicker">DRIE STANDEN</p>
   <h2>De kubus</h2>
-  <p class="note">Uitgevouwen zie je alle zes de vlakken naast elkaar. Gevouwen met het dak open kijk je erin. Gevouwen met het dak dicht is het systeem compleet — en sluit het alleen als alle zes er zijn.</p>
-
+  <p class="note">Uitgevouwen zie je de zes vlakken. Dak open: je kijkt naar binnen, ziet de vloer en de lime voering langs de wanden. Dak dicht: compleet, en het sluit alleen als alles er is.</p>
   <div class="stage">
     <div class="scene" id="scene">
       <div class="rig">
         <div class="cube">
-          <div class="fc f-b"><span class="n">01</span><span class="l">SEO</span></div>
-          <div class="fc f-a"><span class="n">03</span><span class="l">SOCIAL BEHEER</span></div>
-          <div class="fc f-e"><span class="n">05</span><span class="l dakl">E-MAIL</span></div>
-          <div class="fc f-f"><span class="n">06</span><span class="l">WEBSITE</span></div>
+          <div class="fc f-b"><span class="n">02</span><span class="l">SEO</span></div>
+          <div class="fc f-a"><span class="n">04</span><span class="l">SOCIAL BEHEER</span></div>
+          <div class="fc f-e">
+            <span class="seg" style="flex:40;background:rgba(196,240,0,.3)"></span>
+            <span class="seg" style="flex:35;background:rgba(196,240,0,.22)"></span>
+            <span class="seg" style="flex:20;background:rgba(196,240,0,.14)"></span>
+            <span class="seg" style="flex:5;background:rgba(196,240,0,.07)"></span>
+          </div>
+          <div class="fc f-f"><span class="n">01</span><span class="l">WEBSITE</span></div>
           <div class="fc f-g"></div>
-          <div class="fc f-c"><span class="n">04</span><span class="l">SOCIAL ADS</span>
-            <div class="fc f-d"><span class="n">02</span><span class="l">GOOGLE ADS</span></div>
+          <div class="fc f-c"><span class="n">05</span><span class="l">SOCIAL ADS</span>
+            <div class="fc f-d"><span class="n">03</span><span class="l">GOOGLE ADS</span></div>
           </div>
         </div>
       </div>
@@ -283,157 +296,159 @@ b{color:var(--tx);font-weight:600}
       <button type="button" id="bOpen" aria-pressed="false">Dak open</button>
       <button type="button" id="bDicht" aria-pressed="false">Dak dicht</button>
     </div>
-    <p class="stage-cap"><span style="display:inline-flex;align-items:center;gap:7px;margin-inline:10px"><i style="width:11px;height:11px;border-radius:3px;background:rgba(196,240,0,.5);border:1px solid rgba(196,240,0,.8);display:inline-block"></i>DAK &middot; E-MAIL</span><span style="display:inline-flex;align-items:center;gap:7px;margin-inline:10px"><i style="width:11px;height:11px;border-radius:3px;background:rgba(41,151,255,.3);border:1px solid rgba(41,151,255,.7);display:inline-block"></i>GRONDVLAK &middot; WEBSITE</span><span style="display:inline-flex;align-items:center;gap:7px;margin-inline:10px"><i style="width:11px;height:11px;border-radius:3px;background:rgba(120,150,190,.2);border:1px solid rgba(255,255,255,.45);display:inline-block"></i>VIER WANDEN &middot; TWEE ASSEN</span></p>
+    <p class="slg">
+      <span><i style="background:rgba(41,151,255,.35);border:1px solid rgba(41,151,255,.8)"></i>VLOER &middot; WEBSITE</span>
+      <span><i style="background:rgba(120,150,190,.18);border:1px solid rgba(255,255,255,.45)"></i>VIER WANDEN &middot; DE KANALEN</span>
+      <span><i style="background:rgba(196,240,0,.3);border:1px solid rgba(196,240,0,.7)"></i>DAK &middot; BUDGET, IN VIER SEGMENTEN</span>
+      <span><i style="background:transparent;box-shadow:inset 0 0 0 3px rgba(196,240,0,.6);border:1px solid rgba(196,240,0,.35)"></i>VOERING &middot; E-MAIL</span>
+    </p>
+  </div>
+</section>
+
+<section class="wrap sec" id="wat">
+  <p class="kicker">ELK ONDERDEEL, &Eacute;&Eacute;N PLEK</p>
+  <h2>Wat waar zit</h2>
+  <div class="tblwrap">
+    <table class="wat">
+      <thead><tr><th>Plek</th><th>Onderdeel</th><th>Waarom daar</th></tr></thead>
+      <tbody>
+        <tr><td>VLOER</td><td>Website</td><td>Landingspagina&rsquo;s, CRO, functionaliteit. Alles komt hier op uit.</td></tr>
+        <tr><td>WAND &middot; NOORD</td><td>SEO</td><td>Bestaande vraag, organisch. Traag, blijft staan.</td></tr>
+        <tr><td>WAND &middot; ZUID</td><td>Google Ads</td><td>Bestaande vraag, betaald. Direct, stopt als je stopt.</td></tr>
+        <tr><td>WAND &middot; OOST</td><td>Social ads</td><td>Nieuwe vraag maken bij wie nog niet zoekt.</td></tr>
+        <tr><td>WAND &middot; WEST</td><td>Social beheer</td><td>Staat erin voor de volledigheid. Weinig bereik, wel nodig voor geloofwaardigheid.</td></tr>
+        <tr><td>DAK</td><td>Budget</td><td>Het plafond. Vier segmenten: advertentiebudget, linkbuildingbudget, en wat naar beheer gaat.</td></tr>
+        <tr><td>BINNENVOERING</td><td>E-mail &amp; automation</td><td>Bereikt alleen wie al binnen is. Kan er pas in als de wanden staan.</td></tr>
+        <tr><td>RING 1</td><td>Merk</td><td>Maakt elke wand goedkoper. Inclusief de ondergrens voor een levend profiel.</td></tr>
+        <tr><td>RING 2</td><td>Content</td><td>Foto, video en copy. Elke wand put eruit.</td></tr>
+        <tr><td>RING 3</td><td>Monitoring</td><td>Bepaalt waar het budget volgende maand heen gaat.</td></tr>
+      </tbody>
+    </table>
   </div>
 </section>
 
 <section class="wrap sec" id="plan">
   <p class="kicker">VAN BOVEN, MET HET DAK OPEN</p>
   <h2>De plattegrond</h2>
-  <p class="note">Het dak staat geparkeerd naast het stadion — anders zie je er niets van. De verlichte vakken in de tribunes zijn het publiek dat elk kanaal heeft opgebouwd.</p>
+  <p class="note">Het dak staat ernaast geparkeerd met de budgetverdeling erin. De lime band om het veld is de binnenvoering. De verlichte vakken in de tribunes zijn het publiek dat elke wand heeft binnengehaald.</p>
   <div class="plan">
-    <svg class="pl" viewBox="0 0 1180 900" role="img" aria-label="Plattegrond van het stadion met het dak open: de website als veld in het midden, vier tribunes met SEO, social beheer, social ads en Google Ads, drie ringen eromheen, en het dak met e-mail ernaast geparkeerd">
+    <svg class="pl" viewBox="0 0 1240 900" role="img" aria-label="Plattegrond: de website als veld, een lime binnenvoering voor e-mail eromheen, vier wanden met SEO, social beheer, social ads en Google Ads, drie ringen, en het dak met de budgetverdeling ernaast geparkeerd">
         <rect class="rng rng3" x="110" y="110" width="680" height="680" rx="64"/>
         <rect class="rng rng2" x="150" y="150" width="600" height="600" rx="54"/>
         <rect class="rng rng1" x="190" y="190" width="520" height="520" rx="44"/>
-        <rect class="lblbg" x="392" y="102" width="116" height="19" rx="4"/>
-        <text class="rl rl3" x="450" y="116">MONITORING</text>
-        <rect class="lblbg" x="405" y="142" width="90" height="19" rx="4"/>
-        <text class="rl rl2" x="450" y="156">CONTENT</text>
-        <rect class="lblbg" x="418" y="182" width="64" height="19" rx="4"/>
-        <text class="rl rl1" x="450" y="196">MERK</text>
-
-        <line class="tk lit" x1="310" y1="234" x2="310" y2="266"/>
-        <line class="tk lit" x1="330" y1="234" x2="330" y2="266"/>
-        <line class="tk lit" x1="350" y1="234" x2="350" y2="266"/>
-        <line class="tk lit" x1="370" y1="234" x2="370" y2="266"/>
-        <line class="tk lit" x1="390" y1="234" x2="390" y2="266"/>
-        <line class="tk lit" x1="410" y1="234" x2="410" y2="266"/>
-        <line class="tk lit" x1="430" y1="234" x2="430" y2="266"/>
-        <line class="tk lit" x1="450" y1="234" x2="450" y2="266"/>
-        <line class="tk lit" x1="470" y1="234" x2="470" y2="266"/>
-        <line class="tk lit" x1="490" y1="234" x2="490" y2="266"/>
-        <line class="tk lit" x1="510" y1="234" x2="510" y2="266"/>
-        <line class="tk" x1="530" y1="234" x2="530" y2="266"/>
-        <line class="tk" x1="550" y1="234" x2="550" y2="266"/>
-        <line class="tk" x1="570" y1="234" x2="570" y2="266"/>
-        <line class="tk" x1="590" y1="234" x2="590" y2="266"/>
-        <line class="tk" x1="610" y1="234" x2="610" y2="266"/>
-        <line class="tk" x1="310" y1="634" x2="310" y2="666"/>
-        <line class="tk" x1="330" y1="634" x2="330" y2="666"/>
-        <line class="tk" x1="350" y1="634" x2="350" y2="666"/>
-        <line class="tk" x1="370" y1="634" x2="370" y2="666"/>
-        <line class="tk" x1="390" y1="634" x2="390" y2="666"/>
-        <line class="tk" x1="410" y1="634" x2="410" y2="666"/>
-        <line class="tk" x1="430" y1="634" x2="430" y2="666"/>
-        <line class="tk" x1="450" y1="634" x2="450" y2="666"/>
-        <line class="tk" x1="470" y1="634" x2="470" y2="666"/>
-        <line class="tk" x1="490" y1="634" x2="490" y2="666"/>
-        <line class="tk" x1="510" y1="634" x2="510" y2="666"/>
-        <line class="tk" x1="530" y1="634" x2="530" y2="666"/>
-        <line class="tk" x1="550" y1="634" x2="550" y2="666"/>
-        <line class="tk" x1="570" y1="634" x2="570" y2="666"/>
-        <line class="tk" x1="590" y1="634" x2="590" y2="666"/>
-        <line class="tk" x1="610" y1="634" x2="610" y2="666"/>
-        <line class="tk lit" x1="234" y1="310" x2="266" y2="310"/>
-        <line class="tk lit" x1="234" y1="330" x2="266" y2="330"/>
-        <line class="tk lit" x1="234" y1="350" x2="266" y2="350"/>
-        <line class="tk lit" x1="234" y1="370" x2="266" y2="370"/>
-        <line class="tk lit" x1="234" y1="390" x2="266" y2="390"/>
-        <line class="tk lit" x1="234" y1="410" x2="266" y2="410"/>
-        <line class="tk lit" x1="234" y1="430" x2="266" y2="430"/>
-        <line class="tk" x1="234" y1="450" x2="266" y2="450"/>
-        <line class="tk" x1="234" y1="470" x2="266" y2="470"/>
-        <line class="tk" x1="234" y1="490" x2="266" y2="490"/>
-        <line class="tk" x1="234" y1="510" x2="266" y2="510"/>
-        <line class="tk" x1="234" y1="530" x2="266" y2="530"/>
-        <line class="tk" x1="234" y1="550" x2="266" y2="550"/>
-        <line class="tk" x1="234" y1="570" x2="266" y2="570"/>
-        <line class="tk" x1="234" y1="590" x2="266" y2="590"/>
-        <line class="tk" x1="234" y1="610" x2="266" y2="610"/>
-        <line class="tk lit" x1="634" y1="310" x2="666" y2="310"/>
-        <line class="tk lit" x1="634" y1="330" x2="666" y2="330"/>
-        <line class="tk" x1="634" y1="350" x2="666" y2="350"/>
-        <line class="tk" x1="634" y1="370" x2="666" y2="370"/>
-        <line class="tk" x1="634" y1="390" x2="666" y2="390"/>
-        <line class="tk" x1="634" y1="410" x2="666" y2="410"/>
-        <line class="tk" x1="634" y1="430" x2="666" y2="430"/>
-        <line class="tk" x1="634" y1="450" x2="666" y2="450"/>
-        <line class="tk" x1="634" y1="470" x2="666" y2="470"/>
-        <line class="tk" x1="634" y1="490" x2="666" y2="490"/>
-        <line class="tk" x1="634" y1="510" x2="666" y2="510"/>
-        <line class="tk" x1="634" y1="530" x2="666" y2="530"/>
-        <line class="tk" x1="634" y1="550" x2="666" y2="550"/>
-        <line class="tk" x1="634" y1="570" x2="666" y2="570"/>
-        <line class="tk" x1="634" y1="590" x2="666" y2="590"/>
-        <line class="tk" x1="634" y1="610" x2="666" y2="610"/>
-
+        <rect class="lblbg" x="392" y="102" width="116" height="19" rx="4"/><text class="rl rl3" x="450" y="116">MONITORING</text>
+        <rect class="lblbg" x="405" y="142" width="90" height="19" rx="4"/><text class="rl rl2" x="450" y="156">CONTENT</text>
+        <rect class="lblbg" x="418" y="182" width="64" height="19" rx="4"/><text class="rl rl1" x="450" y="196">MERK</text>
+        <line class="tk lit" x1="310" y1="235" x2="310" y2="265"/>
+        <line class="tk lit" x1="330" y1="235" x2="330" y2="265"/>
+        <line class="tk lit" x1="350" y1="235" x2="350" y2="265"/>
+        <line class="tk lit" x1="370" y1="235" x2="370" y2="265"/>
+        <line class="tk lit" x1="390" y1="235" x2="390" y2="265"/>
+        <line class="tk lit" x1="410" y1="235" x2="410" y2="265"/>
+        <line class="tk lit" x1="430" y1="235" x2="430" y2="265"/>
+        <line class="tk lit" x1="450" y1="235" x2="450" y2="265"/>
+        <line class="tk lit" x1="470" y1="235" x2="470" y2="265"/>
+        <line class="tk lit" x1="490" y1="235" x2="490" y2="265"/>
+        <line class="tk lit" x1="510" y1="235" x2="510" y2="265"/>
+        <line class="tk" x1="530" y1="235" x2="530" y2="265"/>
+        <line class="tk" x1="550" y1="235" x2="550" y2="265"/>
+        <line class="tk" x1="570" y1="235" x2="570" y2="265"/>
+        <line class="tk" x1="590" y1="235" x2="590" y2="265"/>
+        <line class="tk" x1="610" y1="235" x2="610" y2="265"/>
+        <line class="tk" x1="310" y1="635" x2="310" y2="665"/>
+        <line class="tk" x1="330" y1="635" x2="330" y2="665"/>
+        <line class="tk" x1="350" y1="635" x2="350" y2="665"/>
+        <line class="tk" x1="370" y1="635" x2="370" y2="665"/>
+        <line class="tk" x1="390" y1="635" x2="390" y2="665"/>
+        <line class="tk" x1="410" y1="635" x2="410" y2="665"/>
+        <line class="tk" x1="430" y1="635" x2="430" y2="665"/>
+        <line class="tk" x1="450" y1="635" x2="450" y2="665"/>
+        <line class="tk" x1="470" y1="635" x2="470" y2="665"/>
+        <line class="tk" x1="490" y1="635" x2="490" y2="665"/>
+        <line class="tk" x1="510" y1="635" x2="510" y2="665"/>
+        <line class="tk" x1="530" y1="635" x2="530" y2="665"/>
+        <line class="tk" x1="550" y1="635" x2="550" y2="665"/>
+        <line class="tk" x1="570" y1="635" x2="570" y2="665"/>
+        <line class="tk" x1="590" y1="635" x2="590" y2="665"/>
+        <line class="tk" x1="610" y1="635" x2="610" y2="665"/>
+        <line class="tk lit" x1="235" y1="310" x2="265" y2="310"/>
+        <line class="tk lit" x1="235" y1="330" x2="265" y2="330"/>
+        <line class="tk lit" x1="235" y1="350" x2="265" y2="350"/>
+        <line class="tk lit" x1="235" y1="370" x2="265" y2="370"/>
+        <line class="tk lit" x1="235" y1="390" x2="265" y2="390"/>
+        <line class="tk lit" x1="235" y1="410" x2="265" y2="410"/>
+        <line class="tk" x1="235" y1="430" x2="265" y2="430"/>
+        <line class="tk" x1="235" y1="450" x2="265" y2="450"/>
+        <line class="tk" x1="235" y1="470" x2="265" y2="470"/>
+        <line class="tk" x1="235" y1="490" x2="265" y2="490"/>
+        <line class="tk" x1="235" y1="510" x2="265" y2="510"/>
+        <line class="tk" x1="235" y1="530" x2="265" y2="530"/>
+        <line class="tk" x1="235" y1="550" x2="265" y2="550"/>
+        <line class="tk" x1="235" y1="570" x2="265" y2="570"/>
+        <line class="tk" x1="235" y1="590" x2="265" y2="590"/>
+        <line class="tk" x1="235" y1="610" x2="265" y2="610"/>
+        <line class="tk lit" x1="635" y1="310" x2="665" y2="310"/>
+        <line class="tk lit" x1="635" y1="330" x2="665" y2="330"/>
+        <line class="tk" x1="635" y1="350" x2="665" y2="350"/>
+        <line class="tk" x1="635" y1="370" x2="665" y2="370"/>
+        <line class="tk" x1="635" y1="390" x2="665" y2="390"/>
+        <line class="tk" x1="635" y1="410" x2="665" y2="410"/>
+        <line class="tk" x1="635" y1="430" x2="665" y2="430"/>
+        <line class="tk" x1="635" y1="450" x2="665" y2="450"/>
+        <line class="tk" x1="635" y1="470" x2="665" y2="470"/>
+        <line class="tk" x1="635" y1="490" x2="665" y2="490"/>
+        <line class="tk" x1="635" y1="510" x2="665" y2="510"/>
+        <line class="tk" x1="635" y1="530" x2="665" y2="530"/>
+        <line class="tk" x1="635" y1="550" x2="665" y2="550"/>
+        <line class="tk" x1="635" y1="570" x2="665" y2="570"/>
+        <line class="tk" x1="635" y1="590" x2="665" y2="590"/>
+        <line class="tk" x1="635" y1="610" x2="665" y2="610"/>
         <polygon class="stand" points="370,370 530,370 570,280 330,280"/>
         <polygon class="stand" points="370,530 530,530 570,620 330,620"/>
         <polygon class="stand" points="370,370 370,530 280,570 280,330"/>
         <polygon class="stand" points="530,370 530,530 620,570 620,330"/>
-        <rect class="pitch" x="370" y="370" width="160" height="160" rx="10"/>
-
+        <rect class="liner" x="377" y="377" width="146" height="146" rx="8"/>
+        <rect class="pitch" x="392" y="392" width="116" height="116" rx="8"/>
         <text class="nm-s" x="450" y="333">SEO</text>
         <text class="nm-s" x="450" y="580">GOOGLE ADS</text>
-        <text class="nm-s" x="325" y="448">SOCIAL</text>
-        <text class="nm-s" x="325" y="468">BEHEER</text>
-        <text class="nm-s" x="575" y="448">SOCIAL</text>
-        <text class="nm-s" x="575" y="468">ADS</text>
-        <text class="nm" x="450" y="443">WEBSITE</text>
-        <text class="tl" x="450" y="468">LANDINGSPAGINA&#8217;S &#183; CRO</text>
-
+        <text class="nm-s" x="325" y="448">SOCIAL</text><text class="nm-s" x="325" y="468">BEHEER</text>
+        <text class="nm-s" x="575" y="448">SOCIAL</text><text class="nm-s" x="575" y="468">ADS</text>
+        <text class="nm" x="450" y="446">WEBSITE</text>
+        <text class="tl" x="450" y="468">LP&#8217;S &#183; CRO</text>
+        <text class="tl tl-l" x="450" y="365">E-MAIL &#183; DE BINNENVOERING</text>
         <text class="tl" x="450" y="212">EIGEN BEZOEKERS</text>
         <text class="tl" x="450" y="700">GEEN PUBLIEK</text>
         <text class="tl" x="250" y="280">VOLGERS</text>
         <text class="tl" x="650" y="280">NAUWELIJKS</text>
-
-        <path class="arr" d="M 800 450 L 880 450"/>
-        <path class="arr" d="M 866 440 L 880 450 L 866 460" stroke-dasharray="0"/>
-        <rect class="dak" x="900" y="300" width="250" height="300" rx="18"/>
-        <text class="nm-s" x="1025" y="440">E-MAIL</text>
-        <text class="tl tl-lime" x="1025" y="464">HET DAK &#183; OPEN</text>
-        <text class="tl" x="1025" y="500">2.480 ABONNEES</text>
+        <path class="arr" d="M 800 450 L 884 450 M 870 441 L 884 450 L 870 459"/>
+        <rect class="dak" x="910" y="250" width="270" height="400" rx="16"/>
+        <text class="tl tl-l" x="1045" y="232">HET DAK &#183; BUDGET</text>
+        <rect class="band" x="911" y="251" width="268" height="158" fill="rgba(196,240,0,.28)"/>
+        <rect class="band" x="911" y="409" width="268" height="138" fill="rgba(196,240,0,.2)"/>
+        <rect class="band" x="911" y="547" width="268" height="79" fill="rgba(196,240,0,.13)"/>
+        <rect class="band" x="911" y="626" width="268" height="23" fill="rgba(196,240,0,.07)"/>
+        <text class="nm-s" x="1045" y="325">SOCIAL ADS &#183; 40%</text>
+        <text class="nm-s" x="1045" y="483">GOOGLE ADS &#183; 35%</text>
+        <text class="nm-s" x="1045" y="592">SEO &#183; 20%</text>
+        <text class="tl" x="1045" y="642">SOCIAL BEHEER &#183; 5%</text>
       </svg>
   </div>
-  <div class="legend" style="grid-template-columns:repeat(3,1fr);margin-top:20px">
-    <div class="lg"><span class="sw" style="border:1.5px solid var(--tx3);border-radius:50%"></span><div><b>Merk</b><span>Binnenste ring. Hoe herkenbaar je bent.</span></div></div>
-    <div class="lg"><span class="sw" style="border:1.5px solid var(--lime-tx);border-radius:50%"></span><div><b>Content</b><span>Middelste ring. Waar elk vlak uit put.</span></div></div>
-    <div class="lg"><span class="sw" style="border:1.5px solid var(--act);border-radius:50%"></span><div><b>Monitoring</b><span>Buitenste ring. Wat er bijgestuurd wordt.</span></div></div>
-  </div>
+  <p class="note" style="margin-top:22px"><b>De twee betaalde wanden bouwen geen publiek.</b> Bij Google Ads blijft het vak leeg en bij social ads bijna leeg. Dat is geen fout in de tekening &mdash; het is het verschil tussen huren en bezitten, zichtbaar gemaakt door de indeling.</p>
 </section>
 
-<section class="wrap sec" id="matrix">
-  <p class="kicker">DE VIER WANDEN</p>
-  <h2>Twee assen, twee keer hetzelfde verschil</h2>
-  <div class="tblwrap">
-    <table class="mx">
-      <thead><tr><th></th><th>Organisch &mdash; bouwt publiek</th><th>Betaald &mdash; koopt bezoek</th></tr></thead>
-      <tbody>
-        <tr><td>ZOEKMACHINE</td><td><b>SEO</b><br><span class="paid">Traag, blijft staan. Vult de tribune met terugkerende bezoekers.</span></td><td><b>Google Ads</b><br><span class="paid">Direct, verdwijnt zodra je stopt. Levert aanvragen, geen publiek.</span></td></tr>
-        <tr><td>SOCIAL</td><td><b>Social beheer</b><br><span class="paid">Veel werk, weinig bereik. Houdt je profiel geloofwaardig en bouwt volgers.</span></td><td><b>Social ads</b><br><span class="paid">Maakt vraag bij wie nog niet zoekt. Bouwt nauwelijks eigen publiek.</span></td></tr>
-      </tbody>
-    </table>
+<section class="wrap sec" id="plint">
+  <p class="kicker">WAAR HET OP STAAT</p>
+  <h2>De plint</h2>
+  <p class="note">Drie lagen die in maand &eacute;&eacute;n worden neergezet en daarna bewaakt.</p>
+  <div class="found">
+    <div class="fl"><span class="fi">LAAG 03</span><span class="fn">Tooling</span><span class="fd">MailerLite, Leadinfo, Calendly, CRM en de koppelingen ertussen.</span></div>
+    <div class="fl"><span class="fi">LAAG 02</span><span class="fn">Techniek en hosting</span><span class="fd">Domein, hosting, snelheid, beveiliging, e-mailauthenticatie, meetopzet.</span></div>
+    <div class="fl"><span class="fi">LAAG 01</span><span class="fn">Doel en plan</span><span class="fd">Doelgroep, doelstelling, meetpunten, capaciteit per tribune. E&eacute;n keer per jaar herijken.</span></div>
   </div>
-  <p class="note" style="margin-top:22px">Elke wand is bepaald door twee vragen: <b>waar zijn ze</b> en <b>betaal je ervoor</b>. Daardoor kan er geen vijfde wand bij zonder dat iemand eerst een derde as bedenkt.</p>
-</section>
-
-<section class="wrap sec" id="vorm">
-  <p class="kicker">WAT DE VORM ZEGT</p>
-  <h2>Drie dingen die je niet hoeft uit te leggen</h2>
-  <div class="cpl" style="display:grid;gap:12px;margin-top:24px">
-    <div class="cp" style="display:grid;grid-template-columns:170px 1fr;gap:20px;background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:20px 22px">
-      <span style="font-family:var(--fm);font-size:11px;color:var(--act);letter-spacing:.03em">HET DAK</span>
-      <p style="margin:0;font-size:15.5px;color:var(--tx2);max-width:none"><b>E-mail bouw je als laatste en het houdt de regen buiten.</b> Je kunt geen lijst hebben voordat er verkeer is, dus het dak komt als de muren staan. En stijgen de advertentiekosten of verandert er een algoritme, dan is je eigen lijst wat je droog houdt. Gaat het dak dicht, dan draagt je eigen publiek je.</p>
-    </div>
-    <div class="cp" style="display:grid;grid-template-columns:170px 1fr;gap:20px;background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:20px 22px">
-      <span style="font-family:var(--fm);font-size:11px;color:var(--act);letter-spacing:.03em">HET GRONDVLAK</span>
-      <p style="margin:0;font-size:15.5px;color:var(--tx2);max-width:none"><b>Alles staat op de website.</b> Vier wanden brengen mensen, het dak haalt ze terug, en alles komt neer op hetzelfde vlak. Een kanaal kan nooit beter presteren dan de pagina waar het op uitkomt &mdash; daarom is dat het enige vlak zonder buitenkant.</p>
-    </div>
-    <div class="cp" style="display:grid;grid-template-columns:170px 1fr;gap:20px;background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:20px 22px">
-      <span style="font-family:var(--fm);font-size:11px;color:var(--act);letter-spacing:.03em">DE TRIBUNES</span>
-      <p style="margin:0;font-size:15.5px;color:var(--tx2);max-width:none"><b>De indeling voorspelt welke tribunes vollopen.</b> De organische kant bouwt publiek, de betaalde kant koopt bezoek. Bij Google Ads blijft het vak leeg en dat is geen fout in de tekening &mdash; dat is het verschil tussen huren en bezitten, zichtbaar gemaakt door de structuur zelf.</p>
-    </div>
+  <div class="key">
+    <span class="k">DE ZIN DIE JE MOET KUNNEN OPZEGGEN</span>
+    <p class="big">Een kubus op een plint, met drie ringen eromheen. Vier wanden, een vloer, een dak &mdash; en een binnenkant.</p>
+    <p>Lukt dat in &eacute;&eacute;n adem, dan klopt het. Komt er iets bij dat er niet in past, dan moet er iets uit.</p>
   </div>
 </section>
 
@@ -447,18 +462,13 @@ b{color:var(--tx);font-weight:600}
   sync();
   tb.addEventListener('click',function(){root.setAttribute('data-theme',cur()==='dark'?'light':'dark');sync()});
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',sync);
-
   var sc=document.getElementById('scene'),
       b={net:document.getElementById('bNet'),open:document.getElementById('bOpen'),dicht:document.getElementById('bDicht')};
-  function set(s){
-    sc.classList.remove('open','dicht');
-    if(s!=='net') sc.classList.add(s);
-    for(var k in b) b[k].setAttribute('aria-pressed', k===s?'true':'false');
-  }
+  function set(s){sc.classList.remove('open','dicht');if(s!=='net')sc.classList.add(s);
+    for(var k in b) b[k].setAttribute('aria-pressed',k===s?'true':'false');}
   for(var k in b)(function(k){b[k].addEventListener('click',function(){set(k)})})(k);
   if(!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches)){
-    setTimeout(function(){set('open')},1500);
-    setTimeout(function(){set('dicht')},4200);
+    setTimeout(function(){set('open')},1500); setTimeout(function(){set('dicht')},4400);
   }
 })();
 </script>
