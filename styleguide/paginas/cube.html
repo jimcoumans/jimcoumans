@@ -79,8 +79,8 @@ b{color:var(--tx);font-weight:600}
   display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;
   transition:transform 1.05s var(--e),background .5s var(--e),border-color .5s var(--e);
   backface-visibility:hidden;padding:6px;text-align:center}
-.fc .n{font-family:var(--fm);font-size:10px;letter-spacing:.08em;color:var(--lime)}
-.fc .l{font-family:var(--fd);font-size:clamp(9px,1.5vw,13.5px);font-weight:600;letter-spacing:-.008em;color:#fff;line-height:1.15}
+.fc .n{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.08em;color:var(--lime)}
+.fc .l{display:block;font-family:var(--fd);font-size:clamp(9px,1.5vw,13.5px);font-weight:600;letter-spacing:-.008em;color:#fff;line-height:1.15}
 /* net-posities */
 .f-b{left:0;top:0;transform-origin:50% 50%}
 .f-c{left:100%;top:0;transform-origin:0% 50%}
@@ -97,9 +97,6 @@ b{color:var(--tx);font-weight:600}
 .folded .f-d{transform:rotateY(90deg)}
 .folded .fc{background:rgba(255,255,255,.085);border-color:rgba(255,255,255,.34)}
 .folded .rig{transform:translateX(calc(var(--S)*.5)) scale(1.3) rotateX(-16deg) rotateY(-32deg)}
-/* bovenvlak staat na het vouwen op zijn kop: inhoud terugdraaien */
-.folded .f-e{flex-direction:column-reverse}
-.folded .f-e span{transform:rotate(180deg)}
 .ctl{display:flex;justify-content:center;gap:12px;margin-top:34px;position:relative;flex-wrap:wrap}
 .ctl button{cursor:pointer;background:transparent;border:1px solid rgba(255,255,255,.26);color:var(--inv);border-radius:980px;padding:9px 20px;font-size:14.5px;transition:background .18s var(--e)}
 .ctl button:hover{background:rgba(255,255,255,.1)}
@@ -159,6 +156,44 @@ b{color:var(--tx);font-weight:600}
 .s3t{font-family:var(--fd);font-size:20px;font-weight:600;letter-spacing:-.014em;margin:0 0 8px}
 .s3d{font-size:15px;color:var(--tx2);margin:0}
 @media (max-width:900px){.stack3{grid-template-columns:1fr}}
+
+/* ringen om de kubus */
+.ringA,.ringB{position:absolute;left:50%;top:50%;border-radius:50%;pointer-events:none;
+  opacity:0;transition:opacity .7s var(--e) .35s}
+.ringA{width:calc(var(--S)*2.45);height:calc(var(--S)*2.45);margin:calc(var(--S)*-1.225) 0 0 calc(var(--S)*-1.225);
+  border:1px solid rgba(255,255,255,.2)}
+.ringB{width:calc(var(--S)*3.1);height:calc(var(--S)*3.1);margin:calc(var(--S)*-1.55) 0 0 calc(var(--S)*-1.55);
+  border:1px dashed rgba(196,240,0,.4)}
+.ringA span,.ringB span{position:absolute;left:50%;top:0;transform:translate(-50%,-50%);
+  font-family:var(--fm);font-size:9.5px;letter-spacing:.09em;padding:2px 8px;background:var(--void);white-space:nowrap}
+.ringA span{color:#a1a1a6}
+.ringB span{color:var(--lime)}
+.folded .ringA,.folded .ringB{opacity:1}
+
+/* ringen-kaarten */
+.rings2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:28px}
+.rg{background:var(--card);border:1px solid var(--ln-s);border-radius:20px;padding:28px 26px}
+.rgk{font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;color:var(--act);margin-bottom:8px}
+.rg h4{font-size:22px;margin-bottom:10px}
+.rgd{font-size:15.5px;color:var(--tx2);margin-bottom:16px}
+.rgq{font-size:14.5px;color:var(--tx2);background:var(--alt);border-radius:12px;padding:16px 18px;margin:0;line-height:1.5}
+.rgq i{color:var(--tx);font-style:italic}
+
+/* drie snelheden */
+.speeds{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:28px}
+.sp{background:var(--card);border:1px solid var(--ln-s);border-radius:18px;padding:26px 24px;display:flex;flex-direction:column;gap:8px}
+.spk{font-family:var(--fm);font-size:10px;letter-spacing:.07em;color:var(--act)}
+.spt{font-family:var(--fd);font-size:24px;font-weight:700;letter-spacing:-.018em;margin:0}
+.spd{font-size:15px;color:var(--tx2);margin:0;flex:1}
+.spm{font-family:var(--fm);font-size:9.5px;letter-spacing:.05em;color:var(--tx3);margin:0;padding-top:12px;border-top:1px solid var(--ln-s)}
+
+/* koppelkaarten */
+.cpl{display:grid;gap:12px;margin-top:22px}
+.cp{background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:20px 22px;display:grid;grid-template-columns:150px 1fr;gap:20px;align-items:start}
+.cp .from{font-family:var(--fm);font-size:11px;color:var(--act);letter-spacing:.03em;padding-top:2px}
+.cp p{margin:0;font-size:15.5px;color:var(--tx2);max-width:none}
+.cp p b{color:var(--tx)}
+@media (max-width:900px){.rings2,.speeds{grid-template-columns:1fr}.cp{grid-template-columns:1fr;gap:8px}}
 @media (max-width:900px){.faces{grid-template-columns:1fr}}
 @media (max-width:734px){
   :root{--g:20px}
@@ -172,249 +207,291 @@ b{color:var(--tx);font-weight:600}
 <div class="bar">
   <div class="bar-in">
     <b>CUBE</b>
-    <a href="#grens">De grens</a>
-    <a href="#gaten">Wat je mist</a>
-    <a href="#vlakken">De zes vlakken</a>
+    <a href="#vlakken">Zes vlakken</a>
+    <a href="#ringen">Twee ringen</a>
     <a href="#kubus">De kubus</a>
-    <a href="#klopt">Waarom het klopt</a>
-    <a href="#risico">De risico&rsquo;s</a>
+    <a href="#snelheden">Drie snelheden</a>
+    <a href="#diensten">Model en diensten</a>
+    <a href="#mis">Wat er nog mist</a>
+    <a href="#grens">De grens</a>
+    <a href="#risico">Risico&rsquo;s</a>
     <button id="themeBtn" type="button">Donker</button>
   </div>
 </div>
 
 <header class="wrap hero">
   <h1>CUBE</h1>
-  <p class="lead">Zes vlakken die samen het systeem vormen, met de grens die eromheen staat: waar jullie verantwoordelijkheid begint en waar hij ophoudt. Die grens is geen voorbehoud maar het scherpste onderdeel van de propositie — mits hij gedefinieerd en gemeten wordt.</p>
+  <p class="lead">Zes vlakken die we elke maand of periodiek bedienen, twee ringen die altijd goed moeten staan, en één grens eromheen. Dit document toetst die indeling en zegt waar hij nog niet sluit.</p>
 </header>
 
-
-<section class="wrap sec" id="grens">
-  <p class="kicker">DE KERN VAN DE VERANTWOORDELIJKHEID</p>
-  <h2>Wij zijn verantwoordelijk voor het marketingresultaat</h2>
-  <p class="note">Van onbekend tot aanvraag. Dat is het stuk dat wij doen, dat wij kunnen sturen en waar wij op afgerekend mogen worden. Het gesprek daarna is het vak van de ondernemer, en dat nemen we niet over.</p>
-
+<!-- ============ DE VONDST ============ -->
+<section class="wrap sec">
+  <p class="kicker">EERST DIT</p>
+  <h2>Je net klopt beter dan je zelf zei</h2>
+  <p class="note">Een kubusnet is een rij van vier, met één vlak erboven en één eronder het tweede vakje. Jij deelde je zes onderdelen in als vier doorlopende en twee zijvlakken — zonder daarbij naar de vorm te kijken.</p>
   <div class="key">
-    <span class="k">DE ZIN DIE HET ZEGT</span>
-    <p class="big">Wij leveren de aanvraag. Het gesprek voer jij.</p>
-    <p>Bijna elk bureau houdt deze grens bewust vaag, zodat er aan het eind van het jaar naar twee kanten gewezen kan worden. <strong>Hem hardop trekken is daarom geen voorbehoud maar een standpunt</strong> — en het hoort in dezelfde familie als &ldquo;maand één levert niets op&rdquo;: ongemakkelijk om te zeggen, en precies daarom geloofwaardig.</p>
-  </div>
-
-  <h3>Een grens houdt alleen stand als hij twee dingen heeft</h3>
-
-  <div class="gap">
-    <div class="hd"><span class="num">01</span><h4>Een norm voor wat je levert</h4><span class="tag hard">ANDERS IS HET EEN ACHTERDEUR</span></div>
-    <p>Zonder norm is &ldquo;wij leverden honderdachtenveertig aanvragen&rdquo; niet te controleren, en dan krijg je precies de discussie die je wilde voorkomen: <i>jullie leads waren niets waard</i>.</p>
-    <p><b>Een aanvraag telt mee als iemand uit zichzelf contact opneemt, met een echte vraag, binnen het werkgebied en binnen het aanbod.</b> Spam, sollicitaties, verkopers en aanvragen van buiten de regio tellen niet. Die norm werkt twee kanten op: hij beschermt de klant tegen opgeblazen cijfers, en jullie tegen een klant die achteraf de lat verlegt.</p>
-  </div>
-
-  <div class="gap">
-    <div class="hd"><span class="num">02</span><h4>Terugkoppeling — als invoer, niet als verantwoordelijkheid</h4><span class="tag mid">HET VERSCHIL ZIT IN DE REDEN</span></div>
-    <p>Je wilt wél weten welke aanvragen klant werden. Niet omdat je erop afgerekend wordt, maar omdat je er anders niet op kunt sturen: zonder die terugkoppeling optimaliseer je op aantallen in plaats van op kwaliteit, en dat is precies hoe een bureau honderd waardeloze leads gaat leveren in de overtuiging dat het goed gaat.</p>
-    <p><b>Dat is een gegevensvraag, geen verantwoordelijkheid.</b> &ldquo;Vertel ons welke aanvragen iets werden, dan sturen we het budget daarheen. Wat je met ze doet, is aan jou.&rdquo; Zo vraag je het op zonder de grens te verplaatsen.</p>
-  </div>
-
-  <div class="warn">
-    <h4>De consequentie die je er meteen bij moet nemen</h4>
-    <p>Als de grens bij de aanvraag ligt, mag je er ook geen krediet voorbij claimen. <b>Dan gaan cases en dashboards over aanvragen, kosten per aanvraag en bereik — niet over omzet.</b> Een case die zegt &ldquo;€&thinsp;74.000 omzet uit marketing&rdquo; haalt die omzet binnen via het verkoopgesprek van de klant, en dat was net het stuk dat niet van jullie is. Dit is geen detail: het is het verschil tussen een grens en een uitvlucht, en iedereen die het twee keer leest ziet dat verschil.</p>
-    <p>Concreet: in het dashboardvoorbeeld op de homepage moet de regel &ldquo;omzet uit marketing&rdquo; eruit.</p>
+    <span class="k">DAT IS GEEN TOEVAL DAT JE MOET UITLEGGEN</span>
+    <p class="big">De rij van vier is het maandelijkse werk. De twee die op- en neerklappen zijn het periodieke werk.</p>
+    <p>Zoekmachinemarketing, platform, social en e-mail staan naast elkaar in de rij. Content en tooling zitten erboven en eronder. <strong>De vorm zegt dus al wat het ritme is, voordat er één woord bij staat.</strong> Dat is precies het verschil tussen een model en een plaatje: hier draagt de tekening informatie in plaats van dat hij die illustreert.</p>
   </div>
 </section>
 
-<!-- ============ WAT JE MIST ============ -->
-<section class="wrap sec" id="gaten">
-  <p class="kicker">BINNEN DE GRENS</p>
-  <h2>Twee dingen die er nog bij kunnen</h2>
-  <p class="note">Allebei vallen ze binnen het marketingresultaat, dus allebei zijn ze van jullie. Ze hoeven geen eigen vlak — ze passen in een bestaand vlak, en dat is precies de regel die het model streng houdt.</p>
-  <div class="gap">
-    <div class="hd"><span class="num">01</span><h4>Het aanbod zelf</h4><span class="tag mid">GEVOELIG, MAAR ECHT</span></div>
-    <p>Marketing versterkt een aanbod. Als de prijs niet klopt, de propositie zwak is of het product niet af is, kun je er miljoenen tegenaan gooien zonder effect.</p>
-    <p>Je raakt dit nu onder "merk", maar dat is positionering — niet: <b>verkoop je het juiste, aan de juiste mensen, voor het juiste bedrag</b>. Dit is ongemakkelijk om te bespreken, en precies daarom doet niemand het. Als je het wél doet, is dat een onderscheid dat niet te kopiëren valt zonder lef.</p>
-  </div>
-
-  <div class="gap">
-    <div class="hd"><span class="num">02</span><h4>Reputatie</h4><span class="tag soft">KLEIN, MAAR ZICHTBAAR</span></div>
-    <p>Google-recensies, beoordelingen, referenties. Voor horeca en makelaardij beslissend: het verschil tussen een 4,2 en een 4,7 verandert de conversie harder dan welke advertentie ook, en het kost bijna niets.</p>
-    <p>Het zit nu nergens, en het is wel degelijk marketing: een reviewverzoek is een automatische mail op het juiste moment. <b>Hoort in vlak 05 (Binding)</b>, naast e-mail en automation.</p>
-  </div>
-
-  <div class="key">
-    <span class="k">WAT DIT BETEKENT</span>
-    <p class="big">Het blijven zes vlakken. Precies de zes die je zelf noemde.</p>
-    <p>Het aanbod scherp krijgen hoort bij <strong>Merk</strong>, reviews horen bij <strong>Binding</strong>. Geen zevende vlak, geen uitzondering. <strong>Dat is meteen de test die het model streng houdt:</strong> alles wat erbij komt, komt erbij bínnen een bestaand vlak — nooit ernaast. De eerste keer dat je die regel loslaat, is de kubus een lijstje geworden.</p>
-  </div>
-</section>
-
-<!-- ============ DE ZES VLAKKEN ============ -->
+<!-- ============ ZES VLAKKEN ============ -->
 <section class="wrap sec" id="vlakken">
-  <p class="kicker">HET SYSTEEM</p>
+  <p class="kicker">WAT WE DOEN</p>
   <h2>Zes vlakken</h2>
-  <p class="note">Je noemde ze zelf al, en je noemde er precies zes. Dat is geen toeval waar we een metafoor omheen bouwen — het is de reden dat de metafoor werkt.</p>
+  <p class="note">Eén wijziging ten opzichte van jouw lijst, en die staat hieronder met de reden erbij.</p>
 
   <div class="faces">
     <div class="fx">
-      <p class="fn">VLAK 01</p>
-      <h4>Merk</h4>
-      <p class="fd">Wie je bent en waarom ze jou onthouden als de prijs gelijk is.</p>
-      <div class="fi"><span>positionering</span><span>identiteit</span><span>tone of voice</span></div>
-      <p class="fz"><b>Zonder:</b> je concurreert op prijs.</p>
+      <p class="fn">VLAK 01 &middot; ELKE MAAND</p>
+      <h4>Zoekmachinemarketing</h4>
+      <p class="fd">Er is al vraag. Wij zorgen dat jij het antwoord bent — betaald en onbetaald.</p>
+      <div class="fi"><span>SEO</span><span>Google Ads</span><span>lokale vindbaarheid</span></div>
+      <p class="fz"><b>Zonder:</b> je bestaat niet op het moment dat iemand je nodig heeft.</p>
     </div>
     <div class="fx">
-      <p class="fn">VLAK 02</p>
-      <h4>Content</h4>
-      <p class="fd">Waar elk kanaal uit put. Eén shoot voedt advertenties, site, mail en socials.</p>
-      <div class="fi"><span>fotografie</span><span>videografie</span><span>copy</span></div>
-      <p class="fz"><b>Zonder:</b> je adverteert met andermans beeld.</p>
+      <p class="fn">VLAK 02 &middot; ELKE MAAND</p>
+      <h4>Social media marketing</h4>
+      <p class="fd">Er is nog geen vraag. Wij maken hem, bij mensen die nog niet zoeken.</p>
+      <div class="fi"><span>Meta</span><span>TikTok</span><span>LinkedIn</span><span>YouTube</span></div>
+      <p class="fz"><b>Zonder:</b> je vist alleen in de vijver die er al is.</p>
     </div>
     <div class="fx">
-      <p class="fn">VLAK 03</p>
-      <h4>Zichtbaarheid</h4>
-      <p class="fd">Gevonden worden door wie zoekt, en gezien worden door wie nog niet zoekt.</p>
-      <div class="fi"><span>SEO</span><span>Google Ads</span><span>social advertising</span></div>
-      <p class="fz"><b>Zonder:</b> niemand komt.</p>
-    </div>
-    <div class="fx">
-      <p class="fn">VLAK 04</p>
+      <p class="fn">VLAK 03 &middot; ELKE MAAND &middot; HET HART</p>
       <h4>Platform</h4>
-      <p class="fd">Waar alles op uitkomt. Een kanaal presteert nooit beter dan de pagina eronder.</p>
-      <div class="fi"><span>website</span><span>landingspagina&rsquo;s</span><span>CRO</span><span>techniek</span></div>
+      <p class="fd">Waar alles op uitkomt. Geen kanaal presteert beter dan de pagina eronder.</p>
+      <div class="fi"><span>website</span><span>landingspagina&rsquo;s</span><span>CRO</span><span>hosting</span><span>snelheid</span><span>beveiliging</span></div>
       <p class="fz"><b>Zonder:</b> je betaalt voor bezoek dat wegklikt.</p>
     </div>
     <div class="fx">
-      <p class="fn">VLAK 05</p>
-      <h4>Binding</h4>
-      <p class="fd">Mensen die al eens iets deden opnieuw bereiken, zonder er per keer voor te betalen.</p>
-      <div class="fi"><span>e-mail</span><span>automation</span><span>retargeting</span><span>reviews</span></div>
-      <p class="fz"><b>Zonder:</b> je begint elke maand op nul en koopt dezelfde klant twee keer.</p>
+      <p class="fn">VLAK 04 &middot; ELKE MAAND</p>
+      <h4>E-mailmarketing</h4>
+      <p class="fd">Mensen die je al kennen opnieuw bereiken, zonder er per keer voor te betalen.</p>
+      <div class="fi"><span>nieuwsbrieven</span><span>automation</span><span>reviewverzoeken</span></div>
+      <p class="fz"><b>Zonder:</b> je koopt dezelfde klant twee keer.</p>
     </div>
     <div class="fx">
-      <p class="fn">VLAK 06</p>
-      <h4>Meting</h4>
-      <p class="fd">Of het werkt, waar het geld volgende maand heen moet, en wat er aan de grens geleverd is.</p>
-      <div class="fi"><span>analytics</span><span>conversiemeting</span><span>dashboards</span><span>attributie</span><span>de aanvraagnorm</span></div>
+      <p class="fn">VLAK 05 &middot; PERIODIEK</p>
+      <h4>Content</h4>
+      <p class="fd">Waar de vier hierboven uit putten. Eén shoot voedt advertenties, site, mail en socials.</p>
+      <div class="fi"><span>fotografie</span><span>videografie</span><span>copy</span></div>
+      <p class="fz"><b>Zonder:</b> je adverteert met de inhoud van iemand anders.</p>
+    </div>
+    <div class="fx new">
+      <p class="fn">VLAK 06 &middot; PERIODIEK</p>
+      <span class="badge">GEWIJZIGD</span>
+      <h4>Data &amp; tooling</h4>
+      <p class="fd">De instrumenten en wat ze je vertellen. Meten, koppelen, automatiseren, signaleren.</p>
+      <div class="fi"><span>analytics</span><span>tracking</span><span>dashboards</span><span>Leadinfo</span><span>koppelingen</span></div>
       <p class="fz"><b>Zonder:</b> elke keuze is een mening.</p>
     </div>
   </div>
 
   <div class="ok">
-    <h4>En het plan dan? En de doelen?</h4>
-    <p>Die zijn geen vlak. <b>Die zitten erin.</b> Een kubus heeft een binnenkant, en daar leeft het plan: doel, doelgroep, prioriteit, en hoe dik elk vlak bij deze klant wordt. Zes vlakken bij iedereen, een andere inhoud bij elk bedrijf — dat is exact je "het zwaartepunt verschilt", maar dan zonder dat het klinkt als een standaardpakket.</p>
+    <h4>Waarom data en tooling één vlak zijn</h4>
+    <p>Je noemde tooling als vlak en monitoring als ring. Dat is dezelfde machine, twee keer geteld: <b>tooling is hoe je meet, monitoring is wat je eruit haalt.</b> Splits je ze, dan krijg je onvermijdelijk de vraag waarom het ene binnen en het andere buiten de kubus staat — en daar is geen goed antwoord op.</p>
+    <p>Belangrijker: je wilt bekendstaan als data-driven. Dan hoort data <b>zichtbaar in het werk</b> te zitten, niet als achtergrondring. Een ring lees je als randvoorwaarde. Een vlak lees je als vakmanschap.</p>
+  </div>
+</section>
+
+<!-- ============ TWEE RINGEN ============ -->
+<section class="wrap sec" id="ringen">
+  <p class="kicker">WAT ALTIJD GOED MOET STAAN</p>
+  <h2>Twee ringen</h2>
+  <p class="note">Geen vlakken, want het is geen maandelijks werk en het is ook geen dienst die je verkoopt. Het zijn voorwaarden: ze moeten kloppen, ze zijn er altijd, en je vindt ze niet elke maand opnieuw uit.</p>
+
+  <div class="rings2">
+    <div class="rg">
+      <p class="rgk">RING 01</p>
+      <h4>Merk</h4>
+      <p class="rgd">Wie je bent, hoe je klinkt, waarom mensen jou onthouden als de prijs gelijk is. Het bepaalt hoe goed alle zes de vlakken presteren: mensen klikken vaker op een naam die ze kennen, en Google rekent daar minder voor.</p>
+      <p class="rgq"><b>Dit lost jouw tweede punt op.</b> Je wilt geen huisstijltrajecten meer verkopen. Door merk een ring te maken in plaats van een vlak, zeg je precies dat: <i>je merk moet kloppen, wij toetsen het en werken ermee, en we repareren wat de marketing in de weg zit — maar een nieuw logo verkopen we je niet.</i></p>
+    </div>
+    <div class="rg">
+      <p class="rgk">RING 02</p>
+      <h4>Doel en plan</h4>
+      <p class="rgd">Wat wil je bereiken, voor wie, en waaraan zien we of het lukt. Dit bepaalt hoe dik elk vlak bij deze klant wordt — het is de bron van het zwaartepunt.</p>
+      <p class="rgq"><b>Dit lost jouw eerste punt op.</b> Je zei terecht dat doel en plan nu nergens in de kubus zit. Als binnenkant was het onzichtbaar, en onzichtbaar is geen communicatiemiddel. Als ring staat het er, naast merk, in dezelfde categorie: iets wat goed moet staan voordat de vlakken zin hebben.</p>
+    </div>
+  </div>
+
+  <div class="warn">
+    <h4>Let op wat een ring impliceert</h4>
+    <p>Een ring zegt: dit is er al, of wij zetten het eenmalig neer. <b>Dat is precies maand één.</b> Merk toetsen, doel scherp krijgen, meetpunten vastleggen — dat is het fundament waar je apart voor factureert. Vanaf maand twee betaalt de klant voor de vlakken. Daarmee is de tekening meteen de uitleg van je factuurmodel, en dat is geen klein voordeel.</p>
   </div>
 </section>
 
 <!-- ============ DE KUBUS ============ -->
 <section class="wrap sec" id="kubus">
   <p class="kicker">DE VISUALISATIE</p>
-  <h2>Plat plan, of gesloten geheel</h2>
-  <p class="note">Precies zoals je beschreef: vier vlakken naast elkaar, één erboven en één eronder. Klik hem dicht.</p>
+  <h2>Opengevouwen is het speelveld. Dicht is het systeem.</h2>
+  <p class="note">Jouw zevende punt was de beste zin van je hele bericht, en ik heb hem overgenomen: de opengevouwen kubus ís het marketingspeelveld. Alles ligt plat en zichtbaar naast elkaar, met het platform in het midden. Vouw je hem dicht, dan is het geen speelveld meer maar een gesloten geheel — wat de klant bezit.</p>
 
   <div class="stage">
     <div class="scene">
+      <div class="ringA"><span>MERK</span></div>
+      <div class="ringB"><span>DOEL EN PLAN</span></div>
       <div class="rig" id="rig">
         <div class="cube">
-          <div class="fc f-b"><span class="n">01</span><span class="l">MERK</span></div>
-          <div class="fc f-e"><span class="n">02</span><span class="l">CONTENT</span></div>
-          <div class="fc f-f"><span class="n">06</span><span class="l">METING</span></div>
-          <div class="fc f-a"><span class="n">05</span><span class="l">BINDING</span></div>
-          <div class="fc f-c"><span class="n">03</span><span class="l">ZICHTBAAR&shy;HEID</span>
-            <div class="fc f-d"><span class="n">04</span><span class="l">PLATFORM</span></div>
+          <div class="fc f-b"><span class="n">03</span><span class="l">PLATFORM</span></div>
+          <div class="fc f-e"><span class="n">05</span><span class="l">CONTENT</span></div>
+          <div class="fc f-f"><span class="n">06</span><span class="l">DATA &amp; TOOLING</span></div>
+          <div class="fc f-a"><span class="n">01</span><span class="l">ZOEK&shy;MACHINES</span></div>
+          <div class="fc f-c"><span class="n">02</span><span class="l">SOCIAL</span>
+            <div class="fc f-d"><span class="n">04</span><span class="l">E-MAIL</span></div>
           </div>
         </div>
       </div>
     </div>
     <div class="ctl">
-      <button type="button" id="bOpen" aria-pressed="true">Opengevouwen</button>
-      <button type="button" id="bFold" aria-pressed="false">Gesloten</button>
+      <button type="button" id="bOpen" aria-pressed="true">Het speelveld</button>
+      <button type="button" id="bFold" aria-pressed="false">Het systeem</button>
     </div>
-    <p class="stage-cap">ZES VLAKKEN &middot; JE ZIET ER ALTIJD MAAR DRIE</p>
+    <p class="stage-cap">PLATFORM IN HET MIDDEN &middot; VIER VLAKKEN GRENZEN ERAAN</p>
   </div>
 
-  <div class="key">
-    <span class="k">DRIE DINGEN DIE DE KUBUS ZEGT EN EEN LIJSTJE NIET</span>
-    <p class="big">Een kubus met vijf vlakken is geen kubus. Het is een doos.</p>
-    <p><strong>Eén.</strong> Haal er één vlak uit en het ding valt uit elkaar. Dat is letterlijk je "het volledige systeem is noodzakelijk", maar dan als natuurkunde in plaats van als verkoopregel. Niemand kan daar tegenin.</p>
-    <p><strong>Twee.</strong> Van een kubus zie je er altijd maar drie tegelijk. Wat je concurrent van je ziet — de advertenties, de site, de socials — is de helft. De andere helft is waarom het werkt.</p>
-    <p><strong>Drie.</strong> Opengevouwen is het een plan op papier. Dichtgevouwen is het een bouwwerk met inhoud. Dat is maand één tegenover maand twaalf, in één beweging.</p>
+  <h3>Wat de vorm zegt</h3>
+  <div class="cpl">
+    <div class="cp">
+      <span class="from">HET MIDDEN</span>
+      <p><b>Platform grenst in het net aan vier vlakken. Dat klopt precies zoals jij het wilde.</b> Zoekmachines, social, content en data raken het platform rechtstreeks; alles wat die vier doen komt daar samen of wordt daar gemeten. Eén nuance: <b>in de dichtgevouwen kubus raakt élk vlak er vier</b> — daar is geen hart meer. Het midden bestaat alleen in het opengevouwen speelveld, en dat is logisch: daar wordt gespeeld, dus daar is een centrum.</p>
+    </div>
+    <div class="cp">
+      <span class="from">DE OVERKANTEN</span>
+      <p><b>Wat tegenover elkaar ligt, is ook inhoudelijk elkaars tegendeel.</b> Zoekmachines tegenover social: vraag oogsten tegenover vraag maken. Platform tegenover e-mail: zij komen naar jou tegenover jij gaat naar hen. Content tegenover data: wat iedereen ziet tegenover wat niemand ziet. Dat is geen ontwerptruc — het komt eruit doordat de indeling klopt.</p>
+    </div>
   </div>
 </section>
 
-<!-- ============ WAAROM HET KLOPT ============ -->
-<section class="wrap sec" id="klopt">
-  <p class="kicker">DE TOREN EN DE KUBUS</p>
-  <h2>Er is geen overlap. Het is hetzelfde.</h2>
-  <p class="note">Je vroeg of er niet veel overlap in zit. Er zit niet véél overlap in — het is dezelfde inhoud, twee keer geordend. Zet je ze naast elkaar, dan valt alles op zijn plek:</p>
+<!-- ============ DRIE SNELHEDEN ============ -->
+<section class="wrap sec" id="snelheden">
+  <p class="kicker">HET STERKSTE ONDERDEEL VAN JE VOORSTEL</p>
+  <h2>Drie snelheden</h2>
+  <p class="note">Dit is de vondst die commercieel het meeste waard is, en het is niet de kubus. Het is dat je onderscheid maakt in <b>ritme</b>: wat loopt elke maand, wat komt periodiek terug, en wat moet er gewoon staan.</p>
 
+  <div class="speeds">
+    <div class="sp">
+      <span class="spk">ELKE MAAND</span>
+      <p class="spt">Vier vlakken</p>
+      <p class="spd">Zoekmachines, social, platform, e-mail. Dit is waar de retainer over gaat en waar het dashboard elke dag op meebeweegt.</p>
+      <p class="spm">DE RIJ VAN VIER</p>
+    </div>
+    <div class="sp">
+      <span class="spk">PERIODIEK</span>
+      <p class="spt">Twee vlakken</p>
+      <p class="spd">Content en data &amp; tooling. Niet elke maand, wel steeds terug: een shoot per kwartaal, een meetopzet die meegroeit.</p>
+      <p class="spm">DE TWEE DIE OP- EN NEERKLAPPEN</p>
+    </div>
+    <div class="sp">
+      <span class="spk">ALTIJD</span>
+      <p class="spt">Twee ringen</p>
+      <p class="spd">Merk en doel. Eén keer goed neerzetten, daarna bewaken. Niet elke maand opnieuw uitvinden.</p>
+      <p class="spm">MAAND &Eacute;&Eacute;N</p>
+    </div>
+  </div>
+
+  <div class="key">
+    <span class="k">WAAROM DIT MEER WAARD IS DAN DE VORM</span>
+    <p class="big">Het beantwoordt de moeilijkste vraag in een retainerverkoop: wat doe je nou elke maand voor mijn geld.</p>
+    <p>Daar struikelt bijna elk bureau over, omdat het antwoord meestal een urenverantwoording is. Met drie snelheden is het antwoord een indeling: <strong>vier dingen lopen door, twee komen terug, twee staan vast.</strong> Dat is in één zin te zeggen en in één plaatje te laten zien.</p>
+  </div>
+</section>
+
+<!-- ============ MODEL EN DIENSTEN ============ -->
+<section class="wrap sec" id="diensten">
+  <p class="kicker">EEN VERWARRING DIE JE VOOR MOET ZIJN</p>
+  <h2>De zes vlakken zijn niet de acht diensten</h2>
+  <p class="note">Op de site staan straks acht dienstenpagina&rsquo;s, want daar zoeken mensen op. Het model heeft zes vlakken. Dat is geen tegenstrijdigheid, maar je moet de vertaling één keer vastleggen — anders gaat iemand die twee dingen gelijktrekken en dan klopt er niets meer.</p>
   <div class="tblwrap">
     <table class="mapt">
-      <thead><tr><th>Laag in de toren</th><th>Waar het in de kubus zit</th></tr></thead>
+      <thead><tr><th>In het model</th><th>Op de site als dienst</th></tr></thead>
       <tbody>
-        <tr><td>Doel en plan</td><td>de binnenkant</td></tr>
-        <tr><td>Merk</td><td>vlak 01 &middot; Merk</td></tr>
-        <tr><td>Infrastructuur en techniek</td><td>vlak 04 &middot; Platform</td></tr>
-        <tr><td>Tooling en meting</td><td>vlak 06 &middot; Meting</td></tr>
-        <tr><td>Platform</td><td>vlak 04 &middot; Platform</td></tr>
-        <tr><td>Content</td><td>vlak 02 &middot; Content</td></tr>
-        <tr><td>Marketing</td><td>vlak 03 &middot; Zichtbaarheid + vlak 05 &middot; Binding</td></tr>
+        <tr><td>01 Zoekmachinemarketing</td><td>SEO &middot; Google Ads</td></tr>
+        <tr><td>02 Social media marketing</td><td>Social advertising</td></tr>
+        <tr><td>03 Platform</td><td>Websites &middot; Conversie-optimalisatie &middot; Hosting</td></tr>
+        <tr><td>04 E-mailmarketing</td><td>E-mailmarketing &middot; Marketing automation</td></tr>
+        <tr><td>05 Content</td><td>Fotografie &middot; Videografie</td></tr>
+        <tr><td>06 Data &amp; tooling</td><td>geen losse dienst &mdash; zit in elk partnership</td></tr>
+        <tr><td>Ring &middot; Merk</td><td>Branding &mdash; tweede laag, niet actief verkocht</td></tr>
+        <tr><td>Ring &middot; Doel en plan</td><td>geen dienst &mdash; dat is maand &eacute;&eacute;n</td></tr>
       </tbody>
     </table>
   </div>
+  <p class="note" style="margin-top:22px"><b>De regel:</b> diensten zijn hoe mensen zoeken. Vlakken zijn hoe wij werken. De dienstenpagina&rsquo;s verkopen een ingang; het model verkoopt het geheel.</p>
+</section>
 
-  <p class="note" style="margin-top:22px">Niets valt buiten de boot. Dat betekent niet dat je twee modellen hebt, maar <b>één model met twee tekeningen en twee woordenlijsten</b>. En twee woordenlijsten voor hetzelfde is precies wat een bedrijf persoonsafhankelijk maakt: dan weet alleen jij nog wanneer je welk woord gebruikt.</p>
+<!-- ============ WAT ER NOG MIST ============ -->
+<section class="wrap sec" id="mis">
+  <p class="kicker">JE VRAAG: MIS IK IETS</p>
+  <h2>Drie dingen, waarvan één per branche beslissend</h2>
 
+  <div class="gap">
+    <div class="hd"><span class="num">01</span><h4>Vindbaarheid op platformen van anderen</h4><span class="tag hard">BESLISSEND VOOR TWEE BRANCHES</span></div>
+    <p>Voor een makelaar is <b>Funda</b> geen kanaal naast SEO — het ís het kanaal. Voor automotive geldt hetzelfde voor de verzamelsites, voor horeca voor Google Maps, TripAdvisor en de reserveringsplatformen. Dat verkeer komt niet uit je site en niet uit je advertenties.</p>
+    <p>Het is geen zevende vlak, maar het moet wel expliciet in vlak 01 staan. <b>"Zoekmachinemarketing" is als naam te smal</b> als het ook Google Business Profile en portalen moet dekken. Twee opties: de naam verbreden naar iets als <i>Vindbaarheid</i>, of de naam houden en in de omschrijving hardop noemen dat lokale vindbaarheid en platformen erbij horen. Ik neig naar het tweede — <i>zoekmachinemarketing</i> is wat mensen herkennen.</p>
+  </div>
+
+  <div class="gap">
+    <div class="hd"><span class="num">02</span><h4>Reputatie</h4><span class="tag mid">KLEIN, GOEDKOOP, ONDERSCHAT</span></div>
+    <p>Het verschil tussen een 4,2 en een 4,7 op Google verandert de conversie harder dan welke advertentie ook, en het kost bijna niets. Het staat nu in vlak 04 als &ldquo;reviewverzoeken&rdquo;, en dat klopt technisch — een reviewverzoek is een automatische mail op het juiste moment.</p>
+    <p>Maar <b>het tonen</b> van die reviews hoort in vlak 03, en de uitkomst ervan raakt de ring Merk. Het is dus geen eigen onderdeel, maar het moet wel ergens beleid zijn in plaats van iets wat per klant toevallig wel of niet gebeurt.</p>
+  </div>
+
+  <div class="gap">
+    <div class="hd"><span class="num">03</span><h4>Het aanbod van de klant zelf</h4><span class="tag soft">BUITEN HET MODEL, BINNEN HET GESPREK</span></div>
+    <p>Marketing versterkt een aanbod. Als de prijs niet klopt of het aanbod zwak is, presteert geen enkel vlak. Dat is geen vlak en ook geen ring — het is van de ondernemer. Maar het hoort wel in het eerste gesprek en in de scan, want het is de meest voorkomende reden dat een goed uitgevoerd partnership toch tegenvalt.</p>
+  </div>
+</section>
+
+<!-- ============ DE GRENS ============ -->
+<section class="wrap sec" id="grens">
+  <p class="kicker">DE LIJN OM ALLES HEEN</p>
+  <h2>Wij zijn verantwoordelijk voor het marketingresultaat</h2>
+  <p class="note">Van onbekend tot aanvraag. Het verkoopgesprek daarna is het vak van de ondernemer en dat nemen we niet over.</p>
   <div class="key">
-    <span class="k">HET ADVIES</span>
-    <p class="big">De toren gaat weg. Niet naar binnen — weg.</p>
-    <p>Vorige ronde zei ik: kubus naar buiten, toren naar binnen. Dat was een compromis, en je vraag legt bloot waarom het er geen is. <strong>De toren deed twee dingen tegelijk en allebei half:</strong> hij beschreef waaruit het systeem bestaat én in welke volgorde je het bouwt. Dat zijn twee vragen, en ze verdienen twee antwoorden.</p>
+    <span class="k">DE ZIN DIE HET ZEGT</span>
+    <p class="big">Wij leveren de aanvraag. Het gesprek voer jij.</p>
+    <p>Bijna elk bureau houdt deze grens bewust vaag, zodat er aan het eind van het jaar naar twee kanten gewezen kan worden. Hem hardop trekken is daarom geen voorbehoud maar een standpunt.</p>
   </div>
-
-  <h3>De drie vragen die de toren probeerde te beantwoorden</h3>
-  <div class="stack3">
-    <div class="s3">
-      <span class="s3k">WAARUIT BESTAAT HET?</span>
-      <p class="s3t">De kubus</p>
-      <p class="s3d">Zes vlakken. Dit is wat de klant koopt en wat er staat als het af is.</p>
-    </div>
-    <div class="s3">
-      <span class="s3k">IN WELKE VOLGORDE BOUWEN WE HET?</span>
-      <p class="s3t">De bouwvolgorde</p>
-      <p class="s3d">Een tijdlijn, geen model. Wat gaat wanneer aan, wanneer rendeert het, en waar stapt déze klant in. Dat is een planning en hoort in de offerte — niet in je merk.</p>
-    </div>
-    <div class="s3">
-      <span class="s3k">WAAR STAAT DEZE KLANT NU?</span>
-      <p class="s3t">De scan</p>
-      <p class="s3d">Scoor de zes vlakken. Dat is preciezer dan zeven lagen met tests, het gebruikt dezelfde woorden als de kubus, en het levert meteen het zwaartepunt op.</p>
-    </div>
+  <div class="gap">
+    <div class="hd"><span class="num">01</span><h4>Een norm voor wat je levert</h4><span class="tag hard">ANDERS IS HET EEN ACHTERDEUR</span></div>
+    <p><b>Een aanvraag telt mee als iemand uit zichzelf contact opneemt, met een echte vraag, binnen het werkgebied en binnen het aanbod.</b> Spam, sollicitaties, verkopers en aanvragen van buiten de regio tellen niet. Die norm beschermt de klant tegen opgeblazen cijfers en jullie tegen een klant die achteraf de lat verlegt.</p>
   </div>
-
-  <div class="ok">
-    <h4>Wat je verliest, en hoe je het terugkrijgt</h4>
-    <p>De toren had één ding dat de kubus mist: afhankelijkheid. Hij liet zien dat je geen marketing kunt doen zonder meting, en geen meting zonder techniek. <b>Dat argument raak je niet kwijt — het wordt sterker.</b> Waar de toren zei &ldquo;deze laag draagt die laag&rdquo;, zegt de kubus: een kubus met vijf vlakken bestaat niet. Hetzelfde punt, in een vorm waar niemand omheen kan.</p>
+  <div class="gap">
+    <div class="hd"><span class="num">02</span><h4>Terugkoppeling &mdash; als invoer, niet als afrekening</h4><span class="tag mid">HET VERSCHIL ZIT IN DE REDEN</span></div>
+    <p>&ldquo;Vertel ons welke aanvragen iets werden, dan sturen we het budget daarheen. Wat je met ze doet, is aan jou.&rdquo; Zonder die terugkoppeling stuur je op aantallen in plaats van op kwaliteit. Met vlak 06 in het model is dit bovendien geen los verzoek meer, maar onderdeel van het werk.</p>
+  </div>
+  <div class="warn">
+    <h4>De consequentie</h4>
+    <p>Als de grens bij de aanvraag ligt, mag je er geen krediet voorbij claimen. <b>Cases en dashboards gaan over aanvragen, kosten per aanvraag en bereik — niet over omzet.</b> Concreet: in het dashboardvoorbeeld op de homepage moet de regel &ldquo;omzet uit marketing&rdquo; eruit.</p>
   </div>
 </section>
 
 <!-- ============ RISICO'S ============ -->
 <section class="wrap sec" id="risico">
-  <p class="kicker">EERLIJK OVER DE NAAM</p>
+  <p class="kicker">EERLIJK OVER DE VORM EN DE NAAM</p>
   <h2>Wat er waar moet zijn voordat je hierin investeert</h2>
 
   <div class="warn">
+    <h4>Het stadion: goede structuur, riskant woord</h4>
+    <p>De structuur die je beschrijft — een speelveld met iets eromheen — klopt. Het woord <i>stadion</i> is het risico. Zeg je stadion, dan haal je een hele woordenlijst binnen: spelers, coach, wedstrijd, scoren, de tegenstander. <b>Dat is precies de holle taal die jullie eigen tone of voice verbiedt</b>, en het botst met CUBE: een kubus in een stadion zijn twee beelden die om aandacht vechten.</p>
+    <p>De test: beschrijf het model in drie zinnen zonder één voetbalwoord. Blijft het staan, dan is de structuur goed. Kan het alleen mét die woorden, dan was het versiering. <b>Mijn advies: hou de kubus met twee ringen, laat het woord stadion vallen.</b></p>
+  </div>
+
+  <div class="warn">
     <h4>Laat de merknaam checken voordat je een letter drukt</h4>
-    <p>"Cube" is een gewoon Engels woord en een populaire bedrijfsnaam. De kans dat er in de Benelux al een merkregistratie in klasse 35 (reclame en marketing) staat, is reëel. <b>Een BOIP-check bij een merkengemachtigde kost een paar honderd euro en een week.</b> Doe dat vóór het logo, de domeinnaam en het drukwerk — niet erna.</p>
-    <p>Beperk het risico door hem nooit alleen te gebruiken: <b>"de CUBE-methode van James Robinson"</b> of <b>"CUBE by James Robinson"</b>. Dan is jouw merk de drager en is CUBE een productnaam, wat zowel juridisch als commercieel steviger is.</p>
+    <p>&ldquo;Cube&rdquo; is een gewoon Engels woord en een populaire bedrijfsnaam. De kans op een bestaande Benelux-registratie in klasse 35 (reclame en marketing) is reëel. <b>Een BOIP-check kost een paar honderd euro en een week</b> — doe dat vóór het logo en het drukwerk. Gebruik hem bovendien nooit alleen: <b>&ldquo;CUBE by James Robinson&rdquo;</b> maakt jouw merk de drager en verlaagt het risico.</p>
   </div>
 
   <div class="warn">
-    <h4>Engels woord, Nederlands merk</h4>
-    <p>Je tone of voice zegt: geen jargon, mensentaal. CUBE is Engels, en dat wringt licht. Het redt zich omdat een kubus een concreet voorwerp is dat iedereen kent — een restauranthouder hoeft niets op te zoeken. Maar het blijft een uitzondering die je maar één keer kunt maken. <b>Alle zes de vlakken moeten dan wél Nederlands blijven.</b> CUBE met daarin "brand awareness" en "lead nurturing" is een ander bureau geworden.</p>
-  </div>
-
-  <div class="warn">
-    <h4>De metafoor moet blijven kloppen als je hem uitrekt</h4>
-    <p>Over een jaar wil iemand een zevende vlak. Of een "CUBE Light". Op dat moment is het model dood, want een kubus met zeven vlakken bestaat niet en dat ziet iedereen. <b>Die strengheid is de kracht en tegelijk het risico.</b> Spreek nu af dat het aantal zes is en blijft, en dat uitbreiding altijd binnen een bestaand vlak gebeurt — nooit ernaast.</p>
+    <h4>Zes blijft zes</h4>
+    <p>Over een jaar wil iemand een zevende vlak, of een &ldquo;CUBE Light&rdquo;. Op dat moment is het model dood, want een kubus met zeven vlakken bestaat niet en dat ziet iedereen. Spreek nu af: <b>uitbreiding gebeurt altijd bínnen een bestaand vlak, nooit ernaast.</b> De ringen zijn daar geen uitzondering op — dat zijn er twee, en ook dat aantal ligt vast.</p>
   </div>
 
   <div class="ok">
     <h4>Wat het je oplevert als het klopt</h4>
-    <p>Een naam en een vorm die een nieuwe medewerker in tien minuten leert, die een klant kan navertellen aan zijn compagnon, en die een concurrent niet kan lenen zonder dat het opvalt. <b>Dat is precies wat je zocht toen je zei dat het bedrijf minder afhankelijk van jou moest worden.</b> Een model met een naam kan zonder jou de deur uit. Een aanpak zonder naam niet.</p>
+    <p>Een model dat een nieuwe medewerker in tien minuten leert, dat een klant kan navertellen aan zijn compagnon, en dat in één plaatje uitlegt waarvoor hij elke maand betaalt. <b>Dat is precies wat je zocht toen je zei dat het bedrijf minder afhankelijk van jou moest worden.</b> Een model met een naam en een vorm kan zonder jou de deur uit. Een aanpak zonder naam niet.</p>
   </div>
 </section>
 
@@ -439,7 +516,7 @@ b{color:var(--tx);font-weight:600}
   bO.addEventListener('click',function(){set(false)});
   bF.addEventListener('click',function(){set(true)});
   if(!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches)){
-    setTimeout(function(){set(true)},1400);
+    setTimeout(function(){set(true)},1600);
   }
 })();
 </script>
