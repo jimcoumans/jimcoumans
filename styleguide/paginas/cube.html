@@ -96,12 +96,12 @@ b{color:var(--tx);font-weight:600}
 .folded .f-f{transform:rotateX(-90deg)}
 .folded .f-d{transform:rotateY(90deg)}
 .folded .fc{background:rgba(255,255,255,.085);border-color:rgba(255,255,255,.34)}
-.folded .rig{transform:translateX(calc(var(--S)*.5)) scale(1.3) rotateX(-16deg) rotateY(-32deg)}
+.folded .rig{transform:translateX(calc(var(--S)*.5)) rotateX(-16deg) rotateY(-32deg)}
 .ctl{display:flex;justify-content:center;gap:12px;margin-top:34px;position:relative;flex-wrap:wrap}
 .ctl button{cursor:pointer;background:transparent;border:1px solid rgba(255,255,255,.26);color:var(--inv);border-radius:980px;padding:9px 20px;font-size:14.5px;transition:background .18s var(--e)}
 .ctl button:hover{background:rgba(255,255,255,.1)}
 .ctl button[aria-pressed="true"]{background:#fff;color:#1c1c1e;border-color:#fff}
-.stage-cap{position:relative;text-align:center;font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;color:#6e6e73;margin-top:26px}
+.stage-cap{position:relative;max-width:none;text-align:center;font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;color:#6e6e73;margin-top:26px}
 
 /* vlakken-lijst */
 .faces{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:28px}
@@ -160,18 +160,32 @@ b{color:var(--tx);font-weight:600}
 /* ringen om de kubus */
 .ringA,.ringB{position:absolute;left:50%;top:50%;border-radius:50%;pointer-events:none;
   opacity:0;transition:opacity .7s var(--e) .35s}
-.ringA{width:calc(var(--S)*2.45);height:calc(var(--S)*2.45);margin:calc(var(--S)*-1.225) 0 0 calc(var(--S)*-1.225);
-  border:1px solid rgba(255,255,255,.2)}
-.ringB{width:calc(var(--S)*3.1);height:calc(var(--S)*3.1);margin:calc(var(--S)*-1.55) 0 0 calc(var(--S)*-1.55);
-  border:1px dashed rgba(196,240,0,.4)}
+.ringA{width:calc(var(--S)*1.95);height:calc(var(--S)*1.95);margin:calc(var(--S)*-.975) 0 0 calc(var(--S)*-.975);
+  border:1px solid rgba(255,255,255,.22)}
+.ringB{width:calc(var(--S)*2.45);height:calc(var(--S)*2.45);margin:calc(var(--S)*-1.225) 0 0 calc(var(--S)*-1.225);
+  border:1px solid rgba(255,255,255,.16)}
+.ringC{position:absolute;left:50%;top:50%;border-radius:50%;pointer-events:none;opacity:0;transition:opacity .7s var(--e) .45s;
+  width:calc(var(--S)*2.95);height:calc(var(--S)*2.95);margin:calc(var(--S)*-1.475) 0 0 calc(var(--S)*-1.475);
+  border:1px dashed rgba(196,240,0,.42)}
+.ringC span{position:absolute;left:50%;top:0;transform:translate(-50%,-50%);font-family:var(--fm);font-size:9.5px;
+  letter-spacing:.09em;padding:2px 8px;background:var(--void);white-space:nowrap;color:var(--lime)}
+.folded .ringC{opacity:1}
 .ringA span,.ringB span{position:absolute;left:50%;top:0;transform:translate(-50%,-50%);
   font-family:var(--fm);font-size:9.5px;letter-spacing:.09em;padding:2px 8px;background:var(--void);white-space:nowrap}
 .ringA span{color:#a1a1a6}
-.ringB span{color:var(--lime)}
+.ringB span{color:#a1a1a6}
 .folded .ringA,.folded .ringB{opacity:1}
 
+/* scorebord */
+.board{position:relative;margin:26px auto 0;max-width:520px;background:#0f1115;border:1px solid #23252b;border-radius:14px;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1px;overflow:hidden}
+.board div{background:#141720;padding:14px 12px;text-align:center}
+.board .bv{display:block;font-family:var(--fd);font-size:22px;font-weight:700;letter-spacing:-.02em;color:var(--lime);font-variant-numeric:tabular-nums}
+.board .bl{display:block;font-family:var(--fm);font-size:9px;letter-spacing:.06em;color:#6e6e73;margin-top:5px}
+.board-cap{position:relative;max-width:none;text-align:center;font-family:var(--fm);font-size:9.5px;letter-spacing:.06em;color:#6e6e73;margin-top:12px}
+
 /* ringen-kaarten */
-.rings2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:28px}
+.rings2{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:28px}
 .rg{background:var(--card);border:1px solid var(--ln-s);border-radius:20px;padding:28px 26px}
 .rgk{font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;color:var(--act);margin-bottom:8px}
 .rg h4{font-size:22px;margin-bottom:10px}
@@ -193,7 +207,8 @@ b{color:var(--tx);font-weight:600}
 .cp .from{font-family:var(--fm);font-size:11px;color:var(--act);letter-spacing:.03em;padding-top:2px}
 .cp p{margin:0;font-size:15.5px;color:var(--tx2);max-width:none}
 .cp p b{color:var(--tx)}
-@media (max-width:900px){.rings2,.speeds{grid-template-columns:1fr}.cp{grid-template-columns:1fr;gap:8px}}
+@media (max-width:1068px){.rings2{grid-template-columns:1fr}}
+@media (max-width:900px){.speeds{grid-template-columns:1fr}.cp{grid-template-columns:1fr;gap:8px}}
 @media (max-width:900px){.faces{grid-template-columns:1fr}}
 @media (max-width:734px){
   :root{--g:20px}
@@ -208,7 +223,8 @@ b{color:var(--tx);font-weight:600}
   <div class="bar-in">
     <b>CUBE</b>
     <a href="#vlakken">Zes vlakken</a>
-    <a href="#ringen">Twee ringen</a>
+    <a href="#ringen">Drie ringen</a>
+    <a href="#scorebord">Het scorebord</a>
     <a href="#kubus">De kubus</a>
     <a href="#snelheden">Drie snelheden</a>
     <a href="#diensten">Model en diensten</a>
@@ -280,36 +296,42 @@ b{color:var(--tx);font-weight:600}
     </div>
     <div class="fx new">
       <p class="fn">VLAK 06 &middot; PERIODIEK</p>
-      <span class="badge">GEWIJZIGD</span>
-      <h4>Data &amp; tooling</h4>
-      <p class="fd">De instrumenten en wat ze je vertellen. Meten, koppelen, automatiseren, signaleren.</p>
-      <div class="fi"><span>analytics</span><span>tracking</span><span>dashboards</span><span>Leadinfo</span><span>koppelingen</span></div>
-      <p class="fz"><b>Zonder:</b> elke keuze is een mening.</p>
+      <span class="badge">JOUW DEFINITIE</span>
+      <h4>Tooling</h4>
+      <p class="fd">De software waar de marketing op draait. Uitkiezen, aanzetten, koppelen, onderhouden.</p>
+      <div class="fi"><span>MailerLite</span><span>Leadinfo</span><span>Calendly</span><span>CRM</span><span>koppelingen</span></div>
+      <p class="fz"><b>Zonder:</b> je kanalen kunnen niet wat je ze vraagt.</p>
     </div>
   </div>
 
   <div class="ok">
-    <h4>Waarom data en tooling één vlak zijn</h4>
-    <p>Je noemde tooling als vlak en monitoring als ring. Dat is dezelfde machine, twee keer geteld: <b>tooling is hoe je meet, monitoring is wat je eruit haalt.</b> Splits je ze, dan krijg je onvermijdelijk de vraag waarom het ene binnen en het andere buiten de kubus staat — en daar is geen goed antwoord op.</p>
-    <p>Belangrijker: je wilt bekendstaan als data-driven. Dan hoort data <b>zichtbaar in het werk</b> te zitten, niet als achtergrondring. Een ring lees je als randvoorwaarde. Een vlak lees je als vakmanschap.</p>
+    <h4>Je hebt gelijk: tooling en monitoring zijn niet hetzelfde</h4>
+    <p>Ik gooide ze op één hoop op basis van een verkeerde aanname. Met jouw definitie — MailerLite, Leadinfo, Calendly — is tooling <b>de gereedschapskist die het werk mogelijk maakt</b>. Monitoring is <b>weten of het werkt</b>. Dat zijn twee dingen, en ze hebben een ander ritme: tooling zet je neer en breid je uit, monitoring loopt onafgebroken.</p>
+    <p>Daarom staat tooling nu als vlak 06, en heeft monitoring een eigen plek gekregen die noch vlak noch ring is: <b>het scorebord</b>. Zie hieronder.</p>
   </div>
 </section>
 
 <!-- ============ TWEE RINGEN ============ -->
 <section class="wrap sec" id="ringen">
   <p class="kicker">WAT ALTIJD GOED MOET STAAN</p>
-  <h2>Twee ringen</h2>
+  <h2>Drie ringen</h2>
   <p class="note">Geen vlakken, want het is geen maandelijks werk en het is ook geen dienst die je verkoopt. Het zijn voorwaarden: ze moeten kloppen, ze zijn er altijd, en je vindt ze niet elke maand opnieuw uit.</p>
 
   <div class="rings2">
     <div class="rg">
       <p class="rgk">RING 01</p>
+      <h4>Marketing management</h4>
+      <p class="rgd">Eén persoon die het overzicht houdt, keuzes maakt en bijstuurt. Loopt onafgebroken en is voor de klant het gezicht van het hele systeem.</p>
+      <p class="rgq"><b>Jouw derde punt, en terecht.</b> Zonder deze ring is het systeem een verzameling losse handelingen die toevallig door hetzelfde bureau worden uitgevoerd. Dit is ook het onderdeel dat maakt dat de klant één aanspreekpunt heeft in plaats van zes specialisten.</p>
+    </div>
+    <div class="rg">
+      <p class="rgk">RING 02</p>
       <h4>Merk</h4>
       <p class="rgd">Wie je bent, hoe je klinkt, waarom mensen jou onthouden als de prijs gelijk is. Het bepaalt hoe goed alle zes de vlakken presteren: mensen klikken vaker op een naam die ze kennen, en Google rekent daar minder voor.</p>
       <p class="rgq"><b>Dit lost jouw tweede punt op.</b> Je wilt geen huisstijltrajecten meer verkopen. Door merk een ring te maken in plaats van een vlak, zeg je precies dat: <i>je merk moet kloppen, wij toetsen het en werken ermee, en we repareren wat de marketing in de weg zit — maar een nieuw logo verkopen we je niet.</i></p>
     </div>
     <div class="rg">
-      <p class="rgk">RING 02</p>
+      <p class="rgk">RING 03</p>
       <h4>Doel en plan</h4>
       <p class="rgd">Wat wil je bereiken, voor wie, en waaraan zien we of het lukt. Dit bepaalt hoe dik elk vlak bij deze klant wordt — het is de bron van het zwaartepunt.</p>
       <p class="rgq"><b>Dit lost jouw eerste punt op.</b> Je zei terecht dat doel en plan nu nergens in de kubus zit. Als binnenkant was het onzichtbaar, en onzichtbaar is geen communicatiemiddel. Als ring staat het er, naast merk, in dezelfde categorie: iets wat goed moet staan voordat de vlakken zin hebben.</p>
@@ -322,6 +344,28 @@ b{color:var(--tx);font-weight:600}
   </div>
 </section>
 
+<!-- ============ HET SCOREBORD ============ -->
+<section class="wrap sec" id="scorebord">
+  <p class="kicker">NOCH VLAK, NOCH RING</p>
+  <h2>Het scorebord</h2>
+  <p class="note">Monitoring en data horen niet in de gereedschapskist en zijn ook geen voorwaarde vooraf. Ze zijn de stand van het spel: altijd zichtbaar, voor iedereen tegelijk, en de reden dat er iets verandert.</p>
+
+  <div class="stage" style="padding-block:34px 28px">
+    <div class="board">
+      <div><span class="bv">148</span><span class="bl">AANVRAGEN</span></div>
+      <div><span class="bv">&euro;12,40</span><span class="bl">KOSTEN PER AANVRAAG</span></div>
+      <div><span class="bv">9.310</span><span class="bl">BEZOEKERS UIT GOOGLE</span></div>
+    </div>
+    <p class="board-cap">LIVE &middot; DE KLANT KIJKT NAAR HETZELFDE BORD ALS WIJ</p>
+  </div>
+
+  <div class="key">
+    <span class="k">WAAROM DIT GEEN RING MAG ZIJN</span>
+    <p class="big">Een ring lees je als randvoorwaarde. Een scorebord lees je als de stand.</p>
+    <p>Je wilt bekendstaan als data-driven. Dan mag het meest bepalende onderdeel niet als achtergrond worden getekend. <strong>Het scorebord is bovendien het enige element dat de klant zelf gebruikt</strong> — en dat is precies waar jullie radicale transparantie zichtbaar wordt: hij hoeft niet te vragen hoe het gaat.</p>
+  </div>
+</section>
+
 <!-- ============ DE KUBUS ============ -->
 <section class="wrap sec" id="kubus">
   <p class="kicker">DE VISUALISATIE</p>
@@ -330,13 +374,14 @@ b{color:var(--tx);font-weight:600}
 
   <div class="stage">
     <div class="scene">
-      <div class="ringA"><span>MERK</span></div>
-      <div class="ringB"><span>DOEL EN PLAN</span></div>
+      <div class="ringA"><span>MARKETING MANAGEMENT</span></div>
+      <div class="ringB"><span>MERK</span></div>
+      <div class="ringC"><span>DOEL EN PLAN</span></div>
       <div class="rig" id="rig">
         <div class="cube">
           <div class="fc f-b"><span class="n">03</span><span class="l">PLATFORM</span></div>
           <div class="fc f-e"><span class="n">05</span><span class="l">CONTENT</span></div>
-          <div class="fc f-f"><span class="n">06</span><span class="l">DATA &amp; TOOLING</span></div>
+          <div class="fc f-f"><span class="n">06</span><span class="l">TOOLING</span></div>
           <div class="fc f-a"><span class="n">01</span><span class="l">ZOEK&shy;MACHINES</span></div>
           <div class="fc f-c"><span class="n">02</span><span class="l">SOCIAL</span>
             <div class="fc f-d"><span class="n">04</span><span class="l">E-MAIL</span></div>
@@ -358,8 +403,16 @@ b{color:var(--tx);font-weight:600}
       <p><b>Platform grenst in het net aan vier vlakken. Dat klopt precies zoals jij het wilde.</b> Zoekmachines, social, content en data raken het platform rechtstreeks; alles wat die vier doen komt daar samen of wordt daar gemeten. Eén nuance: <b>in de dichtgevouwen kubus raakt élk vlak er vier</b> — daar is geen hart meer. Het midden bestaat alleen in het opengevouwen speelveld, en dat is logisch: daar wordt gespeeld, dus daar is een centrum.</p>
     </div>
     <div class="cp">
+      <span class="from">DE ZIJFLAPPEN</span>
+      <p><b>Content en tooling raken in de dichtgevouwen kubus alle vier de maandelijkse vlakken — en elkaar niet.</b> Dat is precies wat er in de praktijk gebeurt: één shoot voedt zoekmachines, social, platform en e-mail; één toolingstack laat diezelfde vier doen wat je ze vraagt. En content en tooling hebben elkaar niet nodig. Sterker kun je het niet tekenen, en het is er niet ingelegd: het volgt uit de positie die jij ze gaf.</p>
+    </div>
+    <div class="cp">
+      <span class="from">DE VOLGORDE</span>
+      <p><b>In het net grenst e-mail aan social, en dat klopt met hoe het werkt.</b> Adressen uit e-mail gaan als doelgroep naar social voor retargeting en lookalikes. Wat in het ene vlak wordt verzameld, wordt in het andere ingezet. Dat het model die aangrenzing al had voordat iemand erop lette, is de beste toets die je kunt doen.</p>
+    </div>
+    <div class="cp">
       <span class="from">DE OVERKANTEN</span>
-      <p><b>Wat tegenover elkaar ligt, is ook inhoudelijk elkaars tegendeel.</b> Zoekmachines tegenover social: vraag oogsten tegenover vraag maken. Platform tegenover e-mail: zij komen naar jou tegenover jij gaat naar hen. Content tegenover data: wat iedereen ziet tegenover wat niemand ziet. Dat is geen ontwerptruc — het komt eruit doordat de indeling klopt.</p>
+      <p><b>Wat tegenover elkaar ligt, is ook inhoudelijk elkaars tegendeel.</b> Zoekmachines tegenover social: vraag oogsten tegenover vraag maken. Platform tegenover e-mail: zij komen naar jou tegenover jij gaat naar hen. Content tegenover tooling: wat iedereen ziet tegenover wat niemand ziet. Dat is geen ontwerptruc — het komt eruit doordat de indeling klopt.</p>
     </div>
   </div>
 </section>
@@ -380,21 +433,21 @@ b{color:var(--tx);font-weight:600}
     <div class="sp">
       <span class="spk">PERIODIEK</span>
       <p class="spt">Twee vlakken</p>
-      <p class="spd">Content en data &amp; tooling. Niet elke maand, wel steeds terug: een shoot per kwartaal, een meetopzet die meegroeit.</p>
+      <p class="spd">Content en tooling. Niet elke maand, wel steeds terug: een shoot per kwartaal, een stack die meegroeit met wat je wilt kunnen.</p>
       <p class="spm">DE TWEE DIE OP- EN NEERKLAPPEN</p>
     </div>
     <div class="sp">
       <span class="spk">ALTIJD</span>
-      <p class="spt">Twee ringen</p>
-      <p class="spd">Merk en doel. Eén keer goed neerzetten, daarna bewaken. Niet elke maand opnieuw uitvinden.</p>
-      <p class="spm">MAAND &Eacute;&Eacute;N</p>
+      <p class="spt">Drie ringen en het scorebord</p>
+      <p class="spd">Marketing management loopt onafgebroken. Merk en doel zet je één keer goed neer en bewaak je daarna. Het scorebord staat altijd aan.</p>
+      <p class="spm">MAAND &Eacute;&Eacute;N, DAARNA DOORLOPEND</p>
     </div>
   </div>
 
   <div class="key">
     <span class="k">WAAROM DIT MEER WAARD IS DAN DE VORM</span>
     <p class="big">Het beantwoordt de moeilijkste vraag in een retainerverkoop: wat doe je nou elke maand voor mijn geld.</p>
-    <p>Daar struikelt bijna elk bureau over, omdat het antwoord meestal een urenverantwoording is. Met drie snelheden is het antwoord een indeling: <strong>vier dingen lopen door, twee komen terug, twee staan vast.</strong> Dat is in één zin te zeggen en in één plaatje te laten zien.</p>
+    <p>Daar struikelt bijna elk bureau over, omdat het antwoord meestal een urenverantwoording is. Met drie snelheden is het antwoord een indeling: <strong>vier vlakken lopen door, twee komen terug, drie ringen en het bord staan altijd aan.</strong> Dat is in één zin te zeggen en in één plaatje te laten zien.</p>
   </div>
 </section>
 
@@ -412,9 +465,11 @@ b{color:var(--tx);font-weight:600}
         <tr><td>03 Platform</td><td>Websites &middot; Conversie-optimalisatie &middot; Hosting</td></tr>
         <tr><td>04 E-mailmarketing</td><td>E-mailmarketing &middot; Marketing automation</td></tr>
         <tr><td>05 Content</td><td>Fotografie &middot; Videografie</td></tr>
-        <tr><td>06 Data &amp; tooling</td><td>geen losse dienst &mdash; zit in elk partnership</td></tr>
+        <tr><td>06 Tooling</td><td>Marketing automation &middot; Leadinfo &mdash; tweede laag</td></tr>
+        <tr><td>Ring &middot; Marketing management</td><td>geen dienst &mdash; het is de samenwerking zelf</td></tr>
         <tr><td>Ring &middot; Merk</td><td>Branding &mdash; tweede laag, niet actief verkocht</td></tr>
         <tr><td>Ring &middot; Doel en plan</td><td>geen dienst &mdash; dat is maand &eacute;&eacute;n</td></tr>
+        <tr><td>Het scorebord</td><td>geen dienst &mdash; zit in elk partnership</td></tr>
       </tbody>
     </table>
   </div>
@@ -474,9 +529,10 @@ b{color:var(--tx);font-weight:600}
   <h2>Wat er waar moet zijn voordat je hierin investeert</h2>
 
   <div class="warn">
-    <h4>Het stadion: goede structuur, riskant woord</h4>
-    <p>De structuur die je beschrijft — een speelveld met iets eromheen — klopt. Het woord <i>stadion</i> is het risico. Zeg je stadion, dan haal je een hele woordenlijst binnen: spelers, coach, wedstrijd, scoren, de tegenstander. <b>Dat is precies de holle taal die jullie eigen tone of voice verbiedt</b>, en het botst met CUBE: een kubus in een stadion zijn twee beelden die om aandacht vechten.</p>
-    <p>De test: beschrijf het model in drie zinnen zonder één voetbalwoord. Blijft het staan, dan is de structuur goed. Kan het alleen mét die woorden, dan was het versiering. <b>Mijn advies: hou de kubus met twee ringen, laat het woord stadion vallen.</b></p>
+    <h4>Het stadion: akkoord, met één discipline</h4>
+    <p>Je mapping klopt en hij is van jullie: het veld is het werk, de spelers zijn het team, de marketing manager is de coach, volgers zijn het publiek en klanten zitten in de skybox. Dat is geen geleende metafoor maar een uitbreiding van &ldquo;on top of your game&rdquo;, en het geeft elk element een plek die je niet hoeft uit te leggen.</p>
+    <p><b>Het risico is niet het woord maar de rek.</b> Een stadion kan alles absorberen: er is altijd nog een tribune, een kleedkamer, een scheidsrechter. Een model dat alles kan opnemen, sluit niets meer uit — en dan is het geen model meer maar een sfeerbeeld. De kubus had precies de tegenovergestelde eigenschap: zes, en geen zeven.</p>
+    <p><b>De discipline die het vraagt, in drie afspraken:</b> het veld heeft zes vlakken, er zijn drie ringen, en er is één scorebord. <b>Het publiek blijft buiten het model</b> — volgers en klanten zijn de uitkomst van het werk, niet een onderdeel ervan. En de sporttaal is werktaal: intern zeg je coach, naar buiten zeg je marketing manager. Laat het beeld het werk doen, niet de woorden.</p>
   </div>
 
   <div class="warn">
@@ -486,7 +542,7 @@ b{color:var(--tx);font-weight:600}
 
   <div class="warn">
     <h4>Zes blijft zes</h4>
-    <p>Over een jaar wil iemand een zevende vlak, of een &ldquo;CUBE Light&rdquo;. Op dat moment is het model dood, want een kubus met zeven vlakken bestaat niet en dat ziet iedereen. Spreek nu af: <b>uitbreiding gebeurt altijd bínnen een bestaand vlak, nooit ernaast.</b> De ringen zijn daar geen uitzondering op — dat zijn er twee, en ook dat aantal ligt vast.</p>
+    <p>Over een jaar wil iemand een zevende vlak, of een &ldquo;CUBE Light&rdquo;. Op dat moment is het model dood, want een kubus met zeven vlakken bestaat niet en dat ziet iedereen. Spreek nu af: <b>uitbreiding gebeurt altijd bínnen een bestaand vlak, nooit ernaast.</b> De ringen zijn daar geen uitzondering op — dat zijn er drie, en ook dat aantal ligt vast. Net als het ene scorebord.</p>
   </div>
 
   <div class="ok">
