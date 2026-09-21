@@ -143,6 +143,22 @@ b{color:var(--tx);font-weight:600}
 .ok p{color:var(--lime-tx);opacity:.95;font-size:15.5px;max-width:none}
 .foot{padding-block:44px 64px;font-size:13px;color:var(--tx3);text-align:center}
 
+
+/* mapping-tabel */
+.tblwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:24px}
+.mapt{width:100%;border-collapse:collapse;font-size:15px;min-width:460px}
+.mapt th,.mapt td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--ln-s)}
+.mapt thead th{font-family:var(--fm);font-size:10.5px;letter-spacing:.04em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.mapt td:first-child{font-weight:500;width:46%}
+.mapt td:last-child{color:var(--act);font-family:var(--fm);font-size:13px}
+.mapt tr:last-child td{border-bottom:none}
+/* drie vragen */
+.stack3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px}
+.s3{background:var(--card);border:1px solid var(--ln-s);border-radius:18px;padding:24px 22px}
+.s3k{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--tx3);margin-bottom:12px}
+.s3t{font-family:var(--fd);font-size:20px;font-weight:600;letter-spacing:-.014em;margin:0 0 8px}
+.s3d{font-size:15px;color:var(--tx2);margin:0}
+@media (max-width:900px){.stack3{grid-template-columns:1fr}}
 @media (max-width:900px){.faces{grid-template-columns:1fr}}
 @media (max-width:734px){
   :root{--g:20px}
@@ -156,6 +172,7 @@ b{color:var(--tx);font-weight:600}
 <div class="bar">
   <div class="bar-in">
     <b>CUBE</b>
+    <a href="#grens">De grens</a>
     <a href="#gaten">Wat je mist</a>
     <a href="#vlakken">De zes vlakken</a>
     <a href="#kubus">De kubus</a>
@@ -167,37 +184,63 @@ b{color:var(--tx);font-weight:600}
 
 <header class="wrap hero">
   <h1>CUBE</h1>
-  <p class="lead">Je vroeg twee dingen: mis ik nog iets, en klopt de kubus. Het antwoord op de tweede is ja — sterker dan je waarschijnlijk dacht, want de kubus bewíjst je eigen argument in plaats van het te illustreren. Het antwoord op de eerste is ook ja, en het zit precies op de plek waar je resultaatbelofte lek is.</p>
+  <p class="lead">Zes vlakken die samen het systeem vormen, met de grens die eromheen staat: waar jullie verantwoordelijkheid begint en waar hij ophoudt. Die grens is geen voorbehoud maar het scherpste onderdeel van de propositie — mits hij gedefinieerd en gemeten wordt.</p>
 </header>
 
-<!-- ============ WAT JE MIST ============ -->
-<section class="wrap sec" id="gaten">
-  <p class="kicker">DE EERSTE VRAAG</p>
-  <h2>Drie dingen ontbreken. Eén ervan is ernstig.</h2>
+
+<section class="wrap sec" id="grens">
+  <p class="kicker">DE KERN VAN DE VERANTWOORDELIJKHEID</p>
+  <h2>Wij zijn verantwoordelijk voor het marketingresultaat</h2>
+  <p class="note">Van onbekend tot aanvraag. Dat is het stuk dat wij doen, dat wij kunnen sturen en waar wij op afgerekend mogen worden. Het gesprek daarna is het vak van de ondernemer, en dat nemen we niet over.</p>
+
+  <div class="key">
+    <span class="k">DE ZIN DIE HET ZEGT</span>
+    <p class="big">Wij leveren de aanvraag. Het gesprek voer jij.</p>
+    <p>Bijna elk bureau houdt deze grens bewust vaag, zodat er aan het eind van het jaar naar twee kanten gewezen kan worden. <strong>Hem hardop trekken is daarom geen voorbehoud maar een standpunt</strong> — en het hoort in dezelfde familie als &ldquo;maand één levert niets op&rdquo;: ongemakkelijk om te zeggen, en precies daarom geloofwaardig.</p>
+  </div>
+
+  <h3>Een grens houdt alleen stand als hij twee dingen heeft</h3>
 
   <div class="gap">
-    <div class="hd"><span class="num">01</span><h4>Opvolging</h4><span class="tag hard">DIT IS HET GAT</span></div>
-    <p>Je levert honderdachtenveertig aanvragen. De klant belt er veertig terug, drie dagen te laat, en de rest verdampt. De marketing was goed. Het resultaat niet.</p>
-    <p><b>Zodra je zegt dat je verantwoordelijk bent voor resultaat, kun je niet stoppen bij de aanvraag.</b> Dat is het moment waarop je je eigen belofte overdraagt aan iemand die er niet op gestuurd wordt. Elk bureau doet dit, en elk bureau heeft daarom dezelfde ruzie aan het eind van jaar één: wij leverden leads, jullie deden er niets mee.</p>
-    <p>Het staat ook nergens in je zes. E-mail en automation zitten erin, maar dat is nurturing — niet opvolging. Wat mist: reactietijd, wie belt, wat er in het CRM gebeurt, en of er überhaupt teruggekoppeld wordt of een aanvraag klant werd. Zonder dat laatste kun je niet eens meten wat marketing waard was.</p>
+    <div class="hd"><span class="num">01</span><h4>Een norm voor wat je levert</h4><span class="tag hard">ANDERS IS HET EEN ACHTERDEUR</span></div>
+    <p>Zonder norm is &ldquo;wij leverden honderdachtenveertig aanvragen&rdquo; niet te controleren, en dan krijg je precies de discussie die je wilde voorkomen: <i>jullie leads waren niets waard</i>.</p>
+    <p><b>Een aanvraag telt mee als iemand uit zichzelf contact opneemt, met een echte vraag, binnen het werkgebied en binnen het aanbod.</b> Spam, sollicitaties, verkopers en aanvragen van buiten de regio tellen niet. Die norm werkt twee kanten op: hij beschermt de klant tegen opgeblazen cijfers, en jullie tegen een klant die achteraf de lat verlegt.</p>
   </div>
 
   <div class="gap">
-    <div class="hd"><span class="num">02</span><h4>Het aanbod zelf</h4><span class="tag mid">GEVOELIG, MAAR ECHT</span></div>
+    <div class="hd"><span class="num">02</span><h4>Terugkoppeling — als invoer, niet als verantwoordelijkheid</h4><span class="tag mid">HET VERSCHIL ZIT IN DE REDEN</span></div>
+    <p>Je wilt wél weten welke aanvragen klant werden. Niet omdat je erop afgerekend wordt, maar omdat je er anders niet op kunt sturen: zonder die terugkoppeling optimaliseer je op aantallen in plaats van op kwaliteit, en dat is precies hoe een bureau honderd waardeloze leads gaat leveren in de overtuiging dat het goed gaat.</p>
+    <p><b>Dat is een gegevensvraag, geen verantwoordelijkheid.</b> &ldquo;Vertel ons welke aanvragen iets werden, dan sturen we het budget daarheen. Wat je met ze doet, is aan jou.&rdquo; Zo vraag je het op zonder de grens te verplaatsen.</p>
+  </div>
+
+  <div class="warn">
+    <h4>De consequentie die je er meteen bij moet nemen</h4>
+    <p>Als de grens bij de aanvraag ligt, mag je er ook geen krediet voorbij claimen. <b>Dan gaan cases en dashboards over aanvragen, kosten per aanvraag en bereik — niet over omzet.</b> Een case die zegt &ldquo;€&thinsp;74.000 omzet uit marketing&rdquo; haalt die omzet binnen via het verkoopgesprek van de klant, en dat was net het stuk dat niet van jullie is. Dit is geen detail: het is het verschil tussen een grens en een uitvlucht, en iedereen die het twee keer leest ziet dat verschil.</p>
+    <p>Concreet: in het dashboardvoorbeeld op de homepage moet de regel &ldquo;omzet uit marketing&rdquo; eruit.</p>
+  </div>
+</section>
+
+<!-- ============ WAT JE MIST ============ -->
+<section class="wrap sec" id="gaten">
+  <p class="kicker">BINNEN DE GRENS</p>
+  <h2>Twee dingen die er nog bij kunnen</h2>
+  <p class="note">Allebei vallen ze binnen het marketingresultaat, dus allebei zijn ze van jullie. Ze hoeven geen eigen vlak — ze passen in een bestaand vlak, en dat is precies de regel die het model streng houdt.</p>
+  <div class="gap">
+    <div class="hd"><span class="num">01</span><h4>Het aanbod zelf</h4><span class="tag mid">GEVOELIG, MAAR ECHT</span></div>
     <p>Marketing versterkt een aanbod. Als de prijs niet klopt, de propositie zwak is of het product niet af is, kun je er miljoenen tegenaan gooien zonder effect.</p>
     <p>Je raakt dit nu onder "merk", maar dat is positionering — niet: <b>verkoop je het juiste, aan de juiste mensen, voor het juiste bedrag</b>. Dit is ongemakkelijk om te bespreken, en precies daarom doet niemand het. Als je het wél doet, is dat een onderscheid dat niet te kopiëren valt zonder lef.</p>
   </div>
 
   <div class="gap">
-    <div class="hd"><span class="num">03</span><h4>Reputatie</h4><span class="tag soft">KLEIN, MAAR ZICHTBAAR</span></div>
+    <div class="hd"><span class="num">02</span><h4>Reputatie</h4><span class="tag soft">KLEIN, MAAR ZICHTBAAR</span></div>
     <p>Google-recensies, beoordelingen, referenties. Voor horeca en makelaardij beslissend: het verschil tussen een 4,2 en een 4,7 verandert de conversie harder dan welke advertentie ook, en het kost bijna niets.</p>
-    <p>Het zit nu nergens. Het hoort bij opvolging, want een review vraag je op het moment dat iemand tevreden is — niet in een campagne.</p>
+    <p>Het zit nu nergens, en het is wel degelijk marketing: een reviewverzoek is een automatische mail op het juiste moment. <b>Hoort in vlak 05 (Binding)</b>, naast e-mail en automation.</p>
   </div>
 
   <div class="key">
     <span class="k">WAT DIT BETEKENT</span>
-    <p class="big">Opvolging is geen zevende vlak. Het vervangt er een.</p>
-    <p>"Binding" (e-mail en automation) was te smal. Verbreed het tot <strong>Opvolging</strong>: alles wat er gebeurt nádat iemand zijn hand opsteekt. E-mail, automation, leadopvolging, reviews. Dan sluit de kubus, dan sluit je resultaatbelofte, en dan heb je zes vlakken die alle zes hetzelfde soort ding zijn.</p>
+    <p class="big">Het blijven zes vlakken. Precies de zes die je zelf noemde.</p>
+    <p>Het aanbod scherp krijgen hoort bij <strong>Merk</strong>, reviews horen bij <strong>Binding</strong>. Geen zevende vlak, geen uitzondering. <strong>Dat is meteen de test die het model streng houdt:</strong> alles wat erbij komt, komt erbij bínnen een bestaand vlak — nooit ernaast. De eerste keer dat je die regel loslaat, is de kubus een lijstje geworden.</p>
   </div>
 </section>
 
@@ -236,19 +279,18 @@ b{color:var(--tx);font-weight:600}
       <div class="fi"><span>website</span><span>landingspagina&rsquo;s</span><span>CRO</span><span>techniek</span></div>
       <p class="fz"><b>Zonder:</b> je betaalt voor bezoek dat wegklikt.</p>
     </div>
-    <div class="fx new">
+    <div class="fx">
       <p class="fn">VLAK 05</p>
-      <span class="badge">NIEUW &middot; VERVANGT BINDING</span>
-      <h4>Opvolging</h4>
-      <p class="fd">Alles wat er gebeurt nadat iemand zijn hand opsteekt, tot en met de review.</p>
-      <div class="fi"><span>e-mail</span><span>automation</span><span>leadopvolging</span><span>reviews</span></div>
-      <p class="fz"><b>Zonder:</b> aanvragen worden geen klanten, en niemand weet waarom.</p>
+      <h4>Binding</h4>
+      <p class="fd">Mensen die al eens iets deden opnieuw bereiken, zonder er per keer voor te betalen.</p>
+      <div class="fi"><span>e-mail</span><span>automation</span><span>retargeting</span><span>reviews</span></div>
+      <p class="fz"><b>Zonder:</b> je begint elke maand op nul en koopt dezelfde klant twee keer.</p>
     </div>
     <div class="fx">
       <p class="fn">VLAK 06</p>
       <h4>Meting</h4>
-      <p class="fd">Of het werkt, en waar het geld volgende maand heen moet.</p>
-      <div class="fi"><span>analytics</span><span>conversiemeting</span><span>dashboards</span><span>attributie</span></div>
+      <p class="fd">Of het werkt, waar het geld volgende maand heen moet, en wat er aan de grens geleverd is.</p>
+      <div class="fi"><span>analytics</span><span>conversiemeting</span><span>dashboards</span><span>attributie</span><span>de aanvraagnorm</span></div>
       <p class="fz"><b>Zonder:</b> elke keuze is een mening.</p>
     </div>
   </div>
@@ -272,7 +314,7 @@ b{color:var(--tx);font-weight:600}
           <div class="fc f-b"><span class="n">01</span><span class="l">MERK</span></div>
           <div class="fc f-e"><span class="n">02</span><span class="l">CONTENT</span></div>
           <div class="fc f-f"><span class="n">06</span><span class="l">METING</span></div>
-          <div class="fc f-a"><span class="n">05</span><span class="l">OPVOLGING</span></div>
+          <div class="fc f-a"><span class="n">05</span><span class="l">BINDING</span></div>
           <div class="fc f-c"><span class="n">03</span><span class="l">ZICHTBAAR&shy;HEID</span>
             <div class="fc f-d"><span class="n">04</span><span class="l">PLATFORM</span></div>
           </div>
@@ -298,19 +340,55 @@ b{color:var(--tx);font-weight:600}
 <!-- ============ WAAROM HET KLOPT ============ -->
 <section class="wrap sec" id="klopt">
   <p class="kicker">DE TOREN EN DE KUBUS</p>
-  <h2>Twee modellen kan niet. Eén moet weg.</h2>
-  <p class="note">De toren zegt: lagen, volgorde, het een draagt het ander. De kubus zegt: zes gelijkwaardige kanten, geen boven of onder. Dat zijn tegengestelde beweringen, en een klant die er twee krijgt, onthoudt er nul.</p>
+  <h2>Er is geen overlap. Het is hetzelfde.</h2>
+  <p class="note">Je vroeg of er niet veel overlap in zit. Er zit niet véél overlap in — het is dezelfde inhoud, twee keer geordend. Zet je ze naast elkaar, dan valt alles op zijn plek:</p>
+
+  <div class="tblwrap">
+    <table class="mapt">
+      <thead><tr><th>Laag in de toren</th><th>Waar het in de kubus zit</th></tr></thead>
+      <tbody>
+        <tr><td>Doel en plan</td><td>de binnenkant</td></tr>
+        <tr><td>Merk</td><td>vlak 01 &middot; Merk</td></tr>
+        <tr><td>Infrastructuur en techniek</td><td>vlak 04 &middot; Platform</td></tr>
+        <tr><td>Tooling en meting</td><td>vlak 06 &middot; Meting</td></tr>
+        <tr><td>Platform</td><td>vlak 04 &middot; Platform</td></tr>
+        <tr><td>Content</td><td>vlak 02 &middot; Content</td></tr>
+        <tr><td>Marketing</td><td>vlak 03 &middot; Zichtbaarheid + vlak 05 &middot; Binding</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="note" style="margin-top:22px">Niets valt buiten de boot. Dat betekent niet dat je twee modellen hebt, maar <b>één model met twee tekeningen en twee woordenlijsten</b>. En twee woordenlijsten voor hetzelfde is precies wat een bedrijf persoonsafhankelijk maakt: dan weet alleen jij nog wanneer je welk woord gebruikt.</p>
 
   <div class="key">
     <span class="k">HET ADVIES</span>
-    <p class="big">De kubus naar buiten. De toren blijft binnen.</p>
-    <p>Dat is geen compromis maar een taakverdeling die je zelf al had bedacht: de toren was altijd al intern. <strong>De toren is de bouwvolgorde</strong> — wat we eerst doen, wat daarna, en waar deze klant instapt. Dat is een projectplanning, en daar heeft een ondernemer niets aan in een eerste gesprek.</p>
-    <p><strong>De kubus is het resultaat</strong> — wat er staat als het af is. Dat is wat hij koopt.</p>
-    <p>Je bouwt in lagen. Je levert een kubus.</p>
+    <p class="big">De toren gaat weg. Niet naar binnen — weg.</p>
+    <p>Vorige ronde zei ik: kubus naar buiten, toren naar binnen. Dat was een compromis, en je vraag legt bloot waarom het er geen is. <strong>De toren deed twee dingen tegelijk en allebei half:</strong> hij beschreef waaruit het systeem bestaat én in welke volgorde je het bouwt. Dat zijn twee vragen, en ze verdienen twee antwoorden.</p>
   </div>
 
-  <h3>Wat er dan met het speelveld gebeurt</h3>
-  <p class="note">Drie van de zes vlakken zijn het speelveld: zichtbaarheid, platform en opvolging. Dat is de laag waar een klant resultaat van ziet. De andere drie — merk, content, meting — zijn wat die drie laten werken. <b>Dat onderscheid blijft bruikbaar</b>, alleen heet het niet meer "fundament en speelveld" maar gewoon: drie vlakken die verkeer en klanten opleveren, en drie die bepalen hoe goed dat gaat.</p>
+  <h3>De drie vragen die de toren probeerde te beantwoorden</h3>
+  <div class="stack3">
+    <div class="s3">
+      <span class="s3k">WAARUIT BESTAAT HET?</span>
+      <p class="s3t">De kubus</p>
+      <p class="s3d">Zes vlakken. Dit is wat de klant koopt en wat er staat als het af is.</p>
+    </div>
+    <div class="s3">
+      <span class="s3k">IN WELKE VOLGORDE BOUWEN WE HET?</span>
+      <p class="s3t">De bouwvolgorde</p>
+      <p class="s3d">Een tijdlijn, geen model. Wat gaat wanneer aan, wanneer rendeert het, en waar stapt déze klant in. Dat is een planning en hoort in de offerte — niet in je merk.</p>
+    </div>
+    <div class="s3">
+      <span class="s3k">WAAR STAAT DEZE KLANT NU?</span>
+      <p class="s3t">De scan</p>
+      <p class="s3d">Scoor de zes vlakken. Dat is preciezer dan zeven lagen met tests, het gebruikt dezelfde woorden als de kubus, en het levert meteen het zwaartepunt op.</p>
+    </div>
+  </div>
+
+  <div class="ok">
+    <h4>Wat je verliest, en hoe je het terugkrijgt</h4>
+    <p>De toren had één ding dat de kubus mist: afhankelijkheid. Hij liet zien dat je geen marketing kunt doen zonder meting, en geen meting zonder techniek. <b>Dat argument raak je niet kwijt — het wordt sterker.</b> Waar de toren zei &ldquo;deze laag draagt die laag&rdquo;, zegt de kubus: een kubus met vijf vlakken bestaat niet. Hetzelfde punt, in een vorm waar niemand omheen kan.</p>
+  </div>
 </section>
 
 <!-- ============ RISICO'S ============ -->
