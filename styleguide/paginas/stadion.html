@@ -180,6 +180,26 @@ b{color:var(--tx);font-weight:600}
 .pl .rl1{fill:#8a8a90}.pl .rl2{fill:#c4f000}.pl .rl3{fill:#2997ff}
 .pl .tl{fill:#6e6e73;font-family:"SF Mono",ui-monospace,monospace;font-size:10px;letter-spacing:.07em;text-anchor:middle}
 
+
+/* ---------- perspectief ---------- */
+.iso{position:relative;display:block;width:100%;height:auto;max-width:700px;margin:0 auto}
+.iso .pl1{fill:#1d2129;stroke:#3a3f4b;stroke-width:1.5}
+.iso .pl2{fill:#14171d;stroke:#262a33;stroke-width:1}
+.iso .pl3{fill:#0d0f13;stroke:#1d2027;stroke-width:1}
+.iso .rng{fill:none;stroke-width:1.5}
+.iso .rng1{stroke:rgba(255,255,255,.3)}
+.iso .rng2{stroke:rgba(196,240,0,.45)}
+.iso .rng3{stroke:rgba(41,151,255,.45)}
+.iso .stand{fill:#1b2432;stroke:rgba(41,151,255,.45);stroke-width:1.5}
+.iso .roof{fill:#3d5273;stroke:var(--lime);stroke-width:1.5;opacity:.95}
+.iso .pitch{fill:#22314a;stroke:rgba(41,151,255,.85);stroke-width:2}
+.iso .nm{fill:#fff;font-family:"Inter Tight",sans-serif;font-size:21px;font-weight:700;letter-spacing:-.012em}
+.iso .nm-s{fill:#dcdce0;font-family:"Inter Tight",sans-serif;font-size:15px;font-weight:600;letter-spacing:-.006em}
+.iso .tl{fill:#8a8a90;font-family:"SF Mono",ui-monospace,monospace;font-size:10px;letter-spacing:.06em}
+.iso .rf{fill:var(--lime);font-family:"SF Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.05em}
+.iso .lblbg{fill:var(--void)}
+.iso .rl{font-family:"SF Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.09em}
+.iso .rl1{fill:#8a8a90}.iso .rl2{fill:#c4f000}.iso .rl3{fill:#2997ff}
 /* fundament */
 .found{display:grid;gap:8px;margin-top:26px;max-width:720px;margin-inline:auto}
 .fl{background:var(--card);border:1px solid var(--ln-s);border-radius:12px;padding:16px 20px;display:flex;gap:16px;align-items:baseline}
@@ -217,7 +237,7 @@ b{color:var(--tx);font-weight:600}
     <b>Het Stadion</b>
     <a href="#toets">De twee toetsen</a>
     <a href="#plan">De plattegrond</a>
-    <a href="#fundament">Het fundament</a>
+    <a href="#daken">De daken</a>
     <a href="#vorm">Wat de vorm zegt</a>
     <a href="#afspraak">Vast te leggen</a>
     <button id="themeBtn" type="button">Donker</button>
@@ -377,14 +397,56 @@ b{color:var(--tx);font-weight:600}
   </div>
 </section>
 
-<section class="wrap sec" id="fundament">
-  <p class="kicker">WAAR HET OP STAAT</p>
-  <h2>Het fundament</h2>
-  <p class="note">Drie lagen die in maand &eacute;&eacute;n worden neergezet en daarna bewaakt. Ze halen toets 2 niet: je vindt ze niet elke maand opnieuw uit.</p>
+<section class="wrap sec" id="daken">
+  <p class="kicker">DE FLAPPEN</p>
+  <h2>Het dak is de inzet</h2>
+  <p class="note">Je hebt gelijk dat ze nu niets doen. En er is precies één ding dat bij een kanaal hoort, per klant verschilt, en logisch bovenop dat kanaal zit: <b>hoeveel je erin stopt.</b></p>
+
+  <div class="key">
+    <span class="k">WAT HET OPLOST</span>
+    <p class="big">Hier wordt het zwaartepunt eindelijk zichtbaar.</p>
+    <p>Tot nu toe was &ldquo;iedereen krijgt hetzelfde systeem, het zwaartepunt verschilt&rdquo; een zin. Met de daken is het een vorm: <strong>elk stadion ziet er anders uit.</strong> Een restaurant heeft een groot dak boven social en een klein boven Google Ads. Een makelaar precies andersom.</p>
+    <p>En het geeft antwoord op de vraag die komen gaat &mdash; <em>ik wil geen Google Ads</em>. Dan staat het vlak er nog steeds, alleen zonder dak. Het kanaal bestaat, de inzet is nul. Zo blijft je claim over het hele systeem overeind zonder dat je de klant kwijtraakt.</p>
+  </div>
+
+  <h3>Twee dingen op één element</h3>
+  <p class="note"><b>De grootte van het dak is wat erin gaat</b> &mdash; budget en uren, als percentage van het geheel. <b>Het getal erop is wat eruit komt</b> &mdash; de ene maatstaf die voor dat kanaal telt. Investering en opbrengst, per kanaal, in één blik.</p>
+  <p class="note">En fysiek klopt het ook: een dak overkapt de tribune. Hoe groter het dak, hoe meer publiek eronder past. Meer inzet in social betekent een grotere social-tribune. Dat is geen beeldspraak maar het mechanisme zelf.</p>
+
+  <div class="plan" style="padding-block:20px">
+    <svg class="iso" viewBox="0 0 1100 1000" role="img" aria-label="Het stadion in perspectief: een plint van drie fundamentlagen, daarop drie ringen, en een open kubus met de website als veld, vier opstaande vlakken en vier daken waarvan de diepte de inzet per kanaal toont">
+        <ellipse class="pl3" cx="550" cy="568" rx="368" ry="331"/><ellipse class="pl2" cx="550" cy="534" rx="368" ry="331"/><ellipse class="pl1" cx="550" cy="500" rx="368" ry="331"/>
+        <ellipse class="rng rng3" cx="550" cy="500" rx="282" ry="254"/><ellipse class="rng rng2" cx="550" cy="500" rx="245" ry="221"/><ellipse class="rng rng1" cx="550" cy="500" rx="208" ry="188"/>
+        <polygon class="roof" points="593.3,266.4 766.5,422.4 837.1,383.5 632.7,199.4"/>
+        <polygon class="roof" points="506.7,266.4 333.5,422.4 287.6,405.7 492.0,221.7"/>
+        <polygon class="stand" points="550.0,390.8 671.2,500.0 792.5,474.8 550.0,256.4"/>
+        <polygon class="stand" points="550.0,390.8 428.8,500.0 307.5,474.8 550.0,256.4"/>
+        <polygon class="pitch" points="550.0,390.8 671.2,500.0 550.0,609.2 428.8,500.0"/>
+        <polygon class="stand" points="671.2,500.0 550.0,609.2 550.0,693.2 792.5,474.8"/>
+        <polygon class="stand" points="428.8,500.0 550.0,609.2 550.0,693.2 307.5,474.8"/>
+        <polygon class="roof" points="766.5,500.4 593.3,656.4 624.5,709.2 828.9,525.1"/>
+        <polygon class="roof" points="333.5,500.4 506.7,656.4 450.8,731.4 246.5,547.3"/>
+        
+        <text class="nm" x="550" y="500" text-anchor="middle">WEBSITE</text><text class="tl" x="550" y="522" text-anchor="middle">LANDINGSPAGINA&#8217;S &#183; CRO</text><text class="nm-s" x="641" y="406" text-anchor="middle">SEO</text><text class="nm-s" x="459" y="406" text-anchor="middle">GOOGLE ADS</text><text class="nm-s" x="641" y="569" text-anchor="middle">E-MAIL</text><text class="nm-s" x="459" y="569" text-anchor="middle">SOCIAL ADS</text><text class="rf" x="735" y="275" text-anchor="middle">25%</text><text class="rf" x="390" y="298" text-anchor="middle">10%</text><text class="rf" x="727" y="643" text-anchor="middle">20%</text><text class="rf" x="349" y="665" text-anchor="middle">35%</text>
+      </svg>
+  </div>
+
+  <div class="legend" style="grid-template-columns:repeat(3,1fr);margin-top:20px">
+    <div class="lg"><span class="sw" style="border:1.5px solid var(--tx3);border-radius:50%"></span><div><b>Merk</b><span>Binnenste ring. Hoe herkenbaar je bent.</span></div></div>
+    <div class="lg"><span class="sw" style="border:1.5px solid var(--lime-tx);border-radius:50%"></span><div><b>Content</b><span>Middelste ring. Waar elk vlak uit put.</span></div></div>
+    <div class="lg"><span class="sw" style="border:1.5px solid var(--act);border-radius:50%"></span><div><b>Monitoring</b><span>Buitenste ring. Wat er bijgestuurd wordt.</span></div></div>
+  </div>
+
   <div class="found">
-    <div class="fl"><span class="fi">LAAG 03</span><span class="fn">Tooling</span><span class="fd">MailerLite, Leadinfo, Calendly, CRM en de koppelingen ertussen.</span></div>
-    <div class="fl"><span class="fi">LAAG 02</span><span class="fn">Techniek en hosting</span><span class="fd">Domein, hosting, snelheid, beveiliging, e-mailauthenticatie, meetopzet.</span></div>
-    <div class="fl"><span class="fi">LAAG 01</span><span class="fn">Doel en plan</span><span class="fd">Doelgroep, doelstelling, meetpunten, en de capaciteit van de tribune. E&eacute;n keer per jaar herijken.</span></div>
+    <div class="fl"><span class="fi">PLINT 01</span><span class="fn">Doel en plan</span><span class="fd">Doelgroep, doelstelling, meetpunten, capaciteit per tribune.</span></div>
+    <div class="fl"><span class="fi">PLINT 02</span><span class="fn">Techniek en hosting</span><span class="fd">Domein, hosting, snelheid, beveiliging, e-mailauthenticatie, meetopzet.</span></div>
+    <div class="fl"><span class="fi">PLINT 03</span><span class="fn">Tooling</span><span class="fd">MailerLite, Leadinfo, Calendly, CRM en de koppelingen ertussen.</span></div>
+  </div>
+
+  <div class="warn">
+    <h4>E&eacute;n regel die je nu moet vastleggen</h4>
+    <p><b>De vier daken tellen samen op tot honderd procent.</b> Zonder die regel wordt het een vrijblijvende aanduiding en kan iedereen overal &ldquo;veel&rdquo; invullen. Met die regel dwingt het een keuze af: meer dak boven het ene kanaal betekent minder boven het andere. Dat is precies het gesprek dat je in maand &eacute;&eacute;n wilt voeren, en elk jaar opnieuw.</p>
+    <p>De vijfde &mdash; de website &mdash; heeft geen dak. Die ligt open, want daar komt alles op neer en daar wordt altijd aan gewerkt.</p>
   </div>
 </section>
 
