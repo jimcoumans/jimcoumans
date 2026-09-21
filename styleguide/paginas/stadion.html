@@ -160,55 +160,48 @@ b{color:var(--tx);font-weight:600}
 .s3d{font-size:15px;color:var(--tx2);margin:0}
 @media (max-width:900px){.stack3{grid-template-columns:1fr}}
 
-/* ---------- stadion ---------- */
-.arena{position:relative;background:var(--void);border-radius:26px;padding:30px 20px 24px;margin-top:30px;overflow:hidden}
-.arena::before{content:"";position:absolute;left:50%;top:14%;width:760px;height:560px;transform:translateX(-50%);
-  background:radial-gradient(closest-side,rgba(0,122,255,.2),transparent 72%);pointer-events:none}
-.arena svg{position:relative;display:block;width:100%;height:auto;max-width:760px;margin:0 auto}
-.st .seat{stroke:#34343a;stroke-width:3;stroke-linecap:round}
-.st .seat.lit{stroke:var(--lime);opacity:.85}
-.st .sky{stroke:#2997ff;stroke-width:6;stroke-linecap:round}
-.st .ring1{fill:none;stroke:rgba(255,255,255,.34);stroke-width:1.5}
-.st .ring2{fill:none;stroke:rgba(255,255,255,.18);stroke-width:1.5}
-.st .ring3{fill:none;stroke:rgba(196,240,0,.45);stroke-width:1.5;stroke-dasharray:6 6}
-.st .pitch-t{fill:#243247;stroke:rgba(41,151,255,.6);stroke-width:1.5}
-.st .pitch-l{fill:#18202e;stroke:rgba(41,151,255,.45);stroke-width:1.5}
-.st .pitch-r{fill:#1e2838;stroke:rgba(41,151,255,.45);stroke-width:1.5}
-.st .board{fill:#10131a;stroke:#2a2f3a;stroke-width:1.5}
-.st .benchbar{fill:#14161c;stroke:#2a2f3a;stroke-width:1.5}
-.st .benchdot{fill:#5b6172}
-.st .benchdot.coach{fill:var(--lime)}
-.st .lbl{fill:#8a8a90;font-family:"SF Mono",ui-monospace,monospace;font-size:13px;letter-spacing:.08em}
-.st .lbl-w{fill:#f5f5f7;font-family:"Inter Tight",sans-serif;font-size:17px;font-weight:600;letter-spacing:-.01em}
-.st .lbl-lime{fill:#c4f000;font-family:"Inter Tight",sans-serif;font-size:28px;font-weight:700;letter-spacing:-.02em}
-.st .lbl-s{fill:#f5f5f7;font-family:"Inter",sans-serif;font-size:12.5px;font-weight:500}
+/* ---------- plattegrond ---------- */
+.plan{position:relative;background:var(--void);border-radius:26px;padding:26px 18px 20px;margin-top:28px;overflow:hidden}
+.plan::before{content:"";position:absolute;left:50%;top:10%;width:720px;height:560px;transform:translateX(-50%);
+  background:radial-gradient(closest-side,rgba(0,122,255,.18),transparent 72%);pointer-events:none}
+.plan svg{position:relative;display:block;width:100%;height:auto;max-width:720px;margin:0 auto}
+.pl .rng{fill:none;stroke-width:1.5}
+.pl .rng1{stroke:rgba(255,255,255,.32)}
+.pl .rng2{stroke:rgba(196,240,0,.42)}
+.pl .rng3{stroke:rgba(41,151,255,.42)}
+.pl .stand{fill:#161b24;stroke:rgba(41,151,255,.35);stroke-width:1.5}
+.pl .pitch{fill:#1d2a3d;stroke:rgba(41,151,255,.75);stroke-width:2}
+.pl .tk{stroke:#34343a;stroke-width:4;stroke-linecap:round}
+.pl .tk.lit{stroke:var(--lime);opacity:.9}
+.pl .nm{fill:#f5f5f7;font-family:"Inter Tight",sans-serif;font-size:19px;font-weight:600;letter-spacing:-.01em;text-anchor:middle}
+.pl .nm-s{fill:#c7c7cc;font-family:"Inter Tight",sans-serif;font-size:16px;font-weight:600;letter-spacing:-.008em;text-anchor:middle}
+.pl .lblbg{fill:var(--void)}
+.pl .rl{font-family:"SF Mono",ui-monospace,monospace;font-size:11.5px;letter-spacing:.09em;text-anchor:middle}
+.pl .rl1{fill:#8a8a90}.pl .rl2{fill:#c4f000}.pl .rl3{fill:#2997ff}
+.pl .tl{fill:#6e6e73;font-family:"SF Mono",ui-monospace,monospace;font-size:10px;letter-spacing:.07em;text-anchor:middle}
 
-.legend{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:26px}
-.lg{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--ln-s);border-radius:14px;padding:16px 18px}
-.lg .sw{flex:none;width:26px;height:26px;border-radius:7px;margin-top:2px;display:flex;align-items:center;justify-content:center}
-.lg .sw i{display:block}
-.lg b{display:block;font-family:var(--fd);font-size:15.5px;font-weight:600;letter-spacing:-.008em;margin-bottom:3px}
-.lg span{font-size:13.5px;color:var(--tx2);line-height:1.4}
-.sw-veld{background:linear-gradient(140deg,#243247,#18202e);border:1px solid rgba(41,151,255,.5)}
-.sw-ring{border:1.5px solid var(--tx3);border-radius:50%!important}
-.sw-ring3{border:1.5px dashed var(--lime-tx);border-radius:50%!important}
-.sw-bord{background:#10131a;border:1px solid var(--ln)}
-.sw-bank{background:var(--alt);border:1px solid var(--ln-s)}
-.sw-bank i{width:7px;height:7px;border-radius:50%;background:var(--lime-tx)}
-.sw-trib{background:var(--alt);border:1px solid var(--ln-s)}
-.sw-trib i{width:3px;height:14px;border-radius:2px;background:var(--lime-tx)}
-.sw-sky{background:var(--alt);border:1px solid var(--ln-s)}
-.sw-sky i{width:5px;height:14px;border-radius:2px;background:var(--act)}
-@media (max-width:900px){.legend{grid-template-columns:1fr}}
+/* fundament */
+.found{display:grid;gap:8px;margin-top:26px;max-width:720px;margin-inline:auto}
+.fl{background:var(--card);border:1px solid var(--ln-s);border-radius:12px;padding:16px 20px;display:flex;gap:16px;align-items:baseline}
+.fl .fi{font-family:var(--fm);font-size:10.5px;color:var(--tx3);flex:none;width:58px}
+.fl .fn{font-family:var(--fd);font-size:16.5px;font-weight:600;letter-spacing:-.01em;flex:none;width:190px}
+.fl .fd{font-size:14.5px;color:var(--tx2)}
+@media (max-width:734px){.fl{flex-direction:column;gap:4px}.fl .fn,.fl .fi{width:auto}}
 
-/* meter */
-.meter{margin-top:26px;background:var(--card);border:1px solid var(--ln-s);border-radius:18px;padding:24px 26px}
-.meter .mh{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;margin-bottom:14px}
-.meter .mt{font-family:var(--fd);font-size:18px;font-weight:600;letter-spacing:-.01em}
-.meter .mv{font-family:var(--fd);font-size:30px;font-weight:700;letter-spacing:-.022em;color:var(--lime-tx);font-variant-numeric:tabular-nums}
-.meter .bar{height:12px;border-radius:99px;background:var(--alt);overflow:hidden}
-.meter .bar i{display:block;height:100%;background:var(--lime-tx);border-radius:99px}
-.meter .mr{display:flex;justify-content:space-between;font-family:var(--fm);font-size:10.5px;color:var(--tx3);margin-top:8px;letter-spacing:.04em}
+/* toetsen */
+.tests{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:26px}
+.tst{background:var(--card);border:1px solid var(--ln-s);border-radius:18px;padding:26px 24px}
+.tst .tk2{font-family:var(--fm);font-size:10.5px;letter-spacing:.06em;color:var(--act);margin-bottom:10px}
+.tst h4{font-size:20px;margin-bottom:10px}
+.tst p{font-size:15.5px;color:var(--tx2)}
+@media (max-width:900px){.tests{grid-template-columns:1fr}}
+
+.tbl{width:100%;border-collapse:collapse;font-size:15px;margin-top:22px}
+.tbl th,.tbl td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--ln-s)}
+.tbl thead th{font-family:var(--fm);font-size:10.5px;letter-spacing:.04em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.tbl td:first-child{font-weight:500;width:34%}
+.tbl tr:last-child td{border-bottom:none}
+.tblwrap{overflow-x:auto}
 @media (max-width:900px){.faces{grid-template-columns:1fr}}
 @media (max-width:734px){
   :root{--g:20px}
@@ -222,258 +215,216 @@ b{color:var(--tx);font-weight:600}
 <div class="bar">
   <div class="bar-in">
     <b>Het Stadion</b>
-    <a href="#beeld">Het beeld</a>
-    <a href="#tribune">De tribune</a>
-    <a href="#veld">Het veld</a>
-    <a href="#coach">Ring of coach</a>
-    <a href="#naam">De naam</a>
-    <a href="#vast">Vastgelegd</a>
+    <a href="#toets">De twee toetsen</a>
+    <a href="#plan">De plattegrond</a>
+    <a href="#fundament">Het fundament</a>
+    <a href="#vorm">Wat de vorm zegt</a>
+    <a href="#afspraak">Vast te leggen</a>
     <button id="themeBtn" type="button">Donker</button>
   </div>
 </div>
 
 <header class="wrap hero">
   <h1>Het Stadion</h1>
-  <p class="lead">Het model zoals we het nu hebben vastgelegd, in één beeld. Een speelveld van zes vlakken, drie ringen eromheen, een scorebord aan de kop, de bank langs de lijn en een tribune die laat zien hoeveel publiek er al is — en hoeveel er nog leeg staat.</p>
+  <p class="lead">Jouw twee correcties kloppen allebei, en de tweede legt bloot dat ik met het verkeerde criterium werkte. Met het juiste criterium valt alles op zijn plek — inclusief content, dat inderdaad een ring is en geen vlak.</p>
 </header>
 
-<section class="wrap sec" id="beeld">
-  <p class="kicker">VAN BOVEN GEZIEN</p>
-  <h2>Het hele model in één plaat</h2>
-  <div class="arena">
-    <svg class="st" viewBox="0 0 900 820" role="img" aria-label="Het stadion van boven gezien: een tribune van stoelen waarvan een deel is gevuld, drie ringen, het speelveld als kubus in het midden, een scorebord aan de kop en de bank met team en coach">
-        <!-- tribune -->
-        <line class="seat" x1="750.0" y1="430.0" x2="782.0" y2="430.0"/>
-        <line class="seat" x1="748.9" y1="456.1" x2="780.7" y2="458.9"/>
-        <line class="seat" x1="745.4" y1="482.1" x2="777.0" y2="487.7"/>
-        <line class="seat" x1="739.8" y1="507.6" x2="770.7" y2="515.9"/>
-        <line class="seat" x1="731.9" y1="532.6" x2="762.0" y2="543.6"/>
-        <line class="seat lit" x1="721.9" y1="556.8" x2="750.9" y2="570.3"/>
-        <line class="seat lit" x1="709.8" y1="580.0" x2="737.5" y2="596.0"/>
-        <line class="seat lit" x1="695.7" y1="602.1" x2="722.0" y2="620.4"/>
-        <line class="seat lit" x1="679.8" y1="622.8" x2="704.3" y2="643.4"/>
-        <line class="seat lit" x1="662.1" y1="642.1" x2="684.8" y2="664.8"/>
-        <line class="seat lit" x1="642.8" y1="659.8" x2="663.4" y2="684.3"/>
-        <line class="seat lit" x1="622.1" y1="675.7" x2="640.4" y2="702.0"/>
-        <line class="seat lit" x1="600.0" y1="689.8" x2="616.0" y2="717.5"/>
-        <line class="seat lit" x1="576.8" y1="701.9" x2="590.3" y2="730.9"/>
-        <line class="seat lit" x1="552.6" y1="711.9" x2="563.6" y2="742.0"/>
-        <line class="seat lit" x1="527.6" y1="719.8" x2="535.9" y2="750.7"/>
-        <line class="seat lit" x1="502.1" y1="725.4" x2="507.7" y2="757.0"/>
-        <line class="seat lit" x1="476.1" y1="728.9" x2="478.9" y2="760.7"/>
-        <line class="seat lit" x1="450.0" y1="730.0" x2="450.0" y2="762.0"/>
-        <line class="seat lit" x1="423.9" y1="728.9" x2="421.1" y2="760.7"/>
-        <line class="seat lit" x1="397.9" y1="725.4" x2="392.3" y2="757.0"/>
-        <line class="seat lit" x1="372.4" y1="719.8" x2="364.1" y2="750.7"/>
-        <line class="seat lit" x1="347.4" y1="711.9" x2="336.4" y2="742.0"/>
-        <line class="seat lit" x1="323.2" y1="701.9" x2="309.7" y2="730.9"/>
-        <line class="seat lit" x1="300.0" y1="689.8" x2="284.0" y2="717.5"/>
-        <line class="seat lit" x1="277.9" y1="675.7" x2="259.6" y2="702.0"/>
-        <line class="seat lit" x1="257.2" y1="659.8" x2="236.6" y2="684.3"/>
-        <line class="seat lit" x1="237.9" y1="642.1" x2="215.2" y2="664.8"/>
-        <line class="seat lit" x1="220.2" y1="622.8" x2="195.7" y2="643.4"/>
-        <line class="seat lit" x1="204.3" y1="602.1" x2="178.0" y2="620.4"/>
-        <line class="seat lit" x1="190.2" y1="580.0" x2="162.5" y2="596.0"/>
-        <line class="seat lit" x1="178.1" y1="556.8" x2="149.1" y2="570.3"/>
-        <line class="seat" x1="168.1" y1="532.6" x2="138.0" y2="543.6"/>
-        <line class="seat" x1="160.2" y1="507.6" x2="129.3" y2="515.9"/>
-        <line class="seat" x1="154.6" y1="482.1" x2="123.0" y2="487.7"/>
-        <line class="seat" x1="151.1" y1="456.1" x2="119.3" y2="458.9"/>
-        <line class="seat" x1="150.0" y1="430.0" x2="118.0" y2="430.0"/>
-        <line class="seat" x1="151.1" y1="403.9" x2="119.3" y2="401.1"/>
-        <line class="seat" x1="154.6" y1="377.9" x2="123.0" y2="372.3"/>
-        <line class="seat" x1="160.2" y1="352.4" x2="129.3" y2="344.1"/>
-        <line class="seat" x1="168.1" y1="327.4" x2="138.0" y2="316.4"/>
-        <line class="seat" x1="178.1" y1="303.2" x2="149.1" y2="289.7"/>
-        <line class="seat" x1="190.2" y1="280.0" x2="162.5" y2="264.0"/>
-        <line class="seat" x1="204.3" y1="257.9" x2="178.0" y2="239.6"/>
-        <line class="seat" x1="220.2" y1="237.2" x2="195.7" y2="216.6"/>
-        <line class="seat" x1="237.9" y1="217.9" x2="215.2" y2="195.2"/>
-        <line class="seat" x1="257.2" y1="200.2" x2="236.6" y2="175.7"/>
-        <line class="seat" x1="277.9" y1="184.3" x2="259.6" y2="158.0"/>
-        <line class="seat" x1="300.0" y1="170.2" x2="284.0" y2="142.5"/>
-        <line class="seat" x1="323.2" y1="158.1" x2="309.7" y2="129.1"/>
-        <line class="seat" x1="347.4" y1="148.1" x2="336.4" y2="118.0"/>
-        <line class="seat" x1="372.4" y1="140.2" x2="364.1" y2="109.3"/>
-        <line class="seat" x1="552.6" y1="148.1" x2="563.6" y2="118.0"/>
-        <line class="seat" x1="576.8" y1="158.1" x2="590.3" y2="129.1"/>
-        <line class="seat" x1="600.0" y1="170.2" x2="616.0" y2="142.5"/>
-        <line class="seat" x1="622.1" y1="184.3" x2="640.4" y2="158.0"/>
-        <line class="seat" x1="642.8" y1="200.2" x2="663.4" y2="175.7"/>
-        <line class="seat" x1="662.1" y1="217.9" x2="684.8" y2="195.2"/>
-        <line class="seat" x1="679.8" y1="237.2" x2="704.3" y2="216.6"/>
-        <line class="seat" x1="695.7" y1="257.9" x2="722.0" y2="239.6"/>
-        <line class="seat" x1="709.8" y1="280.0" x2="737.5" y2="264.0"/>
-        <line class="seat" x1="721.9" y1="303.2" x2="750.9" y2="289.7"/>
-        <line class="seat" x1="731.9" y1="327.4" x2="762.0" y2="316.4"/>
-        <line class="seat" x1="739.8" y1="352.4" x2="770.7" y2="344.1"/>
-        <line class="seat" x1="745.4" y1="377.9" x2="777.0" y2="372.3"/>
-        <line class="seat" x1="748.9" y1="403.9" x2="780.7" y2="401.1"/>
-        <!-- skybox -->
-        <line class="sky" x1="397.9" y1="134.6" x2="392.3" y2="103.0"/>
-        <line class="sky" x1="423.9" y1="131.1" x2="421.1" y2="99.3"/>
-        <line class="sky" x1="450.0" y1="130.0" x2="450.0" y2="98.0"/>
-        <line class="sky" x1="476.1" y1="131.1" x2="478.9" y2="99.3"/>
-        <line class="sky" x1="502.1" y1="134.6" x2="507.7" y2="103.0"/>
-        <line class="sky" x1="527.6" y1="140.2" x2="535.9" y2="109.3"/>
-        <!-- ringen -->
-        <circle class="ring3" cx="450" cy="430" r="255"/>
-        <circle class="ring2" cx="450" cy="430" r="215"/>
-        <circle class="ring1" cx="450" cy="430" r="175"/>
-        <!-- het veld -->
-        <polygon class="pitch-t" points="450,327 528,372 450,417 372,372"/>
-        <polygon class="pitch-l" points="372,372 450,417 450,505 372,460"/>
-        <polygon class="pitch-r" points="528,372 450,417 450,505 528,460"/>
-        <text class="lbl-s" x="411" y="452" text-anchor="middle">PLATFORM</text>
-        <text class="lbl-s" x="489" y="452" text-anchor="middle">SOCIAL</text>
-        <text class="lbl-s" x="450" y="377" text-anchor="middle">CONTENT</text>
-        <!-- scorebord -->
-        <rect class="board" x="335" y="20" width="230" height="70" rx="12"/>
-        <text class="lbl-lime" x="450" y="56" text-anchor="middle">148</text>
-        <text class="lbl" x="450" y="76" text-anchor="middle" font-size="10">AANVRAGEN DEZE MAAND</text>
-        <!-- bank -->
-        <rect class="benchbar" x="380" y="536" width="140" height="36" rx="18"/>
-        <circle class="benchdot" cx="398" cy="554" r="6"/>
-        <circle class="benchdot" cx="424" cy="554" r="6"/>
-        <circle class="benchdot coach" cx="450" cy="554" r="6"/>
-        <circle class="benchdot" cx="476" cy="554" r="6"/>
-        <circle class="benchdot" cx="502" cy="554" r="6"/>
-        </svg>
-  </div>
+<section class="wrap sec" id="toets">
+  <p class="kicker">DE FOUT DIE ERONDER ZAT</p>
+  <h2>Ik toetste op ritme. Je moet toetsen op bereik.</h2>
+  <p class="note">Ik zei: een vlak is werk met een ritme. Daarmee viel content aan de goede kant, maar om de verkeerde reden — en jouw gevoel dat het een ring is, klopte beter dan mijn regel.</p>
+  <p class="note">Kijk naar wat er al in de ringen zit. Merk en monitoring hebben één ding gemeen: <b>ze bereiken zelf nooit een klant.</b> Ze werken via de kanalen. Content doet exact hetzelfde. Een foto doet niets tot SEO, Ads, social, e-mail of de website hem gebruikt.</p>
 
-  <div class="legend">
-    <div class="lg"><span class="sw sw-veld"></span><div><b>Het veld &middot; zes vlakken</b><span>Zoekmachines, social, platform, e-mail, content, tooling. Het werk zelf.</span></div></div>
-    <div class="lg"><span class="sw sw-ring"></span><div><b>Twee binnenste ringen</b><span>Marketing management en merk. Lopen door en omsluiten al het werk.</span></div></div>
-    <div class="lg"><span class="sw sw-ring3"></span><div><b>Buitenste ring</b><span>Doel en plan. Zet de richting en bepaalt hoe dik elk vlak wordt.</span></div></div>
-    <div class="lg"><span class="sw sw-bord"></span><div><b>Het scorebord</b><span>Monitoring en data. Altijd zichtbaar, voor de klant net zo goed als voor ons.</span></div></div>
-    <div class="lg"><span class="sw sw-bank"><i></i></span><div><b>De bank</b><span>Het team en de partners, met de marketing manager als coach in het midden.</span></div></div>
-    <div class="lg"><span class="sw sw-trib"><i></i></span><div><b>De tribune</b><span>Eigen bereik. Wat oplicht is gevuld, de rest is werk dat nog gedaan moet worden.</span></div></div>
-  </div>
-</section>
-
-<section class="wrap sec" id="tribune">
-  <p class="kicker">JOUW IDEE, DOORGEREKEND</p>
-  <h2>De tribune moet iets meten, anders is het versiering</h2>
-  <p class="note">Je wilt dat een klant kan zien hoeveel werk er nog aan de winkel is. Dat werkt alleen als de stoelen ergens voor staan en de capaciteit ergens op gebaseerd is. Zonder die twee is een halfvol stadion een plaatje dat elke maand hetzelfde blijft.</p>
-
-  <h3>Wat de stoelen zijn</h3>
-  <p class="note"><b>Eigen bereik: mensen die je kunt bereiken zonder ervoor te betalen.</b> Volgers op social, abonnees op je nieuwsbrief, terugkerende websitebezoekers, en mensen die jouw naam in Google intikken. Alles bij elkaar &eacute;&eacute;n getal dat elke maand beweegt.</p>
-  <p class="note">Dat sluit precies aan op het onderscheid uit het speelveld tussen huren en bezitten: advertentiebereik huur je opnieuw zodra je stopt, een tribune bouw je op en blijft staan. <b>De tribune is letterlijk je bezit.</b></p>
-
-  <div class="meter">
-    <div class="mh"><span class="mt">Eigen bereik &mdash; voorbeeld horeca Zuid-Limburg</span><span class="mv">38%</span></div>
-    <div class="bar"><i style="width:38%"></i></div>
-    <div class="mr"><span>4.560 MENSEN BEREIKBAAR</span><span>CAPACITEIT 12.000</span></div>
-  </div>
-
-  <div class="warn">
-    <h4>De capaciteit is het enige wat je per klant moet vastleggen</h4>
-    <p>Een stadion heeft een vast aantal stoelen, een markt niet. Zonder een afgesproken capaciteit betekent &ldquo;38 procent vol&rdquo; niets. <b>Bepaal per klant een realistisch bereikbaar publiek</b> — bijvoorbeeld het aantal huishoudens in het verzorgingsgebied dat ooit klant kan worden — en leg dat vast bij het doel en plan. Dan is het getal te volgen en kun je er een jaardoel aan hangen.</p>
-    <p>Doe je dat niet, dan wordt het vanzelf een cijfer dat altijd gunstig uitkomt. En dan is het precies het soort marketingplaatje waar jullie tegen zijn.</p>
-  </div>
-
-  <div class="ok">
-    <h4>De skybox is de tweede helft van het verhaal</h4>
-    <p>De blauwe plekken zijn klanten. <b>Een volle tribune met een lege skybox is geen succes maar een waarschuwing:</b> veel bereik, weinig omzet. Andersom — een lege tribune met een volle skybox — betekent dat je draait op een kleine groep en kwetsbaar bent zodra er één wegvalt.</p>
-    <p>Daarmee doet het beeld iets wat een lijstje cijfers niet doet: het laat in één oogopslag zien welk vlak van het veld dit jaar zwaarder moet. Weinig publiek betekent zoekmachines en social. Volle tribune, lege skybox betekent platform en e-mail.</p>
-  </div>
-</section>
-
-<section class="wrap sec" id="veld">
-  <p class="kicker">IN HET MIDDEN</p>
-  <h2>Het veld</h2>
-  <p class="note">Opengevouwen is het het speelveld: zes vlakken plat naast elkaar, met platform in het midden. Dichtgevouwen is het het systeem dat de klant bezit. Dezelfde zes, twee toestanden.</p>
-
-  <div class="stage">
-    <div class="scene">
-      <div class="rig" id="rig">
-        <div class="cube">
-          <div class="fc f-b"><span class="n">03</span><span class="l">PLATFORM</span></div>
-          <div class="fc f-e"><span class="n">05</span><span class="l">CONTENT</span></div>
-          <div class="fc f-f"><span class="n">06</span><span class="l">TOOLING</span></div>
-          <div class="fc f-a"><span class="n">01</span><span class="l">ZOEK&shy;MACHINES</span></div>
-          <div class="fc f-c"><span class="n">02</span><span class="l">SOCIAL</span>
-            <div class="fc f-d"><span class="n">04</span><span class="l">E-MAIL</span></div>
-          </div>
-        </div>
-      </div>
+  <div class="tests">
+    <div class="tst">
+      <p class="tk2">TOETS 1 &middot; VLAK OF RING</p>
+      <h4>Raakt het de klant rechtstreeks?</h4>
+      <p><b>Ja</b> &rarr; het is een vlak. SEO, Google Ads, social ads, e-mail en de website bereiken mensen.<br><br><b>Nee, het werkt via de vlakken</b> &rarr; het is een ring. Merk, content en monitoring doen zelf niets; ze maken de vlakken beter.</p>
     </div>
-    <div class="ctl">
-      <button type="button" id="bOpen" aria-pressed="true">Het speelveld</button>
-      <button type="button" id="bFold" aria-pressed="false">Het systeem</button>
-    </div>
-    <p class="stage-cap">CONTENT EN TOOLING RAKEN ALLE VIER DE MAANDELIJKSE VLAKKEN &middot; EN ELKAAR NIET</p>
-  </div>
-</section>
-
-<section class="wrap sec" id="coach">
-  <p class="kicker">JE VRAAG</p>
-  <h2>Ring of coach? Allebei, maar niet hetzelfde</h2>
-  <p class="note">Het lijkt dubbelop, en dat is het alleen als je ze op hetzelfde niveau zet. Er zit een verschil tussen wat de klant koopt en wie het uitvoert.</p>
-
-  <div class="rings2" style="grid-template-columns:repeat(2,1fr)">
-    <div class="rg">
-      <p class="rgk">IN HET MODEL</p>
-      <h4>Marketing management is een ring</h4>
-      <p class="rgd">De functie: overzicht houden, keuzes maken, bijsturen, verantwoorden. Dat is onderdeel van wat iemand koopt en het loopt onafgebroken door. Zonder deze ring koopt hij zes losse uitvoeringen.</p>
-      <p class="rgq">Een ring hoort in het model omdat hij <b>blijft bestaan als de persoon wisselt</b>. Gaat de marketing manager weg, dan blijft de functie staan — en dat is precies het soort onafhankelijkheid dat je zoekt.</p>
-    </div>
-    <div class="rg">
-      <p class="rgk">IN HET STADION</p>
-      <h4>De coach staat op de bank</h4>
-      <p class="rgd">De persoon: één naam, één gezicht, één telefoonnummer. Naast hem de spelers — jouw team en de partners die je erbij haalt.</p>
-      <p class="rgq">De bank hoort in het <b>beeld</b> en niet in het model. Het is geen onderdeel dat je koopt maar de bemanning die het uitvoert. Zo kun je hem per klant invullen met echte namen en foto&rsquo;s, zonder dat het model verandert.</p>
+    <div class="tst">
+      <p class="tk2">TOETS 2 &middot; DOORLOPEND OF EENMALIG</p>
+      <h4>Gebeurt het steeds opnieuw?</h4>
+      <p><b>Ja</b> &rarr; het hoort in het stadion, als vlak of als ring.<br><br><b>Nee, je zet het &eacute;&eacute;n keer goed neer</b> &rarr; het hoort in het fundament. Doel en plan, techniek en tooling vallen hier.</p>
     </div>
   </div>
 
   <div class="key">
-    <span class="k">DE REGEL DIE DUBBELING VOORKOMT</span>
-    <p class="big">De ring is de functie. De bank is de bemanning.</p>
-    <p>Zolang je dat onderscheid vasthoudt, kun je beide tonen zonder dat iemand denkt dat het twee keer hetzelfde is. <strong>In een offerte staat de ring. Op de teampagina staat de bank.</strong></p>
+    <span class="k">WAAROM DIT BELANGRIJKER IS DAN HET PLAATJE</span>
+    <p class="big">Twee vragen delen alles in, zonder uitzonderingen.</p>
+    <p>Elk onderdeel waar we het over hebben gehad valt er schoon in: tooling raakt de klant niet en is eenmalig, dus fundament. Content raakt de klant niet en is doorlopend, dus ring. De website raakt de klant en is doorlopend, dus vlak. <strong>Geen enkel onderdeel heeft een uitzondering nodig.</strong></p>
+    <p>Dat is ook de test voor de toekomst: wil iemand er over een jaar iets bij doen, dan beantwoordt hij die twee vragen en weet hij meteen waar het hoort. Daar heb jij niet meer voor nodig te zijn.</p>
   </div>
 </section>
 
-<section class="wrap sec" id="naam">
-  <p class="kicker">CUBE OF STADION</p>
-  <h2>Eén naam, en dat wordt het stadion</h2>
-  <p class="note">Je twijfel is terecht en ik ben het met je eens. Twee namen voor één ding is precies waarom we de toren hebben laten vervallen; datzelfde zou gebeuren met een stadion dat een kubus heet.</p>
+<section class="wrap sec" id="plan">
+  <p class="kicker">VAN BOVEN, MET DE BOVENKANT OPEN</p>
+  <h2>Vijf vlakken, drie ringen</h2>
+  <p class="note">Je open kubus klopt beter dan de gesloten: &eacute;&eacute;n centraal vlak met vier opstaande vlakken eromheen is precies een stadion. Van bovenaf kijk je erin, en dan is de bouwplaat tegelijk de plattegrond.</p>
 
-  <div class="cpl">
-    <div class="cp">
-      <span class="from">WAT JE WINT</span>
-      <p><b>Een stadion is een plek, een kubus is een vorm.</b> &ldquo;Wij bouwen jouw stadion&rdquo; is een belofte waar iemand zich iets bij voorstelt. &ldquo;Wij bouwen jouw kubus&rdquo; is dat niet. En een plek kun je daadwerkelijk maken — in 3D, in beeld, op de muur bij jullie op kantoor.</p>
+  <div class="plan">
+    <svg class="pl" viewBox="0 0 900 900" role="img" aria-label="Plattegrond van het stadion: de website als speelveld in het midden, vier tribunes met SEO, Google Ads, social ads en e-mail eromheen, elk met een eigen vak publiek, en drie ringen om het geheel">
+        <rect class="rng rng3" x="110" y="110" width="680" height="680" rx="64"/>
+        <rect class="rng rng2" x="150" y="150" width="600" height="600" rx="54"/>
+        <rect class="rng rng1" x="190" y="190" width="520" height="520" rx="44"/>
+        <rect class="lblbg" x="392" y="102" width="116" height="19" rx="4"/>
+        <text class="rl rl3" x="450" y="116">MONITORING</text>
+        <rect class="lblbg" x="405" y="142" width="90" height="19" rx="4"/>
+        <text class="rl rl2" x="450" y="156">CONTENT</text>
+        <rect class="lblbg" x="418" y="182" width="64" height="19" rx="4"/>
+        <text class="rl rl1" x="450" y="196">MERK</text>
+
+        <line class="tk lit" x1="310" y1="234" x2="310" y2="266"/>
+        <line class="tk lit" x1="330" y1="234" x2="330" y2="266"/>
+        <line class="tk lit" x1="350" y1="234" x2="350" y2="266"/>
+        <line class="tk lit" x1="370" y1="234" x2="370" y2="266"/>
+        <line class="tk lit" x1="390" y1="234" x2="390" y2="266"/>
+        <line class="tk lit" x1="410" y1="234" x2="410" y2="266"/>
+        <line class="tk lit" x1="430" y1="234" x2="430" y2="266"/>
+        <line class="tk lit" x1="450" y1="234" x2="450" y2="266"/>
+        <line class="tk lit" x1="470" y1="234" x2="470" y2="266"/>
+        <line class="tk lit" x1="490" y1="234" x2="490" y2="266"/>
+        <line class="tk lit" x1="510" y1="234" x2="510" y2="266"/>
+        <line class="tk" x1="530" y1="234" x2="530" y2="266"/>
+        <line class="tk" x1="550" y1="234" x2="550" y2="266"/>
+        <line class="tk" x1="570" y1="234" x2="570" y2="266"/>
+        <line class="tk" x1="590" y1="234" x2="590" y2="266"/>
+        <line class="tk" x1="610" y1="234" x2="610" y2="266"/>
+        <line class="tk lit" x1="310" y1="634" x2="310" y2="666"/>
+        <line class="tk lit" x1="330" y1="634" x2="330" y2="666"/>
+        <line class="tk lit" x1="350" y1="634" x2="350" y2="666"/>
+        <line class="tk lit" x1="370" y1="634" x2="370" y2="666"/>
+        <line class="tk lit" x1="390" y1="634" x2="390" y2="666"/>
+        <line class="tk lit" x1="410" y1="634" x2="410" y2="666"/>
+        <line class="tk lit" x1="430" y1="634" x2="430" y2="666"/>
+        <line class="tk lit" x1="450" y1="634" x2="450" y2="666"/>
+        <line class="tk lit" x1="470" y1="634" x2="470" y2="666"/>
+        <line class="tk lit" x1="490" y1="634" x2="490" y2="666"/>
+        <line class="tk lit" x1="510" y1="634" x2="510" y2="666"/>
+        <line class="tk lit" x1="530" y1="634" x2="530" y2="666"/>
+        <line class="tk lit" x1="550" y1="634" x2="550" y2="666"/>
+        <line class="tk" x1="570" y1="634" x2="570" y2="666"/>
+        <line class="tk" x1="590" y1="634" x2="590" y2="666"/>
+        <line class="tk" x1="610" y1="634" x2="610" y2="666"/>
+        <line class="tk" x1="234" y1="310" x2="266" y2="310"/>
+        <line class="tk" x1="234" y1="330" x2="266" y2="330"/>
+        <line class="tk" x1="234" y1="350" x2="266" y2="350"/>
+        <line class="tk" x1="234" y1="370" x2="266" y2="370"/>
+        <line class="tk" x1="234" y1="390" x2="266" y2="390"/>
+        <line class="tk" x1="234" y1="410" x2="266" y2="410"/>
+        <line class="tk" x1="234" y1="430" x2="266" y2="430"/>
+        <line class="tk" x1="234" y1="450" x2="266" y2="450"/>
+        <line class="tk" x1="234" y1="470" x2="266" y2="470"/>
+        <line class="tk" x1="234" y1="490" x2="266" y2="490"/>
+        <line class="tk" x1="234" y1="510" x2="266" y2="510"/>
+        <line class="tk" x1="234" y1="530" x2="266" y2="530"/>
+        <line class="tk" x1="234" y1="550" x2="266" y2="550"/>
+        <line class="tk" x1="234" y1="570" x2="266" y2="570"/>
+        <line class="tk" x1="234" y1="590" x2="266" y2="590"/>
+        <line class="tk" x1="234" y1="610" x2="266" y2="610"/>
+        <line class="tk lit" x1="634" y1="310" x2="666" y2="310"/>
+        <line class="tk lit" x1="634" y1="330" x2="666" y2="330"/>
+        <line class="tk lit" x1="634" y1="350" x2="666" y2="350"/>
+        <line class="tk lit" x1="634" y1="370" x2="666" y2="370"/>
+        <line class="tk lit" x1="634" y1="390" x2="666" y2="390"/>
+        <line class="tk lit" x1="634" y1="410" x2="666" y2="410"/>
+        <line class="tk lit" x1="634" y1="430" x2="666" y2="430"/>
+        <line class="tk lit" x1="634" y1="450" x2="666" y2="450"/>
+        <line class="tk lit" x1="634" y1="470" x2="666" y2="470"/>
+        <line class="tk" x1="634" y1="490" x2="666" y2="490"/>
+        <line class="tk" x1="634" y1="510" x2="666" y2="510"/>
+        <line class="tk" x1="634" y1="530" x2="666" y2="530"/>
+        <line class="tk" x1="634" y1="550" x2="666" y2="550"/>
+        <line class="tk" x1="634" y1="570" x2="666" y2="570"/>
+        <line class="tk" x1="634" y1="590" x2="666" y2="590"/>
+        <line class="tk" x1="634" y1="610" x2="666" y2="610"/>
+
+        <polygon class="stand" points="370,370 530,370 570,280 330,280"/>
+        <polygon class="stand" points="370,530 530,530 570,620 330,620"/>
+        <polygon class="stand" points="370,370 370,530 280,570 280,330"/>
+        <polygon class="stand" points="530,370 530,530 620,570 620,330"/>
+        <rect class="pitch" x="370" y="370" width="160" height="160" rx="10"/>
+
+        <text class="nm-s" x="450" y="333">SEO</text>
+        <text class="nm-s" x="450" y="580">SOCIAL ADS</text>
+        <text class="nm-s" x="325" y="456">GOOGLE</text>
+        <text class="nm-s" x="325" y="476">ADS</text>
+        <text class="nm-s" x="575" y="456">E-MAIL</text>
+        <text class="nm" x="450" y="443">WEBSITE</text>
+        <text class="tl" x="450" y="468">LANDINGSPAGINA&#8217;S &#183; CRO</text>
+
+        <text class="tl" x="450" y="212">EIGEN BEZOEKERS</text>
+        <text class="tl" x="450" y="680">VOLGERS</text>
+        <text class="tl" x="250" y="272">GEEN</text>
+        <text class="tl" x="250" y="288">PUBLIEK</text>
+        <text class="tl" x="650" y="280">ABONNEES</text>
+      </svg>
+  </div>
+
+  <div class="tblwrap">
+    <table class="tbl">
+      <thead><tr><th>Onderdeel</th><th>Wat erin zit</th><th>Waarom daar</th></tr></thead>
+      <tbody>
+        <tr><td>Het veld &middot; Website</td><td>landingspagina&rsquo;s, CRO, functionaliteit, snelheid</td><td>alles komt hier neer</td></tr>
+        <tr><td>SEO</td><td>organisch, lokaal, platformen als Funda en Maps</td><td>bestaande vraag oogsten</td></tr>
+        <tr><td>Google Ads</td><td>search, shopping, display</td><td>bestaande vraag kopen</td></tr>
+        <tr><td>Social ads</td><td>Meta, TikTok, LinkedIn, YouTube</td><td>vraag maken</td></tr>
+        <tr><td>E-mailmarketing</td><td>nieuwsbrieven, automation, reviewverzoeken</td><td>eigen publiek bereiken</td></tr>
+        <tr><td>Ring &middot; Merk</td><td>identiteit, tone of voice, levend profiel</td><td>maakt elk vlak goedkoper</td></tr>
+        <tr><td>Ring &middot; Content</td><td>fotografie, videografie, copy</td><td>elk vlak put eruit</td></tr>
+        <tr><td>Ring &middot; Monitoring</td><td>analytics, tracking, dashboards, attributie</td><td>stuurt elk vlak bij</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="wrap sec" id="fundament">
+  <p class="kicker">WAAR HET OP STAAT</p>
+  <h2>Het fundament</h2>
+  <p class="note">Drie lagen die in maand &eacute;&eacute;n worden neergezet en daarna bewaakt. Ze halen toets 2 niet: je vindt ze niet elke maand opnieuw uit.</p>
+  <div class="found">
+    <div class="fl"><span class="fi">LAAG 03</span><span class="fn">Tooling</span><span class="fd">MailerLite, Leadinfo, Calendly, CRM en de koppelingen ertussen.</span></div>
+    <div class="fl"><span class="fi">LAAG 02</span><span class="fn">Techniek en hosting</span><span class="fd">Domein, hosting, snelheid, beveiliging, e-mailauthenticatie, meetopzet.</span></div>
+    <div class="fl"><span class="fi">LAAG 01</span><span class="fn">Doel en plan</span><span class="fd">Doelgroep, doelstelling, meetpunten, en de capaciteit van de tribune. E&eacute;n keer per jaar herijken.</span></div>
+  </div>
+</section>
+
+<section class="wrap sec" id="vorm">
+  <p class="kicker">WAT DE TEKENING ZEGT</p>
+  <h2>Drie dingen die uit de vorm volgen</h2>
+  <div class="cpl" style="display:grid;gap:12px;margin-top:24px">
+    <div class="cp" style="display:grid;grid-template-columns:170px 1fr;gap:20px;background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:20px 22px">
+      <span class="from" style="font-family:var(--fm);font-size:11px;color:var(--act);letter-spacing:.03em">HET MIDDEN</span>
+      <p style="margin:0;font-size:15.5px;color:var(--tx2);max-width:none"><b>De website is het veld, en dat is geen keuze maar een gevolg.</b> Alle vier de kanalen staan eromheen en spelen erop. Een bal die niet op het veld terechtkomt, telt niet — en een kanaal dat op een trage of rommelige pagina uitkomt, ook niet.</p>
     </div>
-    <div class="cp">
-      <span class="from">WAT JE NIET VERLIEST</span>
-      <p><b>De kubus blijft, alleen zonder merknaam.</b> Het veld is nog steeds zes vlakken die opengevouwen het speelveld vormen, en het argument blijft even hard: een veld met vijf vlakken vouwt niet dicht. De vorm doet het werk, de naam hoeft dat niet ook te doen.</p>
+    <div class="cp" style="display:grid;grid-template-columns:170px 1fr;gap:20px;background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:20px 22px">
+      <span class="from" style="font-family:var(--fm);font-size:11px;color:var(--act);letter-spacing:.03em">DE OVERKANTEN</span>
+      <p style="margin:0;font-size:15.5px;color:var(--tx2);max-width:none"><b>Tegenover elkaar staan de tegenpolen.</b> SEO tegenover social ads: bestaande vraag oogsten tegenover nieuwe vraag maken. Google Ads tegenover e-mail: bereik dat je huurt tegenover bereik dat je bezit. Dat is niet ingelegd, het volgt uit de indeling.</p>
     </div>
-    <div class="cp">
-      <span class="from">HOE JE HEM SCHRIJFT</span>
-      <p><b>Het James Robinson Stadion</b> als naam van de methode — met je merk erin, want &ldquo;stadion&rdquo; alleen is te algemeen om te beschermen en te makkelijk te kopiëren. Wat de klant krijgt heet <b>jouw stadion</b>. Eén woord, twee eigenaren, en dat is precies goed: de methode is van jullie, het stadion is van hem.</p>
+    <div class="cp" style="display:grid;grid-template-columns:170px 1fr;gap:20px;background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:20px 22px">
+      <span class="from" style="font-family:var(--fm);font-size:11px;color:var(--act);letter-spacing:.03em">DE TRIBUNES</span>
+      <p style="margin:0;font-size:15.5px;color:var(--tx2);max-width:none"><b>Elk kanaal bouwt zijn eigen publiek — behalve &eacute;&eacute;n.</b> SEO levert terugkerende bezoekers, social levert volgers, e-mail levert abonnees. Google Ads levert aanvragen maar geen publiek: stop je met betalen, dan is die tribune leeg. Dat staat er nu letterlijk in het beeld, en het is het eerlijkste argument voor de andere drie dat je kunt geven.</p>
     </div>
   </div>
+
+  <div class="ok">
+    <h4>Wat je hiermee wint in een gesprek</h4>
+    <p>Een ondernemer ziet in vijf seconden vier lege of volle vakken. <b>Daar hoeft geen woord marketing bij.</b> En de vraag die hij vanzelf stelt — waarom is dat ene vak leeg — is precies de vraag waarop jullie het beste antwoord hebben.</p>
+  </div>
+</section>
+
+<section class="wrap sec" id="afspraak">
+  <p class="kicker">NU VASTLEGGEN</p>
+  <h2>Drie afspraken houden dit overeind</h2>
+  <ul class="qs" style="list-style:none;padding:0;margin:22px 0 0;max-width:760px">
+    <li style="display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--ln-s)"><span style="flex:none;width:26px;height:26px;border-radius:50%;background:var(--b100);color:var(--act);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600">1</span><p style="margin:0;max-width:none"><b>Vijf vlakken, drie ringen, drie lagen.</b> Wat erbij komt, valt binnen een bestaand onderdeel. De twee toetsen wijzen aan welk.</p></li>
+    <li style="display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--ln-s)"><span style="flex:none;width:26px;height:26px;border-radius:50%;background:var(--b100);color:var(--act);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600">2</span><p style="margin:0;max-width:none"><b>Binnen een vlak splitsen we niet.</b> Jouw punt: we maken ook geen apart vlak voor retargeting of leadforms. We werken aan de website, we doen social ads. Dat geldt voor alle vijf.</p></li>
+    <li style="display:flex;gap:14px;padding:16px 0"><span style="flex:none;width:26px;height:26px;border-radius:50%;background:var(--b100);color:var(--act);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600">3</span><p style="margin:0;max-width:none"><b>Per klant &eacute;&eacute;n capaciteit per tribune.</b> Zonder afgesproken aantal is een vol of leeg vak betekenisloos. Hoort in laag 01 van het fundament.</p></li>
+  </ul>
 
   <div class="warn">
-    <h4>De grens die je nu moet afspreken</h4>
-    <p>Een stadion kan eindeloos uitbreiden: er is altijd nog een tribune, een kleedkamer, een parkeerterrein. <b>Leg vast dat het model uit vier soorten onderdelen bestaat</b> — zes vlakken, drie ringen, één scorebord, één tribune — en dat alles wat erbij komt binnen een bestaand onderdeel valt. De bank is de enige uitzondering en die hoort bij het beeld, niet bij het model.</p>
-    <p>Zonder die afspraak is het over een jaar een sfeerbeeld in plaats van een model, en dan heb je precies het probleem dat je met de toren had.</p>
+    <h4>E&eacute;n gevolg voor de dienstenpagina&rsquo;s</h4>
+    <p>De vijf vlakken zijn niet de acht diensten. Fotografie en videografie houden hun eigen pagina omdat mensen daarop zoeken, maar in het model zitten ze in de ring content. Websites idem: eigen pagina, in het model het veld. <b>Diensten zijn hoe mensen zoeken, vlakken zijn hoe wij werken</b> — dat onderscheid moet in je verkoopverhaal zitten, anders gaat iemand ze gelijktrekken.</p>
   </div>
-</section>
-
-<section class="wrap sec" id="vast">
-  <p class="kicker">BESLIST</p>
-  <h2>Twee knopen zijn door</h2>
-  <div class="locked" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-top:22px">
-    <div class="gap" style="margin:0"><div class="hd"><span class="num">01</span><h4>Het systeem gaat als geheel</h4></div>
-      <p>Geen losse kanalen, geen losse shoots. Fotografie en videografie zijn altijd onderdeel van een marketingabonnement, zoals nu al het geval is. Dat maakt de claim &ldquo;het volledige systeem&rdquo; waar in plaats van een verkoopregel — en het is de enige claim uit de onderscheidstabel die geld kost om vol te houden.</p>
-    </div>
-    <div class="gap" style="margin:0"><div class="hd"><span class="num">02</span><h4>Het publiek hoort erbij</h4></div>
-      <p>De tribune blijft in het model, als maatstaf voor eigen bereik. Eerst intern gebruiken en meten; pas naar buiten brengen als er per klant een capaciteit is vastgelegd en het getal een paar maanden heeft bewogen.</p>
-    </div>
-  </div>
-
-  <h3>Wat er nog open staat</h3>
-  <p class="note">Uit het propositiedocument: <b>&eacute;&eacute;n retainer of drie niveaus</b> (dit raakt je schaalbaarheid het hardst), en de <b>merknaamcheck</b> — die verschuift nu van CUBE naar Het James Robinson Stadion, wat het makkelijker maakt omdat je eigen merk erin zit.</p>
 </section>
 
 <footer class="wrap foot">James Robinson &mdash; Marketing &amp; Branding &middot; Het Stadion, werkdocument september 2026</footer>
@@ -486,14 +437,5 @@ b{color:var(--tx);font-weight:600}
   sync();
   tb.addEventListener('click',function(){root.setAttribute('data-theme',cur()==='dark'?'light':'dark');sync()});
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',sync);
-  var scene=document.querySelector('.scene'),
-      bO=document.getElementById('bOpen'), bF=document.getElementById('bFold');
-  function set(f){scene.classList.toggle('folded',f);
-    bF.setAttribute('aria-pressed',f?'true':'false');bO.setAttribute('aria-pressed',f?'false':'true');}
-  bO.addEventListener('click',function(){set(false)});
-  bF.addEventListener('click',function(){set(true)});
-  if(!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches)){
-    setTimeout(function(){set(true)},1600);
-  }
 })();
 </script>
