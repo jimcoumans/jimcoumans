@@ -235,6 +235,9 @@ p{margin:0}
 .r .v{font-family:var(--f-disp);font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right}
 .r.big{padding:14px 0} .r.big .v{font-size:23px}
 .r.tot{border-top:var(--s-med) solid var(--ln);margin-top:4px;padding-top:14px}
+.r.warnrow{background:var(--lime-100);border-radius:12px;padding:12px 14px;border-bottom:none;margin:6px 0}
+.r.warnrow .k{color:var(--orange-tx);font-weight:600}
+.r.warnrow .k .fx{color:var(--tx2);font-weight:400}
 .r.tot .k{color:var(--tx);font-weight:600} .r.tot .v{font-size:24px}
 .r .sb{display:block;font-family:var(--f-text);font-weight:400;font-size:12px;color:var(--tx3);text-align:right}
 .r.good .v{color:var(--green-tx)} .r.mid .v{color:var(--orange-tx)} .r.bad .v{color:var(--red-tx)}
@@ -304,6 +307,10 @@ p{margin:0}
 .qf{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;max-width:720px}
 .qf .f label{font-size:15px;color:var(--tx);font-weight:500}
 .qf .f input{font-size:22px;padding:14px 16px;border-radius:14px}
+.afw{display:inline-block;font-weight:600;font-size:12.5px;border-radius:6px;padding:3px 8px;margin-top:2px}
+.afw.plus{background:var(--green-100);color:var(--green-tx)}
+.afw.min{background:var(--orange-100);color:var(--orange-tx)}
+.afw.nul{background:var(--bg-sunk);color:var(--tx3)}
 .qhint{margin-top:22px;max-width:62ch;font-size:14.5px;color:var(--tx3)}
 .qcalc{margin-top:20px;background:var(--blue-tint);border-radius:14px;padding:15px 18px;font-size:16px;color:var(--tx2);max-width:640px}
 .qcalc b{font-family:var(--f-disp);color:var(--tx);font-variant-numeric:tabular-nums}
@@ -331,6 +338,32 @@ p{margin:0}
 .reveal .kn .kd{grid-column:2;font-size:15px;color:#a1a1a6;margin-top:4px}
 @media (max-width:700px){.reveal .kn .kd{grid-column:1}}
 .reveal .kn .kd b{color:#fff}
+
+/* redeneerketen */
+.chain{display:flex;flex-direction:column}
+.cs{display:grid;grid-template-columns:42px 1fr auto;gap:0 18px;align-items:baseline;
+  background:var(--chip);border:var(--s-hair) solid var(--ln-soft);border-radius:16px;padding:18px 22px}
+.cs.hit{border:none;border-left:var(--s-accent) solid var(--lime);border-radius:0 14px 14px 0;background:var(--lime-100)}
+.cs .ix{font-family:var(--f-mono);font-size:12px;color:var(--tx3)}
+.cs.hit .ix{color:var(--lime-text)}
+.cs .lb{font-size:16px;font-weight:600;color:var(--tx);min-width:0}
+.cs .vv{font-family:var(--f-disp);font-weight:700;font-size:clamp(26px,3.4vw,40px);letter-spacing:-.026em;
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+.cs .sb2{grid-column:2/-1;font-size:14px;color:var(--tx2);margin-top:2px}
+.cs .tag{grid-column:2/-1;justify-self:start;display:inline-block;font-size:11px;font-weight:600;
+  background:var(--lime);color:var(--black);border-radius:6px;padding:4px 9px;margin-top:10px}
+.cgap{display:grid;grid-template-columns:42px 1fr;gap:18px;align-items:center;padding:8px 22px}
+.cgap i{display:block;width:var(--s-med);height:22px;background:var(--ln);border-radius:2px;margin-left:19px}
+.cgap span{font-size:14px;color:var(--tx3)}
+.dtbl{width:100%;border-collapse:collapse;font-size:15px;min-width:640px;margin-top:10px}
+.dtbl th,.dtbl td{text-align:left;padding:11px 14px;border-bottom:var(--s-hair) solid var(--ln-soft);vertical-align:top}
+.dtbl th{font-size:12px;font-weight:600;color:var(--tx3)}
+.dtbl th.n,.dtbl td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.dtbl td:first-child{font-weight:600;white-space:nowrap}
+.dtbl td:nth-child(3){color:var(--tx2)}
+.dtbl td:nth-child(4){color:var(--tx2);font-size:14px}
+.dtbl tr.mm td{background:var(--blue-50)}
+.dtbl tr.tot td{border-top:var(--s-med) solid var(--ln);border-bottom:none;font-weight:600;color:var(--tx)}
 
 /* beheer */
 .adm{max-width:1180px;margin:0 auto}
@@ -418,7 +451,7 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
       <div class="pad qwrap"><div class="qin" id="qin"></div></div>
     </section>
 
-    <!-- 5 -->
+    <!-- 5 resultaat -->
     <section class="screen" data-t="Resultaat">
       <div class="pad wide">
         <div class="reveal">
@@ -432,36 +465,22 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
           </div>
         </div>
         <div class="hd">
-          <span class="eyebrow">Wat dat betekent</span>
-          <h1 id="rTitel">Wat dit oplevert</h1>
+          <span class="eyebrow">De redenering</span>
+          <h1 id="rTitel">Wat er nodig is</h1>
           <p class="lead" id="rLead"></p>
         </div>
-        <div class="kpis" id="rKpis"></div>
-        <div class="two" style="margin-top:clamp(18px,2.6vh,30px)">
-          <div class="card">
-            <span class="eyebrow dim">De stroom</span>
-            <h3>Elke stap, en wat er doorgaat</h3>
-            <div class="flow" id="flowRows" style="margin-top:14px"></div>
-          </div>
-          <div>
-            <div class="card">
-              <span class="eyebrow dim">Verwacht rendement</span>
-              <h3>Wat elke euro naar verwachting oplevert</h3>
-              <p class="note" style="font-size:14px;color:var(--tx3);margin:7px 0 10px">Een verwachting op basis van benchmarks en je eigen cijfers. Geen toezegging.</p>
-              <div class="rows" id="roiRows"></div>
-            </div>
-            <div id="flags"></div>
-            <div class="card">
-              <span class="eyebrow dim">Waarom deze aanpak</span>
-              <h3 id="uitlegT">&mdash;</h3>
-              <p class="note" id="uitlegP" style="margin-top:9px;margin-bottom:0"></p>
-            </div>
-          </div>
+        <div class="chain" id="chainRows"></div>
+        <div class="card" style="margin-top:clamp(20px,3vh,32px)">
+          <span class="eyebrow dim">Hoe we dat realiseren</span>
+          <h3 id="realT">De inzet</h3>
+          <p class="note" id="realP" style="font-size:15px;margin:8px 0 14px"></p>
+          <div class="rows" id="realRows"></div>
         </div>
+        <div id="flags"></div>
       </div>
     </section>
 
-    <!-- 6 -->
+    <!-- 6 voorstel -->
     <section class="screen" data-t="Voorstel">
       <div class="pad wide">
         <div class="vhead">
@@ -473,16 +492,24 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
         </div>
         <div class="two">
           <div class="card">
-            <span class="eyebrow dim">De investering</span>
-            <h3 id="invTitel">Wat het kost</h3>
+            <span class="eyebrow dim">Wat het kost</span>
+            <h3 id="invTitel">De investering</h3>
             <div class="rows" id="invRows" style="margin-top:12px"></div>
           </div>
           <div class="card">
-            <span class="eyebrow dim">De diensten</span>
-            <h3 id="lvlName">&mdash;</h3>
-            <p class="note" id="lvlHint" style="font-size:14px;color:var(--tx3);margin:7px 0 0"></p>
-            <ul class="dnst" id="dnstRows"></ul>
+            <span class="eyebrow dim">Wat het naar verwachting oplevert</span>
+            <h3>Het rendement</h3>
+            <p class="note" style="font-size:14px;color:var(--tx3);margin:7px 0 4px">Een verwachting op basis van benchmarks en je eigen cijfers. Geen toezegging.</p>
+            <div class="rows" id="roiRows" style="margin-top:8px"></div>
           </div>
+        </div>
+        <div class="card" style="margin-top:18px">
+          <span class="eyebrow dim">De diensten</span>
+          <h3 id="lvlName">&mdash;</h3>
+          <p class="note" id="lvlHint" style="font-size:14px;color:var(--tx3);margin:7px 0 0"></p>
+          <div style="overflow-x:auto"><table class="dtbl"><thead><tr>
+            <th>Dienst</th><th class="n">Uren p/m</th><th>Waar we op sturen</th><th>Wat het oplevert</th>
+          </tr></thead><tbody id="dnstRows"></tbody></table></div>
         </div>
         <div class="card" style="margin-top:18px">
           <span class="eyebrow dim">Voorwaarden</span>
@@ -510,9 +537,12 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
               <div class="f"><label for="a-cons">Afwijking van de benchmark <span class="u">%</span></label>
                 <input id="a-cons" type="number" step="5" min="-80" max="80" inputmode="numeric">
                 <span class="hp">Negatief is behoudend. Dit is de knop waarmee je voorkomt dat je iets belooft wat je niet waarmaakt.</span></div>
-              <div class="f"><label for="a-corr">Marktcorrectie VS naar NL</label>
-                <input id="a-corr" type="number" step="0.01" min="0.1" max="2" inputmode="decimal">
-                <span class="hp">Valuta plus marktverschil. Vervang zodra je eigen klikprijzen kent.</span></div>
+              <div class="f"><label for="a-koers">Wisselkoers dollar naar euro</label>
+                <input id="a-koers" type="number" step="0.01" min="0.5" max="1.5" inputmode="decimal">
+                <span class="hp">Feitelijk. Werk bij als de koers verschuift.</span></div>
+              <div class="f"><label for="a-markt">Marktfactor Nederland</label>
+                <input id="a-markt" type="number" step="0.05" min="0.3" max="2" inputmode="decimal">
+                <span class="hp">Boven 1 is duurder dan de VS, onder 1 goedkoper. <b>Hier hebben we geen data voor</b>, dus hij staat op 1,00 tot je eigen accounts het antwoord geven.</span></div>
             </div>
             <div class="admnote" id="consOut"></div>
           </div>
@@ -540,7 +570,7 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
           <div class="card" style="grid-column:1/-1">
             <span class="eyebrow dim">De branchebenchmark</span>
             <h3>Klikprijs en conversie per branche</h3>
-            <p class="note" style="font-size:14px;margin:8px 0 10px">Klikprijs in dollars zoals de bron hem geeft; de tool rekent om met de marktcorrectie. Leeg laten betekent: gebruik het gemiddelde over alle branches.</p>
+            <p class="note" style="font-size:14px;margin:8px 0 10px">Klikprijs in dollars zoals de bron hem geeft; de tool rekent om met de wisselkoers maal de marktfactor. Leeg laten betekent: gebruik het gemiddelde over alle branches.</p>
             <div style="overflow-x:auto"><table class="admtbl">
               <thead><tr><th>Branche</th><th>Klikprijs $</th><th>Klik &rarr; conversie %</th><th>In euro&rsquo;s</th><th>Na afwijking</th></tr></thead>
               <tbody id="admBench"></tbody>
@@ -632,7 +662,16 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
     leisure:{naam:'Sport & leisure',ws:'Travel',cpc:2.12,cpcSrc:1,cvr:null,model:'reservering'},
     arbeid:{naam:'Arbeidsmarkt',ws:'Career & Employment',cpc:null,cvr:3.05,cvrSrc:1,model:'werving'}
   };
-  var DIENST=['SEO','SEA','Social Ads','E-mail &amp; automation','Website (LP &amp; CRO)','Content','Merk &amp; design','Marketing Management'];
+  var DIENST=[
+    {n:'SEO',kan:'SEO',kpi:'Organische bezoekers per maand',v:'Bouwt op vanaf maand vier. Daarna bezoekers zonder klikkosten.'},
+    {n:'SEA',kan:'SEA',kpi:'Kosten per aanvraag',v:'Draagt het grootste deel van de betaalde instroom.'},
+    {n:'Social Ads',kan:'Social Ads',kpi:'Bereik en kosten per duizend vertoningen',v:'Zet vraag in gang bij wie nog niet zoekt.'},
+    {n:'E-mail &amp; automation',kpi:'Conversies uit de eigen lijst',v:'Haalt herhaling uit mensen die je al kent. Geen klikkosten.'},
+    {n:'Website (LP &amp; CRO)',kpi:'Conversieratio',v:'Elke procentpunt erbij verlaagt de kostprijs per aanvraag evenredig.'},
+    {n:'Content',kpi:'Vertoningen en doorklikratio',v:'Vult SEO, social en e-mail. Verlaagt de kostprijs van alle drie.'},
+    {n:'Merk &amp; design',kpi:'Aandeel direct en merkverkeer',v:'Bekende merken betalen minder per klik en converteren beter.'},
+    {n:'Marketing Management',kpi:'Alle bovenstaande',v:'Regie, overleg en rapportage. Bepaalt waar het budget volgende maand heen gaat.'}
+  ];
 
   var DX={
     weinig:{naam:'Te weinig',minLvl:1,impact:'zicht',
@@ -686,7 +725,7 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
 
   /* ---------- instellingen ---------- */
   var DEF={
-    cons:-25, corr:0.65, staffel:250, linkL:250, linkH:400,
+    cons:-25, koers:0.90, markt:1.00, staffel:250, linkL:250, linkH:400,
     gcpc:5.42, gcvr:7.52, bron:'WordStream 2026 · 13.000 campagnes, 23 branches', datum:'september 2026',
     lvl:[{mnd:1650,uur:4,setup:3000},{mnd:3300,uur:8,setup:4500},{mnd:4950,uur:12,setup:6000}],
     bench:{}
@@ -698,7 +737,7 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
   }catch(e){} }
   function saveA(){ try{ localStorage.setItem('jr-arena-cfg',JSON.stringify(A)); }catch(e){} }
   function applyA(){
-    WS_CPC=A.gcpc; WS_CVR=A.gcvr; CORR=A.corr; STAFFEL=A.staffel;
+    WS_CPC=A.gcpc; WS_CVR=A.gcvr; CORR=(A.koers||0.9)*(A.markt||1); STAFFEL=A.staffel;
     LVL.forEach(function(L,i){ var c=A.lvl[i]; L.mnd=c.mnd; L.uur=c.uur; L.setup=c.setup; L.jaar=c.mnd*12; });
     Object.keys(BRANCHE).forEach(function(k){ var b=A.bench[k]; if(!b) return;
       BRANCHE[k].cpc=(b.cpc===''||b.cpc===null||b.cpc===undefined)?null:Number(b.cpc);
@@ -711,7 +750,7 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
   function consF(){ return 1+(A.cons||0)/100; }
   loadA(); applyA();
 
-  var model='leadgen', branche='makelaardij', answers={}, dx=null, scr=0;
+  var model='leadgen', branche='makelaardij', answers={}, dx=null, scr=0, eigen=false;
   var T={bedrijf:'',persoon:'',logo:''};
   var V={omzet:null,ambitie:250000,waardePer:3250,aankopen:2,marge:35,jaren:4,
          convWk:null,bezNu:null,cpc:null,ctr:null,cvr:null,close:25};
@@ -869,18 +908,45 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
         :'Let op: neem <b>niet</b> je huidige percentage. Wie nu op netwerk en mond-tot-mond draait, sluit hoog &mdash; die leads waren al warm. Marketingleads zijn kouder.');
     velden(b,[fld('close',M.closeLabel,'%')]);
   }
+  function benchWaarden(){
+    var B=BRANCHE[branche];
+    return {cpc:Math.round((B.cpc||WS_CPC)*CORR*100)/100,
+            ctr:Math.round(2.0*consF()*100)/100,
+            cvr:Math.round((B.cvr||WS_CVR)*consF()*100)/100};
+  }
+  function afw(v,b){ if(!v||!b) return ''; var d=(v/b-1)*100;
+    if(Math.abs(d)<0.5) return '<span class="afw nul">gelijk aan de benchmark</span>';
+    return '<span class="afw '+(d>0?'plus':'min')+'">'+(d>0?'+':'')+dec.format(d)+'% t.o.v. de benchmark</span>'; }
   function rBench(el){
-    var M=MODELS[model], B=BRANCHE[branche];
-    var b=head(el,'De cijfers · waar we mee rekenen','De uitgangspunten',
-      'Deze komen uit de branchebenchmark voor <b>'+B.ws+'</b>, omgerekend naar euro&rsquo;s'+
-      (A.cons?(' en '+Math.abs(A.cons)+'% '+(A.cons<0?'behoudender':'optimistischer')+' gezet'):'')+
-      '. Klopt er iets niet met je eigen ervaring, pas het hier aan.');
+    var M=MODELS[model], B=BRANCHE[branche], bw=benchWaarden();
+    var b=head(el,'De cijfers \u00b7 waar we mee rekenen','De uitgangspunten',
+      'Drie getallen bepalen samen de kostprijs per '+M.conv+'. We beginnen bij de benchmark voor <b>'+B.ws+'</b>'+
+      (A.cons?(', '+Math.abs(A.cons)+'% '+(A.cons<0?'behoudender':'optimistischer')+' gezet'):'')+
+      '. Heb je eigen cijfers, dan zijn die altijd beter.');
+    var seg=document.createElement('div'); seg.className='seg'; seg.style.margin='0 0 24px';
+    [['Benchmarkwaarden',false],['Eigen waarden',true]].forEach(function(o){
+      var btn=document.createElement('button'); btn.type='button'; btn.textContent=o[0];
+      btn.setAttribute('aria-pressed', eigen===o[1]?'true':'false');
+      btn.addEventListener('click',function(){
+        eigen=o[1];
+        if(!eigen){ V.cpc=bw.cpc; V.ctr=bw.ctr; V.cvr=bw.cvr; }
+        go(scr); });
+      seg.appendChild(btn); });
+    b.appendChild(seg);
     velden(b,[
-      fld('cpc','Kosten per klik','EUR','Bron: $'+(B.cpc||WS_CPC).toFixed(2)+' × marktcorrectie '+String(CORR).replace('.',',')),
-      fld('ctr','Van vertoning naar klik','% CTR','Welk deel van wie de advertentie ziet erop klikt.'),
-      fld('cvr','Van klik naar '+M.conv,'% CONVERSIE','Welk deel van de bezoekers een '+M.conv+' doet. Niet de conversieratio van je hele website.')
+      fld('cpc','Kosten per klik','EUR', eigen? afw(V.cpc,bw.cpc)
+        : 'Benchmark $'+(B.cpc||WS_CPC).toFixed(2)+' \u00d7 koers '+String(A.koers).replace('.',',')+' \u00d7 marktfactor '+String(A.markt).replace('.',',')),
+      fld('ctr','Van vertoning naar klik','% CTR', eigen? afw(V.ctr,bw.ctr)
+        : 'Welk deel van wie de advertentie ziet erop klikt.'),
+      fld('cvr','Van klik naar '+M.conv,'% CONVERSIE', eigen? afw(V.cvr,bw.cvr)
+        : 'Welk deel van de bezoekers een '+M.conv+' doet. Niet de conversieratio van je hele website.')
     ]);
-    hint(el,'Deze drie bepalen samen de kostprijs per '+M.conv+'. Ze staan standaard op de benchmark; je eigen cijfers zijn altijd beter.');
+    if(eigen) ['cpc','ctr','cvr'].forEach(function(k){
+      var el2=document.getElementById('x-'+k);
+      if(el2) el2.addEventListener('blur',function(){ go(scr); }); });
+    hint(el, eigen
+      ? 'Onder elk veld zie je hoeveel je eigen cijfer afwijkt van de benchmark. D\u00e1t is het gesprek: waarom presteert dit beter of slechter?'
+      : 'Klik op Eigen waarden zodra je cijfers uit Analytics of Google Ads hebt.');
   }
 
   function setLogo(src){
@@ -958,6 +1024,19 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
 
   function factorFor(g){ if(g===null)return 1.30; if(g<=.25)return 1.15; if(g<=.5)return 1.30; if(g<=1)return 1.50; return 1.80; }
   function staffel(x){ return Math.max(STAFFEL, Math.ceil(x/STAFFEL)*STAFFEL); }
+  /* verdeelt het maandbudget over de kanalen in hele staffels, zonder het totaal op te blazen */
+  function verdeelBudget(kanN,kan,tot){
+    var units=Math.max(kanN.length, Math.round(tot/STAFFEL));
+    var raw=kanN.map(function(k){ return units*kan[k]/100; });
+    var out=raw.map(function(r){ return Math.max(1,Math.floor(r)); });
+    var rest=units-out.reduce(function(a,b){return a+b;},0);
+    var ord=raw.map(function(r,i){ return {i:i,f:r-Math.floor(r)}; }).sort(function(a,b){ return b.f-a.f; });
+    for(var j=0;rest>0;j++,rest--) out[ord[j%ord.length].i]++;
+    while(rest<0){ var big=0;
+      for(var q=1;q<out.length;q++) if(out[q]>out[big]) big=q;
+      if(out[big]<=1) break; out[big]--; rest++; }
+    var res={}; kanN.forEach(function(k,i){ res[k]=out[i]*STAFFEL; });
+    return res; }
   function R(k,fx,v,sb,cls,ind){
     var d=document.createElement('div'); d.className='r'+(cls?' '+cls:'');
     var a=document.createElement('span'); a.className='k'+(ind?' ind':''); a.innerHTML=k+(fx?'<span class="fx">'+fx+'</span>':'');
@@ -998,7 +1077,7 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
     var flags=document.getElementById('flags'); flags.textContent='';
     if(!d){
       document.getElementById('rLead').textContent='Rond eerst de diagnose af.';
-      ['rKpis','flowRows','roiRows','invRows','dnstRows'].forEach(function(id){ document.getElementById(id).textContent=''; });
+      ['chainRows','realRows','roiRows','invRows','dnstRows'].forEach(function(id){ document.getElementById(id).textContent=''; });
       return;
     }
     document.getElementById('vDx').textContent=d.naam;
@@ -1006,18 +1085,18 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
     document.getElementById('kv').textContent=d.knop;
     document.getElementById('kd').innerHTML=d.uitleg+' <b>'+d.effect+'</b>';
 
-    var cvr=V.cvr, close=V.close, waarde=jaarwaarde, eigen=0;
+    var cvr=V.cvr, close=V.close, waarde=jaarwaarde, eigenA=0;
     if(d.lift.cvr&&cvr) cvr*=d.lift.cvr;
     if(d.lift.close&&close) close=Math.min(95,close*d.lift.close);
     if(d.lift.waarde&&waarde) waarde*=d.lift.waarde;
-    if(d.lift.eigen) eigen=d.lift.eigen;
+    if(d.lift.eigen) eigenA=d.lift.eigen;
 
     var klanten=null,conv=null,convB=null,bez=null,vert=null,budget=null,groei=null,fac=1,
         cpl=null,cac=null,margeEur=null,ltv=null,omzet=null;
     if(model==='werving') klanten=V.ambitie||null;
     else if(V.ambitie&&waarde) klanten=V.ambitie/waarde;
     if(klanten&&close) conv=klanten/(close/100);
-    if(conv!==null) convB=conv*(1-eigen);
+    if(conv!==null) convB=conv*(1-eigenA);
     if(conv&&convNu) groei=conv/convNu;
     fac=factorFor(groei);
     if(convB&&cvr) bez=convB/(cvr/100);
@@ -1030,7 +1109,8 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
     if(klanten&&waarde) omzet=klanten*waarde;
 
     var kanN=Object.keys(d.kan), kanB={}, adMnd=0;
-    if(budget!==null) kanN.forEach(function(k){ kanB[k]=staffel(budget/12*d.kan[k]/100); adMnd+=kanB[k]; });
+    if(budget!==null){ kanB=verdeelBudget(kanN,d.kan,budget/12);
+      kanN.forEach(function(k){ adMnd+=kanB[k]; }); }
     var adJaar=adMnd*12, lvlB=1;
     if(budget!==null) LVL.forEach(function(L){ if(adJaar>=L.jaar) lvlB=L.n; });
     var chosen = budget===null ? d.minLvl : Math.max(lvlB,d.minLvl);
@@ -1038,86 +1118,129 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
     var maandTot=L.mnd+adMnd+linkM, jaarTot=maandTot*12, jaar1=jaarTot+L.setup;
     var margeTot=(margeEur&&klanten)?klanten*margeEur:null, onder=margeTot!==null?margeTot-jaar1:null;
 
-    var st=[], fr=document.getElementById('flowRows'); fr.textContent='';
-    if(vert) st.push({key:'zicht',n:'Zichtbaarheid',v:num.format(Math.round(vert)),d:'vertoningen per jaar'});
-    if(bez) st.push({key:'bez',n:'Websitebezoekers',v:num.format(Math.round(bez)),d:'extra per jaar',
-      nu:V.bezNu?('nu '+num.format(V.bezNu)+' per jaar'):null,gap:'CTR '+dec.format(V.ctr)+'%'});
-    if(conv) st.push({key:'aanvr',n:'Extra '+M.convMv,v:num.format(Math.ceil(conv)),d:'per jaar',
-      nu:convNu?('nu '+num.format(convNu)+' — dat is +'+Math.round(groei*100)+'%'):null,
-      gap:'conversie '+dec.format(cvr)+'%'+(d.lift.cvr?' (na CRO)':'')});
-    if(klanten) st.push({key:'klant',n: model==='werving'?'Aannames':(model==='ecom'?'Orders':'Nieuwe klanten'),
-      v:num.format(Math.ceil(klanten)),d:'per jaar',gap:M.closeLabel.toLowerCase()+' '+dec.format(close)+'%'+(d.lift.close?' (na bewijs)':'')});
-    st.forEach(function(s){
-      if(s.gap){ var g=document.createElement('div'); g.className='fgap'; g.innerHTML='<i></i><span>'+s.gap+'</span>'; fr.appendChild(g); }
-      var e=document.createElement('div'); e.className='fs'+(s.key===d.impact?' hit':'');
-      var h='<div class="t"><span class="n">'+s.n+'</span><span class="v">'+s.v+'</span></div><p class="d">'+s.d+'</p>'+(s.nu?'<p class="nu">'+s.nu+'</p>':'');
-      if(s.key===d.impact) h+='<span class="tag">HIER ZIT DE WINST</span>';
-      e.innerHTML=h; fr.appendChild(e); });
+    /* ---- de redenering, van doel naar vertoningen ---- */
+    var ch=document.getElementById('chainRows'); ch.textContent='';
+    function cstep(ix,lb,val,sub,hit,tag){
+      var d=document.createElement('div'); d.className='cs'+(hit?' hit':'');
+      d.innerHTML='<span class="ix">'+ix+'</span><span class="lb">'+lb+'</span><span class="vv">'+val+'</span>'+
+        (sub?'<span class="sb2">'+sub+'</span>':'')+(tag?'<span class="tag">'+tag+'</span>':'');
+      ch.appendChild(d);
+    }
+    function cgap(t){ var d=document.createElement('div'); d.className='cgap';
+      d.innerHTML='<i></i><span>'+t+'</span>'; ch.appendChild(d); }
 
-    document.getElementById('rTitel').textContent = T.bedrijf ? ('Wat dit '+T.bedrijf+' oplevert') : 'Wat dit oplevert';
-    document.getElementById('rLead').innerHTML = 'Diagnose: <b>'+d.naam+'</b>. '+d.duiding;
-    var kp=document.getElementById('rKpis'); kp.textContent='';
-    if(conv) kp.appendChild(KP('Extra '+M.convMv,num.format(Math.ceil(conv)),'per jaar','b'));
-    if(omzet&&model!=='werving') kp.appendChild(KP(model==='leadgen'?'Omzet, projectie':'Extra omzet',eur.format(Math.round(omzet)),'per jaar'));
-    if(budget!==null&&omzet) kp.appendChild(KP('ROAS',dec.format(omzet/adJaar)+'×','omzet per euro advertentiebudget','g'));
-    kp.appendChild(KP('Investering',eur.format(maandTot),'per maand, doorlopend'));
-    if(onder!==null) kp.appendChild(KP('Onder de streep, jaar 1',eur.format(Math.round(onder)),'marge min investering',onder>0?'g':'r'));
-    document.getElementById('uitlegT').textContent=d.knop;
-    document.getElementById('uitlegP').innerHTML=d.uitleg+' <b>'+d.effect+'.</b> Alle getallen op dit scherm volgen daaruit.';
+    var n=1;
+    if(model==='werving'){
+      cstep('0'+(n++),'Mensen die je nodig hebt',num.format(Math.ceil(klanten||0)),'dat is je doel');
+    } else if(V.ambitie){
+      cstep('0'+(n++),'Extra omzet',eur.format(V.ambitie),'dat is je doel');
+      if(klanten){ cgap('\u00f7 '+eur.format(Math.round(waarde))+' waarde per klant in jaar 1');
+        cstep('0'+(n++),'Nieuwe klanten nodig',num.format(Math.ceil(klanten))); }
+    }
+    if(conv){ cgap('\u00f7 '+dec.format(close)+'% winkans'+(d.lift.close?' (na bewijs)':''));
+      cstep('0'+(n++),'Extra '+M.convMv,num.format(Math.ceil(conv)),
+        convNu?('nu '+num.format(convNu)+' per jaar \u2014 dat is +'+Math.round(groei*100)+'%'):null,
+        d.impact==='aanvr', d.impact==='aanvr'?'HIER ZIT DE WINST':null); }
+    if(eigenA>0&&conv){ cgap(Math.round(eigenA*100)+'% hiervan komt uit SEO en e-mail, zonder klikkosten');
+      cstep('0'+(n++),'Uit betaald verkeer',num.format(Math.ceil(convB))); }
+    if(bez){ cgap('\u00f7 '+dec.format(cvr)+'% conversie'+(d.lift.cvr?' (na CRO)':''));
+      cstep('0'+(n++),'Websitebezoekers',num.format(Math.round(bez)),'extra per jaar',
+        d.impact==='bez', d.impact==='bez'?'HIER ZIT DE WINST':null); }
+    if(vert){ cgap('\u00f7 '+dec.format(V.ctr)+'% doorklikratio');
+      cstep('0'+(n++),'Vertoningen',num.format(Math.round(vert)),'zichtbaarheid per jaar',
+        d.impact==='zicht', d.impact==='zicht'?'HIER ZIT DE WINST':null); }
 
+    document.getElementById('rTitel').textContent = T.bedrijf
+      ? ('Wat '+T.bedrijf+' daarvoor nodig heeft') : 'Wat daarvoor nodig is';
+    document.getElementById('rLead').innerHTML = model==='werving'
+      ? d.duiding
+      : (V.ambitie? ('Om '+eur.format(V.ambitie)+' extra omzet te halen rekenen we van achteren naar voren. '+d.duiding) : d.duiding);
+
+    /* ---- hoe we dat realiseren ---- */
+    var rr=document.getElementById('realRows'); rr.textContent='';
+    document.getElementById('realT').textContent='De inzet: '+kanN.join(', ')+(linkM>0?' en SEO':'');
+    document.getElementById('realP').innerHTML = d.uitleg+' <b>'+d.effect+'.</b>';
+    if(budget!==null){
+      var perKan = convB? convB/adMnd : 0;
+      kanN.forEach(function(k){
+        var aandeel=kanB[k]/adMnd;
+        rr.appendChild(R(k, eur.format(kanB[k])+' per maand',
+          num.format(Math.round((convB||0)*aandeel))+' <span class="pm">'+M.convMv+'</span>', 'per jaar'));
+      });
+      if(eigenA>0&&conv) rr.appendChild(R('SEO en e-mail', linkM>0?(eur.format(linkM)+' linkbuilding per maand'):'binnen de retainer',
+        num.format(Math.ceil(conv*eigenA))+' <span class="pm">'+M.convMv+'</span>','per jaar, zonder klikkosten'));
+      rr.appendChild(R('Samen', eur.format(adMnd+linkM)+' per maand aan budget',
+        num.format(Math.ceil(conv))+' <span class="pm">'+M.convMv+'</span>',null,'tot'));
+    }
+
+    /* ---- de conclusie: rendement ---- */
     var roi=document.getElementById('roiRows'); roi.textContent='';
     if(klanten){
       if(model==='werving'){
         var besp=klanten*(waarde||0);
         roi.appendChild(R('Bespaard per aanname',null,eur.format(Math.round(waarde||0))));
-        roi.appendChild(R('Totaal bespaard',num.format(Math.ceil(klanten))+' × '+eur.format(Math.round(waarde||0)),eur.format(Math.round(besp)),null,'big'));
+        roi.appendChild(R('Totaal bespaard',num.format(Math.ceil(klanten))+' \u00d7 '+eur.format(Math.round(waarde||0)),eur.format(Math.round(besp)),null,'big'));
         margeTot=besp; onder=besp-jaar1;
-      } else if(omzet){
-        roi.appendChild(R('<span class="kpi">ROAS</span>Omzet per euro advertentiebudget',
-          eur.format(Math.round(omzet))+' ÷ '+eur.format(adJaar),dec.format(omzet/adJaar)+'×',null,'big good'));
-        roi.appendChild(R('<span class="kpi">ROI</span>Omzet per euro marketing totaal',
-          eur.format(Math.round(omzet))+' ÷ '+eur.format(jaarTot)+' (incl. retainer)',dec.format(omzet/jaarTot)+'×'));
-        roi.appendChild(R('Brutomarge op die omzet',V.marge+'% × '+eur.format(Math.round(omzet)),eur.format(Math.round(margeTot))));
         roi.appendChild(R('Onder de streep, jaar 1',
-          eur.format(Math.round(margeTot))+' marge − '+eur.format(jaar1)+' investering (incl. fundament)',
+          eur.format(Math.round(besp))+' bespaard \u2212 '+eur.format(jaar1)+' investering (incl. fundament)',
           eur.format(Math.round(onder))+'<span class="tagp '+(onder>0?'ok':'bad')+'">'+(onder>0?'POSITIEF':'NEGATIEF')+'</span>',
           null,onder>0?'big good':'big bad'));
-        roi.appendChild(R('<span class="kpi">ROI %</span>Rendement op de investering','(marge − investering) ÷ investering',
+      } else if(omzet){
+        roi.appendChild(R('<span class="kpi">ROAS</span>Omzet per euro advertentiebudget',
+          eur.format(Math.round(omzet))+' \u00f7 '+eur.format(adJaar)+' advertentiebudget',dec.format(omzet/adJaar)+'\u00d7',null,'big good'));
+        roi.appendChild(R('<span class="kpi">ROI</span>Omzet per euro marketing totaal',
+          eur.format(Math.round(omzet))+' \u00f7 '+eur.format(jaarTot)+' (incl. retainer en linkbuilding)',dec.format(omzet/jaarTot)+'\u00d7'));
+        roi.appendChild(R('Brutomarge op die omzet',V.marge+'% \u00d7 '+eur.format(Math.round(omzet)),eur.format(Math.round(margeTot))));
+        roi.appendChild(R('Onder de streep, jaar 1',
+          eur.format(Math.round(margeTot))+' marge \u2212 '+eur.format(jaar1)+' investering (incl. fundament)',
+          eur.format(Math.round(onder))+'<span class="tagp '+(onder>0?'ok':'bad')+'">'+(onder>0?'POSITIEF':'NEGATIEF')+'</span>',
+          null,onder>0?'big good':'big bad'));
+        roi.appendChild(R('<span class="kpi">ROI %</span>Rendement op de investering','(marge \u2212 investering) \u00f7 investering',
           dec.format(onder/jaar1*100)+'%',null,onder>0?'good':'bad'));
       }
+      if(omzet&&adJaar&&omzet/adJaar>10) roi.appendChild(R('Deze ROAS is te hoog om zo te presenteren',
+        'hij volgt uit een conversie van '+dec.format(cvr)+'%, het gemiddelde over 23 branches. Zet je eigen percentage in.','',null,'warnrow'));
       if(cpl!==null) roi.appendChild(R('<span class="kpi">'+M.cpl+'</span>Kosten per '+M.conv,
-        eur2.format(V.cpc)+' klik ÷ '+dec.format(cvr)+'%'+(fac>1?' × '+dec.format(fac)+' opschaling':''),eur2.format(cpl)));
-      if(cac!==null) roi.appendChild(R('<span class="kpi">CAC</span>Kosten per klant',eur2.format(cpl)+' ÷ '+dec.format(close)+'%',
+        eur2.format(V.cpc)+' klik \u00f7 '+dec.format(cvr)+'%'+(fac>1?' \u00d7 '+dec.format(fac)+' opschaling':''),eur2.format(cpl)));
+      if(cac!==null) roi.appendChild(R('<span class="kpi">CAC</span>Kosten per klant',eur2.format(cpl)+' \u00f7 '+dec.format(close)+'%',
         eur2.format(cac)+(margeEur!==null?'<span class="tagp '+(cac<=margeEur?'ok':'bad')+'">'+(cac<=margeEur?'ONDER DE MARGE':'BOVEN DE MARGE')+'</span>':''),
         null,margeEur!==null?(cac<=margeEur?'good':'bad'):null));
-      if(ltv!==null) roi.appendChild(R('Marge over '+V.jaren+' jaar',eur.format(Math.round(margeEur))+' × '+V.jaren+' jaar',eur.format(Math.round(ltv))));
+      if(ltv!==null) roi.appendChild(R('Marge per klant over '+V.jaren+' jaar',eur.format(Math.round(margeEur))+' \u00d7 '+V.jaren+' jaar',eur.format(Math.round(ltv))));
     }
 
+    /* ---- de conclusie: investering ---- */
     var iv=document.getElementById('invRows'); iv.textContent='';
-    document.getElementById('invTitel').textContent='Wat het kost — '+L.naam;
+    document.getElementById('invTitel').textContent='De investering \u2014 '+L.naam;
     iv.appendChild(R('Eenmalig fundament','maand 1, apart gefactureerd',eur.format(L.setup)));
-    iv.appendChild(R('Retainer '+L.naam,L.uur+' uur per week · bedrag onder voorbehoud',pmv(L.mnd)));
+    iv.appendChild(R('Retainer '+L.naam,L.uur+' uur per week \u00b7 bedrag onder voorbehoud',pmv(L.mnd)));
     if(budget!==null){
       iv.appendChild(R('Advertentiebudget','berekend '+eur.format(Math.round(budget/12))+' p/m, afgerond op staffels van '+eur.format(STAFFEL),pmv(adMnd)));
       kanN.forEach(function(k){ iv.appendChild(R(k,null,pmv(kanB[k]),d.kan[k]+'% van het advies',null,true)); }); }
     if(linkM>0) iv.appendChild(R('Linkbuildingbudget','hoort bij SEO',pmv(linkM)));
     iv.appendChild(R('Per maand, doorlopend',null,eur.format(maandTot),null,'tot'));
-    iv.appendChild(R('Jaar 1 totaal','12 × '+eur.format(maandTot)+' + '+eur.format(L.setup)+' fundament',eur.format(jaar1)));
+    iv.appendChild(R('Jaar 1 totaal','12 \u00d7 '+eur.format(maandTot)+' + '+eur.format(L.setup)+' fundament',eur.format(jaar1)));
     if(V.omzet){ var pct=jaarTot/V.omzet*100, c=pct<=12?'good':(pct<=18?'mid':'bad');
       iv.appendChild(R('Van je jaaromzet','benchmark 7,7% (Gartner) tot 9,4% (CMO Survey)',
         dec.format(pct)+'%<span class="tagp '+(c==='good'?'ok':(c==='mid'?'warn':'bad'))+'">'+
         (c==='good'?'BINNEN BENCHMARK':(c==='mid'?'AAN DE HOGE KANT':'BOVEN BENCHMARK'))+'</span>',null,c)); }
 
+    /* ---- diensten met KPI ---- */
     var uurM=Math.round(L.uur*52/12), uren=verdeel(d.uren,uurM), dn=document.getElementById('dnstRows'); dn.textContent='';
     document.getElementById('lvlName').textContent=L.naam;
-    document.getElementById('lvlHint').innerHTML=L.ritme+' · <b>'+uurM+' uur per maand</b> ('+L.uur+' uur per week)';
-    DIENST.forEach(function(n,i){ if(uren[i]<=0) return;
-      var li=document.createElement('li');
-      if(n==='Marketing Management') li.className='mm';
-      li.innerHTML='<div><b>'+n+'</b>'+(n==='Marketing Management'?'<span class="w">Regie, overleg en rapportage. In elke optie.</span>':'')+'</div><em>'+uren[i]+' <span>u/mnd</span></em>';
-      dn.appendChild(li); });
-    var lt=document.createElement('li'); lt.style.borderTop='var(--s-med) solid var(--ln)'; lt.style.borderBottom='none';
-    lt.innerHTML='<div><b>Totaal</b></div><em>'+uurM+' <span>u/mnd</span></em>'; dn.appendChild(lt);
+    document.getElementById('lvlHint').innerHTML=L.ritme+' \u00b7 <b>'+uurM+' uur per maand</b> ('+L.uur+' uur per week)';
+    DIENST.forEach(function(D,i2){ if(uren[i2]<=0) return;
+      var tr=document.createElement('tr');
+      if(D.n==='Marketing Management') tr.className='mm';
+      var lev=D.v;
+      if(D.kan&&kanB[D.kan]&&convB){
+        lev='Ongeveer '+num.format(Math.round(convB*(kanB[D.kan]/adMnd)))+' '+M.convMv+' per jaar, bij '+eur.format(kanB[D.kan])+' budget per maand.';
+      } else if(D.n==='SEO'&&eigenA>0&&conv){
+        lev='Samen met e-mail ongeveer '+num.format(Math.ceil(conv*eigenA))+' '+M.convMv+' per jaar, zonder klikkosten.';
+      }
+      tr.innerHTML='<td>'+D.n+'</td><td class="n">'+uren[i2]+'</td><td>'+D.kpi+'</td><td>'+lev+'</td>';
+      dn.appendChild(tr); });
+    var trt=document.createElement('tr'); trt.className='tot';
+    trt.innerHTML='<td>Totaal</td><td class="n">'+uurM+'</td><td></td><td></td>'; dn.appendChild(trt);
 
     if(!convNu&&!V.bezNu) flags.appendChild(FL('note','<b>Je eigen cijfers zijn er nog niet.</b> Dan stuur je nu op gevoel. De nulmeting is het eerste dat we opleveren.'));
     if(model==='leadgen'||model==='werving') flags.appendChild(FL('warn','<b>Let op het closingpercentage.</b> Draai je nu op netwerk en mond-tot-mond, dan is dat percentage te hoog voor marketingleads. Die zijn kouder.'));
@@ -1147,7 +1270,7 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
     return el;
   }
   var numP=function(x){ var n=parseFloat(x); return isFinite(n)?n:0; };
-  bindA('a-cons','cons',numP); bindA('a-corr','corr',numP); bindA('a-staffel','staffel',numP);
+  bindA('a-cons','cons',numP); bindA('a-koers','koers',numP); bindA('a-markt','markt',numP); bindA('a-staffel','staffel',numP);
   bindA('a-linkL','linkL',numP); bindA('a-linkH','linkH',numP);
   bindA('a-gcpc','gcpc',numP); bindA('a-gcvr','gcvr',numP);
   bindA('a-bron','bron'); bindA('a-datum','datum');
@@ -1176,7 +1299,7 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
         inp.addEventListener('input',function(){ b[spec[0]]= inp.value===''?null:numP(inp.value); afterAdm(true); });
         td.appendChild(inp); tr.appendChild(td); });
       var e=document.createElement('td'); e.style.fontVariantNumeric='tabular-nums';
-      e.textContent=eur2.format((b.cpc||A.gcpc)*A.corr); tr.appendChild(e);
+      e.textContent=eur2.format((b.cpc||A.gcpc)*CORR); tr.appendChild(e);
       var f=document.createElement('td'); f.style.fontVariantNumeric='tabular-nums';
       f.innerHTML=dec.format((b.cvr||A.gcvr)*consF())+'%';
       tr.appendChild(f);
@@ -1184,7 +1307,8 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
   }
   function admSync(){
     document.getElementById('a-cons').value=A.cons;
-    document.getElementById('a-corr').value=A.corr;
+    document.getElementById('a-koers').value=A.koers;
+    document.getElementById('a-markt').value=A.markt;
     document.getElementById('a-staffel').value=A.staffel;
     document.getElementById('a-linkL').value=A.linkL;
     document.getElementById('a-linkH').value=A.linkH;
