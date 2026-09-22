@@ -282,12 +282,12 @@ p{margin:0}
 
 /* de keten compacter naarmate het scherm lager is */
 .fit .cs{padding:clamp(8px,1.35vh,18px) clamp(16px,2vw,22px);border-radius:14px}
-.fit .cs .vv{font-size:clamp(24px,4.4vh,40px)}
+.fit .cs .vv{font-size:clamp(22px,4vh,40px)}
 .fit .cs .lb{font-size:clamp(14px,1.8vh,16px)}
 .fit .cs .sb2{font-size:clamp(12px,1.5vh,14px)}
 .fit .cs .tag{margin-top:clamp(5px,.9vh,10px)}
 .fit .cgap{padding:clamp(3px,.6vh,8px) 22px}
-.fit .cgap.met{padding-block:clamp(5px,.9vh,9px)}
+.fit .cgap.met{padding-block:clamp(4px,.75vh,9px)}
 .fit .cgap i{height:clamp(12px,1.8vh,22px)}
 .fit .cgap span{font-size:clamp(12px,1.5vh,14px)}
 
@@ -450,6 +450,30 @@ p{margin:0}
 .cgap.aan span{color:var(--lime-text)}
 .cgap.aan i{background:var(--lime)}
 .fit .cknop{font-size:clamp(11.5px,1.45vh,13.5px)}
+
+/* de drie lagen van de plint */
+.lagen{display:grid;gap:clamp(9px,1.5vh,14px);max-width:820px}
+.laag{border:var(--s-hair) solid var(--ln-soft);border-radius:14px;
+  padding:clamp(11px,1.7vh,17px) clamp(14px,2vw,20px);background:var(--chip)}
+.laag .lh{display:flex;align-items:baseline;gap:12px}
+.laag .ln{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.04em;color:var(--tx3)}
+.laag .lt{font-family:var(--f-disp);font-size:clamp(15px,2vh,18px);font-weight:600}
+.laag .lv{font-size:clamp(13px,1.7vh,15px);color:var(--tx2);margin:5px 0 10px}
+.laag .seg{margin-top:0}
+.laag .seg button{min-height:clamp(34px,4.4vh,40px);font-size:clamp(13px,1.6vh,14px);padding:6px 15px}
+
+/* de opbouwgrafiek */
+.grafiek svg{width:100%;height:clamp(230px,38vh,360px);display:block;overflow:visible}
+.grafiek .gl{stroke:var(--ln-soft);stroke-width:1}
+.grafiek .gd{stroke:var(--tx3);stroke-width:2;stroke-dasharray:7 5}
+.grafiek .ga,.grafiek .gm{font-family:var(--f-text);font-size:12px;fill:var(--tx3)}
+.grafiek .gm{font-size:12.5px}
+.glg{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:clamp(12px,2vh,20px);
+  font-size:clamp(13px,1.65vh,14.5px);color:var(--tx2)}
+.glg .gi{display:inline-flex;align-items:center;gap:8px}
+.glg i{width:13px;height:13px;border-radius:3px;flex:none}
+.glg i.dash{width:18px;height:0;border-top:2px dashed var(--tx3);border-radius:0}
+.glg b{color:var(--tx);font-variant-numeric:tabular-nums}
 .dtbl{width:100%;border-collapse:collapse;font-size:15px;min-width:640px;margin-top:10px}
 .dtbl th,.dtbl td{text-align:left;padding:11px 14px;border-bottom:var(--s-hair) solid var(--ln-soft);vertical-align:top}
 .dtbl th{font-size:12px;font-weight:600;color:var(--tx3)}
@@ -577,6 +601,18 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
           <h1 id="rTitel">Wat er nodig is</h1>
         </div>
         <div class="chain" id="chainRows"></div>
+      </div>
+    </section>
+
+    <!-- 5c2 de opbouw -->
+    <section class="screen" data-print data-t="Opbouw">
+      <div class="pad wide fit">
+        <div class="hd tight">
+          <span class="eyebrow">De opbouw</span>
+          <h1>Hoe het jaar eruitziet</h1>
+          <p class="lead" id="grLead"></p>
+        </div>
+        <div class="grafiek" id="grafiek"></div>
       </div>
     </section>
 
@@ -857,6 +893,26 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
   function rampT(r,hoofd){ if(!r) return '';
     return (hoofd?'L':'l')+'evert vanaf maand '+r.s+', op niveau vanaf maand '+r.v; }
 
+  /* De plint onder het model: doel, techniek, tooling. Dit is wat het eenmalige
+     fundament oplevert. Staat een laag er niet, dan kan het spel erboven niet
+     gespeeld worden \u2014 en dan is de vraag niet of we adverteren maar wanneer we
+     kunnen meten wat het doet. */
+  var LAGEN=[
+    {k:'doel',n:'Doel en plan',nr:'LAAG 01',
+     w:'Doelgroep, doelstelling en meetpunten. Zonder dit weet niemand wanneer het goed gaat.',
+     v:'Weet je van elke euro marketing waar hij heen ging en wat hij opleverde?',
+     mist:'We beginnen met scherpstellen wie je klant is, wat je doel is en waarop we sturen.'},
+    {k:'tech',n:'Techniek en hosting',nr:'LAAG 02',
+     w:'Domein, hosting, snelheid, beveiliging, e-mailauthenticatie en de meetopzet.',
+     v:'Laadt de site snel, staat de meting goed en komt je e-mail aan?',
+     mist:'Eerst de techniek op orde. Verkeer kopen naar een trage site of meten zonder goede opzet is geld weggooien.'},
+    {k:'tool',n:'Tooling',nr:'LAAG 03',
+     w:'CRM, e-mailplatform, leadherkenning, afsprakentool en de koppelingen ertussen.',
+     v:'Komt een aanvraag automatisch op de juiste plek terecht?',
+     mist:'We richten de tooling in en koppelen hem, zodat een aanvraag niet in een mailbox blijft liggen.'}
+  ];
+  var LAAGANT=[{l:'Staat',v:2},{l:'Deels',v:1},{l:'Staat niet',v:0}];
+
   var DX={
     weinig:{naam:'Te weinig',minLvl:1,impact:'zicht',
       q:{leadgen:'"De telefoon gaat te weinig."',ecom:'"Er komen te weinig bestellingen binnen."',reservering:'"Het is te vaak te rustig."',werving:'"Er reageert bijna niemand."'},
@@ -951,15 +1007,16 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
 
   var model='leadgen', branche='makelaardij', answers={}, dx=null, scr=0, eigen=false;
   var T={bedrijf:'',persoon:'',logo:''};
-  var V={omzet:null,ambitie:250000,waardePer:3250,aankopen:2,marge:35,jaren:4,
-         convWk:null,bezNu:null,cpc:null,ctr:null,cvr:null,close:25};
+  var V={omzet:null,ambitie:250000,eenmalig:0,waardePer:3250,aankopen:2,marge:35,jaren:4,
+         churn:0,convWk:null,bezNu:null,cpc:null,ctr:null,cvr:null,close:25};
+  var FND={doel:null,tech:null,tool:null};
 
   var admEl=document.getElementById('sAdmin');
   var secs={}; [].slice.call(document.querySelectorAll('.screen')).forEach(function(el,i){
     secs[el.id||('s'+i)]=el; });
   function sec(t){ return document.querySelector('.screen[data-t="'+t+'"]'); }
   var secStart=sec('Start'), secWelkom=sec('Welkom'), secVraag=document.getElementById('sVraag'),
-      secDx=sec('Diagnose'), secRed=sec('Redenering'), secAan=sec('Aanpak'),
+      secDx=sec('Diagnose'), secRed=sec('Redenering'), secAan=sec('Aanpak'), secOpb=sec('Opbouw'),
       secAnn=sec('Aannames'), secVoor=sec('Voorstel'), secDns=sec('Diensten');
   var qin=document.getElementById('qin');
 
@@ -976,7 +1033,9 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
         if(answers.q3===0) L.push({id:'q4',fase:'De diagnose',sec:secVraag,r:rQ('q4')});
       }
     }
+    L.push({id:'fundament',fase:'Het fundament',sec:secVraag,r:rFund});
     L.push({id:'doel',fase:'De cijfers',sec:secVraag,r:rDoel});
+    if(model!=='ecom') L.push({id:'churn',fase:'De cijfers',sec:secVraag,r:rChurn});
     L.push({id:'waarde',fase:'De cijfers',sec:secVraag,r:rWaarde});
     L.push({id:'marge',fase:'De cijfers',sec:secVraag,r:rMarge});
     L.push({id:'nu',fase:'De cijfers',sec:secVraag,r:rNu});
@@ -985,6 +1044,7 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
     L.push({id:'diagnose',fase:'De uitkomst',sec:secDx});
     L.push({id:'redenering',fase:'De uitkomst',sec:secRed});
     L.push({id:'aanpak',fase:'De uitkomst',sec:secAan});
+    L.push({id:'opbouw',fase:'De uitkomst',sec:secOpb});
     L.push({id:'aannames',fase:'De uitkomst',sec:secAnn});
     L.push({id:'voorstel',fase:'Het voorstel',sec:secVoor});
     L.push({id:'diensten',fase:'Het voorstel',sec:secDns});
@@ -1066,6 +1126,53 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
         function(i){ pick(id,i); setTimeout(next,240); });
     };
   }
+  /* Groei is netto. Wie elk jaar klanten verliest moet die er eerst bij halen
+     voordat er ook maar iets groeit \u2014 anders belooft de som groei die in
+     werkelijkheid alleen het gat vult. */
+  function rFund(el){
+    var b=head(el,'Het fundament \u00b7 de plint','Wat staat er al?',
+      'Onder alle kanalen ligt een plint van drie lagen. Ontbreekt er een, dan lekt alles daarboven weg. Dit bepaalt wat we in maand 1 doen.');
+    var w=document.createElement('div'); w.className='lagen';
+    LAGEN.forEach(function(L){
+      var r=document.createElement('div'); r.className='laag';
+      r.innerHTML='<div class="lh"><span class="ln">'+L.nr+'</span><span class="lt">'+L.n+'</span></div>'+
+        '<p class="lv">'+L.v+'</p>';
+      var sg=document.createElement('div'); sg.className='seg';
+      LAAGANT.forEach(function(a){
+        var btn=document.createElement('button'); btn.type='button'; btn.textContent=a.l;
+        btn.setAttribute('aria-pressed', FND[L.k]===a.v?'true':'false');
+        btn.addEventListener('click',function(){ FND[L.k]=a.v; go(scr); });
+        sg.appendChild(btn); });
+      r.appendChild(sg); w.appendChild(r); });
+    el.querySelector('.qbody').appendChild(w);
+    var st=fundStaat();
+    hint(el, st.n===0 ? 'Weet je het niet zeker? Dan is het antwoord meestal \u201cdeels\u201d. We toetsen het in de eerste week.'
+      : (st.open? '<b>'+st.open+' van de drie lagen</b> vraagt werk. Dat zit in het eenmalige fundament, niet in de maandelijkse uren.'
+                : 'De plint staat. Het fundament wordt dan licht: controleren, aansluiten en meteen door.'));
+  }
+  function fundStaat(){
+    var n=0,som=0,open=0,mist=[];
+    LAGEN.forEach(function(L){ var v=FND[L.k];
+      if(v===null||v===undefined) return;
+      n++; som+=v; if(v<2){ open++; mist.push(L); } });
+    return {n:n,som:som,open:open,mist:mist,vol:n===LAGEN.length};
+  }
+  /* Hoe minder er staat, hoe zwaarder het fundament. Halve laag telt half. */
+  function fundFactor(){
+    var st=fundStaat();
+    if(!st.n) return 1;
+    var tekort=(st.n*2-st.som)/(st.n*2);
+    return Math.round((0.6+tekort*0.9)*100)/100;
+  }
+  function rChurn(el){
+    var M=MODELS[model];
+    var b=head(el,'De cijfers \u00b7 het gat','Verlies je klanten?',
+      model==='werving'
+        ? 'Mensen die vertrekken moet je eerst vervangen voordat je groeit. Weet je het niet, zet 0 \u2014 dan rekenen we alleen de groei.'
+        : 'Opzeggingen, klanten die niet terugkomen, contracten die aflopen. Die moet je eerst vervangen voordat je groeit. Weet je het niet, zet 0.');
+    velden(b,[fld('churn',model==='werving'?'Vertrekkers per jaar':'Klanten die je per jaar verliest','AANTAL')]);
+    uitkomst(el,'churnout');
+  }
   function rDoel(el){
     var M=MODELS[model];
     var b=head(el,'De cijfers · het doel',
@@ -1080,9 +1187,10 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
       velden(b0,[fld('waardePer','Bespaard per aanname','EUR')]); return;
     }
     var b=head(el,'De cijfers · de waarde','Wat is een klant je waard in het eerste jaar?',
-      'Twee vragen die je zo uit je hoofd beantwoordt. We rekenen met de <b>eerste twaalf maanden</b>, want dat is wat er binnen het contractjaar op je rekening staat.');
-    velden(b,[fld('waardePer','Wat betaalt een klant per keer?','EUR'),
-              fld('aankopen','Hoe vaak koopt hij per jaar?','AANTAL','Bij eenmalig: 1.')]);
+      'Veel bedrijven hebben twee soorten omzet per klant: iets eenmaligs bij de start en iets dat daarna terugkomt. We rekenen met de <b>eerste twaalf maanden</b>.');
+    velden(b,[fld('eenmalig','Eenmalig bij de start','EUR','Aansluitkosten, installatie, set-up. Geen? Zet 0.'),
+              fld('waardePer','Daarna per keer','EUR'),
+              fld('aankopen','Hoe vaak per jaar?','AANTAL','Maandelijks: 12. Eenmalig: 1.')]);
     uitkomst(el,'jaarwaarde');
   }
   function rMarge(el){
@@ -1347,6 +1455,70 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
     return {uren:pct.map(function(){ return 0; }),weg:weg};
   }
 
+  /* Kleur hoort bij de bron, niet bij de volgorde: SEO en e-mail houden hun
+     eigen kleur ook als er een kanaal bijkomt of wegvalt. */
+  var GRKL={'SEA':'#1a5fb4','Retargeting':'#b06010','Social Ads':'#4a9ad4','SEO en e-mail':'#8a9a2e'};
+  var GRKL_D={'SEA':'#2b7fd4','Retargeting':'#cc7a2e','Social Ads':'#66b2e6','SEO en e-mail':'#9fb52f'};
+  var MND=['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
+  function maandF(r,m){ if(!r) return 1;
+    return m<r.s ? 0 : (m>=r.v ? 1 : (m-r.s+1)/(r.v-r.s+1)); }
+  function donker(){ var t=document.documentElement.getAttribute('data-theme');
+    return t? t==='dark' : window.matchMedia('(prefers-color-scheme: dark)').matches; }
+
+  function tekenGrafiek(PL,bezEig,M){
+    var el=document.getElementById('grafiek'); if(!el) return;
+    el.textContent='';
+    if(!PL){ return; }
+    var kl=donker()?GRKL_D:GRKL;
+    /* reeksen: de kanalen plus de eigen bronnen, elk met hun eigen aanloop */
+    var reeks=PL.rij.map(function(r){
+      return {n:r.k, per:r.klik/12, ramp:RAMP[r.k]}; });
+    if(bezEig>0) reeks.push({n:'SEO en e-mail', per:bezEig/12, ramp:RAMP.eigen});
+    reeks.forEach(function(x,i){ x.kl=kl[x.n]||'#6e6e73';
+      x.mnd=MND.map(function(_,m){ return x.per*maandF(x.ramp,m+1); }); });
+    var tot=MND.map(function(_,m){ return reeks.reduce(function(a,x){ return a+x.mnd[m]; },0); });
+    var max=Math.max.apply(null,tot)||1, vol=reeks.reduce(function(a,x){ return a+x.per; },0);
+
+    var W=1000,H=330,pl=54,pr=14,pt=16,pb=30, iw=W-pl-pr, ih=H-pt-pb;
+    var bw=iw/12, gap=Math.min(9,bw*0.22);
+    function y(v){ return pt+ih-(v/max)*ih; }
+    var sv='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Verkeer per maand, opgebouwd per bron" preserveAspectRatio="none">';
+    /* rasterlijnen en schaal */
+    var stap=Math.pow(10,Math.floor(Math.log(max)/Math.LN10))/2, lijnen=[];
+    while(max/stap>5) stap*=2;
+    for(var g=0; g<=max; g+=stap) lijnen.push(g);
+    lijnen.forEach(function(g){
+      sv+='<line class="gl" x1="'+pl+'" y1="'+y(g).toFixed(1)+'" x2="'+(W-pr)+'" y2="'+y(g).toFixed(1)+'"/>'+
+          '<text class="ga" x="'+(pl-10)+'" y="'+(y(g)+4).toFixed(1)+'" text-anchor="end">'+num.format(g)+'</text>';
+    });
+    /* de staven, van onder naar boven gestapeld, met 2px lucht ertussen */
+    MND.forEach(function(nm,m){
+      var x=pl+m*bw+gap/2, w=bw-gap, onder=0;
+      reeks.forEach(function(x2){
+        var v=x2.mnd[m]; if(v<=0){ onder+=v; return; }
+        var y1=y(onder+v), y2=y(onder), h=Math.max(0,y2-y1-2);
+        sv+='<rect x="'+x.toFixed(1)+'" y="'+y1.toFixed(1)+'" width="'+w.toFixed(1)+'" height="'+h.toFixed(1)+
+            '" rx="2" fill="'+x2.kl+'"><title>'+nm+' \u00b7 '+x2.n+': '+num.format(Math.round(v))+' bezoekers</title></rect>';
+        onder+=v; });
+      sv+='<text class="gm" x="'+(x+w/2).toFixed(1)+'" y="'+(H-9)+'" text-anchor="middle">'+nm+'</text>';
+    });
+    /* het niveau op kruissnelheid */
+    sv+='<line class="gd" x1="'+pl+'" y1="'+y(vol).toFixed(1)+'" x2="'+(W-pr)+'" y2="'+y(vol).toFixed(1)+'"/>';
+    sv+='</svg>';
+    el.innerHTML=sv;
+
+    var lg=document.createElement('div'); lg.className='glg';
+    reeks.forEach(function(x){
+      lg.innerHTML+='<span class="gi"><i style="background:'+x.kl+'"></i>'+x.n+
+        ' <b>'+num.format(Math.round(x.per))+'</b> p/m</span>'; });
+    lg.innerHTML+='<span class="gi"><i class="dash"></i>Op kruissnelheid <b>'+num.format(Math.round(vol))+'</b> p/m</span>';
+    el.appendChild(lg);
+
+    var lead=document.getElementById('grLead');
+    if(lead) lead.innerHTML='Verkeer per maand, opgebouwd per bron. De stippellijn is het niveau dat we op kruissnelheid halen. '+
+      'Maand 1 zit daar ver onder: campagnes moeten leren en SEO komt pas na maanden op gang. Het budget staat er wel vanaf maand 1.';
+  }
+
   function compute(){
     var M=MODELS[model], d=dx?DX[dx]:null;
     var wb=document.getElementById('wBedrijf');
@@ -1358,11 +1530,21 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
     document.getElementById('vTitel').textContent = T.bedrijf ? ('Marketingvoorstel '+T.bedrijf) : 'Het voorstel';
     document.getElementById('vMeta').textContent = (T.persoon?('VOOR '+T.persoon.toUpperCase()+' · '):'')+'JAMES ROBINSON · MARKETING & BRANDING';
 
-    var jaarwaarde = model==='werving'? V.waardePer : ((V.waardePer&&V.aankopen)?V.waardePer*V.aankopen:null);
+    /* Jaar 1 telt het eenmalige mee, daarna alleen wat terugkomt. Dat verschil
+       bepaalt of een tweede jaar met dezelfde klant meer of minder waard is. */
+    var terugk = (V.waardePer&&V.aankopen)? V.waardePer*V.aankopen : 0;
+    var jaarwaarde = model==='werving'? V.waardePer
+                   : ((terugk||V.eenmalig)? (V.eenmalig||0)+terugk : null);
     var jw=document.getElementById('jaarwaarde');
     if(jw) jw.innerHTML = jaarwaarde
-      ? 'Waarde in jaar 1: <b>'+eur.format(Math.round(jaarwaarde))+'</b> per klant &nbsp;·&nbsp; '+eur.format(V.waardePer)+' × '+V.aankopen
-      : 'Vul beide velden in.';
+      ? 'Jaar 1: <b>'+eur.format(Math.round(jaarwaarde))+'</b> per klant'+
+        (V.eenmalig? ' — '+eur.format(V.eenmalig)+' eenmalig plus '+eur.format(V.waardePer)+' × '+V.aankopen : '')+
+        (V.eenmalig&&terugk? '. Elk volgend jaar <b>'+eur.format(Math.round(terugk))+'</b>.' : '')
+      : 'Vul de velden in.';
+    var co=document.getElementById('churnout');
+    if(co) co.innerHTML = V.churn
+      ? 'Je moet er <b>'+num.format(V.churn)+'</b> binnenhalen voordat je groeit. Die komen bovenop je doel.'
+      : 'We rekenen alleen met groei. Verlies je toch klanten, dan valt het resultaat lager uit.';
     var convNu=V.convWk?V.convWk*52:null, nu=document.getElementById('nuout');
     if(nu){ if(convNu&&V.bezNu) nu.innerHTML='Nu: <b>'+num.format(convNu)+'</b> '+M.convMv+' uit <b>'+num.format(V.bezNu)+'</b> bezoekers — conversie <b>'+dec.format(convNu/V.bezNu*100)+'%</b>';
       else if(convNu) nu.innerHTML='Nu ongeveer <b>'+num.format(convNu)+'</b> '+M.convMv+' per jaar';
@@ -1390,8 +1572,11 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
        levert een doel op dat je met 15 klanten niet haalt. */
     var klanten=null,conv=null,convB=null,eigenC=0,bez=null,vert=null,budget=null,groei=null,fac=1,
         cpl=null,cac=null,margeEur=null,ltv=null,omzet=null;
-    if(model==='werving') klanten=V.ambitie?Math.ceil(V.ambitie):null;
-    else if(V.ambitie&&waarde) klanten=Math.ceil(V.ambitie/waarde);
+    var groeiK=null;
+    if(model==='werving') groeiK=V.ambitie?Math.ceil(V.ambitie):null;
+    else if(V.ambitie&&waarde) groeiK=Math.ceil(V.ambitie/waarde);
+    /* eerst het gat dichten, dan pas groeien */
+    if(groeiK!==null) klanten=groeiK+(V.churn||0);
     if(klanten&&close) conv=Math.ceil(klanten/(close/100));
     if(conv!==null){ eigenC=Math.round(conv*eigenA); convB=conv-eigenC; }
     if(conv&&convNu) groei=conv/convNu;
@@ -1450,7 +1635,8 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
        linkbuildingbudget dat niemand verwerkt is weggegooid geld. */
     if(linkM>0 && iSEO>=0 && uren[iSEO]<MINUUR) linkM=0;
 
-    var maandTot=L.mnd+adMnd+linkM, jaarTot=maandTot*12, jaar1=jaarTot+L.setup;
+    var fSt=fundStaat(), setup=Math.round(L.setup*fundFactor()/50)*50;
+    var maandTot=L.mnd+adMnd+linkM, jaarTot=maandTot*12, jaar1=jaarTot+setup;
     var margeTot=(margeEur&&klanten)?klanten*margeEur:null, onder=margeTot!==null?margeTot-jaar1:null;
     if(margeJ1!==null) onderJ1=margeJ1-jaar1;
 
@@ -1476,12 +1662,16 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
       cstep('0'+(n++),'Mensen die je nodig hebt',num.format(klanten||0),'dat is je doel');
     } else if(V.ambitie){
       cstep('0'+(n++),'Extra omzet',eur.format(V.ambitie),'dat is je doel');
-      if(klanten){ cgap('\u00f7 '+eur.format(Math.round(waarde))+' waarde per klant in jaar 1',
+      if(groeiK){ cgap('\u00f7 '+eur.format(Math.round(waarde))+' waarde per klant in jaar 1',
           'E-mail en automation halen meer uit klanten die je al hebt. Gaat de waarde per klant met 10% omhoog, dan heb je '+
           num.format(Math.max(1,Math.ceil(V.ambitie/(waarde*1.1))))+' klanten nodig in plaats van '+num.format(klanten)+'.',
           !!d.lift.waarde);
-        cstep('0'+(n++),'Nieuwe klanten nodig',num.format(klanten),
-          omzet>V.ambitie? ('samen goed voor '+eur.format(Math.round(omzet))+', net boven je doel') : null); }
+        cstep('0'+(n++),'Klanten erbij voor de groei',num.format(groeiK),
+          omzet>V.ambitie&&!V.churn? ('samen goed voor '+eur.format(Math.round(omzet))+', net boven je doel') : null);
+        if(V.churn){ cgap('+ '+num.format(V.churn)+' die je per jaar verliest',
+            'E-mail en automation houden klanten vast. Elke klant die blijft, hoef je niet opnieuw te winnen \u2014 en die is goedkoper dan een nieuwe.',
+            false);
+          cstep('0'+(n++),'Nieuwe klanten nodig',num.format(klanten),'het gat dichten \u00e9n groeien'); } }
     }
     if(conv){ cgap('\u00f7 '+dec.format(close)+'% winkans'+(d.lift.close?' (na bewijs)':''),
         'Merk, design en verkoopondersteuning verhogen de winkans. Van '+dec.format(close)+'% naar '+
@@ -1548,6 +1738,12 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
         null, 'sum');
     }
 
+    /* ---- de opbouw over twaalf maanden ----
+       Gestapeld verkeer per bron. Dit is de aanloop die je met woorden niet
+       uitgelegd krijgt: betaald staat er bijna meteen, SEO en e-mail komen
+       later en blijven daarna. */
+    tekenGrafiek(PL, bezEig, M);
+
     /* ---- de conclusie: rendement ---- */
     var roi=document.getElementById('roiRows'); roi.textContent='';
     if(klanten){
@@ -1576,7 +1772,9 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
             '<span class="pm"> \u2192 </span>'+(adJaar? dec.format(omzet/adJaar)+'\u00d7':''),null,'big good'));
         } else {
           roi.appendChild(R('Omzet die hieruit kan volgen',
-            num.format(klanten)+' klanten \u00d7 '+eur.format(Math.round(waarde))+' in jaar 1. Wij leveren de '+M.convMv+'; het verkoopgesprek voer je zelf.',
+            num.format(klanten)+' klanten \u00d7 '+eur.format(Math.round(waarde))+' in jaar 1'+
+            (V.churn? ', waarvan '+num.format(V.churn)+' de klanten vervangt die je anders kwijt was' : '')+
+            '. Wij leveren de '+M.convMv+'; het verkoopgesprek voer je zelf.',
             eur.format(Math.round(omzetJ1||0))+'<span class="pm"> \u2192 </span>'+eur.format(Math.round(omzet)),null,'big'));
         }
         roi.appendChild(R('Brutomarge',V.marge+'% \u00d7 die omzet',
@@ -1600,7 +1798,11 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
     document.getElementById('invTitel').textContent='De investering \u2014 '+L.naam;
     /* Dit scherm vullen we samen met de klant in. Geen rekennotities dus:
        wat hier staat is wat de klant betaalt en waarvoor. */
-    iv.appendChild(R('Eenmalig fundament','de basis die er eerst moet liggen, in maand 1',eur.format(L.setup)));
+    iv.appendChild(R('Eenmalig fundament',
+      fSt.vol? (fSt.open? 'we pakken '+fSt.mist.map(function(x){ return x.n.toLowerCase(); }).join(' en ')+' aan, in maand 1'
+                        : 'de plint staat al, we controleren en sluiten aan')
+             : 'de basis die er eerst moet liggen, in maand 1',
+      eur.format(setup)));
     iv.appendChild(R('Retainer '+L.naam,L.uur+' uur per week aan werk, maandelijks opzegbaar',pmv(L.mnd)));
     if(budget!==null){
       iv.appendChild(R('Advertentiebudget','betaal je rechtstreeks aan Google en Meta, niet aan ons',pmv(adMnd)));
