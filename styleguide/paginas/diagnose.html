@@ -1,0 +1,630 @@
+<title>De ARENA-diagnose</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@600;700&display=swap">
+<style>
+:root{
+  --page:#fbfbfd; --card:#fff; --alt:#f4f5f7; --sunk:#eef0f4;
+  --tx:#1d1d1f; --tx2:#63636b; --tx3:#8b8b94;
+  --ln:#d6d7dd; --ln-s:#e6e7ec;
+  --act:#0857c3; --act-soft:#eaf2ff;
+  --lime:#c4f000; --lime-tx:#56690a; --lime-bg:#f3fbcf;
+  --good-tx:#1c7a3e; --good-bg:#e7f6ec;
+  --warn-tx:#8d5407; --warn-bg:#fdf2e2;
+  --bad-tx:#bb2a22; --bad-bg:#fdeceb;
+  --black:#1c1c1e; --inv:#f2f2f5; --inv2:#9d9da6;
+  --fd:"Inter Tight","Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+  --ft:"Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+  --fm:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --g:28px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --page:#08080a; --card:#161619; --alt:#101013; --sunk:#1d1d21;
+  --tx:#f2f2f5; --tx2:#a0a0aa; --tx3:#7d7d87;
+  --ln:#34343a; --ln-s:#26262b;
+  --act:#5ea6ff; --act-soft:rgba(94,166,255,.13);
+  --lime-tx:#d4ff4d; --lime-bg:rgba(196,240,0,.13);
+  --good-tx:#4cc873; --good-bg:rgba(76,200,115,.13);
+  --warn-tx:#f0a84a; --warn-bg:rgba(240,168,74,.13);
+  --bad-tx:#ff6f66; --bad-bg:rgba(255,111,102,.13);
+  --black:#161619; --inv:#f2f2f5; --inv2:#9d9da6;
+}}
+:root[data-theme="dark"]{
+  --page:#08080a; --card:#161619; --alt:#101013; --sunk:#1d1d21;
+  --tx:#f2f2f5; --tx2:#a0a0aa; --tx3:#7d7d87;
+  --ln:#34343a; --ln-s:#26262b;
+  --act:#5ea6ff; --act-soft:rgba(94,166,255,.13);
+  --lime-tx:#d4ff4d; --lime-bg:rgba(196,240,0,.13);
+  --good-tx:#4cc873; --good-bg:rgba(76,200,115,.13);
+  --warn-tx:#f0a84a; --warn-bg:rgba(240,168,74,.13);
+  --bad-tx:#ff6f66; --bad-bg:rgba(255,111,102,.13);
+  --black:#161619; --inv:#f2f2f5; --inv2:#9d9da6;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--tx);font-family:var(--ft);font-size:16px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+@media (prefers-reduced-motion:reduce){*{transition-duration:.01ms!important;animation-duration:.01ms!important}}
+:focus-visible{outline:2px solid var(--act);outline-offset:2px;border-radius:6px}
+h1,h2,h3,h4{font-family:var(--fd);margin:0;text-wrap:balance}
+p{margin:0}
+
+.wrap{max-width:1180px;margin:0 auto;padding-inline:var(--g)}
+.top{border-bottom:1px solid var(--ln-s);background:var(--card)}
+.top-in{max-width:1180px;margin:0 auto;padding:22px var(--g) 20px;display:flex;align-items:flex-end;gap:20px;flex-wrap:wrap}
+.top h1{font-size:clamp(22px,3.2vw,29px);font-weight:700;letter-spacing:-.022em;line-height:1.1}
+.top .sub{font-size:14.5px;color:var(--tx2);max-width:56ch;margin-top:5px}
+.top button{margin-left:auto;font:inherit;font-size:12.5px;cursor:pointer;background:transparent;
+  border:1px solid var(--ln);color:var(--tx2);border-radius:999px;padding:6px 15px}
+.top button:hover{color:var(--tx);border-color:var(--tx3)}
+
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,420px);gap:26px;align-items:start;padding-block:26px 8px}
+@media (max-width:920px){.cols{grid-template-columns:1fr}}
+
+.panel{background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px}
+.panel + .panel{margin-top:16px}
+.eyebrow{font-family:var(--fm);font-size:10.5px;letter-spacing:.07em;color:var(--tx3);text-transform:uppercase}
+.panel h2{font-size:19px;font-weight:600;letter-spacing:-.012em;margin:7px 0 4px}
+.panel .hint{font-size:14px;color:var(--tx2);margin-bottom:16px}
+
+/* vraagpad */
+.q{border-left:2px solid var(--ln);padding:0 0 0 18px;margin-bottom:4px;position:relative}
+.q.done{border-left-color:var(--act)}
+.q::before{content:"";position:absolute;left:-5px;top:9px;width:8px;height:8px;border-radius:50%;
+  background:var(--ln);border:2px solid var(--card)}
+.q.done::before{background:var(--act)}
+.q .qt{font-size:15.5px;font-weight:500;padding-bottom:9px}
+.q .ans{display:flex;gap:8px;flex-wrap:wrap;padding-bottom:16px}
+.q button{font:inherit;font-size:14px;cursor:pointer;background:var(--card);border:1px solid var(--ln);
+  color:var(--tx);border-radius:999px;padding:7px 16px;transition:background .15s,border-color .15s}
+.q button:hover{border-color:var(--act);color:var(--act)}
+.q button[aria-pressed="true"]{background:var(--act);border-color:var(--act);color:#fff}
+.reset{font:inherit;font-size:13px;cursor:pointer;background:none;border:none;color:var(--act);
+  padding:0;text-decoration:underline;text-underline-offset:3px}
+
+/* invoer */
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px 16px}
+@media (max-width:560px){.fields{grid-template-columns:1fr}}
+.f{display:flex;flex-direction:column;gap:5px;min-width:0}
+.f.wide{grid-column:1/-1}
+.f label{font-size:13px;color:var(--tx2);font-weight:500}
+.f .unit{font-family:var(--fm);font-size:10.5px;color:var(--tx3)}
+.f input,.f select{font:inherit;font-size:15px;font-variant-numeric:tabular-nums;width:100%;
+  background:var(--sunk);border:1px solid transparent;color:var(--tx);border-radius:9px;padding:9px 11px}
+.f input:focus,.f select:focus{border-color:var(--act);background:var(--card)}
+.f input.empty{color:var(--tx3)}
+
+/* advies */
+.adv{position:sticky;top:16px}
+@media (max-width:920px){.adv{position:static}}
+.verdict{background:var(--black);color:var(--inv);border-radius:16px;padding:24px;margin-bottom:16px}
+.verdict .lab{font-family:var(--fm);font-size:10px;letter-spacing:.08em;color:var(--lime);text-transform:uppercase}
+.verdict .dx{font-family:var(--fd);font-size:27px;font-weight:700;letter-spacing:-.02em;line-height:1.12;margin:9px 0 6px}
+.verdict .quote{font-size:14.5px;color:var(--inv2);font-style:italic}
+.verdict .zw{display:inline-block;margin-top:14px;font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;
+  background:rgba(196,240,0,.16);color:var(--lime);border-radius:6px;padding:5px 10px}
+
+.rows{display:flex;flex-direction:column;gap:0}
+.row{display:flex;justify-content:space-between;align-items:baseline;gap:14px;
+  padding:9px 0;border-bottom:1px solid var(--ln-s);font-size:14.5px}
+.row:last-child{border-bottom:none}
+.row .k{color:var(--tx2);min-width:0}
+.row .v{font-family:var(--fd);font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.row.big{padding:13px 0}
+.row.big .v{font-size:21px}
+.row.txt .v{font-family:var(--ft);font-weight:500;font-size:13.5px;color:var(--tx2);white-space:normal;text-align:right;max-width:60%}
+.row .sub{display:block;font-family:var(--ft);font-weight:400;font-size:12px;color:var(--tx3);text-align:right}
+
+.pill{display:inline-block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;border-radius:5px;padding:3px 7px}
+.pill.ok{background:var(--good-bg);color:var(--good-tx)}
+.pill.warn{background:var(--warn-bg);color:var(--warn-tx)}
+.pill.bad{background:var(--bad-bg);color:var(--bad-tx)}
+
+.split{display:flex;flex-direction:column;gap:7px;margin-top:4px}
+.sp{display:grid;grid-template-columns:104px 1fr 44px;align-items:center;gap:10px;font-size:13px}
+.sp .n{font-family:var(--fm);font-size:10.5px;letter-spacing:.04em;color:var(--tx2)}
+.sp .bar{height:7px;background:var(--sunk);border-radius:99px;overflow:hidden}
+.sp .bar i{display:block;height:100%;background:var(--act);border-radius:99px}
+.sp .bar.ring i{background:var(--lime);opacity:.85}
+.sp .u{font-family:var(--fd);font-weight:600;font-variant-numeric:tabular-nums;text-align:right;font-size:13px;color:var(--tx2)}
+
+.flag{border-radius:11px;padding:12px 14px;font-size:13.5px;line-height:1.5;margin-top:9px}
+.flag b{font-weight:600}
+.flag.warn{background:var(--warn-bg);color:var(--warn-tx)}
+.flag.bad{background:var(--bad-bg);color:var(--bad-tx)}
+.flag.ok{background:var(--good-bg);color:var(--good-tx)}
+.flag.note{background:var(--alt);color:var(--tx2)}
+
+.copy{font:inherit;font-size:14px;font-weight:500;cursor:pointer;width:100%;margin-top:16px;
+  background:var(--act);border:none;color:#fff;border-radius:10px;padding:11px 16px}
+.copy:hover{opacity:.9}
+.copied{font-size:13px;color:var(--good-tx);text-align:center;margin-top:8px}
+
+/* beslisboom */
+.tree{padding-block:34px 12px;border-top:1px solid var(--ln-s);margin-top:30px}
+.tree h2{font-size:22px;font-weight:700;letter-spacing:-.016em;margin:8px 0 6px}
+.tree p.lead{font-size:15px;color:var(--tx2);max-width:68ch;margin-bottom:20px}
+.svgwrap{overflow-x:auto;background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:20px}
+.tree svg{display:block;min-width:720px;width:100%;height:auto}
+.tree .qn{fill:var(--card);stroke:var(--ln);stroke-width:1.5}
+.tree .on{fill:var(--act-soft);stroke:var(--act);stroke-width:1.5}
+.tree .en{fill:var(--alt);stroke:var(--ln);stroke-width:1.5;stroke-dasharray:4 3}
+.tree .qtx{fill:var(--tx);font-family:"Inter Tight",sans-serif;font-size:14px;font-weight:600}
+.tree .otx{fill:var(--act);font-family:"Inter Tight",sans-serif;font-size:14px;font-weight:600}
+.tree .etx{fill:var(--tx2);font-family:"Inter Tight",sans-serif;font-size:13px;font-weight:600}
+.tree .ztx{fill:var(--tx3);font-family:"SF Mono",ui-monospace,monospace;font-size:10px;letter-spacing:.04em}
+.tree .ln{stroke:var(--ln);stroke-width:1.5;fill:none}
+.tree .lbl{fill:var(--tx3);font-family:"SF Mono",ui-monospace,monospace;font-size:10.5px}
+
+.assume{padding-block:30px 60px}
+.assume h3{font-size:17px;font-weight:600;margin-bottom:8px}
+.assume ul{margin:0;padding-left:19px;font-size:14.5px;color:var(--tx2)}
+.assume li{margin-bottom:8px}
+.assume li b{color:var(--tx);font-weight:600}
+.assume .foot{margin-top:26px;font-size:12.5px;color:var(--tx3)}
+</style>
+
+<div class="top">
+  <div class="top-in">
+    <div>
+      <h1>De ARENA-diagnose</h1>
+      <p class="sub">Vul in wat je in het eerste gesprek hoort. Het advies rolt eruit &mdash; met de aannames erbij, zodat je ziet waar het rekenwerk ophoudt en jouw oordeel begint.</p>
+    </div>
+    <button id="themeBtn" type="button">Donker</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="cols">
+
+    <div>
+      <div class="panel">
+        <span class="eyebrow">Stap 1</span>
+        <h2>De diagnose</h2>
+        <p class="hint">Vier vragen. De meeste gesprekken zijn na drie klaar.</p>
+        <div id="qpath"></div>
+        <button class="reset" id="resetQ" type="button" hidden>Opnieuw beginnen</button>
+      </div>
+
+      <div class="panel">
+        <span class="eyebrow">Stap 2</span>
+        <h2>De klant</h2>
+        <p class="hint">Voorbeeld ingevuld: een makelaarskantoor. Overschrijf met echte cijfers.</p>
+        <div class="fields">
+          <div class="f">
+            <label for="branche">Branche</label>
+            <select id="branche">
+              <option value="makelaardij">Makelaardij</option>
+              <option value="horeca">Horeca</option>
+              <option value="automotive">Automotive</option>
+              <option value="retail">Retail</option>
+              <option value="b2b">B2B / dienstverlening</option>
+              <option value="zorg">Zorg</option>
+              <option value="sport">Sport &amp; leisure</option>
+              <option value="overheid">Overheid</option>
+            </select>
+          </div>
+          <div class="f">
+            <label for="omzet">Huidige jaaromzet <span class="unit">EUR</span></label>
+            <input id="omzet" type="number" min="0" step="10000" value="1800000" inputmode="numeric">
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <span class="eyebrow">Stap 3</span>
+        <h2>De cijfers</h2>
+        <p class="hint">Laat een veld leeg als de klant het niet weet &mdash; dat is zelf een uitkomst.</p>
+        <div class="fields">
+          <div class="f">
+            <label for="ambitie">Gewenste extra omzet <span class="unit">EUR / JAAR</span></label>
+            <input id="ambitie" type="number" min="0" step="10000" value="250000" inputmode="numeric">
+          </div>
+          <div class="f">
+            <label for="klantwaarde">Gemiddelde klantwaarde <span class="unit">EUR</span></label>
+            <input id="klantwaarde" type="number" min="0" step="100" value="6500" inputmode="numeric">
+          </div>
+          <div class="f">
+            <label for="conversie">Aanvraag wordt klant <span class="unit">%</span></label>
+            <input id="conversie" type="number" min="1" max="100" step="1" value="30" inputmode="numeric">
+          </div>
+          <div class="f">
+            <label for="aanvragen">Aanvragen nu <span class="unit">PER JAAR</span></label>
+            <input id="aanvragen" type="number" min="0" step="10" value="140" inputmode="numeric">
+          </div>
+          <div class="f">
+            <label for="cpa">Kosten per aanvraag nu <span class="unit">EUR</span></label>
+            <input id="cpa" type="number" min="0" step="5" value="85" inputmode="numeric">
+          </div>
+          <div class="f">
+            <label for="media">Mediabudget nu <span class="unit">EUR / JAAR</span></label>
+            <input id="media" type="number" min="0" step="1000" value="24000" inputmode="numeric">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="adv">
+      <div class="verdict">
+        <span class="lab" id="vLab">Diagnose</span>
+        <p class="dx" id="vDx">Beantwoord vraag 1</p>
+        <p class="quote" id="vQuote">Het advies verschijnt zodra de diagnose rond is.</p>
+        <span class="zw" id="vZw" hidden></span>
+      </div>
+
+      <div class="panel" id="sumPanel" hidden>
+        <span class="eyebrow">De som</span>
+        <h2>Van ambitie naar budget</h2>
+        <div class="rows" id="sumRows"></div>
+      </div>
+
+      <div class="panel" id="lvlPanel" hidden>
+        <span class="eyebrow">Het voorstel</span>
+        <h2 id="lvlName">&mdash;</h2>
+        <div class="rows" id="lvlRows"></div>
+        <p class="eyebrow" style="margin-top:18px">Verdeling over ARENA</p>
+        <div class="split" id="splitRows"></div>
+      </div>
+
+      <div id="flags"></div>
+      <button class="copy" id="copyBtn" type="button" hidden>Kopieer samenvatting</button>
+      <p class="copied" id="copiedMsg" hidden>Gekopieerd.</p>
+    </div>
+
+  </div>
+
+  <section class="tree">
+    <span class="eyebrow">De logica erachter</span>
+    <h2>De beslisboom</h2>
+    <p class="lead">Vier vragen, vijf uitkomsten. De volgorde is niet willekeurig: je test eerst of er genoeg binnenkomt, dan of het het juiste is, dan of het gewonnen wordt, en pas daarna wat het kost. Wie die volgorde omdraait, komt bij bijna elke klant uit op &ldquo;meer budget&rdquo;.</p>
+    <div class="svgwrap">
+      <svg viewBox="0 0 860 530" role="img" aria-label="Beslisboom: vier vragen leiden naar vijf diagnoses. Komt er genoeg binnen? Nee en structureel geeft Te weinig, nee en wisselend geeft Te toevallig. Ja leidt naar: zijn het de juiste klussen? Nee geeft Verkeerd. Ja leidt naar: win je ze meestal? Nee geeft Niet gekozen. Ja leidt naar: staan de kosten in verhouding? Nee geeft Te duur, ja betekent geen marketingprobleem maar een groeivraag.">
+        <path class="ln" d="M175 74 V128"/>
+        <path class="ln" d="M330 38 H420"/>
+        <path class="ln" d="M330 56 H380 V102 H420"/>
+        <path class="ln" d="M330 156 H420"/>
+        <path class="ln" d="M175 182 V236"/>
+        <path class="ln" d="M330 264 H420"/>
+        <path class="ln" d="M175 290 V344"/>
+        <path class="ln" d="M330 372 H420"/>
+        <path class="ln" d="M175 398 V452"/>
+
+        <rect class="qn" x="30" y="20" width="300" height="54" rx="11"/>
+        <text class="qtx" x="50" y="43">Komt er genoeg binnen?</text>
+        <text class="ztx" x="50" y="61">VRAAG 1</text>
+
+        <rect class="qn" x="30" y="128" width="300" height="54" rx="11"/>
+        <text class="qtx" x="50" y="151">Zijn het de juiste klussen?</text>
+        <text class="ztx" x="50" y="169">VRAAG 2</text>
+
+        <rect class="qn" x="30" y="236" width="300" height="54" rx="11"/>
+        <text class="qtx" x="50" y="259">Win je ze meestal?</text>
+        <text class="ztx" x="50" y="277">VRAAG 3</text>
+
+        <rect class="qn" x="30" y="344" width="300" height="54" rx="11"/>
+        <text class="qtx" x="50" y="367">Staan de kosten in verhouding?</text>
+        <text class="ztx" x="50" y="385">VRAAG 4</text>
+
+        <text class="lbl" x="186" y="106">ja</text>
+        <text class="lbl" x="186" y="214">ja</text>
+        <text class="lbl" x="186" y="322">ja</text>
+        <text class="lbl" x="186" y="430">ja</text>
+        <text class="lbl" x="342" y="32">nee &middot; structureel</text>
+        <text class="lbl" x="342" y="96">nee &middot; wisselend</text>
+        <text class="lbl" x="342" y="150">nee</text>
+        <text class="lbl" x="342" y="258">nee</text>
+        <text class="lbl" x="342" y="366">nee</text>
+
+        <rect class="on" x="420" y="18" width="270" height="40" rx="10"/>
+        <text class="otx" x="440" y="43">Te weinig</text>
+        <text class="ztx" x="700" y="43">A &middot; ATTENTION</text>
+
+        <rect class="on" x="420" y="82" width="270" height="40" rx="10"/>
+        <text class="otx" x="440" y="107">Te toevallig</text>
+        <text class="ztx" x="700" y="107">BREEDTE + R</text>
+
+        <rect class="on" x="420" y="136" width="270" height="40" rx="10"/>
+        <text class="otx" x="440" y="161">Verkeerd</text>
+        <text class="ztx" x="700" y="161">AUTHORITY + E</text>
+
+        <rect class="on" x="420" y="244" width="270" height="40" rx="10"/>
+        <text class="otx" x="440" y="269">Niet gekozen</text>
+        <text class="ztx" x="700" y="269">A &middot; AUTHORITY</text>
+
+        <rect class="on" x="420" y="352" width="270" height="40" rx="10"/>
+        <text class="otx" x="440" y="377">Te duur</text>
+        <text class="ztx" x="700" y="377">E + AUTHORITY</text>
+
+        <rect class="en" x="30" y="452" width="440" height="44" rx="10"/>
+        <text class="etx" x="50" y="479">Geen marketingprobleem &mdash; een groeivraag</text>
+      </svg>
+    </div>
+  </section>
+
+  <section class="assume">
+    <h3>Wat deze tool w&eacute;l en niet doet</h3>
+    <ul>
+      <li><b>Kosten per aanvraag zijn niet lineair.</b> De eerste aanvragen zijn de goedkoopste, want daar zit de bestaande vraag. Daarom wordt op het extra volume een opschalingsfactor gelegd: +15% tot een kwart groei, +30% tot de helft, +50% tot verdubbeling, +80% daarboven. Dat is een vuistregel uit de praktijk, geen meting &mdash; de echte curve verschilt per markt en komt pas na maand 1 boven tafel.</li>
+      <li><b>De tool kent de markt niet.</b> Hij rekent uit hoeveel aanvragen er nodig zijn. Of die vraag er is, weet alleen jij. Bij meer dan verdubbeling zegt hij dat ook: daar houdt rekenen op en begint een oordeel.</li>
+      <li><b>De diagnose komt uit het gesprek, niet uit het formulier.</b> Een ondernemer zegt zelden &ldquo;ik krijg de verkeerde aanvragen&rdquo;; hij zegt &ldquo;het loopt niet lekker&rdquo;. De vier vragen helpen hem kiezen &mdash; doorvragen doe jij.</li>
+      <li><b>De niveaus volgen uit twee signalen.</b> Het mediabudget bepaalt welk niveau past zonder dat het werk meer dan de helft van het marketingbudget wordt; de diagnose bepaalt hoeveel werk er sowieso nodig is. Lopen die uiteen, dan zegt de tool het in plaats van stilletjes te kiezen.</li>
+      <li><b>Bedragen zijn exclusief btw en exclusief het eenmalige fundament</b> uit maand 1. Retainers: Basis &euro;&thinsp;1.650, Groei &euro;&thinsp;3.300, Versnelling &euro;&thinsp;4.950 per maand.</li>
+    </ul>
+    <p class="foot">James Robinson &mdash; Marketing &amp; Branding &middot; intern instrument, september 2026</p>
+  </section>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var root=document.documentElement,tb=document.getElementById('themeBtn');
+  function cur(){var t=root.getAttribute('data-theme');return t||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');}
+  function syncT(){tb.textContent=cur()==='dark'?'Licht':'Donker';}
+  syncT();
+  tb.addEventListener('click',function(){root.setAttribute('data-theme',cur()==='dark'?'light':'dark');syncT();});
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',syncT);
+
+  var eur=new Intl.NumberFormat('nl-NL',{style:'currency',currency:'EUR',maximumFractionDigits:0});
+  var num=new Intl.NumberFormat('nl-NL',{maximumFractionDigits:0});
+
+  var DX={
+    weinig:{naam:'Te weinig',quote:'"De telefoon gaat te weinig."',zw:'ZWAARTEPUNT: A · ATTENTION',minLvl:1,
+      split:{A:45,R:10,E:20,N:10,U:15}},
+    toeval:{naam:'Te toevallig',quote:'"De ene maand storm, de andere stil. Ik kan er niets op plannen."',zw:'ZWAARTEPUNT: BREEDTE + RETENTION',minLvl:2,
+      split:{A:30,R:25,E:15,N:10,U:20}},
+    duur:{naam:'Te duur',quote:'"Het komt wel binnen, maar wat het kost staat niet meer in verhouding."',zw:'ZWAARTEPUNT: EXPERIENCE + AUTHORITY',minLvl:2,
+      split:{A:20,R:15,E:30,N:15,U:20}},
+    verkeerd:{naam:'Verkeerd',quote:'"Genoeg aanvragen, maar niet de klussen die ik wil."',zw:'ZWAARTEPUNT: AUTHORITY + EXPERIENCE',minLvl:2,
+      split:{A:20,R:10,E:30,N:10,U:30}},
+    nietgekozen:{naam:'Niet gekozen',quote:'"Ze kennen ons, ze vragen offertes aan, en dan kiezen ze de ander."',zw:'ZWAARTEPUNT: A · AUTHORITY',minLvl:2,
+      split:{A:15,R:15,E:25,N:10,U:35}},
+    groei:{naam:'Geen probleem, wel een groeivraag',quote:'"Het loopt. Ik wil harder."',zw:'ZWAARTEPUNT: A · ATTENTION',minLvl:1,
+      split:{A:40,R:15,E:20,N:10,U:15}}
+  };
+  var LVL=[
+    {n:1,naam:'Basis',mnd:1650,jaar:19760,uur:4,ritme:'Per kwartaal een nieuwe actie'},
+    {n:2,naam:'Groei',mnd:3300,jaar:39520,uur:8,ritme:'Elke maand nieuwe campagnes'},
+    {n:3,naam:'Versnelling',mnd:4950,jaar:59280,uur:12,ritme:'Wekelijks, met experimenten'}
+  ];
+  var AANVRAAG={makelaardij:'aanvraag waardebepaling of verkoopgesprek',horeca:'reservering of arrangementsaanvraag',
+    automotive:'proefrit, onderhoudsafspraak of occasionaanvraag',retail:'online bestelling of afhaalorder',
+    b2b:'offerteaanvraag of kennismakingsgesprek',zorg:'intakeaanvraag',sport:'proefles of boeking',overheid:'aanmelding of deelname'};
+  var RINGEN={N:1,U:1};
+
+  var QS=[
+    {id:'q1',vraag:'Komt er genoeg binnen?',opts:[
+      {t:'Ja',go:'q2'},
+      {t:'Nee, structureel te weinig',dx:'weinig'},
+      {t:'Nee, het wisselt sterk',dx:'toeval'}]},
+    {id:'q2',vraag:'Zijn het de klussen die hij wil?',opts:[
+      {t:'Ja',go:'q3'},{t:'Nee',dx:'verkeerd'}]},
+    {id:'q3',vraag:'Wint hij ze meestal?',opts:[
+      {t:'Ja',go:'q4'},{t:'Nee',dx:'nietgekozen'}]},
+    {id:'q4',vraag:'Staan de kosten per klant in verhouding?',opts:[
+      {t:'Ja',dx:'groei'},{t:'Nee',dx:'duur'}]}
+  ];
+  var byId={}; QS.forEach(function(q){byId[q.id]=q;});
+  var answers={}, dx=null;
+
+  var qpath=document.getElementById('qpath'), resetBtn=document.getElementById('resetQ');
+
+  function renderQ(){
+    qpath.textContent='';
+    var id='q1';
+    while(id){
+      var q=byId[id];
+      var wrap=document.createElement('div');
+      wrap.className='q'+(answers[id]!==undefined?' done':'');
+      var t=document.createElement('p'); t.className='qt'; t.textContent=q.vraag; wrap.appendChild(t);
+      var row=document.createElement('div'); row.className='ans';
+      q.opts.forEach(function(o,i){
+        var b=document.createElement('button');
+        b.type='button'; b.textContent=o.t;
+        b.setAttribute('aria-pressed', answers[id]===i?'true':'false');
+        b.addEventListener('click',function(){ pick(q.id,i); });
+        row.appendChild(b);
+      });
+      wrap.appendChild(row);
+      qpath.appendChild(wrap);
+      var a=answers[id];
+      if(a===undefined){ id=null; }
+      else { id=q.opts[a].go||null; }
+    }
+    resetBtn.hidden = !Object.keys(answers).length;
+  }
+  function pick(qid,i){
+    // wis alles na deze vraag
+    var keep={}, id='q1';
+    while(id){
+      if(id===qid){ keep[qid]=i; break; }
+      if(answers[id]===undefined) break;
+      keep[id]=answers[id];
+      id=byId[id].opts[answers[id]].go||null;
+    }
+    answers=keep;
+    dx=null;
+    var cid='q1';
+    while(cid){
+      var a=answers[cid]; if(a===undefined) break;
+      var o=byId[cid].opts[a];
+      if(o.dx){ dx=o.dx; break; }
+      cid=o.go||null;
+    }
+    renderQ(); compute();
+  }
+  resetBtn.addEventListener('click',function(){ answers={}; dx=null; renderQ(); compute(); });
+
+  function val(id){ var el=document.getElementById(id); var v=parseFloat(el.value); return isFinite(v)&&v>0?v:null; }
+  ['omzet','ambitie','klantwaarde','conversie','aanvragen','cpa','media','branche'].forEach(function(id){
+    document.getElementById(id).addEventListener('input',compute);
+  });
+
+  function factorFor(g){
+    if(g<=0.25) return 1.15; if(g<=0.50) return 1.30; if(g<=1.00) return 1.50; return 1.80;
+  }
+  function row(k,v,sub,cls){
+    var d=document.createElement('div'); d.className='row'+(cls?' '+cls:'');
+    var a=document.createElement('span'); a.className='k'; a.textContent=k;
+    var b=document.createElement('span'); b.className='v'; b.textContent=v;
+    if(sub){ var s=document.createElement('span'); s.className='sub'; s.textContent=sub; b.appendChild(s); }
+    d.appendChild(a); d.appendChild(b); return d;
+  }
+  function flag(cls,html){
+    var d=document.createElement('div'); d.className='flag '+cls; d.innerHTML=html; return d;
+  }
+
+  var state={};
+
+  function compute(){
+    var vLab=document.getElementById('vLab'), vDx=document.getElementById('vDx'),
+        vQ=document.getElementById('vQuote'), vZw=document.getElementById('vZw'),
+        sumP=document.getElementById('sumPanel'), sumR=document.getElementById('sumRows'),
+        lvlP=document.getElementById('lvlPanel'), lvlN=document.getElementById('lvlName'),
+        lvlR=document.getElementById('lvlRows'), spR=document.getElementById('splitRows'),
+        flags=document.getElementById('flags'), copyBtn=document.getElementById('copyBtn');
+    flags.textContent=''; sumR.textContent=''; lvlR.textContent=''; spR.textContent='';
+    document.getElementById('copiedMsg').hidden=true;
+
+    if(!dx){
+      vLab.textContent='Diagnose';
+      vDx.textContent = Object.keys(answers).length ? 'Nog niet rond' : 'Beantwoord vraag 1';
+      vQ.textContent='Het advies verschijnt zodra de diagnose rond is.';
+      vZw.hidden=true; sumP.hidden=true; lvlP.hidden=true; copyBtn.hidden=true; state={};
+      return;
+    }
+    var d=DX[dx];
+    vLab.textContent='Diagnose';
+    vDx.textContent=d.naam; vQ.textContent=d.quote;
+    vZw.textContent=d.zw; vZw.hidden=false;
+
+    var branche=document.getElementById('branche').value;
+    var omzet=val('omzet'), ambitie=val('ambitie'), kw=val('klantwaarde'),
+        conv=val('conversie'), huidig=val('aanvragen'), cpa=val('cpa'), media=val('media');
+
+    var klanten=null, extra=null, groei=null, fac=null, effCpa=null, extraMedia=null, totMedia=null;
+    if(ambitie&&kw) klanten=ambitie/kw;
+    if(klanten&&conv) extra=klanten/(conv/100);
+    if(extra&&huidig) groei=extra/huidig;
+    if(extra&&cpa){ fac=factorFor(groei===null?0.5:groei); effCpa=cpa*fac; extraMedia=extra*effCpa; }
+    if(extraMedia!==null&&media!==null) totMedia=media+extraMedia;
+
+    sumP.hidden=false;
+    sumR.appendChild(row('Telt als aanvraag', AANVRAAG[branche], null, 'txt'));
+    if(klanten) sumR.appendChild(row('Extra klanten nodig', num.format(Math.ceil(klanten))));
+    if(extra) sumR.appendChild(row('Extra aanvragen nodig', num.format(Math.ceil(extra)),
+      groei!==null ? '+'+Math.round(groei*100)+'% op de huidige '+num.format(huidig) : null, 'big'));
+    if(effCpa) sumR.appendChild(row('Kosten per extra aanvraag', eur.format(Math.round(effCpa)),
+      'was '+eur.format(cpa)+', +'+Math.round((fac-1)*100)+'% opschaling'));
+    if(extraMedia!==null) sumR.appendChild(row('Extra mediabudget', eur.format(Math.round(extraMedia)), 'per jaar','big'));
+    if(totMedia!==null) sumR.appendChild(row('Mediabudget totaal', eur.format(Math.round(totMedia)), 'per jaar'));
+
+    // niveau
+    var lvlBudget=1;
+    if(totMedia!==null){ lvlBudget=1; LVL.forEach(function(L){ if(totMedia>=L.jaar) lvlBudget=L.n; }); }
+    var lvlWerk=d.minLvl;
+    var chosen=Math.max(lvlBudget, lvlWerk);
+    if(totMedia===null) chosen=lvlWerk;
+    var L=LVL[chosen-1];
+
+    lvlP.hidden=false;
+    lvlN.textContent=L.naam;
+    lvlR.appendChild(row('Retainer', eur.format(L.mnd), 'per maand, excl. btw','big'));
+    lvlR.appendChild(row('Inzet', L.uur+' uur per week', num.format(L.uur*52)+' uur per jaar'));
+    lvlR.appendChild(row('Ritme', L.ritme, null, 'txt'));
+    if(totMedia!==null){
+      var totaal=L.jaar+totMedia, aandeel=L.jaar/totaal*100;
+      lvlR.appendChild(row('Marketingbudget totaal', eur.format(Math.round(totaal)), 'werk + media, per jaar'));
+      var p=document.createElement('div'); p.className='row';
+      var k=document.createElement('span'); k.className='k'; k.textContent='Aandeel werk';
+      var v=document.createElement('span'); v.className='v';
+      v.textContent=Math.round(aandeel)+'% ';
+      var pill=document.createElement('span');
+      pill.className='pill '+(aandeel<=50?'ok':(aandeel<=60?'warn':'bad'));
+      pill.textContent=aandeel<=50?'BINNEN DE REGEL':'BOVEN DE HELFT';
+      v.appendChild(pill);
+      p.appendChild(k); p.appendChild(v); lvlR.appendChild(p);
+      state.aandeel=aandeel; state.totaal=totaal;
+    }
+
+    Object.keys(d.split).forEach(function(key){
+      var namen={A:'A · Attention',R:'R · Retention',E:'E · Experience',N:'N · Numbers',U:'A · Authority'};
+      var pct=d.split[key], uur=(L.uur*pct/100);
+      var r=document.createElement('div'); r.className='sp';
+      var n=document.createElement('span'); n.className='n'; n.textContent=namen[key];
+      var bar=document.createElement('span'); bar.className='bar'+(RINGEN[key]?' ring':'');
+      var i=document.createElement('i'); i.style.width=(pct/45*100)+'%'; bar.appendChild(i);
+      var u=document.createElement('span'); u.className='u'; u.textContent=uur.toFixed(1)+'u';
+      r.appendChild(n); r.appendChild(bar); r.appendChild(u); spR.appendChild(r);
+    });
+
+    // signalen
+    if(!conv) flags.appendChild(flag('bad','<b>Conversie onbekend.</b> Zonder dit getal is er geen doel te stellen en geen budget te onderbouwen. Dat is meteen de eerste opdracht &mdash; en het getal is van de ondernemer, niet van ons.'));
+    if(!cpa) flags.appendChild(flag('warn','<b>Kosten per aanvraag onbekend.</b> Het budgetdeel blijft leeg tot dit gemeten is. Dat gebeurt in maand 1.'));
+    if(groei!==null&&groei>1) flags.appendChild(flag('bad','<b>Meer dan verdubbeling.</b> Hier houdt rekenen op. Dit vraagt een oordeel over de markt: is die vraag er &uuml;berhaupt? Zeg dat nu, niet in december.'));
+    else if(groei!==null&&groei>0.5) flags.appendChild(flag('warn','<b>Stevige groeisprong.</b> Meer dan de helft erbij. Houd rekening met een hogere kostprijs dan de tool laat zien, en spreek een tussentijds ijkmoment af.'));
+    if(lvlBudget<lvlWerk) flags.appendChild(flag('warn','<b>De twee signalen lopen uiteen.</b> Het mediabudget past bij <b>'+LVL[lvlBudget-1].naam+'</b>, maar deze diagnose vraagt het werk van <b>'+LVL[lvlWerk-1].naam+'</b>. Het advies volgt het werk &mdash; bespreek of er budget bij kan of dat de ambitie omlaag moet.'));
+    if(chosen===1) flags.appendChild(flag('note','<b>Basis is geen instappakket.</b> Het is het onderhoudsniveau voor een klant wiens systeem al staat. Bij een nieuwe klant valt er te veel te bouwen voor vier uur per week &mdash; kies dan Groei voor het eerste jaar.'));
+    if(state.aandeel&&state.aandeel>50) flags.appendChild(flag('bad','<b>Het werk is meer dan de helft van het marketingbudget.</b> Je betaalt dan meer voor het sturen dan voor het rijden. Of het mediabudget moet omhoog, of dit is een niveau te hoog. (Ligt het zwaartepunt bij SEO, content en e-mail, dan mag dit aandeel wel hoger.)'));
+    if(totMedia!==null&&totMedia/12<2000&&(dx==='weinig'||dx==='toeval'||dx==='groei'))
+      flags.appendChild(flag('warn','<b>Mediabudget onder het minimum.</b> Reken op &euro;&thinsp;1.000 tot &euro;&thinsp;1.500 per maand per actief advertentiekanaal &mdash; daaronder zijn er te weinig conversies om op te sturen. Kies dan liever &eacute;&eacute;n kanaal goed dan twee half.'));
+    if(omzet&&omzet<1300000&&chosen>=2) flags.appendChild(flag('warn','<b>Onder de omzetdrempel.</b> Bij '+eur.format(omzet)+' omzet is dit niveau een te groot deel van het budget. Die klant wordt nerveus voordat de eerste resultaten binnen zijn.'));
+    if(dx==='verkeerd') flags.appendChild(flag('note','<b>Let op de norm.</b> Bij deze diagnose is <b>minder</b> aanvragen een goed resultaat. Leg vooraf vast wat wel en niet meetelt, anders lijkt het straks alsof je faalt.'));
+    if(dx==='nietgekozen') flags.appendChild(flag('note','<b>Grensgeval.</b> Dit raakt aan het verkoopgesprek, en dat is niet van ons. Wij zorgen dat hij met een voorsprong aan tafel komt &mdash; het gesprek voert hij zelf.'));
+    if(dx==='groei') flags.appendChild(flag('ok','<b>Alles staat.</b> Dit is geen probleem maar een groeivraag: hetzelfde systeem, harder eraan trekken. Eerlijkste advies als er ook niets te bouwen valt: begin op Basis en schaal op zodra de meting staat.'));
+
+    state.text=buildText(d,L,branche,{klanten:klanten,extra:extra,groei:groei,effCpa:effCpa,fac:fac,
+      extraMedia:extraMedia,totMedia:totMedia,huidig:huidig,cpa:cpa});
+    copyBtn.hidden=false;
+  }
+
+  function buildText(d,L,branche,c){
+    var out=[];
+    out.push('ARENA-DIAGNOSE');
+    out.push('');
+    out.push('Diagnose: '+d.naam);
+    out.push(d.zw);
+    out.push('Telt als aanvraag: '+AANVRAAG[branche]);
+    out.push('');
+    if(c.klanten) out.push('Extra klanten nodig: '+num.format(Math.ceil(c.klanten)));
+    if(c.extra) out.push('Extra aanvragen nodig: '+num.format(Math.ceil(c.extra))+
+      (c.groei!==null?' (+'+Math.round(c.groei*100)+'% op '+num.format(c.huidig)+')':''));
+    if(c.effCpa) out.push('Kosten per extra aanvraag: '+eur.format(Math.round(c.effCpa))+
+      ' (was '+eur.format(c.cpa)+', +'+Math.round((c.fac-1)*100)+'% opschaling)');
+    if(c.extraMedia!==null) out.push('Extra mediabudget: '+eur.format(Math.round(c.extraMedia))+' per jaar');
+    if(c.totMedia!==null) out.push('Mediabudget totaal: '+eur.format(Math.round(c.totMedia))+' per jaar');
+    out.push('');
+    out.push('Voorstel: '+L.naam+' - '+eur.format(L.mnd)+' per maand, '+L.uur+' uur per week');
+    out.push('Ritme: '+L.ritme);
+    if(state.totaal) out.push('Marketingbudget totaal: '+eur.format(Math.round(state.totaal))+
+      ' (aandeel werk '+Math.round(state.aandeel)+'%)');
+    out.push('');
+    out.push('Verdeling over ARENA:');
+    var namen={A:'Attention',R:'Retention',E:'Experience',N:'Numbers',U:'Authority'};
+    Object.keys(d.split).forEach(function(k){
+      out.push('  '+namen[k]+': '+d.split[k]+'% ('+(L.uur*d.split[k]/100).toFixed(1)+' uur per week)');
+    });
+    out.push('');
+    out.push('Bedragen excl. btw en excl. het eenmalige fundament uit maand 1.');
+    out.push('Opschalingsfactor is een vuistregel, geen meting.');
+    return out.join('\n');
+  }
+
+  document.getElementById('copyBtn').addEventListener('click',function(){
+    if(!state.text) return;
+    var msg=document.getElementById('copiedMsg');
+    function done(){ msg.hidden=false; setTimeout(function(){msg.hidden=true;},2200); }
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(state.text).then(done,fallback);
+    } else fallback();
+    function fallback(){
+      var ta=document.createElement('textarea'); ta.value=state.text;
+      ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta);
+      ta.select(); try{document.execCommand('copy'); done();}catch(e){}
+      document.body.removeChild(ta);
+    }
+  });
+
+  // voorbeeldcase: te toevallig
+  answers={q1:2};
+  dx='toeval';
+  renderQ(); compute();
+})();
+</script>
