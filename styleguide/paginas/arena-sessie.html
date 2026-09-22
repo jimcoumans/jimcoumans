@@ -251,6 +251,76 @@ p{margin:0}
 .hlbl{font-size:14px;font-weight:600;color:var(--tx);margin:0 0 8px}
 .hnote{font-size:14px;color:var(--tx2);margin:0 0 24px;max-width:64ch}
 .hnote b{color:var(--tx);font-variant-numeric:tabular-nums}
+
+/* de vraagschermen schalen mee met de hoogte, anders loopt een lage laptop over */
+.qin h1{font-size:clamp(24px,4.6vh,46px)}
+.qin .sub{font-size:clamp(15px,2vh,19px);margin-top:clamp(8px,1.4vh,14px)}
+.qbody{margin-top:clamp(16px,3vh,42px)}
+.qin .step{margin-bottom:clamp(7px,1.2vh,12px)}
+.bigans button{min-height:clamp(52px,7vh,64px);padding:clamp(13px,2vh,19px) clamp(18px,2vw,24px);
+  font-size:clamp(16px,2.1vh,19px)}
+.bigans{gap:clamp(7px,1.2vh,11px)}
+.qf .f input{font-size:clamp(18px,2.6vh,22px);padding:clamp(10px,1.6vh,14px) 16px}
+.qf{gap:clamp(12px,2vh,18px)}
+.qhint{margin-top:clamp(12px,2vh,22px);font-size:clamp(13px,1.7vh,14.5px)}
+.qcalc{margin-top:clamp(12px,2vh,20px);padding:clamp(11px,1.7vh,15px) 18px;font-size:clamp(14px,1.9vh,16px)}
+.seg button{min-height:clamp(38px,5vh,42px);padding:clamp(7px,1.1vh,8px) 16px;font-size:clamp(13.5px,1.7vh,14px)}
+.hlbl{margin-bottom:clamp(6px,1vh,8px);font-size:clamp(13px,1.7vh,14px)}
+
+/* schermvullend, zonder scrollen: alles schaalt mee met de hoogte */
+.pad.fit{min-height:100%;display:flex;flex-direction:column;justify-content:center;
+  padding-block:clamp(18px,3.2vh,44px)}
+.hd.tight{margin-bottom:clamp(14px,2.2vh,26px)}
+.hd.tight h1{font-size:clamp(26px,3.6vh,42px)}
+.hd.tight .lead{font-size:clamp(15px,1.7vh,18px);margin-top:9px;max-width:72ch}
+
+/* de diagnose krijgt het hele scherm */
+.reveal.solo{margin-bottom:clamp(14px,2.4vh,26px);padding:clamp(24px,4vh,44px)}
+.reveal.solo .dx{font-size:clamp(34px,7vh,66px)}
+.reveal.solo .qt2{font-size:clamp(16px,2.3vh,22px)}
+.dxl{font-size:clamp(15px,1.9vh,19px);color:var(--tx2);max-width:78ch;margin:0}
+
+/* de keten compacter naarmate het scherm lager is */
+.fit .cs{padding:clamp(10px,1.6vh,18px) clamp(16px,2vw,22px);border-radius:14px}
+.fit .cs .vv{font-size:clamp(24px,4.4vh,40px)}
+.fit .cs .lb{font-size:clamp(14px,1.8vh,16px)}
+.fit .cs .sb2{font-size:clamp(12px,1.5vh,14px)}
+.fit .cs .tag{margin-top:clamp(5px,.9vh,10px)}
+.fit .cgap{padding:clamp(4px,.8vh,8px) 22px}
+.fit .cgap i{height:clamp(12px,1.8vh,22px)}
+.fit .cgap span{font-size:clamp(12px,1.5vh,14px)}
+
+/* de kanalen */
+.fit .kr{padding:clamp(9px,1.5vh,15px) 0}
+.fit .kr .kn2{font-size:clamp(15px,2vh,18px)}
+.fit .kr .kv2{font-size:clamp(17px,2.6vh,23px)}
+.fit .kr .kc{font-size:clamp(10.5px,1.3vh,12px);margin-top:4px}
+.fit .kr .kw{font-size:clamp(12.5px,1.6vh,14px);margin-top:6px}
+.fit .kr .ks{font-size:clamp(11px,1.4vh,13px)}
+
+/* het voorstel */
+.fit .vhead{padding-bottom:clamp(10px,1.5vh,18px);margin-bottom:clamp(11px,2vh,22px)}
+.fit .vhead img{height:clamp(30px,4.6vh,44px)}
+.fit .card h3{font-size:clamp(17px,2.3vh,20px)}
+.fit .eyebrow{margin-bottom:clamp(5px,.9vh,9px)}
+.fit .vhead h1{font-size:clamp(23px,3.4vh,36px)}
+.fit .card{padding:clamp(16px,2.4vh,24px) clamp(18px,2vw,26px)}
+.fit .r{padding:clamp(6px,.95vh,11px) 0;font-size:clamp(13px,1.65vh,15px)}
+.fit .r.tot{padding-top:clamp(8px,1.3vh,14px)}
+.fit .r.tot .v{font-size:clamp(19px,2.8vh,24px)}
+.fit .r.big .v{font-size:clamp(18px,2.6vh,23px)}
+.fit .r .k .fx{font-size:clamp(10px,1.2vh,11px)}
+.fit .dtbl{font-size:clamp(13px,1.7vh,15px)}
+.fit .dtbl th,.fit .dtbl td{padding:clamp(7px,1.2vh,11px) 14px}
+.fit .dtbl td:nth-child(4){font-size:clamp(12.5px,1.55vh,14px)}
+#dnstRest{font-size:clamp(12.5px,1.6vh,14.5px);color:var(--tx2);margin:clamp(10px,1.6vh,16px) 0 0;
+  max-width:none;padding-top:clamp(9px,1.4vh,14px);border-top:var(--s-hair) solid var(--ln-soft)}
+.vw{font-size:clamp(11.5px,1.4vh,13px);color:var(--tx3);margin:clamp(10px,1.6vh,16px) 0 0;max-width:none}
+#flags{margin-top:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));
+  gap:clamp(8px,1.2vh,13px);align-content:start}
+#flags .flag{margin-top:0}
+@media (max-width:760px){#flags{grid-template-columns:1fr}}
+.fit .flag{font-size:clamp(12.5px,1.6vh,14.5px);padding:clamp(9px,1.3vh,14px) 16px;margin-top:clamp(6px,1vh,11px)}
 .r.warnrow .k{color:var(--orange-tx);font-weight:600}
 .r.warnrow .k .fx{color:var(--tx2);font-weight:400}
 .r.tot .k{color:var(--tx);font-weight:600} .r.tot .v{font-size:24px}
@@ -299,7 +369,7 @@ p{margin:0}
 .vhead .m{font-size:13px;font-weight:600;color:var(--tx3);margin-top:5px}
 
 /* vraagstappen */
-.qwrap{min-height:100%;display:flex;align-items:center;justify-content:center;padding-block:clamp(28px,6vh,72px)}
+.qwrap{min-height:100%;display:flex;align-items:center;justify-content:center;padding-block:clamp(16px,3.2vh,56px)}
 .qin{width:100%;max-width:820px}
 .qin .step{font-size:13px;font-weight:600;color:var(--blue-link);margin-bottom:12px}
 .qin h1{font-size:clamp(28px,4.4vw,46px);font-weight:700;letter-spacing:-.026em;line-height:1.08}
@@ -319,8 +389,9 @@ p{margin:0}
 .bigans button:hover .ky,.bigans button[aria-pressed="true"] .ky{background:var(--blue-action);color:#fff}
 .bigans .lbl{flex:1;min-width:0}
 .bigans .dsc{display:block;font-size:14px;font-weight:400;color:var(--tx2);margin-top:3px}
-.qf{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;max-width:720px}
-.qf .f label{font-size:15px;color:var(--tx);font-weight:500}
+.qf{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px;max-width:820px}
+.qf .f label{font-size:clamp(13.5px,1.8vh,15px);color:var(--tx);font-weight:500}
+.qf .f .hp{font-size:clamp(11.5px,1.5vh,12.5px)}
 .qf .f input{font-size:22px;padding:14px 16px;border-radius:14px}
 .afw{display:inline-block;font-weight:600;font-size:12.5px;border-radius:6px;padding:3px 8px;margin-top:2px}
 .afw.plus{background:var(--green-100);color:var(--green-tx)}
@@ -404,10 +475,16 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
   border:var(--s-hair) solid var(--ln-soft);color:var(--tx);border-radius:12px;padding:11px 13px;resize:vertical}
 
 @media print{
-  body{overflow:visible;font-size:11pt}
-  .bar,.screen:not(.on),#sAdmin{display:none!important}
+  body{overflow:visible;font-size:10.5pt}
+  .bar,#sAdmin{display:none!important}
+  .screen:not(.on){display:none!important}
+  body.printing .screen{display:none!important}
+  body.printing .screen[data-print]{display:block!important;break-after:page}
+  body.printing .screen[data-print]:last-of-type{break-after:auto}
   .stage{overflow:visible}
-  .card{break-inside:avoid;border-color:#ddd}
+  .pad.fit{min-height:0;display:block}
+  .card,.kr,.cs{break-inside:avoid}
+  .card{border-color:#ddd}
 }
 </style>
 
@@ -466,10 +543,10 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
       <div class="pad qwrap"><div class="qin" id="qin"></div></div>
     </section>
 
-    <!-- 5 resultaat -->
-    <section class="screen" data-t="Resultaat">
-      <div class="pad wide">
-        <div class="reveal">
+    <!-- 5a de diagnose -->
+    <section class="screen" data-print data-t="Diagnose">
+      <div class="pad wide fit">
+        <div class="reveal solo">
           <span class="eyebrow">De diagnose</span>
           <p class="dx" id="vDx"></p>
           <p class="qt2" id="vQuote"></p>
@@ -479,26 +556,49 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
             <span class="kd" id="kd"></span>
           </div>
         </div>
-        <div class="hd">
+        <p class="note dxl" id="rLead"></p>
+      </div>
+    </section>
+
+    <!-- 5b de redenering -->
+    <section class="screen" data-print data-t="Redenering">
+      <div class="pad wide fit">
+        <div class="hd tight">
           <span class="eyebrow">De redenering</span>
           <h1 id="rTitel">Wat er nodig is</h1>
-          <p class="lead" id="rLead"></p>
         </div>
         <div class="chain" id="chainRows"></div>
-        <div class="card" style="margin-top:clamp(20px,3vh,32px)">
-          <span class="eyebrow dim">Hoe we dat realiseren</span>
-          <h3 id="realT">De inzet</h3>
-          <p class="note" id="realP" style="font-size:15px;margin:8px 0 10px"></p>
-          <p class="note" id="realJ1" style="font-size:14.5px;color:var(--tx2);margin:0 0 16px;max-width:66ch"></p>
-          <div class="rows" id="realRows"></div>
+      </div>
+    </section>
+
+    <!-- 5d waar we op letten -->
+    <section class="screen" data-print data-t="Aannames">
+      <div class="pad wide fit">
+        <div class="hd tight">
+          <span class="eyebrow">Waar we op letten</span>
+          <h1>Wat deze som aanneemt</h1>
+          <p class="lead">Dit zijn de punten waarop het kan tegenvallen. We zetten ze vooraf op tafel in plaats van achteraf.</p>
         </div>
         <div id="flags"></div>
       </div>
     </section>
 
-    <!-- 6 voorstel -->
-    <section class="screen" data-t="Voorstel">
-      <div class="pad wide">
+    <!-- 5c de aanpak -->
+    <section class="screen" data-print data-t="Aanpak">
+      <div class="pad wide fit">
+        <div class="hd tight">
+          <span class="eyebrow">Hoe we dat realiseren</span>
+          <h1 id="realT">De inzet</h1>
+          <p class="lead" id="realJ1"></p>
+        </div>
+        <div class="rows" id="realRows"></div>
+        <p class="note" id="realP" hidden></p>
+      </div>
+    </section>
+
+    <!-- 6a de cijfers -->
+    <section class="screen" data-print data-t="Voorstel">
+      <div class="pad wide fit">
         <div class="vhead">
           <img id="vLogo" alt="" hidden>
           <div style="flex:1;min-width:0">
@@ -510,28 +610,30 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
           <div class="card">
             <span class="eyebrow dim">Wat het kost</span>
             <h3 id="invTitel">De investering</h3>
-            <div class="rows" id="invRows" style="margin-top:12px"></div>
+            <div class="rows" id="invRows" style="margin-top:10px"></div>
           </div>
           <div class="card">
             <span class="eyebrow dim">Wat het naar verwachting oplevert</span>
             <h3>Het rendement</h3>
-            <p class="note" style="font-size:14px;color:var(--tx3);margin:7px 0 4px">Een verwachting op basis van benchmarks en je eigen cijfers. Geen toezegging.</p>
-            <div class="rows" id="roiRows" style="margin-top:8px"></div>
+            <div class="rows" id="roiRows" style="margin-top:10px"></div>
           </div>
         </div>
-        <div class="card" style="margin-top:18px">
-          <span class="eyebrow dim">De diensten</span>
-          <h3 id="lvlName">&mdash;</h3>
-          <p class="note" id="lvlHint" style="font-size:14px;color:var(--tx3);margin:7px 0 0"></p>
-          <div style="overflow-x:auto"><table class="dtbl"><thead><tr>
-            <th>Dienst</th><th class="n">Uren p/m</th><th>Waar we op sturen</th><th>Wat het oplevert</th>
-          </tr></thead><tbody id="dnstRows"></tbody></table></div>
-          <p class="note" id="dnstRest" hidden style="font-size:14.5px;color:var(--tx2);margin:16px 0 0;max-width:none;padding-top:14px;border-top:var(--s-hair) solid var(--ln-soft)"></p>
+      </div>
+    </section>
+
+    <!-- 6b de diensten -->
+    <section class="screen" data-print data-t="Diensten">
+      <div class="pad wide fit">
+        <div class="hd tight">
+          <span class="eyebrow">De diensten</span>
+          <h1 id="lvlName">&mdash;</h1>
+          <p class="lead" id="lvlHint"></p>
         </div>
-        <div class="card" style="margin-top:18px">
-          <span class="eyebrow dim">Voorwaarden</span>
-          <p class="note" style="font-size:14.5px;margin:8px 0 0;max-width:none">Bedragen zijn exclusief btw. Het fundament factureren we in maand 1 apart; de retainer loopt vanaf maand 2 en is maandelijks opzegbaar. Advertentie- en linkbuildingbudget betaal je rechtstreeks, die lopen niet via ons. De getoonde uitkomsten zijn een verwachting op basis van branchebenchmarks en je eigen cijfers, geen toezegging. Retainerbedragen onder voorbehoud.</p>
-        </div>
+        <div style="overflow-x:auto"><table class="dtbl"><thead><tr>
+          <th>Dienst</th><th class="n">Uren p/m</th><th>Waar we op sturen</th><th>Wat het oplevert</th>
+        </tr></thead><tbody id="dnstRows"></tbody></table></div>
+        <p class="note" id="dnstRest" hidden></p>
+        <p class="note vw">Bedragen zijn exclusief btw en onder voorbehoud. Het fundament factureren we in maand 1 apart; de retainer loopt vanaf maand 2 en is maandelijks opzegbaar. Advertentie- en linkbuildingbudget betaal je rechtstreeks. De uitkomsten zijn een verwachting op basis van branchebenchmarks en je eigen cijfers, geen toezegging.</p>
       </div>
     </section>
 
@@ -672,7 +774,10 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
   syncT();
   themeB.addEventListener('click',function(){root.setAttribute('data-theme',cur()==='dark'?'light':'dark');syncT();});
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',syncT);
-  document.getElementById('printB').addEventListener('click',function(){ go(5); setTimeout(function(){try{window.print();}catch(e){}},150); });
+  document.getElementById('printB').addEventListener('click',function(){
+    document.body.classList.add('printing');
+    setTimeout(function(){ try{window.print();}catch(e){}
+      setTimeout(function(){ document.body.classList.remove('printing'); },400); },150); });
 
   var eur=new Intl.NumberFormat('nl-NL',{style:'currency',currency:'EUR',maximumFractionDigits:0});
   var eur2=new Intl.NumberFormat('nl-NL',{style:'currency',currency:'EUR',minimumFractionDigits:2,maximumFractionDigits:2});
@@ -740,7 +845,8 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
   function rampF(r){ if(!r) return 1; var som=0;
     for(var m=1;m<=12;m++) som += m<r.s ? 0 : (m>=r.v ? 1 : (m-r.s+1)/(r.v-r.s+1));
     return som/12; }
-  function rampT(r){ return r? ('levert vanaf maand '+r.s+', op niveau vanaf maand '+r.v) : ''; }
+  function rampT(r,hoofd){ if(!r) return '';
+    return (hoofd?'L':'l')+'evert vanaf maand '+r.s+', op niveau vanaf maand '+r.v; }
 
   var DX={
     weinig:{naam:'Te weinig',minLvl:1,impact:'zicht',
@@ -842,9 +948,10 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
   var admEl=document.getElementById('sAdmin');
   var secs={}; [].slice.call(document.querySelectorAll('.screen')).forEach(function(el,i){
     secs[el.id||('s'+i)]=el; });
-  var secStart=document.querySelectorAll('.screen')[0], secWelkom=document.querySelectorAll('.screen')[1],
-      secVraag=document.getElementById('sVraag'),
-      secRes=document.querySelectorAll('.screen')[3], secVoor=document.querySelectorAll('.screen')[4];
+  function sec(t){ return document.querySelector('.screen[data-t="'+t+'"]'); }
+  var secStart=sec('Start'), secWelkom=sec('Welkom'), secVraag=document.getElementById('sVraag'),
+      secDx=sec('Diagnose'), secRed=sec('Redenering'), secAan=sec('Aanpak'),
+      secAnn=sec('Aannames'), secVoor=sec('Voorstel'), secDns=sec('Diensten');
   var qin=document.getElementById('qin');
 
   function stepList(){
@@ -866,8 +973,12 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
     L.push({id:'nu',fase:'De cijfers',sec:secVraag,r:rNu});
     L.push({id:'close',fase:'De cijfers',sec:secVraag,r:rClose});
     L.push({id:'bench',fase:'De cijfers',sec:secVraag,r:rBench});
-    L.push({id:'resultaat',fase:'Het resultaat',sec:secRes});
+    L.push({id:'diagnose',fase:'De uitkomst',sec:secDx});
+    L.push({id:'redenering',fase:'De uitkomst',sec:secRed});
+    L.push({id:'aanpak',fase:'De uitkomst',sec:secAan});
+    L.push({id:'aannames',fase:'De uitkomst',sec:secAnn});
     L.push({id:'voorstel',fase:'Het voorstel',sec:secVoor});
+    L.push({id:'diensten',fase:'Het voorstel',sec:secDns});
     return L;
   }
   var steps=stepList();
@@ -992,11 +1103,13 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
         :'Let op: neem <b>niet</b> je huidige percentage. Wie nu op netwerk en mond-tot-mond draait, sluit hoog &mdash; die leads waren al warm. Marketingleads zijn kouder.');
     velden(b,[fld('close',M.closeLabel,'%')]);
   }
+  /* De houding werkt naar twee kanten: wat je binnenhaalt gaat omlaag, wat je
+     betaalt gaat omhoog. Behoudend rekenen is duur rekenen. */
   function benchWaarden(){
-    var B=BRANCHE[branche];
-    return {cpc:Math.round((B.cpc||WS_CPC)*CORR*100)/100,
-            ctr:Math.round(2.0*consF()*100)/100,
-            cvr:Math.round((B.cvr||WS_CVR)*consF()*100)/100};
+    var B=BRANCHE[branche], f=consF();
+    return {cpc:Math.round((B.cpc||WS_CPC)*CORR/f*100)/100,
+            ctr:Math.round(2.0*f*100)/100,
+            cvr:Math.round((B.cvr||WS_CVR)*f*100)/100};
   }
   function afw(v,b){ if(!v||!b) return ''; var d=(v/b-1)*100;
     if(Math.abs(d)<0.5) return '<span class="afw nul">gelijk aan de benchmark</span>';
@@ -1010,21 +1123,15 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
       var hl=document.createElement('p'); hl.className='hlbl';
       hl.innerHTML='Hoe voorzichtig rekenen we?';
       b.appendChild(hl);
-      var hseg=document.createElement('div'); hseg.className='seg'; hseg.style.margin='0 0 10px';
+      var hseg=document.createElement('div'); hseg.className='seg'; hseg.style.margin='0 0 22px';
       HOUDNM.forEach(function(nm){
         var btn=document.createElement('button'); btn.type='button';
-        btn.textContent=nm.charAt(0).toUpperCase()+nm.slice(1);
+        btn.textContent=HOUDLB[nm];
         btn.setAttribute('aria-pressed', HOUDING===nm?'true':'false');
         btn.addEventListener('click',function(){ HOUDING=nm;
           var nb=benchWaarden(); V.cpc=nb.cpc; V.ctr=nb.ctr; V.cvr=nb.cvr; go(scr); });
         hseg.appendChild(btn); });
       b.appendChild(hseg);
-      var hu=document.createElement('p'); hu.className='hnote';
-      hu.innerHTML='Huisfactor <b>'+dec2.format(A.huis)+'</b> \u00d7 '+HOUDING+' <b>'+dec2.format(houdF())+
-        '</b> = <b>'+dec2.format(consF())+'\u00d7</b> de benchmark. '+
-        (consF()<1? 'We beloven minder dan het gemiddelde. Halen we meer, dan is dat winst in het gesprek.'
-                  : 'We beloven meer dan het gemiddelde. Dat moet je waarmaken.');
-      b.appendChild(hu);
     }
 
     var seg=document.createElement('div'); seg.className='seg'; seg.style.margin='0 0 24px';
@@ -1039,7 +1146,9 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
     b.appendChild(seg);
     velden(b,[
       fld('cpc','Kosten per klik','EUR', eigen? afw(V.cpc,bw.cpc)
-        : 'Benchmark $'+(B.cpc||WS_CPC).toFixed(2)+' \u00d7 koers '+String(A.koers).replace('.',',')+' \u00d7 marktfactor '+String(A.markt).replace('.',',')),
+        : 'Benchmark $'+(B.cpc||WS_CPC).toFixed(2)+' \u00d7 koers '+String(A.koers).replace('.',',')+
+          (A.markt!==1?' \u00d7 marktfactor '+String(A.markt).replace('.',','):'')+
+          ', '+(consF()<1?'opgehoogd':'verlaagd')+' omdat we '+HOUDLB[HOUDING].toLowerCase()+' rekenen'),
       fld('ctr','Van vertoning naar klik','% CTR', eigen? afw(V.ctr,bw.ctr)
         : 'Welk deel van wie de advertentie ziet erop klikt.'),
       fld('cvr','Van klik naar '+M.conv,'% CONVERSIE', eigen? afw(V.cvr,bw.cvr)
@@ -1101,7 +1210,7 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
   }
   function defaults(){
     var B=BRANCHE[branche];
-    if(V.cpc===null) V.cpc=Math.round((B.cpc||WS_CPC)*CORR*100)/100;
+    if(V.cpc===null) V.cpc=benchWaarden().cpc;
     if(V.cvr===null) V.cvr=Math.round((B.cvr||WS_CVR)*consF()*100)/100;
     if(V.ctr===null) V.ctr=Math.round(2.0*consF()*100)/100;
   }
@@ -1304,6 +1413,9 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
     }
     if(eigenC>0){ eigenJ1=Math.round(eigenC*rampF(RAMP.eigen)); }
     var convTotJ1=convJ1+eigenJ1;
+    /* De redenering gaat over het doel, niet over de herkomst. Hoeveel mensen
+       moeten er op de site komen \u2014 waar ze vandaan komen is de volgende vraag. */
+    var bezTot=(conv&&cvr)? Math.round(conv/(cvr/100)) : null;
     if(close&&convTotJ1) klantenJ1=Math.round(convTotJ1*(close/100));
     if(klantenJ1!==null&&waarde){ omzetJ1=klantenJ1*waarde;
       if(V.marge) margeJ1=omzetJ1*(V.marge/100); }
@@ -1352,15 +1464,9 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
       cstep('0'+(n++),'Extra '+M.convMv,num.format(conv),
         convNu?('nu '+num.format(convNu)+' per jaar \u2014 dat is +'+Math.round(groei*100)+'%'):null,
         d.impact==='aanvr', d.impact==='aanvr'?'HIER ZIT DE WINST':null); }
-    if(eigenC>0){ cgap(Math.round(eigenA*100)+'% hiervan uit SEO en e-mail, zonder klikkosten \u2014 dat is '+num.format(eigenC));
-      cstep('0'+(n++),'Uit betaald verkeer',num.format(convB)); }
-    if(bez){ cgap('\u00f7 conversie per kanaal'+(d.lift.cvr?', na CRO':'')+' \u2014 '+
-        PL.rij.map(function(r){ return r.k+' '+dec.format(r.cvr)+'%'; }).join(', '));
-      cstep('0'+(n++),'Websitebezoekers',num.format(bez),'extra per jaar',
-        d.impact==='bez', d.impact==='bez'?'HIER ZIT DE WINST':null); }
-    if(vert){ cgap('\u00f7 '+dec.format(V.ctr)+'% doorklikratio');
-      cstep('0'+(n++),'Vertoningen',num.format(vert),'zichtbaarheid per jaar',
-        d.impact==='zicht', d.impact==='zicht'?'HIER ZIT DE WINST':null); }
+    if(bezTot){ cgap('\u00f7 '+dec.format(cvr)+'% conversie'+(d.lift.cvr?', na CRO':''));
+      cstep('0'+(n++),'Websitebezoekers',num.format(bezTot),'extra per jaar \u00b7 '+num.format(Math.round(bezTot/12))+' per maand',
+        d.impact==='bez'||d.impact==='zicht', (d.impact==='bez'||d.impact==='zicht')?'HIER ZIT DE WINST':null); }
 
     document.getElementById('rTitel').textContent = T.bedrijf
       ? ('Wat '+T.bedrijf+' daarvoor nodig heeft') : 'Wat daarvoor nodig is';
@@ -1372,10 +1478,8 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
     var rr=document.getElementById('realRows'); rr.textContent='';
     document.getElementById('realT').textContent='De inzet: '+kanN.join(', ')+(linkM>0?' en SEO':'');
     var rj=document.getElementById('realJ1');
-    if(rj) rj.innerHTML=convTotJ1&&conv
-      ? 'De getallen rechts zijn het niveau op kruissnelheid. Daaronder staat wat jaar 1 ervan oplevert: <b>'+
-        num.format(convTotJ1)+' '+M.convMv+'</b> in plaats van '+num.format(conv)+
-        '. Campagnes moeten leren en SEO komt pas na maanden op gang. Het budget staat er wel vanaf maand 1, want zonder volume valt er niets te sturen.'
+    if(rj) rj.innerHTML=bezTot
+      ? 'Elk kanaal brengt ander verkeer. We splitsen de '+M.convMv+' er niet over uit, want dan ga je kanalen tegen elkaar afwegen terwijl ze elkaar juist nodig hebben: betaald verkeer levert nu, eigen kanalen leveren straks en maken het betaalde goedkoper.'
       : '';
     document.getElementById('realP').innerHTML = d.uitleg+' <b>'+d.effect+'.</b>';
     function KR(nm,geld,lev,sub,why,cls){
@@ -1384,24 +1488,33 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
         '</span></div><div class="kc">'+geld+'</div>'+(sub?'<div class="ks">'+sub+'</div>':'')+
         (why?'<p class="kw">'+why+'</p>':'');
       rr.appendChild(d); }
+    /* Per kanaal het verkeer, niet de aanvragen. Aanvragen per kanaal nodigen uit
+       tot afpellen \u2014 dan valt het goedkoopste kanaal als winnaar uit de bus en
+       verdwijnt de reden waarom de combinatie werkt. */
     if(PL){
+      var bezM=Math.round((bezTot||0)/12);
       PL.rij.forEach(function(r){
-        var lev=r.conv+(r===PL.rij[0]?(PL.over||0):0), plaf=(r.max<100&&r.conv>=Math.floor(convB*r.max/100)&&PL.rij.length>1);
+        var plaf=(r.max<100&&r.conv>=Math.floor(convB*r.max/100)&&PL.rij.length>1),
+            pm=Math.round(r.klik/12), aandeel=bezTot? Math.round(r.klik/bezTot*100) : 0;
         KR(r.k+(r.extra?' <span class="tagp warn">ERBIJ</span>':'')+(plaf?' <span class="tagp ok">VOL</span>':''),
-          eur.format(kanB[r.k])+' per maand \u2014 '+num.format(Math.round(r.klik/12))+' klikken p/m tegen '+
-          eur2.format(r.cpc*fac)+(fac>1?' ('+eur2.format(r.cpc)+' plus '+dec.format(fac)+'\u00d7 opschaling)':'')+
-          ', waarvan '+dec.format(r.cvr)+'% converteert. Kostprijs '+eur2.format(r.kpc)+' per '+M.conv+'.',
-          num.format(lev)+' <span class="pm">'+M.convMv+'</span>',
-          'in jaar 1: '+num.format(r.j1)+' \u00b7 '+rampT(RAMP[r.k]), r.why);
+          eur.format(kanB[r.k])+' per maand tegen '+eur2.format(r.cpc*fac)+' per klik. '+
+          (plaf? 'Dit is wat dit kanaal maximaal kan dragen.' : 'Ruimte om op te schalen als het werkt.'),
+          num.format(pm)+' <span class="pm">bezoekers p/m</span>',
+          aandeel+'% van het verkeer \u00b7 '+rampT(RAMP[r.k]), r.why);
       });
-      if(eigenC>0) KR('SEO en e-mail',
-        (linkM>0?eur.format(linkM)+' linkbuilding per maand':'binnen de retainer')+' \u2014 geen klikkosten per bezoeker.',
-        num.format(eigenC)+' <span class="pm">'+M.convMv+'</span>',
-        'in jaar 1: '+num.format(eigenJ1)+' \u00b7 '+rampT(RAMP.eigen),
-        'Bouwt langzaam op en blijft daarna staan. Dit is het deel dat niet stopt zodra je de advertenties uitzet.');
-      KR('Samen', eur.format(adMnd+linkM)+' per maand aan budget, naast de retainer.',
-        num.format(eigenC+convGe)+' <span class="pm">'+M.convMv+'</span>',
-        'in jaar 1: '+num.format(convTotJ1)+(conv?' \u00b7 dat is '+Math.round(convTotJ1/conv*100)+'% van wat het op kruissnelheid doet':''),
+      if(eigenC>0){ var bezE=cvr? Math.round(eigenC/(cvr/100)/12) : 0;
+        KR('SEO en e-mail',
+          (linkM>0?eur.format(linkM)+' linkbuilding per maand':'binnen de retainer')+
+          '. Geen klikkosten: dit verkeer blijft komen als je stopt met adverteren.',
+          num.format(bezE)+' <span class="pm">bezoekers p/m</span>',
+          (bezTot? Math.round(bezE*12/bezTot*100):0)+'% van het verkeer \u00b7 '+rampT(RAMP.eigen),
+          'Bouwt langzaam op en blijft daarna staan. Zonder dit deel ben je elke maand opnieuw afhankelijk van je advertentiebudget.');
+      }
+      KR('Samen', eur.format(adMnd+linkM)+' per maand aan budget, naast de retainer. Daaruit komen '+
+        num.format(conv||0)+' '+M.convMv+' per jaar, '+num.format(convTotJ1)+' daarvan in jaar 1.',
+        num.format(bezM)+' <span class="pm">bezoekers p/m</span>',
+        'nu '+(V.bezNu? num.format(Math.round(V.bezNu/12))+' per maand \u2014 dat is '+Math.round(bezTot/V.bezNu*100)+'% erbij'
+                      : 'onbekend, de nulmeting is de eerste oplevering'),
         null, 'sum');
     }
 
@@ -1431,10 +1544,7 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
           dec.format((omzetJ1||0)/jaar1)+'\u00d7<span class="pm"> \u2192 </span>'+dec.format(omzet/jaarTot)+'\u00d7'));
         roi.appendChild(R('Brutomarge',V.marge+'% \u00d7 de omzet hierboven',
           eur.format(Math.round(margeJ1||0))+'<span class="pm"> \u2192 </span>'+eur.format(Math.round(margeTot))));
-        if(convTotJ1&&conv&&convTotJ1<conv) roi.appendChild(R('Waarom jaar 1 lager is',
-          'campagnes moeten leren en SEO komt pas na maanden op gang',
-          num.format(convTotJ1)+' van '+num.format(conv)+' '+M.convMv,
-          Math.round(convTotJ1/conv*100)+'% van het niveau op kruissnelheid'));
+
         roi.appendChild(R('Onder de streep, jaar 1',
           eur.format(Math.round(margeJ1||0))+' marge \u2212 '+eur.format(jaar1)+' investering (incl. fundament)',
           eur.format(Math.round(onderJ1||0))+'<span class="tagp '+((onderJ1||0)>0?'ok':'bad')+'">'+((onderJ1||0)>0?'POSITIEF':'NEGATIEF')+'</span>',
@@ -1448,13 +1558,7 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
           roi.appendChild(R('Terugverdiend na',null,(12+maanden)+' maanden','vanaf de start gerekend')); }
       }
       if(omzet&&adJaar&&omzet/adJaar>10) roi.appendChild(R('Deze ROAS is te hoog om zo te presenteren',
-        'hij volgt uit een conversie van '+dec.format(cvr)+'%. Dat is het gemiddelde over 23 branches, '+dec2.format(consF())+'\u00d7 gezet. Zet je eigen percentage in zodra je het hebt.','',null,'warnrow'));
-      if(cpl!==null) roi.appendChild(R('<span class="kpi">'+M.cpl+'</span>Kosten per '+M.conv,
-        'op kruissnelheid \u00b7 '+eur2.format(V.cpc)+' klik \u00f7 '+dec.format(cvr)+'%'+(fac>1?' \u00d7 '+dec.format(fac)+' opschaling':''),eur2.format(cpl)));
-      if(cac!==null) roi.appendChild(R('<span class="kpi">CAC</span>Kosten per klant',eur2.format(cpl)+' \u00f7 '+dec.format(close)+'%',
-        eur2.format(cac)+(margeEur!==null?'<span class="tagp '+(cac<=margeEur?'ok':'bad')+'">'+(cac<=margeEur?'ONDER DE MARGE':'BOVEN DE MARGE')+'</span>':''),
-        null,margeEur!==null?(cac<=margeEur?'good':'bad'):null));
-      if(ltv!==null) roi.appendChild(R('Marge per klant over '+V.jaren+' jaar',eur.format(Math.round(margeEur))+' \u00d7 '+V.jaren+' jaar',eur.format(Math.round(ltv))));
+        'hij volgt uit een conversie van '+dec.format(cvr)+'%, het gemiddelde over 23 branches. Zet je eigen percentage in zodra je het hebt.','',null,'warnrow'));
     }
 
     /* ---- de conclusie: investering ---- */
@@ -1469,6 +1573,11 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
     if(linkM>0) iv.appendChild(R('Linkbuildingbudget','hoort bij SEO',pmv(linkM)));
     iv.appendChild(R('Per maand, doorlopend',null,eur.format(maandTot),null,'tot'));
     iv.appendChild(R('Jaar 1 totaal','12 \u00d7 '+eur.format(maandTot)+' + '+eur.format(L.setup)+' fundament',eur.format(jaar1)));
+    if(cpl!==null) iv.appendChild(R('<span class="kpi">'+M.cpl+'</span>Kosten per '+M.conv,
+      eur2.format(V.cpc)+' klik \u00f7 '+dec.format(cvr)+'%'+(fac>1?' \u00d7 '+dec.format(fac)+' opschaling':''),eur2.format(cpl)));
+    if(cac!==null) iv.appendChild(R('<span class="kpi">CAC</span>Kosten per klant',eur2.format(cpl)+' \u00f7 '+dec.format(close)+'%',
+      eur2.format(cac)+(margeEur!==null?'<span class="tagp '+(cac<=margeEur?'ok':'bad')+'">'+(cac<=margeEur?'ONDER DE MARGE':'BOVEN DE MARGE')+'</span>':''),
+      null,margeEur!==null?(cac<=margeEur?'good':'bad'):null));
     if(V.omzet){ var pct=jaarTot/V.omzet*100, c=pct<=12?'good':(pct<=18?'mid':'bad');
       iv.appendChild(R('Van je jaaromzet','benchmark 7,7% (Gartner) tot 9,4% (CMO Survey)',
         dec.format(pct)+'%<span class="tagp '+(c==='good'?'ok':(c==='mid'?'warn':'bad'))+'">'+
@@ -1483,12 +1592,12 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
       if(D.n==='Marketing Management') tr.className='mm';
       var lev=D.v;
       var PR=PL&&PL.rij.filter(function(r){ return r.k===D.kan; })[0];
-      if(PR){ lev=num.format(PR.conv+(PR===PL.rij[0]?(PL.over||0):0))+' '+M.convMv+' per jaar op kruissnelheid, '+
-          num.format(PR.j1)+' in jaar 1. Bij '+eur.format(kanB[D.kan])+' per maand is dat '+eur2.format(PR.kpc)+' per '+M.conv+'.';
+      if(PR){ lev='Ongeveer '+num.format(Math.round(PR.klik/12))+' bezoekers per maand, bij '+
+          eur.format(kanB[D.kan])+' budget. '+rampT(RAMP[D.kan],true)+'.';
       } else if(D.n==='SEO'&&eigenC>0){
-        lev='Samen met e-mail '+num.format(eigenC)+' '+M.convMv+' per jaar zonder klikkosten, waarvan '+num.format(eigenJ1)+' in jaar 1.';
+        lev='Verkeer zonder klikkosten, samen met e-mail. '+rampT(RAMP.eigen,true)+'.';
       } else if(D.n.indexOf('E-mail')===0&&eigenC>0){
-        lev='Draagt samen met SEO '+num.format(eigenC)+' '+M.convMv+' per jaar. Geen klikkosten, maar het duurt voor de lijst staat.';
+        lev='Haalt herhaling uit wie je al kent. Geen klikkosten, maar het duurt voor de lijst staat.';
       }
       tr.innerHTML='<td>'+D.n+'</td><td class="n">'+uren[i2]+'</td><td>'+D.kpi+'</td><td>'+lev+'</td>';
       dn.appendChild(tr); });
@@ -1519,6 +1628,7 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
 
   /* ---------- beheerscherm ---------- */
   var HOUDNM=['behoudend','conform','optimistisch'];
+  var HOUDLB={behoudend:'Behoudend',conform:'Conform benchmark',optimistisch:'Optimistisch'};
 
   function bindA(id,key,parse){
     var el=document.getElementById(id);
