@@ -7,7 +7,7 @@
   --tx:#1d1d1f; --tx2:#63636b; --tx3:#8b8b94;
   --ln:#d6d7dd; --ln-s:#e6e7ec;
   --act:#0857c3; --act-soft:#eaf2ff;
-  --lime:#c4f000; --lime-tx:#56690a; --lime-bg:#f3fbcf;
+  --lime:#c4f000; --lime-tx:#56690a;
   --good-tx:#1c7a3e; --good-bg:#e7f6ec;
   --warn-tx:#8d5407; --warn-bg:#fdf2e2;
   --bad-tx:#bb2a22; --bad-bg:#fdeceb;
@@ -15,14 +15,14 @@
   --fd:"Inter Tight","Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
   --ft:"Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
   --fm:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-  --g:28px;
+  --g:26px;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --page:#08080a; --card:#161619; --alt:#101013; --sunk:#1d1d21;
   --tx:#f2f2f5; --tx2:#a0a0aa; --tx3:#7d7d87;
   --ln:#34343a; --ln-s:#26262b;
   --act:#5ea6ff; --act-soft:rgba(94,166,255,.13);
-  --lime-tx:#d4ff4d; --lime-bg:rgba(196,240,0,.13);
+  --lime-tx:#d4ff4d;
   --good-tx:#4cc873; --good-bg:rgba(76,200,115,.13);
   --warn-tx:#f0a84a; --warn-bg:rgba(240,168,74,.13);
   --bad-tx:#ff6f66; --bad-bg:rgba(255,111,102,.13);
@@ -33,7 +33,7 @@
   --tx:#f2f2f5; --tx2:#a0a0aa; --tx3:#7d7d87;
   --ln:#34343a; --ln-s:#26262b;
   --act:#5ea6ff; --act-soft:rgba(94,166,255,.13);
-  --lime-tx:#d4ff4d; --lime-bg:rgba(196,240,0,.13);
+  --lime-tx:#d4ff4d;
   --good-tx:#4cc873; --good-bg:rgba(76,200,115,.13);
   --warn-tx:#f0a84a; --warn-bg:rgba(240,168,74,.13);
   --bad-tx:#ff6f66; --bad-bg:rgba(255,111,102,.13);
@@ -42,157 +42,163 @@
 *,*::before,*::after{box-sizing:border-box}
 body{margin:0;background:var(--page);color:var(--tx);font-family:var(--ft);font-size:16px;line-height:1.55;
   -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
-@media (prefers-reduced-motion:reduce){*{transition-duration:.01ms!important;animation-duration:.01ms!important}}
+@media (prefers-reduced-motion:reduce){*{transition-duration:.01ms!important}}
 :focus-visible{outline:2px solid var(--act);outline-offset:2px;border-radius:6px}
-h1,h2,h3,h4{font-family:var(--fd);margin:0;text-wrap:balance}
+h1,h2,h3{font-family:var(--fd);margin:0;text-wrap:balance}
 p{margin:0}
 
-.wrap{max-width:1200px;margin:0 auto;padding-inline:var(--g)}
+.wrap{max-width:1240px;margin:0 auto;padding-inline:var(--g)}
 .top{border-bottom:1px solid var(--ln-s);background:var(--card)}
-.top-in{max-width:1200px;margin:0 auto;padding:22px var(--g) 20px;display:flex;align-items:flex-end;gap:20px;flex-wrap:wrap}
-.top h1{font-size:clamp(22px,3.2vw,29px);font-weight:700;letter-spacing:-.022em;line-height:1.1}
-.top .sub{font-size:14.5px;color:var(--tx2);max-width:60ch;margin-top:5px}
+.top-in{max-width:1240px;margin:0 auto;padding:20px var(--g);display:flex;align-items:flex-end;gap:20px;flex-wrap:wrap}
+.top h1{font-size:clamp(21px,3vw,28px);font-weight:700;letter-spacing:-.022em;line-height:1.1}
+.top .sub{font-size:14px;color:var(--tx2);max-width:62ch;margin-top:5px}
 .top button{margin-left:auto;font:inherit;font-size:12.5px;cursor:pointer;background:transparent;
   border:1px solid var(--ln);color:var(--tx2);border-radius:999px;padding:6px 15px}
-.top button:hover{color:var(--tx);border-color:var(--tx3)}
 
-.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,428px);gap:24px;align-items:start;padding-block:24px 8px}
-@media (max-width:980px){.cols{grid-template-columns:1fr}}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,440px);gap:22px;align-items:start;padding-block:22px 8px}
+@media (max-width:1000px){.cols{grid-template-columns:1fr}}
 
-.panel{background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:21px 23px}
-.panel + .panel{margin-top:14px}
-.eyebrow{font-family:var(--fm);font-size:10.5px;letter-spacing:.07em;color:var(--tx3);text-transform:uppercase}
-.panel h2{font-size:18.5px;font-weight:600;letter-spacing:-.012em;margin:7px 0 4px}
-.panel .hint{font-size:13.5px;color:var(--tx2);margin-bottom:15px}
+.panel{background:var(--card);border:1px solid var(--ln-s);border-radius:15px;padding:20px 22px}
+.panel + .panel{margin-top:13px}
+.eyebrow{font-family:var(--fm);font-size:10px;letter-spacing:.07em;color:var(--tx3);text-transform:uppercase}
+.panel h2{font-size:18px;font-weight:600;letter-spacing:-.012em;margin:6px 0 4px}
+.panel .hint{font-size:13.5px;color:var(--tx2);margin-bottom:14px}
 .panel .hint b{color:var(--tx)}
 
-.modes{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
-@media (max-width:520px){.modes{grid-template-columns:1fr}}
-.mode{text-align:left;font:inherit;cursor:pointer;background:var(--card);border:1px solid var(--ln);
-  border-radius:12px;padding:12px 14px;transition:border-color .15s,background .15s}
-.mode:hover{border-color:var(--act)}
-.mode[aria-pressed="true"]{border-color:var(--act);background:var(--act-soft)}
-.mode .mn{display:block;font-family:var(--fd);font-weight:600;font-size:15px;color:var(--tx)}
-.mode .md{display:block;font-size:12.5px;color:var(--tx2);margin-top:2px;line-height:1.35}
+.opts{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+@media (max-width:520px){.opts{grid-template-columns:1fr}}
+.opt{text-align:left;font:inherit;cursor:pointer;background:var(--card);border:1px solid var(--ln);
+  border-radius:11px;padding:11px 13px;transition:border-color .15s,background .15s}
+.opt:hover{border-color:var(--act)}
+.opt[aria-pressed="true"]{border-color:var(--act);background:var(--act-soft)}
+.opt .mn{display:block;font-family:var(--fd);font-weight:600;font-size:14.5px;color:var(--tx)}
+.opt .md{display:block;font-size:12px;color:var(--tx2);margin-top:2px;line-height:1.35}
 
-.q{border-left:2px solid var(--ln);padding:0 0 0 18px;margin-bottom:2px;position:relative}
+.q{border-left:2px solid var(--ln);padding:0 0 0 17px;position:relative}
 .q.done{border-left-color:var(--act)}
-.q::before{content:"";position:absolute;left:-5px;top:9px;width:8px;height:8px;border-radius:50%;
+.q.wait{opacity:.45}
+.q::before{content:"";position:absolute;left:-5px;top:8px;width:8px;height:8px;border-radius:50%;
   background:var(--ln);border:2px solid var(--card)}
 .q.done::before{background:var(--act)}
-.q .qt{font-size:15px;font-weight:500;padding-bottom:8px}
-.q .qs{display:block;font-size:12.5px;font-weight:400;color:var(--tx2);margin-top:2px}
-.q .ans{display:flex;gap:7px;flex-wrap:wrap;padding-bottom:15px}
-.q button{font:inherit;font-size:13.5px;cursor:pointer;background:var(--card);border:1px solid var(--ln);
-  color:var(--tx);border-radius:999px;padding:6px 14px;transition:background .15s,border-color .15s}
+.q .qn{font-family:var(--fm);font-size:9.5px;letter-spacing:.06em;color:var(--tx3)}
+.q .qt{font-size:14.5px;font-weight:500;padding:2px 0 7px}
+.q .ans{display:flex;gap:6px;flex-wrap:wrap;padding-bottom:14px}
+.q button{font:inherit;font-size:13px;cursor:pointer;background:var(--card);border:1px solid var(--ln);
+  color:var(--tx);border-radius:999px;padding:6px 13px}
 .q button:hover{border-color:var(--act);color:var(--act)}
 .q button[aria-pressed="true"]{background:var(--act);border-color:var(--act);color:#fff}
+.q .lock{font-size:12.5px;color:var(--tx3);padding-bottom:14px}
 .reset{font:inherit;font-size:13px;cursor:pointer;background:none;border:none;color:var(--act);
-  padding:0;text-decoration:underline;text-underline-offset:3px}
+  padding:0;text-decoration:underline;text-underline-offset:3px;margin-top:4px}
 
-.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 15px}
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 14px}
 @media (max-width:560px){.fields{grid-template-columns:1fr}}
-.f{display:flex;flex-direction:column;gap:5px;min-width:0}
-.f.wide{grid-column:1/-1}
-.f label{font-size:12.5px;color:var(--tx2);font-weight:500;display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
-.f .unit{font-family:var(--fm);font-size:10px;color:var(--tx3)}
-.f .tag{font-family:var(--fm);font-size:9px;letter-spacing:.04em;border-radius:4px;padding:2px 5px;
-  background:var(--warn-bg);color:var(--warn-tx)}
+.f{display:flex;flex-direction:column;gap:4px;min-width:0}
+.f label{font-size:12.5px;color:var(--tx2);font-weight:500;display:flex;align-items:baseline;gap:5px;flex-wrap:wrap}
+.f .unit{font-family:var(--fm);font-size:9.5px;color:var(--tx3)}
+.f .src{font-family:var(--fm);font-size:8.5px;letter-spacing:.03em;border-radius:4px;padding:2px 5px;white-space:nowrap}
+.src.b{background:var(--act-soft);color:var(--act)}
+.src.a{background:var(--warn-bg);color:var(--warn-tx)}
+.src.k{background:var(--good-bg);color:var(--good-tx)}
 .f input,.f select{font:inherit;font-size:15px;font-variant-numeric:tabular-nums;width:100%;
-  background:var(--sunk);border:1px solid transparent;color:var(--tx);border-radius:9px;padding:9px 11px}
+  background:var(--sunk);border:1px solid transparent;color:var(--tx);border-radius:9px;padding:8px 11px}
 .f input:focus,.f select:focus{border-color:var(--act);background:var(--card)}
 .f .help{font-size:11.5px;color:var(--tx3);line-height:1.4}
+.calcout{grid-column:1/-1;background:var(--alt);border-radius:9px;padding:9px 12px;font-size:13px;color:var(--tx2)}
+.calcout b{font-family:var(--fd);color:var(--tx);font-variant-numeric:tabular-nums}
 
-.adv{position:sticky;top:16px}
-@media (max-width:980px){.adv{position:static}}
-.verdict{background:var(--black);color:var(--inv);border-radius:16px;padding:22px 24px;margin-bottom:14px}
-.verdict .lab{font-family:var(--fm);font-size:10px;letter-spacing:.08em;color:var(--lime);text-transform:uppercase}
-.verdict .dx{font-family:var(--fd);font-size:26px;font-weight:700;letter-spacing:-.02em;line-height:1.12;margin:8px 0 6px}
-.verdict .quote{font-size:14px;color:var(--inv2);font-style:italic}
-.verdict .zw{display:inline-block;margin-top:13px;font-family:var(--fm);font-size:10px;letter-spacing:.05em;
-  background:rgba(196,240,0,.16);color:var(--lime);border-radius:6px;padding:5px 9px}
+.adv{position:sticky;top:14px}
+@media (max-width:1000px){.adv{position:static}}
+.verdict{background:var(--black);color:var(--inv);border-radius:15px;padding:21px 22px;margin-bottom:13px}
+.verdict .lab{font-family:var(--fm);font-size:9.5px;letter-spacing:.08em;color:var(--lime);text-transform:uppercase}
+.verdict .dx{font-family:var(--fd);font-size:25px;font-weight:700;letter-spacing:-.02em;line-height:1.12;margin:7px 0 5px}
+.verdict .quote{font-size:13.5px;color:var(--inv2);font-style:italic}
+.verdict .knob{margin-top:14px;padding-top:13px;border-top:1px solid rgba(255,255,255,.14)}
+.verdict .knob .kl{font-family:var(--fm);font-size:9.5px;letter-spacing:.06em;color:var(--inv2)}
+.verdict .knob .kv{font-family:var(--fd);font-size:16px;font-weight:600;color:var(--lime);margin-top:3px}
+.verdict .knob .kd{font-size:12.5px;color:var(--inv2);margin-top:5px;line-height:1.45}
+.verdict .knob .kd b{color:#fff}
 
-/* trechter */
-.fun{display:flex;flex-direction:column;gap:2px;margin-top:6px}
-.fs{display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:baseline;
-  padding:10px 0 9px;border-bottom:1px solid var(--ln-s)}
+.fun{display:flex;flex-direction:column;margin-top:4px}
+.fs{display:grid;grid-template-columns:1fr auto;gap:3px 12px;align-items:baseline;
+  padding:9px 0 8px;border-bottom:1px solid var(--ln-s)}
 .fs:last-child{border-bottom:none}
-.fs .fk{font-size:14px;color:var(--tx2)}
-.fs .fv{font-family:var(--fd);font-weight:600;font-size:17px;font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
-.fs .fbar{grid-column:1/-1;height:6px;background:var(--sunk);border-radius:99px;overflow:hidden}
+.fs .fk{font-size:13.5px;color:var(--tx2)}
+.fs .fv{font-family:var(--fd);font-weight:600;font-size:16px;font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.fs .fbar{grid-column:1/-1;height:5px;background:var(--sunk);border-radius:99px;overflow:hidden}
 .fs .fbar i{display:block;height:100%;background:var(--act);border-radius:99px}
-.fs .fr{grid-column:1/-1;font-size:11.5px;color:var(--tx3);font-family:var(--fm)}
-.fs.hi .fv{font-size:22px;color:var(--act)}
+.fs .fr{grid-column:1/-1;font-size:11px;color:var(--tx3);font-family:var(--fm)}
+.fs.hi .fv{font-size:21px;color:var(--act)}
 .fs.hi .fbar i{background:var(--lime)}
 
 .rows{display:flex;flex-direction:column}
-.row{display:flex;justify-content:space-between;align-items:baseline;gap:14px;
-  padding:9px 0;border-bottom:1px solid var(--ln-s);font-size:14px}
+.row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+  padding:8px 0;border-bottom:1px solid var(--ln-s);font-size:13.5px}
 .row:last-child{border-bottom:none}
-.row .k{color:var(--tx2);min-width:0;flex:1 1 42%}
+.row .k{color:var(--tx2);flex:1 1 44%;min-width:0}
+.row .k.ind{padding-left:12px;font-size:12.5px}
 .row .v{font-family:var(--fd);font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right}
-.row.big{padding:12px 0}
-.row.big .v{font-size:20px}
-.row.txt .v{font-family:var(--ft);font-weight:500;font-size:13px;color:var(--tx2);white-space:normal;max-width:62%}
-.row .sub{display:block;font-family:var(--ft);font-weight:400;font-size:11.5px;color:var(--tx3);text-align:right}
+.row.big{padding:11px 0}
+.row.big .v{font-size:19px}
+.row.tot{border-top:2px solid var(--ln);margin-top:3px;padding-top:11px}
+.row.tot .k{color:var(--tx);font-weight:600}
+.row.tot .v{font-size:19px}
+.row .sub{display:block;font-family:var(--ft);font-weight:400;font-size:11px;color:var(--tx3);text-align:right}
+.pm{font-size:11px;color:var(--tx3)}
 
-.pill{display:inline-block;font-family:var(--fm);font-size:9.5px;letter-spacing:.05em;border-radius:5px;padding:3px 6px;margin-left:5px}
+.pill{display:inline-block;font-family:var(--fm);font-size:9px;letter-spacing:.05em;border-radius:5px;padding:3px 6px;margin-left:5px}
 .pill.ok{background:var(--good-bg);color:var(--good-tx)}
 .pill.warn{background:var(--warn-bg);color:var(--warn-tx)}
 .pill.bad{background:var(--bad-bg);color:var(--bad-tx)}
 
-.dnst{list-style:none;margin:6px 0 0;padding:0;counter-reset:d}
-.dnst li{counter-increment:d;display:grid;grid-template-columns:22px 1fr;gap:10px;
-  padding:8px 0;border-bottom:1px solid var(--ln-s);font-size:14px}
+.dnst{list-style:none;margin:5px 0 0;padding:0;counter-reset:d}
+.dnst li{counter-increment:d;display:grid;grid-template-columns:20px 1fr auto;gap:9px;align-items:baseline;
+  padding:8px 0;border-bottom:1px solid var(--ln-s);font-size:13.5px}
 .dnst li:last-child{border-bottom:none}
-.dnst li::before{content:counter(d);font-family:var(--fm);font-size:11px;color:var(--act);padding-top:2px}
+.dnst li::before{content:counter(d);font-family:var(--fm);font-size:10.5px;color:var(--act)}
 .dnst li b{font-weight:600;display:block}
-.dnst li span{color:var(--tx2);font-size:12.5px}
+.dnst li span.w{color:var(--tx2);font-size:12px;display:block;line-height:1.4}
+.dnst li em{font-family:var(--fd);font-style:normal;font-weight:600;font-size:12.5px;color:var(--tx2);
+  font-variant-numeric:tabular-nums;white-space:nowrap}
 
-.split{display:flex;flex-direction:column;gap:6px;margin-top:4px}
-.sp{display:grid;grid-template-columns:100px 1fr 42px;align-items:center;gap:9px;font-size:13px}
-.sp .n{font-family:var(--fm);font-size:10px;letter-spacing:.04em;color:var(--tx2)}
-.sp .bar{height:6px;background:var(--sunk);border-radius:99px;overflow:hidden}
-.sp .bar i{display:block;height:100%;background:var(--act);border-radius:99px}
-.sp .bar.ring i{background:var(--lime);opacity:.85}
-.sp .u{font-family:var(--fd);font-weight:600;font-variant-numeric:tabular-nums;text-align:right;font-size:12.5px;color:var(--tx2)}
-
-.flag{border-radius:11px;padding:11px 13px;font-size:13px;line-height:1.5;margin-top:8px}
+.flag{border-radius:10px;padding:10px 12px;font-size:12.5px;line-height:1.5;margin-top:8px}
 .flag b{font-weight:600}
 .flag.warn{background:var(--warn-bg);color:var(--warn-tx)}
 .flag.bad{background:var(--bad-bg);color:var(--bad-tx)}
 .flag.ok{background:var(--good-bg);color:var(--good-tx)}
 .flag.note{background:var(--alt);color:var(--tx2)}
 
-.copy{font:inherit;font-size:14px;font-weight:500;cursor:pointer;width:100%;margin-top:14px;
+.copy{font:inherit;font-size:14px;font-weight:500;cursor:pointer;width:100%;margin-top:13px;
   background:var(--act);border:none;color:#fff;border-radius:10px;padding:11px 16px}
-.copy:hover{opacity:.9}
 .copied{font-size:13px;color:var(--good-tx);text-align:center;margin-top:8px}
 
-.sec{padding-block:34px 0;border-top:1px solid var(--ln-s);margin-top:28px}
-.sec h2{font-size:22px;font-weight:700;letter-spacing:-.016em;margin:8px 0 6px}
-.sec p.lead{font-size:15px;color:var(--tx2);max-width:70ch;margin-bottom:18px}
+.sec{padding-block:32px 0;border-top:1px solid var(--ln-s);margin-top:26px}
+.sec h2{font-size:21px;font-weight:700;letter-spacing:-.016em;margin:7px 0 6px}
+.sec p.lead{font-size:14.5px;color:var(--tx2);max-width:74ch;margin-bottom:16px}
+.sec p.lead a{color:var(--act)}
 .tblwrap{overflow-x:auto;background:var(--card);border:1px solid var(--ln-s);border-radius:14px}
-table{width:100%;border-collapse:collapse;font-size:14px;min-width:640px}
-th,td{text-align:left;padding:12px 15px;border-bottom:1px solid var(--ln-s);vertical-align:top}
-thead th{font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--tx3);font-weight:500;text-transform:uppercase}
+table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:680px}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+thead th{font-family:var(--fm);font-size:9.5px;letter-spacing:.05em;color:var(--tx3);font-weight:500;text-transform:uppercase}
 tbody tr:last-child td{border-bottom:none}
-td.kop{font-weight:600;white-space:nowrap}
-td .mono{font-family:var(--fm);font-size:11px;color:var(--tx3);display:block;margin-top:3px}
+td.kop{font-weight:600}
+td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+td small{color:var(--tx3);font-family:var(--fm);font-size:10px;display:block;margin-top:2px}
 
-.assume{padding-block:30px 60px}
-.assume h3{font-size:17px;font-weight:600;margin:22px 0 8px}
-.assume ul{margin:0;padding-left:19px;font-size:14.5px;color:var(--tx2)}
+.assume{padding-block:28px 60px}
+.assume h3{font-size:16.5px;font-weight:600;margin:22px 0 8px}
+.assume ul{margin:0;padding-left:19px;font-size:14px;color:var(--tx2)}
 .assume li{margin-bottom:8px}
 .assume li b{color:var(--tx);font-weight:600}
-.assume .foot{margin-top:26px;font-size:12.5px;color:var(--tx3)}
+.assume a{color:var(--act)}
+.assume .foot{margin-top:24px;font-size:12.5px;color:var(--tx3)}
 </style>
 
 <div class="top">
   <div class="top-in">
     <div>
       <h1>De ARENA-diagnose</h1>
-      <p class="sub">Vul in wat je in het eerste gesprek hoort. De trechter, het budget en de diensten rollen eruit &mdash; met elke aanname zichtbaar gemarkeerd, zodat je weet welk getal je nog moet meten.</p>
+      <p class="sub">Vul in wat je in het eerste gesprek hoort. Er rolt een compleet voorstel uit: trechter, investering, rendement en diensten. Elk startgetal toont zijn bron.</p>
     </div>
     <button id="themeBtn" type="button">Donker</button>
   </div>
@@ -200,205 +206,144 @@ td .mono{font-family:var(--fm);font-size:11px;color:var(--tx3);display:block;mar
 
 <div class="wrap">
   <div class="cols">
-
     <div>
       <div class="panel">
         <span class="eyebrow">Stap 1</span>
-        <h2>Het model</h2>
-        <p class="hint">E&eacute;n vraag beslist alles: <b>wat gebeurt er n&aacute; de conversie?</b> Daar hangen de rekensom, de grens van onze verantwoordelijkheid en de diensten aan.</p>
-        <div class="modes" id="modes"></div>
+        <h2>Wat moet de marketing opleveren?</h2>
+        <p class="hint">Het antwoord bepaalt de rekensom &eacute;n waar onze verantwoordelijkheid ophoudt.</p>
+        <div class="opts" id="modes"></div>
+        <p class="hint" id="modeNote" style="margin:13px 0 0;font-size:12.5px"></p>
       </div>
 
       <div class="panel">
         <span class="eyebrow">Stap 2</span>
-        <h2>De diagnose</h2>
-        <p class="hint">Vier vragen. De meeste gesprekken zijn na drie klaar.</p>
+        <h2>Waar zit het knelpunt?</h2>
+        <p class="hint">Maximaal vier vragen, in deze volgorde: <b>volume, kwaliteit, gunning, kostprijs</b>. Het antwoord bepaalt welke knop we omdraaien &mdash; en dat verandert de som, niet alleen het advies.</p>
         <div id="qpath"></div>
         <button class="reset" id="resetQ" type="button" hidden>Opnieuw beginnen</button>
       </div>
 
       <div class="panel">
         <span class="eyebrow">Stap 3</span>
-        <h2>Ambitie en waarde</h2>
-        <p class="hint" id="h3">&nbsp;</p>
+        <h2>De klant</h2>
+        <p class="hint">De branche zet de startwaarden voor klikprijs en conversie. Jaaromzet is optioneel &mdash; alleen om te toetsen of de investering binnen de benchmark valt.</p>
         <div class="fields" id="f3"></div>
       </div>
 
       <div class="panel">
         <span class="eyebrow">Stap 4</span>
-        <h2>De nulmeting</h2>
-        <p class="hint">Waar staat hij nu? Weet hij het niet, laat het dan leeg &mdash; dat is zelf een uitkomst, en meteen de eerste opdracht van maand 1.</p>
+        <h2>Wat is een klant waard?</h2>
+        <p class="hint" id="h4">&nbsp;</p>
         <div class="fields" id="f4"></div>
       </div>
 
       <div class="panel">
         <span class="eyebrow">Stap 5</span>
-        <h2>De trechter</h2>
-        <p class="hint">Hiermee reken je de kostprijs per conversie uit in plaats van hem te vragen. Oranje gemarkeerde velden zijn aannames tot je ze gemeten hebt.</p>
+        <h2>De nulmeting</h2>
+        <p class="hint">Dezelfde twee getallen voor elk type, alleen de naam verschilt. Weet hij ze niet? Laat leeg &mdash; dat is de eerste opdracht van maand 1.</p>
         <div class="fields" id="f5"></div>
+      </div>
+
+      <div class="panel">
+        <span class="eyebrow">Stap 6</span>
+        <h2>De uitgangspunten</h2>
+        <p class="hint">Startwaarden uit de branchebenchmark. Overschrijf ze zodra je eigen cijfers hebt &mdash; het bronlabel vertelt waar elk getal vandaan komt.</p>
+        <div class="fields" id="f6"></div>
       </div>
     </div>
 
     <div class="adv">
       <div class="verdict">
-        <span class="lab" id="vLab">Diagnose</span>
+        <span class="lab">Diagnose</span>
         <p class="dx" id="vDx">Beantwoord vraag 1</p>
-        <p class="quote" id="vQuote">Kies eerst het model, dan de diagnose.</p>
-        <span class="zw" id="vZw" hidden></span>
+        <p class="quote" id="vQuote">Kies eerst wat de marketing moet opleveren.</p>
+        <div class="knob" id="vKnob" hidden>
+          <p class="kl">HIER DRAAIEN WE AAN</p>
+          <p class="kv" id="kv"></p>
+          <p class="kd" id="kd"></p>
+        </div>
       </div>
 
       <div class="panel" id="funPanel" hidden>
         <span class="eyebrow">De keten</span>
-        <h2>Van budget naar omzet</h2>
+        <h2>Van budget naar resultaat</h2>
         <div class="fun" id="funRows"></div>
       </div>
 
-      <div class="panel" id="kpiPanel" hidden>
-        <span class="eyebrow">De kengetallen</span>
-        <h2>Wat een klant kost en opbrengt</h2>
-        <div class="rows" id="kpiRows"></div>
+      <div class="panel" id="invPanel" hidden>
+        <span class="eyebrow">De investering</span>
+        <h2>Wat het kost</h2>
+        <div class="rows" id="invRows"></div>
+      </div>
+
+      <div class="panel" id="roiPanel" hidden>
+        <span class="eyebrow">Het rendement</span>
+        <h2>Wat elke euro oplevert</h2>
+        <div class="rows" id="roiRows"></div>
       </div>
 
       <div class="panel" id="lvlPanel" hidden>
-        <span class="eyebrow">Het voorstel</span>
+        <span class="eyebrow">De diensten</span>
         <h2 id="lvlName">&mdash;</h2>
-        <div class="rows" id="lvlRows"></div>
-        <p class="eyebrow" style="margin-top:17px">Diensten, in deze volgorde</p>
+        <p class="hint" id="lvlHint" style="margin-bottom:8px"></p>
         <ol class="dnst" id="dnstRows"></ol>
-        <p class="eyebrow" style="margin-top:17px">Verdeling van de uren over ARENA</p>
-        <div class="split" id="splitRows"></div>
       </div>
 
       <div id="flags"></div>
       <button class="copy" id="copyBtn" type="button" hidden>Kopieer samenvatting</button>
       <p class="copied" id="copiedMsg" hidden>Gekopieerd.</p>
     </div>
-
   </div>
 
   <section class="sec">
-    <span class="eyebrow">De vier modellen</span>
-    <h2>Leadgen, e-commerce, reservering of werving</h2>
-    <p class="lead">Niet de branche bepaalt het model, maar wat er n&aacute; de conversie gebeurt. Moet er nog iemand overtuigd worden, of is het rond? Daar hangt alles aan: de rekensom, de grens van onze verantwoordelijkheid, en de vraag of we over omzet mogen rapporteren.</p>
-    <div class="tblwrap">
-      <table>
-        <thead><tr><th>Model</th><th>Conversie</th><th>Wat er daarna gebeurt</th><th>Onze grens</th><th>Voorbeelden</th></tr></thead>
-        <tbody>
-          <tr>
-            <td class="kop">Leadgeneratie</td>
-            <td>Aanvraag<span class="mono">offerte, afspraak, taxatie</span></td>
-            <td>Een verkoopgesprek. Iemand moet hem sluiten, en dat percentage is niet van ons.</td>
-            <td>De aanvraag. Omzet rapporteren we niet.</td>
-            <td>B2B, makelaardij, installatie, zorg, automotive</td>
-          </tr>
-          <tr>
-            <td class="kop">E-commerce</td>
-            <td>Bestelling<span class="mono">betaald, bedrag bekend</span></td>
-            <td>Niets. De transactie is klaar en het bedrag staat vast.</td>
-            <td>De omzet zelf. Hier m&oacute;&eacute;t je op omzet en ROAS sturen.</td>
-            <td>Webshops, online boekingen met directe betaling</td>
-          </tr>
-          <tr>
-            <td class="kop">Reservering</td>
-            <td>Toezegging<span class="mono">tafel, kamer, afspraak</span></td>
-            <td>Levering, geen verkoop. Niemand hoeft nog overtuigd te worden.</td>
-            <td>De reservering, gecorrigeerd voor no-show. Omzet is statistisch, niet exact.</td>
-            <td>Restaurants, hotels zonder vooruitbetaling, leisure</td>
-          </tr>
-          <tr>
-            <td class="kop">Werving</td>
-            <td>Sollicitatie<span class="mono">of open gesprek</span></td>
-            <td>Een gesprek. Structureel hetzelfde als leadgen.</td>
-            <td>De sollicitatie. De waarde is vermeden kosten, geen omzet.</td>
-            <td>Horeca, zorg, techniek, productie</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <p class="lead" style="margin-top:16px"><b>Een hotelboeking is dus e-commerce als er vooruit betaald wordt, en anders een reservering.</b> Een tafel in een restaurant is altijd een reservering. Werving is leadgen met een andere waardeformule &mdash; dezelfde trechter, maar wat een sollicitant oplevert is de wervingskosten en de onderbezetting die je niet meer hebt.</p>
+    <span class="eyebrow">Stap 1 uitgelegd</span>
+    <h2>De vier opbrengsttypen</h2>
+    <p class="lead">Niet de branche bepaalt het type, maar wat er n&aacute; de conversie gebeurt. Moet er nog iemand overtuigd worden, of is het rond? Daar hangt aan hoe we rekenen en waarover we mogen rapporteren.</p>
+    <div class="tblwrap"><table>
+      <thead><tr><th>Opbrengst</th><th>Wat er daarna gebeurt</th><th>Onze grens</th><th>Voorbeelden</th></tr></thead>
+      <tbody>
+        <tr><td class="kop">Aanvragen<small>LEADGENERATIE</small></td><td>Een verkoopgesprek. Iemand moet hem sluiten, en dat percentage is niet van ons.</td><td>De aanvraag. Omzet is een projectie, geen resultaat.</td><td>B2B, makelaardij, installatie, zorg, automotive</td></tr>
+        <tr><td class="kop">Bestellingen<small>E-COMMERCE</small></td><td>Niets. De transactie is klaar, het bedrag staat vast.</td><td>De omzet zelf. Hier m&oacute;&eacute;t je op ROAS sturen.</td><td>Webshops, boekingen met directe betaling</td></tr>
+        <tr><td class="kop">Reserveringen<small>RESERVERING</small></td><td>Levering, geen verkoop. Niemand hoeft nog overtuigd te worden.</td><td>De reservering, min de no-show. Omzet is statistisch.</td><td>Restaurants, hotels zonder vooruitbetaling, leisure</td></tr>
+        <tr><td class="kop">Sollicitaties<small>WERVING</small></td><td>Een gesprek. Structureel hetzelfde als leadgen.</td><td>De sollicitatie. De waarde is vermeden kosten, geen omzet.</td><td>Horeca, zorg, techniek, productie</td></tr>
+      </tbody>
+    </table></div>
+    <p class="lead" style="margin-top:14px"><b>Een hotelboeking met vooruitbetaling is e-commerce, zonder is het een reservering.</b> Een tafel in een restaurant is altijd een reservering. Werving is leadgen met een andere waardeformule.</p>
   </section>
 
   <section class="sec">
-    <span class="eyebrow">Wat er uit de diagnose rolt</span>
-    <h2>Diagnose, zwaartepunt en diensten</h2>
-    <p class="lead">ARENA is het frame; dit zijn de diensten. De volgorde is de volgorde waarin je ze inzet &mdash; niet alles tegelijk, en niet in willekeurige volgorde.</p>
-    <div class="tblwrap">
-      <table>
-        <thead><tr><th>Diagnose</th><th>Wat hij zegt</th><th>Zwaartepunt</th><th>Diensten, in volgorde</th></tr></thead>
-        <tbody id="dxTable"></tbody>
-      </table>
-    </div>
+    <span class="eyebrow">Stap 2 uitgelegd</span>
+    <h2>Welke knop elke diagnose omdraait</h2>
+    <p class="lead">Dit is waarom de diagnose ertoe doet: elk antwoord verandert een andere variabele in dezelfde som. Bij &ldquo;te duur&rdquo; kopen we geen extra verkeer maar verhogen we de conversie &mdash; en dat is een compleet ander voorstel, met een ander budget en andere diensten.</p>
+    <div class="tblwrap"><table>
+      <thead><tr><th>Diagnose</th><th>Wat hij zegt</th><th>Knop</th><th>Effect op de som</th><th>Diensten</th></tr></thead>
+      <tbody id="dxTable"></tbody>
+    </table></div>
   </section>
 
   <section class="sec">
-    <span class="eyebrow">De vier vragen</span>
-    <h2>De beslisboom</h2>
-    <p class="lead">De volgorde is niet willekeurig: eerst of er genoeg binnenkomt, dan of het het juiste is, dan of het gewonnen wordt, en pas daarna wat het kost. Wie die volgorde omdraait, komt bij bijna elke klant uit op &ldquo;meer budget&rdquo;.</p>
-    <div class="tblwrap" style="padding:18px;min-width:0">
-      <div style="overflow-x:auto">
-      <svg viewBox="0 0 880 530" style="display:block;min-width:700px;width:100%;height:auto" role="img" aria-label="Beslisboom met vier vragen. Vraag 1: haal je het aantal conversies dat je nodig hebt? Nee en structureel geeft de diagnose Te weinig, nee en wisselend geeft Te toevallig. Ja leidt naar vraag 2: leveren ze op wat je ervan verwacht? Nee geeft Verkeerd. Ja leidt naar vraag 3: win je ze meestal? Nee geeft Niet gekozen. Ja leidt naar vraag 4: staan de kosten per klant in verhouding tot de marge? Nee geeft Te duur, ja betekent geen marketingprobleem maar een groeivraag.">
-        <g fill="none" stroke="currentColor" stroke-width="1.5" opacity=".28">
-          <path d="M175 74 V128"/><path d="M340 38 H430"/><path d="M340 56 H390 V102 H430"/>
-          <path d="M340 156 H430"/><path d="M175 182 V236"/><path d="M340 264 H430"/>
-          <path d="M175 290 V344"/><path d="M340 372 H430"/><path d="M175 398 V452"/>
-        </g>
-        <g>
-          <rect x="30" y="20" width="310" height="54" rx="11" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".35"/>
-          <rect x="30" y="128" width="310" height="54" rx="11" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".35"/>
-          <rect x="30" y="236" width="310" height="54" rx="11" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".35"/>
-          <rect x="30" y="344" width="310" height="54" rx="11" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".35"/>
-        </g>
-        <g fill="currentColor" font-family="Inter Tight,sans-serif" font-size="13.5" font-weight="600">
-          <text x="48" y="42">Haal je het aantal dat je nodig hebt?</text>
-          <text x="48" y="150">Leveren ze op wat je ervan verwacht?</text>
-          <text x="48" y="258">Win je ze meestal?</text>
-          <text x="48" y="366">Staan de kosten in verhouding tot de marge?</text>
-        </g>
-        <g fill="currentColor" opacity=".45" font-family="SF Mono,ui-monospace,monospace" font-size="10">
-          <text x="48" y="61">VRAAG 1 &middot; VOLUME</text>
-          <text x="48" y="169">VRAAG 2 &middot; KWALITEIT</text>
-          <text x="48" y="277">VRAAG 3 &middot; GUNNING</text>
-          <text x="48" y="385">VRAAG 4 &middot; KOSTPRIJS</text>
-          <text x="186" y="106">ja</text><text x="186" y="214">ja</text>
-          <text x="186" y="322">ja</text><text x="186" y="430">ja</text>
-          <text x="352" y="32">nee &middot; structureel</text><text x="352" y="96">nee &middot; wisselend</text>
-          <text x="352" y="150">nee</text><text x="352" y="258">nee</text><text x="352" y="366">nee</text>
-        </g>
-        <g>
-          <rect x="430" y="18" width="290" height="40" rx="10" fill="var(--act-soft)" stroke="var(--act)" stroke-width="1.5"/>
-          <rect x="430" y="82" width="290" height="40" rx="10" fill="var(--act-soft)" stroke="var(--act)" stroke-width="1.5"/>
-          <rect x="430" y="136" width="290" height="40" rx="10" fill="var(--act-soft)" stroke="var(--act)" stroke-width="1.5"/>
-          <rect x="430" y="244" width="290" height="40" rx="10" fill="var(--act-soft)" stroke="var(--act)" stroke-width="1.5"/>
-          <rect x="430" y="352" width="290" height="40" rx="10" fill="var(--act-soft)" stroke="var(--act)" stroke-width="1.5"/>
-          <rect x="30" y="452" width="450" height="44" rx="10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 3" opacity=".35"/>
-        </g>
-        <g fill="var(--act)" font-family="Inter Tight,sans-serif" font-size="14" font-weight="600">
-          <text x="450" y="43">Te weinig</text><text x="450" y="107">Te toevallig</text>
-          <text x="450" y="161">Verkeerd</text><text x="450" y="269">Niet gekozen</text>
-          <text x="450" y="377">Te duur</text>
-        </g>
-        <g fill="currentColor" opacity=".45" font-family="SF Mono,ui-monospace,monospace" font-size="9.5">
-          <text x="600" y="43">SEA &middot; SOCIAL ADS &middot; LP</text>
-          <text x="600" y="107">SEO &middot; E-MAIL &middot; BREEDTE</text>
-          <text x="600" y="161">POSITIONERING &middot; LP</text>
-          <text x="600" y="269">CASES &middot; CONTENT &middot; LP</text>
-          <text x="600" y="377">CRO &middot; LP &middot; MERK</text>
-        </g>
-        <text x="48" y="479" fill="currentColor" opacity=".6" font-family="Inter Tight,sans-serif" font-size="13" font-weight="600">Geen marketingprobleem &mdash; een groeivraag</text>
-      </svg>
-      </div>
-    </div>
+    <span class="eyebrow">Stap 6 uitgelegd</span>
+    <h2>De branchebenchmark</h2>
+    <p class="lead">Startwaarden uit <a href="https://www.wordstream.com/blog/2026-google-ads-benchmarks">WordStream 2026</a>: ruim 13.000 zoekcampagnes over 23 branches, april 2025 tot maart 2026. <b>Amerikaanse data in dollars</b> &mdash; daarom staat er een marktcorrectie van 0,65 voor Nederland op, en die correctie is zelf een aanname tot jullie hem uit de eigen accounts vervangen.</p>
+    <div class="tblwrap"><table>
+      <thead><tr><th>Branche</th><th>Bronregel</th><th class="n">Klikprijs (VS)</th><th class="n">Conversie</th><th>Opbrengsttype</th></tr></thead>
+      <tbody id="bmTable"></tbody>
+    </table></div>
   </section>
 
   <section class="assume">
-    <h3>Over de getallen</h3>
+    <h3>Twee verwarringen die je moet kennen</h3>
     <ul>
-      <li><b>Wij hebben geen eigen kengetallen &mdash; nog niet.</b> De startwaarden hieronder komen uit publieke benchmarks: e&#8209;commerce in Nederland rond de <b>2,3%</b> conversie, leadgeneratie rond de <b>2%</b> (B2B 2&ndash;5%). Die spreiding per sector is enorm, dus als aanname bruikbaar en als belofte waardeloos. Het echte antwoord: <b>bouw je eigen set uit je eigen dashboards.</b> Acht jaar klanten in Zuid-Limburg is een betere benchmark dan wat je ergens kunt kopen &mdash; en niemand anders heeft hem.</li>
-      <li><b>Kosten per klik zijn een pure aanname</b> tot je ze meet. Ze verschillen per branche met een factor tien. Dit is het eerste getal dat uit eigen data moet komen.</li>
-      <li><b>De kostprijs per conversie is niet lineair.</b> De eerste conversies zijn de goedkoopste, want daar zit de bestaande vraag. Op het extra volume ligt daarom een opschalingsfactor: +15% tot een kwart groei, +30% tot de helft, +50% tot verdubbeling, +80% daarboven. Vuistregel, geen meting.</li>
-      <li><b>Het closingpercentage daalt als marketing gaat leveren.</b> Een bedrijf dat op netwerk en mond-tot-mond draait, sluit een hoog percentage &mdash; die leads waren al warm. Marketingleads zijn kouder. Reken daarom met een apart, lager percentage en zeg dat hardop, anders beloof je iets dat rekenkundig niet kan.</li>
-      <li><b>Klantwaarde is altijd de waarde in de eerste twaalf maanden.</b> Dat is wat er binnen het contractjaar op de rekening staat. De levensduurwaarde gebruiken we voor &eacute;&eacute;n ding: de bovengrens van wat een klant mag kosten. Nooit om resultaat mee te rapporteren.</li>
-      <li><b>Bedragen zijn exclusief btw en exclusief het eenmalige fundament</b> uit maand 1. Retainers: Basis &euro;&thinsp;1.650, Groei &euro;&thinsp;3.300, Versnelling &euro;&thinsp;4.950 per maand.</li>
+      <li><b>Conversie op advertentieverkeer is niet hetzelfde als de conversieratio van een website.</b> Het gemiddelde over alle Nederlandse sites ligt rond de <b>2%</b> &mdash; al het verkeer, inclusief mensen die verdwaalden. Op betaald zoekverkeer dat op een eigen landingspagina landt meet WordStream gemiddeld <b>7,5%</b>. Deze tool rekent met het tweede, want de trechter gaat over ingekocht verkeer. Zet je er per ongeluk 2% in, dan komt het budget bijna vier keer te hoog uit.</li>
+      <li><b>De kostprijs per conversie is niet lineair.</b> De eerste conversies zijn de goedkoopste, want daar zit de bestaande vraag. Op het extra volume ligt een opschalingsfactor: +15% tot een kwart groei, +30% tot de helft, +50% tot verdubbeling, +80% daarboven. Vuistregel, geen meting.</li>
+    </ul>
+    <h3>Wat er nog moet gebeuren</h3>
+    <ul>
+      <li><b>De marktcorrectie is een aanname.</b> De bron is Amerikaans; Nederlandse klikprijzen liggen doorgaans lager. De factor 0,65 schat valutaverschil plus marktverschil. Dit is het eerste getal dat uit de eigen advertentieaccounts moet komen &mdash; en zodra dat gebeurt, hebben jullie iets wat geen concurrent in Limburg heeft.</li>
+      <li><b>Het closingpercentage daalt als marketing gaat leveren.</b> Wie op netwerk en mond-tot-mond draait, sluit een hoog percentage &mdash; die leads waren al warm. Marketingleads zijn kouder. Vul de verwachting voor nieuwe leads in, niet het cijfer uit zijn hoofd.</li>
+      <li><b>Klantwaarde is altijd de waarde over de eerste twaalf maanden.</b> Dat is wat er binnen het contractjaar op de rekening staat. De levensduurwaarde dient voor &eacute;&eacute;n ding: de bovengrens van wat een klant mag kosten. Nooit om resultaat mee te rapporteren.</li>
+      <li><b>Het budget als percentage van de omzet</b> wordt getoetst aan <a href="https://www.gartner.com/en/newsroom/press-releases/2025-05-12-gartner-2025-cmo-spend-survey-reveals-marketing-budgets-have-flatlined-at-seven-percent-of-overall-company-revenue">Gartner 2025 (7,7%)</a> en de <a href="https://www.sender.net/marketing-glossary/marketing-budget/statistics/">CMO Survey (9,4%; B2B-diensten 9,0%, B2C-product 15,5%)</a>. Let op: dat zijn grote bedrijven. Voor MKB tussen een en vijf miljoen omzet mag het hoger liggen, zeker in een inhaaljaar.</li>
+      <li><b>Het eenmalige fundament</b> staat op &euro;&thinsp;3.000 / &euro;&thinsp;4.500 / &euro;&thinsp;6.000 per niveau &mdash; ongeveer 32, 48 en 64 uur voor doelbepaling, nulmeting, meetopzet, technische check en dashboardbouw. Dat is een voorstel, geen besluit.</li>
     </ul>
     <p class="foot">James Robinson &mdash; Marketing &amp; Branding &middot; intern instrument, september 2026</p>
   </section>
@@ -417,155 +362,214 @@ td .mono{font-family:var(--fm);font-size:11px;color:var(--tx3);display:block;mar
   var eur=new Intl.NumberFormat('nl-NL',{style:'currency',currency:'EUR',maximumFractionDigits:0});
   var eur2=new Intl.NumberFormat('nl-NL',{style:'currency',currency:'EUR',minimumFractionDigits:2,maximumFractionDigits:2});
   var num=new Intl.NumberFormat('nl-NL',{maximumFractionDigits:0});
+  var dec=new Intl.NumberFormat('nl-NL',{minimumFractionDigits:1,maximumFractionDigits:1});
+
+  var WS_CPC=5.42, WS_CVR=7.52, CORR=0.65;
 
   var MODELS={
-    leadgen:{naam:'Leadgeneratie',uitleg:'Er volgt een verkoopgesprek. Iemand moet hem sluiten.',
-      conv:'aanvraag',convMv:'aanvragen',cr:2.0,close:25,closeLabel:'Aanvraag wordt klant',
-      waardeLabel:'Omzet per klant, eerste 12 maanden',ambitieLabel:'Gewenste extra omzet'},
-    ecom:{naam:'E-commerce',uitleg:'Niets. De transactie is klaar en het bedrag staat vast.',
-      conv:'bestelling',convMv:'bestellingen',cr:2.3,close:100,closeLabel:'Bestelling wordt omzet',
-      waardeLabel:'Gemiddelde orderwaarde',ambitieLabel:'Gewenste extra omzet'},
-    reservering:{naam:'Reservering',uitleg:'Levering, geen verkoop. Niemand hoeft nog overtuigd te worden.',
-      conv:'reservering',convMv:'reserveringen',cr:3.0,close:88,closeLabel:'Komt daadwerkelijk opdagen',
-      waardeLabel:'Gemiddelde besteding per reservering',ambitieLabel:'Gewenste extra omzet'},
-    werving:{naam:'Werving',uitleg:'Een gesprek. Structureel hetzelfde als leadgen.',
-      conv:'sollicitatie',convMv:'sollicitaties',cr:5.0,close:18,closeLabel:'Sollicitatie wordt aanname',
-      waardeLabel:'Wat &eacute;&eacute;n aanname bespaart',ambitieLabel:'Aantal mensen nodig'}
+    leadgen:{naam:'Aanvragen',uitleg:'Offerte, afspraak, taxatie',conv:'aanvraag',convMv:'aanvragen',
+      close:25,closeLabel:'Aanvraag wordt klant',ambitieLabel:'Gewenste extra omzet',
+      note:'Er volgt een verkoopgesprek dat wij niet voeren. Omzet is hier een <b>projectie</b> op basis van zijn eigen closingpercentage &mdash; onze verantwoordelijkheid stopt bij de aanvraag.'},
+    ecom:{naam:'Bestellingen',uitleg:'Betaald, bedrag staat vast',conv:'bestelling',convMv:'bestellingen',
+      close:100,closeLabel:'Bestelling wordt omzet',ambitieLabel:'Gewenste extra omzet',
+      note:'De transactie is compleet en toerekenbaar. Hier <b>m&oacute;&eacute;t</b> je op omzet en ROAS sturen, want het is eerlijk meetbaar.'},
+    reservering:{naam:'Reserveringen',uitleg:'Tafel, kamer, boeking',conv:'reservering',convMv:'reserveringen',
+      close:88,closeLabel:'Komt daadwerkelijk opdagen',ambitieLabel:'Gewenste extra omzet',
+      note:'Er volgt levering, geen verkoop. Rapporteer op reserveringen; omzet is een afgeleide met het no-showpercentage erbij.'},
+    werving:{naam:'Sollicitaties',uitleg:'Vacature of open gesprek',conv:'sollicitatie',convMv:'sollicitaties',
+      close:18,closeLabel:'Sollicitatie wordt aanname',ambitieLabel:'Aantal mensen nodig',
+      note:'Structureel hetzelfde als leadgen, maar de opbrengst is <b>vermeden kosten</b>: uitzendmarge, recruiter, overuren en gemiste omzet door onderbezetting.'}
+  };
+
+  var BRANCHE={
+    makelaardij:{naam:'Makelaardij',ws:'Real Estate',cpc:null,cvr:null,model:'leadgen'},
+    horeca:{naam:'Horeca',ws:'Restaurants & Food',cpc:2.05,cpcSrc:1,cvr:null,model:'reservering'},
+    bouw:{naam:'Bouw & installatie',ws:'Home & Home Improvement',cpc:7.85,cpcSrc:1,cvr:null,model:'leadgen'},
+    automotive:{naam:'Automotive',ws:'Automotive (sales & service)',cpc:null,cvr:null,model:'leadgen'},
+    retail:{naam:'Retail & webshop',ws:'Shopping & Retail',cpc:null,cvr:null,model:'ecom'},
+    b2b:{naam:'B2B & dienstverlening',ws:'Business Services',cpc:null,cvr:null,model:'leadgen'},
+    zorg:{naam:'Zorg',ws:'Health & Fitness',cpc:null,cvr:null,model:'leadgen'},
+    leisure:{naam:'Sport & leisure',ws:'Travel',cpc:2.12,cpcSrc:1,cvr:null,model:'reservering'},
+    arbeid:{naam:'Arbeidsmarkt',ws:'Career & Employment',cpc:null,cvr:3.05,cvrSrc:1,model:'werving'}
   };
 
   var DX={
-    weinig:{naam:'Te weinig',q:{leadgen:'"De telefoon gaat te weinig."',ecom:'"Er komen te weinig bestellingen binnen."',
-        reservering:'"Het is te vaak te rustig."',werving:'"Er reageert bijna niemand op onze vacatures."'},
-      zw:'ZWAARTEPUNT: A · ATTENTION',minLvl:1,split:{A:45,R:10,E:20,N:10,U:15},
-      diensten:[['SEA','Bestaande vraag, morgen aan'],['Social Ads','Vraag maken bij wie nog niet zoekt'],
-        ['Landingspagina per campagne','Zonder eigen pagina verdampt het advertentiegeld'],
-        ['SEO','Duurt langer, blijft daarna renderen']]},
-    toeval:{naam:'Te toevallig',q:{leadgen:'"De ene maand storm, de andere stil. Ik kan er niets op plannen."',
-        ecom:'"Piek in het seizoen, daarna niets."',reservering:'"Het weekend zit vol, doordeweeks leeg."',
-        werving:'"Soms tien reacties, soms een half jaar niets."'},
-      zw:'ZWAARTEPUNT: BREEDTE + RETENTION',minLvl:2,split:{A:30,R:25,E:15,N:10,U:20},
-      diensten:[['SEO','De bron die blijft draaien als je stopt met betalen'],
-        ['E-mailmarketing en automation','Van een stroom naar een voorraad'],
-        ['Tweede advertentiekanaal','Eén bron is een risico, geen strategie'],
-        ['Content','Vulling voor beide, en de dalen opvangen']]},
-    duur:{naam:'Te duur',q:{leadgen:'"Het komt wel binnen, maar wat het kost staat niet meer in verhouding."',
-        ecom:'"De ROAS zakt elk kwartaal."',reservering:'"Ik betaal me scheel aan de platforms."',
-        werving:'"Een goede kracht vinden kost me een vermogen."'},
-      zw:'ZWAARTEPUNT: EXPERIENCE + AUTHORITY',minLvl:2,split:{A:20,R:15,E:30,N:15,U:20},
-      diensten:[['CRO','Conversie van 2 naar 3 procent verlaagt de kostprijs met een derde'],
-        ['Landingspagina per doelgroep','Eén pagina voor iedereen converteert voor niemand'],
-        ['Campagne-opschoning','Zoekwoorden en doelgroepen die geld kosten en niets leveren'],
-        ['E-mailmarketing','Een tweede aankoop kost geen advertentiegeld'],
-        ['Merk en content','Bekende merken betalen minder per klik']]},
-    verkeerd:{naam:'Verkeerd',q:{leadgen:'"Genoeg aanvragen, maar niet de klussen die ik wil."',
-        ecom:'"Veel kleine orders, veel retouren."',reservering:'"Volle tent, lage besteding."',
-        werving:'"Veel reacties, niemand die past."'},
-      zw:'ZWAARTEPUNT: AUTHORITY + EXPERIENCE',minLvl:2,split:{A:20,R:10,E:30,N:10,U:30},
-      diensten:[['Positionering aanscherpen','Wie je wilt, en net zo belangrijk: wie niet'],
-        ['Landingspagina per type klus','Elk segment zijn eigen bewijs en eigen prijs'],
-        ['Uitsluitingen in de campagnes','Stoppen met betalen voor het verkeerde verkeer'],
-        ['Kwalificatie in het formulier','Twee extra velden schelen tien slechte gesprekken'],
-        ['Content','Die de verkeerde klant afschrikt voordat hij belt']]},
-    nietgekozen:{naam:'Niet gekozen',q:{leadgen:'"Ze kennen ons, ze vragen offertes aan, en dan kiezen ze de ander."',
-        ecom:'"Ze leggen het in de winkelwagen en kopen elders."',reservering:'"Ze kijken en boeken ergens anders."',
-        werving:'"Ze solliciteren en haken af bij het aanbod."'},
-      zw:'ZWAARTEPUNT: A · AUTHORITY',minLvl:2,split:{A:15,R:15,E:25,N:10,U:35},
-      diensten:[['Cases en reviews','Het enige bewijs dat niet van jezelf komt'],
-        ['Landingspagina met bewijs','Bewijs hoort op de pagina, niet in de offerte'],
-        ['Content','Beantwoord de vergelijkingsvraag voordat de concurrent dat doet'],
-        ['Retargeting','Wie al kwam, is de goedkoopste te overtuigen'],
-        ['E-mail nurture','Blijven bestaan tot het moment wel klopt']]},
-    groei:{naam:'Geen probleem, wel een groeivraag',q:{leadgen:'"Het loopt. Ik wil harder."',ecom:'"Het loopt. Ik wil opschalen."',
-        reservering:'"Het loopt. Ik wil meer."',werving:'"Het loopt. We gaan uitbreiden."'},
-      zw:'ZWAARTEPUNT: A · ATTENTION',minLvl:1,split:{A:40,R:15,E:20,N:10,U:15},
-      diensten:[['Budget op wat al bewezen werkt','Niet slimmer worden, harder duwen'],
-        ['Derde advertentiekanaal','Ruimte zoeken buiten het verzadigde kanaal'],
-        ['CRO','Zodat opschalen de kostprijs niet meesleept'],
-        ['Automation','Herhaling pakken die je nu laat liggen']]}
+    weinig:{naam:'Te weinig',zw:'A · ATTENTION',minLvl:1,
+      q:{leadgen:'"De telefoon gaat te weinig."',ecom:'"Er komen te weinig bestellingen binnen."',
+         reservering:'"Het is te vaak te rustig."',werving:'"Er reageert bijna niemand."'},
+      knop:'Meer verkeer inkopen',
+      uitleg:'De trechter klopt, er gaat alleen te weinig in. Dit is de enige diagnose waarbij budget er rechtstreeks meer uithaalt.',
+      effect:'geen correctie — de volle groei moet uit betaald verkeer komen',
+      lift:{}, kan:{'SEA':60,'Social Ads':40}, link:0,
+      diensten:[['SEA',55,'Bestaande vraag, morgen aan'],['Social Ads',20,'Vraag maken bij wie nog niet zoekt'],
+        ['Landingspagina&rsquo;s',15,'Zonder eigen pagina verdampt het advertentiegeld'],['Monitoring',10,'Sturen op wat werkt']]},
+    toeval:{naam:'Te toevallig',zw:'BREEDTE + RETENTION',minLvl:2,
+      q:{leadgen:'"De ene maand storm, de andere stil. Ik kan er niets op plannen."',ecom:'"Piek in het seizoen, daarna niets."',
+         reservering:'"Het weekend zit vol, doordeweeks leeg."',werving:'"Soms tien reacties, soms een half jaar niets."'},
+      knop:'Eigen kanalen naast betaald',
+      uitleg:'Het probleem is niet volume maar afhankelijkheid. SEO en e-mail leveren conversies zonder klikkosten, dus een deel van de groei hoeft niet gekocht te worden.',
+      effect:'25% van de extra conversies uit SEO en e-mail → evenveel minder advertentiebudget',
+      lift:{eigen:0.25}, kan:{'SEA':45,'Social Ads':30,'Retargeting':25}, link:400,
+      diensten:[['SEO',25,'De bron die blijft draaien als je stopt met betalen'],
+        ['E-mail &amp; automation',25,'Van een stroom naar een voorraad'],
+        ['SEA',20,'Het dal opvangen terwijl SEO groeit'],['Content',20,'Vulling voor beide'],
+        ['Monitoring',10,'Zien welke bron wegvalt voordat het pijn doet']]},
+    duur:{naam:'Te duur',zw:'EXPERIENCE + AUTHORITY',minLvl:2,
+      q:{leadgen:'"Het komt wel binnen, maar wat het kost staat niet meer in verhouding."',ecom:'"De ROAS zakt elk kwartaal."',
+         reservering:'"Ik betaal me scheel aan de platforms."',werving:'"Een goede kracht vinden kost me een vermogen."'},
+      knop:'Conversie omhoog',
+      uitleg:'Meer budget lost dit niet op &mdash; het maakt het erger. De kostprijs daalt door betere pagina&rsquo;s en een sterker merk.',
+      effect:'conversie +40% relatief → kostprijs per conversie ongeveer 29% lager',
+      lift:{cvr:1.40}, kan:{'SEA':50,'Social Ads':20,'Retargeting':30}, link:250,
+      diensten:[['CRO',30,'Van 5 naar 7 procent haalt bijna een derde van de kostprijs af'],
+        ['Landingspagina&rsquo;s',25,'E&eacute;n pagina voor iedereen converteert voor niemand'],
+        ['Merk &amp; content',20,'Bekende merken betalen minder per klik'],
+        ['SEA-opschoning',15,'Zoekwoorden die geld kosten en niets leveren'],['Monitoring',10,'Kostprijs per kanaal volgen']]},
+    verkeerd:{naam:'Verkeerd',zw:'AUTHORITY + EXPERIENCE',minLvl:2,
+      q:{leadgen:'"Genoeg aanvragen, maar niet de klussen die ik wil."',ecom:'"Veel kleine orders, veel retouren."',
+         reservering:'"Volle tent, lage besteding."',werving:'"Veel reacties, niemand die past."'},
+      knop:'Waarde per klant omhoog',
+      uitleg:'Hier is m&iacute;nder volume een goed resultaat. Scherper positioneren en de verkeerde mensen actief wegsturen levert minder maar zwaardere conversies.',
+      effect:'waarde per klant +25% → evenredig minder conversies nodig voor dezelfde omzet',
+      lift:{waarde:1.25}, kan:{'SEA':50,'Social Ads':50}, link:250,
+      diensten:[['Positionering',25,'Wie je wilt, en net zo belangrijk: wie niet'],
+        ['Landingspagina per segment',25,'Elk type klus zijn eigen bewijs en eigen prijs'],
+        ['Content',20,'Die de verkeerde klant afschrikt voordat hij belt'],
+        ['Campagne-uitsluitingen',20,'Stoppen met betalen voor het verkeerde verkeer'],['Monitoring',10,'Sturen op kwaliteit, niet op aantal']]},
+    nietgekozen:{naam:'Niet gekozen',zw:'A · AUTHORITY',minLvl:2,
+      q:{leadgen:'"Ze kennen ons, ze vragen offertes aan, en dan kiezen ze de ander."',ecom:'"Ze leggen het in de winkelwagen en kopen elders."',
+         reservering:'"Ze kijken en boeken ergens anders."',werving:'"Ze solliciteren en haken af bij het aanbod."'},
+      knop:'Winkans omhoog',
+      uitleg:'Een bewijsprobleem, geen bereikprobleem. Cases, reviews en prijsduidelijkheid verhogen de kans dat hij gekozen wordt.',
+      effect:'winkans +30% relatief → evenredig minder conversies nodig',
+      lift:{close:1.30}, kan:{'SEA':35,'Social Ads':30,'Retargeting':35}, link:400,
+      diensten:[['Cases &amp; reviews',30,'Het enige bewijs dat niet van jezelf komt'],
+        ['Landingspagina met bewijs',20,'Bewijs hoort op de pagina, niet in de offerte'],
+        ['Content',20,'De vergelijkingsvraag beantwoorden v&oacute;&oacute;r de concurrent'],
+        ['Retargeting &amp; e-mail',20,'Wie al kwam is het goedkoopst te overtuigen'],['Monitoring',10,'Winkans volgen, niet alleen volume']]},
+    groei:{naam:'Geen knelpunt, wel een groeivraag',zw:'A · ATTENTION',minLvl:1,
+      q:{leadgen:'"Het loopt. Ik wil harder."',ecom:'"Het loopt. Ik wil opschalen."',
+         reservering:'"Het loopt. Ik wil meer."',werving:'"Het loopt. We gaan uitbreiden."'},
+      knop:'Opschalen wat al werkt',
+      uitleg:'Niets kapot, dus niets repareren. Harder duwen op wat bewezen werkt, en de kostprijs bewaken terwijl je opschaalt.',
+      effect:'geen correctie, wel een zwaardere opschalingsfactor bij grote sprongen',
+      lift:{}, kan:{'SEA':45,'Social Ads':40,'Retargeting':15}, link:250,
+      diensten:[['SEA &amp; Social Ads',45,'Budget op wat al bewezen werkt'],
+        ['CRO',20,'Zodat opschalen de kostprijs niet meesleept'],
+        ['E-mailmarketing',15,'Herhaling pakken die je nu laat liggen'],
+        ['Content',10,'Vulling voor het extra volume'],['Monitoring',10,'De kostprijs bewaken']]}
   };
 
   var LVL=[
-    {n:1,naam:'Basis',mnd:1650,jaar:19760,uur:4,ritme:'Per kwartaal een nieuwe actie'},
-    {n:2,naam:'Groei',mnd:3300,jaar:39520,uur:8,ritme:'Elke maand nieuwe campagnes'},
-    {n:3,naam:'Versnelling',mnd:4950,jaar:59280,uur:12,ritme:'Wekelijks, met experimenten'}
+    {n:1,naam:'Basis',mnd:1650,jaar:19760,uur:4,setup:3000,ritme:'Per kwartaal een nieuwe actie'},
+    {n:2,naam:'Groei',mnd:3300,jaar:39520,uur:8,setup:4500,ritme:'Elke maand nieuwe campagnes'},
+    {n:3,naam:'Versnelling',mnd:4950,jaar:59280,uur:12,setup:6000,ritme:'Wekelijks, met experimenten'}
   ];
 
-  var model='leadgen', answers={}, dx=null;
-  var V={ambitie:250000,waarde:6500,marge:35,jaren:4,convNu:140,bezoekersNu:9000,close:25,cr:2.0,cpc:1.60,ctr:2.0};
+  var model='leadgen', branche='makelaardij', answers={}, dx=null;
+  var V={omzet:null,ambitie:250000,waardePer:3250,aankopen:2,marge:35,jaren:4,
+         convNu:140,bezNu:9000,cpc:null,cvr:null,close:25,ctr:2.0};
 
-  // ---------- model ----------
   var modesEl=document.getElementById('modes');
+  function syncModes(){
+    var keys=Object.keys(MODELS);
+    Array.prototype.forEach.call(modesEl.children,function(c,i){
+      c.setAttribute('aria-pressed', keys[i]===model?'true':'false'); });
+  }
   Object.keys(MODELS).forEach(function(k){
-    var M=MODELS[k];
-    var b=document.createElement('button');
-    b.type='button'; b.className='mode'; b.setAttribute('aria-pressed', k===model?'true':'false');
+    var M=MODELS[k], b=document.createElement('button');
+    b.type='button'; b.className='opt';
     b.innerHTML='<span class="mn">'+M.naam+'</span><span class="md">'+M.uitleg+'</span>';
     b.addEventListener('click',function(){
-      model=k; V.cr=M.cr; V.close=M.close;
-      Array.prototype.forEach.call(modesEl.children,function(c,i){
-        c.setAttribute('aria-pressed', Object.keys(MODELS)[i]===k?'true':'false');
-      });
-      buildFields(); renderQ(); renderDxTable(); compute();
-    });
+      model=k; V.close=M.close; syncModes(); buildFields(); renderQ(); renderTables(); compute(); });
     modesEl.appendChild(b);
   });
+  syncModes();
 
-  // ---------- velden ----------
-  function fld(id,label,unit,help,tag){
+  function fld(id,label,unit,help,src){
     var f=document.createElement('div'); f.className='f';
-    var l=document.createElement('label'); l.setAttribute('for',id);
-    l.innerHTML=label+(unit?' <span class="unit">'+unit+'</span>':'')+(tag?' <span class="tag">'+tag+'</span>':'');
+    var lab=document.createElement('label'); lab.setAttribute('for',id);
+    lab.innerHTML=label+(unit?' <span class="unit">'+unit+'</span>':'')+
+      (src?' <span class="src '+src[0]+'">'+src[1]+'</span>':'');
     var i=document.createElement('input');
-    i.id=id; i.type='number'; i.min='0'; i.step='any'; i.inputMode='decimal'; i.value=V[id];
+    i.id=id; i.type='number'; i.min='0'; i.step='any'; i.inputMode='decimal';
+    i.value=(V[id]===null||V[id]===undefined)?'':V[id];
     i.addEventListener('input',function(){ var n=parseFloat(i.value); V[id]=isFinite(n)?n:null; compute(); });
-    f.appendChild(l); f.appendChild(i);
+    f.appendChild(lab); f.appendChild(i);
     if(help){ var h=document.createElement('span'); h.className='help'; h.innerHTML=help; f.appendChild(h); }
     return f;
   }
+
   function buildFields(){
-    var M=MODELS[model];
+    var M=MODELS[model], B=BRANCHE[branche];
+    document.getElementById('modeNote').innerHTML=M.note;
+
     var f3=document.getElementById('f3'); f3.textContent='';
-    document.getElementById('h3').innerHTML = model==='werving'
-      ? 'Bij werving is de waarde geen omzet maar <b>vermeden kosten</b>: het uitzendbureau, de recruiter, de overuren en de omzet die je misliep door onderbezetting.'
-      : 'Reken altijd met de waarde in de <b>eerste twaalf maanden</b>. Dat is wat er binnen het contractjaar op de rekening staat &mdash; de rest is een belofte die je niet kunt laten zien.';
-    f3.appendChild(fld('ambitie', M.ambitieLabel, model==='werving'?'AANTAL / JAAR':'EUR / JAAR'));
-    f3.appendChild(fld('waarde', M.waardeLabel, 'EUR',
-      model==='werving' ? 'Wervingskosten + onderbezetting die je niet meer hebt.'
-      : 'Eerste aankoop &times; hoeveel keer hij in jaar 1 terugkomt.'));
-    f3.appendChild(fld('marge','Brutomarge','%','Bepaalt wat een klant m&aacute;g kosten. Op omzet rekenen mag je alles uitgeven.'));
-    f3.appendChild(fld('jaren','Hoeveel jaar blijft een klant','JAAR','Alleen voor de bovengrens, nooit voor de rapportage.'));
+    var fb=document.createElement('div'); fb.className='f';
+    fb.innerHTML='<label for="branche">Branche</label>';
+    var sel=document.createElement('select'); sel.id='branche';
+    Object.keys(BRANCHE).forEach(function(k){
+      var o=document.createElement('option'); o.value=k; o.textContent=BRANCHE[k].naam;
+      if(k===branche) o.selected=true; sel.appendChild(o); });
+    sel.addEventListener('change',function(){
+      branche=sel.value; V.cpc=null; V.cvr=null;
+      var sug=BRANCHE[branche].model;
+      if(sug&&sug!==model){ model=sug; V.close=MODELS[model].close; syncModes(); }
+      buildFields(); renderQ(); renderTables(); compute();
+    });
+    fb.appendChild(sel);
+    var h=document.createElement('span'); h.className='help';
+    h.innerHTML='Bronregel: <b>'+B.ws+'</b>';
+    fb.appendChild(h); f3.appendChild(fb);
+    f3.appendChild(fld('omzet','Jaaromzet','EUR','Alleen om de investering tegen de benchmark te houden.',['k','OPTIONEEL']));
 
     var f4=document.getElementById('f4'); f4.textContent='';
-    f4.appendChild(fld('convNu','Aantal '+M.convMv+' nu','PER JAAR',
-      'Bepaalt hoe zwaar de sprong is, en is de nulmeting waartegen je straks afrekent.'));
-    f4.appendChild(fld('bezoekersNu','Websitebezoekers nu','PER JAAR','Samen met de regel hierboven geeft dit de huidige conversieratio.'));
+    document.getElementById('h4').innerHTML = model==='werving'
+      ? 'De waarde is geen omzet maar <b>vermeden kosten</b>: uitzendmarge, recruiter, overuren en de omzet die je misliep door onderbezetting.'
+      : 'Opgeknipt in twee vragen die een ondernemer w&eacute;l kan beantwoorden. Reken altijd met de <b>eerste twaalf maanden</b>.';
+    f4.appendChild(fld('ambitie', M.ambitieLabel, model==='werving'?'AANTAL / JAAR':'EUR / JAAR'));
+    if(model==='werving'){
+      f4.appendChild(fld('waardePer','Wat &eacute;&eacute;n aanname bespaart','EUR'));
+    } else {
+      f4.appendChild(fld('waardePer','Gemiddelde waarde per aankoop','EUR'));
+      f4.appendChild(fld('aankopen','Aankopen per klant per jaar','AANTAL','Bij eenmalig: 1.'));
+    }
+    f4.appendChild(fld('marge','Brutomarge','%','Bepaalt wat een klant m&aacute;g kosten.'));
+    f4.appendChild(fld('jaren','Hoeveel jaar blijft een klant','JAAR','Alleen voor de bovengrens, nooit voor de rapportage.'));
+    if(model!=='werving'){
+      var out=document.createElement('div'); out.className='calcout'; out.id='jaarwaarde'; f4.appendChild(out);
+    }
 
     var f5=document.getElementById('f5'); f5.textContent='';
-    f5.appendChild(fld('cpc','Kosten per klik','EUR',null,'AANNAME'));
-    f5.appendChild(fld('ctr','Doorklikratio','%','Alleen om het bereik te tonen.','AANNAME'));
-    f5.appendChild(fld('cr','Conversieratio website','%',
-      'Welk deel van de bezoekers wordt een '+M.conv+'.', 'AANNAME'));
-    f5.appendChild(fld('close', M.closeLabel,'%',
-      model==='leadgen'||model==='werving' ? 'Let op: <b>marketingleads zijn kouder dan netwerkleads.</b> Neem niet het huidige percentage.' : null,
-      model==='ecom' ? null : 'AANNAME'));
-    ['cpc','ctr','cr','close'].forEach(function(id){ document.getElementById(id).value=V[id]; });
+    f5.appendChild(fld('convNu','Aantal '+M.convMv+' nu','PER JAAR',
+      'Bepaalt hoe zwaar de sprong is, en is de nulmeting waartegen je afrekent.'));
+    f5.appendChild(fld('bezNu','Websitebezoekers nu','PER JAAR','Samen geeft dit zijn huidige conversieratio.'));
+
+    var f6=document.getElementById('f6'); f6.textContent='';
+    if(V.cpc===null) V.cpc=Math.round((B.cpc||WS_CPC)*CORR*100)/100;
+    if(V.cvr===null) V.cvr=B.cvr||WS_CVR;
+    f6.appendChild(fld('cpc','Kosten per klik','EUR',
+      'WordStream: $'+(B.cpc||WS_CPC).toFixed(2)+(B.cpc?'':' (gemiddelde over 23 branches)')+' &times; marktcorrectie 0,65.',
+      B.cpcSrc?['b','BENCHMARK']:['a','GEMIDDELDE']));
+    f6.appendChild(fld('cvr','Conversie op advertentieverkeer','%',
+      'Niet de website-conversieratio. WordStream meet '+(B.cvr||WS_CVR).toFixed(2)+'%'+(B.cvr?'':' gemiddeld'),
+      B.cvrSrc?['b','BENCHMARK']:['a','GEMIDDELDE']));
+    f6.appendChild(fld('close', M.closeLabel,'%',
+      (model==='leadgen'||model==='werving')?'Neem <b>niet</b> zijn huidige percentage &mdash; marketingleads zijn kouder.':null,
+      model==='ecom'?['k','VAST']:['a','AANNAME']));
+    f6.appendChild(fld('ctr','Doorklikratio','%','Alleen om het bereik te tonen.',['a','AANNAME']));
   }
 
-  // ---------- diagnose ----------
   function QS(){
     var M=MODELS[model];
     return [
-      {id:'q1',vraag:'Haal je het aantal '+M.convMv+' dat je nodig hebt?',
-       sub:'Volume: komt er genoeg binnen om je doel te halen?',
+      {id:'q1',n:'VRAAG 1 · VOLUME',vraag:'Haalt hij het aantal '+M.convMv+' dat hij nodig heeft?',
        opts:[{t:'Ja',go:'q2'},{t:'Nee, structureel te weinig',dx:'weinig'},{t:'Nee, het wisselt sterk',dx:'toeval'}]},
-      {id:'q2',vraag:'Leveren ze op wat je ervan verwacht?',
-       sub:'Kwaliteit: is het de klant, de order of de kandidaat die je wilt?',
+      {id:'q2',n:'VRAAG 2 · KWALITEIT',vraag:'Leveren ze op wat hij ervan verwacht?',
        opts:[{t:'Ja',go:'q3'},{t:'Nee',dx:'verkeerd'}]},
-      {id:'q3',vraag: model==='ecom' ? 'Maken ze de bestelling af?' : 'Win je ze meestal?',
-       sub:'Gunning: kiest hij uiteindelijk voor jou?',
+      {id:'q3',n:'VRAAG 3 · GUNNING',vraag: model==='ecom'?'Maken ze de bestelling af?':'Wint hij ze meestal?',
        opts:[{t:'Ja',go:'q4'},{t:'Nee',dx:'nietgekozen'}]},
-      {id:'q4',vraag:'Staan de kosten per klant in verhouding tot de marge?',
-       sub:'Kostprijs: houd je er onderaan de streep iets aan over?',
+      {id:'q4',n:'VRAAG 4 · KOSTPRIJS',vraag:'Staan de kosten per klant in verhouding tot de marge?',
        opts:[{t:'Ja',dx:'groei'},{t:'Nee',dx:'duur'}]}
     ];
   }
@@ -574,28 +578,30 @@ td .mono{font-family:var(--fm);font-size:11px;color:var(--tx3);display:block;mar
 
   function renderQ(){
     var B=byId(); qpath.textContent='';
-    var id='q1';
-    while(id){
-      var q=B[id];
+    var path=[], id='q1';
+    while(id){ path.push(id); if(answers[id]===undefined) break; id=B[id].opts[answers[id]].go||null; }
+    QS().forEach(function(q){
+      var actief = path.indexOf(q.id)>=0;
       var wrap=document.createElement('div');
-      wrap.className='q'+(answers[id]!==undefined?' done':'');
-      var t=document.createElement('p'); t.className='qt';
-      t.textContent=q.vraag;
-      var s=document.createElement('span'); s.className='qs'; s.textContent=q.sub; t.appendChild(s);
-      wrap.appendChild(t);
-      var row=document.createElement('div'); row.className='ans';
-      (function(qid,opts){
-        opts.forEach(function(o,i){
+      wrap.className='q'+(answers[q.id]!==undefined?' done':(actief?'':' wait'));
+      var n=document.createElement('p'); n.className='qn'; n.textContent=q.n; wrap.appendChild(n);
+      var t=document.createElement('p'); t.className='qt'; t.textContent=q.vraag; wrap.appendChild(t);
+      if(actief){
+        var row=document.createElement('div'); row.className='ans';
+        q.opts.forEach(function(o,i){
           var b=document.createElement('button');
           b.type='button'; b.textContent=o.t;
-          b.setAttribute('aria-pressed', answers[qid]===i?'true':'false');
-          b.addEventListener('click',function(){ pick(qid,i); });
-          row.appendChild(b);
-        });
-      })(q.id,q.opts);
-      wrap.appendChild(row); qpath.appendChild(wrap);
-      if(answers[id]===undefined){ id=null; } else { id=q.opts[answers[id]].go||null; }
-    }
+          b.setAttribute('aria-pressed', answers[q.id]===i?'true':'false');
+          b.addEventListener('click',function(){ pick(q.id,i); });
+          row.appendChild(b); });
+        wrap.appendChild(row);
+      } else {
+        var l=document.createElement('p'); l.className='lock';
+        l.textContent = dx ? 'Niet meer nodig — de diagnose is rond.' : 'Komt aan bod als het antwoord hierboven "ja" is.';
+        wrap.appendChild(l);
+      }
+      qpath.appendChild(wrap);
+    });
     resetBtn.hidden = !Object.keys(answers).length;
   }
   function pick(qid,i){
@@ -607,242 +613,284 @@ td .mono{font-family:var(--fm);font-size:11px;color:var(--tx3);display:block;mar
     }
     answers=keep; dx=null;
     var cid='q1';
-    while(cid){
-      var a=answers[cid]; if(a===undefined) break;
-      var o=B[cid].opts[a];
-      if(o.dx){ dx=o.dx; break; }
-      cid=o.go||null;
-    }
+    while(cid){ var a=answers[cid]; if(a===undefined) break;
+      var o=B[cid].opts[a]; if(o.dx){ dx=o.dx; break; } cid=o.go||null; }
     renderQ(); compute();
   }
   resetBtn.addEventListener('click',function(){ answers={}; dx=null; renderQ(); compute(); });
 
-  function renderDxTable(){
-    var tb2=document.getElementById('dxTable'); tb2.textContent='';
+  function renderTables(){
+    var t=document.getElementById('dxTable'); t.textContent='';
     ['weinig','toeval','duur','verkeerd','nietgekozen'].forEach(function(k){
       var d=DX[k], tr=document.createElement('tr');
-      var c1=document.createElement('td'); c1.className='kop'; c1.textContent=d.naam;
-      var c2=document.createElement('td'); c2.style.fontStyle='italic'; c2.style.color='var(--tx2)'; c2.textContent=d.q[model];
-      var c3=document.createElement('td'); c3.innerHTML='<span class="mono" style="margin:0">'+d.zw.replace('ZWAARTEPUNT: ','')+'</span>';
-      var c4=document.createElement('td');
-      c4.innerHTML=d.diensten.map(function(x,i){return (i+1)+'. '+x[0];}).join('<br>');
-      tr.appendChild(c1);tr.appendChild(c2);tr.appendChild(c3);tr.appendChild(c4);
-      tb2.appendChild(tr);
+      tr.innerHTML='<td class="kop">'+d.naam+'<small>'+d.zw+'</small></td>'+
+        '<td style="font-style:italic;color:var(--tx2)">'+d.q[model]+'</td>'+
+        '<td class="kop">'+d.knop+'</td><td>'+d.effect+'</td>'+
+        '<td>'+d.diensten.map(function(x){return x[0];}).join('<br>')+'</td>';
+      t.appendChild(tr);
+    });
+    var b=document.getElementById('bmTable'); b.textContent='';
+    Object.keys(BRANCHE).forEach(function(k){
+      var B=BRANCHE[k], tr=document.createElement('tr');
+      tr.innerHTML='<td class="kop">'+B.naam+'</td><td>'+B.ws+'</td>'+
+        '<td class="n">'+(B.cpc?('$ '+B.cpc.toFixed(2)):('$ '+WS_CPC.toFixed(2)+'<small>GEMIDDELDE</small>'))+'</td>'+
+        '<td class="n">'+(B.cvr?(B.cvr.toFixed(2)+'%'):(WS_CVR.toFixed(2)+'%<small>GEMIDDELDE</small>'))+'</td>'+
+        '<td>'+MODELS[B.model].naam+'</td>';
+      b.appendChild(tr);
     });
   }
 
-  // ---------- rekenen ----------
   function factorFor(g){ if(g<=0.25)return 1.15; if(g<=0.50)return 1.30; if(g<=1.00)return 1.50; return 1.80; }
-  function row(k,v,sub,cls){
+  function row(k,v,sub,cls,ind){
     var d=document.createElement('div'); d.className='row'+(cls?' '+cls:'');
-    var a=document.createElement('span'); a.className='k'; a.textContent=k;
+    var a=document.createElement('span'); a.className='k'+(ind?' ind':''); a.innerHTML=k;
     var b=document.createElement('span'); b.className='v'; b.innerHTML=v;
     if(sub){ var s=document.createElement('span'); s.className='sub'; s.textContent=sub; b.appendChild(s); }
     d.appendChild(a); d.appendChild(b); return d;
   }
-  function funRow(k,v,ratio,frac,hi){
+  function pm(v){ return eur.format(Math.round(v))+' <span class="pm">p/m</span>'; }
+  function funRow(k,v,r,frac,hi){
     var d=document.createElement('div'); d.className='fs'+(hi?' hi':'');
     var a=document.createElement('span'); a.className='fk'; a.textContent=k;
     var b=document.createElement('span'); b.className='fv'; b.textContent=v;
     var bar=document.createElement('span'); bar.className='fbar';
     var i=document.createElement('i'); i.style.width=Math.max(2,frac*100)+'%'; bar.appendChild(i);
     d.appendChild(a); d.appendChild(b); d.appendChild(bar);
-    if(ratio){ var r=document.createElement('span'); r.className='fr'; r.textContent=ratio; d.appendChild(r); }
+    if(r){ var x=document.createElement('span'); x.className='fr'; x.textContent=r; d.appendChild(x); }
     return d;
   }
-  function flag(cls,html){ var d=document.createElement('div'); d.className='flag '+cls; d.innerHTML=html; return d; }
+  function flag(c,h){ var d=document.createElement('div'); d.className='flag '+c; d.innerHTML=h; return d; }
   var state={};
 
   function compute(){
     var M=MODELS[model];
-    var vDx=document.getElementById('vDx'), vQ=document.getElementById('vQuote'), vZw=document.getElementById('vZw'),
-        funP=document.getElementById('funPanel'), funR=document.getElementById('funRows'),
-        kpiP=document.getElementById('kpiPanel'), kpiR=document.getElementById('kpiRows'),
+    var funP=document.getElementById('funPanel'), funR=document.getElementById('funRows'),
+        invP=document.getElementById('invPanel'), invR=document.getElementById('invRows'),
+        roiP=document.getElementById('roiPanel'), roiR=document.getElementById('roiRows'),
         lvlP=document.getElementById('lvlPanel'), lvlN=document.getElementById('lvlName'),
-        lvlR=document.getElementById('lvlRows'), dnR=document.getElementById('dnstRows'),
-        spR=document.getElementById('splitRows'), flags=document.getElementById('flags'),
-        copyBtn=document.getElementById('copyBtn');
-    [funR,kpiR,lvlR,dnR,spR,flags].forEach(function(e){e.textContent='';});
+        lvlH=document.getElementById('lvlHint'), dnR=document.getElementById('dnstRows'),
+        flags=document.getElementById('flags'), copyBtn=document.getElementById('copyBtn');
+    [funR,invR,roiR,dnR,flags].forEach(function(e){e.textContent='';});
     document.getElementById('copiedMsg').hidden=true;
 
+    var jw=document.getElementById('jaarwaarde');
+    var jaarwaarde = model==='werving' ? V.waardePer
+      : ((V.waardePer&&V.aankopen)? V.waardePer*V.aankopen : null);
+    if(jw) jw.innerHTML = jaarwaarde
+      ? 'Waarde per klant in jaar 1: <b>'+eur.format(Math.round(jaarwaarde))+'</b> &nbsp;&middot;&nbsp; '+
+        eur.format(V.waardePer)+' &times; '+V.aankopen+' aankopen'
+      : 'Vul waarde per aankoop en aantal aankopen in.';
+
     if(!dx){
-      vDx.textContent = Object.keys(answers).length ? 'Nog niet rond' : 'Beantwoord vraag 1';
-      vQ.textContent='Kies eerst het model, dan de diagnose.';
-      vZw.hidden=true; funP.hidden=true; kpiP.hidden=true; lvlP.hidden=true; copyBtn.hidden=true; state={};
+      document.getElementById('vDx').textContent = Object.keys(answers).length?'Nog niet rond':'Beantwoord vraag 1';
+      document.getElementById('vQuote').textContent='Kies eerst wat de marketing moet opleveren.';
+      document.getElementById('vKnob').hidden=true;
+      funP.hidden=true; invP.hidden=true; roiP.hidden=true; lvlP.hidden=true; copyBtn.hidden=true; state={};
       return;
     }
     var d=DX[dx];
-    vDx.textContent=d.naam; vQ.textContent=d.q[model];
-    vZw.textContent=d.zw; vZw.hidden=false;
+    document.getElementById('vDx').textContent=d.naam;
+    document.getElementById('vQuote').textContent=d.q[model];
+    document.getElementById('vKnob').hidden=false;
+    document.getElementById('kv').textContent=d.knop;
+    document.getElementById('kd').innerHTML=d.uitleg+' <b>'+d.effect+'</b>';
 
-    var ambitie=V.ambitie, waarde=V.waarde, marge=V.marge, jaren=V.jaren,
-        convNu=V.convNu, bezNu=V.bezoekersNu, close=V.close, cr=V.cr, cpc=V.cpc, ctr=V.ctr;
+    var cvr=V.cvr, close=V.close, waarde=jaarwaarde, eigen=0;
+    if(d.lift.cvr&&cvr) cvr=cvr*d.lift.cvr;
+    if(d.lift.close&&close) close=Math.min(95,close*d.lift.close);
+    if(d.lift.waarde&&waarde) waarde=waarde*d.lift.waarde;
+    if(d.lift.eigen) eigen=d.lift.eigen;
 
-    // achterwaarts: ambitie -> klanten -> conversies -> bezoekers -> klikken -> vertoningen -> budget
-    var klanten=null, conversies=null, bezoekers=null, vertoningen=null, budget=null,
-        groei=null, fac=1, cpaBasis=null, cpaEff=null, kostPerKlant=null, margeEur=null, ltv=null;
+    var klanten=null,conv=null,convB=null,bez=null,vert=null,budget=null,
+        groei=null,fac=1,cpa=null,kostKlant=null,margeEur=null,ltv=null,omzet=null;
 
-    if(model==='werving'){ klanten = ambitie || null; }
-    else if(ambitie&&waarde){ klanten=ambitie/waarde; }
-
-    if(klanten&&close) conversies=klanten/(close/100);
-    if(conversies&&convNu) groei=conversies/convNu;
+    if(model==='werving') klanten=V.ambitie||null;
+    else if(V.ambitie&&waarde) klanten=V.ambitie/waarde;
+    if(klanten&&close) conv=klanten/(close/100);
+    if(conv!==null) convB=conv*(1-eigen);
+    if(conv&&V.convNu) groei=conv/V.convNu;
     if(groei!==null) fac=factorFor(groei);
-    if(conversies&&cr) bezoekers=conversies/(cr/100);
-    if(bezoekers&&ctr) vertoningen=bezoekers/(ctr/100);
-    if(cpc&&cr) cpaBasis=cpc/(cr/100);
-    if(cpaBasis!==null) cpaEff=cpaBasis*fac;
-    if(bezoekers&&cpc) budget=bezoekers*cpc*fac;
-    if(cpaEff!==null&&close) kostPerKlant=cpaEff/(close/100);
-    if(waarde&&marge) margeEur=waarde*(marge/100);
-    if(waarde&&marge&&jaren) ltv=waarde*(marge/100)*jaren;
+    if(convB&&cvr) bez=convB/(cvr/100);
+    if(bez&&V.ctr) vert=bez/(V.ctr/100);
+    if(V.cpc&&cvr) cpa=(V.cpc/(cvr/100))*fac;
+    if(bez&&V.cpc) budget=bez*V.cpc*fac;
+    if(cpa!==null&&close) kostKlant=cpa/(close/100);
+    if(waarde&&V.marge) margeEur=waarde*(V.marge/100);
+    if(margeEur&&V.jaren) ltv=margeEur*V.jaren;
+    if(klanten&&waarde) omzet=klanten*waarde;
 
-    // trechter
-    funP.hidden=false;
-    var top=vertoningen||bezoekers||conversies||1;
-    function fr(x){ return x?Math.min(1,Math.log10(x+1)/Math.log10(top+1)):0.02; }
-    if(budget!==null) funR.appendChild(funRow('Mediabudget', eur.format(Math.round(budget)), 'per jaar, bovenop wat hij nu doet', 1, true));
-    if(vertoningen) funR.appendChild(funRow('Vertoningen', num.format(Math.round(vertoningen)), 'bereik', fr(vertoningen)));
-    if(bezoekers) funR.appendChild(funRow('Klikken naar de site', num.format(Math.round(bezoekers)),
-      ctr?('doorklikratio '+ctr+'%'):null, fr(bezoekers)));
-    if(conversies) funR.appendChild(funRow('Extra '+M.convMv, num.format(Math.ceil(conversies)),
-      (cr?'conversieratio '+cr+'%':'')+(groei!==null?' · +'+Math.round(groei*100)+'% op '+num.format(convNu):''), fr(conversies), true));
-    if(klanten) funR.appendChild(funRow(model==='werving'?'Aannames':(model==='ecom'?'Orders':'Nieuwe klanten'),
-      num.format(Math.ceil(klanten)), close?(M.closeLabel.toLowerCase()+' '+close+'%'):null, fr(klanten)));
-    if(ambitie&&model!=='werving') funR.appendChild(funRow('Extra omzet', eur.format(ambitie),
-      waarde?('à '+eur.format(waarde)+' per klant, jaar 1'):null, fr(klanten||1)));
-
-    // kengetallen
-    kpiP.hidden=false;
-    if(cpaBasis!==null) kpiR.appendChild(row('Kosten per '+M.conv, eur2.format(cpaEff),
-      eur2.format(cpc)+' klik ÷ '+cr+'% conversie'+(fac>1?', +'+Math.round((fac-1)*100)+'%':''), 'big'));
-    if(kostPerKlant!==null) kpiR.appendChild(row('Kosten per klant', eur2.format(kostPerKlant)));
-    if(margeEur!==null){
-      var ok = kostPerKlant!==null && kostPerKlant<=margeEur;
-      kpiR.appendChild(row('Marge in jaar 1', eur.format(Math.round(margeEur))+
-        (kostPerKlant!==null?'<span class="pill '+(ok?'ok':'bad')+'">'+(ok?'WINST IN JAAR 1':'VERLIES IN JAAR 1')+'</span>':''),
-        marge+'% van '+eur.format(waarde)));
-    }
-    if(ltv!==null) kpiR.appendChild(row('Marge over '+jaren+' jaar', eur.format(Math.round(ltv)),
-      'bovengrens van wat een klant mag kosten'));
-    if(convNu&&bezNu) kpiR.appendChild(row('Conversieratio nu', (convNu/bezNu*100).toFixed(2)+'%',
-      num.format(convNu)+' van '+num.format(bezNu)));
-
-    // niveau
     var lvlBudget=1;
-    if(budget!==null){ LVL.forEach(function(L){ if(budget>=L.jaar) lvlBudget=L.n; }); }
-    var lvlWerk=d.minLvl, chosen=Math.max(lvlBudget,lvlWerk);
-    if(budget===null) chosen=lvlWerk;
-    var L=LVL[chosen-1];
+    if(budget!==null) LVL.forEach(function(L){ if(budget>=L.jaar) lvlBudget=L.n; });
+    var chosen = budget===null ? d.minLvl : Math.max(lvlBudget,d.minLvl);
+    var L=LVL[chosen-1], link=d.link*12;
+
+    funP.hidden=false;
+    var top=vert||bez||conv||1;
+    function fr(x){ return x?Math.min(1,Math.log10(x+1)/Math.log10(top+1)):.02; }
+    if(budget!==null) funR.appendChild(funRow('Advertentiebudget', eur.format(Math.round(budget)),'per jaar',1,true));
+    if(vert) funR.appendChild(funRow('Vertoningen', num.format(Math.round(vert)),'bereik',fr(vert)));
+    if(bez) funR.appendChild(funRow('Klikken naar de site', num.format(Math.round(bez)),'doorklikratio '+V.ctr+'%',fr(bez)));
+    if(convB) funR.appendChild(funRow('Uit betaald verkeer', num.format(Math.ceil(convB)),
+      'conversie '+dec.format(cvr)+'%'+(d.lift.cvr?' (na CRO)':''),fr(convB)));
+    if(eigen>0&&conv) funR.appendChild(funRow('Uit SEO en e-mail', num.format(Math.ceil(conv*eigen)),'zonder klikkosten',fr(conv*eigen)));
+    if(conv) funR.appendChild(funRow('Extra '+M.convMv, num.format(Math.ceil(conv)),
+      groei!==null?('+'+Math.round(groei*100)+'% op de huidige '+num.format(V.convNu)):null,fr(conv),true));
+    if(klanten) funR.appendChild(funRow(model==='werving'?'Aannames':(model==='ecom'?'Orders':'Nieuwe klanten'),
+      num.format(Math.ceil(klanten)), dec.format(close)+'% van de '+M.convMv+(d.lift.close?', na bewijs':''),fr(klanten)));
+    if(omzet&&model!=='werving') funR.appendChild(funRow(model==='leadgen'?'Omzet (projectie)':'Extra omzet',
+      eur.format(Math.round(omzet)), eur.format(Math.round(waarde))+' per klant in jaar 1',fr(klanten||1)));
+
+    invP.hidden=false;
+    invR.appendChild(row('Eenmalig fundament', eur.format(L.setup),'maand 1, apart gefactureerd'));
+    invR.appendChild(row('Retainer '+L.naam, pm(L.mnd), eur.format(L.jaar)+' per jaar'));
+    if(budget!==null){
+      invR.appendChild(row('Advertentiebudget', pm(budget/12), eur.format(Math.round(budget))+' per jaar'));
+      Object.keys(d.kan).forEach(function(k){
+        invR.appendChild(row(k, pm(budget/12*d.kan[k]/100), d.kan[k]+'%', null, true)); });
+    }
+    if(link>0) invR.appendChild(row('Linkbuildingbudget', pm(d.link), eur.format(link)+' per jaar'));
+    var totJaar=L.jaar+(budget||0)+link, totJaar1=totJaar+L.setup;
+    invR.appendChild(row('Per maand, doorlopend', eur.format(Math.round(totJaar/12)),null,'tot'));
+    invR.appendChild(row('Jaar 1 totaal', eur.format(Math.round(totJaar1)),'inclusief fundament'));
+    var aw=totJaar?L.jaar/totJaar*100:null;
+    if(aw!==null) invR.appendChild(row('Aandeel werk', Math.round(aw)+'%'+
+      '<span class="pill '+(aw<=50?'ok':(aw<=60?'warn':'bad'))+'">'+(aw<=50?'BINNEN DE REGEL':'BOVEN DE HELFT')+'</span>'));
+    if(V.omzet){
+      var pct=totJaar/V.omzet*100;
+      invR.appendChild(row('Van de jaaromzet', dec.format(pct)+'%'+
+        '<span class="pill '+(pct<=12?'ok':(pct<=18?'warn':'bad'))+'">'+
+        (pct<=12?'BINNEN BENCHMARK':(pct<=18?'AAN DE HOGE KANT':'BOVEN BENCHMARK'))+'</span>',
+        'benchmark 7,7% (Gartner) tot 9,4% (CMO Survey)'));
+    }
+
+    var margeTot = (margeEur&&klanten)? klanten*margeEur : null;
+    if(klanten){
+      roiP.hidden=false;
+      if(model==='werving'){
+        if(waarde) roiR.appendChild(row('Bespaard per aanname', eur.format(Math.round(waarde))));
+        var besp=klanten*(waarde||0);
+        roiR.appendChild(row('Totaal bespaard', eur.format(Math.round(besp)),null,'big'));
+        roiR.appendChild(row('Onder de streep, jaar 1', eur.format(Math.round(besp-totJaar1))+
+          '<span class="pill '+(besp>totJaar1?'ok':'bad')+'">'+(besp>totJaar1?'POSITIEF':'NEGATIEF')+'</span>'));
+        margeTot=besp;
+      } else if(omzet){
+        var roas=budget?omzet/budget:null, rend=totJaar?omzet/totJaar:null;
+        if(roas) roiR.appendChild(row('Omzet per euro advertentiebudget', dec.format(roas)+'&times;',
+          model==='ecom'?'ROAS':'projectie via winkans','big'));
+        if(rend) roiR.appendChild(row('Omzet per euro marketing totaal', dec.format(rend)+'&times;','incl. retainer, excl. fundament'));
+        if(margeTot) roiR.appendChild(row('Brutomarge op die omzet', eur.format(Math.round(margeTot)),
+          V.marge+'% van '+eur.format(Math.round(omzet))));
+        if(margeTot) roiR.appendChild(row('Onder de streep, jaar 1', eur.format(Math.round(margeTot-totJaar1))+
+          '<span class="pill '+(margeTot>totJaar1?'ok':'bad')+'">'+(margeTot>totJaar1?'POSITIEF':'NEGATIEF')+'</span>',
+          'marge min de volledige investering','big'));
+        state.roas=roas; state.rend=rend;
+      }
+      if(cpa!==null) roiR.appendChild(row('Kosten per '+M.conv, eur2.format(cpa),
+        eur2.format(V.cpc)+' klik : '+dec.format(cvr)+'%'+(fac>1?', +'+Math.round((fac-1)*100)+'%':'')));
+      if(kostKlant!==null) roiR.appendChild(row('Kosten per klant', eur2.format(kostKlant)+
+        (margeEur!==null?'<span class="pill '+(kostKlant<=margeEur?'ok':'bad')+'">'+
+        (kostKlant<=margeEur?'ONDER DE MARGE':'BOVEN DE MARGE')+'</span>':''),
+        margeEur!==null?('marge jaar 1: '+eur.format(Math.round(margeEur))):null));
+      if(ltv!==null) roiR.appendChild(row('Marge over '+V.jaren+' jaar', eur.format(Math.round(ltv)),
+        'bovengrens van wat een klant mag kosten'));
+      state.margeTot=margeTot;
+    } else roiP.hidden=true;
 
     lvlP.hidden=false; lvlN.textContent=L.naam;
-    lvlR.appendChild(row('Retainer', eur.format(L.mnd), 'per maand, excl. btw','big'));
-    lvlR.appendChild(row('Inzet', L.uur+' uur per week', num.format(L.uur*52)+' uur per jaar'));
-    lvlR.appendChild(row('Ritme', L.ritme, null, 'txt'));
-    if(budget!==null){
-      var totaal=L.jaar+budget, aandeel=L.jaar/totaal*100;
-      lvlR.appendChild(row('Marketingbudget totaal', eur.format(Math.round(totaal)),'werk + media, per jaar'));
-      lvlR.appendChild(row('Aandeel werk', Math.round(aandeel)+'%'+
-        '<span class="pill '+(aandeel<=50?'ok':(aandeel<=60?'warn':'bad'))+'">'+
-        (aandeel<=50?'BINNEN DE REGEL':'BOVEN DE HELFT')+'</span>'));
-      state.aandeel=aandeel; state.totaal=totaal;
-    }
+    lvlH.innerHTML=L.ritme+' &middot; '+L.uur+' uur per week &middot; '+num.format(L.uur*52)+' uur per jaar';
     d.diensten.forEach(function(x){
       var li=document.createElement('li');
-      li.innerHTML='<div><b>'+x[0]+'</b><span>'+x[1]+'</span></div>';
-      dnR.appendChild(li);
-    });
-    var namen={A:'A · Attention',R:'R · Retention',E:'E · Experience',N:'N · Numbers',U:'A · Authority'};
-    Object.keys(d.split).forEach(function(key){
-      var pct=d.split[key], r=document.createElement('div'); r.className='sp';
-      var n=document.createElement('span'); n.className='n'; n.textContent=namen[key];
-      var bar=document.createElement('span'); bar.className='bar'+((key==='N'||key==='U')?' ring':'');
-      var i=document.createElement('i'); i.style.width=(pct/45*100)+'%'; bar.appendChild(i);
-      var u=document.createElement('span'); u.className='u'; u.textContent=(L.uur*pct/100).toFixed(1)+'u';
-      r.appendChild(n);r.appendChild(bar);r.appendChild(u); spR.appendChild(r);
-    });
+      li.innerHTML='<div><b>'+x[0]+'</b><span class="w">'+x[2]+'</span></div><em>'+dec.format(L.uur*x[1]/100)+' u/wk</em>';
+      dnR.appendChild(li); });
 
-    // signalen
-    if((model==='leadgen'||model==='werving'))
-      flags.appendChild(flag('warn','<b>Controleer het closingpercentage.</b> Draait hij nu op netwerk en mond-tot-mond, dan is zijn huidige percentage te hoog voor marketingleads &mdash; die zijn kouder. Vul hier de verwachting voor nieuwe leads in, niet het cijfer uit zijn hoofd. Dit is ook het getal dat het eerste kwartaal moet vervangen.'));
-    if(groei!==null&&groei>1) flags.appendChild(flag('bad','<b>Meer dan verdubbeling.</b> Hier houdt rekenen op en begint een oordeel over de markt: is die vraag er &uuml;berhaupt? Zeg dat nu, niet in december.'));
+    if(model==='leadgen'||model==='werving')
+      flags.appendChild(flag('warn','<b>Toets het closingpercentage.</b> Draait hij nu op netwerk en mond-tot-mond, dan is zijn huidige percentage te hoog voor marketingleads. Dit is ook het getal dat kwartaal 1 moet vervangen.'));
+    if(groei!==null&&groei>1) flags.appendChild(flag('bad','<b>Meer dan verdubbeling.</b> Hier houdt rekenen op en begint een oordeel over de markt: is die vraag er &uuml;berhaupt?'));
     else if(groei!==null&&groei>0.5) flags.appendChild(flag('warn','<b>Stevige sprong.</b> Meer dan de helft erbij. Spreek een tussentijds ijkmoment af.'));
-    if(margeEur!==null&&kostPerKlant!==null&&kostPerKlant>margeEur){
-      var jr = ltv!==null&&kostPerKlant<=ltv;
-      flags.appendChild(flag(jr?'warn':'bad','<b>Een klant kost meer dan hij in jaar 1 oplevert.</b> '+
-        (jr?'Over '+jaren+' jaar komt het terug, maar dan financier je de groei voor. Dat kan &mdash; als hij het wéét en het kán dragen.'
-           :'Ook over de hele levensduur komt dit niet goed. Dit is geen marketingvraag maar een prijs- of margevraag.')));
-    }
-    if(lvlBudget<lvlWerk) flags.appendChild(flag('warn','<b>De twee signalen lopen uiteen.</b> Het budget past bij <b>'+LVL[lvlBudget-1].naam+'</b>, de diagnose vraagt het werk van <b>'+LVL[lvlWerk-1].naam+'</b>. Het advies volgt het werk &mdash; bespreek of er budget bij kan of dat de ambitie omlaag moet.'));
-    if(chosen===1) flags.appendChild(flag('note','<b>Basis is geen instappakket</b> maar het onderhoudsniveau voor een systeem dat al staat. Bij een nieuwe klant valt er te veel te bouwen voor vier uur per week.'));
-    if(state.aandeel&&state.aandeel>50) flags.appendChild(flag('bad','<b>Het werk is meer dan de helft van het marketingbudget.</b> Je betaalt dan meer voor het sturen dan voor het rijden. Of het budget moet omhoog, of dit is een niveau te hoog.'));
+    if(kostKlant!==null&&margeEur!==null&&kostKlant>margeEur)
+      flags.appendChild(flag((ltv&&kostKlant<=ltv)?'warn':'bad','<b>Een klant kost meer dan hij in jaar 1 oplevert.</b> '+
+        ((ltv&&kostKlant<=ltv)?'Over '+V.jaren+' jaar komt het terug, maar dan financiert hij de groei voor. Dat kan &mdash; als hij het weet en het kan dragen.'
+          :'Ook over de levensduur komt dit niet goed. Dit is geen marketingvraag maar een prijs- of margevraag.')));
+    if(budget!==null&&lvlBudget<d.minLvl)
+      flags.appendChild(flag('warn','<b>De twee signalen lopen uiteen.</b> Het budget past bij <b>'+LVL[lvlBudget-1].naam+'</b>, de diagnose vraagt het werk van <b>'+LVL[d.minLvl-1].naam+'</b>. Het advies volgt het werk.'));
+    if(chosen===1) flags.appendChild(flag('note','<b>Basis is geen instappakket</b> maar het onderhoudsniveau voor een systeem dat al staat.'));
+    if(aw!==null&&aw>50) flags.appendChild(flag('bad','<b>Het werk is meer dan de helft van het marketingbudget.</b> Of het budget moet omhoog, of dit is een niveau te hoog.'));
     if(budget!==null&&budget/12<2000&&(dx==='weinig'||dx==='toeval'||dx==='groei'))
-      flags.appendChild(flag('warn','<b>Mediabudget onder het minimum.</b> Reken op &euro;&thinsp;1.000 tot &euro;&thinsp;1.500 per maand per actief advertentiekanaal &mdash; daaronder zijn er te weinig conversies om op te sturen. Kies dan &eacute;&eacute;n kanaal goed in plaats van twee half.'));
-    if(!bezNu) flags.appendChild(flag('note','<b>Geen bezoekersaantal bekend.</b> Dan is de huidige conversieratio onbekend en werkt de hele trechter op aannames. Dit is de eerste meting van maand 1.'));
-    if(dx==='verkeerd') flags.appendChild(flag('note','<b>Let op de norm.</b> Bij deze diagnose is <b>minder</b> volume een goed resultaat. Leg vooraf vast wat wel en niet meetelt, anders lijkt het straks alsof je faalt.'));
-    if(dx==='nietgekozen'&&model!=='ecom') flags.appendChild(flag('note','<b>Grensgeval.</b> Dit raakt aan het verkoopgesprek, en dat is niet van ons. Wij zorgen dat hij met een voorsprong aan tafel komt.'));
-    if(model==='ecom') flags.appendChild(flag('ok','<b>Hier mág je op omzet sturen.</b> De transactie is compleet en toerekenbaar, dus ROAS is een eerlijke maatstaf. Bij de andere drie modellen is dat niet zo.'));
-    if(model==='reservering') flags.appendChild(flag('note','<b>Omzet is hier statistisch.</b> Je levert reserveringen; de besteding is een gemiddelde. Rapporteer op reserveringen en noem de omzet als afgeleide, met het no-showpercentage erbij.'));
-    if(model==='werving') flags.appendChild(flag('note','<b>Werving is leadgen met een andere waardeformule.</b> Dezelfde trechter, maar de opbrengst is vermeden kosten. Houd het binnen hetzelfde systeem &mdash; niet als aparte dienst met eigen pakketten.'));
+      flags.appendChild(flag('warn','<b>Advertentiebudget onder het minimum.</b> Reken op &euro;&thinsp;1.000 tot &euro;&thinsp;1.500 per maand per actief kanaal &mdash; daaronder zijn er te weinig conversies om op te sturen.'));
+    if(!V.bezNu) flags.appendChild(flag('note','<b>Geen bezoekersaantal bekend.</b> Dan is zijn huidige conversieratio onbekend en werkt de trechter volledig op benchmarks.'));
+    else if(V.convNu){
+      var crNu=V.convNu/V.bezNu*100;
+      flags.appendChild(flag(crNu<1.5?'warn':'note','<b>Zijn huidige conversieratio: '+dec.format(crNu)+'%</b> ('+num.format(V.convNu)+' van '+num.format(V.bezNu)+' bezoekers). '+
+        (crNu<1.5?'Dat is laag &mdash; hier valt waarschijnlijk meer te halen dan met extra budget.':'Dit is over al het verkeer; op advertentieverkeer ligt het hoger.')));
+    }
+    if(dx==='verkeerd') flags.appendChild(flag('note','<b>Let op de norm.</b> Bij deze diagnose is <b>minder</b> volume een goed resultaat. Leg vooraf vast wat meetelt.'));
+    if(model==='leadgen') flags.appendChild(flag('note','<b>De omzet hierboven is een projectie</b> op basis van z&iacute;jn closingpercentage. Wij leveren aanvragen; het gesprek voert hij zelf.'));
+    if(model==='ecom') flags.appendChild(flag('ok','<b>Hier m&aacute;g je op omzet sturen.</b> De transactie is compleet en toerekenbaar, dus ROAS is een eerlijke maatstaf.'));
+    if(model==='reservering') flags.appendChild(flag('note','<b>Omzet is hier statistisch.</b> Rapporteer op reserveringen en noem de omzet als afgeleide, met het no-showpercentage erbij.'));
 
-    state.text=buildText(d,L,M,{klanten:klanten,conversies:conversies,bezoekers:bezoekers,vertoningen:vertoningen,
-      budget:budget,cpaEff:cpaEff,kostPerKlant:kostPerKlant,margeEur:margeEur,ltv:ltv,groei:groei,fac:fac});
+    state.d=d; state.L=L; state.M=M; state.budget=budget; state.link=link; state.linkM=d.link;
+    state.totJaar=totJaar; state.totJaar1=totJaar1; state.conv=conv; state.klanten=klanten;
+    state.omzet=omzet; state.cpa=cpa; state.kostKlant=kostKlant; state.bez=bez; state.vert=vert;
+    state.aw=aw; state.groei=groei;
     copyBtn.hidden=false;
   }
 
-  function buildText(d,L,M,c){
+  document.getElementById('copyBtn').addEventListener('click',function(){
+    var s=state; if(!s.d) return;
+    function clean(t){ return t.replace(/&amp;/g,'&').replace(/&rsquo;/g,"'").replace(/&eacute;/g,'e'); }
     var o=[];
     o.push('ARENA-DIAGNOSE');
-    o.push('Model: '+M.naam+' — conversie = '+M.conv);
-    o.push('');
-    o.push('Diagnose: '+d.naam);
-    o.push(d.zw);
+    o.push('Opbrengst: '+s.M.naam+' | Branche: '+BRANCHE[branche].naam);
+    o.push('Diagnose: '+s.d.naam+' ('+s.d.zw+')');
+    o.push('Knop: '+s.d.knop+' - '+s.d.effect);
     o.push('');
     o.push('DE KETEN');
-    if(c.budget!==null) o.push('  Mediabudget: '+eur.format(Math.round(c.budget))+' per jaar');
-    if(c.vertoningen) o.push('  Vertoningen: '+num.format(Math.round(c.vertoningen)));
-    if(c.bezoekers) o.push('  Klikken: '+num.format(Math.round(c.bezoekers)));
-    if(c.conversies) o.push('  Extra '+M.convMv+': '+num.format(Math.ceil(c.conversies))+
-      (c.groei!==null?' (+'+Math.round(c.groei*100)+'%)':''));
-    if(c.klanten) o.push('  Klanten: '+num.format(Math.ceil(c.klanten)));
+    if(s.budget!==null) o.push('  Advertentiebudget: '+eur.format(Math.round(s.budget))+' per jaar');
+    if(s.vert) o.push('  Vertoningen: '+num.format(Math.round(s.vert)));
+    if(s.bez) o.push('  Klikken: '+num.format(Math.round(s.bez)));
+    if(s.conv) o.push('  Extra '+s.M.convMv+': '+num.format(Math.ceil(s.conv))+
+      (s.groei!==null?' (+'+Math.round(s.groei*100)+'%)':''));
+    if(s.klanten) o.push('  Klanten: '+num.format(Math.ceil(s.klanten)));
+    if(s.omzet) o.push('  Omzet: '+eur.format(Math.round(s.omzet))+(model==='leadgen'?' (projectie)':''));
     o.push('');
-    if(c.cpaEff!==null) o.push('Kosten per '+M.conv+': '+eur2.format(c.cpaEff));
-    if(c.kostPerKlant!==null) o.push('Kosten per klant: '+eur2.format(c.kostPerKlant));
-    if(c.margeEur!==null) o.push('Marge jaar 1 per klant: '+eur.format(Math.round(c.margeEur)));
-    if(c.ltv!==null) o.push('Marge levensduur: '+eur.format(Math.round(c.ltv))+' (bovengrens)');
+    o.push('DE INVESTERING');
+    o.push('  Eenmalig fundament: '+eur.format(s.L.setup));
+    o.push('  Retainer '+s.L.naam+': '+eur.format(s.L.mnd)+' p/m');
+    if(s.budget!==null){
+      o.push('  Advertentiebudget: '+eur.format(Math.round(s.budget/12))+' p/m');
+      Object.keys(s.d.kan).forEach(function(k){
+        o.push('    - '+k+': '+eur.format(Math.round(s.budget/12*s.d.kan[k]/100))+' p/m ('+s.d.kan[k]+'%)'); });
+    }
+    if(s.link>0) o.push('  Linkbuildingbudget: '+eur.format(s.linkM)+' p/m');
+    o.push('  Per maand doorlopend: '+eur.format(Math.round(s.totJaar/12)));
+    o.push('  Jaar 1 totaal: '+eur.format(Math.round(s.totJaar1)));
+    if(s.aw!==null) o.push('  Aandeel werk: '+Math.round(s.aw)+'%');
     o.push('');
-    o.push('VOORSTEL: '+L.naam+' — '+eur.format(L.mnd)+' per maand, '+L.uur+' uur per week');
-    o.push('Ritme: '+L.ritme);
-    if(state.totaal) o.push('Marketingbudget totaal: '+eur.format(Math.round(state.totaal))+
-      ' (aandeel werk '+Math.round(state.aandeel)+'%)');
+    o.push('HET RENDEMENT');
+    if(state.roas) o.push('  Omzet per euro advertentiebudget: '+dec.format(state.roas)+'x');
+    if(state.rend) o.push('  Omzet per euro marketing totaal: '+dec.format(state.rend)+'x');
+    if(state.margeTot) o.push('  Onder de streep jaar 1: '+eur.format(Math.round(state.margeTot-s.totJaar1)));
+    if(s.cpa!==null) o.push('  Kosten per '+s.M.conv+': '+eur2.format(s.cpa));
+    if(s.kostKlant!==null) o.push('  Kosten per klant: '+eur2.format(s.kostKlant));
     o.push('');
-    o.push('DIENSTEN, IN VOLGORDE');
-    d.diensten.forEach(function(x,i){ o.push('  '+(i+1)+'. '+x[0]+' — '+x[1]); });
+    o.push('DIENSTEN ('+s.L.uur+' uur per week)');
+    s.d.diensten.forEach(function(x,i){
+      o.push('  '+(i+1)+'. '+clean(x[0])+' - '+dec.format(s.L.uur*x[1]/100)+' u/wk'); });
     o.push('');
     o.push('AANNAMES DIE VERVANGEN MOETEN WORDEN');
-    o.push('  Klikprijs, conversieratio, closingpercentage — meten in maand 1 t/m 3.');
-    o.push('  Klantwaarde is de waarde in de eerste 12 maanden, niet de levensduur.');
-    o.push('  Bedragen excl. btw en excl. het eenmalige fundament.');
-    return o.join('\n');
-  }
-
-  document.getElementById('copyBtn').addEventListener('click',function(){
-    if(!state.text) return;
-    var msg=document.getElementById('copiedMsg');
+    o.push('  Klikprijs: US-benchmark x marktcorrectie 0,65.');
+    o.push('  Conversie op advertentieverkeer en closingpercentage: benchmark, meten in kwartaal 1.');
+    o.push('  Klantwaarde is de waarde over de eerste 12 maanden, niet de levensduur.');
+    o.push('  Bedragen excl. btw.');
+    var text=o.join('\n'), msg=document.getElementById('copiedMsg');
     function done(){ msg.hidden=false; setTimeout(function(){msg.hidden=true;},2200); }
-    function fallback(){
-      var ta=document.createElement('textarea'); ta.value=state.text;
+    function fb(){ var ta=document.createElement('textarea'); ta.value=text;
       ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta);
-      ta.select(); try{document.execCommand('copy'); done();}catch(e){}
-      document.body.removeChild(ta);
-    }
-    if(navigator.clipboard&&navigator.clipboard.writeText){
-      navigator.clipboard.writeText(state.text).then(done,fallback);
-    } else fallback();
+      ta.select(); try{document.execCommand('copy'); done();}catch(e){} document.body.removeChild(ta); }
+    if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done,fb); else fb();
   });
 
-  buildFields();
-  answers={q1:2}; dx='toeval';
-  renderQ(); renderDxTable(); compute();
+  buildFields(); answers={q1:2}; dx='toeval';
+  renderQ(); renderTables(); compute();
 })();
 </script>
