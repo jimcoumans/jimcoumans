@@ -1,0 +1,347 @@
+<title>Het doel</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@600;700&display=swap">
+<style>
+:root{
+  --page:#fbfbfd; --card:#fff; --alt:#f5f5f7;
+  --tx:#1d1d1f; --tx2:#6e6e73; --tx3:#86868b;
+  --ln:#d2d2d7; --ln-s:#e5e5e9;
+  --blue:#007aff; --link:#0066cc; --act:#0857c3;
+  --b100:#e0efff; --b50:#f4f9ff;
+  --lime:#c4f000; --lime-tx:#5a7000; --lime100:#f2fccc;
+  --green-tx:#1d7d3f; --green100:#e6f7eb;
+  --orange-tx:#94590a; --orange100:#fef2e0;
+  --red-tx:#c02a22; --red100:#fdecea;
+  --black:#1c1c1e; --inv:#f5f5f7; --inv2:#a1a1a6;
+  --fd:"Inter Tight","Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --ft:"Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --fm:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --e:cubic-bezier(.25,.1,.25,1);--g:32px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}}
+:root[data-theme="dark"]{
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--tx);font-family:var(--ft);font-size:16.5px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition-duration:.01ms!important}}
+:focus-visible{outline:none;box-shadow:0 0 0 4px rgba(0,122,255,.4);border-radius:8px}
+p{margin:0 0 18px;max-width:70ch}
+p:last-child{margin-bottom:0}
+h1,h2,h3,h4{font-family:var(--fd);margin:0;text-wrap:balance}
+code{font-family:var(--fm);font-size:.86em;background:var(--alt);padding:2px 6px;border-radius:5px}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:60;background:rgba(251,251,253,.86);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--ln-s)}
+:root[data-theme="dark"] .bar,:root:not([data-theme="light"]) .bar{background:rgba(0,0,0,.74)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .bar{background:rgba(251,251,253,.86)}}
+.bar-in{max-width:1080px;margin:0 auto;padding:0 var(--g);display:flex;align-items:center;gap:5px;min-height:48px;overflow-x:auto;scrollbar-width:none}
+.bar-in::-webkit-scrollbar{display:none}
+.bar b{font-family:var(--fd);font-size:14.5px;font-weight:700;letter-spacing:-.016em;margin-right:8px;white-space:nowrap}
+.bar a{font-size:12.5px;color:var(--tx2);text-decoration:none;padding:6px 8px;border-radius:7px;white-space:nowrap}
+.bar a:hover{color:var(--tx)}
+.bar button{margin-left:auto;flex:none;font:inherit;font-size:12px;cursor:pointer;background:transparent;border:1px solid var(--ln);color:var(--tx2);border-radius:980px;padding:5px 13px}
+
+.wrap{max-width:1080px;margin:0 auto;padding-inline:var(--g)}
+.hero{padding-block:76px 40px}
+h1{font-size:clamp(34px,5.4vw,58px);font-weight:700;line-height:1.06;letter-spacing:-.026em;margin-bottom:20px}
+.lead{font-size:20px;line-height:1.5;color:var(--tx2);max-width:64ch}
+.sec{padding-block:60px;border-top:1px solid var(--ln-s)}
+h2{font-size:clamp(26px,3.4vw,38px);font-weight:700;line-height:1.12;letter-spacing:-.02em;margin-bottom:8px}
+.sec > .kicker{font-family:var(--fm);font-size:11px;letter-spacing:.06em;color:var(--tx3);margin-bottom:14px}
+h3{font-size:21px;font-weight:600;line-height:1.24;letter-spacing:-.012em;margin:38px 0 10px}
+h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
+.note{color:var(--tx2)}
+.note b,b{color:var(--tx);font-weight:600}
+
+/* kernblok */
+.key{background:var(--black);color:var(--inv);border-radius:22px;padding:34px 32px;margin:26px 0}
+.key .k{display:block;font-family:var(--fm);font-size:10.5px;letter-spacing:.06em;color:var(--lime);margin-bottom:14px}
+.key p{color:var(--inv2);font-size:17.5px;max-width:64ch}
+.key strong{color:#fff;font-weight:600}
+.key .big{font-family:var(--fd);font-size:clamp(22px,3vw,30px);font-weight:600;line-height:1.2;letter-spacing:-.018em;color:#fff;margin-bottom:16px}
+
+/* lagen van het aanbod */
+.stack{display:grid;gap:12px;margin-top:24px}
+.st{background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;display:grid;grid-template-columns:132px 1fr;gap:20px;align-items:start}
+.st .lab{font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;color:var(--act);padding-top:3px}
+.st .bd p{margin:0;font-size:15.5px;color:var(--tx2)}
+.st .bd h4{margin-bottom:5px}
+
+/* kandidaten */
+.cands{display:grid;gap:12px;margin-top:22px}
+.cand{border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;background:var(--card)}
+.cand.win{border-color:var(--lime);box-shadow:0 0 0 1px var(--lime)}
+.cand .zin{font-family:var(--fd);font-size:22px;font-weight:600;letter-spacing:-.014em;margin-bottom:8px}
+.cand .why{font-size:15px;color:var(--tx2);margin:0}
+.cand .verdict{display:inline-block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;border-radius:5px;padding:3px 7px;margin-bottom:12px}
+.cand .verdict.no{background:var(--red100);color:var(--red-tx)}
+.cand .verdict.ok{background:var(--lime100);color:var(--lime-tx)}
+.cand .verdict.mid{background:var(--orange100);color:var(--orange-tx)}
+
+/* onderscheid */
+.dist{width:100%;border-collapse:collapse;font-size:15px;margin-top:22px}
+.dist th,.dist td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.dist thead th{font-family:var(--fm);font-size:10.5px;letter-spacing:.04em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.dist td:first-child{font-weight:500;width:34%}
+.dist .v{font-family:var(--fm);font-size:11px;white-space:nowrap}
+.dist .v.y{color:var(--green-tx)}
+.dist .v.n{color:var(--red-tx)}
+.dist tr:last-child td{border-bottom:none}
+.tblwrap{overflow-x:auto}
+
+/* beslissingen */
+.dec{border:1px solid var(--ln-s);border-radius:18px;background:var(--card);padding:26px 28px;margin-top:14px}
+.dec .hd{display:flex;align-items:baseline;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.dec .num{font-family:var(--fm);font-size:11px;color:var(--tx3);flex:none}
+.dec h4{font-size:19px;flex:1;min-width:220px;margin:0}
+.dec .tag{font-family:var(--fm);font-size:9.5px;letter-spacing:.05em;border-radius:5px;padding:3px 7px}
+.dec .tag.blok{background:var(--red100);color:var(--red-tx)}
+.dec .tag.schaal{background:var(--orange100);color:var(--orange-tx)}
+.dec .tag.scherp{background:var(--b100);color:var(--act)}
+.dec .q{font-size:16px;color:var(--tx2);margin:0 0 16px}
+.dec .adv{background:var(--b50);border-left:3px solid var(--act);border-radius:0 10px 10px 0;padding:16px 18px}
+.dec .adv .al{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.06em;color:var(--act);margin-bottom:7px}
+.dec .adv p{font-size:15.5px;margin:0 0 10px}
+.dec .adv p:last-child{margin-bottom:0}
+
+/* vast */
+.locked{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-top:22px}
+.lk{background:var(--card);border:1px solid var(--ln-s);border-radius:14px;padding:18px 20px}
+.lk .t{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--green-tx);margin-bottom:7px}
+.lk .b{font-size:15px;color:var(--tx2);line-height:1.45}
+.lk .b b{color:var(--tx)}
+
+.warn{background:var(--orange100);border-radius:18px;padding:24px 26px;margin-top:26px}
+.warn h4{color:var(--orange-tx)}
+.warn p{color:var(--orange-tx);opacity:.94;font-size:15.5px;max-width:none}
+.foot{padding-block:44px 64px;font-size:13px;color:var(--tx3);text-align:center}
+
+@media (max-width:734px){
+  :root{--g:20px}
+  body{font-size:16px}
+  .sec{padding-block:48px}
+  .hero{padding-block:44px 28px}
+  .st{grid-template-columns:1fr;gap:10px}
+  .key{padding:24px 22px}
+  .dec{padding:22px 20px}
+}
+/* diagnose */
+.prob{display:grid;gap:12px;margin-top:24px}
+.pr{background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px}
+.pr .ph{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+.pr .pn{font-family:var(--fm);font-size:11px;color:var(--tx3);flex:none}
+.pr h4{margin:0;font-size:19px;flex:1;min-width:180px}
+.pr .zw{font-family:var(--fm);font-size:9.5px;letter-spacing:.05em;background:var(--b100);color:var(--act);border-radius:5px;padding:3px 8px}
+.pr .zegt{font-size:16px;color:var(--tx2);font-style:italic;margin:0 0 12px}
+.pr .bd2{font-size:15.5px;color:var(--tx2);margin:0}
+.rek{background:var(--alt);border-radius:16px;padding:22px 24px;margin-top:22px;font-size:15.5px}
+.rek ol{margin:0;padding-left:20px}
+.rek li{margin-bottom:9px;color:var(--tx2)}
+.rek li b{color:var(--tx)}
+.rek li:last-child{margin-bottom:0}
+</style>
+
+<div class="bar">
+  <div class="bar-in">
+    <b>Het doel</b>
+    <a href="#waarom">Het echte probleem</a>
+    <a href="#zin">De zin</a>
+    <a href="#vijf">De vijf diagnoses</a>
+    <a href="#norm">Wat telt als aanvraag</a>
+    <a href="#getal">Het doel uitrekenen</a>
+    <a href="#keuzes">De keuzes</a>
+    <button id="themeBtn" type="button">Donker</button>
+  </div>
+</div>
+
+<header class="wrap hero">
+  <h1>Waar we klanten mee helpen</h1>
+  <p class="lead">De laag onder de propositie. Zonder afgesproken doel is elke activiteit te verdedigen en elke activiteit aan te vallen &mdash; en precies daar ontstaat de discussie waar je vanaf wilt.</p>
+</header>
+
+<section class="wrap sec" id="waarom">
+  <p class="kicker">DE DIAGNOSE VAN JE EIGEN KLACHT</p>
+  <h2>Waarom die discussie ontstaat</h2>
+  <p class="note">Je zei het scherp: het verzandt altijd in een subjectieve discussie over het nut. Dat is geen toeval en het ligt niet aan de gesprekspartner. <b>Het gebeurt zodra er geen afgesproken doel is.</b> Zonder doel kan elke activiteit verdedigd worden (&ldquo;het is goed voor je merk&rdquo;) en elke activiteit aangevallen (&ldquo;wat levert dit nou op?&rdquo;). Beide zijn niet te weerleggen, dus wint degene die het hardst praat of het langst volhoudt.</p>
+  <p class="note">En let op waar de fout zit: dit is <b>geen communicatieprobleem</b>. Je lost het niet op door het beter uit te leggen of mooier te rapporteren. Je lost het op door aan het begin iets vast te leggen waaraan je het later kunt toetsen.</p>
+
+  <div class="key">
+    <span class="k">WAT ER ONTBREEKT</span>
+    <p class="big">Je hebt drie lagen nodig. Je hebt er twee.</p>
+    <p><strong>1. Waar wij voor bestaan</strong> &mdash; &eacute;&eacute;n zin, geldt voor elke klant. Die heb je (de propositie).<br>
+    <strong>2. Welk probleem d&eacute;ze klant heeft</strong> &mdash; &eacute;&eacute;n keuze uit een korte vaste lijst. <strong>Die ontbreekt.</strong><br>
+    <strong>3. Wat we dit jaar gaan bewegen</strong> &mdash; &eacute;&eacute;n getal. Die heb je half: je weet dat het om aanvragen gaat, maar er ligt geen norm en geen som.</p>
+    <p>Laag 2 is de ontbrekende schakel. Met een vastgelegde diagnose heeft &ldquo;moeten we de feed vullen?&rdquo; ineens een objectief antwoord: <strong>alleen als het dit probleem kleiner maakt.</strong> Dat is toetsbaar. &ldquo;Zichtbaarheid&rdquo; is dat niet.</p>
+  </div>
+  <p class="note" style="margin-top:22px">In het model is hier al een plek voor: <b>plint, laag 01 &mdash; doel en plan</b>. Die staat nu leeg beschreven (&ldquo;doelgroep, doelstelling, meetpunten&rdquo;). Dit document vult hem.</p>
+</section>
+
+<section class="wrap sec" id="zin">
+  <p class="kicker">DE FORMULERING</p>
+  <h2>De zin</h2>
+  <p class="note">E&eacute;n zin die voor elke klant geldt, en die scherp genoeg is om dingen mee uit te sluiten. Een probleemzin die niets uitsluit is geen probleemzin.</p>
+
+  <div class="key">
+    <span class="k">HET PROBLEEM DAT WIJ OPLOSSEN</span>
+    <p class="big">Klanten komen bij jou binnen door toeval. Wij maken er een systeem van.</p>
+    <p>De meeste bedrijven die het goed doen, doen het goed <strong>zonder te weten waarom</strong>. De omzet komt uit mond-tot-mond, uit &eacute;&eacute;n platform, uit die ene goede maand, uit het netwerk van de eigenaar. Dat werkt &mdash; tot het niet meer werkt, en dan weet niemand waar je aan moet draaien.</p>
+    <p>Dat is de pijn onder alle andere: <strong>niet te weinig klanten, maar geen knop.</strong> En het is ook precies wat een systeem oplevert: niet meer geluk, maar een verband tussen wat je doet en wat eruit komt.</p>
+  </div>
+
+  <div class="warn">
+    <h4>Waarom deze en niet &ldquo;meer klanten&rdquo;</h4>
+    <p>&ldquo;Meer klanten&rdquo; is wat elk bureau zegt, en het is bovendien niet waar voor een deel van je klanten &mdash; sommige hebben genoeg klanten en het verkeerde soort, of te dure. <b>&ldquo;Toeval&rdquo; sluit wel iets uit:</b> alles wat de uitkomst niet voorspelbaarder maakt, valt af. Een feed vullen omdat het hoort, valt af. Een campagne zonder meetopzet, valt af. Een mooie video zonder plek in het systeem, valt af.</p>
+    <p>Het maakt ook meteen duidelijk waarom maand 1 niets oplevert en waarom dat klopt: <b>je kunt geen toeval vervangen voordat je kunt meten.</b></p>
+  </div>
+</section>
+
+<section class="wrap sec" id="vijf">
+  <p class="kicker">LAAG 2 &middot; PER KLANT KIEZEN</p>
+  <h2>De vijf diagnoses</h2>
+  <p class="note">Vijf, niet meer. Bij meer is het geen keuze meer maar een menukaart. Je kiest er &eacute;&eacute;n als hoofddiagnose en hooguit &eacute;&eacute;n als bijkomend &mdash; vastgelegd in maand 1, herijkt bij de jaarlijkse evaluatie. <b>De diagnose bepaalt het zwaartepunt in ARENA</b>, en dat is het antwoord op de vraag die bij knoop 01 open bleef: iedereen krijgt hetzelfde systeem, maar hoe bepaal je waar de nadruk ligt?</p>
+
+  <div class="prob">
+    <div class="pr">
+      <div class="ph"><span class="pn">01</span><h4>Te weinig</h4><span class="zw">ZWAARTEPUNT: A &middot; ATTENTION</span></div>
+      <p class="zegt">&ldquo;De telefoon gaat te weinig.&rdquo;</p>
+      <p class="bd2">De basisvorm. Er is simpelweg te weinig instroom. Remedie: kanalen aanzetten en budget erachter. Dit is de enige diagnose waarbij meer geld er vrijwel direct meer uit haalt &mdash; en ook de enige waarbij een bureau er makkelijk goed uitziet.</p>
+    </div>
+    <div class="pr">
+      <div class="ph"><span class="pn">02</span><h4>Te toevallig</h4><span class="zw">ZWAARTEPUNT: BREEDTE + R</span></div>
+      <p class="zegt">&ldquo;De ene maand loopt het storm, de andere is het stil. Ik kan er niets op plannen.&rdquo;</p>
+      <p class="bd2">Genoeg volume, geen voorspelbaarheid. Vaak &eacute;&eacute;n dominante bron: mond-tot-mond, &eacute;&eacute;n platform, &eacute;&eacute;n partner. Remedie: verbreden over meerdere wanden en de voering aanleggen, zodat er een voorraad ontstaat in plaats van een stroom. Dit is de diagnose waar personeelsplanning en inkoop aan hangen, dus de pijn is groter dan hij klinkt.</p>
+    </div>
+    <div class="pr">
+      <div class="ph"><span class="pn">03</span><h4>Te duur</h4><span class="zw">ZWAARTEPUNT: E + A &middot; AUTHORITY</span></div>
+      <p class="zegt">&ldquo;Het komt wel binnen, maar wat het kost staat niet meer in verhouding.&rdquo;</p>
+      <p class="bd2">Meestal een bedrijf dat al adverteert en ziet dat de kosten per klant oplopen. Remedie ligt zelden bij meer budget: het zit in conversie (de bodem) en in merkbekendheid, want bekende merken betalen minder per klik en converteren beter. Dit is de diagnose waarbij je moet uitleggen dat de oplossing niet in het advertentiekanaal zit.</p>
+    </div>
+    <div class="pr">
+      <div class="ph"><span class="pn">04</span><h4>Verkeerd</h4><span class="zw">ZWAARTEPUNT: A &middot; AUTHORITY + E</span></div>
+      <p class="zegt">&ldquo;Ik krijg genoeg aanvragen, maar het zijn niet de klussen die ik wil.&rdquo;</p>
+      <p class="bd2">Te klein, te ver weg, verkeerde dienst, prijsvechters. Dit is verrassend vaak het echte probleem en het wordt bijna nooit zo benoemd, omdat het klinkt als klagen met een volle agenda. Remedie: scherper positioneren en op de landingspagina actief de verkeerde mensen wegsturen. <b>Dit is de enige diagnose waarbij minder aanvragen een goed resultaat is</b> &mdash; en dus de enige waarbij je de norm v&oacute;&oacute;raf moet vastleggen, anders lijkt het alsof je faalt.</p>
+    </div>
+    <div class="pr">
+      <div class="ph"><span class="pn">05</span><h4>Niet gekozen</h4><span class="zw">ZWAARTEPUNT: A &middot; AUTHORITY</span></div>
+      <p class="zegt">&ldquo;Ze kennen ons, ze vragen offertes aan, en dan kiezen ze de ander.&rdquo;</p>
+      <p class="bd2">Een bewijsprobleem, geen bereikprobleem. Remedie: cases, reviews, prijsduidelijkheid, gezichten. Hier is content geen sluitpost maar de hoofdmoot. Let op: dit grenst aan het verkoopgesprek, en d&aacute;t is niet van ons (knoop 05). De grens: wij zorgen dat hij met een voorsprong aan tafel komt, het gesprek voert hij zelf.</p>
+    </div>
+  </div>
+</section>
+
+<section class="wrap sec" id="norm">
+  <p class="kicker">LAAG 3, DEEL 1</p>
+  <h2>Wat telt als aanvraag</h2>
+  <p class="note">Bij knoop 05 stond al dat de grens alleen standhoudt met een norm. Zonder die norm heb je nog steeds een subjectieve discussie &mdash; alleen gaat hij nu over de definitie in plaats van over het nut. Leg drie dingen vast, in maand 1, op papier.</p>
+
+  <div class="rek">
+    <ol>
+      <li><b>Wat telt.</b> Per branche anders en dus expliciet: horeca &rarr; reservering of arrangementsaanvraag. Makelaardij &rarr; aanvraag waardebepaling of verkoopgesprek. Automotive &rarr; proefrit, onderhoudsafspraak, occasionaanvraag. B2B &rarr; offerteaanvraag of kennismaking. Zorg &rarr; intakeaanvraag. Sport &amp; leisure &rarr; proefles of boeking.</li>
+      <li><b>Wat niet telt.</b> Spam, bestaande klanten, sollicitaties, leveranciers, onvolledige formulieren. Dit is de saaie helft en hij bespaart later het hele gesprek.</li>
+      <li><b>Hoe het geregistreerd wordt.</b> Formulier, telefoon met nummerherkenning, WhatsApp, e-mail, aan de balie. Wat niet geregistreerd wordt, bestaat niet &mdash; en dat is vaak precies het kanaal waar de klant het meest in gelooft.</li>
+    </ol>
+  </div>
+
+  <div class="warn">
+    <h4>De onvermijdelijke uitkomst van punt 3</h4>
+    <p>Bij bijna elke klant blijkt in maand 1 dat een groot deel van de aanvragen nergens geregistreerd wordt. <b>Dat is geen tegenvaller maar je eerste bevinding</b>, en het is meteen het bewijs waarom maand 1 bestaat. Verkoop het ook zo: we beginnen niet met adverteren, we beginnen met zichtbaar maken wat er nu al binnenkomt en waar het vandaan komt. Vrijwel elke ondernemer schrikt van dat antwoord.</p>
+  </div>
+</section>
+
+<section class="wrap sec" id="getal">
+  <p class="kicker">LAAG 3, DEEL 2</p>
+  <h2>Het doel uitrekenen</h2>
+  <p class="note">E&eacute;n getal per jaar, en het moet van achteren naar voren gerekend worden. Niet &ldquo;we gaan voor meer aanvragen&rdquo; maar een aantal dat ergens op slaat.</p>
+
+  <div class="rek">
+    <ol>
+      <li><b>De ambitie</b> &mdash; van de ondernemer. &ldquo;Ik wil volgend jaar &euro;&thinsp;400.000 meer omzet.&rdquo;</li>
+      <li><b>Gemiddelde klantwaarde</b> &mdash; van de ondernemer. &euro;&thinsp;8.000 &rarr; er zijn 50 nieuwe klanten nodig.</li>
+      <li><b>Conversie van aanvraag naar klant</b> &mdash; <b>van de ondernemer.</b> 25% &rarr; er zijn 200 aanvragen nodig.</li>
+      <li><b>Huidig aantal aanvragen</b> &mdash; uit de meting van maand 1. 120 &rarr; er moeten er 80 bij.</li>
+      <li><b>Kosten per aanvraag</b> &mdash; uit de meting, per kanaal. &euro;&thinsp;65 &rarr; er is ongeveer &euro;&thinsp;5.200 extra mediabudget nodig.</li>
+      <li><b>De toets</b> &mdash; past dat budget bij het niveau en bij de vuistregel dat werk niet meer dan de helft van het totale marketingbudget is? Zo niet, dan is de ambitie te groot voor het budget, en dat zeg je nu in plaats van in december.</li>
+    </ol>
+  </div>
+
+  <div class="key">
+    <span class="k">DE BELANGRIJKSTE STAP IS STAP 3</span>
+    <p class="big">Weet de ondernemer zijn conversie van aanvraag naar klant niet, dan is dat de eerste opdracht.</p>
+    <p>Dat getal is van hem, niet van ons &mdash; en dat is precies waarom de grens bij de aanvraag ligt. Zonder dat getal kun je geen doel stellen, kun je geen budget onderbouwen en kun je achteraf niet laten zien wat het opleverde. <strong>Vraag het in het eerste gesprek.</strong> Het antwoord vertelt je in dertig seconden of dit een klant is die met jou kan werken.</p>
+    <p>En wie het wel weet maar een slecht getal heeft, heeft geen marketingprobleem maar een opvolgingsprobleem. Ook dat zeg je liever nu.</p>
+  </div>
+</section>
+
+<section class="wrap sec" id="keuzes">
+  <p class="kicker">WAT JIJ MOET BESLISSEN</p>
+  <h2>Vier keuzes</h2>
+  <p class="note">De rest volgt uit deze vier.</p>
+
+  <div class="dec">
+    <div class="hd"><span class="num">A</span><h4>Wie bepaalt het doel &mdash; de klant of wij?</h4><span class="tag blok">BEPAALT ALLES</span></div>
+    <p class="q">Als de klant het bepaalt, erf je een doel dat je misschien niet kunt waarmaken. Als jij het bepaalt, moet je het kunnen onderbouwen &eacute;n draag je het risico.</p>
+    <div class="adv">
+      <span class="al">ADVIES</span>
+      <p><b>De klant bepaalt de ambitie, wij bepalen het doel.</b> Hij zegt waar hij heen wil; wij rekenen terug wat dat in aanvragen en budget betekent en zeggen of het kan. Soms is het antwoord nee, en dat is het waardevolste wat je in dat gesprek kunt zeggen.</p>
+      <p>Dat is ook precies het verschil tussen een leverancier en een marketingafdeling. Een leverancier neemt de opdracht aan. Een afdeling rekent hem eerst na.</p>
+    </div>
+  </div>
+
+  <div class="dec">
+    <div class="hd"><span class="num">B</span><h4>Zeg je nee tegen werk dat niet aan het doel bijdraagt?</h4><span class="tag scherp">RAAKT ELKE DAG</span></div>
+    <p class="q">De klant vraagt om een post over het teamuitje. Draagt niet bij aan het doel. Wat doe je?</p>
+    <div class="adv">
+      <span class="al">ADVIES</span>
+      <p><b>Niet nee zeggen. Laten zien wat het verdringt.</b> Je verkoopt een vast aantal dagdelen, dus elke wens gaat ten koste van iets anders. Dat maakt de discussie vanzelf objectief: niet &ldquo;heeft dit nut?&rdquo; (subjectief) maar &ldquo;wil je dit liever dan de landingspagina die deze maand gepland stond?&rdquo; (een keuze die de klant zelf maakt).</p>
+      <p>Dit is het mechanisme dat je probleem oplost, en je hebt het al: <b>de vaste retainer plus volledige inzage in ClickUp.</b> Alles komt uit dezelfde pot en de pot is zichtbaar. Je hoeft nooit iets te weigeren &mdash; je laat de prijs zien.</p>
+    </div>
+  </div>
+
+  <div class="dec">
+    <div class="hd"><span class="num">C</span><h4>Hoe verantwoord je merk en content, die niet direct meetbaar zijn?</h4><span class="tag blok">BEDREIGT JE EIGEN MODEL</span></div>
+    <p class="q">Je wilt doelgericht werken. Maar merk en content raken de klant per definitie niet rechtstreeks. Hang je alles aan aanvragen op, dan sneuvelen je eigen twee ringen als eerste.</p>
+    <div class="adv">
+      <span class="al">ADVIES</span>
+      <p><b>Ringen krijgen geen eigen doel, maar een functie plus een vast aandeel.</b> Je meet ze niet op aanvragen &mdash; dat kan niet en het is oneerlijk. Je meet ze op wat ze met de wanden doen: dalende kosten per aanvraag, stijgend aandeel merkverkeer, stijgende doorklikratio bij gelijke positie. Allemaal cijfers die je al hebt.</p>
+      <p>En je legt v&oacute;&oacute;raf vast welk deel van de tijd erheen gaat &mdash; bijvoorbeeld een vijfde &mdash; zodat het geen sluitpost wordt zodra het even druk is. <b>Zonder dat percentage verdwijnen merk en content altijd</b>, en dan verkoop je binnen een jaar toch weer losse campagnes.</p>
+    </div>
+  </div>
+
+  <div class="dec">
+    <div class="hd"><span class="num">D</span><h4>Is de arbeidsmarkt in scope?</h4><span class="tag schaal">RAAKT JE POSITIONERING</span></div>
+    <p class="q">In horeca en zorg &mdash; twee van jouw branches &mdash; is de schaarste geen klanten maar personeel. Dat is daar vaak het grotere probleem en het wordt je gevraagd.</p>
+    <div class="adv">
+      <span class="al">ADVIES</span>
+      <p><b>Ja, maar als toepassing van hetzelfde systeem en niet als tweede dienst.</b> ARENA werkt voor een vacature precies zoals voor een product: dezelfde wanden, dezelfde bodem (een vacaturepagina is een landingspagina), dezelfde voering. Alleen de norm verandert: de aanvraag heet dan sollicitatie.</p>
+      <p>Wat je niet moet doen is er een aparte propositie van maken met eigen pakketten. Dan heb je twee beloftes, twee doelgroepen en twee verhalen &mdash; en arbeidsmarktcommunicatie is een vak waarin gespecialiseerde bureaus je eruit concurreren. <b>Als afgeleide toepassing is het gratis onderscheid; als aparte dienst is het een nieuw bedrijf.</b></p>
+    </div>
+  </div>
+</section>
+
+<footer class="wrap foot">James Robinson &mdash; Marketing &amp; Branding &middot; Het doel, werkdocument september 2026</footer>
+
+<script>
+(function(){
+  var root=document.documentElement,tb=document.getElementById('themeBtn');
+  function cur(){var t=root.getAttribute('data-theme');return t||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}
+  function sync(){tb.textContent=cur()==='dark'?'Licht':'Donker'}
+  sync();
+  tb.addEventListener('click',function(){root.setAttribute('data-theme',cur()==='dark'?'light':'dark');sync()});
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',sync);
+})();
+</script>
