@@ -245,8 +245,12 @@ p{margin:0}
 .kr .kv2{font-family:var(--f-disp);font-weight:700;font-size:21px;font-variant-numeric:tabular-nums;white-space:nowrap}
 .kr.sum .kv2{font-size:25px}
 .kr .kc{font-family:var(--f-mono);font-size:11.5px;color:var(--tx3);margin-top:5px;line-height:1.55}
-.kr .ks{font-size:12.5px;color:var(--green-tx);margin-top:4px}
+.kr .ks{font-size:12.5px;color:var(--tx3);margin-top:5px}
+.kr.sum .ks{color:var(--blue-link);font-weight:500;font-size:13.5px}
 .kr .kw{font-size:14px;color:var(--tx2);margin-top:8px;max-width:64ch}
+.hlbl{font-size:14px;font-weight:600;color:var(--tx);margin:0 0 8px}
+.hnote{font-size:14px;color:var(--tx2);margin:0 0 24px;max-width:64ch}
+.hnote b{color:var(--tx);font-variant-numeric:tabular-nums}
 .r.warnrow .k{color:var(--orange-tx);font-weight:600}
 .r.warnrow .k .fx{color:var(--tx2);font-weight:400}
 .r.tot .k{color:var(--tx);font-weight:600} .r.tot .v{font-size:24px}
@@ -484,7 +488,8 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
         <div class="card" style="margin-top:clamp(20px,3vh,32px)">
           <span class="eyebrow dim">Hoe we dat realiseren</span>
           <h3 id="realT">De inzet</h3>
-          <p class="note" id="realP" style="font-size:15px;margin:8px 0 14px"></p>
+          <p class="note" id="realP" style="font-size:15px;margin:8px 0 10px"></p>
+          <p class="note" id="realJ1" style="font-size:14.5px;color:var(--tx2);margin:0 0 16px;max-width:66ch"></p>
           <div class="rows" id="realRows"></div>
         </div>
         <div id="flags"></div>
@@ -543,20 +548,16 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
           <div class="card">
             <span class="eyebrow dim">Verwachtingsmanagement</span>
             <h3>Hoe we ons tot de benchmark verhouden</h3>
-            <p class="note" style="font-size:14px;margin:8px 0 10px">De benchmark is een gemiddelde. Dit bepaalt of we daarboven, daaronder of erop gaan zitten in wat we een klant voorspiegelen. Het werkt op de doorklikratio en de conversie: lager betekent meer verkeer nodig, dus een hoger budget en een lagere beloofde opbrengst.</p>
-            <div class="seg" id="consSeg"></div>
-            <div class="fields" style="margin-top:14px">
-              <div class="f"><label for="a-cons">Afwijking van de benchmark <span class="u">%</span></label>
-                <input id="a-cons" type="number" step="5" min="-80" max="80" inputmode="numeric">
-                <span class="hp">Negatief is behoudend. Dit is de knop waarmee je voorkomt dat je iets belooft wat je niet waarmaakt.</span></div>
-              <div class="f"><label for="a-koers">Wisselkoers dollar naar euro</label>
-                <input id="a-koers" type="number" step="0.01" min="0.5" max="1.5" inputmode="decimal">
-                <span class="hp">Feitelijk. Werk bij als de koers verschuift.</span></div>
-              <div class="f"><label for="a-markt">Marktfactor Nederland</label>
-                <input id="a-markt" type="number" step="0.05" min="0.3" max="2" inputmode="decimal">
-                <span class="hp">Boven 1 is duurder dan de VS, onder 1 goedkoper. <b>Hier hebben we geen data voor</b>, dus hij staat op 1,00 tot je eigen accounts het antwoord geven.</span></div>
+            <p class="note" style="font-size:14px;margin:8px 0 10px">Twee lagen. De <b>huisfactor</b> is ons beleid en geldt altijd: we gaan ervan uit dat we onder het benchmarkgemiddelde zitten tot het tegendeel gemeten is. De <b>houding</b> kies je per gesprek. Ze vermenigvuldigen, dus met een huisfactor van 0,90 en de houding behoudend rekenen we met 0,81 &times; de benchmark. Het werkt op de doorklikratio en de conversie: lager betekent meer verkeer nodig, dus een hoger budget en een lagere beloofde opbrengst.</p>
+            <div class="fields">
+              <div class="f"><label for="a-huis">Huisfactor <span class="u">&times; BENCHMARK</span></label>
+                <input id="a-huis" type="number" step="0.05" min="0.3" max="1.5" inputmode="decimal">
+                <span class="hp">Onder 1,00 beloof je minder dan het gemiddelde. Dat is de kant waar je wilt zitten.</span></div>
             </div>
-            <div class="admnote" id="consOut"></div>
+            <div style="overflow-x:auto;margin-top:14px"><table class="admtbl">
+              <thead><tr><th>Houding</th><th>Factor</th><th>Samen met de huisfactor</th><th>Conversie wordt</th></tr></thead>
+              <tbody id="admHoud"></tbody>
+            </table></div>
           </div>
 
           <div class="card">
@@ -570,7 +571,7 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
             <div class="fields" style="margin-top:14px">
               <div class="f"><label for="a-staffel">Staffel advertentiebudget <span class="u">EUR / MAAND</span></label>
                 <input id="a-staffel" type="number" step="50" min="50" inputmode="numeric">
-                <span class="hp">Per kanaal naar boven afgerond op dit bedrag.</span></div>
+                <span class="hp">Het budget per kanaal wordt op veelvouden hiervan afgerond, met minimaal één staffel per kanaal.</span></div>
               <div class="f"><label for="a-linkL">Linkbuilding, licht <span class="u">EUR / MAAND</span></label>
                 <input id="a-linkL" type="number" step="50" min="0" inputmode="numeric"></div>
               <div class="f"><label for="a-linkH">Linkbuilding, zwaar <span class="u">EUR / MAAND</span></label>
@@ -586,6 +587,12 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
             <div style="overflow-x:auto"><table class="admtbl">
               <thead><tr><th>Kanaal</th><th>Klikprijs &times;</th><th>Conversie &times;</th><th>Max. aandeel %</th><th>Kostprijs per conversie</th></tr></thead>
               <tbody id="admKan"></tbody>
+            </table></div>
+            <h3 style="margin-top:22px">De aanloop</h3>
+            <p class="note" style="font-size:14px;margin:8px 0 10px">Niets staat in maand 1 op vol vermogen. Hieruit volgt wat jaar 1 oplevert tegenover het niveau op kruissnelheid. Het budget loopt niet mee op: dat staat er vanaf maand 1, anders valt er niets te sturen.</p>
+            <div style="overflow-x:auto"><table class="admtbl">
+              <thead><tr><th>Onderdeel</th><th>Levert vanaf maand</th><th>Op niveau vanaf maand</th><th>Jaar 1 telt mee voor</th></tr></thead>
+              <tbody id="admRamp"></tbody>
             </table></div>
             <div class="fields" style="margin-top:14px">
               <div class="f"><label for="a-minklik">Minimum per kanaal <span class="u">KLIKKEN / MAAND</span></label>
@@ -610,6 +617,12 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
                 <input id="a-gcpc" type="number" step="0.01" inputmode="decimal"></div>
               <div class="f"><label for="a-gcvr">Gemiddelde conversie <span class="u">%</span></label>
                 <input id="a-gcvr" type="number" step="0.01" inputmode="decimal"></div>
+              <div class="f"><label for="a-koers">Koers dollar naar euro</label>
+                <input id="a-koers" type="number" step="0.01" min="0.1" max="2" inputmode="decimal">
+                <span class="hp">Puur de wisselkoers. Een feit, geen aanname.</span></div>
+              <div class="f"><label for="a-markt">Marktfactor VS naar NL</label>
+                <input id="a-markt" type="number" step="0.05" min="0.1" max="3" inputmode="decimal">
+                <span class="hp">Staat op 1,00 omdat we geen data hebben over het verschil tussen de Amerikaanse en de Nederlandse klikprijs. Vervang hem zodra je je eigen klikprijzen kent.</span></div>
               <div class="f"><label for="a-bron">Bron</label>
                 <input id="a-bron" type="text" style="font-variant-numeric:normal"></div>
               <div class="f"><label for="a-datum">Laatst bijgewerkt</label>
@@ -665,6 +678,7 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
   var eur2=new Intl.NumberFormat('nl-NL',{style:'currency',currency:'EUR',minimumFractionDigits:2,maximumFractionDigits:2});
   var num=new Intl.NumberFormat('nl-NL',{maximumFractionDigits:0});
   var dec=new Intl.NumberFormat('nl-NL',{minimumFractionDigits:1,maximumFractionDigits:1});
+  var dec2=new Intl.NumberFormat('nl-NL',{minimumFractionDigits:2,maximumFractionDigits:2});
   var WS_CPC=5.42, WS_CVR=7.52, CORR=0.65, STAFFEL=250;
   var MINKLIK=100;
   var MINUUR=4;
@@ -714,6 +728,20 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
     'Social Ads': {cpcI:0.45, cvrI:0.35, max:100,why:'Zet vraag in gang bij wie nog niet zoekt. Goedkope klik, koud publiek, dus een lagere conversie. Het enige kanaal dat onbeperkt kan schalen.'},
     'Retargeting':{cpcI:0.40, cvrI:1.60, max:15, why:'Volgt wie al op de site was. De laagste kostprijs, maar een deel van die conversies was er toch wel gekomen. Daarom houden we het aandeel klein.'}
   };
+  /* De aanloop. Niets staat in maand 1 op vol vermogen: campagnes moeten leren,
+     pagina's worden beter, SEO komt pas na maanden op gang. s = de maand waarin
+     het kanaal begint te leveren, v = de maand waarop het op niveau is. */
+  var RAMP={
+    'SEA':        {s:1,v:4},
+    'Social Ads': {s:1,v:5},
+    'Retargeting':{s:2,v:6},
+    'eigen':      {s:3,v:10}
+  };
+  function rampF(r){ if(!r) return 1; var som=0;
+    for(var m=1;m<=12;m++) som += m<r.s ? 0 : (m>=r.v ? 1 : (m-r.s+1)/(r.v-r.s+1));
+    return som/12; }
+  function rampT(r){ return r? ('levert vanaf maand '+r.s+', op niveau vanaf maand '+r.v) : ''; }
+
   var DX={
     weinig:{naam:'Te weinig',minLvl:1,impact:'zicht',
       q:{leadgen:'"De telefoon gaat te weinig."',ecom:'"Er komen te weinig bestellingen binnen."',reservering:'"Het is te vaak te rustig."',werving:'"Er reageert bijna niemand."'},
@@ -766,14 +794,16 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
 
   /* ---------- instellingen ---------- */
   var DEF={
-    cons:-25, koers:0.90, markt:1.00, staffel:250, linkL:250, linkH:400,
-    minklik:100, minuur:4, kan:{},
+    huis:0.90, houding:{behoudend:0.90, conform:1.00, optimistisch:1.10},
+    koers:0.90, markt:1.00, staffel:250, linkL:250, linkH:400,
+    minklik:100, minuur:4, kan:{}, ramp:{},
     gcpc:5.42, gcvr:7.52, bron:'WordStream 2026 · 13.000 campagnes, 23 branches', datum:'september 2026',
     lvl:[{mnd:1650,uur:4,setup:3000},{mnd:3300,uur:8,setup:4500},{mnd:4950,uur:12,setup:6000}],
     bench:{}
   };
   Object.keys(BRANCHE).forEach(function(k){ DEF.bench[k]={cpc:BRANCHE[k].cpc,cvr:BRANCHE[k].cvr}; });
   Object.keys(KAN).forEach(function(k){ DEF.kan[k]={cpcI:KAN[k].cpcI,cvrI:KAN[k].cvrI,max:KAN[k].max}; });
+  Object.keys(RAMP).forEach(function(k){ DEF.ramp[k]={s:RAMP[k].s,v:RAMP[k].v}; });
   var A=JSON.parse(JSON.stringify(DEF));
   function loadA(){ try{ var raw=localStorage.getItem('jr-arena-cfg'); if(!raw) return;
     var o=JSON.parse(raw); Object.keys(DEF).forEach(function(k){ if(o[k]!==undefined) A[k]=o[k]; });
@@ -782,6 +812,8 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
   function applyA(){
     WS_CPC=A.gcpc; WS_CVR=A.gcvr; CORR=(A.koers||0.9)*(A.markt||1); STAFFEL=A.staffel;
     MINKLIK=A.minklik||100; MINUUR=A.minuur||4;
+    Object.keys(RAMP).forEach(function(k){ var r=A.ramp&&A.ramp[k]; if(!r) return;
+      RAMP[k].s=Number(r.s); RAMP[k].v=Number(r.v); });
     Object.keys(KAN).forEach(function(k){ var c=A.kan&&A.kan[k]; if(!c) return;
       KAN[k].cpcI=Number(c.cpcI); KAN[k].cvrI=Number(c.cvrI); KAN[k].max=Number(c.max); });
     LVL.forEach(function(L,i){ var c=A.lvl[i]; L.mnd=c.mnd; L.uur=c.uur; L.setup=c.setup; L.jaar=c.mnd*12; });
@@ -793,7 +825,13 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
     DX.duur.link=A.linkL; DX.verkeerd.link=A.linkL; DX.groei.link=A.linkL;
     DX.toeval.link=A.linkH; DX.nietgekozen.link=A.linkH;
   }
-  function consF(){ return 1+(A.cons||0)/100; }
+  /* Twee lagen. De huisfactor is ons beleid: we gaan er standaard vanuit dat we
+     onder de benchmark presteren tot we het tegendeel bewezen hebben. De houding
+     is de keuze in dit gesprek. Ze vermenigvuldigen, dus zelfs optimistisch
+     blijft onder de benchmark zolang de huisfactor onder de 1 staat. */
+  var HOUDING='behoudend';
+  function houdF(){ var h=A.houding||{}; return h[HOUDING]||1; }
+  function consF(){ return (A.huis||1)*houdF(); }
   loadA(); applyA();
 
   var model='leadgen', branche='makelaardij', answers={}, dx=null, scr=0, eigen=false;
@@ -966,9 +1004,29 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
   function rBench(el){
     var M=MODELS[model], B=BRANCHE[branche], bw=benchWaarden();
     var b=head(el,'De cijfers \u00b7 waar we mee rekenen','De uitgangspunten',
-      'Drie getallen bepalen samen de kostprijs per '+M.conv+'. We beginnen bij de benchmark voor <b>'+B.ws+'</b>'+
-      (A.cons?(', '+Math.abs(A.cons)+'% '+(A.cons<0?'behoudender':'optimistischer')+' gezet'):'')+
-      '. Heb je eigen cijfers, dan zijn die altijd beter.');
+      'Drie getallen bepalen samen de kostprijs per '+M.conv+'. We beginnen bij de benchmark voor <b>'+B.ws+'</b>. Heb je eigen cijfers, dan zijn die altijd beter.');
+
+    if(!eigen){
+      var hl=document.createElement('p'); hl.className='hlbl';
+      hl.innerHTML='Hoe voorzichtig rekenen we?';
+      b.appendChild(hl);
+      var hseg=document.createElement('div'); hseg.className='seg'; hseg.style.margin='0 0 10px';
+      HOUDNM.forEach(function(nm){
+        var btn=document.createElement('button'); btn.type='button';
+        btn.textContent=nm.charAt(0).toUpperCase()+nm.slice(1);
+        btn.setAttribute('aria-pressed', HOUDING===nm?'true':'false');
+        btn.addEventListener('click',function(){ HOUDING=nm;
+          var nb=benchWaarden(); V.cpc=nb.cpc; V.ctr=nb.ctr; V.cvr=nb.cvr; go(scr); });
+        hseg.appendChild(btn); });
+      b.appendChild(hseg);
+      var hu=document.createElement('p'); hu.className='hnote';
+      hu.innerHTML='Huisfactor <b>'+dec2.format(A.huis)+'</b> \u00d7 '+HOUDING+' <b>'+dec2.format(houdF())+
+        '</b> = <b>'+dec2.format(consF())+'\u00d7</b> de benchmark. '+
+        (consF()<1? 'We beloven minder dan het gemiddelde. Halen we meer, dan is dat winst in het gesprek.'
+                  : 'We beloven meer dan het gemiddelde. Dat moet je waarmaken.');
+      b.appendChild(hu);
+    }
+
     var seg=document.createElement('div'); seg.className='seg'; seg.style.margin='0 0 24px';
     [['Benchmarkwaarden',false],['Eigen waarden',true]].forEach(function(o){
       var btn=document.createElement('button'); btn.type='button'; btn.textContent=o[0];
@@ -1236,6 +1294,19 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
       if(convB>0) cpl=budget/convGe;
       if(cpl!==null&&close) cac=cpl/(close/100);
     }
+
+    /* Jaar 1 telt niet vol mee. Het budget staat er wel vanaf maand 1 — je moet
+       volume kopen om te kunnen sturen — maar de opbrengst loopt op. */
+    var convJ1=0, eigenJ1=0, klantenJ1=null, omzetJ1=null, margeJ1=null, onderJ1=null;
+    if(PL){
+      PL.rij.forEach(function(r){ r.ramp=rampF(RAMP[r.k]); 
+        r.j1=Math.round((r.conv+(r===PL.rij[0]?(PL.over||0):0))*r.ramp); convJ1+=r.j1; });
+    }
+    if(eigenC>0){ eigenJ1=Math.round(eigenC*rampF(RAMP.eigen)); }
+    var convTotJ1=convJ1+eigenJ1;
+    if(close&&convTotJ1) klantenJ1=Math.round(convTotJ1*(close/100));
+    if(klantenJ1!==null&&waarde){ omzetJ1=klantenJ1*waarde;
+      if(V.marge) margeJ1=omzetJ1*(V.marge/100); }
     var adJaar=adMnd*12, lvlB=1;
     if(budget!==null) LVL.forEach(function(L){ if(adJaar>=L.jaar) lvlB=L.n; });
     var chosen = budget===null ? d.minLvl : Math.max(lvlB,d.minLvl);
@@ -1255,6 +1326,7 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
 
     var maandTot=L.mnd+adMnd+linkM, jaarTot=maandTot*12, jaar1=jaarTot+L.setup;
     var margeTot=(margeEur&&klanten)?klanten*margeEur:null, onder=margeTot!==null?margeTot-jaar1:null;
+    if(margeJ1!==null) onderJ1=margeJ1-jaar1;
 
     /* ---- de redenering, van doel naar vertoningen ---- */
     var ch=document.getElementById('chainRows'); ch.textContent='';
@@ -1299,6 +1371,12 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
     /* ---- hoe we dat realiseren ---- */
     var rr=document.getElementById('realRows'); rr.textContent='';
     document.getElementById('realT').textContent='De inzet: '+kanN.join(', ')+(linkM>0?' en SEO':'');
+    var rj=document.getElementById('realJ1');
+    if(rj) rj.innerHTML=convTotJ1&&conv
+      ? 'De getallen rechts zijn het niveau op kruissnelheid. Daaronder staat wat jaar 1 ervan oplevert: <b>'+
+        num.format(convTotJ1)+' '+M.convMv+'</b> in plaats van '+num.format(conv)+
+        '. Campagnes moeten leren en SEO komt pas na maanden op gang. Het budget staat er wel vanaf maand 1, want zonder volume valt er niets te sturen.'
+      : '';
     document.getElementById('realP').innerHTML = d.uitleg+' <b>'+d.effect+'.</b>';
     function KR(nm,geld,lev,sub,why,cls){
       var d=document.createElement('div'); d.className='kr'+(cls?' '+cls:'');
@@ -1313,46 +1391,66 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
           eur.format(kanB[r.k])+' per maand \u2014 '+num.format(Math.round(r.klik/12))+' klikken p/m tegen '+
           eur2.format(r.cpc*fac)+(fac>1?' ('+eur2.format(r.cpc)+' plus '+dec.format(fac)+'\u00d7 opschaling)':'')+
           ', waarvan '+dec.format(r.cvr)+'% converteert. Kostprijs '+eur2.format(r.kpc)+' per '+M.conv+'.',
-          num.format(lev)+' <span class="pm">'+M.convMv+'</span>', null, r.why);
+          num.format(lev)+' <span class="pm">'+M.convMv+'</span>',
+          'in jaar 1: '+num.format(r.j1)+' \u00b7 '+rampT(RAMP[r.k]), r.why);
       });
       if(eigenC>0) KR('SEO en e-mail',
         (linkM>0?eur.format(linkM)+' linkbuilding per maand':'binnen de retainer')+' \u2014 geen klikkosten per bezoeker.',
-        num.format(eigenC)+' <span class="pm">'+M.convMv+'</span>', null,
+        num.format(eigenC)+' <span class="pm">'+M.convMv+'</span>',
+        'in jaar 1: '+num.format(eigenJ1)+' \u00b7 '+rampT(RAMP.eigen),
         'Bouwt langzaam op en blijft daarna staan. Dit is het deel dat niet stopt zodra je de advertenties uitzet.');
       KR('Samen', eur.format(adMnd+linkM)+' per maand aan budget, naast de retainer.',
         num.format(eigenC+convGe)+' <span class="pm">'+M.convMv+'</span>',
-        conv&&(eigenC+convGe)>conv?('je doel was '+num.format(conv)):null, null, 'sum');
+        'in jaar 1: '+num.format(convTotJ1)+(conv?' \u00b7 dat is '+Math.round(convTotJ1/conv*100)+'% van wat het op kruissnelheid doet':''),
+        null, 'sum');
     }
 
     /* ---- de conclusie: rendement ---- */
     var roi=document.getElementById('roiRows'); roi.textContent='';
     if(klanten){
       if(model==='werving'){
-        var besp=klanten*(waarde||0);
+        var besp=klanten*(waarde||0), bespJ1=(klantenJ1||0)*(waarde||0);
         roi.appendChild(R('Bespaard per aanname',null,eur.format(Math.round(waarde||0))));
-        roi.appendChild(R('Totaal bespaard',num.format(Math.ceil(klanten))+' \u00d7 '+eur.format(Math.round(waarde||0)),eur.format(Math.round(besp)),null,'big'));
-        margeTot=besp; onder=besp-jaar1;
+        roi.appendChild(R('Op kruissnelheid, per jaar',num.format(klanten)+' \u00d7 '+eur.format(Math.round(waarde||0)),eur.format(Math.round(besp)),null,'big'));
+        roi.appendChild(R('In jaar 1, met aanloop',num.format(klantenJ1||0)+' aannames',eur.format(Math.round(bespJ1))));
+        margeTot=besp; onder=besp-jaar1; onderJ1=bespJ1-jaar1;
         roi.appendChild(R('Onder de streep, jaar 1',
-          eur.format(Math.round(besp))+' bespaard \u2212 '+eur.format(jaar1)+' investering (incl. fundament)',
-          eur.format(Math.round(onder))+'<span class="tagp '+(onder>0?'ok':'bad')+'">'+(onder>0?'POSITIEF':'NEGATIEF')+'</span>',
-          null,onder>0?'big good':'big bad'));
+          eur.format(Math.round(bespJ1))+' bespaard \u2212 '+eur.format(jaar1)+' investering (incl. fundament)',
+          eur.format(Math.round(onderJ1))+'<span class="tagp '+(onderJ1>0?'ok':'bad')+'">'+(onderJ1>0?'POSITIEF':'NEGATIEF')+'</span>',
+          null,onderJ1>0?'big good':'big bad'));
+        roi.appendChild(R('Onder de streep, vanaf jaar 2',
+          eur.format(Math.round(besp))+' \u2212 '+eur.format(jaarTot)+' (geen fundament meer)',
+          eur.format(Math.round(besp-jaarTot)),null,(besp-jaarTot)>0?'good':'bad'));
       } else if(omzet){
         roi.appendChild(R('<span class="kpi">ROAS</span>Omzet per euro advertentiebudget',
-          eur.format(Math.round(omzet))+' \u00f7 '+eur.format(adJaar)+' advertentiebudget',dec.format(omzet/adJaar)+'\u00d7',null,'big good'));
+          'jaar 1: '+eur.format(Math.round(omzetJ1||0))+' \u00f7 '+eur.format(adJaar)+' \u2014 daarna '+eur.format(Math.round(omzet))+' \u00f7 '+eur.format(adJaar),
+          (adJaar? dec.format((omzetJ1||0)/adJaar)+'\u00d7':'\u2014')+
+          '<span class="pm"> \u2192 </span>'+(adJaar? dec.format(omzet/adJaar)+'\u00d7':''),null,'big good'));
         roi.appendChild(R('<span class="kpi">ROI</span>Omzet per euro marketing totaal',
-          eur.format(Math.round(omzet))+' \u00f7 '+eur.format(jaarTot)+' (incl. retainer en linkbuilding)',dec.format(omzet/jaarTot)+'\u00d7'));
-        roi.appendChild(R('Brutomarge op die omzet',V.marge+'% \u00d7 '+eur.format(Math.round(omzet)),eur.format(Math.round(margeTot))));
+          'jaar 1 inclusief het eenmalige fundament, daarna zonder',
+          dec.format((omzetJ1||0)/jaar1)+'\u00d7<span class="pm"> \u2192 </span>'+dec.format(omzet/jaarTot)+'\u00d7'));
+        roi.appendChild(R('Brutomarge',V.marge+'% \u00d7 de omzet hierboven',
+          eur.format(Math.round(margeJ1||0))+'<span class="pm"> \u2192 </span>'+eur.format(Math.round(margeTot))));
+        if(convTotJ1&&conv&&convTotJ1<conv) roi.appendChild(R('Waarom jaar 1 lager is',
+          'campagnes moeten leren en SEO komt pas na maanden op gang',
+          num.format(convTotJ1)+' van '+num.format(conv)+' '+M.convMv,
+          Math.round(convTotJ1/conv*100)+'% van het niveau op kruissnelheid'));
         roi.appendChild(R('Onder de streep, jaar 1',
-          eur.format(Math.round(margeTot))+' marge \u2212 '+eur.format(jaar1)+' investering (incl. fundament)',
-          eur.format(Math.round(onder))+'<span class="tagp '+(onder>0?'ok':'bad')+'">'+(onder>0?'POSITIEF':'NEGATIEF')+'</span>',
-          null,onder>0?'big good':'big bad'));
-        roi.appendChild(R('<span class="kpi">ROI %</span>Rendement op de investering','(marge \u2212 investering) \u00f7 investering',
-          dec.format(onder/jaar1*100)+'%',null,onder>0?'good':'bad'));
+          eur.format(Math.round(margeJ1||0))+' marge \u2212 '+eur.format(jaar1)+' investering (incl. fundament)',
+          eur.format(Math.round(onderJ1||0))+'<span class="tagp '+((onderJ1||0)>0?'ok':'bad')+'">'+((onderJ1||0)>0?'POSITIEF':'NEGATIEF')+'</span>',
+          null,(onderJ1||0)>0?'big good':'big bad'));
+        roi.appendChild(R('Onder de streep, vanaf jaar 2',
+          eur.format(Math.round(margeTot))+' marge \u2212 '+eur.format(jaarTot)+' (geen fundament meer)',
+          eur.format(Math.round(margeTot-jaarTot))+'<span class="tagp '+((margeTot-jaarTot)>0?'ok':'bad')+'">'+((margeTot-jaarTot)>0?'POSITIEF':'NEGATIEF')+'</span>',
+          null,(margeTot-jaarTot)>0?'big good':'big bad'));
+        if(onderJ1!==null&&onderJ1<0&&(margeTot-jaarTot)>0){
+          var maanden=Math.ceil(Math.abs(onderJ1)/((margeTot-jaarTot)/12));
+          roi.appendChild(R('Terugverdiend na',null,(12+maanden)+' maanden','vanaf de start gerekend')); }
       }
       if(omzet&&adJaar&&omzet/adJaar>10) roi.appendChild(R('Deze ROAS is te hoog om zo te presenteren',
-        'hij volgt uit een conversie van '+dec.format(cvr)+'%, het gemiddelde over 23 branches. Zet je eigen percentage in.','',null,'warnrow'));
+        'hij volgt uit een conversie van '+dec.format(cvr)+'%. Dat is het gemiddelde over 23 branches, '+dec2.format(consF())+'\u00d7 gezet. Zet je eigen percentage in zodra je het hebt.','',null,'warnrow'));
       if(cpl!==null) roi.appendChild(R('<span class="kpi">'+M.cpl+'</span>Kosten per '+M.conv,
-        eur2.format(V.cpc)+' klik \u00f7 '+dec.format(cvr)+'%'+(fac>1?' \u00d7 '+dec.format(fac)+' opschaling':''),eur2.format(cpl)));
+        'op kruissnelheid \u00b7 '+eur2.format(V.cpc)+' klik \u00f7 '+dec.format(cvr)+'%'+(fac>1?' \u00d7 '+dec.format(fac)+' opschaling':''),eur2.format(cpl)));
       if(cac!==null) roi.appendChild(R('<span class="kpi">CAC</span>Kosten per klant',eur2.format(cpl)+' \u00f7 '+dec.format(close)+'%',
         eur2.format(cac)+(margeEur!==null?'<span class="tagp '+(cac<=margeEur?'ok':'bad')+'">'+(cac<=margeEur?'ONDER DE MARGE':'BOVEN DE MARGE')+'</span>':''),
         null,margeEur!==null?(cac<=margeEur?'good':'bad'):null));
@@ -1365,7 +1463,7 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
     iv.appendChild(R('Eenmalig fundament','maand 1, apart gefactureerd',eur.format(L.setup)));
     iv.appendChild(R('Retainer '+L.naam,L.uur+' uur per week \u00b7 bedrag onder voorbehoud',pmv(L.mnd)));
     if(budget!==null){
-      iv.appendChild(R('Advertentiebudget','berekend '+eur.format(Math.round(budget/12))+' p/m, afgerond op staffels van '+eur.format(STAFFEL),pmv(adMnd)));
+      iv.appendChild(R('Advertentiebudget','berekend '+eur.format(Math.round(budget/12))+' p/m, afgerond op staffels van '+eur.format(STAFFEL)+' · staat vanaf maand 1 op dit niveau',pmv(adMnd)));
       if(PL.rij.length>1) PL.rij.forEach(function(r){ iv.appendChild(R(r.k,null,pmv(kanB[r.k]),
         Math.round(kanB[r.k]/adMnd*100)+'% van het budget',null,true)); }); }
     if(linkM>0) iv.appendChild(R('Linkbuildingbudget','hoort bij SEO',pmv(linkM)));
@@ -1385,9 +1483,12 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
       if(D.n==='Marketing Management') tr.className='mm';
       var lev=D.v;
       var PR=PL&&PL.rij.filter(function(r){ return r.k===D.kan; })[0];
-      if(PR){ lev=num.format(PR.conv+(PR===PL.rij[0]?(PL.over||0):0))+' '+M.convMv+' per jaar, bij '+eur.format(kanB[D.kan])+' per maand. '+eur2.format(PR.kpc)+' per '+M.conv+'.';
+      if(PR){ lev=num.format(PR.conv+(PR===PL.rij[0]?(PL.over||0):0))+' '+M.convMv+' per jaar op kruissnelheid, '+
+          num.format(PR.j1)+' in jaar 1. Bij '+eur.format(kanB[D.kan])+' per maand is dat '+eur2.format(PR.kpc)+' per '+M.conv+'.';
       } else if(D.n==='SEO'&&eigenC>0){
-        lev='Samen met e-mail '+num.format(eigenC)+' '+M.convMv+' per jaar, zonder klikkosten.';
+        lev='Samen met e-mail '+num.format(eigenC)+' '+M.convMv+' per jaar zonder klikkosten, waarvan '+num.format(eigenJ1)+' in jaar 1.';
+      } else if(D.n.indexOf('E-mail')===0&&eigenC>0){
+        lev='Draagt samen met SEO '+num.format(eigenC)+' '+M.convMv+' per jaar. Geen klikkosten, maar het duurt voor de lijst staat.';
       }
       tr.innerHTML='<td>'+D.n+'</td><td class="n">'+uren[i2]+'</td><td>'+D.kpi+'</td><td>'+lev+'</td>';
       dn.appendChild(tr); });
@@ -1411,18 +1512,13 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
     if(PL&&PL.over>0) flags.appendChild(FL('note','<b>Het budget wordt bepaald door de ondergrens, niet door je doel.</b> Onder '+MINKLIK+' klikken per maand valt er niets te sturen: te weinig data om te optimaliseren. We kopen dat minimum, en dat levert '+num.format(PL.over)+' '+M.convMv+' meer op dan je vroeg.'));
     if(PL&&PL.bij) flags.appendChild(FL('warn','<b>Er is een kanaal bij gekomen.</b> Met alleen '+d.kan.join(' en ')+' haal je dit doel niet: die zijn begrensd door zoekvolume en door je eigen verkeer. Social Ads is het enige kanaal dat verder kan schalen.'));
     if(adJaar&&L.jaar/adJaar>4) flags.appendChild(FL('warn','<b>De verhouding is scheef.</b> De retainer is '+dec.format(L.jaar/adJaar)+'× het advertentiebudget. Dat is te veel regie op te weinig media. Of het doel mag omhoog, of dit is een lichtere optie.'));
-    if(omzet&&adJaar&&omzet/adJaar>10) flags.appendChild(FL('bad','<b>Deze ROAS is te mooi om te presenteren.</b> '+dec.format(omzet/adJaar)+'× komt vrijwel zeker doordat de conversie van '+dec.format(cvr)+'% het gemiddelde over 23 branches is. Zet er een realistischer percentage in.'));
+    if(omzet&&adJaar&&omzet/adJaar>10) flags.appendChild(FL('bad','<b>Deze ROAS is te mooi om te presenteren.</b> '+dec.format(omzet/adJaar)+'× volgt uit een conversie van '+dec.format(cvr)+'%: het gemiddelde over 23 branches, '+dec2.format(consF())+'× gezet. Ook behoudend blijft dat een geleend getal. Je eigen conversie is het enige dat dit oplost.'));
     if(dx==='verkeerd') flags.appendChild(FL('note','<b>Let op de norm.</b> Bij deze diagnose is <b>minder</b> volume een goed resultaat. We leggen vooraf vast wat meetelt.'));
     if(model==='leadgen') flags.appendChild(FL('note','<b>De omzet is een projectie</b> op basis van je eigen closingpercentage. Wij leveren aanvragen. Het gesprek voer je zelf.'));
   }
 
   /* ---------- beheerscherm ---------- */
-  var CONS=[{l:'Behoudend',v:-25},{l:'Iets onder',v:-10},{l:'Op de benchmark',v:0},{l:'Iets boven',v:10}];
-  var consSeg=document.getElementById('consSeg');
-  CONS.forEach(function(c){
-    var b=document.createElement('button'); b.type='button'; b.textContent=c.l;
-    b.addEventListener('click',function(){ A.cons=c.v; afterAdm(); });
-    consSeg.appendChild(b); });
+  var HOUDNM=['behoudend','conform','optimistisch'];
 
   function bindA(id,key,parse){
     var el=document.getElementById(id);
@@ -1432,9 +1528,9 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
     return el;
   }
   var numP=function(x){ var n=parseFloat(x); return isFinite(n)?n:0; };
-  bindA('a-cons','cons',numP); bindA('a-koers','koers',numP); bindA('a-markt','markt',numP); bindA('a-staffel','staffel',numP);
+  bindA('a-koers','koers',numP); bindA('a-markt','markt',numP); bindA('a-staffel','staffel',numP);
   bindA('a-linkL','linkL',numP); bindA('a-linkH','linkH',numP);
-  bindA('a-minklik','minklik',numP); bindA('a-minuur','minuur',numP);
+  bindA('a-huis','huis',numP); bindA('a-minklik','minklik',numP); bindA('a-minuur','minuur',numP);
   bindA('a-gcpc','gcpc',numP); bindA('a-gcvr','gcvr',numP);
   bindA('a-bron','bron'); bindA('a-datum','datum');
 
@@ -1449,6 +1545,19 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
         inp.addEventListener('input',function(){ A.lvl[i][spec[0]]=numP(inp.value); afterAdm(true); });
         td.appendChild(inp); tr.appendChild(td); });
       tl.appendChild(tr); });
+
+    var rt=document.getElementById('admRamp'); rt.textContent='';
+    Object.keys(RAMP).forEach(function(k){
+      var tr=document.createElement('tr'), c=A.ramp[k];
+      var t0=document.createElement('td'); t0.textContent=k==='eigen'?'SEO en e-mail':k; tr.appendChild(t0);
+      [['s',1],['v',1]].forEach(function(spec){
+        var td=document.createElement('td'), inp=document.createElement('input');
+        inp.type='number'; inp.step='1'; inp.min='1'; inp.max='24'; inp.value=c[spec[0]];
+        inp.addEventListener('input',function(){ c[spec[0]]=numP(inp.value); afterAdm(true); });
+        td.appendChild(inp); tr.appendChild(td); });
+      var t3=document.createElement('td'); t3.style.fontVariantNumeric='tabular-nums';
+      t3.textContent=Math.round(rampF({s:Number(c.s),v:Number(c.v)})*100)+'%';
+      tr.appendChild(t3); rt.appendChild(tr); });
 
     var kt=document.getElementById('admKan'); kt.textContent='';
     Object.keys(KAN).forEach(function(k){
@@ -1483,7 +1592,7 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
       tb.appendChild(tr); });
   }
   function admSync(){
-    document.getElementById('a-cons').value=A.cons;
+    document.getElementById('a-huis').value=A.huis;
     document.getElementById('a-koers').value=A.koers;
     document.getElementById('a-markt').value=A.markt;
     document.getElementById('a-staffel').value=A.staffel;
@@ -1495,11 +1604,22 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
     document.getElementById('a-gcvr').value=A.gcvr;
     document.getElementById('a-bron').value=A.bron;
     document.getElementById('a-datum').value=A.datum;
-    Array.prototype.forEach.call(consSeg.children,function(b,i){ b.setAttribute('aria-pressed', CONS[i].v===A.cons?'true':'false'); });
-    var g=A.gcvr, na=g*consF();
-    document.getElementById('consOut').innerHTML = A.cons===0
-      ? '<b>We rekenen precies op de benchmark.</b> Gemiddelde conversie '+dec.format(g)+'%. Dat is een gemiddelde over alle branches, dus bij een specifieke klant zit je er net zo vaak boven als onder.'
-      : '<b>We rekenen '+Math.abs(A.cons)+'% '+(A.cons<0?'onder':'boven')+' de benchmark.</b> Conversie '+dec.format(g)+'% wordt '+dec.format(na)+'%, doorklikratio 2,0% wordt '+dec.format(2*consF())+'%. '+(A.cons<0?'Meer verkeer nodig, dus een hoger budget en een lagere beloofde opbrengst. Dat is de veilige kant.':'Minder verkeer nodig, dus een lager budget en een hogere beloofde opbrengst. Let op wat je daarmee belooft.');
+    var ht=document.getElementById('admHoud'); ht.textContent='';
+    HOUDNM.forEach(function(nm){
+      var tr=document.createElement('tr');
+      var t0=document.createElement('td'); t0.textContent=nm.charAt(0).toUpperCase()+nm.slice(1);
+      if(nm===HOUDING) t0.innerHTML+=' <span class="tagp ok">NU</span>';
+      tr.appendChild(t0);
+      var t1=document.createElement('td'), inp=document.createElement('input');
+      inp.type='number'; inp.step='0.05'; inp.min='0.3'; inp.max='2'; inp.value=A.houding[nm];
+      inp.addEventListener('input',function(){ A.houding[nm]=numP(inp.value); afterAdm(true); });
+      t1.appendChild(inp); tr.appendChild(t1);
+      var sam=(A.huis||1)*(A.houding[nm]||1);
+      var t2=document.createElement('td'); t2.style.fontVariantNumeric='tabular-nums';
+      t2.textContent=dec2.format(sam)+'\u00d7'; tr.appendChild(t2);
+      var t3=document.createElement('td'); t3.style.fontVariantNumeric='tabular-nums';
+      t3.textContent=dec.format(A.gcvr*sam)+'%'; tr.appendChild(t3);
+      ht.appendChild(tr); });
     var v=document.getElementById('verval');
     v.textContent='Bron: '+A.bron;
     document.getElementById('admJson').value=JSON.stringify(A,null,1);
@@ -1522,7 +1642,7 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
   document.getElementById('beheerB').addEventListener('click',function(){
     var open=admEl.classList.contains('on');
     if(open){ go(scr); }
-    else { screens.forEach(function(x){ x.classList.remove('on'); });
+    else { [].slice.call(document.querySelectorAll('.screen')).forEach(function(x){ x.classList.remove('on'); });
       admEl.classList.add('on');
       document.getElementById('stage').scrollTop=0;
       admSync(); }
