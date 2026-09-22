@@ -236,6 +236,17 @@ p{margin:0}
 .r.big{padding:14px 0} .r.big .v{font-size:23px}
 .r.tot{border-top:var(--s-med) solid var(--ln);margin-top:4px;padding-top:14px}
 .r.warnrow{background:var(--lime-100);border-radius:12px;padding:12px 14px;border-bottom:none;margin:6px 0}
+.kr{padding:14px 0;border-bottom:var(--s-hair) solid var(--ln-soft)}
+.kr:last-child{border-bottom:none}
+.kr.sum{border-top:var(--s-med) solid var(--ln);border-bottom:none;margin-top:6px;padding-top:15px}
+.kr .kt{display:flex;justify-content:space-between;align-items:baseline;gap:14px}
+.kr .kn2{font-family:var(--f-disp);font-size:17px;font-weight:600}
+.kr.sum .kn2{font-size:18px}
+.kr .kv2{font-family:var(--f-disp);font-weight:700;font-size:21px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.kr.sum .kv2{font-size:25px}
+.kr .kc{font-family:var(--f-mono);font-size:11.5px;color:var(--tx3);margin-top:5px;line-height:1.55}
+.kr .ks{font-size:12.5px;color:var(--green-tx);margin-top:4px}
+.kr .kw{font-size:14px;color:var(--tx2);margin-top:8px;max-width:64ch}
 .r.warnrow .k{color:var(--orange-tx);font-weight:600}
 .r.warnrow .k .fx{color:var(--tx2);font-weight:400}
 .r.tot .k{color:var(--tx);font-weight:600} .r.tot .v{font-size:24px}
@@ -510,6 +521,7 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
           <div style="overflow-x:auto"><table class="dtbl"><thead><tr>
             <th>Dienst</th><th class="n">Uren p/m</th><th>Waar we op sturen</th><th>Wat het oplevert</th>
           </tr></thead><tbody id="dnstRows"></tbody></table></div>
+          <p class="note" id="dnstRest" hidden style="font-size:14.5px;color:var(--tx2);margin:16px 0 0;max-width:none;padding-top:14px;border-top:var(--s-hair) solid var(--ln-soft)"></p>
         </div>
         <div class="card" style="margin-top:18px">
           <span class="eyebrow dim">Voorwaarden</span>
@@ -564,6 +576,24 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
               <div class="f"><label for="a-linkH">Linkbuilding, zwaar <span class="u">EUR / MAAND</span></label>
                 <input id="a-linkH" type="number" step="50" min="0" inputmode="numeric">
                 <span class="hp">Geldt bij de diagnoses waar SEO de hoofdmoot is.</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="grid-column:1/-1">
+            <span class="eyebrow dim">De kanalen</span>
+            <h3>Waarmee het budget wordt verdeeld</h3>
+            <p class="note" style="font-size:14px;margin:8px 0 10px">Elk kanaal afgezet tegen de branchebenchmark, die zelf zoekadvertenties is. Hieruit volgt de kostprijs per conversie, en daaruit de verdeling &mdash; het goedkoopste kanaal eerst, tot het zijn plafond raakt. Het budget is de uitkomst van die som, geen invoer.</p>
+            <div style="overflow-x:auto"><table class="admtbl">
+              <thead><tr><th>Kanaal</th><th>Klikprijs &times;</th><th>Conversie &times;</th><th>Max. aandeel %</th><th>Kostprijs per conversie</th></tr></thead>
+              <tbody id="admKan"></tbody>
+            </table></div>
+            <div class="fields" style="margin-top:14px">
+              <div class="f"><label for="a-minklik">Minimum per kanaal <span class="u">KLIKKEN / MAAND</span></label>
+                <input id="a-minklik" type="number" step="10" min="0" inputmode="numeric">
+                <span class="hp">Onder dit volume valt er niets te optimaliseren. Kanalen die er niet aan komen vallen af; blijft er &eacute;&eacute;n over, dan kopen we het minimum en halen we meer dan het doel.</span></div>
+              <div class="f"><label for="a-minuur">Minimum per dienst <span class="u">UUR / MAAND</span></label>
+                <input id="a-minuur" type="number" step="1" min="1" inputmode="numeric">
+                <span class="hp">Diensten die hier niet aan komen staan niet in het voorstel. Hun uren gaan naar de onderdelen die het knelpunt oplossen.</span></div>
             </div>
           </div>
 
@@ -636,6 +666,8 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
   var num=new Intl.NumberFormat('nl-NL',{maximumFractionDigits:0});
   var dec=new Intl.NumberFormat('nl-NL',{minimumFractionDigits:1,maximumFractionDigits:1});
   var WS_CPC=5.42, WS_CVR=7.52, CORR=0.65, STAFFEL=250;
+  var MINKLIK=100;
+  var MINUUR=4;
 
   var MODELS={
     leadgen:{naam:'Aanvragen',uitleg:'Offerte, afspraak, taxatie',conv:'aanvraag',convMv:'aanvragen',
@@ -663,7 +695,7 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
     arbeid:{naam:'Arbeidsmarkt',ws:'Career & Employment',cpc:null,cvr:3.05,cvrSrc:1,model:'werving'}
   };
   var DIENST=[
-    {n:'SEO',kan:'SEO',kpi:'Organische bezoekers per maand',v:'Bouwt op vanaf maand vier. Daarna bezoekers zonder klikkosten.'},
+    {n:'SEO',kpi:'Organische bezoekers per maand',v:'Bouwt op vanaf maand vier. Daarna bezoekers zonder klikkosten.'},
     {n:'SEA',kan:'SEA',kpi:'Kosten per aanvraag',v:'Draagt het grootste deel van de betaalde instroom.'},
     {n:'Social Ads',kan:'Social Ads',kpi:'Bereik en kosten per duizend vertoningen',v:'Zet vraag in gang bij wie nog niet zoekt.'},
     {n:'E-mail &amp; automation',kpi:'Conversies uit de eigen lijst',v:'Haalt herhaling uit mensen die je al kent. Geen klikkosten.'},
@@ -673,6 +705,15 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
     {n:'Marketing Management',kpi:'Alle bovenstaande',v:'Regie, overleg en rapportage. Bepaalt waar het budget volgende maand heen gaat.'}
   ];
 
+  /* De kanalen, elk afgezet tegen de benchmark (die zelf zoekadvertenties is).
+     cpcI = klikprijs t.o.v. SEA, cvrI = conversie t.o.v. SEA, max = het aandeel
+     van de conversies dat dit kanaal realistisch kan dragen. Daaruit volgt de
+     kostprijs per conversie, en daaruit de verdeling. Niet andersom. */
+  var KAN={
+    'SEA':        {cpcI:1.00, cvrI:1.00, max:70, why:'Vangt wie al zoekt. De duurste klik, de beste conversie. Het plafond is het zoekvolume: meer kopen dan er gezocht wordt kan niet.'},
+    'Social Ads': {cpcI:0.45, cvrI:0.35, max:100,why:'Zet vraag in gang bij wie nog niet zoekt. Goedkope klik, koud publiek, dus een lagere conversie. Het enige kanaal dat onbeperkt kan schalen.'},
+    'Retargeting':{cpcI:0.40, cvrI:1.60, max:15, why:'Volgt wie al op de site was. De laagste kostprijs, maar een deel van die conversies was er toch wel gekomen. Daarom houden we het aandeel klein.'}
+  };
   var DX={
     weinig:{naam:'Te weinig',minLvl:1,impact:'zicht',
       q:{leadgen:'"De telefoon gaat te weinig."',ecom:'"Er komen te weinig bestellingen binnen."',reservering:'"Het is te vaak te rustig."',werving:'"Er reageert bijna niemand."'},
@@ -680,42 +721,42 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
       uitleg:'De trechter klopt. Er gaat alleen te weinig in.',
       effect:'geen correctie — de volle groei komt uit betaald verkeer',
       duiding:'De trechter werkt. Wat ontbreekt is volume aan de voorkant, en dat is te koop. Het grootste deel van de inzet gaat naar zichtbaarheid en de pagina&rsquo;s waar dat verkeer op landt.',
-      lift:{}, kan:{'SEA':60,'Social Ads':40}, link:0, uren:[5,30,20,5,15,8,2,15]},
+      lift:{}, kan:['SEA','Social Ads'], link:0, uren:[5,30,20,5,15,8,2,15]},
     toeval:{naam:'Te toevallig',minLvl:2,impact:'zicht',
       q:{leadgen:'"De ene maand storm, de andere stil. Ik kan er niets op plannen."',ecom:'"Piek in het seizoen, daarna niets."',reservering:'"Het weekend zit vol, doordeweeks leeg."',werving:'"Soms tien reacties, soms een half jaar niets."'},
       knop:'Eigen kanalen naast betaald',
       uitleg:'Geen tekort, maar afhankelijkheid. SEO en e-mail leveren conversies zonder klikkosten.',
       effect:'25% van de extra conversies uit SEO en e-mail → evenveel minder advertentiebudget',
       duiding:'Er is geen tekort maar een afhankelijkheid. Valt die ene bron weg, dan valt alles weg. We bouwen bronnen die bl&iacute;jven draaien &mdash; SEO en e-mail &mdash; zodat je kunt plannen in plaats van afwachten.',
-      lift:{eigen:0.25}, kan:{'SEA':45,'Social Ads':30,'Retargeting':25}, link:400, uren:[22,12,8,20,8,13,2,15]},
+      lift:{eigen:0.25}, kan:['SEA','Social Ads','Retargeting'], link:400, uren:[22,12,8,20,8,13,2,15]},
     duur:{naam:'Te duur',minLvl:2,impact:'aanvr',
       q:{leadgen:'"Het komt wel binnen, maar wat het kost staat niet meer in verhouding."',ecom:'"De ROAS zakt elk kwartaal."',reservering:'"Ik betaal me scheel aan de platforms."',werving:'"Een goede kracht vinden kost me een vermogen."'},
       knop:'Meer uit hetzelfde verkeer',
       uitleg:'Meer budget maakt dit erger. De kostprijs daalt door betere pagina&rsquo;s en een sterker merk.',
       effect:'conversie +40% relatief → kostprijs per conversie ongeveer 29% lager',
       duiding:'Meer budget zou hier het verkeerde zijn. Je betaalt dan meer voor hetzelfde lek. We halen meer uit het verkeer dat er al is. Elke procentpunt conversie erbij verlaagt de kostprijs zonder dat er een euro budget bij hoeft.',
-      lift:{cvr:1.40}, kan:{'SEA':50,'Social Ads':20,'Retargeting':30}, link:250, uren:[8,12,5,10,30,12,8,15]},
+      lift:{cvr:1.40}, kan:['SEA','Retargeting'], link:250, uren:[8,12,5,10,30,12,8,15]},
     verkeerd:{naam:'Verkeerd',minLvl:2,impact:'aanvr',
       q:{leadgen:'"Genoeg aanvragen, maar niet de klussen die ik wil."',ecom:'"Veel kleine orders, veel retouren."',reservering:'"Volle tent, lage besteding."',werving:'"Veel reacties, niemand die past."'},
       knop:'Waarde per klant omhoog',
       uitleg:'Hier is m&iacute;nder volume een goed resultaat. Scherper positioneren levert minder maar zwaardere conversies.',
       effect:'waarde per klant +25% → evenredig minder conversies nodig',
       duiding:'Meer is hier niet beter. We sturen de verkeerde aanvragen actief weg en trekken de juiste aan. Het aantal daalt. Dat is de bedoeling, en daarom leggen we vooraf vast wat wel en niet meetelt.',
-      lift:{waarde:1.25}, kan:{'SEA':50,'Social Ads':50}, link:250, uren:[8,10,10,5,25,15,12,15]},
+      lift:{waarde:1.25}, kan:['SEA','Social Ads'], link:250, uren:[8,10,10,5,25,15,12,15]},
     nietgekozen:{naam:'Niet gekozen',minLvl:2,impact:'klant',
       q:{leadgen:'"Ze kennen ons, ze vragen offertes aan, en dan kiezen ze de ander."',ecom:'"Ze leggen het in de winkelwagen en kopen elders."',reservering:'"Ze kijken en boeken ergens anders."',werving:'"Ze solliciteren en haken af bij het aanbod."'},
       knop:'Winkans omhoog',
       uitleg:'Een bewijsprobleem, geen bereikprobleem. Cases, reviews en prijsduidelijkheid verhogen de winkans.',
       effect:'winkans +30% relatief → evenredig minder conversies nodig',
       duiding:'Je wordt gevonden en overwogen, maar niet gekozen. Dat is een bewijsprobleem. We zorgen dat je met een voorsprong aan tafel komt. Het gesprek voer je zelf.',
-      lift:{close:1.30}, kan:{'SEA':35,'Social Ads':30,'Retargeting':35}, link:400, uren:[8,8,8,12,22,20,7,15]},
+      lift:{close:1.30}, kan:['SEA','Retargeting'], link:400, uren:[8,8,8,12,22,20,7,15]},
     groei:{naam:'Geen knelpunt, wel een groeivraag',minLvl:1,impact:'zicht',
       q:{leadgen:'"Het loopt. Ik wil harder."',ecom:'"Het loopt. Ik wil opschalen."',reservering:'"Het loopt. Ik wil meer."',werving:'"Het loopt. We gaan uitbreiden."'},
       knop:'Opschalen wat al werkt',
       uitleg:'Niets kapot. Harder duwen op wat bewezen werkt.',
       effect:'geen correctie, wel een zwaardere opschalingsfactor bij grote sprongen',
       duiding:'Er valt niets te repareren. We zetten budget op wat al werkt en bewaken ondertussen de kostprijs. Opschalen maakt elke volgende klant duurder als je niet oplet.',
-      lift:{}, kan:{'SEA':45,'Social Ads':40,'Retargeting':15}, link:250, uren:[10,25,20,10,12,6,2,15]}
+      lift:{}, kan:['SEA','Social Ads','Retargeting'], link:250, uren:[10,25,20,10,12,6,2,15]}
   };
   var LVL=[
     {n:1,naam:'Optie A',mnd:1650,jaar:19760,uur:4,setup:3000,ritme:'Per kwartaal een nieuwe actie'},
@@ -726,11 +767,13 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
   /* ---------- instellingen ---------- */
   var DEF={
     cons:-25, koers:0.90, markt:1.00, staffel:250, linkL:250, linkH:400,
+    minklik:100, minuur:4, kan:{},
     gcpc:5.42, gcvr:7.52, bron:'WordStream 2026 · 13.000 campagnes, 23 branches', datum:'september 2026',
     lvl:[{mnd:1650,uur:4,setup:3000},{mnd:3300,uur:8,setup:4500},{mnd:4950,uur:12,setup:6000}],
     bench:{}
   };
   Object.keys(BRANCHE).forEach(function(k){ DEF.bench[k]={cpc:BRANCHE[k].cpc,cvr:BRANCHE[k].cvr}; });
+  Object.keys(KAN).forEach(function(k){ DEF.kan[k]={cpcI:KAN[k].cpcI,cvrI:KAN[k].cvrI,max:KAN[k].max}; });
   var A=JSON.parse(JSON.stringify(DEF));
   function loadA(){ try{ var raw=localStorage.getItem('jr-arena-cfg'); if(!raw) return;
     var o=JSON.parse(raw); Object.keys(DEF).forEach(function(k){ if(o[k]!==undefined) A[k]=o[k]; });
@@ -738,6 +781,9 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
   function saveA(){ try{ localStorage.setItem('jr-arena-cfg',JSON.stringify(A)); }catch(e){} }
   function applyA(){
     WS_CPC=A.gcpc; WS_CVR=A.gcvr; CORR=(A.koers||0.9)*(A.markt||1); STAFFEL=A.staffel;
+    MINKLIK=A.minklik||100; MINUUR=A.minuur||4;
+    Object.keys(KAN).forEach(function(k){ var c=A.kan&&A.kan[k]; if(!c) return;
+      KAN[k].cpcI=Number(c.cpcI); KAN[k].cvrI=Number(c.cvrI); KAN[k].max=Number(c.max); });
     LVL.forEach(function(L,i){ var c=A.lvl[i]; L.mnd=c.mnd; L.uur=c.uur; L.setup=c.setup; L.jaar=c.mnd*12; });
     Object.keys(BRANCHE).forEach(function(k){ var b=A.bench[k]; if(!b) return;
       BRANCHE[k].cpc=(b.cpc===''||b.cpc===null||b.cpc===undefined)?null:Number(b.cpc);
@@ -1023,20 +1069,57 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
   }
 
   function factorFor(g){ if(g===null)return 1.30; if(g<=.25)return 1.15; if(g<=.5)return 1.30; if(g<=1)return 1.50; return 1.80; }
-  function staffel(x){ return Math.max(STAFFEL, Math.ceil(x/STAFFEL)*STAFFEL); }
-  /* verdeelt het maandbudget over de kanalen in hele staffels, zonder het totaal op te blazen */
-  function verdeelBudget(kanN,kan,tot){
-    var units=Math.max(kanN.length, Math.round(tot/STAFFEL));
-    var raw=kanN.map(function(k){ return units*kan[k]/100; });
-    var out=raw.map(function(r){ return Math.max(1,Math.floor(r)); });
-    var rest=units-out.reduce(function(a,b){return a+b;},0);
-    var ord=raw.map(function(r,i){ return {i:i,f:r-Math.floor(r)}; }).sort(function(a,b){ return b.f-a.f; });
-    for(var j=0;rest>0;j++,rest--) out[ord[j%ord.length].i]++;
-    while(rest<0){ var big=0;
-      for(var q=1;q<out.length;q++) if(out[q]>out[big]) big=q;
-      if(out[big]<=1) break; out[big]--; rest++; }
-    var res={}; kanN.forEach(function(k,i){ res[k]=out[i]*STAFFEL; });
-    return res; }
+  function staffel(x){ return Math.max(STAFFEL, Math.round(x/STAFFEL)*STAFFEL); }
+  /* Verdeelt de conversiebehoefte over de kanalen: laagste kostprijs eerst, tot elk
+     kanaal zijn plafond raakt. Het budget is hier de uitkomst, niet de invoer.
+     Kanalen die te weinig volume krijgen om te kunnen sturen vallen af; wat dan
+     nog niet gedekt is gaat naar het kanaal dat wel kan schalen. */
+  function kanaalplan(kanN,doel,cvr,cpc,fac){
+    function mk(k){ var K=KAN[k]||{cpcI:1,cvrI:1,max:100};
+      var c=cvr*K.cvrI, pr=cpc*K.cpcI;
+      return {k:k,cvr:c,cpc:pr,max:K.max,why:K.why,kpc:(pr/(c/100))*fac,conv:0,extra:false}; }
+    /* Verdeelt doel volledig: goedkoopste kanaal eerst tot zijn plafond. Blijft er
+       maar een kanaal over, dan vervalt het plafond — er is dan geen alternatief.
+       Wat na alle plafonds overblijft gaat naar het goedkoopste kanaal dat er is,
+       zodat de som altijd gelijk is aan het doel. */
+    function verdeel(lijst){
+      var rest=doel, srt=lijst.slice().sort(function(a,b){ return a.kpc-b.kpc; });
+      lijst.forEach(function(r){ r.conv=0; });
+      srt.forEach(function(r){
+        var cap=lijst.length===1? doel : Math.floor(doel*r.max/100);
+        var n=Math.min(cap,rest); r.conv=n; rest-=n; });
+      return rest;
+    }
+    var rij=kanN.map(mk), bij=null, over=0;
+    var rest=verdeel(rij);
+    /* de gekozen kanalen zijn allemaal begrensd: het kanaal dat wel kan schalen erbij */
+    if(rest>0 && kanN.indexOf('Social Ads')<0){
+      bij=mk('Social Ads'); bij.extra=true; rij.push(bij); rest=verdeel(rij); }
+    if(rest>0){ rij.slice().sort(function(a,b){ return a.kpc-b.kpc; })[0].conv+=rest; rest=0; }
+    /* minimaal volume om een campagne te kunnen sturen */
+    var minK=MINKLIK*12;
+    function klikken(r){ return r.conv? Math.ceil(r.conv/(r.cvr/100)) : 0; }
+    var wijzig=true;
+    while(wijzig && rij.length>1){
+      wijzig=false;
+      for(var i=0;i<rij.length;i++){
+        if(rij[i].conv>0 && klikken(rij[i])<minK){
+          var weg=rij.splice(i,1)[0]; if(weg===bij) bij=null;
+          rest=verdeel(rij);
+          if(rest>0) rij.slice().sort(function(a,b){ return a.kpc-b.kpc; })[0].conv+=rest;
+          wijzig=true; break; }
+      }
+    }
+    rij.forEach(function(r){ r.klik=klikken(r); });
+    /* ook het laatste kanaal kan te klein zijn: dan kopen we het minimum en halen we meer dan het doel */
+    if(rij.length===1 && rij[0].klik>0 && rij[0].klik<minK){
+      rij[0].klik=minK; over=Math.floor(rij[0].klik*rij[0].cvr/100)-rij[0].conv; }
+    rij.forEach(function(r){ r.jaar=r.klik*r.cpc*fac; r.mnd=r.jaar/12;
+      r.vert=V.ctr? Math.round(r.klik/(V.ctr/100)) : 0; });
+    rij.sort(function(a,b){ return b.jaar-a.jaar; });
+    return {rij:rij,bij:bij,over:over};
+  }
+
   function R(k,fx,v,sb,cls,ind){
     var d=document.createElement('div'); d.className='r'+(cls?' '+cls:'');
     var a=document.createElement('span'); a.className='k'+(ind?' ind':''); a.innerHTML=k+(fx?'<span class="fx">'+fx+'</span>':'');
@@ -1052,6 +1135,41 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
     var ord=raw.map(function(r,i){return{i:i,f:r-Math.floor(r)};}).sort(function(a,b){return b.f-a.f;});
     for(var j=0;j<rest;j++) out[ord[j%ord.length].i]++;
     return out; }
+  /* Verdeelt de uren, maar alleen over diensten die er genoeg krijgen om iets
+     te betekenen. Een dienst met een uur per maand is een vinkje, geen dienst.
+     Wat afvalt gaat naar de onderdelen waar de diagnose om vraagt. Diensten in
+     'vast' blijven altijd staan: het kanaal krijgt budget, dus er moet iemand
+     aan werken. Diensten in 'uit' vervallen sowieso. */
+  function verdeelDiensten(pct,tot,vast,uit){
+    vast=vast||[]; uit=uit||[];
+    var idx=[], weg=[];
+    pct.forEach(function(x,i){ if(uit.indexOf(i)>=0){ if(x>0) weg.push(i); } else idx.push(i); });
+    for(;;){
+      var sub=idx.map(function(i){ return pct[i]; }),
+          som=sub.reduce(function(a,b){ return a+b; },0);
+      if(!som) break;
+      var uren=verdeel(sub.map(function(x){ return x/som*100; }),tot), zw=-1;
+      for(var j=0;j<idx.length;j++){
+        if(uren[j]<MINUUR && vast.indexOf(idx[j])<0 && idx.length>2 &&
+           (zw<0 || uren[j]<uren[zw])) zw=j;
+      }
+      if(zw<0){ var res=pct.map(function(){ return 0; });
+        idx.forEach(function(i,j){ res[i]=uren[j]; });
+        /* een dienst die vaststaat omdat er budget naartoe gaat, moet ook de
+           ondergrens halen: de uren komen van het onderdeel met de meeste */
+        vast.forEach(function(i){
+          if(res[i]===undefined||res[i]>=MINUUR||idx.indexOf(i)<0) return;
+          var te=MINUUR-res[i];
+          while(te>0){ var gr=-1;
+            idx.forEach(function(j){ if(vast.indexOf(j)<0&&res[j]>MINUUR&&(gr<0||res[j]>res[gr])) gr=j; });
+            if(gr<0) idx.forEach(function(j){ if(j!==i&&res[j]>MINUUR&&(gr<0||res[j]>res[gr])) gr=j; });
+            if(gr<0) break;
+            res[gr]--; res[i]++; te--; } });
+        return {uren:res,weg:weg}; }
+      weg.push(idx[zw]); idx.splice(zw,1);
+    }
+    return {uren:pct.map(function(){ return 0; }),weg:weg};
+  }
 
   function compute(){
     var M=MODELS[model], d=dx?DX[dx]:null;
@@ -1091,30 +1209,50 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
     if(d.lift.waarde&&waarde) waarde*=d.lift.waarde;
     if(d.lift.eigen) eigenA=d.lift.eigen;
 
-    var klanten=null,conv=null,convB=null,bez=null,vert=null,budget=null,groei=null,fac=1,
+    /* De keten. Elke stap wordt afgerond en de volgende stap rekent met dat
+       afgeronde getal. Een halve klant bestaat niet, en met 14,6 doorrekenen
+       levert een doel op dat je met 15 klanten niet haalt. */
+    var klanten=null,conv=null,convB=null,eigenC=0,bez=null,vert=null,budget=null,groei=null,fac=1,
         cpl=null,cac=null,margeEur=null,ltv=null,omzet=null;
-    if(model==='werving') klanten=V.ambitie||null;
-    else if(V.ambitie&&waarde) klanten=V.ambitie/waarde;
-    if(klanten&&close) conv=klanten/(close/100);
-    if(conv!==null) convB=conv*(1-eigenA);
+    if(model==='werving') klanten=V.ambitie?Math.ceil(V.ambitie):null;
+    else if(V.ambitie&&waarde) klanten=Math.ceil(V.ambitie/waarde);
+    if(klanten&&close) conv=Math.ceil(klanten/(close/100));
+    if(conv!==null){ eigenC=Math.round(conv*eigenA); convB=conv-eigenC; }
     if(conv&&convNu) groei=conv/convNu;
     fac=factorFor(groei);
-    if(convB&&cvr) bez=convB/(cvr/100);
-    if(bez&&V.ctr) vert=bez/(V.ctr/100);
-    if(V.cpc&&cvr) cpl=(V.cpc/(cvr/100))*fac;
-    if(bez&&V.cpc) budget=bez*V.cpc*fac;
-    if(cpl!==null&&close) cac=cpl/(close/100);
+    if(klanten&&waarde) omzet=klanten*waarde;
     if(waarde&&V.marge) margeEur=waarde*(V.marge/100);
     if(margeEur&&V.jaren) ltv=margeEur*V.jaren;
-    if(klanten&&waarde) omzet=klanten*waarde;
 
-    var kanN=Object.keys(d.kan), kanB={}, adMnd=0;
-    if(budget!==null){ kanB=verdeelBudget(kanN,d.kan,budget/12);
-      kanN.forEach(function(k){ adMnd+=kanB[k]; }); }
+    /* Het budget volgt uit de kanalen, niet uit een gemiddelde klikprijs over alles. */
+    var kanN=(d.kan||[]).slice(), PL=null, kanB={}, adMnd=0, convGe=convB;
+    if(convB!==null&&convB>0&&cvr&&V.cpc){
+      PL=kanaalplan(kanN,convB,cvr,V.cpc,fac);
+      kanN=PL.rij.map(function(r){ return r.k; });
+      bez=0; vert=0; budget=0;
+      PL.rij.forEach(function(r){ kanB[r.k]=staffel(r.mnd); adMnd+=kanB[r.k];
+        bez+=r.klik; vert+=r.vert; budget+=r.jaar; });
+      convGe=convB+(PL.over||0);
+      if(convB>0) cpl=budget/convGe;
+      if(cpl!==null&&close) cac=cpl/(close/100);
+    }
     var adJaar=adMnd*12, lvlB=1;
     if(budget!==null) LVL.forEach(function(L){ if(adJaar>=L.jaar) lvlB=L.n; });
     var chosen = budget===null ? d.minLvl : Math.max(lvlB,d.minLvl);
     var L=LVL[chosen-1], linkM=d.link;
+
+    /* De diensten volgen het kanaalplan: waar budget heen gaat moet iemand aan
+       werken, en een kanaal dat afviel krijgt ook geen uren. */
+    var vastD=[DIENST.length-1], uitD=[], iSEO=-1;
+    DIENST.forEach(function(D,i){ if(D.n==='SEO') iSEO=i; if(!D.kan) return;
+      if(kanN.indexOf(D.kan)>=0) vastD.push(i); else uitD.push(i); });
+    if(eigenC>0){ DIENST.forEach(function(D,i){
+      if(D.n==='SEO'||D.n.indexOf('E-mail')===0) vastD.push(i); }); }
+    var uurM=Math.round(L.uur*52/12), VD=verdeelDiensten(d.uren,uurM,vastD,uitD), uren=VD.uren;
+    /* Krijgt SEO te weinig uren, dan kopen we er ook geen links voor. Een
+       linkbuildingbudget dat niemand verwerkt is weggegooid geld. */
+    if(linkM>0 && iSEO>=0 && uren[iSEO]<MINUUR) linkM=0;
+
     var maandTot=L.mnd+adMnd+linkM, jaarTot=maandTot*12, jaar1=jaarTot+L.setup;
     var margeTot=(margeEur&&klanten)?klanten*margeEur:null, onder=margeTot!==null?margeTot-jaar1:null;
 
@@ -1131,23 +1269,25 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
 
     var n=1;
     if(model==='werving'){
-      cstep('0'+(n++),'Mensen die je nodig hebt',num.format(Math.ceil(klanten||0)),'dat is je doel');
+      cstep('0'+(n++),'Mensen die je nodig hebt',num.format(klanten||0),'dat is je doel');
     } else if(V.ambitie){
       cstep('0'+(n++),'Extra omzet',eur.format(V.ambitie),'dat is je doel');
-      if(klanten){ cgap('\u00f7 '+eur.format(Math.round(waarde))+' waarde per klant in jaar 1');
-        cstep('0'+(n++),'Nieuwe klanten nodig',num.format(Math.ceil(klanten))); }
+      if(klanten){ cgap('\u00f7 '+eur.format(Math.round(waarde))+' waarde per klant in jaar 1'+
+          (klanten*waarde>V.ambitie?' \u2014 naar boven afgerond, dus '+eur.format(Math.round(omzet)):''));
+        cstep('0'+(n++),'Nieuwe klanten nodig',num.format(klanten)); }
     }
     if(conv){ cgap('\u00f7 '+dec.format(close)+'% winkans'+(d.lift.close?' (na bewijs)':''));
-      cstep('0'+(n++),'Extra '+M.convMv,num.format(Math.ceil(conv)),
+      cstep('0'+(n++),'Extra '+M.convMv,num.format(conv),
         convNu?('nu '+num.format(convNu)+' per jaar \u2014 dat is +'+Math.round(groei*100)+'%'):null,
         d.impact==='aanvr', d.impact==='aanvr'?'HIER ZIT DE WINST':null); }
-    if(eigenA>0&&conv){ cgap(Math.round(eigenA*100)+'% hiervan komt uit SEO en e-mail, zonder klikkosten');
-      cstep('0'+(n++),'Uit betaald verkeer',num.format(Math.ceil(convB))); }
-    if(bez){ cgap('\u00f7 '+dec.format(cvr)+'% conversie'+(d.lift.cvr?' (na CRO)':''));
-      cstep('0'+(n++),'Websitebezoekers',num.format(Math.round(bez)),'extra per jaar',
+    if(eigenC>0){ cgap(Math.round(eigenA*100)+'% hiervan uit SEO en e-mail, zonder klikkosten \u2014 dat is '+num.format(eigenC));
+      cstep('0'+(n++),'Uit betaald verkeer',num.format(convB)); }
+    if(bez){ cgap('\u00f7 conversie per kanaal'+(d.lift.cvr?', na CRO':'')+' \u2014 '+
+        PL.rij.map(function(r){ return r.k+' '+dec.format(r.cvr)+'%'; }).join(', '));
+      cstep('0'+(n++),'Websitebezoekers',num.format(bez),'extra per jaar',
         d.impact==='bez', d.impact==='bez'?'HIER ZIT DE WINST':null); }
     if(vert){ cgap('\u00f7 '+dec.format(V.ctr)+'% doorklikratio');
-      cstep('0'+(n++),'Vertoningen',num.format(Math.round(vert)),'zichtbaarheid per jaar',
+      cstep('0'+(n++),'Vertoningen',num.format(vert),'zichtbaarheid per jaar',
         d.impact==='zicht', d.impact==='zicht'?'HIER ZIT DE WINST':null); }
 
     document.getElementById('rTitel').textContent = T.bedrijf
@@ -1160,17 +1300,28 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
     var rr=document.getElementById('realRows'); rr.textContent='';
     document.getElementById('realT').textContent='De inzet: '+kanN.join(', ')+(linkM>0?' en SEO':'');
     document.getElementById('realP').innerHTML = d.uitleg+' <b>'+d.effect+'.</b>';
-    if(budget!==null){
-      var perKan = convB? convB/adMnd : 0;
-      kanN.forEach(function(k){
-        var aandeel=kanB[k]/adMnd;
-        rr.appendChild(R(k, eur.format(kanB[k])+' per maand',
-          num.format(Math.round((convB||0)*aandeel))+' <span class="pm">'+M.convMv+'</span>', 'per jaar'));
+    function KR(nm,geld,lev,sub,why,cls){
+      var d=document.createElement('div'); d.className='kr'+(cls?' '+cls:'');
+      d.innerHTML='<div class="kt"><span class="kn2">'+nm+'</span><span class="kv2">'+lev+
+        '</span></div><div class="kc">'+geld+'</div>'+(sub?'<div class="ks">'+sub+'</div>':'')+
+        (why?'<p class="kw">'+why+'</p>':'');
+      rr.appendChild(d); }
+    if(PL){
+      PL.rij.forEach(function(r){
+        var lev=r.conv+(r===PL.rij[0]?(PL.over||0):0), plaf=(r.max<100&&r.conv>=Math.floor(convB*r.max/100)&&PL.rij.length>1);
+        KR(r.k+(r.extra?' <span class="tagp warn">ERBIJ</span>':'')+(plaf?' <span class="tagp ok">VOL</span>':''),
+          eur.format(kanB[r.k])+' per maand \u2014 '+num.format(Math.round(r.klik/12))+' klikken p/m tegen '+
+          eur2.format(r.cpc*fac)+(fac>1?' ('+eur2.format(r.cpc)+' plus '+dec.format(fac)+'\u00d7 opschaling)':'')+
+          ', waarvan '+dec.format(r.cvr)+'% converteert. Kostprijs '+eur2.format(r.kpc)+' per '+M.conv+'.',
+          num.format(lev)+' <span class="pm">'+M.convMv+'</span>', null, r.why);
       });
-      if(eigenA>0&&conv) rr.appendChild(R('SEO en e-mail', linkM>0?(eur.format(linkM)+' linkbuilding per maand'):'binnen de retainer',
-        num.format(Math.ceil(conv*eigenA))+' <span class="pm">'+M.convMv+'</span>','per jaar, zonder klikkosten'));
-      rr.appendChild(R('Samen', eur.format(adMnd+linkM)+' per maand aan budget',
-        num.format(Math.ceil(conv))+' <span class="pm">'+M.convMv+'</span>',null,'tot'));
+      if(eigenC>0) KR('SEO en e-mail',
+        (linkM>0?eur.format(linkM)+' linkbuilding per maand':'binnen de retainer')+' \u2014 geen klikkosten per bezoeker.',
+        num.format(eigenC)+' <span class="pm">'+M.convMv+'</span>', null,
+        'Bouwt langzaam op en blijft daarna staan. Dit is het deel dat niet stopt zodra je de advertenties uitzet.');
+      KR('Samen', eur.format(adMnd+linkM)+' per maand aan budget, naast de retainer.',
+        num.format(eigenC+convGe)+' <span class="pm">'+M.convMv+'</span>',
+        conv&&(eigenC+convGe)>conv?('je doel was '+num.format(conv)):null, null, 'sum');
     }
 
     /* ---- de conclusie: rendement ---- */
@@ -1215,7 +1366,8 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
     iv.appendChild(R('Retainer '+L.naam,L.uur+' uur per week \u00b7 bedrag onder voorbehoud',pmv(L.mnd)));
     if(budget!==null){
       iv.appendChild(R('Advertentiebudget','berekend '+eur.format(Math.round(budget/12))+' p/m, afgerond op staffels van '+eur.format(STAFFEL),pmv(adMnd)));
-      kanN.forEach(function(k){ iv.appendChild(R(k,null,pmv(kanB[k]),d.kan[k]+'% van het advies',null,true)); }); }
+      if(PL.rij.length>1) PL.rij.forEach(function(r){ iv.appendChild(R(r.k,null,pmv(kanB[r.k]),
+        Math.round(kanB[r.k]/adMnd*100)+'% van het budget',null,true)); }); }
     if(linkM>0) iv.appendChild(R('Linkbuildingbudget','hoort bij SEO',pmv(linkM)));
     iv.appendChild(R('Per maand, doorlopend',null,eur.format(maandTot),null,'tot'));
     iv.appendChild(R('Jaar 1 totaal','12 \u00d7 '+eur.format(maandTot)+' + '+eur.format(L.setup)+' fundament',eur.format(jaar1)));
@@ -1225,22 +1377,29 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
         (c==='good'?'BINNEN BENCHMARK':(c==='mid'?'AAN DE HOGE KANT':'BOVEN BENCHMARK'))+'</span>',null,c)); }
 
     /* ---- diensten met KPI ---- */
-    var uurM=Math.round(L.uur*52/12), uren=verdeel(d.uren,uurM), dn=document.getElementById('dnstRows'); dn.textContent='';
+    var dn=document.getElementById('dnstRows'); dn.textContent='';
     document.getElementById('lvlName').textContent=L.naam;
     document.getElementById('lvlHint').innerHTML=L.ritme+' \u00b7 <b>'+uurM+' uur per maand</b> ('+L.uur+' uur per week)';
     DIENST.forEach(function(D,i2){ if(uren[i2]<=0) return;
       var tr=document.createElement('tr');
       if(D.n==='Marketing Management') tr.className='mm';
       var lev=D.v;
-      if(D.kan&&kanB[D.kan]&&convB){
-        lev='Ongeveer '+num.format(Math.round(convB*(kanB[D.kan]/adMnd)))+' '+M.convMv+' per jaar, bij '+eur.format(kanB[D.kan])+' budget per maand.';
-      } else if(D.n==='SEO'&&eigenA>0&&conv){
-        lev='Samen met e-mail ongeveer '+num.format(Math.ceil(conv*eigenA))+' '+M.convMv+' per jaar, zonder klikkosten.';
+      var PR=PL&&PL.rij.filter(function(r){ return r.k===D.kan; })[0];
+      if(PR){ lev=num.format(PR.conv+(PR===PL.rij[0]?(PL.over||0):0))+' '+M.convMv+' per jaar, bij '+eur.format(kanB[D.kan])+' per maand. '+eur2.format(PR.kpc)+' per '+M.conv+'.';
+      } else if(D.n==='SEO'&&eigenC>0){
+        lev='Samen met e-mail '+num.format(eigenC)+' '+M.convMv+' per jaar, zonder klikkosten.';
       }
       tr.innerHTML='<td>'+D.n+'</td><td class="n">'+uren[i2]+'</td><td>'+D.kpi+'</td><td>'+lev+'</td>';
       dn.appendChild(tr); });
     var trt=document.createElement('tr'); trt.className='tot';
     trt.innerHTML='<td>Totaal</td><td class="n">'+uurM+'</td><td></td><td></td>'; dn.appendChild(trt);
+    var rest=document.getElementById('dnstRest');
+    if(VD.weg.length){
+      rest.innerHTML='<b>Niet in dit voorstel:</b> '+VD.weg.map(function(i){ return DIENST[i].n; }).join(', ')+
+        '. Je hebt er toegang toe, maar bij deze diagnose zou er minder dan '+MINUUR+
+        ' uur per maand naartoe gaan, of het kanaal levert bij dit volume te weinig op om te openen. Die uren staan nu bij de onderdelen die je knelpunt oplossen. Verschuift het knelpunt, dan verschuift het zwaartepunt mee.';
+      rest.hidden=false;
+    } else rest.hidden=true;
 
     if(!convNu&&!V.bezNu) flags.appendChild(FL('note','<b>Je eigen cijfers zijn er nog niet.</b> Dan stuur je nu op gevoel. De nulmeting is het eerste dat we opleveren.'));
     if(model==='leadgen'||model==='werving') flags.appendChild(FL('warn','<b>Let op het closingpercentage.</b> Draai je nu op netwerk en mond-tot-mond, dan is dat percentage te hoog voor marketingleads. Die zijn kouder.'));
@@ -1249,6 +1408,9 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
     if(cac!==null&&margeEur!==null&&cac>margeEur) flags.appendChild(FL((ltv&&cac<=ltv)?'warn':'bad',
       '<b>Een klant kost meer dan hij in jaar 1 oplevert.</b> '+((ltv&&cac<=ltv)?'Over '+V.jaren+' jaar komt het terug. Dan financier je de groei voor.':'Ook over de levensduur komt dit niet goed. Dit is een prijs- of margevraag.')));
     if(budget!==null&&lvlB<d.minLvl) flags.appendChild(FL('warn','<b>Twee signalen lopen uiteen.</b> Het budget past bij <b>'+LVL[lvlB-1].naam+'</b>, de diagnose vraagt het werk van <b>'+LVL[d.minLvl-1].naam+'</b>. Het advies volgt het werk.'));
+    if(PL&&PL.over>0) flags.appendChild(FL('note','<b>Het budget wordt bepaald door de ondergrens, niet door je doel.</b> Onder '+MINKLIK+' klikken per maand valt er niets te sturen: te weinig data om te optimaliseren. We kopen dat minimum, en dat levert '+num.format(PL.over)+' '+M.convMv+' meer op dan je vroeg.'));
+    if(PL&&PL.bij) flags.appendChild(FL('warn','<b>Er is een kanaal bij gekomen.</b> Met alleen '+d.kan.join(' en ')+' haal je dit doel niet: die zijn begrensd door zoekvolume en door je eigen verkeer. Social Ads is het enige kanaal dat verder kan schalen.'));
+    if(adJaar&&L.jaar/adJaar>4) flags.appendChild(FL('warn','<b>De verhouding is scheef.</b> De retainer is '+dec.format(L.jaar/adJaar)+'× het advertentiebudget. Dat is te veel regie op te weinig media. Of het doel mag omhoog, of dit is een lichtere optie.'));
     if(omzet&&adJaar&&omzet/adJaar>10) flags.appendChild(FL('bad','<b>Deze ROAS is te mooi om te presenteren.</b> '+dec.format(omzet/adJaar)+'× komt vrijwel zeker doordat de conversie van '+dec.format(cvr)+'% het gemiddelde over 23 branches is. Zet er een realistischer percentage in.'));
     if(dx==='verkeerd') flags.appendChild(FL('note','<b>Let op de norm.</b> Bij deze diagnose is <b>minder</b> volume een goed resultaat. We leggen vooraf vast wat meetelt.'));
     if(model==='leadgen') flags.appendChild(FL('note','<b>De omzet is een projectie</b> op basis van je eigen closingpercentage. Wij leveren aanvragen. Het gesprek voer je zelf.'));
@@ -1272,6 +1434,7 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
   var numP=function(x){ var n=parseFloat(x); return isFinite(n)?n:0; };
   bindA('a-cons','cons',numP); bindA('a-koers','koers',numP); bindA('a-markt','markt',numP); bindA('a-staffel','staffel',numP);
   bindA('a-linkL','linkL',numP); bindA('a-linkH','linkH',numP);
+  bindA('a-minklik','minklik',numP); bindA('a-minuur','minuur',numP);
   bindA('a-gcpc','gcpc',numP); bindA('a-gcvr','gcvr',numP);
   bindA('a-bron','bron'); bindA('a-datum','datum');
 
@@ -1286,6 +1449,20 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
         inp.addEventListener('input',function(){ A.lvl[i][spec[0]]=numP(inp.value); afterAdm(true); });
         td.appendChild(inp); tr.appendChild(td); });
       tl.appendChild(tr); });
+
+    var kt=document.getElementById('admKan'); kt.textContent='';
+    Object.keys(KAN).forEach(function(k){
+      var tr=document.createElement('tr'), c=A.kan[k];
+      var td0=document.createElement('td'); td0.textContent=k; tr.appendChild(td0);
+      [['cpcI',0.05],['cvrI',0.05],['max',5]].forEach(function(spec){
+        var td=document.createElement('td'), inp=document.createElement('input');
+        inp.type='number'; inp.step=spec[1]; inp.min='0'; inp.value=c[spec[0]];
+        inp.addEventListener('input',function(){ c[spec[0]]=numP(inp.value); afterAdm(true); });
+        td.appendChild(inp); tr.appendChild(td); });
+      var kp=document.createElement('td'); kp.style.fontVariantNumeric='tabular-nums';
+      var bcpc=A.gcpc*CORR*Number(c.cpcI), bcvr=A.gcvr*consF()*Number(c.cvrI);
+      kp.textContent=bcvr>0? eur2.format(bcpc/(bcvr/100)) : '\u2014';
+      tr.appendChild(kp); kt.appendChild(tr); });
 
     var tb=document.getElementById('admBench'); tb.textContent='';
     Object.keys(BRANCHE).forEach(function(k){
@@ -1311,6 +1488,8 @@ textarea.json{font-family:var(--f-mono);font-size:12px;width:100%;min-height:110
     document.getElementById('a-markt').value=A.markt;
     document.getElementById('a-staffel').value=A.staffel;
     document.getElementById('a-linkL').value=A.linkL;
+    document.getElementById('a-minklik').value=A.minklik;
+    document.getElementById('a-minuur').value=A.minuur;
     document.getElementById('a-linkH').value=A.linkH;
     document.getElementById('a-gcpc').value=A.gcpc;
     document.getElementById('a-gcvr').value=A.gcvr;
