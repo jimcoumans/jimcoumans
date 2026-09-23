@@ -1,0 +1,262 @@
+<title>Het playbook &middot; James Robinson</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@600;700&display=swap">
+<style>
+:root{
+  --page:#fbfbfd; --card:#fff; --alt:#f5f5f7;
+  --tx:#1d1d1f; --tx2:#6e6e73; --tx3:#86868b;
+  --ln:#d2d2d7; --ln-s:#e5e5e9;
+  --blue:#007aff; --link:#0066cc; --act:#0857c3;
+  --b100:#e0efff; --b50:#f4f9ff;
+  --lime:#c4f000; --lime-tx:#5a7000; --lime100:#f2fccc;
+  --green-tx:#1d7d3f; --green100:#e6f7eb;
+  --orange-tx:#94590a; --orange100:#fef2e0;
+  --red-tx:#c02a22; --red100:#fdecea;
+  --black:#1c1c1e; --inv:#f5f5f7; --inv2:#a1a1a6;
+  --fd:"Inter Tight","Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --ft:"Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --fm:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --e:cubic-bezier(.25,.1,.25,1);--g:32px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}}
+:root[data-theme="dark"]{
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--tx);font-family:var(--ft);font-size:16.5px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition-duration:.01ms!important}}
+:focus-visible{outline:none;box-shadow:0 0 0 4px rgba(0,122,255,.4);border-radius:8px}
+p{margin:0 0 18px;max-width:70ch}
+p:last-child{margin-bottom:0}
+h1,h2,h3,h4{font-family:var(--fd);margin:0;text-wrap:balance}
+code{font-family:var(--fm);font-size:.86em;background:var(--alt);padding:2px 6px;border-radius:5px}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:60;background:rgba(251,251,253,.86);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--ln-s)}
+:root[data-theme="dark"] .bar,:root:not([data-theme="light"]) .bar{background:rgba(0,0,0,.74)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .bar{background:rgba(251,251,253,.86)}}
+.bar-in{max-width:1080px;margin:0 auto;padding:0 var(--g);display:flex;align-items:center;gap:5px;min-height:48px;overflow-x:auto;scrollbar-width:none}
+.bar-in::-webkit-scrollbar{display:none}
+.bar b{font-family:var(--fd);font-size:14.5px;font-weight:700;letter-spacing:-.016em;margin-right:8px;white-space:nowrap}
+.bar a{font-size:12.5px;color:var(--tx2);text-decoration:none;padding:6px 8px;border-radius:7px;white-space:nowrap}
+.bar a:hover{color:var(--tx)}
+.bar button{margin-left:auto;flex:none;font:inherit;font-size:12px;cursor:pointer;background:transparent;border:1px solid var(--ln);color:var(--tx2);border-radius:980px;padding:5px 13px}
+
+.wrap{max-width:1080px;margin:0 auto;padding-inline:var(--g)}
+.hero{padding-block:76px 40px}
+h1{font-size:clamp(34px,5.4vw,58px);font-weight:700;line-height:1.06;letter-spacing:-.026em;margin-bottom:20px}
+.lead{font-size:20px;line-height:1.5;color:var(--tx2);max-width:64ch}
+.sec{padding-block:60px;border-top:1px solid var(--ln-s)}
+h2{font-size:clamp(26px,3.4vw,38px);font-weight:700;line-height:1.12;letter-spacing:-.02em;margin-bottom:8px}
+.sec > .kicker{font-family:var(--fm);font-size:11px;letter-spacing:.06em;color:var(--tx3);margin-bottom:14px}
+h3{font-size:21px;font-weight:600;line-height:1.24;letter-spacing:-.012em;margin:38px 0 10px}
+h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
+.note{color:var(--tx2)}
+.note b,b{color:var(--tx);font-weight:600}
+
+/* kernblok */
+.key{background:var(--black);color:var(--inv);border-radius:22px;padding:34px 32px;margin:26px 0}
+.key .k{display:block;font-family:var(--fm);font-size:10.5px;letter-spacing:.06em;color:var(--lime);margin-bottom:14px}
+.key p{color:var(--inv2);font-size:17.5px;max-width:64ch}
+.key strong{color:#fff;font-weight:600}
+.key .big{font-family:var(--fd);font-size:clamp(22px,3vw,30px);font-weight:600;line-height:1.2;letter-spacing:-.018em;color:#fff;margin-bottom:16px}
+
+/* lagen van het aanbod */
+.stack{display:grid;gap:12px;margin-top:24px}
+.st{background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;display:grid;grid-template-columns:132px 1fr;gap:20px;align-items:start}
+.st .lab{font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;color:var(--act);padding-top:3px}
+.st .bd p{margin:0;font-size:15.5px;color:var(--tx2)}
+.st .bd h4{margin-bottom:5px}
+
+/* kandidaten */
+.cands{display:grid;gap:12px;margin-top:22px}
+.cand{border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;background:var(--card)}
+.cand.win{border-color:var(--lime);box-shadow:0 0 0 1px var(--lime)}
+.cand .zin{font-family:var(--fd);font-size:22px;font-weight:600;letter-spacing:-.014em;margin-bottom:8px}
+.cand .why{font-size:15px;color:var(--tx2);margin:0}
+.cand .verdict{display:inline-block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;border-radius:5px;padding:3px 7px;margin-bottom:12px}
+.cand .verdict.no{background:var(--red100);color:var(--red-tx)}
+.cand .verdict.ok{background:var(--lime100);color:var(--lime-tx)}
+.cand .verdict.mid{background:var(--orange100);color:var(--orange-tx)}
+
+/* onderscheid */
+.dist{width:100%;border-collapse:collapse;font-size:15px;margin-top:22px}
+.dist th,.dist td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.dist thead th{font-family:var(--fm);font-size:10.5px;letter-spacing:.04em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.dist td:first-child{font-weight:500;width:34%}
+.dist .v{font-family:var(--fm);font-size:11px;white-space:nowrap}
+.dist .v.y{color:var(--green-tx)}
+.dist .v.n{color:var(--red-tx)}
+.dist tr:last-child td{border-bottom:none}
+.tblwrap{overflow-x:auto}
+
+/* beslissingen */
+.dec{border:1px solid var(--ln-s);border-radius:18px;background:var(--card);padding:26px 28px;margin-top:14px}
+.dec .hd{display:flex;align-items:baseline;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.dec .num{font-family:var(--fm);font-size:11px;color:var(--tx3);flex:none}
+.dec h4{font-size:19px;flex:1;min-width:220px;margin:0}
+.dec .tag{font-family:var(--fm);font-size:9.5px;letter-spacing:.05em;border-radius:5px;padding:3px 7px}
+.dec .tag.blok{background:var(--red100);color:var(--red-tx)}
+.dec .tag.schaal{background:var(--orange100);color:var(--orange-tx)}
+.dec .tag.scherp{background:var(--b100);color:var(--act)}
+.dec .q{font-size:16px;color:var(--tx2);margin:0 0 16px}
+.dec .adv{background:var(--b50);border-left:3px solid var(--act);border-radius:0 10px 10px 0;padding:16px 18px}
+.dec .adv .al{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.06em;color:var(--act);margin-bottom:7px}
+.dec .adv p{font-size:15.5px;margin:0 0 10px}
+.dec .adv p:last-child{margin-bottom:0}
+
+/* vast */
+.locked{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-top:22px}
+.lk{background:var(--card);border:1px solid var(--ln-s);border-radius:14px;padding:18px 20px}
+.lk .t{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--green-tx);margin-bottom:7px}
+.lk .b{font-size:15px;color:var(--tx2);line-height:1.45}
+.lk .b b{color:var(--tx)}
+
+.warn{background:var(--orange100);border-radius:18px;padding:24px 26px;margin-top:26px}
+.warn h4{color:var(--orange-tx)}
+.warn p{color:var(--orange-tx);opacity:.94;font-size:15.5px;max-width:none}
+.foot{padding-block:44px 64px;font-size:13px;color:var(--tx3);text-align:center}
+
+@media (max-width:734px){
+  :root{--g:20px}
+  body{font-size:16px}
+  .sec{padding-block:48px}
+  .hero{padding-block:44px 28px}
+  .st{grid-template-columns:1fr;gap:10px}
+  .key{padding:24px 22px}
+  .dec{padding:22px 20px}
+}
+<style>
+.sc,.pb{width:100%;border-collapse:collapse;font-size:15px}
+.sc th,.sc td,.pb th,.pb td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.sc thead th,.pb thead th{font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.sc td.n{text-align:right;font-family:var(--fm);font-size:13px;white-space:nowrap}
+.tblwrap{overflow-x:auto}
+.pb td.c,.pb th.c{text-align:center}
+.pb td.nr{font-family:var(--fm);font-size:11px;color:var(--tx3);width:34px}
+.pb td.u{font-family:var(--fm);font-size:11px;color:var(--tx3);white-space:nowrap;width:44px}
+.pb td b{font-weight:500;font-size:14.5px;display:block;line-height:1.4}
+.pb .ond{display:block;font-family:var(--fm);font-size:9.5px;letter-spacing:.05em;color:var(--blue);margin-bottom:3px}
+.pb td.af{color:var(--tx2);font-size:13.5px;line-height:1.45;max-width:30ch}
+.pb td em{font-style:normal;display:block;font-size:12px;color:var(--tx2);margin-top:3px;max-width:22ch;line-height:1.35}
+.chip{display:inline-block;font-family:var(--fm);font-size:9.5px;letter-spacing:.04em;padding:3px 7px;border-radius:5px;white-space:nowrap}
+.r-strategie{background:var(--b100);color:var(--link)}
+.r-techniek{background:var(--alt);color:var(--tx2)}
+.r-campagne{background:var(--lime100);color:var(--lime-tx)}
+.r-content{background:var(--orange100);color:var(--orange-tx)}
+.r-klantcontact,.r-klant{background:var(--green100);color:var(--green-tx)}
+.chip.m{border:1px solid var(--ln);color:var(--tx2);background:var(--card)}
+.chip.m.nee{border-color:var(--red-tx);color:var(--red-tx)}
+.blk{margin-top:34px}
+.blk h3{font-family:var(--fd);font-size:20px;font-weight:600;letter-spacing:-.014em;
+  padding-bottom:8px;border-bottom:2px solid var(--ln)}
+.st{display:inline-block;font-family:var(--fm);font-size:10px;padding:3px 8px;border-radius:980px}
+.st.ok{background:var(--alt);color:var(--tx2)}
+.st.nee{background:var(--red100);color:var(--red-tx)}
+.sc td .d{display:block;font-size:13px;color:var(--tx2);margin-top:2px;line-height:1.45;max-width:52ch}
+</style>
+
+<div class="bar"><div class="bar-in">
+  <b>Het playbook</b>
+  <a href="#rollen">Rollen</a>
+  <a href="#stappen">De 75 stappen</a>
+  <a href="#middelen">De middelen</a>
+  <a href="#bouw">Wat we moeten bouwen</a>
+  <button id="themeBtn" type="button">Donker</button>
+</div></div>
+
+<header class="wrap hdr">
+  <p class="kicker">INTERN &middot; WERKDOCUMENT</p>
+  <h1>Het playbook</h1>
+  <p class="lead">De 75 stappen van het fundament, elk met wie hem doet, waarmee, en wat er dan af is. Dit is niet de verkoopkant maar de uitvoeringskant: hier staat of het fundament ook echt kan draaien zonder dat jij of Jim erbij zit.</p>
+</header>
+
+<main class="wrap">
+
+<section class="sec" id="rollen">
+  <p class="kicker">DE ROLLEN</p>
+  <h2>Vijf rollen, niet vijf mensen</h2>
+  <p class="note">Een rol is een soort werk, geen functie. Bij een kleine klant doet iemand er drie; bij een grote splits je ze. Het punt is dat elke stap een eigenaar heeft, zodat niemand hoeft te vragen wie wat oppakt.</p>
+  <div class="tblwrap">
+  <table class="sc">
+    <thead><tr><th>Rol</th><th class="c" style="text-align:center">Stappen</th></tr></thead>
+    <tbody><tr><td><span class="chip r-techniek">Techniek</span></td><td class="c">26</td></tr><tr><td><span class="chip r-campagne">Campagne</span></td><td class="c">16</td></tr><tr><td><span class="chip r-content">Content</span></td><td class="c">16</td></tr><tr><td><span class="chip r-strategie">Strategie</span></td><td class="c">11</td></tr><tr><td><span class="chip r-klant">Klantcontact</span></td><td class="c">6</td></tr></tbody>
+  </table>
+  </div>
+  <div class="key" style="margin-top:24px">
+    <span class="k">WAT DEZE VERDELING LAAT ZIEN</span>
+    <p class="big">Techniek en content dragen samen bijna twee derde van het fundament.</p>
+    <p>Dat is goed nieuws voor je schaalbaarheid, want dat is het best overdraagbare werk: het volgt een checklist of een shotlist. Strategie is kleiner dan je zou denken en zit vrijwel volledig in de eerste dagen. Klantcontact is het kleinst en juist dat is het werk waar jij of Jim nu waarschijnlijk in zit &mdash; vijf momenten, niet meer.</p>
+  </div>
+</section>
+
+<section class="sec" id="stappen">
+  <p class="kicker">DE UITVOERING</p>
+  <h2>De 75 stappen</h2>
+  <p class="note">Op volgorde. De kolom <b>middel</b> noemt de standaard waaruit de stap wordt gedaan; staat die rood, dan bestaat hij nog niet en wordt de stap dus elke keer opnieuw bedacht. De kolom <b>wat er dan af is</b> is het afvinkpunt: geen mening, maar iets wat je kunt zien.</p>
+<div class="blk"><h3>Doel en plan</h3><div class="tblwrap"><table class="pb"><thead><tr><th class="c">#</th><th>Stap</th><th>Rol</th><th>Middel</th><th>Wat er dan af is</th><th class="c">Uur</th></tr></thead><tbody><tr><td class="c nr">1</td><td><span class="ond">Intake verwerken</span><b>Formulier versturen met toelichting</b></td><td><span class="chip r-klant">Klantcontact</span></td><td><span class="chip m ok">F1</span><em>Intakeformulier</em></td><td class="af">Formulier verstuurd, ontvangstdatum vastgelegd en het nabelmoment gepland</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">2</td><td><b>Antwoorden doornemen en gaten markeren</b></td><td><span class="chip r-strategie">Strategie</span></td><td><span class="chip m ok">F1</span><em>Intakeformulier</em></td><td class="af">Ingevuld formulier met de gaten gemarkeerd, plus de vragen voor het gesprek</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">3</td><td><b>Doel narekenen en vastleggen</b></td><td><span class="chip r-strategie">Strategie</span></td><td><span class="chip m ok">F2</span><em>Rekenblad doel en toolkosten</em></td><td class="af">E&eacute;n doelregel: zoveel aanvragen per maand tegen maximaal zoveel per aanvraag</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">4</td><td><b>Lijstgrootte en verkeer ophalen, toolkosten uitrekenen</b></td><td><span class="chip r-strategie">Strategie</span></td><td><span class="chip m ok">F2</span><em>Rekenblad doel en toolkosten</em></td><td class="af">E&eacute;n regel toolkosten voor het voorstel, met de staffel eronder</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">5</td><td><span class="ond">Doelgroep uitwerken</span><b>Antwoorden toetsen aan het klantenbestand</b></td><td><span class="chip r-strategie">Strategie</span></td><td><span class="chip m ok">F1</span><em>Intakeformulier</em></td><td class="af">Het doelgroepbeeld bevestigd of ontkracht, met de cijfers erbij</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">6</td><td><b>AI-analyse op de input en de markt</b></td><td><span class="chip r-strategie">Strategie</span></td><td><span class="chip m nee">A1</span><em>AI-instructie doelgroep</em></td><td class="af">Doelgroepprofiel uit een vaste prompt, niet per klant opnieuw bedacht</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">7</td><td><b>Targetingprofielen per kanaal uitwerken</b></td><td><span class="chip r-campagne">Campagne</span></td><td><span class="chip m ok">S3</span><em>Standaard targetingprofielen</em></td><td class="af">Per kanaal een profiel dat rechtstreeks in het account te zetten is</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">8</td><td><span class="ond">Propositie aanscherpen</span><b>Input en concurrentieteksten door AI halen</b></td><td><span class="chip r-strategie">Strategie</span></td><td><span class="chip m nee">A2</span><em>AI-instructie propositie en tekst</em></td><td class="af">Eerste versie van de boodschap per doelgroep</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">9</td><td><b>Redigeren tot een boodschap per doelgroep</b></td><td><span class="chip r-strategie">Strategie</span></td><td><span class="chip m nee">A2</span><em>AI-instructie propositie en tekst</em></td><td class="af">Afgetekende boodschap, bruikbaar als advertentietaal</td><td class="c u">1 u</td></tr><tr><td class="c nr">10</td><td><span class="ond">Concurrentieanalyse</span><b>Zoekwoorden en advertentiebibliotheek ophalen</b></td><td><span class="chip r-campagne">Campagne</span></td><td><span class="chip m nee">A3</span><em>AI-instructie concurrentieanalyse</em></td><td class="af">In beeld wat de concurrent draait en waarop</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">11</td><td><b>AI-analyse en samenvatting waar het gat zit</b></td><td><span class="chip r-strategie">Strategie</span></td><td><span class="chip m nee">A3</span><em>AI-instructie concurrentieanalyse</em></td><td class="af">E&eacute;n alinea: hier zit het gat</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">12</td><td><span class="ond">Conversiedefinitie</span><b>Standaardset kiezen, toespitsen en aftekenen</b></td><td><span class="chip r-strategie">Strategie</span></td><td><span class="chip m ok">S1</span><em>Standaardset conversies</em></td><td class="af">Getekende conversiedefinitie &mdash; hieraan hangen de KPI&rsquo;s en de rapportage</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">13</td><td><span class="ond">Merkcheck</span><b>Assets inventariseren en beoordelen</b></td><td><span class="chip r-content">Content</span></td><td><span class="chip m ok">P2</span><em>Merkchecklijst</em></td><td class="af">Oordeel per asset: bruikbaar, deels of niet</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">14</td><td><b>Kleurstelling en typografie vaststellen</b></td><td><span class="chip r-content">Content</span></td><td><span class="chip m ok">P2</span><em>Merkchecklijst</em></td><td class="af">Kleur en typografie vastgelegd. Vervalt als er een bruikbaar merk ligt</td><td class="c u">0–0,5 u</td></tr><tr><td class="c nr">15</td><td><b>Advertentiesjablonen opzetten</b></td><td><span class="chip r-content">Content</span></td><td><span class="chip m ok">T4</span><em>Template advertentiesjablonen</em></td><td class="af">Sjablonen in alle drie de beeldverhoudingen</td><td class="c u">0,5 u</td></tr></tbody></table></div></div><div class="blk"><h3>Techniek en meting</h3><div class="tblwrap"><table class="pb"><thead><tr><th class="c">#</th><th>Stap</th><th>Rol</th><th>Middel</th><th>Wat er dan af is</th><th class="c">Uur</th></tr></thead><tbody><tr><td class="c nr">16</td><td><span class="ond">De technische audit</span><b>Checklist afwerken: toegang, snelheid, SSL, redirects, e-mail, meting, consent, indexatie, bedrijfsprofiel</b></td><td><span class="chip r-techniek">Techniek</span></td><td><span class="chip m ok">C1</span><em>Checklist technische audit</em></td><td class="af">Negen uitkomsten, elk groen, oranje of rood tegen een vaste drempel</td><td class="c u">1,5 u</td></tr><tr><td class="c nr">17</td><td><b>Uitkomsten door AI tot bevindingenrapport</b></td><td><span class="chip r-techniek">Techniek</span></td><td><span class="chip m nee">A4</span><em>AI-instructie bevindingenrapport</em></td><td class="af">Rapport dat de klant zelf kan lezen, met wat het kost en wat het oplevert</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">18</td><td><span class="ond">Bevindingen doorzetten</span><b>Rapport met de klant doornemen</b></td><td><span class="chip r-klant">Klantcontact</span></td><td><span class="chip m ok">G1</span><em>Gespreksleidraad bevindingen</em></td><td class="af">Per bevinding een beslissing: nu, later of niet</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">19</td><td><b>Voorstel Webmix aanvragen voor wat niet voldoet</b></td><td><span class="chip r-techniek">Techniek</span></td><td><span class="chip m ok">W1</span><em>Aanvraagformat Webmix</em></td><td class="af">Offerte van Webmix bij de klant, niet bij ons</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">20</td><td><span class="ond">Meetopzet volgens onze standaard</span><b>GA4 en Tag Manager uit template</b></td><td><span class="chip r-techniek">Techniek</span></td><td><span class="chip m ok">T1</span><em>Template meetopzet</em></td><td class="af">Container live, de basisevents vuren aantoonbaar</td><td class="c u">1 u</td></tr><tr><td class="c nr">21</td><td><b>Conversie-events uit de standaardset</b></td><td><span class="chip r-techniek">Techniek</span></td><td><span class="chip m ok">S1</span><em>Standaardset conversies</em></td><td class="af">Elk event uit de standaardset getest en zichtbaar</td><td class="c u">1 u</td></tr><tr><td class="c nr">22</td><td><b>Koppelen aan Google Ads en Meta</b></td><td><span class="chip r-techniek">Techniek</span></td><td><span class="chip m ok">T1</span><em>Template meetopzet</em></td><td class="af">Conversies komen binnen in Google Ads &eacute;n Meta</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">23</td><td><b>Consent mode instellen</b></td><td><span class="chip r-techniek">Techniek</span></td><td><span class="chip m ok">T1</span><em>Template meetopzet</em></td><td class="af">Meting werkt met en zonder toestemming, aantoonbaar</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">24</td><td><b>Search Console en Google Bedrijfsprofiel</b></td><td><span class="chip r-techniek">Techniek</span></td><td><span class="chip m ok">C2</span><em>Checklist accounts en toegang</em></td><td class="af">Beide geverifieerd en gekoppeld</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">25</td><td><span class="ond">De nulmeting</span><b>Cijfers per bron vastleggen in het dashboard</b></td><td><span class="chip r-techniek">Techniek</span></td><td><span class="chip m ok">T7</span><em>Template dashboard</em></td><td class="af">Nulmeting bevroren, met de datum erbij</td><td class="c u">0,5 u</td></tr></tbody></table></div></div><div class="blk"><h3>Onze systemen</h3><div class="tblwrap"><table class="pb"><thead><tr><th class="c">#</th><th>Stap</th><th>Rol</th><th>Middel</th><th>Wat er dan af is</th><th class="c">Uur</th></tr></thead><tbody><tr><td class="c nr">26</td><td><span class="ond">Advertentieaccounts</span><b>Google Ads aanmaken en verifiëren</b></td><td><span class="chip r-techniek">Techniek</span></td><td><span class="chip m ok">C2</span><em>Checklist accounts en toegang</em></td><td class="af">Account op naam van de klant, wij als beheerder</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">27</td><td><b>Meta Business Manager en advertentieaccount</b></td><td><span class="chip r-techniek">Techniek</span></td><td><span class="chip m ok">C2</span><em>Checklist accounts en toegang</em></td><td class="af">Account op naam van de klant, wij als beheerder</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">28</td><td><b>Beheertoegang en betaalmethode van de klant</b></td><td><span class="chip r-techniek">Techniek</span></td><td><span class="chip m ok">C2</span><em>Checklist accounts en toegang</em></td><td class="af">Betaalmethode van de klant, nooit van ons</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">29</td><td><span class="ond">MailerLite</span><b>Account opzetten en domein verifiëren</b></td><td><span class="chip r-techniek">Techniek</span></td><td><span class="chip m ok">T5</span><em>Template e-mailopzet</em></td><td class="af">Verzendend domein geverifieerd</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">30</td><td><b>Bestaande contacten importeren: opschonen, ontdubbelen, toestemming controleren</b></td><td><span class="chip r-techniek">Techniek</span></td><td><span class="chip m ok">T5</span><em>Template e-mailopzet</em></td><td class="af">Ge&iuml;mporteerd, ontdubbeld, en de herkomst van de lijst vastgelegd</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">31</td><td><b>Bestaande segmentatie overnemen, of een eerste indeling opzetten</b></td><td><span class="chip r-strategie">Strategie</span></td><td><span class="chip m ok">T5</span><em>Template e-mailopzet</em></td><td class="af">Groepen die aansluiten op de conversiedefinitie</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">32</td><td><b>Leadformulieren en webformulieren koppelen, per formulier naar de juiste groep</b></td><td><span class="chip r-techniek">Techniek</span></td><td><span class="chip m ok">T5</span><em>Template e-mailopzet</em></td><td class="af">Elke inzending landt in de juiste groep, getest</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">33</td><td><b>Standaardflow: bevestiging en opvolging</b></td><td><span class="chip r-content">Content</span></td><td><span class="chip m ok">T5</span><em>Template e-mailopzet</em></td><td class="af">Flow live, testmail ontvangen</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">34</td><td><span class="ond">Leadinfo</span><b>Script plaatsen, account aanmaken en de set-up via ons regelen — kosteloos</b></td><td><span class="chip r-techniek">Techniek</span></td><td><span class="chip m ok">C2</span><em>Checklist accounts en toegang</em></td><td class="af">Herkenning zichtbaar in de portal</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">35</td><td><span class="ond">Je leadportal</span><b>Klantomgeving aanmaken en gebruikers instellen</b></td><td><span class="chip r-techniek">Techniek</span></td><td><span class="chip m nee">P1</span><em>Het leadportal</em></td><td class="af">De klant kan inloggen en ziet zijn eigen omgeving</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">36</td><td><b>Formulieren aan de portal koppelen</b></td><td><span class="chip r-techniek">Techniek</span></td><td><span class="chip m nee">P1</span><em>Het leadportal</em></td><td class="af">Elke aanvraag komt binnen met de bron erbij</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">37</td><td><b>Doortesten met een echte aanvraag</b></td><td><span class="chip r-techniek">Techniek</span></td><td><span class="chip m ok">C3</span><em>Checklist doortesten</em></td><td class="af">Testaanvraag zichtbaar in de portal &eacute;n in het dashboard</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">38</td><td><span class="ond">Je dashboard</span><b>Bronnen koppelen: Ads, Meta, GA4 en de portal</b></td><td><span class="chip r-techniek">Techniek</span></td><td><span class="chip m ok">T7</span><em>Template dashboard</em></td><td class="af">Alle vier de bronnen live</td><td class="c u">1 u</td></tr><tr><td class="c nr">39</td><td><b>Doelen en nulmeting invullen</b></td><td><span class="chip r-strategie">Strategie</span></td><td><span class="chip m ok">T7</span><em>Template dashboard</em></td><td class="af">Het doel uit stap 3 staat als lijn in het dashboard</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">40</td><td><b>Doorlopen met de klant</b></td><td><span class="chip r-klant">Klantcontact</span></td><td><span class="chip m ok">G3</span><em>Gespreksleidraad dashboard</em></td><td class="af">De klant weet waar hij kijkt en waarop wij sturen</td><td class="c u">0,5 u</td></tr></tbody></table></div></div><div class="blk"><h3>De campagne</h3><div class="tblwrap"><table class="pb"><thead><tr><th class="c">#</th><th>Stap</th><th>Rol</th><th>Middel</th><th>Wat er dan af is</th><th class="c">Uur</th></tr></thead><tbody><tr><td class="c nr">41</td><td><span class="ond">Zoekwoordonderzoek</span><b>Zoekwoorden verzamelen en verrijken met AI</b></td><td><span class="chip r-campagne">Campagne</span></td><td><span class="chip m nee">A6</span><em>AI-instructie zoekwoorden</em></td><td class="af">Ruwe zoekwoordenlijst</td><td class="c u">1 u</td></tr><tr><td class="c nr">42</td><td><b>Volume en klikprijs ophalen</b></td><td><span class="chip r-campagne">Campagne</span></td><td><span class="chip m nee">A6</span><em>AI-instructie zoekwoorden</em></td><td class="af">Lijst met volume en klikprijs per woord</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">43</td><td><b>Clusteren naar intentie</b></td><td><span class="chip r-campagne">Campagne</span></td><td><span class="chip m nee">A6</span><em>AI-instructie zoekwoorden</em></td><td class="af">Clusters die &eacute;&eacute;n op &eacute;&eacute;n advertentiegroepen worden</td><td class="c u">1 u</td></tr><tr><td class="c nr">44</td><td><b>Uitsluitingslijst uit onze standaard plus klantspecifiek</b></td><td><span class="chip r-campagne">Campagne</span></td><td><span class="chip m ok">S2</span><em>Standaard uitsluitingslijst</em></td><td class="af">Standaardlijst plus de klantspecifieke aanvulling</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">45</td><td><span class="ond">Campagnestructuur</span><b>Campagnes en advertentiegroepen uit template</b></td><td><span class="chip r-campagne">Campagne</span></td><td><span class="chip m ok">T2</span><em>Template campagnestructuur</em></td><td class="af">Structuur staat: merknaam, commercieel en retargeting apart</td><td class="c u">1 u</td></tr><tr><td class="c nr">46</td><td><b>Locaties, talen en planning</b></td><td><span class="chip r-campagne">Campagne</span></td><td><span class="chip m ok">T2</span><em>Template campagnestructuur</em></td><td class="af">Locaties, talen en planning ingesteld en gecontroleerd</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">47</td><td><b>Budget verdelen</b></td><td><span class="chip r-campagne">Campagne</span></td><td><span class="chip m ok">T2</span><em>Template campagnestructuur</em></td><td class="af">Verdeling die past bij het doel uit stap 3</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">48</td><td><span class="ond">Advertenties schrijven</span><b>Koppen en beschrijvingen, eerste versie met AI</b></td><td><span class="chip r-campagne">Campagne</span></td><td><span class="chip m nee">A5</span><em>AI-instructie advertentieteksten</em></td><td class="af">Eerste set varianten per advertentiegroep</td><td class="c u">1 u</td></tr><tr><td class="c nr">49</td><td><b>Redigeren en op merk zetten</b></td><td><span class="chip r-content">Content</span></td><td><span class="chip m nee">A2</span><em>AI-instructie propositie en tekst</em></td><td class="af">Advertenties in dezelfde boodschap als stap 9</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">50</td><td><b>Extensies en sitelinks</b></td><td><span class="chip r-campagne">Campagne</span></td><td><span class="chip m ok">T2</span><em>Template campagnestructuur</em></td><td class="af">Extensies en sitelinks ingericht</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">51</td><td><span class="ond">Doelgroepen en targeting</span><b>Publieken opbouwen in Meta</b></td><td><span class="chip r-campagne">Campagne</span></td><td><span class="chip m ok">S3</span><em>Standaard targetingprofielen</em></td><td class="af">Publieken opgebouwd uit de targetingprofielen</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">52</td><td><b>Uitsluitingen instellen</b></td><td><span class="chip r-campagne">Campagne</span></td><td><span class="chip m ok">S2</span><em>Standaard uitsluitingslijst</em></td><td class="af">Bestaande klanten en sollicitanten uitgesloten</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">53</td><td><span class="ond">Biedstrategie en retargeting</span><b>Startstrategie per campagne</b></td><td><span class="chip r-campagne">Campagne</span></td><td><span class="chip m ok">T2</span><em>Template campagnestructuur</em></td><td class="af">Startstrategie vastgelegd, met het moment waarop we omschakelen</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">54</td><td><b>Pixel, conversie-API en segmenten</b></td><td><span class="chip r-techniek">Techniek</span></td><td><span class="chip m ok">T1</span><em>Template meetopzet</em></td><td class="af">Server-side meting werkt aantoonbaar</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">55</td><td><span class="ond">Landingspagina</span><b>Opzet en structuur uit template</b></td><td><span class="chip r-content">Content</span></td><td><span class="chip m ok">T3</span><em>Template landingspagina</em></td><td class="af">Pagina staat op het subdomein van de klant</td><td class="c u">1 u</td></tr><tr><td class="c nr">56</td><td><b>Teksten schrijven</b></td><td><span class="chip r-content">Content</span></td><td><span class="chip m nee">A2</span><em>AI-instructie propositie en tekst</em></td><td class="af">Pagina in dezelfde boodschap als de advertenties</td><td class="c u">1,5 u</td></tr><tr><td class="c nr">57</td><td><b>Beeld plaatsen en opmaken</b></td><td><span class="chip r-content">Content</span></td><td><span class="chip m ok">T3</span><em>Template landingspagina</em></td><td class="af">Eigen beeld van de draaidag, geen stock</td><td class="c u">1 u</td></tr><tr><td class="c nr">58</td><td><b>Mobiel en snelheid controleren</b></td><td><span class="chip r-techniek">Techniek</span></td><td><span class="chip m ok">C1</span><em>Checklist technische audit</em></td><td class="af">Onder de drempelwaarde uit de audit, gemeten met hetzelfde gereedschap</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">59</td><td><span class="ond">Formulier en bedankpagina</span><b>Formulier bouwen en aan de portal koppelen</b></td><td><span class="chip r-techniek">Techniek</span></td><td><span class="chip m nee">P1</span><em>Het leadportal</em></td><td class="af">Inzending komt binnen in de portal</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">60</td><td><b>Bedankpagina met conversiemeting</b></td><td><span class="chip r-techniek">Techniek</span></td><td><span class="chip m ok">S1</span><em>Standaardset conversies</em></td><td class="af">Conversie vuurt op de bedankpagina, getest</td><td class="c u">0,5 u</td></tr></tbody></table></div></div><div class="blk"><h3>De content</h3><div class="tblwrap"><table class="pb"><thead><tr><th class="c">#</th><th>Stap</th><th>Rol</th><th>Middel</th><th>Wat er dan af is</th><th class="c">Uur</th></tr></thead><tbody><tr><td class="c nr">61</td><td><span class="ond">Voorbereiding</span><b>Shotlist uit ons format invullen</b></td><td><span class="chip r-content">Content</span></td><td><span class="chip m ok">T6</span><em>Template shotlist en draaidag</em></td><td class="af">Shotlist die de draaidag stuurt</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">62</td><td><b>Planning en afstemming met de klant</b></td><td><span class="chip r-klant">Klantcontact</span></td><td><span class="chip m ok">T6</span><em>Template shotlist en draaidag</em></td><td class="af">Datum, locatie, mensen en producten bevestigd</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">63</td><td><span class="ond">De draaidag</span><b>Reis en opbouw</b></td><td><span class="chip r-content">Content</span></td><td><span class="chip m ok">T6</span><em>Template shotlist en draaidag</em></td><td class="af">Klaar om te draaien</td><td class="c u">1 u</td></tr><tr><td class="c nr">64</td><td><b>Filmen</b></td><td><span class="chip r-content">Content</span></td><td><span class="chip m ok">T6</span><em>Template shotlist en draaidag</em></td><td class="af">Shotlist afgewerkt</td><td class="c u">4 u</td></tr><tr><td class="c nr">65</td><td><b>Afbouw</b></td><td><span class="chip r-content">Content</span></td><td><span class="chip m ok">T6</span><em>Template shotlist en draaidag</em></td><td class="af">Materiaal veiliggesteld en geback-upt</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">66</td><td><span class="ond">Montage</span><b>Selectie en ruwe montage</b></td><td><span class="chip r-content">Content</span></td><td><span class="chip m ok">T6</span><em>Template shotlist en draaidag</em></td><td class="af">Ruwe versie</td><td class="c u">1,5 u</td></tr><tr><td class="c nr">67</td><td><b>Varianten knippen</b></td><td><span class="chip r-content">Content</span></td><td><span class="chip m ok">T6</span><em>Template shotlist en draaidag</em></td><td class="af">Meerdere varianten om tegen elkaar te testen</td><td class="c u">2 u</td></tr><tr><td class="c nr">68</td><td><b>Exporteren in 9:16, 1:1 en 4:5</b></td><td><span class="chip r-content">Content</span></td><td><span class="chip m ok">T4</span><em>Template advertentiesjablonen</em></td><td class="af">Alle drie de beeldverhoudingen klaar</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">69</td><td><b>Stills selecteren en bewerken</b></td><td><span class="chip r-content">Content</span></td><td><span class="chip m ok">T4</span><em>Template advertentiesjablonen</em></td><td class="af">Stills voor de landingspagina en de statische advertenties</td><td class="c u">0,5 u</td></tr></tbody></table></div></div><div class="blk"><h3>Live</h3><div class="tblwrap"><table class="pb"><thead><tr><th class="c">#</th><th>Stap</th><th>Rol</th><th>Middel</th><th>Wat er dan af is</th><th class="c">Uur</th></tr></thead><tbody><tr><td class="c nr">70</td><td><span class="ond">Kickoff met je team</span><b>Voorbereiden</b></td><td><span class="chip r-klant">Klantcontact</span></td><td><span class="chip m ok">G2</span><em>Gespreksleidraad kickoff</em></td><td class="af">Agenda en rolverdeling klaar</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">71</td><td><b>Sessie met het team van de klant</b></td><td><span class="chip r-klant">Klantcontact</span></td><td><span class="chip m ok">G2</span><em>Gespreksleidraad kickoff</em></td><td class="af">Vastgelegd wie belt, hoe snel, en waar de aanvraag landt</td><td class="c u">1 u</td></tr><tr><td class="c nr">72</td><td><span class="ond">Testaanvraag door de keten</span><b>Aanvraag doen en volgen</b></td><td><span class="chip r-techniek">Techniek</span></td><td><span class="chip m ok">C3</span><em>Checklist doortesten</em></td><td class="af">Aanvraag gevolgd door advertentie, pagina, formulier, portal, dashboard en e-mail</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">73</td><td><b>Bevindingen oplossen en hertesten</b></td><td><span class="chip r-techniek">Techniek</span></td><td><span class="chip m ok">C3</span><em>Checklist doortesten</em></td><td class="af">Tweede test groen</td><td class="c u">0,5 u</td></tr><tr><td class="c nr">74</td><td><span class="ond">De eerste week</span><b>Dagelijkse controle</b></td><td><span class="chip r-campagne">Campagne</span></td><td><span class="chip m ok">T2</span><em>Template campagnestructuur</em></td><td class="af">Zeven dagen bijgehouden, afwijkingen dezelfde dag opgepakt</td><td class="c u">1 u</td></tr><tr><td class="c nr">75</td><td><b>Eerste bijstellingen</b></td><td><span class="chip r-campagne">Campagne</span></td><td><span class="chip m ok">T2</span><em>Template campagnestructuur</em></td><td class="af">Eerste optimalisaties doorgevoerd en vastgelegd</td><td class="c u">1 u</td></tr></tbody></table></div></div>
+</section>
+
+<section class="sec" id="middelen">
+  <p class="kicker">DE MIDDELEN</p>
+  <h2>27 standaarden dragen 75 stappen</h2>
+  <p class="note">Dit is de kern van het hele verhaal. Het fundament is niet standaard omdat de stappen op een lijst staan, maar omdat elke stap uit een vast middel komt. Hoe vaker een middel terugkomt, hoe meer het oplevert om het goed te maken.</p>
+  <div class="tblwrap">
+  <table class="sc">
+    <thead><tr><th>Code</th><th>Middel</th><th class="c" style="text-align:center">Stappen</th><th>Status</th></tr></thead>
+    <tbody><tr><td><span class="chip m ok">T2</span></td><td><b>Template campagnestructuur</b><span class="d">Merknaam, commercieel en retargeting apart. Inclusief startbiedstrategie en het moment van omschakelen.</span></td><td class="c">7</td><td><span class="st ok">Vastleggen</span></td></tr><tr><td><span class="chip m ok">T6</span></td><td><b>Template shotlist en draaidag</b><span class="d">Wat we filmen, in welke volgorde, en wat de klant daarvoor klaarzet.</span></td><td class="c">7</td><td><span class="st ok">Vastleggen</span></td></tr><tr><td><span class="chip m ok">C2</span></td><td><b>Checklist accounts en toegang</b><span class="d">Welke accounts, op wiens naam, met welke rechten en welke betaalmethode.</span></td><td class="c">5</td><td><span class="st ok">Vastleggen</span></td></tr><tr><td><span class="chip m ok">T5</span></td><td><b>Template e-mailopzet</b><span class="d">Domeinverificatie, import, segmentatie, formulierkoppeling en de bevestigingsflow.</span></td><td class="c">5</td><td><span class="st ok">Vastleggen</span></td></tr><tr><td><span class="chip m nee">A2</span></td><td><b>AI-instructie propositie en tekst</b><span class="d">Vaste prompt voor de boodschap per doelgroep, hergebruikt in advertenties en op de landingspagina.</span></td><td class="c">4</td><td><span class="st nee">Bestaat nog niet</span></td></tr><tr><td><span class="chip m ok">T1</span></td><td><b>Template meetopzet</b><span class="d">GA4, Tag Manager, consent mode en de koppeling naar beide advertentieplatformen.</span></td><td class="c">4</td><td><span class="st ok">Vastleggen</span></td></tr><tr><td><span class="chip m nee">A6</span></td><td><b>AI-instructie zoekwoorden</b><span class="d">Vaste prompt voor verzamelen, verrijken en clusteren naar intentie.</span></td><td class="c">3</td><td><span class="st nee">Bestaat nog niet</span></td></tr><tr><td><span class="chip m ok">C3</span></td><td><b>Checklist doortesten</b><span class="d">De route die een testaanvraag aflegt en wat er op elk punt zichtbaar moet zijn.</span></td><td class="c">3</td><td><span class="st ok">Vastleggen</span></td></tr><tr><td><span class="chip m ok">F1</span></td><td><b>Intakeformulier</b><span class="d">De vragen die de klant v&oacute;&oacute;r dag 1 beantwoordt. Vaste velden, vaste volgorde, met een export van zijn e-mailbestand erbij.</span></td><td class="c">3</td><td><span class="st ok">Vastleggen</span></td></tr><tr><td><span class="chip m nee">P1</span></td><td><b>Het leadportal</b><span class="d">Bestaat nog niet. De belofte &ldquo;wij koppelen niet met jouw CRM&rdquo; kan pas als aanvragen hier landen.</span></td><td class="c">3</td><td><span class="st nee">Bestaat nog niet</span></td></tr><tr><td><span class="chip m ok">S1</span></td><td><b>Standaardset conversies</b><span class="d">De vaste set events die wij meten, met de naamgeving die het dashboard verwacht.</span></td><td class="c">3</td><td><span class="st ok">Vastleggen</span></td></tr><tr><td><span class="chip m ok">T4</span></td><td><b>Template advertentiesjablonen</b><span class="d">Alle drie de beeldverhoudingen, klaar om beeld in te laten vallen.</span></td><td class="c">3</td><td><span class="st ok">Vastleggen</span></td></tr><tr><td><span class="chip m ok">T7</span></td><td><b>Template dashboard</b><span class="d">Vier bronnen, de doellijn uit het rekenblad en de nulmeting.</span></td><td class="c">3</td><td><span class="st ok">Vastleggen</span></td></tr><tr><td><span class="chip m nee">A3</span></td><td><b>AI-instructie concurrentieanalyse</b><span class="d">Vaste prompt die van zoekwoorden en advertentieteksten &eacute;&eacute;n alinea maakt: hier zit het gat.</span></td><td class="c">2</td><td><span class="st nee">Bestaat nog niet</span></td></tr><tr><td><span class="chip m ok">C1</span></td><td><b>Checklist technische audit</b><span class="d">Negen metingen, elk met het gereedschap en de drempelwaarde. Dit is de kern: zonder drempels is het een mening.</span></td><td class="c">2</td><td><span class="st ok">Vastleggen</span></td></tr><tr><td><span class="chip m ok">F2</span></td><td><b>Rekenblad doel en toolkosten</b><span class="d">Van gewenste omzet naar aanvragen per maand en maximale kosten per aanvraag. Plus de staffels die de toolkosten bepalen.</span></td><td class="c">2</td><td><span class="st ok">Vastleggen</span></td></tr><tr><td><span class="chip m ok">G2</span></td><td><b>Gespreksleidraad kickoff</b><span class="d">Wie belt, hoe snel, waar het landt en wat wij van het team verwachten.</span></td><td class="c">2</td><td><span class="st ok">Vastleggen</span></td></tr><tr><td><span class="chip m ok">P2</span></td><td><b>Merkchecklijst</b><span class="d">Welke assets we nodig hebben en wanneer iets bruikbaar is om mee te adverteren.</span></td><td class="c">2</td><td><span class="st ok">Vastleggen</span></td></tr><tr><td><span class="chip m ok">S2</span></td><td><b>Standaard uitsluitingslijst</b><span class="d">Zoekwoorden en publieken die wij altijd uitsluiten, plus de klantspecifieke aanvulling.</span></td><td class="c">2</td><td><span class="st ok">Vastleggen</span></td></tr><tr><td><span class="chip m ok">S3</span></td><td><b>Standaard targetingprofielen</b><span class="d">Per kanaal een profiel dat rechtstreeks in het account te zetten is.</span></td><td class="c">2</td><td><span class="st ok">Vastleggen</span></td></tr><tr><td><span class="chip m ok">T3</span></td><td><b>Template landingspagina</b><span class="d">Op onze eigen omgeving, op het subdomein van de klant.</span></td><td class="c">2</td><td><span class="st ok">Vastleggen</span></td></tr><tr><td><span class="chip m nee">A1</span></td><td><b>AI-instructie doelgroep</b><span class="d">Vaste prompt die van de intake-antwoorden een doelgroepprofiel maakt.</span></td><td class="c">1</td><td><span class="st nee">Bestaat nog niet</span></td></tr><tr><td><span class="chip m nee">A4</span></td><td><b>AI-instructie bevindingenrapport</b><span class="d">Vaste prompt die de negen meetuitkomsten omzet in een rapport dat een klant begrijpt.</span></td><td class="c">1</td><td><span class="st nee">Bestaat nog niet</span></td></tr><tr><td><span class="chip m nee">A5</span></td><td><b>AI-instructie advertentieteksten</b><span class="d">Vaste prompt voor koppen en beschrijvingen, gevoed door de boodschap uit A2.</span></td><td class="c">1</td><td><span class="st nee">Bestaat nog niet</span></td></tr><tr><td><span class="chip m ok">G1</span></td><td><b>Gespreksleidraad bevindingen</b><span class="d">Hoe je negen uitkomsten doorneemt zonder het een verkooppraatje te laten worden.</span></td><td class="c">1</td><td><span class="st ok">Vastleggen</span></td></tr><tr><td><span class="chip m ok">G3</span></td><td><b>Gespreksleidraad dashboard</b><span class="d">Hoe je een klant leert kijken naar zijn eigen cijfers.</span></td><td class="c">1</td><td><span class="st ok">Vastleggen</span></td></tr><tr><td><span class="chip m ok">W1</span></td><td><b>Aanvraagformat Webmix</b><span class="d">Vaste uitvraag met de meetuitkomsten erbij, zodat Webmix direct kan offreren.</span></td><td class="c">1</td><td><span class="st ok">Vastleggen</span></td></tr></tbody>
+  </table>
+  </div>
+</section>
+
+<section class="sec" id="bouw">
+  <p class="kicker">DE BOUWLIJST</p>
+  <h2>Wat er moet bestaan voordat dit werkt</h2>
+  <div class="key">
+    <span class="k">DE HARDE ONDERGRENS</span>
+    <p class="big">Zeven middelen bestaan nog niet. Daar hangen 15 van de 75 stappen aan.</p>
+    <p>Zes AI-instructies en het leadportal. Zolang die er niet zijn, is het fundament een lijst met goede voornemens: de stappen worden gezet, maar elke keer opnieuw bedacht, door degene die toevallig beschikbaar is, in de tijd die het die keer kost. Precies het probleem dat je met &euro; 4.500 voor 52 uur niet meer kunt hebben.</p>
+  </div>
+  <div class="stack" style="margin-top:22px">
+    <div class="st" style="display:block"><span class="lab">EERST</span><div class="bd"><h4>Het leadportal</h4><p>Drie stappen hangen er rechtstreeks aan, maar de afhankelijkheid is groter dan dat getal: zonder portal kun je niet beloven dat je niet koppelt met het CRM van de klant, en dan valt een van de vier redenen weg waarom jouw model geen maatwerk wordt. Dit is geen template maar een bouwproject, en het moet af zijn v&oacute;&oacute;r de eerste klant.</p></div></div>
+    <div class="st" style="display:block"><span class="lab">DAARNA</span><div class="bd"><h4>De zes AI-instructies</h4><p>Twaalf stappen, samen goed voor ongeveer vijf uur in de begroting. Die vijf uur kloppen alleen met goede prompts; zonder is het eerder twaalf. Dat is het verschil tussen &euro; 86 per uur en &euro; 60. De zwaarste is A2, de propositie-instructie, want die wordt drie keer hergebruikt &mdash; in de boodschap, in de advertenties en op de landingspagina.</p></div></div>
+    <div class="st" style="display:block"><span class="lab">DAN</span><div class="bd"><h4>De checklist technische audit</h4><p>Staat als &ldquo;vastleggen&rdquo; omdat je het werk al doet, maar hij is even urgent. Negen metingen hebben negen gereedschappen en negen drempelwaarden nodig. &ldquo;Onder 2,5 seconden&rdquo; is een norm; &ldquo;actuele software&rdquo; is dat niet. Zolang die drempels ontbreken kun je geen prijslijst publiceren waarin een meting automatisch naar een bedrag wijst.</p></div></div>
+  </div>
+
+  <div class="key" style="margin-top:24px">
+    <span class="k">DE VOLGORDE DIE IK ZOU AANHOUDEN</span>
+    <p class="big">Bouw de middelen die het vaakst terugkomen het eerst.</p>
+    <p>Niet de leukste en niet de moeilijkste, maar die met de meeste stappen eronder. Daar zit je rendement: een middel dat in zeven stappen terugkomt levert zeven keer tijdwinst en zeven keer minder spreiding op. De tabel hierboven staat daarom op aflopend gebruik, niet op alfabet.</p>
+    <p style="margin-top:14px">Wat ik hier niet in heb gezet: hoe lang het bouwen zelf kost. Dat is het volgende gesprek, en het is een eerlijker investering dan het lijkt &mdash; deze 27 middelen zijn wat het verschil maakt tussen een bureau dat tien klanten aankan en een bureau dat er dertig aankan zonder dat jullie tweeën harder gaan werken.</p>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap foot">James Robinson &mdash; Marketing &amp; Branding &middot; Het playbook, concept september 2026</footer>
+
+<script>
+(function(){
+  var root=document.documentElement,tb=document.getElementById('themeBtn');
+  if(!tb) return;
+  function cur(){var t=root.getAttribute('data-theme');return t||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}
+  function sync(){tb.textContent=cur()==='dark'?'Licht':'Donker'}
+  sync();
+  tb.addEventListener('click',function(){root.setAttribute('data-theme',cur()==='dark'?'light':'dark');sync()});
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',sync);
+})();
+</script>

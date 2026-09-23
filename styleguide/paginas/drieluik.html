@@ -278,9 +278,6 @@ h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
       <label class="opt"><input type="checkbox" data-e="250">
         <span class="lb">E-mailauthenticatie<em>Webmix. SPF, DKIM en DMARC.</em></span>
         <span class="pz">&euro; 250</span></label>
-      <label class="opt"><input type="checkbox" data-e="250" id="s-cal">
-        <span class="lb">Afsprakenplanner instellen<em>Wij. Alleen als je hem in het gameplan aanzet.</em></span>
-        <span class="pz">&euro; 250</span></label>
     </div>
 
     <!-- ========== MIDDEN ========== -->
@@ -318,9 +315,9 @@ h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
       <label class="opt vast"><input type="checkbox" checked disabled>
         <span class="lb">E-mailplatform<em>Vast onderdeel, vanaf dag &eacute;&eacute;n &mdash; we beginnen meteen adressen te verzamelen. Prijs volgt je lijstgrootte.</em></span>
         <span class="pz">vanaf &euro; 9,90 p/m</span></label>
-      <label class="opt"><input type="checkbox" data-m="10" id="g-cal">
-        <span class="lb">Afsprakenplanner<em>Alleen als je afspraken laat inplannen.</em></span>
-        <span class="pz">vanaf &euro; 10 p/m</span></label>
+      <label class="opt"><input type="checkbox" data-m="15" data-e="250" id="g-cal">
+        <span class="lb">Afsprakenplanner<em>Alleen als je afspraken laat inplannen. Wij zetten hem op en koppelen hem; het maandbedrag geldt per gebruiker.</em></span>
+        <span class="pz">&euro; 250 eenmalig + &euro; 15 p/m</span></label>
       <label class="opt"><input type="checkbox" data-staffel="1">
         <span class="lb">Bezoekersherkenning<em>Zien welke bedrijven langskwamen zonder te converteren. Alleen zinvol bij B2B, want wij volgen geen leads op. Wij ontvangen hier een vergoeding voor.</em></span>
         <span class="pz">staffel</span></label>
@@ -428,7 +425,6 @@ h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
     <div class="st"><span class="lab">BEDRAGEN</span><div class="bd"><h4>Drie posten op de bank hebben nog geen vastgezet tarief</h4><p>Snelheid &euro; 750, redirects &euro; 500 en e-mailauthenticatie &euro; 250 zijn middens van mijn schattingen. Webmix moet ze bevestigen voordat dit blad de deur uit gaat.</p></div></div>
     <div class="st"><span class="lab">STAFFELS</span><div class="bd"><h4>Twee keer &ldquo;vanaf&rdquo; en &eacute;&eacute;n keer &ldquo;staffel&rdquo;</h4><p>Het e-mailplatform, de afsprakenplanner en de bezoekersherkenning hebben alle drie een prijs die met de klant meegroeit. Zolang die trappen ontbreken kan het totaal rechtsonder niet kloppen, en een totaal dat niet klopt is erger dan geen totaal.</p></div></div>
     <div class="st"><span class="lab">VORM</span><div class="bd"><h4>Aanvinken kan niet op papier</h4><p>Zodra er vinkjes op zitten is het geen drukwerk meer, of je drukt het blanco en vinkt met een pen aan tafel. Dat tweede is niet erg &mdash; het maakt het invullen een gezamenlijke handeling in plaats van een presentatie. Maar dan moet het totaal ook met de hand te berekenen zijn, en dus moeten alle bedragen rond zijn.</p></div></div>
-    <div class="st"><span class="lab">SAMENHANG</span><div class="bd"><h4>De afsprakenplanner staat twee keer</h4><p>Eenmalig instellen staat links op de bank, het abonnement staat in het midden bij de uitrusting. Dat klopt inhoudelijk maar het is verwarrend om twee keer hetzelfde woord aan te moeten vinken. Ofwel koppelen, ofwel &eacute;&eacute;n van de twee anders noemen.</p></div></div>
   </div>
 </section>
 
@@ -461,9 +457,6 @@ h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
     document.getElementById('tJaar').textContent='€ '+f(jaar);
   }
   boxes.concat(radios).forEach(function(el){el.addEventListener('change',calc)});
-  // afsprakenplanner: abonnement aan => instellen aan
-  var gc=document.getElementById('g-cal'),sc=document.getElementById('s-cal');
-  if(gc&&sc){gc.addEventListener('change',function(){sc.checked=gc.checked;calc()});}
   calc();
 })();
 (function(){
