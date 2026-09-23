@@ -1,0 +1,521 @@
+<title>De werkinstructies &middot; James Robinson</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@600;700&display=swap">
+<style>
+:root{
+  --page:#fbfbfd; --card:#fff; --alt:#f5f5f7;
+  --tx:#1d1d1f; --tx2:#6e6e73; --tx3:#86868b;
+  --ln:#d2d2d7; --ln-s:#e5e5e9;
+  --blue:#007aff; --link:#0066cc; --act:#0857c3;
+  --b100:#e0efff; --b50:#f4f9ff;
+  --lime:#c4f000; --lime-tx:#5a7000; --lime100:#f2fccc;
+  --green-tx:#1d7d3f; --green100:#e6f7eb;
+  --orange-tx:#94590a; --orange100:#fef2e0;
+  --red-tx:#c02a22; --red100:#fdecea;
+  --black:#1c1c1e; --inv:#f5f5f7; --inv2:#a1a1a6;
+  --fd:"Inter Tight","Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --ft:"Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --fm:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --e:cubic-bezier(.25,.1,.25,1);--g:32px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}}
+:root[data-theme="dark"]{
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--tx);font-family:var(--ft);font-size:16.5px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition-duration:.01ms!important}}
+:focus-visible{outline:none;box-shadow:0 0 0 4px rgba(0,122,255,.4);border-radius:8px}
+p{margin:0 0 18px;max-width:70ch}
+p:last-child{margin-bottom:0}
+h1,h2,h3,h4{font-family:var(--fd);margin:0;text-wrap:balance}
+code{font-family:var(--fm);font-size:.86em;background:var(--alt);padding:2px 6px;border-radius:5px}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:60;background:rgba(251,251,253,.86);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--ln-s)}
+:root[data-theme="dark"] .bar,:root:not([data-theme="light"]) .bar{background:rgba(0,0,0,.74)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .bar{background:rgba(251,251,253,.86)}}
+.bar-in{max-width:1080px;margin:0 auto;padding:0 var(--g);display:flex;align-items:center;gap:5px;min-height:48px;overflow-x:auto;scrollbar-width:none}
+.bar-in::-webkit-scrollbar{display:none}
+.bar b{font-family:var(--fd);font-size:14.5px;font-weight:700;letter-spacing:-.016em;margin-right:8px;white-space:nowrap}
+.bar a{font-size:12.5px;color:var(--tx2);text-decoration:none;padding:6px 8px;border-radius:7px;white-space:nowrap}
+.bar a:hover{color:var(--tx)}
+.bar button{margin-left:auto;flex:none;font:inherit;font-size:12px;cursor:pointer;background:transparent;border:1px solid var(--ln);color:var(--tx2);border-radius:980px;padding:5px 13px}
+
+.wrap{max-width:1080px;margin:0 auto;padding-inline:var(--g)}
+.hero{padding-block:76px 40px}
+h1{font-size:clamp(34px,5.4vw,58px);font-weight:700;line-height:1.06;letter-spacing:-.026em;margin-bottom:20px}
+.lead{font-size:20px;line-height:1.5;color:var(--tx2);max-width:64ch}
+.sec{padding-block:60px;border-top:1px solid var(--ln-s)}
+h2{font-size:clamp(26px,3.4vw,38px);font-weight:700;line-height:1.12;letter-spacing:-.02em;margin-bottom:8px}
+.sec > .kicker{font-family:var(--fm);font-size:11px;letter-spacing:.06em;color:var(--tx3);margin-bottom:14px}
+h3{font-size:21px;font-weight:600;line-height:1.24;letter-spacing:-.012em;margin:38px 0 10px}
+h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
+.note{color:var(--tx2)}
+.note b,b{color:var(--tx);font-weight:600}
+
+/* kernblok */
+.key{background:var(--black);color:var(--inv);border-radius:22px;padding:34px 32px;margin:26px 0}
+.key .k{display:block;font-family:var(--fm);font-size:10.5px;letter-spacing:.06em;color:var(--lime);margin-bottom:14px}
+.key p{color:var(--inv2);font-size:17.5px;max-width:64ch}
+.key strong{color:#fff;font-weight:600}
+.key .big{font-family:var(--fd);font-size:clamp(22px,3vw,30px);font-weight:600;line-height:1.2;letter-spacing:-.018em;color:#fff;margin-bottom:16px}
+
+/* lagen van het aanbod */
+.stack{display:grid;gap:12px;margin-top:24px}
+.st{background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;display:grid;grid-template-columns:132px 1fr;gap:20px;align-items:start}
+.st .lab{font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;color:var(--act);padding-top:3px}
+.st .bd p{margin:0;font-size:15.5px;color:var(--tx2)}
+.st .bd h4{margin-bottom:5px}
+
+/* kandidaten */
+.cands{display:grid;gap:12px;margin-top:22px}
+.cand{border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;background:var(--card)}
+.cand.win{border-color:var(--lime);box-shadow:0 0 0 1px var(--lime)}
+.cand .zin{font-family:var(--fd);font-size:22px;font-weight:600;letter-spacing:-.014em;margin-bottom:8px}
+.cand .why{font-size:15px;color:var(--tx2);margin:0}
+.cand .verdict{display:inline-block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;border-radius:5px;padding:3px 7px;margin-bottom:12px}
+.cand .verdict.no{background:var(--red100);color:var(--red-tx)}
+.cand .verdict.ok{background:var(--lime100);color:var(--lime-tx)}
+.cand .verdict.mid{background:var(--orange100);color:var(--orange-tx)}
+
+/* onderscheid */
+.dist{width:100%;border-collapse:collapse;font-size:15px;margin-top:22px}
+.dist th,.dist td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.dist thead th{font-family:var(--fm);font-size:10.5px;letter-spacing:.04em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.dist td:first-child{font-weight:500;width:34%}
+.dist .v{font-family:var(--fm);font-size:11px;white-space:nowrap}
+.dist .v.y{color:var(--green-tx)}
+.dist .v.n{color:var(--red-tx)}
+.dist tr:last-child td{border-bottom:none}
+.tblwrap{overflow-x:auto}
+
+/* beslissingen */
+.dec{border:1px solid var(--ln-s);border-radius:18px;background:var(--card);padding:26px 28px;margin-top:14px}
+.dec .hd{display:flex;align-items:baseline;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.dec .num{font-family:var(--fm);font-size:11px;color:var(--tx3);flex:none}
+.dec h4{font-size:19px;flex:1;min-width:220px;margin:0}
+.dec .tag{font-family:var(--fm);font-size:9.5px;letter-spacing:.05em;border-radius:5px;padding:3px 7px}
+.dec .tag.blok{background:var(--red100);color:var(--red-tx)}
+.dec .tag.schaal{background:var(--orange100);color:var(--orange-tx)}
+.dec .tag.scherp{background:var(--b100);color:var(--act)}
+.dec .q{font-size:16px;color:var(--tx2);margin:0 0 16px}
+.dec .adv{background:var(--b50);border-left:3px solid var(--act);border-radius:0 10px 10px 0;padding:16px 18px}
+.dec .adv .al{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.06em;color:var(--act);margin-bottom:7px}
+.dec .adv p{font-size:15.5px;margin:0 0 10px}
+.dec .adv p:last-child{margin-bottom:0}
+
+/* vast */
+.locked{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-top:22px}
+.lk{background:var(--card);border:1px solid var(--ln-s);border-radius:14px;padding:18px 20px}
+.lk .t{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--green-tx);margin-bottom:7px}
+.lk .b{font-size:15px;color:var(--tx2);line-height:1.45}
+.lk .b b{color:var(--tx)}
+
+.warn{background:var(--orange100);border-radius:18px;padding:24px 26px;margin-top:26px}
+.warn h4{color:var(--orange-tx)}
+.warn p{color:var(--orange-tx);opacity:.94;font-size:15.5px;max-width:none}
+.foot{padding-block:44px 64px;font-size:13px;color:var(--tx3);text-align:center}
+
+@media (max-width:734px){
+  :root{--g:20px}
+  body{font-size:16px}
+  .sec{padding-block:48px}
+  .hero{padding-block:44px 28px}
+  .st{grid-template-columns:1fr;gap:10px}
+  .key{padding:24px 22px}
+  .dec{padding:22px 20px}
+}
+<style>
+.sc{width:100%;border-collapse:collapse;font-size:15px}
+.sc th,.sc td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.sc thead th{font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.sc tbody tr:last-child td{border-bottom:none}
+.tblwrap{overflow-x:auto}
+.chip{display:inline-block;font-family:var(--fm);font-size:9.5px;letter-spacing:.04em;padding:3px 7px;border-radius:5px;white-space:nowrap}
+.r-strategie{background:var(--b100);color:var(--link)}
+.r-techniek{background:var(--alt);color:var(--tx2)}
+.r-campagne{background:var(--lime100);color:var(--lime-tx)}
+.r-content{background:var(--orange100);color:var(--orange-tx)}
+.r-klantcontact{background:var(--green100);color:var(--green-tx)}
+.chip.m{border:1px solid var(--ln);color:var(--tx3);background:transparent}
+.blokkop{font-family:var(--fd);font-size:22px;font-weight:700;letter-spacing:-.018em;
+  margin:44px 0 4px;padding-bottom:10px;border-bottom:2px solid var(--tx)}
+.wi{background:var(--card);border:1px solid var(--ln-s);border-radius:18px;padding:26px 28px;margin-top:16px}
+.wh{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:baseline;row-gap:8px}
+.wn{font-family:var(--fm);font-size:12px;color:var(--tx3)}
+.wh h4{font-family:var(--fd);font-size:21px;font-weight:600;letter-spacing:-.016em}
+.wc{grid-column:2;display:flex;gap:5px;flex-wrap:wrap}
+.wd{font-size:16px;line-height:1.55;margin:14px 0 0;max-width:72ch}
+.lbl{display:block;font-family:var(--fm);font-size:9.5px;letter-spacing:.07em;color:var(--tx3);margin-bottom:5px}
+.lbl.hd{margin-top:20px}
+.wg{margin-top:18px;padding-left:14px;border-left:2px solid var(--ln-s)}
+.wg p{font-size:14.5px;line-height:1.55;color:var(--tx2);max-width:70ch}
+.wg.mis{border-left-color:var(--orange-tx)}
+.wg.mis .lbl{color:var(--orange-tx)}
+.wg.klaar{border-left-color:var(--green-tx)}
+.wg.klaar .lbl{color:var(--green-tx)}
+.wg.klaar p{color:var(--tx)}
+.hl{list-style:none;margin:0;padding:0;counter-reset:h}
+.hl li{display:grid;grid-template-columns:1fr 1fr auto;gap:18px;align-items:start;
+  padding:11px 0 11px 26px;border-bottom:1px solid var(--ln-s);position:relative;counter-increment:h}
+.hl li:last-child{border-bottom:none}
+.hl li::before{content:counter(h);position:absolute;left:0;top:12px;
+  font-family:var(--fm);font-size:10px;color:var(--tx3)}
+.hl .h{font-size:14.5px;font-weight:500;line-height:1.4}
+.hl .a{font-size:13.5px;color:var(--tx2);line-height:1.45}
+.hl em{font-style:normal;font-family:var(--fm);font-size:11px;color:var(--tx3);white-space:nowrap}
+@media(max-width:820px){.hl li{grid-template-columns:1fr auto}.hl .a{grid-column:1;margin-top:3px}}
+.wm{margin-top:18px;padding-top:14px;border-top:1px solid var(--ln-s);display:flex;gap:6px;flex-wrap:wrap}
+.vlg{counter-reset:v;list-style:none;margin:22px 0 0;padding:0}
+.vlg li{counter-increment:v;display:grid;grid-template-columns:34px 1fr;gap:16px;
+  padding:16px 0;border-bottom:1px solid var(--ln-s);align-items:start}
+.vlg li:last-child{border-bottom:none}
+.vlg li::before{content:counter(v);font-family:var(--fm);font-size:13px;color:var(--blue);padding-top:2px}
+.vlg b{display:block;font-family:var(--fd);font-size:17px;font-weight:600}
+.vlg p{font-size:14.5px;color:var(--tx2);line-height:1.55;margin-top:3px;max-width:70ch}
+</style>
+
+<div class="bar"><div class="bar-in">
+  <b>Werkinstructies</b>
+  <a href="#volgorde">De volgorde</a>
+  <a href="#instructies">De 28 instructies</a>
+  <button id="themeBtn" type="button">Donker</button>
+</div></div>
+
+<header class="wrap hdr">
+  <p class="kicker">INTERN &middot; STAP 1 VAN 4</p>
+  <h1>De werkinstructies</h1>
+  <p class="lead">Per onderdeel: waarom het bestaat, wat je nodig hebt, welke handelingen je doet, waar het misgaat en wanneer het af is. Dit is wat er op papier moet staan v&oacute;&oacute;rdat je er vragenlijsten, AI-instructies of een dashboard omheen bouwt.</p>
+</header>
+
+<main class="wrap">
+
+<section class="sec" id="volgorde">
+  <p class="kicker">DE VOLGORDE</p>
+  <h2>Waarom deze kant op</h2>
+  <p class="note">Ik had het omgekeerd voorgesteld en dat was fout. Je kunt geen prompt schrijven voor werk dat nog nergens beschreven staat, en geen dashboard bouwen voor velden die nog niet bestaan.</p>
+  <ol class="vlg">
+    <li><div><b>De werkinstructies</b><p>Hoe een mens dit onderdeel doet, in welke volgorde, en waaraan je ziet dat het af is. Zonder dit is al het volgende gokwerk.</p></div></li>
+    <li><div><b>De vragen en checklists</b><p>Pas als de handelingen vaststaan weet je welke informatie je vooraf moet ophalen. Het intakeformulier, de auditchecklist en de standaardsets volgen uit de instructies, niet andersom.</p></div></li>
+    <li><div><b>De AI-instructies</b><p>Een prompt is een werkinstructie in andere woorden. Je kunt hem pas schrijven als je weet welke input erin gaat (stap 2) en welk oordeel eruit moet komen (stap 1).</p></div></li>
+    <li><div><b>Het dashboard en het portal</b><p>Die tonen wat er in de stappen ervoor is vastgelegd. Bouw je ze eerder, dan bouw je velden waarvan je later merkt dat ze niet kloppen.</p></div></li>
+  </ol>
+  <div class="key" style="margin-top:26px">
+    <span class="k">&Eacute;&Eacute;N UITZONDERING</span>
+    <p class="big">Het leadportal kan niet helemaal achteraan.</p>
+    <p>Alles hierboven is beschrijven, en dat kan snel. Het leadportal is bouwen, en dat duurt. Begin met beschrijven, maar zet het portal parallel in gang &mdash; anders sta je straks met 28 instructies en geen plek waar een aanvraag landt.</p>
+  </div>
+</section>
+
+<section class="sec" id="instructies">
+  <p class="kicker">STAP 1</p>
+  <h2>28 onderdelen</h2>
+  <p class="note">Elke handeling heeft een eigen afvinkpunt: niet &ldquo;gedaan&rdquo; maar iets wat je kunt zien. Onderaan elke instructie staan de middelen die eruit voortkomen &mdash; dat is de invullijst voor stap 2.</p>
+<h3 class="blokkop">Doel en plan</h3><article class="wi" id="wi1">
+  <div class="wh"><span class="wn">01</span><h4>Intake verwerken</h4><div class="wc"><span class="chip r-klantcontact">Klantcontact</span> <span class="chip r-strategie">Strategie</span></div></div>
+  <p class="wd">Van wat de klant heeft opgeschreven naar &eacute;&eacute;n doelregel waar de rest van het fundament aan hangt.</p>
+  <div class="wg"><span class="lbl">JE HEBT NODIG</span><p>Het ingevulde intakeformulier, een export van zijn e-mailbestand en toegang tot zijn analytics.</p></div>
+  <span class="lbl hd">DE HANDELINGEN</span>
+  <ol class="hl"><li><span class="h">Formulier versturen met toelichting</span><span class="a">Formulier verstuurd, ontvangstdatum vastgelegd en het nabelmoment gepland</span><em>0,5 u</em></li><li><span class="h">Antwoorden doornemen en gaten markeren</span><span class="a">Ingevuld formulier met de gaten gemarkeerd, plus de vragen voor het gesprek</span><em>0,5 u</em></li><li><span class="h">Doel narekenen en vastleggen</span><span class="a">E&eacute;n doelregel: zoveel aanvragen per maand tegen maximaal zoveel per aanvraag</span><em>0,5 u</em></li><li><span class="h">Lijstgrootte en verkeer ophalen, toolkosten uitrekenen</span><span class="a">E&eacute;n regel toolkosten voor het voorstel, met de staffel eronder</span><em>0,5 u</em></li></ol>
+  <div class="wg mis"><span class="lbl">WAAR HET MISGAAT</span><p>Je gaat het formulier tijdens het gesprek invullen. Dan kost het drie keer zoveel tijd en krijg je antwoorden die hij ter plekke verzint. Komt het formulier niet terug: nabellen, niet alvast beginnen.</p></div>
+  <div class="wg klaar"><span class="lbl">KLAAR ALS</span><p>Er staat &eacute;&eacute;n regel op papier: zoveel aanvragen per maand tegen maximaal zoveel per aanvraag. Alles daarna wordt daaraan getoetst.</p></div>
+  <p class="wm"><span class="chip m">F1 &middot; Intakeformulier</span> <span class="chip m">F2 &middot; Rekenblad doel en toolkosten</span></p>
+</article><article class="wi" id="wi2">
+  <div class="wh"><span class="wn">02</span><h4>Doelgroep uitwerken</h4><div class="wc"><span class="chip r-campagne">Campagne</span> <span class="chip r-strategie">Strategie</span></div></div>
+  <p class="wd">De klant beschrijft zijn klant; wij toetsen dat aan zijn eigen data en maken er targeting van.</p>
+  <div class="wg"><span class="lbl">JE HEBT NODIG</span><p>De doelgroepvragen uit het formulier en zijn klantenbestand of omzetoverzicht.</p></div>
+  <span class="lbl hd">DE HANDELINGEN</span>
+  <ol class="hl"><li><span class="h">Antwoorden toetsen aan het klantenbestand</span><span class="a">Het doelgroepbeeld bevestigd of ontkracht, met de cijfers erbij</span><em>0,5 u</em></li><li><span class="h">AI-analyse op de input en de markt</span><span class="a">Doelgroepprofiel uit een vaste prompt, niet per klant opnieuw bedacht</span><em>0,5 u</em></li><li><span class="h">Targetingprofielen per kanaal uitwerken</span><span class="a">Per kanaal een profiel dat rechtstreeks in het account te zetten is</span><em>0,5 u</em></li></ol>
+  <div class="wg mis"><span class="lbl">WAAR HET MISGAAT</span><p>Je neemt zijn beschrijving over. Bijna elke ondernemer beschrijft de klant die hij w&iacute;l en niet de klant die hij h&eacute;&eacute;ft. Het bestand vertelt je de waarheid.</p></div>
+  <div class="wg klaar"><span class="lbl">KLAAR ALS</span><p>Per kanaal ligt er een targetingprofiel dat iemand anders zonder overleg in het account kan zetten.</p></div>
+  <p class="wm"><span class="chip m">A1 &middot; AI-instructie doelgroep</span> <span class="chip m">F1 &middot; Intakeformulier</span> <span class="chip m">S3 &middot; Standaard targetingprofielen</span></p>
+</article><article class="wi" id="wi3">
+  <div class="wh"><span class="wn">03</span><h4>Propositie aanscherpen</h4><div class="wc"><span class="chip r-strategie">Strategie</span></div></div>
+  <p class="wd">Van het verhaal van de klant naar advertentietaal die in 30 tekens past.</p>
+  <div class="wg"><span class="lbl">JE HEBT NODIG</span><p>Zijn antwoorden over waarom mensen voor hem kiezen, plus de advertentieteksten van drie concurrenten.</p></div>
+  <span class="lbl hd">DE HANDELINGEN</span>
+  <ol class="hl"><li><span class="h">Input en concurrentieteksten door AI halen</span><span class="a">Eerste versie van de boodschap per doelgroep</span><em>0,5 u</em></li><li><span class="h">Redigeren tot een boodschap per doelgroep</span><span class="a">Afgetekende boodschap, bruikbaar als advertentietaal</span><em>1 u</em></li></ol>
+  <div class="wg mis"><span class="lbl">WAAR HET MISGAAT</span><p>Je maakt er marketingtaal van. Als de zin ook bij zijn concurrent had kunnen staan, is hij niet af.</p></div>
+  <div class="wg klaar"><span class="lbl">KLAAR ALS</span><p>Er ligt &eacute;&eacute;n afgetekende boodschap per doelgroep, en die zin komt letterlijk terug in de advertenties en op de landingspagina.</p></div>
+  <p class="wm"><span class="chip m">A2 &middot; AI-instructie propositie en tekst</span></p>
+</article><article class="wi" id="wi4">
+  <div class="wh"><span class="wn">04</span><h4>Concurrentieanalyse</h4><div class="wc"><span class="chip r-campagne">Campagne</span> <span class="chip r-strategie">Strategie</span></div></div>
+  <p class="wd">Vaststellen waar het gat zit, in plaats van aannemen dat er een gat is.</p>
+  <div class="wg"><span class="lbl">JE HEBT NODIG</span><p>De concurrenten die de klant noemt, plus de twee die hij niet noemt maar die wel op zijn woorden adverteren.</p></div>
+  <span class="lbl hd">DE HANDELINGEN</span>
+  <ol class="hl"><li><span class="h">Zoekwoorden en advertentiebibliotheek ophalen</span><span class="a">In beeld wat de concurrent draait en waarop</span><em>0,5 u</em></li><li><span class="h">AI-analyse en samenvatting waar het gat zit</span><span class="a">E&eacute;n alinea: hier zit het gat</span><em>0,5 u</em></li></ol>
+  <div class="wg mis"><span class="lbl">WAAR HET MISGAAT</span><p>Je maakt een overzicht van wat iedereen doet. Dat is werk zonder conclusie. De opdracht is &eacute;&eacute;n alinea: hier zit de ruimte.</p></div>
+  <div class="wg klaar"><span class="lbl">KLAAR ALS</span><p>Er staat &eacute;&eacute;n alinea die zegt waar wij gaan zitten en waarom daar.</p></div>
+  <p class="wm"><span class="chip m">A3 &middot; AI-instructie concurrentieanalyse</span></p>
+</article><article class="wi" id="wi5">
+  <div class="wh"><span class="wn">05</span><h4>Conversiedefinitie</h4><div class="wc"><span class="chip r-strategie">Strategie</span></div></div>
+  <p class="wd">Vastleggen wat wij tellen als resultaat, voordat er iets te tellen valt.</p>
+  <div class="wg"><span class="lbl">JE HEBT NODIG</span><p>De standaardset conversies en het doel uit de intake.</p></div>
+  <span class="lbl hd">DE HANDELINGEN</span>
+  <ol class="hl"><li><span class="h">Standaardset kiezen, toespitsen en aftekenen</span><span class="a">Getekende conversiedefinitie &mdash; hieraan hangen de KPI&rsquo;s en de rapportage</span><em>0,5 u</em></li></ol>
+  <div class="wg mis"><span class="lbl">WAAR HET MISGAAT</span><p>Je verzint een set per klant. Dan kan het dashboard hem niet lezen en is niets vergelijkbaar tussen klanten.</p></div>
+  <div class="wg klaar"><span class="lbl">KLAAR ALS</span><p>De klant heeft de definitie afgetekend. Hieraan hangen de meetopzet, het dashboard en de rapportage.</p></div>
+  <p class="wm"><span class="chip m">S1 &middot; Standaardset conversies</span></p>
+</article><article class="wi" id="wi6">
+  <div class="wh"><span class="wn">06</span><h4>Merkcheck</h4><div class="wc"><span class="chip r-content">Content</span></div></div>
+  <p class="wd">Vaststellen of er genoeg ligt om mee te kunnen adverteren. Niet of het merk mooi is.</p>
+  <div class="wg"><span class="lbl">JE HEBT NODIG</span><p>Logo, kleuren, lettertype en beeldmateriaal, in bruikbare bestandsformaten.</p></div>
+  <span class="lbl hd">DE HANDELINGEN</span>
+  <ol class="hl"><li><span class="h">Assets inventariseren en beoordelen</span><span class="a">Oordeel per asset: bruikbaar, deels of niet</span><em>0,5 u</em></li><li><span class="h">Kleurstelling en typografie vaststellen</span><span class="a">Kleur en typografie vastgelegd. Vervalt als er een bruikbaar merk ligt</span><em>0–0,5 u</em></li><li><span class="h">Advertentiesjablonen opzetten</span><span class="a">Sjablonen in alle drie de beeldverhoudingen</span><em>0,5 u</em></li></ol>
+  <div class="wg mis"><span class="lbl">WAAR HET MISGAAT</span><p>Je begint een huisstijltraject. Dat is een apart project met een eigen prijs. Hier kies je alleen kleur en typografie om mee te kunnen werken.</p></div>
+  <div class="wg klaar"><span class="lbl">KLAAR ALS</span><p>De advertentiesjablonen staan in alle drie de beeldverhoudingen klaar om beeld in te laten vallen.</p></div>
+  <p class="wm"><span class="chip m">P2 &middot; Merkchecklijst</span> <span class="chip m">T4 &middot; Template advertentiesjablonen</span></p>
+</article><h3 class="blokkop">Techniek en meting</h3><article class="wi" id="wi7">
+  <div class="wh"><span class="wn">07</span><h4>De technische audit</h4><div class="wc"><span class="chip r-techniek">Techniek</span></div></div>
+  <p class="wd">Negen objectieve metingen. Geen oordeel, geen advies dat toevallig bij onze dienstverlening past.</p>
+  <div class="wg"><span class="lbl">JE HEBT NODIG</span><p>Beheerderstoegang tot site, hosting, domein en analytics, plus de checklist met de negen drempelwaarden.</p></div>
+  <span class="lbl hd">DE HANDELINGEN</span>
+  <ol class="hl"><li><span class="h">Checklist afwerken: toegang, snelheid, SSL, redirects, e-mail, meting, consent, indexatie, bedrijfsprofiel</span><span class="a">Negen uitkomsten, elk groen, oranje of rood tegen een vaste drempel</span><em>1,5 u</em></li><li><span class="h">Uitkomsten door AI tot bevindingenrapport</span><span class="a">Rapport dat de klant zelf kan lezen, met wat het kost en wat het oplevert</span><em>0,5 u</em></li></ol>
+  <div class="wg mis"><span class="lbl">WAAR HET MISGAAT</span><p>Je meet met een ander gereedschap dan de vorige keer. Dan is de uitkomst niet vergelijkbaar en kan een klant je bedrag aanvechten. E&eacute;n gereedschap per meting, altijd hetzelfde.</p></div>
+  <div class="wg klaar"><span class="lbl">KLAAR ALS</span><p>Negen uitkomsten, elk groen, oranje of rood tegen een drempel die op papier stond voordat je begon.</p></div>
+  <p class="wm"><span class="chip m">A4 &middot; AI-instructie bevindingenrapport</span> <span class="chip m">C1 &middot; Checklist technische audit</span></p>
+</article><article class="wi" id="wi8">
+  <div class="wh"><span class="wn">08</span><h4>Bevindingen doorzetten</h4><div class="wc"><span class="chip r-klantcontact">Klantcontact</span> <span class="chip r-techniek">Techniek</span></div></div>
+  <p class="wd">De klant laten beslissen wat er hersteld wordt, met wat het kost en wat het oplevert ernaast.</p>
+  <div class="wg"><span class="lbl">JE HEBT NODIG</span><p>Het bevindingenrapport en de tarieven uit de prijslijst.</p></div>
+  <span class="lbl hd">DE HANDELINGEN</span>
+  <ol class="hl"><li><span class="h">Rapport met de klant doornemen</span><span class="a">Per bevinding een beslissing: nu, later of niet</span><em>0,5 u</em></li><li><span class="h">Voorstel Webmix aanvragen voor wat niet voldoet</span><span class="a">Offerte van Webmix bij de klant, niet bij ons</span><em>0,5 u</em></li></ol>
+  <div class="wg mis"><span class="lbl">WAAR HET MISGAAT</span><p>Je gaat het verkopen. Wij herstellen niets zelf en verdienen er niets aan; op het moment dat je gaat overtuigen ben je die positie kwijt.</p></div>
+  <div class="wg klaar"><span class="lbl">KLAAR ALS</span><p>Per bevinding staat een beslissing: nu, later of niet. En bij &ldquo;niet&rdquo; staat de kanttekening die daarna in elke rapportage terugkomt.</p></div>
+  <p class="wm"><span class="chip m">G1 &middot; Gespreksleidraad bevindingen</span> <span class="chip m">W1 &middot; Aanvraagformat Webmix</span></p>
+</article><article class="wi" id="wi9">
+  <div class="wh"><span class="wn">09</span><h4>Meetopzet volgens onze standaard</h4><div class="wc"><span class="chip r-techniek">Techniek</span></div></div>
+  <p class="wd">De hele trechter zichtbaar maken: weergaven, kliks, conversies. Voor iedereen hetzelfde.</p>
+  <div class="wg"><span class="lbl">JE HEBT NODIG</span><p>De conversiedefinitie, toegang tot de site en de mogelijkheid om een script in de <code>head</code> te plaatsen.</p></div>
+  <span class="lbl hd">DE HANDELINGEN</span>
+  <ol class="hl"><li><span class="h">GA4 en Tag Manager uit template</span><span class="a">Container live, de basisevents vuren aantoonbaar</span><em>1 u</em></li><li><span class="h">Conversie-events uit de standaardset</span><span class="a">Elk event uit de standaardset getest en zichtbaar</span><em>1 u</em></li><li><span class="h">Koppelen aan Google Ads en Meta</span><span class="a">Conversies komen binnen in Google Ads &eacute;n Meta</span><em>0,5 u</em></li><li><span class="h">Consent mode instellen</span><span class="a">Meting werkt met en zonder toestemming, aantoonbaar</span><em>0,5 u</em></li><li><span class="h">Search Console en Google Bedrijfsprofiel</span><span class="a">Beide geverifieerd en gekoppeld</span><em>0,5 u</em></li></ol>
+  <div class="wg mis"><span class="lbl">WAAR HET MISGAAT</span><p>Je zet het op en test het niet. Een event dat niet vuurt merk je pas in maand twee, en dan heb je twee maanden op lucht gestuurd.</p></div>
+  <div class="wg klaar"><span class="lbl">KLAAR ALS</span><p>Elk event uit de standaardset is &eacute;&eacute;n keer handmatig uitgelokt en aantoonbaar binnengekomen in GA4, Google Ads &eacute;n Meta.</p></div>
+  <p class="wm"><span class="chip m">C2 &middot; Checklist accounts en toegang</span> <span class="chip m">S1 &middot; Standaardset conversies</span> <span class="chip m">T1 &middot; Template meetopzet</span></p>
+</article><article class="wi" id="wi10">
+  <div class="wh"><span class="wn">10</span><h4>De nulmeting</h4><div class="wc"><span class="chip r-techniek">Techniek</span></div></div>
+  <p class="wd">Vastleggen waar de klant stond op de dag voor we begonnen.</p>
+  <div class="wg"><span class="lbl">JE HEBT NODIG</span><p>Het dashboard met alle bronnen gekoppeld.</p></div>
+  <span class="lbl hd">DE HANDELINGEN</span>
+  <ol class="hl"><li><span class="h">Cijfers per bron vastleggen in het dashboard</span><span class="a">Nulmeting bevroren, met de datum erbij</span><em>0,5 u</em></li></ol>
+  <div class="wg mis"><span class="lbl">WAAR HET MISGAAT</span><p>Je doet hem nadat de campagne al een paar dagen loopt. Dan meet je jezelf mee en is het ijkpunt waardeloos.</p></div>
+  <div class="wg klaar"><span class="lbl">KLAAR ALS</span><p>De cijfers per bron staan bevroren in het dashboard, met de datum erbij.</p></div>
+  <p class="wm"><span class="chip m">T7 &middot; Template dashboard</span></p>
+</article><h3 class="blokkop">Onze systemen</h3><article class="wi" id="wi11">
+  <div class="wh"><span class="wn">11</span><h4>Advertentieaccounts</h4><div class="wc"><span class="chip r-techniek">Techniek</span></div></div>
+  <p class="wd">Altijd allebei aanmaken, ook als we met &eacute;&eacute;n kanaal starten. Op naam van de klant, met ons als beheerder.</p>
+  <div class="wg"><span class="lbl">JE HEBT NODIG</span><p>De bedrijfsgegevens van de klant en zijn betaalmethode.</p></div>
+  <span class="lbl hd">DE HANDELINGEN</span>
+  <ol class="hl"><li><span class="h">Google Ads aanmaken en verifiëren</span><span class="a">Account op naam van de klant, wij als beheerder</span><em>0,5 u</em></li><li><span class="h">Meta Business Manager en advertentieaccount</span><span class="a">Account op naam van de klant, wij als beheerder</span><em>0,5 u</em></li><li><span class="h">Beheertoegang en betaalmethode van de klant</span><span class="a">Betaalmethode van de klant, nooit van ons</span><em>0,5 u</em></li></ol>
+  <div class="wg mis"><span class="lbl">WAAR HET MISGAAT</span><p>Je zet het account op onze naam omdat dat sneller gaat. Dan is de klant bij ons vertrokken zijn historie kwijt, en dat is precies het bureau dat wij niet zijn.</p></div>
+  <div class="wg klaar"><span class="lbl">KLAAR ALS</span><p>Beide accounts staan op naam van de klant, met zijn betaalmethode en onze beheertoegang.</p></div>
+  <p class="wm"><span class="chip m">C2 &middot; Checklist accounts en toegang</span></p>
+</article><article class="wi" id="wi12">
+  <div class="wh"><span class="wn">12</span><h4>MailerLite</h4><div class="wc"><span class="chip r-content">Content</span> <span class="chip r-strategie">Strategie</span> <span class="chip r-techniek">Techniek</span></div></div>
+  <p class="wd">Het e-mailplatform staat vanaf dag &eacute;&eacute;n klaar, want we beginnen meteen adressen te verzamelen.</p>
+  <div class="wg"><span class="lbl">JE HEBT NODIG</span><p>Een export van het bestaande bestand, toegang tot het domein en de formulieren op de site.</p></div>
+  <span class="lbl hd">DE HANDELINGEN</span>
+  <ol class="hl"><li><span class="h">Account opzetten en domein verifiëren</span><span class="a">Verzendend domein geverifieerd</span><em>0,5 u</em></li><li><span class="h">Bestaande contacten importeren: opschonen, ontdubbelen, toestemming controleren</span><span class="a">Ge&iuml;mporteerd, ontdubbeld, en de herkomst van de lijst vastgelegd</span><em>0,5 u</em></li><li><span class="h">Bestaande segmentatie overnemen, of een eerste indeling opzetten</span><span class="a">Groepen die aansluiten op de conversiedefinitie</span><em>0,5 u</em></li><li><span class="h">Leadformulieren en webformulieren koppelen, per formulier naar de juiste groep</span><span class="a">Elke inzending landt in de juiste groep, getest</span><em>0,5 u</em></li><li><span class="h">Standaardflow: bevestiging en opvolging</span><span class="a">Flow live, testmail ontvangen</span><em>0,5 u</em></li></ol>
+  <div class="wg mis"><span class="lbl">WAAR HET MISGAAT</span><p>Je importeert een lijst waarvan niemand kan uitleggen hoe hij is opgebouwd. Vanaf dat moment ben jij de verzender en ligt het risico bij jou. Weet niemand het: importeren, maar eerst een opt-in sturen en verdergaan met wie reageert.</p></div>
+  <div class="wg klaar"><span class="lbl">KLAAR ALS</span><p>Een testinzending via elk formulier landt in de juiste groep en de bevestigingsmail komt aan.</p></div>
+  <p class="wm"><span class="chip m">T5 &middot; Template e-mailopzet</span></p>
+</article><article class="wi" id="wi13">
+  <div class="wh"><span class="wn">13</span><h4>Leadinfo</h4><div class="wc"><span class="chip r-techniek">Techniek</span></div></div>
+  <p class="wd">Zien welke bedrijven langskwamen zonder te converteren. Een extra dat de klant zelf gebruikt.</p>
+  <div class="wg"><span class="lbl">JE HEBT NODIG</span><p>Toegang om een script te plaatsen en de bedrijfsgegevens voor het account.</p></div>
+  <span class="lbl hd">DE HANDELINGEN</span>
+  <ol class="hl"><li><span class="h">Script plaatsen, account aanmaken en de set-up via ons regelen — kosteloos</span><span class="a">Herkenning zichtbaar in de portal</span><em>0,5 u</em></li></ol>
+  <div class="wg mis"><span class="lbl">WAAR HET MISGAAT</span><p>Je verkoopt het aan een klant die er niets mee gaat doen. Alleen bij B2B, en alleen als er iemand is die opvolgt. Wij volgen geen leads op.</p></div>
+  <div class="wg klaar"><span class="lbl">KLAAR ALS</span><p>Herkenning is zichtbaar in de portal en de klant weet dat wij er niets mee doen.</p></div>
+  <p class="wm"><span class="chip m">C2 &middot; Checklist accounts en toegang</span></p>
+</article><article class="wi" id="wi14">
+  <div class="wh"><span class="wn">14</span><h4>Je leadportal</h4><div class="wc"><span class="chip r-techniek">Techniek</span></div></div>
+  <p class="wd">Aanvragen landen bij ons in plaats van in het CRM van de klant. Dit is de reden dat wij niet hoeven te koppelen.</p>
+  <div class="wg"><span class="lbl">JE HEBT NODIG</span><p>De klantgegevens, de formulieren en de conversiedefinitie.</p></div>
+  <span class="lbl hd">DE HANDELINGEN</span>
+  <ol class="hl"><li><span class="h">Klantomgeving aanmaken en gebruikers instellen</span><span class="a">De klant kan inloggen en ziet zijn eigen omgeving</span><em>0,5 u</em></li><li><span class="h">Formulieren aan de portal koppelen</span><span class="a">Elke aanvraag komt binnen met de bron erbij</span><em>0,5 u</em></li><li><span class="h">Doortesten met een echte aanvraag</span><span class="a">Testaanvraag zichtbaar in de portal &eacute;n in het dashboard</span><em>0,5 u</em></li></ol>
+  <div class="wg mis"><span class="lbl">WAAR HET MISGAAT</span><p>Je bouwt toch een koppeling omdat de klant erom vraagt. E&eacute;n keer toegeven en het model is weg: dan is het maatwerk, en dan is het nooit meer af.</p></div>
+  <div class="wg klaar"><span class="lbl">KLAAR ALS</span><p>De klant kan inloggen en ziet een echte testaanvraag binnenkomen, met de bron erbij.</p></div>
+  <p class="wm"><span class="chip m">C3 &middot; Checklist doortesten</span> <span class="chip m">P1 &middot; Het leadportal</span></p>
+</article><article class="wi" id="wi15">
+  <div class="wh"><span class="wn">15</span><h4>Je dashboard</h4><div class="wc"><span class="chip r-klantcontact">Klantcontact</span> <span class="chip r-strategie">Strategie</span> <span class="chip r-techniek">Techniek</span></div></div>
+  <p class="wd">Vanaf dag &eacute;&eacute;n live inzicht, geen maandrapport.</p>
+  <div class="wg"><span class="lbl">JE HEBT NODIG</span><p>Toegang tot Ads, Meta, GA4 en de portal, plus het doel en de nulmeting.</p></div>
+  <span class="lbl hd">DE HANDELINGEN</span>
+  <ol class="hl"><li><span class="h">Bronnen koppelen: Ads, Meta, GA4 en de portal</span><span class="a">Alle vier de bronnen live</span><em>1 u</em></li><li><span class="h">Doelen en nulmeting invullen</span><span class="a">Het doel uit stap 3 staat als lijn in het dashboard</span><em>0,5 u</em></li><li><span class="h">Doorlopen met de klant</span><span class="a">De klant weet waar hij kijkt en waarop wij sturen</span><em>0,5 u</em></li></ol>
+  <div class="wg mis"><span class="lbl">WAAR HET MISGAAT</span><p>Je levert het op zonder het door te lopen. Een dashboard dat niemand begrijpt wordt niet bekeken, en dan komt de vraag &ldquo;hoe gaat het eigenlijk&rdquo; alsnog per mail.</p></div>
+  <div class="wg klaar"><span class="lbl">KLAAR ALS</span><p>De klant heeft het &eacute;&eacute;n keer met ons doorgenomen en kan aanwijzen waar zijn kosten per aanvraag staan.</p></div>
+  <p class="wm"><span class="chip m">G3 &middot; Gespreksleidraad dashboard</span> <span class="chip m">T7 &middot; Template dashboard</span></p>
+</article><h3 class="blokkop">De campagne</h3><article class="wi" id="wi16">
+  <div class="wh"><span class="wn">16</span><h4>Zoekwoordonderzoek</h4><div class="wc"><span class="chip r-campagne">Campagne</span></div></div>
+  <p class="wd">Uitzoeken waar de koper op zoekt, wat dat kost en waar de concurrentie zit.</p>
+  <div class="wg"><span class="lbl">JE HEBT NODIG</span><p>De propositie, de doelgroepprofielen en toegang tot de zoekwoordplanner.</p></div>
+  <span class="lbl hd">DE HANDELINGEN</span>
+  <ol class="hl"><li><span class="h">Zoekwoorden verzamelen en verrijken met AI</span><span class="a">Ruwe zoekwoordenlijst</span><em>1 u</em></li><li><span class="h">Volume en klikprijs ophalen</span><span class="a">Lijst met volume en klikprijs per woord</span><em>0,5 u</em></li><li><span class="h">Clusteren naar intentie</span><span class="a">Clusters die &eacute;&eacute;n op &eacute;&eacute;n advertentiegroepen worden</span><em>1 u</em></li><li><span class="h">Uitsluitingslijst uit onze standaard plus klantspecifiek</span><span class="a">Standaardlijst plus de klantspecifieke aanvulling</span><em>0,5 u</em></li></ol>
+  <div class="wg mis"><span class="lbl">WAAR HET MISGAAT</span><p>Je verzamelt volume zonder intentie. Duizend zoekopdrachten van mensen die alleen informatie willen leveren geen aanvraag op, maar wel een rekening.</p></div>
+  <div class="wg klaar"><span class="lbl">KLAAR ALS</span><p>Er liggen clusters die &eacute;&eacute;n op &eacute;&eacute;n advertentiegroepen worden, plus een uitsluitingslijst.</p></div>
+  <p class="wm"><span class="chip m">A6 &middot; AI-instructie zoekwoorden</span> <span class="chip m">S2 &middot; Standaard uitsluitingslijst</span></p>
+</article><article class="wi" id="wi17">
+  <div class="wh"><span class="wn">17</span><h4>Campagnestructuur</h4><div class="wc"><span class="chip r-campagne">Campagne</span></div></div>
+  <p class="wd">Een vast stramien neerzetten: merknaam, commerci&euml;le woorden en retargeting strikt apart.</p>
+  <div class="wg"><span class="lbl">JE HEBT NODIG</span><p>De zoekwoordclusters, het budget en het doel uit de intake.</p></div>
+  <span class="lbl hd">DE HANDELINGEN</span>
+  <ol class="hl"><li><span class="h">Campagnes en advertentiegroepen uit template</span><span class="a">Structuur staat: merknaam, commercieel en retargeting apart</span><em>1 u</em></li><li><span class="h">Locaties, talen en planning</span><span class="a">Locaties, talen en planning ingesteld en gecontroleerd</span><em>0,5 u</em></li><li><span class="h">Budget verdelen</span><span class="a">Verdeling die past bij het doel uit stap 3</span><em>0,5 u</em></li></ol>
+  <div class="wg mis"><span class="lbl">WAAR HET MISGAAT</span><p>Je gooit merknaam en commerci&euml;le woorden bij elkaar. Dan ziet je gemiddelde er prachtig uit en weet je niet meer wat er werkt.</p></div>
+  <div class="wg klaar"><span class="lbl">KLAAR ALS</span><p>De structuur staat, het budget is verdeeld naar het doel en de startbiedstrategie ligt vast met het moment waarop we omschakelen.</p></div>
+  <p class="wm"><span class="chip m">T2 &middot; Template campagnestructuur</span></p>
+</article><article class="wi" id="wi18">
+  <div class="wh"><span class="wn">18</span><h4>Advertenties schrijven</h4><div class="wc"><span class="chip r-campagne">Campagne</span> <span class="chip r-content">Content</span></div></div>
+  <p class="wd">Meerdere varianten per groep, om tegen elkaar te laten testen.</p>
+  <div class="wg"><span class="lbl">JE HEBT NODIG</span><p>De afgetekende boodschap per doelgroep en de zoekwoordclusters.</p></div>
+  <span class="lbl hd">DE HANDELINGEN</span>
+  <ol class="hl"><li><span class="h">Koppen en beschrijvingen, eerste versie met AI</span><span class="a">Eerste set varianten per advertentiegroep</span><em>1 u</em></li><li><span class="h">Redigeren en op merk zetten</span><span class="a">Advertenties in dezelfde boodschap als stap 9</span><em>0,5 u</em></li><li><span class="h">Extensies en sitelinks</span><span class="a">Extensies en sitelinks ingericht</span><em>0,5 u</em></li></ol>
+  <div class="wg mis"><span class="lbl">WAAR HET MISGAAT</span><p>Je schrijft &eacute;&eacute;n set en noemt dat af. Zonder varianten heeft het algoritme niets te leren en duurt de aanloopperiode twee keer zo lang.</p></div>
+  <div class="wg klaar"><span class="lbl">KLAAR ALS</span><p>Elke advertentiegroep heeft meerdere varianten, in dezelfde boodschap als de landingspagina.</p></div>
+  <p class="wm"><span class="chip m">A2 &middot; AI-instructie propositie en tekst</span> <span class="chip m">A5 &middot; AI-instructie advertentieteksten</span> <span class="chip m">T2 &middot; Template campagnestructuur</span></p>
+</article><article class="wi" id="wi19">
+  <div class="wh"><span class="wn">19</span><h4>Doelgroepen en targeting</h4><div class="wc"><span class="chip r-campagne">Campagne</span></div></div>
+  <p class="wd">De targetingprofielen omzetten in publieken die daadwerkelijk in de accounts staan.</p>
+  <div class="wg"><span class="lbl">JE HEBT NODIG</span><p>De targetingprofielen en de klantenlijst voor uitsluitingen.</p></div>
+  <span class="lbl hd">DE HANDELINGEN</span>
+  <ol class="hl"><li><span class="h">Publieken opbouwen in Meta</span><span class="a">Publieken opgebouwd uit de targetingprofielen</span><em>0,5 u</em></li><li><span class="h">Uitsluitingen instellen</span><span class="a">Bestaande klanten en sollicitanten uitgesloten</span><em>0,5 u</em></li></ol>
+  <div class="wg mis"><span class="lbl">WAAR HET MISGAAT</span><p>Je vergeet de uitsluitingen. Adverteren aan je eigen klanten en aan sollicitanten kost geld en levert ruis op in je cijfers.</p></div>
+  <div class="wg klaar"><span class="lbl">KLAAR ALS</span><p>De publieken staan en bestaande klanten en sollicitanten zijn uitgesloten.</p></div>
+  <p class="wm"><span class="chip m">S2 &middot; Standaard uitsluitingslijst</span> <span class="chip m">S3 &middot; Standaard targetingprofielen</span></p>
+</article><article class="wi" id="wi20">
+  <div class="wh"><span class="wn">20</span><h4>Biedstrategie en retargeting</h4><div class="wc"><span class="chip r-campagne">Campagne</span> <span class="chip r-techniek">Techniek</span></div></div>
+  <p class="wd">Kiezen hoe we beginnen met bieden, en de meting klaarzetten die dat later kan overnemen.</p>
+  <div class="wg"><span class="lbl">JE HEBT NODIG</span><p>De conversiedefinitie, de meetopzet en toegang tot beide platformen.</p></div>
+  <span class="lbl hd">DE HANDELINGEN</span>
+  <ol class="hl"><li><span class="h">Startstrategie per campagne</span><span class="a">Startstrategie vastgelegd, met het moment waarop we omschakelen</span><em>0,5 u</em></li><li><span class="h">Pixel, conversie-API en segmenten</span><span class="a">Server-side meting werkt aantoonbaar</span><em>0,5 u</em></li></ol>
+  <div class="wg mis"><span class="lbl">WAAR HET MISGAAT</span><p>Je start meteen op een strategie die conversiedata nodig heeft die er nog niet is. Dan leert het systeem van niets en geef je het eerste budget weg.</p></div>
+  <div class="wg klaar"><span class="lbl">KLAAR ALS</span><p>De startstrategie ligt vast met het omschakelmoment erbij, en de server-side meting werkt aantoonbaar.</p></div>
+  <p class="wm"><span class="chip m">T1 &middot; Template meetopzet</span> <span class="chip m">T2 &middot; Template campagnestructuur</span></p>
+</article><article class="wi" id="wi21">
+  <div class="wh"><span class="wn">21</span><h4>Landingspagina</h4><div class="wc"><span class="chip r-content">Content</span> <span class="chip r-techniek">Techniek</span></div></div>
+  <p class="wd">E&eacute;n pagina die doet wat de advertentie belooft, bij ons gebouwd zodat we hem morgen kunnen aanpassen.</p>
+  <div class="wg"><span class="lbl">JE HEBT NODIG</span><p>De boodschap, het beeld van de draaidag en het subdomein van de klant.</p></div>
+  <span class="lbl hd">DE HANDELINGEN</span>
+  <ol class="hl"><li><span class="h">Opzet en structuur uit template</span><span class="a">Pagina staat op het subdomein van de klant</span><em>1 u</em></li><li><span class="h">Teksten schrijven</span><span class="a">Pagina in dezelfde boodschap als de advertenties</span><em>1,5 u</em></li><li><span class="h">Beeld plaatsen en opmaken</span><span class="a">Eigen beeld van de draaidag, geen stock</span><em>1 u</em></li><li><span class="h">Mobiel en snelheid controleren</span><span class="a">Onder de drempelwaarde uit de audit, gemeten met hetzelfde gereedschap</span><em>0,5 u</em></li></ol>
+  <div class="wg mis"><span class="lbl">WAAR HET MISGAAT</span><p>Je bouwt hem in de website van de klant omdat hij daarom vraagt. Dan ben je afhankelijk van zijn systeem, zijn plugins en zijn bouwer, en is elke tekstwijziging een aanvraag.</p></div>
+  <div class="wg klaar"><span class="lbl">KLAAR ALS</span><p>De pagina staat op het subdomein, haalt de snelheidsdrempel uit de audit en zegt hetzelfde als de advertentie.</p></div>
+  <p class="wm"><span class="chip m">A2 &middot; AI-instructie propositie en tekst</span> <span class="chip m">C1 &middot; Checklist technische audit</span> <span class="chip m">T3 &middot; Template landingspagina</span></p>
+</article><article class="wi" id="wi22">
+  <div class="wh"><span class="wn">22</span><h4>Formulier en bedankpagina</h4><div class="wc"><span class="chip r-techniek">Techniek</span></div></div>
+  <p class="wd">De aanvraag vangen en aantoonbaar laten landen waar hij hoort.</p>
+  <div class="wg"><span class="lbl">JE HEBT NODIG</span><p>De portal, de conversiedefinitie en de landingspagina.</p></div>
+  <span class="lbl hd">DE HANDELINGEN</span>
+  <ol class="hl"><li><span class="h">Formulier bouwen en aan de portal koppelen</span><span class="a">Inzending komt binnen in de portal</span><em>0,5 u</em></li><li><span class="h">Bedankpagina met conversiemeting</span><span class="a">Conversie vuurt op de bedankpagina, getest</span><em>0,5 u</em></li></ol>
+  <div class="wg mis"><span class="lbl">WAAR HET MISGAAT</span><p>Je vraagt te veel velden. Elk extra veld kost aanvragen. Vraag wat je nodig hebt om terug te bellen, de rest vraag je aan de telefoon.</p></div>
+  <div class="wg klaar"><span class="lbl">KLAAR ALS</span><p>Een testinzending staat in de portal &eacute;n de conversie is gevuurd op de bedankpagina.</p></div>
+  <p class="wm"><span class="chip m">P1 &middot; Het leadportal</span> <span class="chip m">S1 &middot; Standaardset conversies</span></p>
+</article><h3 class="blokkop">De content</h3><article class="wi" id="wi23">
+  <div class="wh"><span class="wn">23</span><h4>Voorbereiding</h4><div class="wc"><span class="chip r-content">Content</span> <span class="chip r-klantcontact">Klantcontact</span></div></div>
+  <p class="wd">De draaidag voorbereiden zodat er op locatie niets bedacht hoeft te worden.</p>
+  <div class="wg"><span class="lbl">JE HEBT NODIG</span><p>Het shotlistformat, de propositie en de beschikbaarheid van de klant.</p></div>
+  <span class="lbl hd">DE HANDELINGEN</span>
+  <ol class="hl"><li><span class="h">Shotlist uit ons format invullen</span><span class="a">Shotlist die de draaidag stuurt</span><em>0,5 u</em></li><li><span class="h">Planning en afstemming met de klant</span><span class="a">Datum, locatie, mensen en producten bevestigd</span><em>0,5 u</em></li></ol>
+  <div class="wg mis"><span class="lbl">WAAR HET MISGAAT</span><p>Je komt zonder shotlist. Dan film je wat je toevallig tegenkomt en merk je pas bij de montage dat het belangrijkste ontbreekt.</p></div>
+  <div class="wg klaar"><span class="lbl">KLAAR ALS</span><p>De shotlist is ingevuld en de klant heeft datum, locatie, mensen en producten bevestigd.</p></div>
+  <p class="wm"><span class="chip m">T6 &middot; Template shotlist en draaidag</span></p>
+</article><article class="wi" id="wi24">
+  <div class="wh"><span class="wn">24</span><h4>De draaidag</h4><div class="wc"><span class="chip r-content">Content</span></div></div>
+  <p class="wd">In &eacute;&eacute;n dagdeel genoeg materiaal ophalen voor een kwartaal aan advertenties.</p>
+  <div class="wg"><span class="lbl">JE HEBT NODIG</span><p>De shotlist, de apparatuur en de mensen en producten die de klant heeft toegezegd.</p></div>
+  <span class="lbl hd">DE HANDELINGEN</span>
+  <ol class="hl"><li><span class="h">Reis en opbouw</span><span class="a">Klaar om te draaien</span><em>1 u</em></li><li><span class="h">Filmen</span><span class="a">Shotlist afgewerkt</span><em>4 u</em></li><li><span class="h">Afbouw</span><span class="a">Materiaal veiliggesteld en geback-upt</span><em>0,5 u</em></li></ol>
+  <div class="wg mis"><span class="lbl">WAAR HET MISGAAT</span><p>Je draait alles in &eacute;&eacute;n beeldverhouding. Wat je verticaal niet hebt gefilmd bestaat niet, en bijfilmen kost een tweede dag.</p></div>
+  <div class="wg klaar"><span class="lbl">KLAAR ALS</span><p>De shotlist is afgewerkt en het materiaal staat veilig en geback-upt.</p></div>
+  <p class="wm"><span class="chip m">T6 &middot; Template shotlist en draaidag</span></p>
+</article><article class="wi" id="wi25">
+  <div class="wh"><span class="wn">25</span><h4>Montage</h4><div class="wc"><span class="chip r-content">Content</span></div></div>
+  <p class="wd">Van het ruwe materiaal naar varianten die tegen elkaar getest kunnen worden.</p>
+  <div class="wg"><span class="lbl">JE HEBT NODIG</span><p>Het materiaal van de draaidag en de advertentiesjablonen.</p></div>
+  <span class="lbl hd">DE HANDELINGEN</span>
+  <ol class="hl"><li><span class="h">Selectie en ruwe montage</span><span class="a">Ruwe versie</span><em>1,5 u</em></li><li><span class="h">Varianten knippen</span><span class="a">Meerdere varianten om tegen elkaar te testen</span><em>2 u</em></li><li><span class="h">Exporteren in 9:16, 1:1 en 4:5</span><span class="a">Alle drie de beeldverhoudingen klaar</span><em>0,5 u</em></li><li><span class="h">Stills selecteren en bewerken</span><span class="a">Stills voor de landingspagina en de statische advertenties</span><em>0,5 u</em></li></ol>
+  <div class="wg mis"><span class="lbl">WAAR HET MISGAAT</span><p>Je maakt &eacute;&eacute;n perfecte film. Vijf goede varianten leveren meer op dan &eacute;&eacute;n mooie, want je weet vooraf niet welke werkt.</p></div>
+  <div class="wg klaar"><span class="lbl">KLAAR ALS</span><p>Alle drie de beeldverhoudingen zijn ge&euml;xporteerd en er liggen stills voor de pagina en de statische advertenties.</p></div>
+  <p class="wm"><span class="chip m">T4 &middot; Template advertentiesjablonen</span> <span class="chip m">T6 &middot; Template shotlist en draaidag</span></p>
+</article><h3 class="blokkop">Live</h3><article class="wi" id="wi26">
+  <div class="wh"><span class="wn">26</span><h4>Kickoff met je team</h4><div class="wc"><span class="chip r-klantcontact">Klantcontact</span></div></div>
+  <p class="wd">Vastleggen wat er gebeurt zodra er een aanvraag binnenkomt. Dit bepaalt of het werkt.</p>
+  <div class="wg"><span class="lbl">JE HEBT NODIG</span><p>De portal, de gespreksleidraad en de mensen bij de klant die daadwerkelijk opvolgen.</p></div>
+  <span class="lbl hd">DE HANDELINGEN</span>
+  <ol class="hl"><li><span class="h">Voorbereiden</span><span class="a">Agenda en rolverdeling klaar</span><em>0,5 u</em></li><li><span class="h">Sessie met het team van de klant</span><span class="a">Vastgelegd wie belt, hoe snel, en waar de aanvraag landt</span><em>1 u</em></li></ol>
+  <div class="wg mis"><span class="lbl">WAAR HET MISGAAT</span><p>Je doet hem met de directeur en niet met degene die belt. Dan is de afspraak gemaakt met iemand die hem niet uitvoert.</p></div>
+  <div class="wg klaar"><span class="lbl">KLAAR ALS</span><p>Er staat op papier wie belt, binnen hoeveel tijd, en wat er gebeurt als diegene er niet is.</p></div>
+  <p class="wm"><span class="chip m">G2 &middot; Gespreksleidraad kickoff</span></p>
+</article><article class="wi" id="wi27">
+  <div class="wh"><span class="wn">27</span><h4>Testaanvraag door de keten</h4><div class="wc"><span class="chip r-techniek">Techniek</span></div></div>
+  <p class="wd">Zelf een aanvraag doen en hem volgen tot het einde, voordat een echte klant dat doet.</p>
+  <div class="wg"><span class="lbl">JE HEBT NODIG</span><p>De complete keten: advertentie, pagina, formulier, portal, dashboard en e-mail.</p></div>
+  <span class="lbl hd">DE HANDELINGEN</span>
+  <ol class="hl"><li><span class="h">Aanvraag doen en volgen</span><span class="a">Aanvraag gevolgd door advertentie, pagina, formulier, portal, dashboard en e-mail</span><em>0,5 u</em></li><li><span class="h">Bevindingen oplossen en hertesten</span><span class="a">Tweede test groen</span><em>0,5 u</em></li></ol>
+  <div class="wg mis"><span class="lbl">WAAR HET MISGAAT</span><p>Je test alleen het formulier. De keten breekt meestal verderop &mdash; in de melding die niet aankomt of de conversie die niet vuurt.</p></div>
+  <div class="wg klaar"><span class="lbl">KLAAR ALS</span><p>De tweede test is groen op alle zes de punten.</p></div>
+  <p class="wm"><span class="chip m">C3 &middot; Checklist doortesten</span></p>
+</article><article class="wi" id="wi28">
+  <div class="wh"><span class="wn">28</span><h4>De eerste week</h4><div class="wc"><span class="chip r-campagne">Campagne</span></div></div>
+  <p class="wd">De eerste dagen bepalen hoe snel het algoritme leert. Daarom kijken we dagelijks mee.</p>
+  <div class="wg"><span class="lbl">JE HEBT NODIG</span><p>Toegang tot beide platformen en het dashboard.</p></div>
+  <span class="lbl hd">DE HANDELINGEN</span>
+  <ol class="hl"><li><span class="h">Dagelijkse controle</span><span class="a">Zeven dagen bijgehouden, afwijkingen dezelfde dag opgepakt</span><em>1 u</em></li><li><span class="h">Eerste bijstellingen</span><span class="a">Eerste optimalisaties doorgevoerd en vastgelegd</span><em>1 u</em></li></ol>
+  <div class="wg mis"><span class="lbl">WAAR HET MISGAAT</span><p>Je grijpt te snel in. Elke wijziging zet de leerfase terug. Kijken en noteren, en alleen ingrijpen bij iets wat aantoonbaar fout staat.</p></div>
+  <div class="wg klaar"><span class="lbl">KLAAR ALS</span><p>Zeven dagen bijgehouden, de eerste optimalisaties doorgevoerd en vastgelegd waarom.</p></div>
+  <p class="wm"><span class="chip m">T2 &middot; Template campagnestructuur</span></p>
+</article>
+</section>
+
+<section class="sec" id="na">
+  <p class="kicker">WAT HIERNA KOMT</p>
+  <h2>Wat stap 2 uit deze instructies haalt</h2>
+  <p class="note">De kolom &ldquo;je hebt nodig&rdquo; is de invullijst. Elke keer dat daar iets staat wat de klant moet aanleveren, is dat een veld in het intakeformulier. Elke keer dat er een norm of een standaardset staat, is dat een checklist.</p>
+  <div class="tblwrap">
+  <table class="sc">
+    <thead><tr><th>Uit de instructies volgt</th><th>Wordt in stap 2</th></tr></thead>
+    <tbody>
+      <tr><td>Alles wat de klant moet aanleveren</td><td>De velden van het intakeformulier, in de volgorde waarin wij ze gebruiken</td></tr>
+      <tr><td>De negen metingen met hun drempel</td><td>De auditchecklist, met per meting het gereedschap en de grenswaarde</td></tr>
+      <tr><td>De afvinkpunten</td><td>De opleverchecklist: wat moet je kunnen z&iacute;&eacute;n voordat iets af heet</td></tr>
+      <tr><td>Alles wat &ldquo;uit onze standaardset&rdquo; heet</td><td>De standaardsets zelf: conversies, uitsluitingen, targetingprofielen</td></tr>
+      <tr><td>Alles wat &ldquo;uit template&rdquo; heet</td><td>De templates: meetopzet, campagnestructuur, landingspagina, e-mailflow, shotlist, dashboard</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="key" style="margin-top:24px">
+    <span class="k">DE TOETS</span>
+    <p class="big">Een instructie deugt als iemand die er niet bij was hem kan uitvoeren.</p>
+    <p>Dat is de enige maatstaf die telt, en het is ook meteen de test: geef er drie aan iemand uit het team die dat onderdeel nooit heeft gedaan en kijk waar hij vastloopt. Daar staat te weinig. Doe dat v&oacute;&oacute;rdat je aan stap 2 begint, want een checklist bouwen op een instructie die niet klopt kost je het dubbele.</p>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap foot">James Robinson &mdash; Marketing &amp; Branding &middot; De werkinstructies, concept september 2026</footer>
+
+<script>
+(function(){
+  var root=document.documentElement,tb=document.getElementById('themeBtn');
+  if(!tb) return;
+  function cur(){var t=root.getAttribute('data-theme');return t||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}
+  function sync(){tb.textContent=cur()==='dark'?'Licht':'Donker'}
+  sync();
+  tb.addEventListener('click',function(){root.setAttribute('data-theme',cur()==='dark'?'light':'dark');sync()});
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',sync);
+})();
+</script>
