@@ -1,0 +1,219 @@
+<title>Backlog &middot; James Robinson</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@600;700&display=swap">
+<style>
+:root{
+  --page:#fbfbfd; --card:#fff; --alt:#f5f5f7;
+  --tx:#1d1d1f; --tx2:#6e6e73; --tx3:#86868b;
+  --ln:#d2d2d7; --ln-s:#e5e5e9;
+  --blue:#007aff; --link:#0066cc; --act:#0857c3;
+  --b100:#e0efff; --b50:#f4f9ff;
+  --lime:#c4f000; --lime-tx:#5a7000; --lime100:#f2fccc;
+  --green-tx:#1d7d3f; --green100:#e6f7eb;
+  --orange-tx:#94590a; --orange100:#fef2e0;
+  --red-tx:#c02a22; --red100:#fdecea;
+  --black:#1c1c1e; --inv:#f5f5f7; --inv2:#a1a1a6;
+  --fd:"Inter Tight","Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --ft:"Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --fm:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --e:cubic-bezier(.25,.1,.25,1);--g:32px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}}
+:root[data-theme="dark"]{
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--tx);font-family:var(--ft);font-size:16.5px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition-duration:.01ms!important}}
+:focus-visible{outline:none;box-shadow:0 0 0 4px rgba(0,122,255,.4);border-radius:8px}
+p{margin:0 0 18px;max-width:70ch}
+p:last-child{margin-bottom:0}
+h1,h2,h3,h4{font-family:var(--fd);margin:0;text-wrap:balance}
+code{font-family:var(--fm);font-size:.86em;background:var(--alt);padding:2px 6px;border-radius:5px}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:60;background:rgba(251,251,253,.86);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--ln-s)}
+:root[data-theme="dark"] .bar,:root:not([data-theme="light"]) .bar{background:rgba(0,0,0,.74)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .bar{background:rgba(251,251,253,.86)}}
+.bar-in{max-width:1080px;margin:0 auto;padding:0 var(--g);display:flex;align-items:center;gap:5px;min-height:48px;overflow-x:auto;scrollbar-width:none}
+.bar-in::-webkit-scrollbar{display:none}
+.bar b{font-family:var(--fd);font-size:14.5px;font-weight:700;letter-spacing:-.016em;margin-right:8px;white-space:nowrap}
+.bar a{font-size:12.5px;color:var(--tx2);text-decoration:none;padding:6px 8px;border-radius:7px;white-space:nowrap}
+.bar a:hover{color:var(--tx)}
+.bar button{margin-left:auto;flex:none;font:inherit;font-size:12px;cursor:pointer;background:transparent;border:1px solid var(--ln);color:var(--tx2);border-radius:980px;padding:5px 13px}
+
+.wrap{max-width:1080px;margin:0 auto;padding-inline:var(--g)}
+.hero{padding-block:76px 40px}
+h1{font-size:clamp(34px,5.4vw,58px);font-weight:700;line-height:1.06;letter-spacing:-.026em;margin-bottom:20px}
+.lead{font-size:20px;line-height:1.5;color:var(--tx2);max-width:64ch}
+.sec{padding-block:60px;border-top:1px solid var(--ln-s)}
+h2{font-size:clamp(26px,3.4vw,38px);font-weight:700;line-height:1.12;letter-spacing:-.02em;margin-bottom:8px}
+.sec > .kicker{font-family:var(--fm);font-size:11px;letter-spacing:.06em;color:var(--tx3);margin-bottom:14px}
+h3{font-size:21px;font-weight:600;line-height:1.24;letter-spacing:-.012em;margin:38px 0 10px}
+h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
+.note{color:var(--tx2)}
+.note b,b{color:var(--tx);font-weight:600}
+
+/* kernblok */
+.key{background:var(--black);color:var(--inv);border-radius:22px;padding:34px 32px;margin:26px 0}
+.key .k{display:block;font-family:var(--fm);font-size:10.5px;letter-spacing:.06em;color:var(--lime);margin-bottom:14px}
+.key p{color:var(--inv2);font-size:17.5px;max-width:64ch}
+.key strong{color:#fff;font-weight:600}
+.key .big{font-family:var(--fd);font-size:clamp(22px,3vw,30px);font-weight:600;line-height:1.2;letter-spacing:-.018em;color:#fff;margin-bottom:16px}
+
+/* lagen van het aanbod */
+.stack{display:grid;gap:12px;margin-top:24px}
+.st{background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;display:grid;grid-template-columns:132px 1fr;gap:20px;align-items:start}
+.st .lab{font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;color:var(--act);padding-top:3px}
+.st .bd p{margin:0;font-size:15.5px;color:var(--tx2)}
+.st .bd h4{margin-bottom:5px}
+
+/* kandidaten */
+.cands{display:grid;gap:12px;margin-top:22px}
+.cand{border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;background:var(--card)}
+.cand.win{border-color:var(--lime);box-shadow:0 0 0 1px var(--lime)}
+.cand .zin{font-family:var(--fd);font-size:22px;font-weight:600;letter-spacing:-.014em;margin-bottom:8px}
+.cand .why{font-size:15px;color:var(--tx2);margin:0}
+.cand .verdict{display:inline-block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;border-radius:5px;padding:3px 7px;margin-bottom:12px}
+.cand .verdict.no{background:var(--red100);color:var(--red-tx)}
+.cand .verdict.ok{background:var(--lime100);color:var(--lime-tx)}
+.cand .verdict.mid{background:var(--orange100);color:var(--orange-tx)}
+
+/* onderscheid */
+.dist{width:100%;border-collapse:collapse;font-size:15px;margin-top:22px}
+.dist th,.dist td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.dist thead th{font-family:var(--fm);font-size:10.5px;letter-spacing:.04em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.dist td:first-child{font-weight:500;width:34%}
+.dist .v{font-family:var(--fm);font-size:11px;white-space:nowrap}
+.dist .v.y{color:var(--green-tx)}
+.dist .v.n{color:var(--red-tx)}
+.dist tr:last-child td{border-bottom:none}
+.tblwrap{overflow-x:auto}
+
+/* beslissingen */
+.dec{border:1px solid var(--ln-s);border-radius:18px;background:var(--card);padding:26px 28px;margin-top:14px}
+.dec .hd{display:flex;align-items:baseline;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.dec .num{font-family:var(--fm);font-size:11px;color:var(--tx3);flex:none}
+.dec h4{font-size:19px;flex:1;min-width:220px;margin:0}
+.dec .tag{font-family:var(--fm);font-size:9.5px;letter-spacing:.05em;border-radius:5px;padding:3px 7px}
+.dec .tag.blok{background:var(--red100);color:var(--red-tx)}
+.dec .tag.schaal{background:var(--orange100);color:var(--orange-tx)}
+.dec .tag.scherp{background:var(--b100);color:var(--act)}
+.dec .q{font-size:16px;color:var(--tx2);margin:0 0 16px}
+.dec .adv{background:var(--b50);border-left:3px solid var(--act);border-radius:0 10px 10px 0;padding:16px 18px}
+.dec .adv .al{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.06em;color:var(--act);margin-bottom:7px}
+.dec .adv p{font-size:15.5px;margin:0 0 10px}
+.dec .adv p:last-child{margin-bottom:0}
+
+/* vast */
+.locked{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-top:22px}
+.lk{background:var(--card);border:1px solid var(--ln-s);border-radius:14px;padding:18px 20px}
+.lk .t{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--green-tx);margin-bottom:7px}
+.lk .b{font-size:15px;color:var(--tx2);line-height:1.45}
+.lk .b b{color:var(--tx)}
+
+.warn{background:var(--orange100);border-radius:18px;padding:24px 26px;margin-top:26px}
+.warn h4{color:var(--orange-tx)}
+.warn p{color:var(--orange-tx);opacity:.94;font-size:15.5px;max-width:none}
+.foot{padding-block:44px 64px;font-size:13px;color:var(--tx3);text-align:center}
+
+@media (max-width:734px){
+  :root{--g:20px}
+  body{font-size:16px}
+  .sec{padding-block:48px}
+  .hero{padding-block:44px 28px}
+  .st{grid-template-columns:1fr;gap:10px}
+  .key{padding:24px 22px}
+  .dec{padding:22px 20px}
+}
+</style>
+
+<header class="wrap hdr">
+  <p class="kicker">WERKDOCUMENT</p>
+  <h1>Backlog</h1>
+  <p class="lead">Wat er nog ligt, in volgorde van wat het verhaal het meest afmaakt. Dit is geen wensenlijst: alles hier volgt uit een besluit dat al genomen is.</p>
+</header>
+
+<main class="wrap">
+
+<section class="sec" id="dash">
+  <p class="kicker">PRIORITEIT 1</p>
+  <h2>Het dashboard</h2>
+  <p class="lead">De propositie zegt: advertising koopt het volume, de rest verlaagt de kostprijs. Dat is alleen waar als je het kunt laten zien. Zonder dashboard is de tweede helft van ons verhaal opnieuw iets waar een klant ons op moet geloven &mdash; precies wat we wilden afschaffen.</p>
+
+  <div class="key">
+    <span class="k">DE REGEL DIE HET DRAAGT</span>
+    <p class="big">Wat je zonder ons had uitgegeven, tegenover wat er werkelijk uitging.</p>
+    <p>Die ene regel maakt elke euro CRO, e-mail en SEO verantwoordbaar. Hij bestaat alleen als we vanaf maand &eacute;&eacute;n de nulmeting vastleggen. Doen we dat niet, dan kunnen we het achteraf niet meer reconstrueren.</p>
+  </div>
+
+  <h3>Per klant</h3>
+  <div class="stack">
+    <div class="st"><span class="lab">DE KERN</span><div class="bd"><h4>Kostprijs per aanvraag, per kanaal, per maand</h4><p>Als lijn over de tijd, met de nulmeting als referentie. Dit is het getal waar alles aan hangt: daalt het, dan werkt de performancelaag.</p></div></div>
+    <div class="st"><span class="lab">DE VERSCHUIVING</span><div class="bd"><h4>Betaald tegenover organisch</h4><p>Apart in verkeer &eacute;n in conversies. Dat verschil is het bewijs dat SEO de adspend verlegt in plaats van dat het geld kost.</p></div></div>
+    <div class="st"><span class="lab">DE SOM</span><div class="bd"><h4>De tien duurste zoekwoorden</h4><p>Per woord: de klikprijs, de organische positie en wat die positie per maand bespaart. Hier wordt SEO een rekensom in plaats van een belofte.</p></div></div>
+    <div class="st"><span class="lab">DE UITKOMST</span><div class="bd"><h4>Vermeden kosten</h4><p>Wat dezelfde resultaten gekost hadden tegen de kostprijs van maand &eacute;&eacute;n. Dit is de regel waarmee je een verlenging verkoopt.</p></div></div>
+  </div>
+
+  <h3>Overkoepelend</h3>
+  <p class="note">Hetzelfde principe, maar over de hele portefeuille. Niet om intern te sturen &mdash; om te laten zien wat we neerzetten.</p>
+  <div class="locked">
+    <div class="lk"><span class="t">BEWIJS</span><p class="b"><b>Gemiddelde daling van de kostprijs per aanvraag</b> over alle klanten, per maand sinds start.</p></div>
+    <div class="lk"><span class="t">SCHAAL</span><p class="b"><b>Totaal beheerd mediabudget en totaal aantal aanvragen.</b> Groot, eerlijk en zonder franje.</p></div>
+    <div class="lk"><span class="t">DUUR</span><p class="b"><b>Gemiddelde looptijd van een samenwerking.</b> Het enige cijfer dat laat zien of het werkt.</p></div>
+    <div class="lk"><span class="t">HERKOMST</span><p class="b"><b>Aandeel organisch over de hele portefeuille.</b> Laat zien dat de performancelaag echt aankomt.</p></div>
+  </div>
+  <p class="note">De laatste is de scherpste: hij dwingt onze eigen marketing te kloppen, net als het live dashboard op onze site dat al in de roadmap staat.</p>
+
+  <div class="key">
+    <span class="k">DE VOORWAARDE</span>
+    <p class="big">De nulmeting is de eerste oplevering, niet de eerste rapportage.</p>
+    <p>Kostprijs per aanvraag per kanaal, verkeer per bron, conversieratio per pagina &mdash; vastgelegd in maand &eacute;&eacute;n, v&oacute;&oacute;rdat er iets verandert. Zonder dat ijkpunt is elk cijfer daarna een mening.</p>
+  </div>
+</section>
+
+<section class="sec" id="rest">
+  <p class="kicker">WAT ER VERDER LIGT</p>
+  <h2>De rest van de backlog</h2>
+
+  <div class="stack">
+    <div class="st"><span class="lab">TOOL</span><div class="bd"><h4>Het kwartaalplan in de ARENA-sessie</h4><p>De urenverdeling is nu &eacute;&eacute;n jaargemiddelde. Dat moet een vast plan per kwartaal worden dat het zwaartepunt verschuift van advertising naar de performancelaag, zonder dat er een moment is waarop iets &ldquo;overgaat&rdquo;. Volgt direct uit het besluit hierboven.</p></div></div>
+    <div class="st"><span class="lab">TOOL</span><div class="bd"><h4>De kwalificatiecheck</h4><p>Vier gevallen waarin we nee zeggen, als toets in de diagnosefase. Nu ontdekken we het pas als het misgaat.</p></div></div>
+    <div class="st"><span class="lab">TOOL</span><div class="bd"><h4>De 50%-regel inbouwen</h4><p>De sessie moet weigeren een voorstel te tonen waarin de retainer meer dan de helft van het maandbudget is, met de uitleg erbij. De retainerbedragen zelf staan nog open: de tool rekent met &euro;1.650, &euro;3.300 en &euro;4.950, terwijl het gesprek over &euro;1.000 tot &euro;1.500 ging.</p></div></div>
+    <div class="st"><span class="lab">CIJFERS</span><div class="bd"><h4>Eigen kengetallen per branche</h4><p>De sessie rekent met Amerikaanse benchmarks en een marktfactor waarvoor we geen bewijs hebben. Elke uitkomst is daardoor geleend. Onze eigen conversiecijfers uit de Ads-accounts lossen dit op, en niets anders.</p></div></div>
+    <div class="st"><span class="lab">PORTEFEUILLE</span><div class="bd"><h4>Bestaande SEO-klanten</h4><p>Een deel van de portefeuille draait nu op wat we niet meer als pijler verkopen. Dat is een migratievraagstuk met omzetrisico, en het moet gebeuren v&oacute;&oacute;r de nieuwe propositie naar buiten gaat.</p></div></div>
+    <div class="st"><span class="lab">MERK</span><div class="bd"><h4>De brandskill bijwerken</h4><p>De skill schrijft nog Helvetica Neue voor, verbiedt Inter en beschrijft een toon die de styleguide tegenspreekt. Elk document dat ermee gemaakt wordt, wijkt af van de huisstijl.</p></div></div>
+    <div class="st"><span class="lab">MERK</span><div class="bd"><h4>BOIP-check op ARENA</h4><p>Voor drukwerk en domeinnaam. Nog niet gedaan.</p></div></div>
+    <div class="st"><span class="lab">SITE</span><div class="bd"><h4>De homepage</h4><p>Staat nog op het oude verhaal van zeven gelijkwaardige lagen. Wacht op propositie, strategie, websiteplan en design &mdash; in die volgorde.</p></div></div>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap foot">James Robinson &mdash; Marketing &amp; Branding &middot; Backlog, september 2026</footer>
+
+<script>
+(function(){
+  var root=document.documentElement,tb=document.getElementById('themeBtn');
+  if(!tb) return;
+  function cur(){var t=root.getAttribute('data-theme');return t||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}
+  function sync(){tb.textContent=cur()==='dark'?'Licht':'Donker'}
+  sync();
+  tb.addEventListener('click',function(){root.setAttribute('data-theme',cur()==='dark'?'light':'dark');sync()});
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',sync);
+})();
+</script>
