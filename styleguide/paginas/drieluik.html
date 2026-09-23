@@ -146,335 +146,326 @@ h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
 .sc thead th{font-family:var(--fm);font-size:10.5px;letter-spacing:.04em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
 .sc td.n,.sc th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;font-family:var(--fm);font-size:13px}
 .sc tbody tr:last-child td{border-bottom:none}
+.tblwrap{overflow-x:auto}
 
-/* ---------- podium ---------- */
-.stage{margin-top:26px}
-.stagebar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px}
-.stagebar button{font:inherit;font-size:12.5px;cursor:pointer;background:transparent;border:1px solid var(--ln);
-  color:var(--tx2);border-radius:980px;padding:6px 15px}
-.stagebar button[aria-pressed="true"]{background:var(--tx);color:var(--page);border-color:var(--tx)}
-.stagebar .hint{font-size:12.5px;color:var(--tx3);margin-left:4px}
-.view{--z:.60;overflow:hidden;background:var(--alt);border:1px solid var(--ln-s);border-radius:18px;
-  padding:26px;display:flex;justify-content:center}
-.box{width:calc(420mm * var(--z));height:calc(297mm * var(--z));position:relative;
-  transition:width .55s var(--e)}
-.box.dicht{width:calc(210mm * var(--z))}
-.piece{width:420mm;height:297mm;position:absolute;top:0;left:0;
-  transform:scale(var(--z)) translateX(0);transform-origin:top left;transform-style:preserve-3d;
-  perspective:2600px;transition:transform .55s var(--e)}
-.box.dicht .piece{transform:scale(var(--z)) translateX(-105mm)}
+.spread{display:grid;grid-template-columns:1fr 1.9fr 1fr;gap:0;margin-top:26px;
+  border:1px solid var(--ln);border-radius:20px;overflow:hidden;background:var(--card)}
+@media(max-width:1000px){.spread{grid-template-columns:1fr}}
+.pan{padding:30px 26px;display:flex;flex-direction:column;min-width:0}
+.pan.side{background:var(--alt);border-inline:1px solid var(--ln-s)}
+@media(max-width:1000px){.pan.side{border-inline:none;border-top:1px solid var(--ln-s)}}
+.pan .eb{font-family:var(--fm);font-size:10px;letter-spacing:.09em;color:var(--tx3);text-transform:uppercase}
+.pan h3{font-family:var(--fd);font-size:25px;font-weight:700;letter-spacing:-.022em;line-height:1.1;margin-top:6px}
+.pan .sub{font-size:14px;line-height:1.5;color:var(--tx2);margin:10px 0 0;max-width:46ch}
+.pan .rule{height:1px;background:var(--ln);margin:22px 0 18px}
+.pan .cap{font-family:var(--fm);font-size:10px;letter-spacing:.07em;color:var(--blue);margin:22px 0 8px}
 
-.pan{position:absolute;top:0;height:297mm;background:var(--card);overflow:hidden}
-.mid{left:105mm;width:210mm}
-.flap{width:105mm;overflow:visible;transform-style:preserve-3d;transition:transform .55s var(--e)}
-.fl{left:0;transform-origin:100% 50%}
-.fr{left:315mm;transform-origin:0 50%}
-.box.dicht .fl{transform:translateZ(1px) rotateY(180deg)}
-.box.dicht .fr{transform:translateZ(1px) rotateY(-180deg)}
-.face{position:absolute;inset:0;backface-visibility:hidden;overflow:hidden;background:var(--card)}
-.face.bk{transform:rotateY(180deg)}
-.vouw{position:absolute;top:0;bottom:0;width:1px;background:var(--ln);z-index:9;pointer-events:none}
+.grp{margin-bottom:16px}
+.grp .gt{font-family:var(--fm);font-size:10px;letter-spacing:.06em;color:var(--tx3)}
+.grp b{display:block;font-family:var(--fd);font-size:16px;font-weight:600;margin-top:2px}
+.grp ul{list-style:none;margin:8px 0 0;padding:0}
+.grp ul li{font-size:13.5px;line-height:1.55;color:var(--tx2);padding-left:14px;position:relative}
+.grp ul li::before{content:"";position:absolute;left:0;top:8px;width:5px;height:5px;border-radius:50%;background:var(--ln)}
 
-/* ---------- paneelinhoud, ontworpen op ware grootte ---------- */
-.pn{position:absolute;inset:0;padding:13mm 11mm;display:flex;flex-direction:column;color:var(--tx)}
-.pn.tint{background:var(--alt)}
-.pn .eb{font-family:var(--fm);font-size:7pt;letter-spacing:.09em;color:var(--tx3);text-transform:uppercase}
-.pn h3{font-family:var(--fd);font-size:19pt;font-weight:700;letter-spacing:-.02em;line-height:1.08;margin-top:3mm}
-.pn .sub{font-size:8.5pt;line-height:1.45;color:var(--tx2);margin-top:3mm;max-width:none}
-.pn .rule{height:1px;background:var(--ln);margin:6mm 0 5mm}
-.pn .foot{margin-top:auto;padding-top:5mm;border-top:1px solid var(--ln-s);font-size:7.5pt;color:var(--tx3);line-height:1.4}
-.it{margin-bottom:4mm}
-.it .t{font-family:var(--fm);font-size:7pt;letter-spacing:.06em;color:var(--blue)}
-.it b{display:block;font-family:var(--fd);font-size:10.5pt;font-weight:600;margin-top:.6mm}
-.it ul{list-style:none;margin:1.6mm 0 0;padding:0}
-.it ul li{font-size:8pt;line-height:1.5;color:var(--tx2);padding-left:3.4mm;position:relative}
-.it ul li::before{content:"";position:absolute;left:0;top:1.55mm;width:1.3mm;height:1.3mm;border-radius:50%;background:var(--ln)}
-.kv{display:flex;justify-content:space-between;gap:3mm;align-items:baseline;
-  padding:2.2mm 0;border-bottom:1px solid var(--ln-s);font-size:8pt}
-.kv:last-of-type{border-bottom:none}
-.kv span{color:var(--tx2)}
-.kv em{font-style:normal;font-family:var(--fm);font-size:8pt;color:var(--tx);white-space:nowrap}
+.opt{display:block;cursor:pointer;display:grid;grid-template-columns:20px 1fr auto;gap:10px;
+  align-items:start;padding:10px 0;border-bottom:1px solid var(--ln-s)}
+.opt:last-of-type{border-bottom:none}
+.opt input{margin:2px 0 0;width:16px;height:16px;accent-color:var(--blue);cursor:pointer}
+.opt .lb{font-size:14px;font-weight:500;line-height:1.35}
+.opt .lb em{display:block;font-style:normal;font-size:12.5px;color:var(--tx2);font-weight:400;margin-top:2px}
+.opt .pz{font-family:var(--fm);font-size:12px;color:var(--tx);white-space:nowrap;padding-top:2px}
+.opt.vast{cursor:default}
+.opt.vast .pz{color:var(--tx2)}
+.opt input:disabled{accent-color:var(--tx3);cursor:default}
 
-/* midden: drie kolommen */
-.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:0;flex:1;margin-top:6mm}
-.col{padding:0 5mm;border-left:1px solid var(--ln-s);display:flex;flex-direction:column}
-.col:first-child{border-left:none;padding-left:0}
-.col:last-child{padding-right:0}
-.col .nm{font-family:var(--fd);font-size:14pt;font-weight:700;letter-spacing:-.018em}
-.col .pr{font-family:var(--fd);font-size:23pt;font-weight:700;letter-spacing:-.028em;
-  font-variant-numeric:tabular-nums;line-height:1.05;margin-top:1.5mm}
-.col .pm{font-family:var(--fm);font-size:7pt;color:var(--tx3);margin-top:.8mm}
-.col .who{font-size:7.5pt;color:var(--tx2);line-height:1.45;margin-top:3mm}
-.col dl{margin:0;padding:0;margin-top:auto}
-.col dt{font-family:var(--fm);font-size:6.5pt;letter-spacing:.05em;color:var(--tx3);margin-top:3.5mm}
-.col dl dt:first-child{margin-top:0}
-.col dd{margin:.4mm 0 0;font-size:8.5pt;font-weight:500}
-.col.acc .nm{color:var(--lime-tx)}
-.col .mrk{display:block;height:5mm;margin-bottom:2mm}
-.col .mrk span{display:inline-block;font-family:var(--fm);font-size:6pt;letter-spacing:.06em;
-  background:var(--lime100);color:var(--lime-tx);padding:.9mm 2mm;border-radius:2mm}
+.pk{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+@media(max-width:700px){.pk{grid-template-columns:1fr}}
+.pkc{position:relative;border:1px solid var(--ln);border-radius:14px;padding:16px 16px 18px;cursor:pointer;background:var(--card);
+  display:flex;flex-direction:column;transition:border-color .15s,box-shadow .15s}
+.pkc:hover{border-color:var(--tx3)}
+.pkc.on{border-color:var(--blue);box-shadow:inset 0 0 0 1px var(--blue)}
+.pkc input{position:absolute;opacity:0;pointer-events:none}
+.pkc .nm{font-family:var(--fd);font-size:17px;font-weight:700;letter-spacing:-.018em}
+.pkc .pr{font-family:var(--fd);font-size:26px;font-weight:700;letter-spacing:-.028em;font-variant-numeric:tabular-nums;margin-top:4px}
+.pkc .pm{font-family:var(--fm);font-size:10px;color:var(--tx3)}
+.pkc .who{font-size:12.5px;color:var(--tx2);line-height:1.45;margin-top:10px}
+.pkc dl{margin:14px 0 0;padding:0}
+.pkc dt{font-family:var(--fm);font-size:9px;letter-spacing:.05em;color:var(--tx3);margin-top:9px}
+.pkc dt:first-child{margin-top:0}
+.pkc dd{margin:1px 0 0;font-size:13px;font-weight:500}
 
-/* cover */
-.cov{justify-content:flex-end}
-.cov .big{font-family:var(--fd);font-size:25pt;font-weight:700;letter-spacing:-.026em;line-height:1.06}
-.cov .lg{font-family:var(--fd);font-size:11pt;font-weight:700;letter-spacing:-.018em}
-.cov .tag{font-size:8pt;color:var(--tx2);margin-top:2.5mm;line-height:1.45}
+.tel{margin-top:auto;padding-top:20px}
+.tel .rw{display:flex;justify-content:space-between;gap:12px;align-items:baseline;
+  padding:9px 0;border-bottom:1px solid var(--ln-s);font-size:14px}
+.tel .rw span{color:var(--tx2)}
+.tel .rw em{font-style:normal;font-family:var(--fm);font-size:13px;color:var(--tx);white-space:nowrap}
+.tel .rw.big{border-bottom:none;border-top:2px solid var(--ln);margin-top:6px;padding-top:14px}
+.tel .rw.big span{color:var(--tx);font-weight:600}
+.tel .rw.big em{font-family:var(--fd);font-size:20px;font-weight:700;letter-spacing:-.02em}
+.tel .nt{font-size:12px;color:var(--tx3);margin-top:12px;line-height:1.5}
 
-/* achterzijde */
-.mt{width:100%;border-collapse:collapse;font-size:7.5pt}
-.mt td{padding:1.9mm 0;border-bottom:1px solid var(--ln-s);vertical-align:top;color:var(--tx2)}
-.mt td:first-child{color:var(--tx);font-weight:500;width:38%}
-.mt td:last-child{text-align:right;font-family:var(--fm);font-size:7pt;white-space:nowrap;color:var(--tx3)}
-.mt tr:last-child td{border-bottom:none}
-
-.plat{display:grid;gap:22px;margin-top:22px}
-.platrij .cap{font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;color:var(--tx3);margin-bottom:8px}
-.platrij .sheet{--z:.60;position:relative;width:calc(420mm * var(--z));height:calc(297mm * var(--z));
-  max-width:100%;border:1px solid var(--ln);border-radius:6px;overflow:hidden}
-.platrij .sheet.half{width:calc(210mm * var(--z))}
-.platrij .inner{position:absolute;top:0;left:0;width:420mm;height:297mm;transform:scale(var(--z));transform-origin:top left}
-.platrij .inner.h{width:210mm}
-.platwrap{overflow-x:auto;padding-bottom:6px}
-@media(max-width:1100px){.view{--z:.42}.platrij .sheet{--z:.42}}
-@media(max-width:700px){.view{--z:.30}.platrij .sheet{--z:.30}}
+.fill{border:1px dashed var(--ln);border-radius:12px;padding:14px 16px;margin-top:10px}
+.fill .fr{display:flex;justify-content:space-between;gap:10px;align-items:baseline;padding:7px 0;font-size:13.5px}
+.fill .fr span{color:var(--tx2)}
+.fill .fr em{font-style:normal;font-family:var(--fm);font-size:12px;color:var(--tx3);
+  border-bottom:1px solid var(--ln);min-width:62px;text-align:right}
+.mini{list-style:none;margin:10px 0 0;padding:0}
+.mini li{font-size:13.5px;line-height:1.5;color:var(--tx2);padding-left:14px;position:relative;margin-bottom:5px}
+.mini li::before{content:"";position:absolute;left:0;top:8px;width:5px;height:5px;border-radius:50%;background:var(--blue)}
 </style>
 
 <div class="bar"><div class="bar-in">
   <b>Het drieluik</b>
-  <a href="#mock">De maquette</a>
-  <a href="#opbouw">De opbouw</a>
-  <a href="#plat">Platte vellen</a>
-  <a href="#keuzes">Ontwerpkeuzes</a>
-  <a href="#druk">Drukwerk</a>
+  <a href="#blad">Het blad</a>
+  <a href="#namen">De namen</a>
+  <a href="#rechts">De rechterflap</a>
+  <a href="#open">Nog te beslissen</a>
   <button id="themeBtn" type="button">Donker</button>
 </div></div>
 
 <header class="wrap hdr">
-  <p class="kicker">VERKOOPONDERSTEUNING &middot; CONCEPT</p>
+  <p class="kicker">VERKOOPONDERSTEUNING &middot; INHOUD</p>
   <h1>Het drieluik</h1>
-  <p class="lead">E&eacute;n vel A3 liggend, twee keer gevouwen. Dicht is het een A4 met alleen een uitspraak erop. Open is het je hele aanbod in de volgorde waarin het geld loopt: links wat je &eacute;&eacute;n keer betaalt, in het midden wat je elke maand aan ons betaalt, rechts wat er elders naartoe gaat.</p>
+  <p class="lead">Line-up links, gameplan in het midden, scoreboard rechts. De vinkjes werken: zet aan wat deze klant nodig heeft en het totaal rechtsonder loopt mee. Dit gaat over de inhoud, niet over de vormgeving &mdash; die volgt zodra de indeling klopt.</p>
 </header>
 
 <main class="wrap">
 
-<section class="sec" id="mock">
-  <p class="kicker">DE MAQUETTE</p>
-  <h2>Open en dicht</h2>
-  <p class="note">De flappen vouwen naar binnen. Samen vormen ze precies de A4 die je in handen krijgt, met de naad in het midden &mdash; en die naad valt tussen de twee zinnen op de voorkant.</p>
-  <div class="stage">
-    <div class="stagebar">
-      <button id="bDicht" type="button" aria-pressed="true">Dicht</button>
-      <button id="bOpen" type="button" aria-pressed="false">Open</button>
-      <span class="hint">Op ware grootte 420 &times; 297 mm, hier op 60%.</span>
+<section class="sec" id="blad">
+  <p class="kicker">HET BLAD</p>
+  <h2>Wat er op de drie panelen staat</h2>
+  <p class="note">Alles wat aanvinkbaar is, is aanvinkbaar omdat de diagnose het bepaalt &mdash; niet omdat wij het mogen voorstellen. Wat vast is, staat vast.</p>
+
+  <div class="spread">
+
+    <!-- ========== LINKS ========== -->
+    <div class="pan side">
+      <p class="eb">&Eacute;&Eacute;N KEER</p>
+      <h3>Starting line-up</h3>
+      <p class="sub">Wie er staat bij de aftrap. Twee helften, &eacute;&eacute;n prijs, niet los verkrijgbaar.</p>
+
+      <div class="rule"></div>
+      <div class="grp">
+        <span class="gt">HELFT 1</span><b>De basis</b>
+        <ul><li>Doel, doelgroep en propositie</li><li>Technische diagnose met rapport</li>
+        <li>Meetopzet en nulmeting</li><li>Advertentieaccounts op jouw naam</li>
+        <li>Je leadportal en je dashboard</li></ul>
+      </div>
+      <div class="grp">
+        <span class="gt">HELFT 2</span><b>Je eerste campagne</b>
+        <ul><li>Zoekwoorden, structuur en advertenties</li><li>Landingspagina met formulier</li>
+        <li>Een volledige draaidag bij jou</li><li>Montage in drie beeldverhoudingen</li>
+        <li>Kickoff en de eerste week dagelijks mee</li></ul>
+      </div>
+      <label class="opt vast"><input type="checkbox" checked disabled>
+        <span class="lb">Starting line-up<em>Vast. Hier valt niets af te vinken.</em></span>
+        <span class="pz">&euro; 4.500</span></label>
+
+      <p class="cap">SUBS &middot; ALLEEN ALS DE DIAGNOSE ZE NODIG HEEFT</p>
+      <p class="sub" style="margin-bottom:6px">Negen metingen, vaste normen. Voldoet alles, dan blijft de bank leeg en betaal je hier niets.</p>
+      <label class="opt"><input type="checkbox" data-m="85" id="s-host">
+        <span class="lb">Hosting en onderhoud<em>Webmix. Migratie gratis. Alleen als je huidige omgeving de norm niet haalt.</em></span>
+        <span class="pz">&euro; 85 p/m</span></label>
+      <label class="opt"><input type="checkbox" data-j="150" id="s-cookie">
+        <span class="lb">Cookiescript<em>Webmix. Toestemming om te mogen meten.</em></span>
+        <span class="pz">&euro; 150 p/j</span></label>
+      <label class="opt"><input type="checkbox" data-e="750">
+        <span class="lb">Snelheid in de site<em>Webmix. Afbeeldingen, scripts, plugins en thema.</em></span>
+        <span class="pz">&euro; 750</span></label>
+      <label class="opt"><input type="checkbox" data-e="500">
+        <span class="lb">Redirects en dode links<em>Webmix.</em></span>
+        <span class="pz">&euro; 500</span></label>
+      <label class="opt"><input type="checkbox" data-e="250">
+        <span class="lb">E-mailauthenticatie<em>Webmix. SPF, DKIM en DMARC.</em></span>
+        <span class="pz">&euro; 250</span></label>
+      <label class="opt"><input type="checkbox" data-e="250" id="s-cal">
+        <span class="lb">Afsprakenplanner instellen<em>Wij. Alleen als je hem in het gameplan aanzet.</em></span>
+        <span class="pz">&euro; 250</span></label>
     </div>
-    <div class="view">
-      <div class="box dicht" id="box">
-        <div class="piece">
-          <div class="pan mid" id="pMid"></div>
-          <div class="pan flap fl"><div class="face" id="pLin"></div><div class="face bk" id="pLout"></div></div>
-          <div class="pan flap fr"><div class="face" id="pRin"></div><div class="face bk" id="pRout"></div></div>
-          <div class="vouw" style="left:105mm"></div><div class="vouw" style="left:315mm"></div>
-        </div>
+
+    <!-- ========== MIDDEN ========== -->
+    <div class="pan">
+      <p class="eb">ELKE MAAND</p>
+      <h3>Gameplan</h3>
+      <p class="sub">Alle drie dezelfde inhoud: adverteren als motor, met SEO, CRO en e-mail als laag die elke euro effici&euml;nter laat werken. Het verschil zit in de hoeveelheid, niet in de aanpak.</p>
+
+      <div class="pk">
+        <label class="pkc on"><input type="radio" name="pk" value="1000" data-ads="1.000" checked>
+          <span class="nm">Enter</span><span class="pr">&euro; 1.000</span><span class="pm">PER MAAND</span>
+          <span class="who">Voor wie begint met adverteren en eerst wil zien of het werkt.</span>
+          <dl><dt>ADVERTENTIEBUDGET</dt><dd>&euro; 1.000 &ndash; 2.500</dd>
+          <dt>ADVERTENTIESETS</dt><dd>1 per kwartaal</dd>
+          <dt>DRAAIDAGEN</dt><dd>1 per jaar</dd>
+          <dt>PERFORMANCEBLOKKEN</dt><dd>1 per jaar</dd></dl></label>
+        <label class="pkc"><input type="radio" name="pk" value="1500" data-ads="2.500">
+          <span class="nm">Compete</span><span class="pr">&euro; 1.500</span><span class="pm">PER MAAND</span>
+          <span class="who">Voor wie mee wil doen in een markt waar de concurrentie al adverteert.</span>
+          <dl><dt>ADVERTENTIEBUDGET</dt><dd>&euro; 2.500 &ndash; 7.500</dd>
+          <dt>ADVERTENTIESETS</dt><dd>1 per maand</dd>
+          <dt>DRAAIDAGEN</dt><dd>2 per jaar</dd>
+          <dt>PERFORMANCEBLOKKEN</dt><dd>1 per kwartaal</dd></dl></label>
+        <label class="pkc"><input type="radio" name="pk" value="2000" data-ads="7.500">
+          <span class="nm">Own</span><span class="pr">&euro; 2.000</span><span class="pm">PER MAAND</span>
+          <span class="who">Voor wie de markt wil bezitten en het budget heeft om dat vol te houden.</span>
+          <dl><dt>ADVERTENTIEBUDGET</dt><dd>vanaf &euro; 7.500</dd>
+          <dt>ADVERTENTIESETS</dt><dd>2 per maand</dd>
+          <dt>DRAAIDAGEN</dt><dd>4 per jaar</dd>
+          <dt>PERFORMANCEBLOKKEN</dt><dd>doorlopend</dd></dl></label>
+      </div>
+
+      <p class="cap">DE UITRUSTING &middot; OP JOUW NAAM, RECHTSTREEKS BETAALD</p>
+      <p class="sub" style="margin-bottom:6px">Wij richten het in en beheren het, de rekening gaat naar jou. Zo zit je nooit aan ons vast om erbij te kunnen.</p>
+      <label class="opt vast"><input type="checkbox" checked disabled>
+        <span class="lb">E-mailplatform<em>Vast onderdeel, vanaf dag &eacute;&eacute;n &mdash; we beginnen meteen adressen te verzamelen. Prijs volgt je lijstgrootte.</em></span>
+        <span class="pz">vanaf &euro; 9,90 p/m</span></label>
+      <label class="opt"><input type="checkbox" data-m="10" id="g-cal">
+        <span class="lb">Afsprakenplanner<em>Alleen als je afspraken laat inplannen.</em></span>
+        <span class="pz">vanaf &euro; 10 p/m</span></label>
+      <label class="opt"><input type="checkbox" data-staffel="1">
+        <span class="lb">Bezoekersherkenning<em>Zien welke bedrijven langskwamen zonder te converteren. Alleen zinvol bij B2B, want wij volgen geen leads op. Wij ontvangen hier een vergoeding voor.</em></span>
+        <span class="pz">staffel</span></label>
+
+      <p class="nt" style="font-size:12px;color:var(--tx3);margin-top:20px;line-height:1.5">Maandelijks per automatische incasso. Je advertentiebudget loopt via je eigen accounts en komt nooit op onze factuur. Onze fee is nooit meer dan de helft van wat je aan media uitgeeft.</p>
+    </div>
+
+    <!-- ========== RECHTS ========== -->
+    <div class="pan side">
+      <p class="eb">WAT HET MOET OPLEVEREN</p>
+      <h3>Scoreboard</h3>
+      <p class="sub">Het enige paneel dat per klant verschilt. Deze getallen komen niet van ons maar uit jouw eigen cijfers, in de sessie samen doorgerekend.</p>
+
+      <p class="cap">DE OPDRACHT</p>
+      <div class="fill">
+        <div class="fr"><span>Extra omzet per jaar</span><em>&euro;</em></div>
+        <div class="fr"><span>Wat een klant je waard is</span><em>&euro;</em></div>
+        <div class="fr"><span>Nieuwe klanten nodig</span><em>&nbsp;</em></div>
+        <div class="fr"><span>Aanvragen per maand</span><em>&nbsp;</em></div>
+        <div class="fr"><span>Maximale kosten per aanvraag</span><em>&euro;</em></div>
+      </div>
+
+      <p class="cap">HOE JE ZIET OF HET WERKT</p>
+      <ul class="mini">
+        <li>Een nulmeting op de dag voor we beginnen, zodat elk cijfer daarna ergens tegenaf gezet wordt</li>
+        <li>Een dashboard vanaf dag &eacute;&eacute;n, live &mdash; geen maandrapport</li>
+        <li>Elke aanvraag in je leadportal, met de bron erbij</li>
+        <li>Performanceblokken waarin we vastleggen wat we hebben geleerd en wat er verandert</li>
+      </ul>
+
+      <div class="tel">
+        <div class="rw"><span>Advertentiebudget, niet via ons</span><em id="tAds">vanaf &euro; 1.000 p/m</em></div>
+        <div class="rw"><span>Per jaar</span><em id="tJaar">&euro; 0</em></div>
+        <div class="rw big"><span>Eenmalig</span><em id="tEen">&euro; 4.500</em></div>
+        <div class="rw big"><span>Per maand</span><em id="tMaand">&euro; 1.009,90</em></div>
+        <p class="nt">Het eenmalige bedrag is wat er in maand 1 gebeurt plus wat de diagnose heeft gevonden. Het maandbedrag is onze fee plus je uitrusting; je advertentiebudget staat er los van en gaat rechtstreeks naar Google en Meta.</p>
       </div>
     </div>
+
   </div>
 </section>
 
-<section class="sec" id="opbouw">
-  <p class="kicker">DE OPBOUW</p>
-  <h2>Zes vlakken, &eacute;&eacute;n leesrichting</h2>
-  <p class="note">Een drieluik heeft een dramaturgie die een A4 niet heeft: je ziet eerst de buitenkant, dan pas het geheel. Dat is precies de volgorde van je verkoopgesprek.</p>
-  <div class="tblwrap">
-  <table class="sc">
-    <thead><tr><th>Vlak</th><th>Breedte</th><th>Wat erop staat</th><th>Waarom daar</th></tr></thead>
-    <tbody>
-      <tr><td><b>Voorkant</b> &middot; buitenzijde van beide flappen</td><td class="n">2 &times; 105 mm</td><td>&Eacute;&eacute;n uitspraak, gebroken door de vouw</td><td>De naad zit tussen de twee zinnen. Openen is dan letterlijk het tweede deel lezen.</td></tr>
-      <tr><td><b>Linkerflap</b> &middot; binnenzijde</td><td class="n">105 mm</td><td>Het fundament &mdash; &euro; 4.500 eenmalig</td><td>Wat er &eacute;&eacute;n keer gebeurt, staat links: v&oacute;&oacute;r de maandelijkse samenwerking.</td></tr>
-      <tr><td><b>Middenpaneel</b></td><td class="n">210 mm</td><td>De drie retainers</td><td>Het grootste vlak, het enige witte, en waar je oog landt op het moment dat het opengaat.</td></tr>
-      <tr><td><b>Rechterflap</b> &middot; binnenzijde</td><td class="n">105 mm</td><td>Wat niet naar ons gaat</td><td>Rechts sluit af met de posten die je elders betaalt. Daarmee is het plaatje compleet en heb je niets verzwegen.</td></tr>
-      <tr><td><b>Achterkant</b> &middot; buitenzijde middenpaneel</td><td class="n">210 mm</td><td>De negen metingen en de contactgegevens</td><td>Het bewijs dat de prijslijst geen verkooppraatje is. Dat hoort niet in de etalage maar wel op tafel.</td></tr>
-    </tbody>
-  </table>
-  </div>
-</section>
+<section class="sec" id="kaft">
+  <p class="kicker">DE KAFT EN DE ACHTERKANT</p>
+  <h2>Wat een klant als eerste ziet</h2>
+  <p class="note">Dit is het eerste middel dat op tafel komt, dus het moet het ARENA-verhaal dragen en niet een losse uitspraak over adverteren. Drie voorstellen, mijn voorkeur bovenaan.</p>
 
-<section class="sec" id="plat">
-  <p class="kicker">PLATTE VELLEN</p>
-  <h2>Zoals de drukker het krijgt</h2>
-  <p class="note">Twee zijden, allebei 420 &times; 297 mm. De stippellijnen zijn de vouwen.</p>
-  <div class="plat">
-    <div class="platrij">
-      <p class="cap">BINNENZIJDE &mdash; wat je ziet als het openligt</p>
-      <div class="platwrap"><div class="sheet"><div class="inner" id="flatIn"></div></div></div>
-    </div>
-    <div class="platrij">
-      <p class="cap">BUITENZIJDE &mdash; gevouwen vormen de flappen de voorkant, het midden is de achterkant</p>
-      <div class="platwrap"><div class="sheet"><div class="inner" id="flatOut"></div></div></div>
-    </div>
-  </div>
-</section>
-
-<section class="sec" id="keuzes">
-  <p class="kicker">ONTWERPKEUZES</p>
-  <h2>Waarom het er zo uitziet</h2>
   <div class="stack">
-    <div class="st"><span class="lab">HI&Euml;RARCHIE</span><div class="bd"><h4>Alleen het midden is wit</h4><p>De twee flappen staan op de grijstint van de huisstijl. Het middenpaneel is het enige witte vlak, dus op het moment dat het vel opengaat landt je oog daar &mdash; zonder dat je met een kleur of een kader hoeft te sturen. Dat is dezelfde hi&euml;rarchie als in je model: de retainer is het product, de rest is context.</p></div></div>
-    <div class="st"><span class="lab">DE NAAD</span><div class="bd"><h4>De vouw is een leesteken</h4><p>Op de voorkant staat &eacute;&eacute;n zin die door de naad in twee&euml;n wordt gebroken. Dicht lees je &ldquo;Adverteren is de motor.&rdquo; Openen levert de tweede helft. Een drieluik dat die naad wegwerkt, had net zo goed een A4 kunnen zijn.</p></div></div>
-    <div class="st"><span class="lab">GELDSTROMEN</span><div class="bd"><h4>Links, midden, rechts zijn drie ontvangers</h4><p>Eenmalig naar ons, maandelijks naar ons, maandelijks naar anderen. Dat is geen ontwerpgreep maar de tabel uit het fundament, in een vorm die je kunt aanwijzen. Je kunt letterlijk met je vinger op het rechterpaneel tikken en zeggen: hier verdienen wij niets aan.</p></div></div>
-    <div class="st"><span class="lab">&Eacute;&Eacute;N ACCENT</span><div class="bd"><h4>Lime komt precies &eacute;&eacute;n keer voor</h4><p>Op Compete, het middelste pakket. Niet omdat het het beste is, maar omdat een drieluik zonder ankerpunt een menukaart is. Wil je niet sturen, haal het weg &mdash; maar kies dan bewust, want geen accent is ook een keuze.</p></div></div>
-    <div class="st"><span class="lab">GEEN UREN</span><div class="bd"><h4>Nergens staat hoeveel uur iets kost</h4><p>Wel wat je krijgt, in aantallen die je kunt tellen: advertentiesets, draaidagen, performanceblokken. Zodra er een uur op dit vel staat, gaat het gesprek over uren.</p></div></div>
+    <div class="st"><span class="lab">VOORKEUR</span><div class="bd"><h4>De arena zelf</h4><p>Links van de vouw alleen het woord <b>ARENA</b>, groot, met eronder de vijf onderdelen uitgeschreven: Attention, Retention, Experience, Numbers, Authority. Rechts van de vouw: <em>&ldquo;Vijf onderdelen die samen bepalen wat een klant je kost.&rdquo;</em> Dat zet het systeem neer v&oacute;&oacute;rdat er een prijs in beeld komt, en het maakt line-up, gameplan en scoreboard binnenin vanzelfsprekend in plaats van gezocht.</p></div></div>
+    <div class="st"><span class="lab">ALTERNATIEF</span><div class="bd"><h4>De wedstrijd loopt al</h4><p><em>&ldquo;Je staat al in de arena.&rdquo;</em> / <em>&ldquo;De vraag is of je een plan hebt.&rdquo;</em> Directer en confronterender, en het werkt goed bij een klant die al adverteert zonder richting. Maar het legt meer nadruk op zijn tekort dan op ons systeem, en dat is een ander gesprek.</p></div></div>
+    <div class="st"><span class="lab">ALTERNATIEF</span><div class="bd"><h4>Van opstelling tot uitslag</h4><p><em>&ldquo;Elke wedstrijd begint met een opstelling.&rdquo;</em> / <em>&ldquo;En eindigt met een uitslag.&rdquo;</em> Het meest letterlijk gekoppeld aan de drie panelen, maar het zegt niets over wat wij doen en het kan van elk bureau zijn.</p></div></div>
+    <div class="st"><span class="lab">ACHTERKANT</span><div class="bd"><h4>ARENA in vijf regels, plus contact</h4><p>De negen metingen gaan eraf &mdash; die horen bij de diagnose en niet bij het eerste kennismakingsmiddel. In plaats daarvan de vijf onderdelen van ARENA met &eacute;&eacute;n regel uitleg per letter, en daaronder wie we zijn en waar we zitten. Zo sluit het blad waar het mee opende.</p></div></div>
+  </div>
+
+  <div class="key" style="margin-top:24px">
+    <span class="k">WAT ERAF GAAT</span>
+    <p class="big">&ldquo;De rest maakt hem goedkoper&rdquo; staat nergens meer.</p>
+    <p>Goedkoper is een belofte over de prijs en die kun je niet hard maken zonder de cijfers van die ene klant. Effici&euml;nter is een belofte over de werking, en die kun je in het dashboard laten zien. In het gameplan staat nu: SEO, CRO en e-mail als laag die elke euro effici&euml;nter laat werken.</p>
   </div>
 </section>
 
-<section class="sec" id="druk">
-  <p class="kicker">DRUKWERK</p>
-  <h2>De specificaties</h2>
+<section class="sec" id="namen">
+  <p class="kicker">DE NAMEN</p>
+  <h2>Waarom er geen merknamen op staan</h2>
+  <p class="note">Je vroeg om een overkoepelende naam voor MailerLite. Mijn antwoord is breder: noem overal de functie en nergens de leverancier. Dan kun je van leverancier wisselen zonder je verkoopmateriaal, je website en je voorstellen te herschrijven.</p>
   <div class="tblwrap">
   <table class="sc">
+    <thead><tr><th>Op het blad</th><th>Nu</th><th>Waarom dit woord</th></tr></thead>
     <tbody>
-      <tr><td>Open formaat</td><td class="n">420 &times; 297 mm (A3 liggend)</td></tr>
-      <tr><td>Gesloten formaat</td><td class="n">210 &times; 297 mm (A4 staand)</td></tr>
-      <tr><td>Vouw</td><td class="n">Wikkelvouw, beide flappen naar binnen</td></tr>
-      <tr><td>Paneelbreedtes</td><td class="n">104 / 210 / 106 mm</td></tr>
-      <tr><td>Afloop</td><td class="n">3 mm rondom</td></tr>
-      <tr><td>Papier</td><td class="n">250 &ndash; 300 g/m&sup2;, ongestreken</td></tr>
-      <tr><td>Drukwerk</td><td class="n">Dubbelzijdig, full colour</td></tr>
+      <tr><td><b>E-mailplatform</b></td><td>MailerLite</td><td>Zegt wat het doet, klinkt niet als een bijproduct. Verplicht, want we verzamelen vanaf dag &eacute;&eacute;n adressen.</td></tr>
+      <tr><td><b>Afsprakenplanner</b></td><td>Calendly</td><td>Nederlands, en iedereen snapt het zonder uitleg. Optioneel.</td></tr>
+      <tr><td><b>Bezoekersherkenning</b></td><td>Leadinfo</td><td>Beschrijft precies wat je krijgt, en niet meer dan dat &mdash; het herkent bedrijven, het levert geen leads.</td></tr>
+      <tr><td><b>De uitrusting</b></td><td>&mdash;</td><td>De verzamelnaam voor die drie. Past bij line-up, gameplan en scoreboard, en het maakt meteen duidelijk dat het niet onze omzet is.</td></tr>
     </tbody>
   </table>
   </div>
   <div class="key" style="margin-top:24px">
-    <span class="k">&Eacute;&Eacute;N DING DAT JE DRUKKER JE GAAT VERTELLEN</span>
-    <p class="big">De flappen mogen niet allebei 105 millimeter zijn.</p>
-    <p>Bij een wikkelvouw ligt de ene flap over de andere heen. Maak je ze precies even breed, dan botsen ze in de naad en bolt het vel op. Vandaar 104 en 106: de flap die als laatste omvouwt is twee millimeter smaller. Op de voorkant zie je dat niet, want de naad zit dan niet exact in het midden &mdash; wat juist prettig is, omdat de twee zinnen ook niet even lang zijn.</p>
+    <span class="k">&Eacute;&Eacute;N VOORWAARDE</span>
+    <p class="big">Zet de leverancier er w&eacute;l bij, klein.</p>
+    <p>Alleen de functie noemen wordt vaag, en vaag is precies wat deze hele exercitie moest oplossen. Dus: <b>E-mailplatform</b> groot, <em>via MailerLite</em> klein eronder. Wissel je ooit, dan verandert er &eacute;&eacute;n regel in plaats van je hele verhaal &mdash; en ondertussen kan een klant wel nakijken wat hij koopt.</p>
+  </div>
+</section>
+
+<section class="sec" id="rechts">
+  <p class="kicker">DE RECHTERFLAP</p>
+  <h2>Waarom daar het scorebord hoort</h2>
+  <p class="note">Je wist nog niet wat erop moest. Dit is mijn voorstel, en de reden erachter is de leesrichting.</p>
+  <div class="key">
+    <span class="k">DE DRAMATURGIE</span>
+    <p class="big">Links koop je, in het midden koop je, en rechts moet iets terugkomen.</p>
+    <p>Als het rechterpaneel n&oacute;g een lijst met bedragen is, dan is het hele blad een prijskaart en gaat het gesprek over geld. Zet je er de opbrengst neer, dan is het blad een afspraak: dit leveren wij, dit kost het, en hier staat waar we op afgerekend worden.</p>
+    <p style="margin-top:14px">Dat werkt alleen als die getallen van de klant zijn en niet van ons. Vandaar de invulvelden: extra omzet, wat een klant waard is, hoeveel klanten daarvoor nodig zijn, hoeveel aanvragen dat per maand betekent en wat een aanvraag dan maximaal mag kosten. Precies de keten uit de ARENA-sessie, met de hand ingevuld terwijl je het samen doorrekent.</p>
+  </div>
+  <div class="stack" style="margin-top:20px">
+    <div class="st"><span class="lab">DAARONDER</span><div class="bd"><h4>Hoe je ziet of het werkt</h4><p>Nulmeting, live dashboard, elke aanvraag in het leadportal met de bron erbij, en de performanceblokken. Vier regels, want dit is het antwoord op de vraag die na elke prijs komt: hoe weet ik of het gewerkt heeft?</p></div></div>
+    <div class="st"><span class="lab">ONDERAAN</span><div class="bd"><h4>De optelsom</h4><p>Eenmalig, per maand, per jaar, en het advertentiebudget apart omdat dat niet via ons loopt. Dit is de enige plek op het blad waar alles bij elkaar komt, en het staat helemaal rechts omdat je daar eindigt.</p></div></div>
+    <div class="st"><span class="lab">OVERWOGEN EN AFGEVALLEN</span><div class="bd"><h4>De negen metingen, het tijdpad en de neelijst</h4><p>De metingen horen bij de diagnose en die komt later; op een kennismakingsblad maken ze het te technisch. Het tijdpad is mooi maar het verkoopt niets. En de neelijst is sterk in een gesprek, maar op papier gezet leest hij als een voorbehoud in plaats van als een standpunt.</p></div></div>
   </div>
 </section>
 
 <section class="sec" id="open">
   <p class="kicker">NOG TE BESLISSEN</p>
-  <h2>Wat hier nog niet vastligt</h2>
+  <h2>Wat hier nog niet klopt</h2>
   <div class="stack">
-    <div class="st"><span class="lab">TEKST</span><div class="bd"><h4>De zin op de voorkant</h4><p>&ldquo;Adverteren is de motor. De rest maakt hem goedkoper.&rdquo; komt uit je propositie en werkt omdat hij in twee&euml;n breekt. Maar het is de enige zin die een klant leest voordat hij besluit of hij openvouwt, dus die verdient meer dan &eacute;&eacute;n voorstel.</p></div></div>
-    <div class="st"><span class="lab">BEDRAGEN</span><div class="bd"><h4>Drie posten op de rechterflap zijn nog niet vastgezet</h4><p>MailerLite staat als &ldquo;vanaf&rdquo;, Leadinfo heeft geen bedrag en Calendly is een schatting. Op een gedrukt vel kun je dat niet later nog even rechtzetten. Drukken pas als de staffels binnen zijn.</p></div></div>
-    <div class="st"><span class="lab">HOUDBAARHEID</span><div class="bd"><h4>Gedrukte prijzen verouderen</h4><p>Zet er geen jaartal op maar wel een versieaanduiding in de voet, klein. Dan weet je bij de volgende ronde welke stapel de oude is, en kun je bij een klant zien welk vel hij heeft gekregen.</p></div></div>
+    <div class="st"><span class="lab">BEDRAGEN</span><div class="bd"><h4>Drie posten op de bank hebben nog geen vastgezet tarief</h4><p>Snelheid &euro; 750, redirects &euro; 500 en e-mailauthenticatie &euro; 250 zijn middens van mijn schattingen. Webmix moet ze bevestigen voordat dit blad de deur uit gaat.</p></div></div>
+    <div class="st"><span class="lab">STAFFELS</span><div class="bd"><h4>Twee keer &ldquo;vanaf&rdquo; en &eacute;&eacute;n keer &ldquo;staffel&rdquo;</h4><p>Het e-mailplatform, de afsprakenplanner en de bezoekersherkenning hebben alle drie een prijs die met de klant meegroeit. Zolang die trappen ontbreken kan het totaal rechtsonder niet kloppen, en een totaal dat niet klopt is erger dan geen totaal.</p></div></div>
+    <div class="st"><span class="lab">VORM</span><div class="bd"><h4>Aanvinken kan niet op papier</h4><p>Zodra er vinkjes op zitten is het geen drukwerk meer, of je drukt het blanco en vinkt met een pen aan tafel. Dat tweede is niet erg &mdash; het maakt het invullen een gezamenlijke handeling in plaats van een presentatie. Maar dan moet het totaal ook met de hand te berekenen zijn, en dus moeten alle bedragen rond zijn.</p></div></div>
+    <div class="st"><span class="lab">SAMENHANG</span><div class="bd"><h4>De afsprakenplanner staat twee keer</h4><p>Eenmalig instellen staat links op de bank, het abonnement staat in het midden bij de uitrusting. Dat klopt inhoudelijk maar het is verwarrend om twee keer hetzelfde woord aan te moeten vinken. Ofwel koppelen, ofwel &eacute;&eacute;n van de twee anders noemen.</p></div></div>
   </div>
 </section>
 
 </main>
 
-<footer class="wrap foot">James Robinson &mdash; Marketing &amp; Branding &middot; Het drieluik, concept september 2026</footer>
+<footer class="wrap foot">James Robinson &mdash; Marketing &amp; Branding &middot; Het drieluik, inhoud september 2026</footer>
 
 <script>
-var P={};
-
-P.covL='<div class="pn cov">'
- +'<div><p class="eb">JAMES ROBINSON</p><p class="lg" style="margin-top:2mm">Marketing &amp; Branding</p></div>'
- +'<div style="margin-top:auto"><p class="big">Adverteren is de motor.</p>'
- +'<p class="tag">Hulsberg, Zuid-Limburg</p></div></div>';
-
-P.covR='<div class="pn cov">'
- +'<div style="margin-top:auto"><p class="big">De rest maakt hem goedkoper.</p>'
- +'<p class="tag">Vouw open voor het hele plaatje: wat je &eacute;&eacute;n keer betaalt, wat je elke maand betaalt, en wat er niet naar ons toe gaat.</p></div></div>';
-
-P.links='<div class="pn tint">'
- +'<p class="eb">EERST, &Eacute;&Eacute;N KEER</p>'
- +'<h3>Het fundament</h3>'
- +'<p class="sub">Alles wat er staat voordat er &eacute;&eacute;n euro naar Google of Meta gaat. Twee delen, &eacute;&eacute;n prijs, niet los verkrijgbaar.</p>'
- +'<div class="rule"></div>'
- +'<div class="it"><span class="t">DEEL 1</span><b>De basis</b><ul>'
- +'<li>Doel, doelgroep en propositie</li><li>Technische diagnose met rapport</li>'
- +'<li>Meetopzet en nulmeting</li><li>Advertentieaccounts op jouw naam</li>'
- +'<li>Je leadportal en je dashboard</li></ul></div>'
- +'<div class="it"><span class="t">DEEL 2</span><b>Je eerste campagne</b><ul>'
- +'<li>Zoekwoorden, structuur en advertenties</li><li>Landingspagina met formulier</li>'
- +'<li>Een volledige draaidag bij jou</li><li>Montage in drie beeldverhoudingen</li>'
- +'<li>Kickoff en de eerste week dagelijks mee</li></ul></div>'
- +'<div style="margin-top:auto"><div class="kv"><span>Eenmalig</span><em>&euro; 4.500</em></div>'
- +'<div class="kv"><span>Herstelwerk, als de diagnose het vindt</span><em>&euro; 0 &ndash; 2.000</em></div></div>'
- +'<p class="foot">Het herstelwerk gaat naar Webmix, niet naar ons. Wij meten, zij herstellen, jij beslist.</p></div>';
-
-function col(nm,pr,who,budget,sets,draai,blok,acc){
- return '<div class="col'+(acc?' acc':'')+'">'
-  +'<span class="mrk">'+(acc?'<span>MEESTGEKOZEN</span>':'')+'</span>'
-  +'<p class="nm">'+nm+'</p><p class="pr">&euro; '+pr+'</p><p class="pm">PER MAAND</p>'
-  +'<p class="who">'+who+'</p>'
-  +'<dl><dt>ADVERTENTIEBUDGET</dt><dd>'+budget+'</dd>'
-  +'<dt>ADVERTENTIESETS</dt><dd>'+sets+'</dd>'
-  +'<dt>DRAAIDAGEN</dt><dd>'+draai+'</dd>'
-  +'<dt>PERFORMANCEBLOKKEN</dt><dd>'+blok+'</dd></dl></div>';
-}
-
-P.midden='<div class="pn">'
- +'<p class="eb">DAARNA, ELKE MAAND</p>'
- +'<h3>Drie manieren om het serieus te doen</h3>'
- +'<p class="sub">Alle drie dezelfde inhoud: adverteren als motor, met SEO, CRO en e-mail als laag die de kosten per klant omlaag brengt. Het verschil zit in de hoeveelheid, niet in de aanpak.</p>'
- +'<div class="cols">'
- + col('Enter','1.000','Voor wie begint met adverteren en eerst wil zien of het werkt.','&euro; 1.000 &ndash; 2.500','1 per kwartaal','1 per jaar','1 per jaar',false)
- + col('Compete','1.500','Voor wie mee wil doen in een markt waar de concurrentie al adverteert.','&euro; 2.500 &ndash; 7.500','1 per maand','2 per jaar','1 per kwartaal',true)
- + col('Own','2.000','Voor wie de markt wil bezitten en het budget heeft om dat vol te houden.','vanaf &euro; 7.500','2 per maand','4 per jaar','doorlopend',false)
- +'</div>'
- +'<p class="foot">Maandelijks per automatische incasso. Je advertentiebudget loopt via je eigen accounts en komt nooit op onze factuur. Onze fee is nooit meer dan de helft van wat je aan media uitgeeft.</p></div>';
-
-P.rechts='<div class="pn tint">'
- +'<p class="eb">EN DIT GAAT NIET NAAR ONS</p>'
- +'<h3>Wat je elders betaalt</h3>'
- +'<p class="sub">Op jouw naam, rechtstreeks betaald, zodat je er altijd zelf bij kunt. Wij richten het in en beheren het. Je ziet deze bedragen voordat wij de diagnose doen.</p>'
- +'<div class="rule"></div>'
- +'<div class="it"><span class="t">ALTIJD</span><b>Je advertentiebudget</b><ul>'
- +'<li>Via je eigen Google- en Meta-account</li><li>Minimaal &euro; 1.000, &euro; 2.500 of &euro; 7.500 per maand</li>'
- +'<li>Geen maximum</li></ul></div>'
- +'<div class="kv"><span>MailerLite &middot; e-mailplatform</span><em>vanaf &euro; 9,90 p/m</em></div>'
- +'<div class="kv"><span>Cookiescript &middot; toestemming</span><em>&euro; 150 per jaar</em></div>'
- +'<div class="kv"><span>Hosting en onderhoud &middot; Webmix</span><em>&euro; 85 p/m</em></div>'
- +'<div class="kv"><span>Leadinfo &middot; optioneel, B2B</span><em>staffel</em></div>'
- +'<div class="kv"><span>Calendly &middot; optioneel</span><em>vanaf &euro; 10 p/m</em></div>'
- +'<p class="sub" style="margin-top:5mm">Hosting alleen als de diagnose zegt dat je huidige omgeving de norm niet haalt. Voldoet hij, dan blijf je waar je zit en betaal je hier niets.</p>'
- +'<p class="foot">Wij ontvangen geen vergoeding van deze leveranciers, met &eacute;&eacute;n uitzondering: Leadinfo. Dat zeggen we liever zelf dan dat je het later hoort.</p></div>';
-
-var MET=[['Toegang tot je website','Wij kunnen zelf een script plaatsen','&euro; 0'],
- ['Laadtijd op mobiel','Onder 2,5 seconden','&euro; 85 p/m en/of &euro; 750'],
- ['Beveiliging en back-ups','Certificaat, updates, herstelbare back-up','&euro; 85 p/m'],
- ['Redirects en dode links','Geen ingaande link die doodloopt','&euro; 500'],
- ['E-mailauthenticatie','SPF, DKIM en DMARC ingesteld','&euro; 250'],
- ['Toestemming voor meten','Werkende banner en consent mode','&euro; 150 p/j'],
- ['Conversiemeting','Je cijfers kloppen met de werkelijkheid','&euro; 0'],
- ['Indexatie','Je site is vindbaar','&euro; 0'],
- ['Google Bedrijfsprofiel','Compleet en geverifieerd','&euro; 0']];
-
-P.achter='<div class="pn">'
- +'<p class="eb">HOE WE AAN JOUW BEDRAG KOMEN</p>'
- +'<h3>Negen metingen. Geen mening.</h3>'
- +'<p class="sub">Je krijgt deze lijst v&oacute;&oacute;rdat wij je website hebben bekeken. Elke meting heeft een norm die vaststaat en een consequentie die vaststaat, dus wij kunnen de prijs niet laten afhangen van wat we aantreffen. Drie van de negen kunnen nooit tot een extra rekening leiden &mdash; die lossen wij op binnen het fundament.</p>'
- +'<div class="rule"></div><table class="mt"><tbody>'
- + MET.map(function(r){return '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td></tr>'}).join('')
- +'</tbody></table>'
- +'<div style="margin-top:auto;padding-top:8mm">'
- +'<p style="font-family:var(--fd);font-size:11pt;font-weight:700;letter-spacing:-.018em">James Robinson</p>'
- +'<p class="sub" style="margin-top:1.5mm">Hulsberg, Zuid-Limburg &middot; jamesrobinson.nl</p>'
- +'<p class="foot" style="margin-top:5mm">Drieluik v1 &middot; prijzen onder voorbehoud van de definitieve staffels</p></div></div>';
-
-function put(id,html){var e=document.getElementById(id); if(e) e.innerHTML=html;}
-put('pMid',P.midden); put('pLin',P.links); put('pRin',P.rechts);
-put('pLout',P.covL); put('pRout',P.covR);
-
 (function(){
- var fi=document.getElementById('flatIn'), fo=document.getElementById('flatOut');
- function pan(left,w,html){return '<div class="pan" style="left:'+left+'mm;width:'+w+'mm">'+html+'</div>'}
- function vouw(x){return '<div class="vouw" style="left:'+x+'mm;background:none;border-left:1px dashed var(--tx3)"></div>'}
- if(fi) fi.innerHTML = pan(0,105,P.links)+pan(105,210,P.midden)+pan(315,105,P.rechts)+vouw(105)+vouw(315);
- if(fo) fo.innerHTML = pan(0,105,P.covR)+pan(105,210,P.achter)+pan(315,105,P.covL)+vouw(105)+vouw(315);
+  var f=function(n){return n.toLocaleString('nl-NL',{minimumFractionDigits:n%1?2:0,maximumFractionDigits:2})};
+  var boxes=[].slice.call(document.querySelectorAll('.opt input[type=checkbox]'));
+  var radios=[].slice.call(document.querySelectorAll('input[name=pk]'));
+  function calc(){
+    var een=4500,maand=0,jaar=0,staffel=false;
+    radios.forEach(function(r){
+      r.closest('.pkc').classList.toggle('on',r.checked);
+      if(r.checked){maand+=parseFloat(r.value);
+        document.getElementById('tAds').textContent='vanaf € '+r.getAttribute('data-ads')+' p/m';}
+    });
+    maand+=9.90; // e-mailplatform, vast
+    boxes.forEach(function(b){
+      if(b.disabled||!b.checked) return;
+      if(b.dataset.e) een+=parseFloat(b.dataset.e);
+      if(b.dataset.m) maand+=parseFloat(b.dataset.m);
+      if(b.dataset.j) jaar+=parseFloat(b.dataset.j);
+      if(b.dataset.staffel) staffel=true;
+    });
+    document.getElementById('tEen').textContent='€ '+f(een);
+    document.getElementById('tMaand').textContent='€ '+f(maand)+(staffel?' + staffel':'');
+    document.getElementById('tJaar').textContent='€ '+f(jaar);
+  }
+  boxes.concat(radios).forEach(function(el){el.addEventListener('change',calc)});
+  // afsprakenplanner: abonnement aan => instellen aan
+  var gc=document.getElementById('g-cal'),sc=document.getElementById('s-cal');
+  if(gc&&sc){gc.addEventListener('change',function(){sc.checked=gc.checked;calc()});}
+  calc();
 })();
-
-(function(){
- var box=document.getElementById('box'),bd=document.getElementById('bDicht'),bo=document.getElementById('bOpen');
- function set(dicht){
-   box.classList.toggle('dicht',dicht);
-   bd.setAttribute('aria-pressed',dicht?'true':'false');
-   bo.setAttribute('aria-pressed',dicht?'false':'true');
- }
- bd.addEventListener('click',function(){set(true)});
- bo.addEventListener('click',function(){set(false)});
-})();
-
 (function(){
   var root=document.documentElement,tb=document.getElementById('themeBtn');
   if(!tb) return;
