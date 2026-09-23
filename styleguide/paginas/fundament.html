@@ -1,0 +1,269 @@
+<title>Het fundament &middot; James Robinson</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@600;700&display=swap">
+<style>
+:root{
+  --page:#fbfbfd; --card:#fff; --alt:#f5f5f7;
+  --tx:#1d1d1f; --tx2:#6e6e73; --tx3:#86868b;
+  --ln:#d2d2d7; --ln-s:#e5e5e9;
+  --blue:#007aff; --link:#0066cc; --act:#0857c3;
+  --b100:#e0efff; --b50:#f4f9ff;
+  --lime:#c4f000; --lime-tx:#5a7000; --lime100:#f2fccc;
+  --green-tx:#1d7d3f; --green100:#e6f7eb;
+  --orange-tx:#94590a; --orange100:#fef2e0;
+  --red-tx:#c02a22; --red100:#fdecea;
+  --black:#1c1c1e; --inv:#f5f5f7; --inv2:#a1a1a6;
+  --fd:"Inter Tight","Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --ft:"Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --fm:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --e:cubic-bezier(.25,.1,.25,1);--g:32px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}}
+:root[data-theme="dark"]{
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--tx);font-family:var(--ft);font-size:16.5px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition-duration:.01ms!important}}
+:focus-visible{outline:none;box-shadow:0 0 0 4px rgba(0,122,255,.4);border-radius:8px}
+p{margin:0 0 18px;max-width:70ch}
+p:last-child{margin-bottom:0}
+h1,h2,h3,h4{font-family:var(--fd);margin:0;text-wrap:balance}
+code{font-family:var(--fm);font-size:.86em;background:var(--alt);padding:2px 6px;border-radius:5px}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:60;background:rgba(251,251,253,.86);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--ln-s)}
+:root[data-theme="dark"] .bar,:root:not([data-theme="light"]) .bar{background:rgba(0,0,0,.74)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .bar{background:rgba(251,251,253,.86)}}
+.bar-in{max-width:1080px;margin:0 auto;padding:0 var(--g);display:flex;align-items:center;gap:5px;min-height:48px;overflow-x:auto;scrollbar-width:none}
+.bar-in::-webkit-scrollbar{display:none}
+.bar b{font-family:var(--fd);font-size:14.5px;font-weight:700;letter-spacing:-.016em;margin-right:8px;white-space:nowrap}
+.bar a{font-size:12.5px;color:var(--tx2);text-decoration:none;padding:6px 8px;border-radius:7px;white-space:nowrap}
+.bar a:hover{color:var(--tx)}
+.bar button{margin-left:auto;flex:none;font:inherit;font-size:12px;cursor:pointer;background:transparent;border:1px solid var(--ln);color:var(--tx2);border-radius:980px;padding:5px 13px}
+
+.wrap{max-width:1080px;margin:0 auto;padding-inline:var(--g)}
+.hero{padding-block:76px 40px}
+h1{font-size:clamp(34px,5.4vw,58px);font-weight:700;line-height:1.06;letter-spacing:-.026em;margin-bottom:20px}
+.lead{font-size:20px;line-height:1.5;color:var(--tx2);max-width:64ch}
+.sec{padding-block:60px;border-top:1px solid var(--ln-s)}
+h2{font-size:clamp(26px,3.4vw,38px);font-weight:700;line-height:1.12;letter-spacing:-.02em;margin-bottom:8px}
+.sec > .kicker{font-family:var(--fm);font-size:11px;letter-spacing:.06em;color:var(--tx3);margin-bottom:14px}
+h3{font-size:21px;font-weight:600;line-height:1.24;letter-spacing:-.012em;margin:38px 0 10px}
+h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
+.note{color:var(--tx2)}
+.note b,b{color:var(--tx);font-weight:600}
+
+/* kernblok */
+.key{background:var(--black);color:var(--inv);border-radius:22px;padding:34px 32px;margin:26px 0}
+.key .k{display:block;font-family:var(--fm);font-size:10.5px;letter-spacing:.06em;color:var(--lime);margin-bottom:14px}
+.key p{color:var(--inv2);font-size:17.5px;max-width:64ch}
+.key strong{color:#fff;font-weight:600}
+.key .big{font-family:var(--fd);font-size:clamp(22px,3vw,30px);font-weight:600;line-height:1.2;letter-spacing:-.018em;color:#fff;margin-bottom:16px}
+
+/* lagen van het aanbod */
+.stack{display:grid;gap:12px;margin-top:24px}
+.st{background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;display:grid;grid-template-columns:132px 1fr;gap:20px;align-items:start}
+.st .lab{font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;color:var(--act);padding-top:3px}
+.st .bd p{margin:0;font-size:15.5px;color:var(--tx2)}
+.st .bd h4{margin-bottom:5px}
+
+/* kandidaten */
+.cands{display:grid;gap:12px;margin-top:22px}
+.cand{border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;background:var(--card)}
+.cand.win{border-color:var(--lime);box-shadow:0 0 0 1px var(--lime)}
+.cand .zin{font-family:var(--fd);font-size:22px;font-weight:600;letter-spacing:-.014em;margin-bottom:8px}
+.cand .why{font-size:15px;color:var(--tx2);margin:0}
+.cand .verdict{display:inline-block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;border-radius:5px;padding:3px 7px;margin-bottom:12px}
+.cand .verdict.no{background:var(--red100);color:var(--red-tx)}
+.cand .verdict.ok{background:var(--lime100);color:var(--lime-tx)}
+.cand .verdict.mid{background:var(--orange100);color:var(--orange-tx)}
+
+/* onderscheid */
+.dist{width:100%;border-collapse:collapse;font-size:15px;margin-top:22px}
+.dist th,.dist td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.dist thead th{font-family:var(--fm);font-size:10.5px;letter-spacing:.04em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.dist td:first-child{font-weight:500;width:34%}
+.dist .v{font-family:var(--fm);font-size:11px;white-space:nowrap}
+.dist .v.y{color:var(--green-tx)}
+.dist .v.n{color:var(--red-tx)}
+.dist tr:last-child td{border-bottom:none}
+.tblwrap{overflow-x:auto}
+
+/* beslissingen */
+.dec{border:1px solid var(--ln-s);border-radius:18px;background:var(--card);padding:26px 28px;margin-top:14px}
+.dec .hd{display:flex;align-items:baseline;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.dec .num{font-family:var(--fm);font-size:11px;color:var(--tx3);flex:none}
+.dec h4{font-size:19px;flex:1;min-width:220px;margin:0}
+.dec .tag{font-family:var(--fm);font-size:9.5px;letter-spacing:.05em;border-radius:5px;padding:3px 7px}
+.dec .tag.blok{background:var(--red100);color:var(--red-tx)}
+.dec .tag.schaal{background:var(--orange100);color:var(--orange-tx)}
+.dec .tag.scherp{background:var(--b100);color:var(--act)}
+.dec .q{font-size:16px;color:var(--tx2);margin:0 0 16px}
+.dec .adv{background:var(--b50);border-left:3px solid var(--act);border-radius:0 10px 10px 0;padding:16px 18px}
+.dec .adv .al{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.06em;color:var(--act);margin-bottom:7px}
+.dec .adv p{font-size:15.5px;margin:0 0 10px}
+.dec .adv p:last-child{margin-bottom:0}
+
+/* vast */
+.locked{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-top:22px}
+.lk{background:var(--card);border:1px solid var(--ln-s);border-radius:14px;padding:18px 20px}
+.lk .t{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--green-tx);margin-bottom:7px}
+.lk .b{font-size:15px;color:var(--tx2);line-height:1.45}
+.lk .b b{color:var(--tx)}
+
+.warn{background:var(--orange100);border-radius:18px;padding:24px 26px;margin-top:26px}
+.warn h4{color:var(--orange-tx)}
+.warn p{color:var(--orange-tx);opacity:.94;font-size:15.5px;max-width:none}
+.foot{padding-block:44px 64px;font-size:13px;color:var(--tx3);text-align:center}
+
+@media (max-width:734px){
+  :root{--g:20px}
+  body{font-size:16px}
+  .sec{padding-block:48px}
+  .hero{padding-block:44px 28px}
+  .st{grid-template-columns:1fr;gap:10px}
+  .key{padding:24px 22px}
+  .dec{padding:22px 20px}
+}
+</style><style>
+.blok{margin-top:26px}
+.bh{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;padding-bottom:10px;border-bottom:2px solid var(--ln)}
+.bh .bn{font-family:var(--fm);font-size:10px;letter-spacing:.06em;color:var(--tx3)}
+.bh h3{font-family:var(--fd);font-size:21px;font-weight:600;letter-spacing:-.014em;flex:1;min-width:0}
+.bh .bu{font-family:var(--fm);font-size:12px;color:var(--blue);white-space:nowrap}
+.bl{list-style:none;margin:0;padding:0}
+.bl li{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:baseline;
+  padding:10px 0;border-bottom:1px solid var(--ln-s);font-size:15px}
+.bl li:last-child{border-bottom:none}
+.bl li b{font-weight:600;display:block}
+.bl li span.d{color:var(--tx2);font-size:13.5px;display:block;margin-top:1px}
+.bl li em{font-style:normal;font-family:var(--fm);font-size:11.5px;color:var(--tx3);white-space:nowrap}
+.bl li.opt{opacity:.72}
+.bl li.opt em{color:var(--orange-tx)}
+.pr{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin-top:22px}
+.prc{background:var(--card);border:1px solid var(--ln-s);border-radius:18px;padding:22px 24px}
+.prc.base{border-color:var(--blue);box-shadow:inset 0 0 0 1px var(--blue)}
+.prc .t{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--tx3);margin-bottom:8px}
+.prc .p{font-family:var(--fd);font-size:30px;font-weight:700;letter-spacing:-.022em;font-variant-numeric:tabular-nums}
+.prc .w{font-size:14px;color:var(--tx2);margin-top:8px}
+.tl{display:grid;gap:0;margin-top:22px}
+.tlr{display:grid;grid-template-columns:96px 1fr;gap:20px;padding:14px 0;border-bottom:1px solid var(--ln-s);align-items:baseline}
+.tlr:last-child{border-bottom:none}
+.tlr .dag{font-family:var(--fm);font-size:11px;letter-spacing:.04em;color:var(--blue)}
+.tlr b{font-weight:600}
+.tlr p{font-size:14.5px;color:var(--tx2);margin-top:2px}
+</style>
+
+<header class="wrap hdr">
+  <p class="kicker">WERKDOCUMENT &middot; CONCEPT</p>
+  <h1>Het fundament</h1>
+  <p class="lead">Wat er in maand 1 gebeurt, voordat er &eacute;&eacute;n euro naar Google of Meta gaat. Negenendertig onderdelen in zes blokken. Deze lijst is niet bedoeld om indruk te maken maar om de prijs te kunnen verantwoorden &mdash; en om intern te weten wat we beloven.</p>
+</header>
+
+<main class="wrap">
+
+<section class="sec" id="lijst">
+  <p class="kicker">DE INHOUD</p>
+  <h2>Wat we doen</h2>
+  <p class="note">De uren zijn wat het kost als we het met onze eigen templates doen, niet wat het de eerste keer kostte. Onderdelen in lichtere tekst vervallen als het bij jou al op orde is &mdash; dat toetsen we vooraf, niet gaandeweg.</p>
+<div class="blok"><div class="bh"><span class="bn">BLOK 01</span><h3>Doel en plan</h3><span class="bu">11 &ndash; 15 UUR</span></div><ul class="bl"><li class=""><div><b>Intake en doelen vastleggen</b><span class="d">Wat de marketing moet opleveren, vertaald naar een getal per maand.</span></div><em>2 u</em></li><li class=""><div><b>Doelgroep scherpstellen</b><span class="d">Wie je ideale klant is, en net zo belangrijk wie je niet wilt.</span></div><em>2 &ndash; 3 u</em></li><li class=""><div><b>Propositie en kernboodschap</b><span class="d">Waarom jij en niet de ander, in taal die een koper herkent. Dit wordt de basis van elke advertentie.</span></div><em>3 &ndash; 4 u</em></li><li class=""><div><b>Concurrentieanalyse</b><span class="d">Wie er meebiedt op dezelfde klant, op welke woorden, en wat ze uitgeven.</span></div><em>2 u</em></li><li class=""><div><b>Conversiedefinitie</b><span class="d">Vooraf vastleggen wat meetelt als aanvraag en wat niet. Voorkomt discussie achteraf.</span></div><em>1 u</em></li><li class=""><div><b>Merkcheck</b><span class="d">Logo, kleuren, typografie en beeldstijl gecontroleerd en waar nodig aangevuld voor advertentiegebruik.</span></div><em>1 &ndash; 3 u</em></li></ul></div><div class="blok"><div class="bh"><span class="bn">BLOK 02</span><h3>Techniek en meting</h3><span class="bu">7,5 &ndash; 22 UUR</span></div><ul class="bl"><li class=""><div><b>Technische audit</b><span class="d">Wij meten vooraf: snelheid, beveiliging, meting, e-mail. Jij hoeft niets te weten van DMARC.</span></div><em>1 u</em></li><li class="opt"><div><b>Snelheid verbeteren</b><span class="d">Alleen als de site te traag is. Elke seconde laadtijd kost conversie en verhoogt je klikprijs.</span></div><em>0 &ndash; 5 u</em></li><li class="opt"><div><b>Beveiliging en back-ups</b><span class="d">Certificaat, updates en een back-up waar je op terug kunt.</span></div><em>0 &ndash; 2 u</em></li><li class="opt"><div><b>Redirects en dode links</b><span class="d">Oude urls die netjes doorverwijzen. Advertentieverkeer naar een 404 is weggegooid geld.</span></div><em>0 &ndash; 2 u</em></li><li class=""><div><b>E-mailauthenticatie</b><span class="d">SPF, DKIM en DMARC. Zonder dit belandt je e-mail in de spammap.</span></div><em>1 &ndash; 2 u</em></li><li class=""><div><b>Analytics inrichten</b><span class="d">GA4 correct opgezet, zonder dubbeltellingen of gaten.</span></div><em>1 &ndash; 3 u</em></li><li class=""><div><b>Conversiemeting</b><span class="d">Events, doelen en waardetoekenning, zodat elke aanvraag herleidbaar is naar zijn bron.</span></div><em>2 &ndash; 3 u</em></li><li class=""><div><b>Toestemming en cookies</b><span class="d">Consent mode ingericht, zodat je blijft meten binnen de regels.</span></div><em>1 &ndash; 2 u</em></li><li class=""><div><b>Search Console</b><span class="d">Gekoppeld, indexatie gecontroleerd.</span></div><em>0,5 &ndash; 1 u</em></li><li class=""><div><b>De nulmeting</b><span class="d">Waar je staat op de dag voor we beginnen. Zonder dit ijkpunt is elk cijfer daarna een mening.</span></div><em>1 u</em></li></ul></div><div class="blok"><div class="bh"><span class="bn">BLOK 03</span><h3>Tooling en opvolging</h3><span class="bu">8 &ndash; 18 UUR</span></div><ul class="bl"><li class=""><div><b>Advertentieaccounts</b><span class="d">Aangemaakt op jouw naam, met ons als beheerder. Jouw data, jouw historie, ook als we uit elkaar gaan.</span></div><em>1 u</em></li><li class=""><div><b>Toegang en betaalmethode</b><span class="d">Jij betaalt Google en Meta rechtstreeks. Wij schieten niets voor.</span></div><em>0,5 &ndash; 1 u</em></li><li class=""><div><b>CRM</b><span class="d">Ingericht of gekoppeld, zodat elke aanvraag op &eacute;&eacute;n plek binnenkomt en blijft staan.</span></div><em>1 &ndash; 4 u</em></li><li class=""><div><b>E-mailplatform</b><span class="d">MailerLite opgezet met je lijst en de eerste flow. Draai je op iets anders, dan migreren we.</span></div><em>1 &ndash; 3 u</em></li><li class=""><div><b>Leadherkenning</b><span class="d">Leadinfo ge&iuml;nstalleerd: zien welke bedrijven langskwamen zonder te converteren.</span></div><em>0,5 &ndash; 1 u</em></li><li class="opt"><div><b>Afsprakentool</b><span class="d">Alleen als je afspraken inplant. Direct in de agenda, zonder heen en weer mailen.</span></div><em>0 &ndash; 1 u</em></li><li class=""><div><b>Koppelingen</b><span class="d">Formulier naar CRM naar e-mail, zonder overtypen. Hier gaat het meestal mis.</span></div><em>2 &ndash; 4 u</em></li><li class=""><div><b>Opvolgingsafspraken</b><span class="d">Wie belt, binnen hoeveel tijd. Wij leveren de aanvraag; het bellen doe jij.</span></div><em>0,5 &ndash; 1 u</em></li><li class=""><div><b>Je dashboard</b><span class="d">Gebouwd en gekoppeld. Vanaf dag &eacute;&eacute;n live inzicht, geen maandrapport.</span></div><em>1,5 &ndash; 2 u</em></li></ul></div><div class="blok"><div class="bh"><span class="bn">BLOK 04</span><h3>De campagne</h3><span class="bu">14 &ndash; 22 UUR</span></div><ul class="bl"><li class=""><div><b>Zoekwoordonderzoek</b><span class="d">Waar je koper op zoekt, wat het kost, en waar de concurrentie zit.</span></div><em>3 &ndash; 4 u</em></li><li class=""><div><b>Campagnestructuur</b><span class="d">Merknaam, commerci&euml;le woorden en retargeting apart, zodat je budget stuurbaar is.</span></div><em>2 &ndash; 3 u</em></li><li class=""><div><b>Advertentieteksten</b><span class="d">Meerdere varianten per groep, geschreven om tegen elkaar getest te worden.</span></div><em>2 &ndash; 3 u</em></li><li class=""><div><b>Doelgroepen en targeting</b><span class="d">Wie we benaderen op sociaal, en wie we bewust overslaan.</span></div><em>1 &ndash; 2 u</em></li><li class=""><div><b>Biedstrategie</b><span class="d">Hoe we sturen in de eerste weken, en wanneer we overschakelen.</span></div><em>0,5 &ndash; 1 u</em></li><li class=""><div><b>Retargetingpubliek</b><span class="d">Opgebouwd en klaar voordat er verkeer is.</span></div><em>0,5 &ndash; 1 u</em></li><li class=""><div><b>Landingspagina</b><span class="d">Gebouwd om te converteren, niet om mooi te zijn. Los van je bestaande site, dus snel aan te passen.</span></div><em>4 &ndash; 6 u</em></li><li class=""><div><b>Formulier en bedankpagina</b><span class="d">Inclusief meting, zodat elke aanvraag geteld wordt.</span></div><em>1 &ndash; 2 u</em></li></ul></div><div class="blok"><div class="bh"><span class="bn">BLOK 05</span><h3>De content</h3><span class="bu">13 &ndash; 15 UUR</span></div><ul class="bl"><li class=""><div><b>Voorbereiding</b><span class="d">Wat we filmen, waar en met wie. Een vast stramien, geen script van tien pagina&rsquo;s.</span></div><em>1 &ndash; 2 u</em></li><li class=""><div><b>De draaidag</b><span class="d">E&eacute;n dag bij jou. Jij levert locatie, mensen en producten; een halve dag van jouw tijd.</span></div><em>8 u</em></li><li class=""><div><b>Montage</b><span class="d">Zes tot acht videovarianten plus stills, geknipt op de formaten die elk kanaal vraagt.</span></div><em>4 &ndash; 5 u</em></li></ul></div><div class="blok"><div class="bh"><span class="bn">BLOK 06</span><h3>Live</h3><span class="bu">4,5 UUR</span></div><ul class="bl"><li class=""><div><b>Kickoff met je team</b><span class="d">Wie doet wat, waar komen aanvragen binnen, en wat verwachten we van elkaar.</span></div><em>1,5 u</em></li><li class=""><div><b>Testaanvraag door de keten</b><span class="d">Wij doen zelf een aanvraag en volgen hem tot in je CRM en je dashboard.</span></div><em>1 u</em></li><li class=""><div><b>De eerste week</b><span class="d">Dagelijks meekijken en bijsturen. De eerste dagen bepalen hoe snel het algoritme leert.</span></div><em>2 u</em></li></ul></div>
+</section>
+
+<section class="sec" id="prijs">
+  <p class="kicker">DE PRIJS</p>
+  <h2>Een vaste basis, en zichtbaar wat er bij komt</h2>
+  <p class="note">E&eacute;n bedrag voor iedereen werkt niet, want de ene klant heeft alles op orde en de andere niets. Daarom een vaste basis met opslagen die uit de scan volgen. Je ziet vooraf wat je betaalt en waarvoor.</p>
+  <div class="pr">
+    <div class="prc base">
+      <span class="t">BASIS &middot; ALTIJD</span>
+      <p class="p">&euro; 3.500</p>
+      <p class="w">Doel en plan, de campagne, de content en de livegang. Dit werk is bij elke klant hetzelfde en gaat altijd door.</p>
+    </div>
+    <div class="prc">
+      <span class="t">OPSLAG &middot; TECHNIEK</span>
+      <p class="p">&euro; 0 &ndash; 1.500</p>
+      <p class="w">Alleen wat er niet op orde is. Staat je techniek, dan betaal je hier niets.</p>
+    </div>
+    <div class="prc">
+      <span class="t">OPSLAG &middot; TOOLING</span>
+      <p class="p">&euro; 0 &ndash; 1.500</p>
+      <p class="w">Inrichten en koppelen wat er nog niet staat, of migreren vanaf wat je nu gebruikt.</p>
+    </div>
+  </div>
+
+  <div class="key">
+    <span class="k">INTERN &middot; WAT HIER ACHTER ZIT</span>
+    <p class="big">58 tot 96 uur werk, afhankelijk van wat er al staat.</p>
+    <p>Bij &euro; 3.500 en alles op orde komt dat neer op ongeveer <strong>&euro; 60 per uur</strong>; bij &euro; 6.500 en niets op orde op <strong>&euro; 67</strong>. Dat is onder ons normale tarief, en dat is een keuze: het fundament is geen verdienmodel maar de voorwaarde om te kunnen leveren wat we beloven. De marge zit in de retainer, die jaren doorloopt.</p>
+    <p style="margin-top:14px"><strong>Let op de verhouding.</strong> Bij het lichtste pakket is dit drie&euml;nhalf tot ruim zes maanden retainer. Dat is de grootste drempel in het hele verkoopgesprek. Spreiding over de eerste drie maanden is waarschijnlijk nodig &mdash; en dan moet de opzegtermijn daarop aansluiten.</p>
+  </div>
+</section>
+
+<section class="sec" id="tijd">
+  <p class="kicker">HET TIJDPAD</p>
+  <h2>Van tekenen tot live</h2>
+  <p class="note">Vier weken, mits jij op tijd aanlevert. Dat laatste is geen voorbehoud maar de belangrijkste variabele: elke dag die wij wachten op toegang of op een akkoord, schuift alles op.</p>
+  <div class="tl">
+    <div class="tlr"><span class="dag">DAG 1</span><div><b>Tekenen en toegang</b><p>Overeenkomst, incassomachtiging en toegang tot wat er al draait. Wij starten de technische audit.</p></div></div>
+    <div class="tlr"><span class="dag">DAG 2 &ndash; 5</span><div><b>Doel en plan</b><p>Twee sessies: doelgroep en propositie, doel en meetpunten. Hieruit volgt alles daarna.</p></div></div>
+    <div class="tlr"><span class="dag">DAG 5 &ndash; 12</span><div><b>Techniek en tooling</b><p>Meting, koppelingen, accounts en dashboard. Grotendeels ons werk, af en toe een akkoord van jou.</p></div></div>
+    <div class="tlr"><span class="dag">DAG 8</span><div><b>De draaidag</b><p>E&eacute;n dag filmen bij jou. Een halve dag van jouw tijd.</p></div></div>
+    <div class="tlr"><span class="dag">DAG 12 &ndash; 18</span><div><b>Campagne en landingspagina</b><p>Bouwen, schrijven, monteren. Alles staat klaar om getest te worden.</p></div></div>
+    <div class="tlr"><span class="dag">DAG 19</span><div><b>Jij kijkt mee</b><p>Je ziet de complete campagne voordat hij live gaat. E&eacute;n ronde feedback.</p></div></div>
+    <div class="tlr"><span class="dag">DAG 21</span><div><b>Live</b><p>We zetten hem aan en kijken de eerste week dagelijks mee.</p></div></div>
+    <div class="tlr"><span class="dag">DAG 28</span><div><b>Eerste cijfers</b><p>Nog geen conclusies &mdash; wel de eerste aanvragen en de richting.</p></div></div>
+  </div>
+</section>
+
+<section class="sec" id="jij">
+  <p class="kicker">WAT WIJ VAN JOU NODIG HEBBEN</p>
+  <h2>Vier dingen, en daar valt of staat het tijdpad mee</h2>
+  <div class="rg">
+    <div class="rgc"><span class="t">DAG 1</span><p><b>Toegang tot alles.</b> Website, hosting, domein, analytics, bestaande advertentieaccounts en je e-mailplatform. Weet je niet waar het staat, dan zoeken wij het uit &mdash; maar dat kost tijd.</p></div>
+    <div class="rgc"><span class="t">WEEK 1</span><p><b>Twee sessies van anderhalf uur.</b> Met iemand die over de doelgroep en de propositie kan beslissen, niet met iemand die het moet navragen.</p></div>
+    <div class="rgc"><span class="t">WEEK 2</span><p><b>Een halve dag voor de draaidag.</b> Locatie, mensen en producten. Zonder eigen beeld beginnen we met stock, en dat werkt aantoonbaar slechter.</p></div>
+    <div class="rgc"><span class="t">DOORLOPEND</span><p><b>E&eacute;n beslisser.</b> Iemand die binnen twee werkdagen ja of nee kan zeggen. Feedback via een commissie kost je twee weken.</p></div>
+  </div>
+</section>
+
+<section class="sec" id="open">
+  <p class="kicker">NOG TE BESLISSEN</p>
+  <h2>Wat hier nog niet vastligt</h2>
+  <div class="stack">
+    <div class="st"><span class="lab">PRIJS</span><div class="bd"><h4>&euro; 3.500 basis</h4><p>Een voorstel, geen uitkomst. Toets het aan de laatste drie onboardings: hoeveel uur zat er werkelijk in, en wat is er toen gefactureerd?</p></div></div>
+    <div class="st"><span class="lab">SPREIDING</span><div class="bd"><h4>In &eacute;&eacute;n keer of over drie maanden</h4><p>Spreiding verlaagt de drempel maar verhoogt het risico als iemand na twee maanden stopt. Koppel het aan de opzegtermijn: wie spreidt, zit vast tot het fundament betaald is.</p></div></div>
+    <div class="st"><span class="lab">SCOPE</span><div class="bd"><h4>Waar de grens ligt bij techniek</h4><p>Een trage site verbeteren we, maar een site die technisch niet te redden is vraagt een nieuwe. Dat is een apart project en dat moet je in het eerste gesprek kunnen zeggen.</p></div></div>
+    <div class="st"><span class="lab">TIJD</span><div class="bd"><h4>Vier weken is ambitieus</h4><p>Het haalbare tijdpad hangt op de aanlevering van de klant. Overweeg de belofte te formuleren als &ldquo;live binnen vier weken na volledige toegang&rdquo; in plaats van na ondertekening.</p></div></div>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap foot">James Robinson &mdash; Marketing &amp; Branding &middot; Het fundament, concept september 2026</footer>
+
+<script>
+(function(){
+  var root=document.documentElement,tb=document.getElementById('themeBtn');
+  if(!tb) return;
+  function cur(){var t=root.getAttribute('data-theme');return t||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}
+  function sync(){tb.textContent=cur()==='dark'?'Licht':'Donker'}
+  sync();
+  tb.addEventListener('click',function(){root.setAttribute('data-theme',cur()==='dark'?'light':'dark');sync()});
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',sync);
+})();
+</script>
