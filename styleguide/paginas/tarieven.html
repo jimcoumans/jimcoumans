@@ -1,0 +1,422 @@
+<title>Tarieven &middot; James Robinson</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@600;700&display=swap">
+<style>
+:root{
+  --page:#fbfbfd; --card:#fff; --alt:#f5f5f7;
+  --tx:#1d1d1f; --tx2:#6e6e73; --tx3:#86868b;
+  --ln:#d2d2d7; --ln-s:#e5e5e9;
+  --blue:#007aff; --link:#0066cc; --act:#0857c3;
+  --b100:#e0efff; --b50:#f4f9ff;
+  --lime:#c4f000; --lime-tx:#5a7000; --lime100:#f2fccc;
+  --green-tx:#1d7d3f; --green100:#e6f7eb;
+  --orange-tx:#94590a; --orange100:#fef2e0;
+  --red-tx:#c02a22; --red100:#fdecea;
+  --black:#1c1c1e; --inv:#f5f5f7; --inv2:#a1a1a6;
+  --fd:"Inter Tight","Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --ft:"Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --fm:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --e:cubic-bezier(.25,.1,.25,1);--g:32px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}}
+:root[data-theme="dark"]{
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--tx);font-family:var(--ft);font-size:16.5px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition-duration:.01ms!important}}
+:focus-visible{outline:none;box-shadow:0 0 0 4px rgba(0,122,255,.4);border-radius:8px}
+p{margin:0 0 18px;max-width:70ch}
+p:last-child{margin-bottom:0}
+h1,h2,h3,h4{font-family:var(--fd);margin:0;text-wrap:balance}
+code{font-family:var(--fm);font-size:.86em;background:var(--alt);padding:2px 6px;border-radius:5px}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:60;background:rgba(251,251,253,.86);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--ln-s)}
+:root[data-theme="dark"] .bar,:root:not([data-theme="light"]) .bar{background:rgba(0,0,0,.74)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .bar{background:rgba(251,251,253,.86)}}
+.bar-in{max-width:1080px;margin:0 auto;padding:0 var(--g);display:flex;align-items:center;gap:5px;min-height:48px;overflow-x:auto;scrollbar-width:none}
+.bar-in::-webkit-scrollbar{display:none}
+.bar b{font-family:var(--fd);font-size:14.5px;font-weight:700;letter-spacing:-.016em;margin-right:8px;white-space:nowrap}
+.bar a{font-size:12.5px;color:var(--tx2);text-decoration:none;padding:6px 8px;border-radius:7px;white-space:nowrap}
+.bar a:hover{color:var(--tx)}
+.bar button{margin-left:auto;flex:none;font:inherit;font-size:12px;cursor:pointer;background:transparent;border:1px solid var(--ln);color:var(--tx2);border-radius:980px;padding:5px 13px}
+
+.wrap{max-width:1080px;margin:0 auto;padding-inline:var(--g)}
+.hero{padding-block:76px 40px}
+h1{font-size:clamp(34px,5.4vw,58px);font-weight:700;line-height:1.06;letter-spacing:-.026em;margin-bottom:20px}
+.lead{font-size:20px;line-height:1.5;color:var(--tx2);max-width:64ch}
+.sec{padding-block:60px;border-top:1px solid var(--ln-s)}
+h2{font-size:clamp(26px,3.4vw,38px);font-weight:700;line-height:1.12;letter-spacing:-.02em;margin-bottom:8px}
+.sec > .kicker{font-family:var(--fm);font-size:11px;letter-spacing:.06em;color:var(--tx3);margin-bottom:14px}
+h3{font-size:21px;font-weight:600;line-height:1.24;letter-spacing:-.012em;margin:38px 0 10px}
+h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
+.note{color:var(--tx2)}
+.note b,b{color:var(--tx);font-weight:600}
+
+/* kernblok */
+.key{background:var(--black);color:var(--inv);border-radius:22px;padding:34px 32px;margin:26px 0}
+.key .k{display:block;font-family:var(--fm);font-size:10.5px;letter-spacing:.06em;color:var(--lime);margin-bottom:14px}
+.key p{color:var(--inv2);font-size:17.5px;max-width:64ch}
+.key strong{color:#fff;font-weight:600}
+.key .big{font-family:var(--fd);font-size:clamp(22px,3vw,30px);font-weight:600;line-height:1.2;letter-spacing:-.018em;color:#fff;margin-bottom:16px}
+
+/* lagen van het aanbod */
+.stack{display:grid;gap:12px;margin-top:24px}
+.st{background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;display:grid;grid-template-columns:132px 1fr;gap:20px;align-items:start}
+.st .lab{font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;color:var(--act);padding-top:3px}
+.st .bd p{margin:0;font-size:15.5px;color:var(--tx2)}
+.st .bd h4{margin-bottom:5px}
+
+/* kandidaten */
+.cands{display:grid;gap:12px;margin-top:22px}
+.cand{border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;background:var(--card)}
+.cand.win{border-color:var(--lime);box-shadow:0 0 0 1px var(--lime)}
+.cand .zin{font-family:var(--fd);font-size:22px;font-weight:600;letter-spacing:-.014em;margin-bottom:8px}
+.cand .why{font-size:15px;color:var(--tx2);margin:0}
+.cand .verdict{display:inline-block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;border-radius:5px;padding:3px 7px;margin-bottom:12px}
+.cand .verdict.no{background:var(--red100);color:var(--red-tx)}
+.cand .verdict.ok{background:var(--lime100);color:var(--lime-tx)}
+.cand .verdict.mid{background:var(--orange100);color:var(--orange-tx)}
+
+/* onderscheid */
+.dist{width:100%;border-collapse:collapse;font-size:15px;margin-top:22px}
+.dist th,.dist td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.dist thead th{font-family:var(--fm);font-size:10.5px;letter-spacing:.04em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.dist td:first-child{font-weight:500;width:34%}
+.dist .v{font-family:var(--fm);font-size:11px;white-space:nowrap}
+.dist .v.y{color:var(--green-tx)}
+.dist .v.n{color:var(--red-tx)}
+.dist tr:last-child td{border-bottom:none}
+.tblwrap{overflow-x:auto}
+
+/* beslissingen */
+.dec{border:1px solid var(--ln-s);border-radius:18px;background:var(--card);padding:26px 28px;margin-top:14px}
+.dec .hd{display:flex;align-items:baseline;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.dec .num{font-family:var(--fm);font-size:11px;color:var(--tx3);flex:none}
+.dec h4{font-size:19px;flex:1;min-width:220px;margin:0}
+.dec .tag{font-family:var(--fm);font-size:9.5px;letter-spacing:.05em;border-radius:5px;padding:3px 7px}
+.dec .tag.blok{background:var(--red100);color:var(--red-tx)}
+.dec .tag.schaal{background:var(--orange100);color:var(--orange-tx)}
+.dec .tag.scherp{background:var(--b100);color:var(--act)}
+.dec .q{font-size:16px;color:var(--tx2);margin:0 0 16px}
+.dec .adv{background:var(--b50);border-left:3px solid var(--act);border-radius:0 10px 10px 0;padding:16px 18px}
+.dec .adv .al{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.06em;color:var(--act);margin-bottom:7px}
+.dec .adv p{font-size:15.5px;margin:0 0 10px}
+.dec .adv p:last-child{margin-bottom:0}
+
+/* vast */
+.locked{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-top:22px}
+.lk{background:var(--card);border:1px solid var(--ln-s);border-radius:14px;padding:18px 20px}
+.lk .t{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--green-tx);margin-bottom:7px}
+.lk .b{font-size:15px;color:var(--tx2);line-height:1.45}
+.lk .b b{color:var(--tx)}
+
+.warn{background:var(--orange100);border-radius:18px;padding:24px 26px;margin-top:26px}
+.warn h4{color:var(--orange-tx)}
+.warn p{color:var(--orange-tx);opacity:.94;font-size:15.5px;max-width:none}
+.foot{padding-block:44px 64px;font-size:13px;color:var(--tx3);text-align:center}
+
+@media (max-width:734px){
+  :root{--g:20px}
+  body{font-size:16px}
+  .sec{padding-block:48px}
+  .hero{padding-block:44px 28px}
+  .st{grid-template-columns:1fr;gap:10px}
+  .key{padding:24px 22px}
+  .dec{padding:22px 20px}
+}
+<style>
+.sc{width:100%;border-collapse:collapse;font-size:15px}
+.sc th,.sc td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.sc thead th{font-family:var(--fm);font-size:10.5px;letter-spacing:.04em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.sc td.n,.sc th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;font-family:var(--fm);font-size:13px}
+.sc tbody tr:last-child td{border-bottom:none}
+.sc tbody tr.tot td{border-top:2px solid var(--ln);border-bottom:none;padding-top:14px}
+.sc td b{font-weight:600}
+.blok{margin-top:26px}
+.bh{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;padding-bottom:10px;border-bottom:2px solid var(--ln)}
+.bh .bn{font-family:var(--fm);font-size:10px;letter-spacing:.06em;color:var(--tx3)}
+.bh h3{font-family:var(--fd);font-size:21px;font-weight:600;letter-spacing:-.014em;flex:1;min-width:0}
+.bh .bu{font-family:var(--fm);font-size:12px;color:var(--blue);white-space:nowrap}
+.bi{font-size:14.5px;color:var(--tx2);margin:12px 0 4px;max-width:78ch}
+.ond{padding:14px 0;border-bottom:1px solid var(--ln-s)}
+.ond:last-child{border-bottom:none}
+.oh{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:baseline}
+.oh b{font-family:var(--fd);font-weight:600;font-size:16.5px;display:block}
+.oh .od{display:block;font-size:14px;color:var(--tx2);margin-top:2px;max-width:70ch}
+.oh .ou{font-style:normal;font-family:var(--fm);font-size:12px;color:var(--blue);white-space:nowrap;font-weight:600}
+.stap{display:grid;gap:0;margin-top:22px}
+.stapr{display:grid;grid-template-columns:34px 1fr;gap:18px;padding:15px 0;border-bottom:1px solid var(--ln-s);align-items:start}
+.stapr:last-child{border-bottom:none}
+.stapr .nr{font-family:var(--fm);font-size:12px;color:var(--blue);padding-top:2px}
+.stapr b{font-family:var(--fd);font-weight:600;font-size:17px;display:block}
+.stapr p{font-size:14.5px;color:var(--tx2);margin:3px 0 0}
+.duo{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px;margin-top:22px}
+.duoc{background:var(--card);border:1px solid var(--ln-s);border-radius:18px;padding:24px 26px}
+.duoc .t{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--tx3);margin-bottom:8px}
+.duoc h4{font-size:19px;font-weight:600;letter-spacing:-.014em}
+.duoc p{font-size:14.5px;color:var(--tx2);margin:8px 0 0}
+.duoc ul{list-style:none;margin:12px 0 0;padding:0}
+.duoc ul li{font-size:14px;color:var(--tx2);padding:5px 0 5px 16px;position:relative}
+.duoc ul li::before{content:"";position:absolute;left:0;top:13px;width:6px;height:6px;border-radius:50%;background:var(--blue)}
+.vb{background:var(--alt);border-radius:18px;padding:24px 26px;margin-top:16px}
+.vb h4{font-size:18px;font-weight:600}
+.vb .s{font-size:14px;color:var(--tx2);margin:6px 0 14px}
+.tblwrap{overflow-x:auto}
+.nee{list-style:none;margin:20px 0 0;padding:0;display:grid;gap:0}
+.nee li{padding:13px 0;border-bottom:1px solid var(--ln-s);font-size:15px}
+.nee li:last-child{border-bottom:none}
+.nee li b{font-weight:600}
+.nee li span{display:block;color:var(--tx2);font-size:14px;margin-top:2px;max-width:72ch}
+</style>
+
+<div class="bar"><div class="bar-in">
+  <b>Tarieven</b>
+  <a href="#volgorde">Volgorde</a>
+  <a href="#fundament">Het fundament</a>
+  <a href="#eenmalig">Eenmalig</a>
+  <a href="#doorlopend">Doorlopend</a>
+  <a href="#meten">Wat we meten</a>
+  <a href="#voorbeelden">Voorbeelden</a>
+  <a href="#niet">Wat er niet op staat</a>
+  <button id="themeBtn" type="button">Donker</button>
+</div></div>
+
+<header class="wrap hdr">
+  <p class="kicker">TARIEVEN &middot; CONCEPT</p>
+  <h1>Wat het kost</h1>
+  <p class="lead">Je ziet deze lijst voordat wij weten wat je nodig hebt. Dat is de volgorde die telt: eerst de prijzen, dan pas de diagnose. Wat er daarna uit rolt is geen offerte die wij hebben bedacht, maar een optelsom die je zelf kunt narekenen.</p>
+</header>
+
+<main class="wrap">
+
+<section class="sec" id="volgorde">
+  <p class="kicker">DE VOLGORDE</p>
+  <h2>Zo komen we aan jouw bedrag</h2>
+  <p class="note">Vier stappen. De derde is de enige waarin wij iets bepalen, en daar meten we alleen.</p>
+  <div class="stap">
+    <div class="stapr"><span class="nr">01</span><div><b>De intake</b><p>Jij vult het formulier in: je doel, je klant, je concurrenten, je cijfers. En twee getallen die je toolkosten bepalen &mdash; hoeveel e-mailadressen je hebt en hoeveel bezoekers je site per maand krijgt.</p></div></div>
+    <div class="stapr"><span class="nr">02</span><div><b>Deze lijst</b><p>Je krijgt alle tarieven te zien. V&oacute;&oacute;r de diagnose, dus voordat wij weten wat er bij jou mis is. Wij kunnen de prijs dan niet meer laten afhangen van wat we aantreffen.</p></div></div>
+    <div class="stapr"><span class="nr">03</span><div><b>De diagnose</b><p>Acht metingen met een vast gereedschap en een vaste norm. Geen oordeel, geen advies dat toevallig bij onze dienstverlening past &mdash; alleen uitkomsten. Je krijgt het rapport, ook als je niet met ons verdergaat.</p></div></div>
+    <div class="stapr"><span class="nr">04</span><div><b>Jouw bedrag</b><p>Elke meting die niet voldoet wijst naar &eacute;&eacute;n post op deze lijst, met het bedrag dat er al stond. Optellen is het enige wat wij nog doen.</p></div></div>
+  </div>
+  <div class="key" style="margin-top:28px">
+    <span class="k">WAAROM DEZE VOLGORDE</span>
+    <p class="big">Een prijs die na de diagnose ontstaat, is een prijs die je niet kunt controleren.</p>
+    <p>Dat is de normale gang van zaken in deze branche en precies waarom niemand een bureaufactuur vertrouwt. Wij draaien het om. De lijst ligt er eerst, hij is voor iedereen gelijk, en de diagnose kan er niets aan veranderen &mdash; alleen aanwijzen welke regels voor jou gelden.</p>
+  </div>
+</section>
+
+<section class="sec" id="fundament">
+  <p class="kicker">DE EENMALIGE FEE</p>
+  <h2>Het fundament bestaat uit twee delen</h2>
+  <p class="note">Eén prijs, twee helften. Dat is geen verkooptruc maar de eerlijke weergave van waar het geld heen gaat: iets meer dan de helft zit in het maken en lanceren van je eerste campagne, niet in het inrichten van accounts.</p>
+  <div class="duo">
+    <div class="duoc">
+      <span class="t">DEEL 1</span>
+      <h4>De basis</h4>
+      <p>Alles wat er moet staan voordat er &eacute;&eacute;n euro naar Google of Meta gaat.</p>
+      <ul>
+        <li>Doel, doelgroep, propositie en concurrentiebeeld</li>
+        <li>Technische diagnose en het bevindingenrapport</li>
+        <li>Meetopzet: analytics, conversies, consent, Search Console</li>
+        <li>Advertentieaccounts op jouw naam</li>
+        <li>MailerLite met je contacten en formulieren</li>
+        <li>Je leadportal en je dashboard</li>
+        <li>De nulmeting: waar je stond op dag &eacute;&eacute;n</li>
+      </ul>
+    </div>
+    <div class="duoc">
+      <span class="t">DEEL 2</span>
+      <h4>Je eerste campagne</h4>
+      <p>Het spul dat daadwerkelijk aanvragen binnenhaalt, gemaakt en aangezet.</p>
+      <ul>
+        <li>Zoekwoordonderzoek en campagnestructuur</li>
+        <li>Advertenties, doelgroepen, biedstrategie en retargeting</li>
+        <li>Een landingspagina met formulier en bedankpagina</li>
+        <li>Een volledige draaidag bij jou op locatie</li>
+        <li>Montage: video in drie beeldverhoudingen, plus stills</li>
+        <li>Kickoff met je team en een testaanvraag door de hele keten</li>
+        <li>De eerste week dagelijks meekijken en bijsturen</li>
+      </ul>
+    </div>
+  </div>
+  <div class="key" style="margin-top:24px">
+    <span class="k">&Eacute;&Eacute;N PRIJS</span>
+    <p class="big">&euro; 4.500 eenmalig. Niet los verkrijgbaar.</p>
+    <p>Deel 1 zonder deel 2 levert nul aanvragen op &mdash; dat is een stopcontact zonder apparaat. Deel 2 zonder deel 1 levert aanvragen op die je niet kunt meten, niet kunt opvolgen en niet kunt verbeteren. Ze zijn samen &eacute;&eacute;n product, dus ze hebben samen &eacute;&eacute;n prijs.</p>
+    <p>Wat er in dat bedrag niet zit: het herstellen van je website. Dat doen wij niet, dat doet Webmix, en die tarieven staan hieronder.</p>
+  </div>
+</section>
+
+<section class="sec" id="eenmalig">
+  <p class="kicker">TARIEVEN</p>
+  <h2>Eenmalig</h2>
+  <p class="note">Alleen de eerste regel geldt voor iedereen. De rest komt er alleen bij als de diagnose het aanwijst, en is bij een gezonde site nul.</p>
+  <div class="tblwrap">
+  <table class="sc">
+    <thead><tr><th>Post</th><th>Wanneer</th><th>Aan wie</th><th class="n">Bedrag</th></tr></thead>
+    <tbody>
+      <tr><td><b>Het fundament</b></td><td>Altijd</td><td>James Robinson</td><td class="n">&euro; 4.500</td></tr>
+      <tr><td>Snelheidsoptimalisatie in de site</td><td>Als de laadtijd de norm niet haalt en dat niet aan de server ligt</td><td>Webmix</td><td class="n">&euro; 750</td></tr>
+      <tr><td>Redirects en dode links</td><td>Als er ingaande links doodlopen</td><td>Webmix</td><td class="n">&euro; 500</td></tr>
+      <tr><td>E-mailauthenticatie</td><td>Als SPF, DKIM of DMARC ontbreekt</td><td>Webmix</td><td class="n">&euro; 250</td></tr>
+      <tr><td>Calendly-implementatie</td><td>Alleen als je afspraken laat inplannen</td><td>James Robinson</td><td class="n">&euro; 250</td></tr>
+      <tr><td>Huisstijl ontwikkelen</td><td>Alleen als er geen bruikbaar merk ligt</td><td>James Robinson</td><td class="n">apart traject</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="note">Ligt er geen bruikbare huisstijl, dan kiezen we binnen het fundament kleur en typografie om mee te kunnen werken. Dat is genoeg om te adverteren. Een echt merk ontwikkelen is een eigen traject met een eigen prijs, en dat verkopen we niet als bijproduct van een campagne.</p>
+</section>
+
+<section class="sec" id="doorlopend">
+  <p class="kicker">TARIEVEN</p>
+  <h2>Per maand en per jaar</h2>
+  <p class="note">Drie ontvangers. Alleen de eerste regel gaat naar ons; de rest staat op jouw naam en betaal je rechtstreeks, zodat je er altijd zelf bij kunt.</p>
+  <div class="tblwrap">
+  <table class="sc">
+    <thead><tr><th>Post</th><th>Aan wie</th><th>Wanneer</th><th class="n">Bedrag</th></tr></thead>
+    <tbody>
+      <tr><td><b>Retainer &middot; Enter</b></td><td>James Robinson</td><td>Per maand, automatische incasso</td><td class="n">&euro; 1.000</td></tr>
+      <tr><td><b>Retainer &middot; Compete</b></td><td>James Robinson</td><td>Per maand, automatische incasso</td><td class="n">&euro; 1.500</td></tr>
+      <tr><td><b>Retainer &middot; Own</b></td><td>James Robinson</td><td>Per maand, automatische incasso</td><td class="n">&euro; 2.000</td></tr>
+      <tr><td>Advertentiebudget</td><td>Google en Meta</td><td>Per maand, via je eigen advertentieaccounts</td><td class="n">vanaf &euro; 1.000</td></tr>
+      <tr><td>Hosting en onderhoud</td><td>Webmix</td><td>Alleen als je overzet. Migratie is gratis</td><td class="n">&euro; 85 p/m</td></tr>
+      <tr><td>Cookiescript</td><td>Webmix</td><td>Altijd &mdash; zonder consent mag je niet meten</td><td class="n">&euro; 150 p/j</td></tr>
+      <tr><td>MailerLite</td><td>MailerLite</td><td>Altijd. Prijs hangt af van je lijstgrootte</td><td class="n">vanaf &euro; 9,90 p/m</td></tr>
+      <tr><td>Leadinfo</td><td>Leadinfo</td><td>Optioneel, alleen zinvol bij B2B. Set-up regelen wij kosteloos</td><td class="n">staffel</td></tr>
+      <tr><td>Calendly</td><td>Calendly</td><td>Optioneel, alleen bij afspraken inplannen</td><td class="n">vanaf &euro; 10 p/m</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="note">Het advertentiebudget hangt aan je pakket: minimaal &euro; 1.000 bij Enter, &euro; 2.500 bij Compete en &euro; 7.500 bij Own. Er is geen maximum. Wel een regel die wij onszelf opleggen: onze fee mag nooit meer zijn dan de helft van wat je aan media uitgeeft. Anders betaal je ons om te sturen op een bedrag dat te klein is om iets mee te sturen.</p>
+</section>
+
+<section class="sec" id="meten">
+  <p class="kicker">DE DIAGNOSE</p>
+  <h2>Acht metingen, en waar ze naartoe wijzen</h2>
+  <p class="note">Dit is de hele lijst. Elke meting heeft een norm die vaststaat en een consequentie die vaststaat. Wij bepalen niet wat je nodig hebt; de uitkomst bepaalt dat.</p>
+  <div class="tblwrap">
+  <table class="sc">
+    <thead><tr><th>Wat we meten</th><th>De norm</th><th>Voldoet niet &rarr;</th><th class="n">Kosten</th></tr></thead>
+    <tbody>
+      <tr><td>Laadtijd op mobiel</td><td>Onder 2,5 seconden tot de pagina bruikbaar is</td><td>Hosting omzetten, en als het aan de site zelf ligt ook optimalisatie</td><td class="n">&euro; 85 p/m<br>en/of &euro; 750</td></tr>
+      <tr><td>Beveiliging en back-ups</td><td>Geldig certificaat, actuele software, herstelbare back-up</td><td>Hosting omzetten</td><td class="n">&euro; 85 p/m</td></tr>
+      <tr><td>Redirects en dode links</td><td>Geen ingaande link die doodloopt</td><td>Redirects herstellen</td><td class="n">&euro; 500</td></tr>
+      <tr><td>E-mailauthenticatie</td><td>SPF, DKIM en DMARC ingesteld</td><td>Authenticatie inrichten bij je domein</td><td class="n">&euro; 250</td></tr>
+      <tr><td>Toestemming voor meten</td><td>Werkende banner en consent mode</td><td>Cookiescript implementeren</td><td class="n">&euro; 150 p/j</td></tr>
+      <tr><td>Conversiemeting</td><td>Wat je systeem telt klopt met wat er echt gebeurt</td><td>Wij richten het opnieuw in</td><td class="n">&euro; 0</td></tr>
+      <tr><td>Indexatie</td><td>Je site is vindbaar, niets blokkeert dat onbedoeld</td><td>Wij lossen het op</td><td class="n">&euro; 0</td></tr>
+      <tr><td>Google Bedrijfsprofiel</td><td>Compleet, geverifieerd, juiste gegevens</td><td>Wij vullen het aan</td><td class="n">&euro; 0</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="key" style="margin-top:24px">
+    <span class="k">LET OP DE LAATSTE DRIE</span>
+    <p class="big">Drie van de acht metingen kunnen nooit tot een extra rekening leiden.</p>
+    <p>Meting, indexatie en je bedrijfsprofiel zitten in het fundament, hoe beroerd ze er ook bij staan. Dat is geen gunst. Het is het verschil tussen wat er aan jouw website moet gebeuren en wat er aan onze kant moet gebeuren &mdash; en alles aan onze kant zit in de prijs die je al kent.</p>
+  </div>
+</section>
+
+<section class="sec" id="voorbeelden">
+  <p class="kicker">TWEE VOORBEELDEN</p>
+  <h2>Hoe dat in de praktijk uitpakt</h2>
+  <p class="note">Beide met Enter, het kleinste pakket. Het verschil tussen de twee is niet wat wij hebben besloten, maar wat de diagnose heeft gevonden.</p>
+
+  <div class="vb">
+    <h4>Een gezonde site</h4>
+    <p class="s">Acht metingen, acht keer groen. Er is niets te herstellen.</p>
+    <div class="tblwrap">
+    <table class="sc">
+      <tbody>
+        <tr><td>Het fundament</td><td class="n">&euro; 4.500</td></tr>
+        <tr class="tot"><td><b>Eenmalig</b></td><td class="n"><b>&euro; 4.500</b></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="margin-top:14px;font-size:14.5px;color:var(--tx2)">Daarnaast per maand: &euro; 1.000 retainer, &euro; 9,90 MailerLite en minimaal &euro; 1.000 advertentiebudget. En &euro; 150 per jaar voor Cookiescript. Hosting blijft waar hij staat, want die voldoet.</p>
+  </div>
+
+  <div class="vb">
+    <h4>Een site met achterstallig onderhoud</h4>
+    <p class="s">Traag, geen e-mailauthenticatie, een handvol dode links. En deze klant laat afspraken inplannen.</p>
+    <div class="tblwrap">
+    <table class="sc">
+      <tbody>
+        <tr><td>Het fundament</td><td class="n">&euro; 4.500</td></tr>
+        <tr><td>Snelheidsoptimalisatie in de site</td><td class="n">&euro; 750</td></tr>
+        <tr><td>Redirects en dode links</td><td class="n">&euro; 500</td></tr>
+        <tr><td>E-mailauthenticatie</td><td class="n">&euro; 250</td></tr>
+        <tr><td>Calendly-implementatie</td><td class="n">&euro; 250</td></tr>
+        <tr class="tot"><td><b>Eenmalig</b></td><td class="n"><b>&euro; 6.250</b></td></tr>
+        <tr><td>Waarvan naar James Robinson</td><td class="n">&euro; 4.750</td></tr>
+        <tr><td>Waarvan naar Webmix</td><td class="n">&euro; 1.500</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="margin-top:14px;font-size:14.5px;color:var(--tx2)">Daarnaast per maand: &euro; 1.000 retainer, &euro; 85 hosting, &euro; 9,90 MailerLite, &euro; 10 Calendly en minimaal &euro; 1.000 advertentiebudget. En &euro; 150 per jaar voor Cookiescript.</p>
+  </div>
+
+  <div class="key" style="margin-top:24px">
+    <span class="k">EN ALS JE HET HERSTEL NIET DOET</span>
+    <p class="big">Dan beginnen we gewoon. Maar dan staat er bij elk rapport een kanttekening.</p>
+    <p>Je bent tot niets verplicht. Alleen: bij een kostprijs van &euro; 100 per aanvraag kost &eacute;&eacute;n seconde extra laadtijd je ongeveer &euro; 8 per aanvraag, oftewel &euro; 900 per jaar bij 120 aanvragen. Twee seconden is het dubbele. Dat is geen dreigement maar een rekensom, en hij staat elke maand in je rapport &mdash; zonder verwijt, maar ook zonder dat we doen alsof het er niet is.</p>
+  </div>
+</section>
+
+<section class="sec" id="niet">
+  <p class="kicker">GEEN TARIEF</p>
+  <h2>Wat er niet op deze lijst staat</h2>
+  <p class="note">Niet omdat het te duur is om te noemen, maar omdat we het niet doen. Dat is even duidelijk.</p>
+  <ul class="nee">
+    <li><b>Een uurtarief</b><span>Wij verkopen geen uren. Je koopt een fundament en een maandelijkse samenwerking met een vaste inhoud. Hoeveel uur daarin gaat zitten is ons probleem, niet het jouwe.</span></li>
+    <li><b>Meerwerk</b><span>Er staat geen post op deze lijst die we halverwege kunnen oprekken. Wat er niet op staat, doen we niet &mdash; of het wordt een apart voorstel met een eigen prijs, v&oacute;&oacute;raf.</span></li>
+    <li><b>Koppelingen met jouw systemen</b><span>Wij koppelen niet met je CRM, je ERP of je boekingssysteem. Je aanvragen komen binnen in je leadportal en die is van jou. Koppelen is maatwerk zonder einde en daar zijn wij het verkeerde bureau voor.</span></li>
+    <li><b>Leads opvolgen</b><span>Wij halen ze binnen, jij belt ze. Wie ze opvolgt bepaalt of ze klant worden, en dat gesprek kunnen wij niet voeren.</span></li>
+    <li><b>Losse projecten</b><span>Geen losse website, geen losse campagne, geen losse video. Wij werken in partnerships, want alles wat we in maand 1 bouwen is bedoeld om in maand 12 nog beter te werken.</span></li>
+    <li><b>Korting</b><span>Deze lijst is voor iedereen gelijk. Wie erover onderhandelt, onderhandelt met de vorige klant die hem wel heeft betaald.</span></li>
+  </ul>
+</section>
+
+<section class="sec" id="open">
+  <p class="kicker">INTERN &middot; NOG VAST TE ZETTEN</p>
+  <h2>Wat hier nog niet klopt</h2>
+  <div class="stack">
+    <div class="st"><span class="lab">WEBMIX</span><div class="bd"><h4>Drie bedragen zijn afgeleid, niet afgesproken</h4><p>&euro; 750 voor snelheid, &euro; 500 voor redirects en &euro; 250 voor e-mailauthenticatie zijn de middens van mijn eerdere schattingen. Hosting en Cookiescript staan wel vast. Zolang die drie niet met Webmix zijn vastgezet, staat er een prijslijst in de markt die je niet kunt waarmaken &mdash; en dat is erger dan geen prijslijst.</p></div></div>
+    <div class="st"><span class="lab">STAFFELS</span><div class="bd"><h4>MailerLite, Leadinfo en Calendly</h4><p>&ldquo;Vanaf&rdquo; is precies wat deze pagina belooft niet te doen. Zolang de staffels ontbreken staat er drie keer een woord dat de rest van de lijst ondermijnt.</p></div></div>
+    <div class="st"><span class="lab">NORMEN</span><div class="bd"><h4>De acht metingen moeten meetbaar zijn</h4><p>&ldquo;Onder 2,5 seconden&rdquo; is een norm. &ldquo;Actuele software&rdquo; en &ldquo;een herstelbare back-up&rdquo; zijn dat niet. Elke regel in die tabel heeft een gereedschap en een drempelwaarde nodig, anders is het alsnog een oordeel met een prijskaartje eraan.</p></div></div>
+    <div class="st"><span class="lab">CALENDLY</span><div class="bd"><h4>&euro; 250 is een voorstel</h4><p>Afgeleid van drie uur werk: account, agenda koppelen, afspraaktypes, bevestigingen, verwerken in de landingspagina en doortesten. Toets het aan de laatste keer dat je dit hebt gedaan.</p></div></div>
+    <div class="st"><span class="lab">KICKBACK</span><div class="bd"><h4>De vergoeding op Leadinfo</h4><p>Op een pagina die begint met &ldquo;je ziet deze lijst voordat wij weten wat je nodig hebt&rdquo; kun je niet verzwijgen dat &eacute;&eacute;n regel je een vergoeding oplevert. Noem het, dan wordt het een bewijs van je eigen belofte in plaats van een gat erin.</p></div></div>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap foot">James Robinson &mdash; Marketing &amp; Branding &middot; Tarieven, concept september 2026</footer>
+
+<script>
+(function(){
+  var root=document.documentElement,tb=document.getElementById('themeBtn');
+  if(!tb) return;
+  function cur(){var t=root.getAttribute('data-theme');return t||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}
+  function sync(){tb.textContent=cur()==='dark'?'Licht':'Donker'}
+  sync();
+  tb.addEventListener('click',function(){root.setAttribute('data-theme',cur()==='dark'?'light':'dark');sync()});
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',sync);
+})();
+</script>
