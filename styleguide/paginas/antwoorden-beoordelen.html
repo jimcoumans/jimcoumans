@@ -1,0 +1,283 @@
+<title>Antwoorden beoordelen &middot; James Robinson</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@600;700&display=swap">
+<style>
+:root{
+  --page:#fbfbfd; --card:#fff; --alt:#f5f5f7;
+  --tx:#1d1d1f; --tx2:#6e6e73; --tx3:#86868b;
+  --ln:#d2d2d7; --ln-s:#e5e5e9;
+  --blue:#007aff; --link:#0066cc; --act:#0857c3;
+  --b100:#e0efff; --b50:#f4f9ff;
+  --lime:#c4f000; --lime-tx:#5a7000; --lime100:#f2fccc;
+  --green-tx:#1d7d3f; --green100:#e6f7eb;
+  --orange-tx:#94590a; --orange100:#fef2e0;
+  --red-tx:#c02a22; --red100:#fdecea;
+  --black:#1c1c1e; --inv:#f5f5f7; --inv2:#a1a1a6;
+  --fd:"Inter Tight","Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --ft:"Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --fm:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --e:cubic-bezier(.25,.1,.25,1);--g:32px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}}
+:root[data-theme="dark"]{
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--tx);font-family:var(--ft);font-size:16.5px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition-duration:.01ms!important}}
+:focus-visible{outline:none;box-shadow:0 0 0 4px rgba(0,122,255,.4);border-radius:8px}
+p{margin:0 0 18px;max-width:70ch}
+p:last-child{margin-bottom:0}
+h1,h2,h3,h4{font-family:var(--fd);margin:0;text-wrap:balance}
+code{font-family:var(--fm);font-size:.86em;background:var(--alt);padding:2px 6px;border-radius:5px}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:60;background:rgba(251,251,253,.86);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--ln-s)}
+:root[data-theme="dark"] .bar,:root:not([data-theme="light"]) .bar{background:rgba(0,0,0,.74)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .bar{background:rgba(251,251,253,.86)}}
+.bar-in{max-width:1080px;margin:0 auto;padding:0 var(--g);display:flex;align-items:center;gap:5px;min-height:48px;overflow-x:auto;scrollbar-width:none}
+.bar-in::-webkit-scrollbar{display:none}
+.bar b{font-family:var(--fd);font-size:14.5px;font-weight:700;letter-spacing:-.016em;margin-right:8px;white-space:nowrap}
+.bar a{font-size:12.5px;color:var(--tx2);text-decoration:none;padding:6px 8px;border-radius:7px;white-space:nowrap}
+.bar a:hover{color:var(--tx)}
+.bar button{margin-left:auto;flex:none;font:inherit;font-size:12px;cursor:pointer;background:transparent;border:1px solid var(--ln);color:var(--tx2);border-radius:980px;padding:5px 13px}
+
+.wrap{max-width:1080px;margin:0 auto;padding-inline:var(--g)}
+.hero{padding-block:76px 40px}
+h1{font-size:clamp(34px,5.4vw,58px);font-weight:700;line-height:1.06;letter-spacing:-.026em;margin-bottom:20px}
+.lead{font-size:20px;line-height:1.5;color:var(--tx2);max-width:64ch}
+.sec{padding-block:60px;border-top:1px solid var(--ln-s)}
+h2{font-size:clamp(26px,3.4vw,38px);font-weight:700;line-height:1.12;letter-spacing:-.02em;margin-bottom:8px}
+.sec > .kicker{font-family:var(--fm);font-size:11px;letter-spacing:.06em;color:var(--tx3);margin-bottom:14px}
+h3{font-size:21px;font-weight:600;line-height:1.24;letter-spacing:-.012em;margin:38px 0 10px}
+h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
+.note{color:var(--tx2)}
+.note b,b{color:var(--tx);font-weight:600}
+
+/* kernblok */
+.key{background:var(--black);color:var(--inv);border-radius:22px;padding:34px 32px;margin:26px 0}
+.key .k{display:block;font-family:var(--fm);font-size:10.5px;letter-spacing:.06em;color:var(--lime);margin-bottom:14px}
+.key p{color:var(--inv2);font-size:17.5px;max-width:64ch}
+.key strong{color:#fff;font-weight:600}
+.key .big{font-family:var(--fd);font-size:clamp(22px,3vw,30px);font-weight:600;line-height:1.2;letter-spacing:-.018em;color:#fff;margin-bottom:16px}
+
+/* lagen van het aanbod */
+.stack{display:grid;gap:12px;margin-top:24px}
+.st{background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;display:grid;grid-template-columns:132px 1fr;gap:20px;align-items:start}
+.st .lab{font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;color:var(--act);padding-top:3px}
+.st .bd p{margin:0;font-size:15.5px;color:var(--tx2)}
+.st .bd h4{margin-bottom:5px}
+
+/* kandidaten */
+.cands{display:grid;gap:12px;margin-top:22px}
+.cand{border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;background:var(--card)}
+.cand.win{border-color:var(--lime);box-shadow:0 0 0 1px var(--lime)}
+.cand .zin{font-family:var(--fd);font-size:22px;font-weight:600;letter-spacing:-.014em;margin-bottom:8px}
+.cand .why{font-size:15px;color:var(--tx2);margin:0}
+.cand .verdict{display:inline-block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;border-radius:5px;padding:3px 7px;margin-bottom:12px}
+.cand .verdict.no{background:var(--red100);color:var(--red-tx)}
+.cand .verdict.ok{background:var(--lime100);color:var(--lime-tx)}
+.cand .verdict.mid{background:var(--orange100);color:var(--orange-tx)}
+
+/* onderscheid */
+.dist{width:100%;border-collapse:collapse;font-size:15px;margin-top:22px}
+.dist th,.dist td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.dist thead th{font-family:var(--fm);font-size:10.5px;letter-spacing:.04em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.dist td:first-child{font-weight:500;width:34%}
+.dist .v{font-family:var(--fm);font-size:11px;white-space:nowrap}
+.dist .v.y{color:var(--green-tx)}
+.dist .v.n{color:var(--red-tx)}
+.dist tr:last-child td{border-bottom:none}
+.tblwrap{overflow-x:auto}
+
+/* beslissingen */
+.dec{border:1px solid var(--ln-s);border-radius:18px;background:var(--card);padding:26px 28px;margin-top:14px}
+.dec .hd{display:flex;align-items:baseline;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.dec .num{font-family:var(--fm);font-size:11px;color:var(--tx3);flex:none}
+.dec h4{font-size:19px;flex:1;min-width:220px;margin:0}
+.dec .tag{font-family:var(--fm);font-size:9.5px;letter-spacing:.05em;border-radius:5px;padding:3px 7px}
+.dec .tag.blok{background:var(--red100);color:var(--red-tx)}
+.dec .tag.schaal{background:var(--orange100);color:var(--orange-tx)}
+.dec .tag.scherp{background:var(--b100);color:var(--act)}
+.dec .q{font-size:16px;color:var(--tx2);margin:0 0 16px}
+.dec .adv{background:var(--b50);border-left:3px solid var(--act);border-radius:0 10px 10px 0;padding:16px 18px}
+.dec .adv .al{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.06em;color:var(--act);margin-bottom:7px}
+.dec .adv p{font-size:15.5px;margin:0 0 10px}
+.dec .adv p:last-child{margin-bottom:0}
+
+/* vast */
+.locked{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-top:22px}
+.lk{background:var(--card);border:1px solid var(--ln-s);border-radius:14px;padding:18px 20px}
+.lk .t{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--green-tx);margin-bottom:7px}
+.lk .b{font-size:15px;color:var(--tx2);line-height:1.45}
+.lk .b b{color:var(--tx)}
+
+.warn{background:var(--orange100);border-radius:18px;padding:24px 26px;margin-top:26px}
+.warn h4{color:var(--orange-tx)}
+.warn p{color:var(--orange-tx);opacity:.94;font-size:15.5px;max-width:none}
+.foot{padding-block:44px 64px;font-size:13px;color:var(--tx3);text-align:center}
+
+@media (max-width:734px){
+  :root{--g:20px}
+  body{font-size:16px}
+  .sec{padding-block:48px}
+  .hero{padding-block:44px 28px}
+  .st{grid-template-columns:1fr;gap:10px}
+  .key{padding:24px 22px}
+  .dec{padding:22px 20px}
+}
+<style>
+.sc{width:100%;border-collapse:collapse;font-size:15px}
+.sc th,.sc td{text-align:left;padding:14px 14px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.sc thead th{font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.sc tbody tr:last-child td{border-bottom:none}
+.sc td:first-child{width:27%}
+.sc td b{font-weight:500;display:block;line-height:1.4}
+.sc td{color:var(--tx2);line-height:1.5;font-size:14px}
+.sc td:first-child b{color:var(--tx);font-size:14.5px}
+.so{display:inline-block;font-family:var(--fm);font-size:9.5px;letter-spacing:.04em;
+  padding:2px 7px;border-radius:5px;margin-top:6px}
+.so.cijfer{background:var(--b100);color:var(--link)}
+.so.open{background:var(--orange100);color:var(--orange-tx)}
+.tblwrap{overflow-x:auto}
+.stapels{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin-top:22px}
+.stap{background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;
+  border-top:3px solid var(--ln)}
+.stap.g{border-top-color:var(--green-tx)}
+.stap.o{border-top-color:var(--orange-tx)}
+.stap.r{border-top-color:var(--red-tx)}
+.stap h4{font-family:var(--fd);font-size:17px;font-weight:600}
+.stap .w{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--tx3);margin-bottom:7px}
+.stap p{font-size:14px;color:var(--tx2);margin:8px 0 0;line-height:1.55}
+.proc{counter-reset:p;list-style:none;margin:22px 0 0;padding:0}
+.proc li{counter-increment:p;display:grid;grid-template-columns:30px 1fr;gap:16px;
+  padding:16px 0;border-bottom:1px solid var(--ln-s)}
+.proc li:last-child{border-bottom:none}
+.proc li::before{content:counter(p);font-family:var(--fm);font-size:12px;color:var(--blue);padding-top:3px}
+.proc b{display:block;font-family:var(--fd);font-size:17px;font-weight:600}
+.proc p{font-size:14.5px;color:var(--tx2);line-height:1.55;margin-top:3px;max-width:70ch}
+.soort{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin-top:22px}
+.soc{background:var(--alt);border-radius:16px;padding:22px 24px}
+.soc .t{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--tx3);margin-bottom:6px}
+.soc h4{font-family:var(--fd);font-size:17px;font-weight:600}
+.soc p{font-size:14px;color:var(--tx2);margin:8px 0 0;line-height:1.55}
+</style>
+
+<div class="bar"><div class="bar-in">
+  <b>Antwoorden beoordelen</b>
+  <a href="#hoe">Hoe je het doet</a>
+  <a href="#soorten">Drie soorten</a>
+  <a href="#normen">De normen</a>
+  <a href="#uit">Wat eruit komt</a>
+  <button id="themeBtn" type="button">Donker</button>
+</div></div>
+
+<header class="wrap hdr">
+  <p class="kicker">ONDERDEEL 01 &middot; HANDELING 2 &middot; 0,5 UUR</p>
+  <h1>Antwoorden doornemen en gaten markeren</h1>
+  <p class="lead">Een gat is niet alleen een leeg veld. De meeste gaten zitten in velden die z&iacute;jn ingevuld, maar met een antwoord waar je niets mee kunt. Daarom hieronder per vraag wanneer het antwoord bruikbaar is &mdash; anders markeert de &eacute;&eacute;n een gat waar de ander doorleest.</p>
+</header>
+
+<main class="wrap">
+
+<section class="sec" id="hoe">
+  <p class="kicker">DE HANDELING</p>
+  <h2>Vier stappen, een half uur</h2>
+  <p class="note">Je doet dit v&oacute;&oacute;r het gesprek, in &eacute;&eacute;n keer, met het klantenbestand ernaast. Niet tijdens het gesprek, want dan lees je mee in plaats van dat je voorbereid bent.</p>
+  <ol class="proc">
+    <li><div><b>Lees het formulier &eacute;&eacute;n keer helemaal door zonder iets te doen</b>
+      <p>Je zoekt de rode draad: wat voor bedrijf is dit, waar loopt hij tegenaan, klopt het verhaal met zichzelf. Antwoorden die elkaar tegenspreken vind je alleen zo, niet veld voor veld.</p></div></li>
+    <li><div><b>Loop de achttien vragen met een norm af</b>
+      <p>Alleen die achttien. De rest is feitelijk: ingevuld is goed, leeg is opzoeken of nabellen. Per vraag zet je er groen, oranje of rood achter.</p></div></li>
+    <li><div><b>Leg de doelgroepantwoorden naast het klantenbestand</b>
+      <p>Postcodes, opdrachtgroottes, branches. Dit is de enige plek waar je z&iacute;jn beeld kunt toetsen aan zijn eigen cijfers, en het levert bijna altijd een verschil op. Dat verschil is je opening in het gesprek.</p></div></li>
+    <li><div><b>Verdeel alles over drie stapels en schrijf de gespreksvragen uit</b>
+      <p>Maximaal acht vragen. Meer dan acht is geen voorbereiding maar een tweede formulier, en dan had je het beter meteen kunnen vragen.</p></div></li>
+  </ol>
+</section>
+
+<section class="sec" id="soorten">
+  <p class="kicker">DE INDELING</p>
+  <h2>Drie soorten antwoorden</h2>
+  <p class="note">Elk veld valt in een van deze drie, en per soort geldt een vaste handelwijze. Dat scheelt je het oordeel per vraag.</p>
+  <div class="soort">
+    <div class="soc"><span class="t">SOORT 1</span><h4>Feitelijk</h4>
+      <p>Bedrijfsnaam, website, hosting, domeinnaam, platform. Er is &eacute;&eacute;n goed antwoord en dat is te controleren. Ingevuld is klaar; leeg is opzoeken, en pas nabellen als je het echt niet vindt. Hier gaat geen half uur in zitten.</p></div>
+    <div class="soc"><span class="t">SOORT 2</span><h4>Een cijfer</h4>
+      <p>Aanvragen, klantwaarde, omzetdoel, conversie. Hier controleer je niet of er iets staat maar of het gel&oacute;&oacute;fwaardig is. Een getal dat niet klopt is erger dan een leeg veld, want er wordt wel mee gerekend.</p></div>
+    <div class="soc"><span class="t">SOORT 3</span><h4>Een oordeel</h4>
+      <p>Doelgroep, propositie, bezwaren, opvolging. Hier is geen goed of fout, maar w&eacute;l bruikbaar of onbruikbaar. De norm staat hieronder per vraag, en die norm is meestal: kun je er morgen iets mee bouwen?</p></div>
+  </div>
+</section>
+
+<section class="sec" id="normen">
+  <p class="kicker">DE NORMEN</p>
+  <h2>Achttien vragen die een oordeel vragen</h2>
+  <p class="note">De andere achtendertig zijn feitelijk. Deze achttien bepalen of het fundament op zand staat.</p>
+  <div class="tblwrap">
+  <table class="sc">
+    <thead><tr><th>De vraag</th><th>Bruikbaar als</th><th>Zo niet, dan</th></tr></thead>
+    <tbody><tr><td><b>Hoeveel aanvragen krijg je nu gemiddeld per maand?</b><span class="so cijfer">cijfer</span></td><td>Er staat een getal en het is niet rond op honderd. &ldquo;Ongeveer 12&rdquo; is bruikbaar, &ldquo;een stuk of 100&rdquo; niet.</td><td>Zelf ophalen uit zijn statistieken. Lukt dat niet, dan tellen we het vanaf de nulmeting en zetten we erbij dat er geen vertrekpunt was.</td></tr><tr><td><b>Wat levert een nieuwe klant je gemiddeld op?</b><span class="so cijfer">cijfer</span></td><td>Het bedrag ligt in dezelfde orde als de gemiddelde opdrachtwaarde verderop. Wijkt het meer dan een factor drie af, dan heeft hij twee verschillende dingen ingevuld.</td><td>Vraag voor het gesprek. Dit getal draagt de hele rekensom; hier mag geen aanname op.</td></tr><tr><td><b>Hoeveel extra omzet wil je komend jaar halen?</b><span class="so cijfer">cijfer</span></td><td>E&eacute;n getal, en het staat in verhouding tot zijn huidige omzet. Een verdubbeling bij een bedrijf dat al jaren vlak loopt is een gespreksonderwerp, geen doel.</td><td>Vraag voor het gesprek. Zonder dit getal kunnen we niet rekenen.</td></tr><tr><td><b>Hoeveel van je aanvragen wordt uiteindelijk klant?</b><span class="so cijfer">cijfer</span></td><td>Tussen 5% en 60%. Daarbuiten klopt de vraag of het antwoord niet: bij 90% telt hij waarschijnlijk offertes en geen aanvragen.</td><td>Branchegemiddelde invullen en er zichtbaar bij noteren dat het een aanname is. Dit is de enige plek waar dat mag.</td></tr><tr><td><b>Wat is dat gemiddeld waard per opdracht?</b><span class="so cijfer">cijfer</span></td><td>Een bedrag per genoemde dienst. E&eacute;n bedrag bij drie verschillende diensten is geen antwoord.</td><td>Zelf afleiden uit zijn prijslijst of website, en laten bevestigen in het gesprek.</td></tr><tr><td><b>Kun je meer werk aan? En waar loopt het vast als het verdubbelt?</b><span class="so open">open</span></td><td>Er staat een concrete beperking: mensen, materiaal, doorlooptijd of een seizoen. &ldquo;Dat lukt wel&rdquo; is geen antwoord.</td><td>Vraag voor het gesprek, en een belangrijke. Een campagne die meer oplevert dan hij kan leveren kost hem klanten en ons een opzegging.</td></tr><tr><td><b>Beschrijf je beste klant</b><span class="so open">open</span></td><td>Er staan kenmerken in waarop je kunt targeten: branche, omvang, locatie, levensfase, aanleiding. Persoonskenmerken als &ldquo;betrouwbaar&rdquo; of &ldquo;prettig&rdquo; tellen niet mee.</td><td>Zelf afleiden uit zijn klantenbestand en het in het gesprek voorleggen: &ldquo;dit zien wij, herken je dat?&rdquo;</td></tr><tr><td><b>Waarom stelt iemand de aankoop uit?</b><span class="so open">open</span></td><td>Er staat een bezwaar dat je kunt wegnemen in een advertentie of op een pagina. &ldquo;Ze hebben geen geld&rdquo; is geen bezwaar maar een doelgroepprobleem.</td><td>Vraag voor het gesprek. Vraag door op de laatste drie klanten die eerst nee zeiden en later toch ja.</td></tr><tr><td><b>Waarom kiezen mensen voor jou en niet voor een ander?</b><span class="so open">open</span></td><td>Minstens &eacute;&eacute;n reden die niet bij zijn concurrent had kunnen staan. Toets het: vervang zijn bedrijfsnaam door die van de concurrent &mdash; blijft het kloppen, dan is het geen antwoord.</td><td>Vraag voor het gesprek. Dit is het belangrijkste veld van het hele formulier; hier gaan we niet zelf iets invullen.</td></tr><tr><td><b>Welke drie concurrenten komen je klanten ook tegen?</b><span class="so open">open</span></td><td>Drie namen met een website, en het zijn partijen die op dezelfde dienst in hetzelfde gebied actief zijn.</td><td>Zelf opzoeken op zijn belangrijkste zoekwoorden en de lijst in het gesprek voorleggen. Noemt hij andere namen dan wij vinden, dan is dat op zichzelf een bevinding.</td></tr><tr><td><b>Welke dienst of welk product moet de campagne opleveren?</b><span class="so open">open</span></td><td>Maximaal drie, en ze zijn concreet genoeg om op te adverteren. &ldquo;Alles wat we doen&rdquo; is geen antwoord.</td><td>Vraag voor het gesprek. Kiest hij niet, dan kiezen wij op basis van opdrachtwaarde en zoekvolume, en leggen we dat voor.</td></tr><tr><td><b>Weet je hoe die adressen zijn verzameld?</b><span class="so open">open</span></td><td>Er staat een van de drie keuzes aangevinkt. Dit is een van de weinige vragen waar &ldquo;dat weten we niet&rdquo; het goede antwoord kan zijn.</td><td>Bij &ldquo;nee&rdquo; of &ldquo;deels&rdquo;: importeren, eerst een bevestigingsmail, en verdergaan met wie reageert. Dat is geen gespreksonderwerp maar een vaste werkwijze.</td></tr><tr><td><b>Toegang tot je systemen</b><span class="so open">open</span></td><td>Alleen gebruiken als meldveld. Het echte antwoord komt uit de toegangenlijst, niet hieruit.</td><td>Altijd nabellen, ongeacht wat er staat. Dit veld is een signaal, geen oplevering.</td></tr><tr><td><b>Wie neemt contact op met een nieuwe aanvraag?</b><span class="so open">open</span></td><td>Een naam. Niet een afdeling, niet &ldquo;het team&rdquo;, niet &ldquo;wie er tijd heeft&rdquo;.</td><td>Vraag voor het gesprek, en het moet opgelost zijn v&oacute;&oacute;r de kickoff. Zonder naam is er geen opvolging.</td></tr><tr><td><b>Wat gebeurt er als diegene er niet is?</b><span class="so open">open</span></td><td>Er staat een tweede naam of een concrete afspraak.</td><td>Vraag voor de kickoff. Dit is de vraag waarop de meeste campagnes stuklopen zonder dat iemand het merkt.</td></tr><tr><td><b>Wie kunnen we voor de camera zetten?</b><span class="so open">open</span></td><td>Namen en rollen, en er zit iemand bij die het werk doet.</td><td>Vraag bij het plannen van de draaidag. Komt er alleen een directeur, dan zeggen we wat dat met het resultaat doet.</td></tr><tr><td><b>Wat moet er in beeld?</b><span class="so open">open</span></td><td>Concreet genoeg om een opnamelijst van te maken: dit product, die machine, dat project.</td><td>Zelf een voorstel maken uit zijn website en het bij de planning voorleggen.</td></tr><tr><td><b>Wie beslist over je doelgroep en je boodschap?</b><span class="so open">open</span></td><td>E&eacute;n naam, en die persoon is beschikbaar voor de sessie.</td><td>Sessie verzetten tot die persoon kan. Een sessie met iemand die het moet navragen levert een plan op dat later wordt teruggedraaid.</td></tr></tbody>
+  </table>
+  </div>
+</section>
+
+<section class="sec" id="uit">
+  <p class="kicker">DE OPLEVERING</p>
+  <h2>Drie stapels en acht vragen</h2>
+  <p class="note">Dit is wat er na een half uur ligt. Het gaat mee naar het gesprek en het blijft daarna staan als verantwoording bij het plan.</p>
+  <div class="stapels">
+    <div class="stap g"><span class="w">STAPEL 1</span><h4>Compleet</h4>
+      <p>Bruikbaar zoals het er staat. Hier doen we niets mee behalve gebruiken.</p></div>
+    <div class="stap o"><span class="w">STAPEL 2</span><h4>Aanname gemaakt</h4>
+      <p>Wij hebben het ingevuld of opgezocht. Staat zichtbaar in het plan als aanname, met wie hem heeft gemaakt. Wordt in het gesprek in &eacute;&eacute;n zin bevestigd of gecorrigeerd.</p></div>
+    <div class="stap r"><span class="w">STAPEL 3</span><h4>Vraag voor het gesprek</h4>
+      <p>Kan niet door ons worden ingevuld. Maximaal acht, en ze staan op volgorde van belang, want het gesprek loopt altijd korter dan gepland.</p></div>
+  </div>
+  <div class="key" style="margin-top:26px">
+    <span class="k">DE TOETS OP DEZE HANDELING</span>
+    <p class="big">Stapel 2 mag nooit groter zijn dan stapel 3.</p>
+    <p>Vul je meer zelf in dan je navraagt, dan schrijf je zijn plan in plaats van het zijne scherp te maken. Dat voelt efficient en het kost je in maand drie een gesprek waarin hij zegt dat hij zich er niet in herkent. Is stapel 2 gro&oacute;ter, dan is dat geen reden om door te gaan maar om het formulier terug te sturen.</p>
+  </div>
+</section>
+
+<section class="sec" id="mist">
+  <p class="kicker">WAT WE ONDERWEG MISSEN</p>
+  <h2>Terug naar het formulier</h2>
+  <p class="note">Wat bij deze handeling naar boven komt en nog niet in het formulier staat. Dit vullen we in &eacute;&eacute;n keer aan als de hele ronde is gelopen, niet steeds tussendoor.</p>
+  <div class="stack">
+    <div class="st"><span class="lab">ONTBREEKT</span><div class="bd"><h4>Zijn huidige omzet</h4><p>We vragen wel hoeveel extra omzet hij wil, maar niet wat hij nu draait. Zonder dat getal kun je niet beoordelen of zijn doel realistisch is, en dat is precies de norm die hierboven staat.</p></div></div>
+    <div class="st"><span class="lab">ONTBREEKT</span><div class="bd"><h4>Wat hij nu aan marketing uitgeeft</h4><p>Niet om zijn budget te bepalen &mdash; dat volgt uit zijn doel. Maar wel om te weten of hij van nul komt of van drieduizend per maand. Dat verandert het gesprek over de retainer volledig.</p></div></div>
+    <div class="st"><span class="lab">ONTBREEKT</span><div class="bd"><h4>Seizoen</h4><p>Bij veel branches is de helft van de omzet in drie maanden. Dat bepaalt hoe we het budget over het jaar verdelen en wanneer we starten, en het staat nergens.</p></div></div>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap foot">James Robinson &mdash; Marketing &amp; Branding &middot; Antwoorden beoordelen, concept september 2026</footer>
+
+<script>
+(function(){
+  var root=document.documentElement,tb=document.getElementById('themeBtn');
+  if(!tb) return;
+  function cur(){var t=root.getAttribute('data-theme');return t||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}
+  function sync(){tb.textContent=cur()==='dark'?'Licht':'Donker'}
+  sync();
+  tb.addEventListener('click',function(){root.setAttribute('data-theme',cur()==='dark'?'light':'dark');sync()});
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',sync);
+})();
+</script>
