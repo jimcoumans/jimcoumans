@@ -1,0 +1,299 @@
+<title>Het intakeformulier &middot; James Robinson</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@600;700&display=swap">
+<style>
+:root{
+  --page:#fbfbfd; --card:#fff; --alt:#f5f5f7;
+  --tx:#1d1d1f; --tx2:#6e6e73; --tx3:#86868b;
+  --ln:#d2d2d7; --ln-s:#e5e5e9;
+  --blue:#007aff; --link:#0066cc; --act:#0857c3;
+  --b100:#e0efff; --b50:#f4f9ff;
+  --lime:#c4f000; --lime-tx:#5a7000; --lime100:#f2fccc;
+  --green-tx:#1d7d3f; --green100:#e6f7eb;
+  --orange-tx:#94590a; --orange100:#fef2e0;
+  --red-tx:#c02a22; --red100:#fdecea;
+  --black:#1c1c1e; --inv:#f5f5f7; --inv2:#a1a1a6;
+  --fd:"Inter Tight","Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --ft:"Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --fm:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --e:cubic-bezier(.25,.1,.25,1);--g:32px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}}
+:root[data-theme="dark"]{
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--tx);font-family:var(--ft);font-size:16.5px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition-duration:.01ms!important}}
+:focus-visible{outline:none;box-shadow:0 0 0 4px rgba(0,122,255,.4);border-radius:8px}
+p{margin:0 0 18px;max-width:70ch}
+p:last-child{margin-bottom:0}
+h1,h2,h3,h4{font-family:var(--fd);margin:0;text-wrap:balance}
+code{font-family:var(--fm);font-size:.86em;background:var(--alt);padding:2px 6px;border-radius:5px}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:60;background:rgba(251,251,253,.86);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--ln-s)}
+:root[data-theme="dark"] .bar,:root:not([data-theme="light"]) .bar{background:rgba(0,0,0,.74)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .bar{background:rgba(251,251,253,.86)}}
+.bar-in{max-width:1080px;margin:0 auto;padding:0 var(--g);display:flex;align-items:center;gap:5px;min-height:48px;overflow-x:auto;scrollbar-width:none}
+.bar-in::-webkit-scrollbar{display:none}
+.bar b{font-family:var(--fd);font-size:14.5px;font-weight:700;letter-spacing:-.016em;margin-right:8px;white-space:nowrap}
+.bar a{font-size:12.5px;color:var(--tx2);text-decoration:none;padding:6px 8px;border-radius:7px;white-space:nowrap}
+.bar a:hover{color:var(--tx)}
+.bar button{margin-left:auto;flex:none;font:inherit;font-size:12px;cursor:pointer;background:transparent;border:1px solid var(--ln);color:var(--tx2);border-radius:980px;padding:5px 13px}
+
+.wrap{max-width:1080px;margin:0 auto;padding-inline:var(--g)}
+.hero{padding-block:76px 40px}
+h1{font-size:clamp(34px,5.4vw,58px);font-weight:700;line-height:1.06;letter-spacing:-.026em;margin-bottom:20px}
+.lead{font-size:20px;line-height:1.5;color:var(--tx2);max-width:64ch}
+.sec{padding-block:60px;border-top:1px solid var(--ln-s)}
+h2{font-size:clamp(26px,3.4vw,38px);font-weight:700;line-height:1.12;letter-spacing:-.02em;margin-bottom:8px}
+.sec > .kicker{font-family:var(--fm);font-size:11px;letter-spacing:.06em;color:var(--tx3);margin-bottom:14px}
+h3{font-size:21px;font-weight:600;line-height:1.24;letter-spacing:-.012em;margin:38px 0 10px}
+h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
+.note{color:var(--tx2)}
+.note b,b{color:var(--tx);font-weight:600}
+
+/* kernblok */
+.key{background:var(--black);color:var(--inv);border-radius:22px;padding:34px 32px;margin:26px 0}
+.key .k{display:block;font-family:var(--fm);font-size:10.5px;letter-spacing:.06em;color:var(--lime);margin-bottom:14px}
+.key p{color:var(--inv2);font-size:17.5px;max-width:64ch}
+.key strong{color:#fff;font-weight:600}
+.key .big{font-family:var(--fd);font-size:clamp(22px,3vw,30px);font-weight:600;line-height:1.2;letter-spacing:-.018em;color:#fff;margin-bottom:16px}
+
+/* lagen van het aanbod */
+.stack{display:grid;gap:12px;margin-top:24px}
+.st{background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;display:grid;grid-template-columns:132px 1fr;gap:20px;align-items:start}
+.st .lab{font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;color:var(--act);padding-top:3px}
+.st .bd p{margin:0;font-size:15.5px;color:var(--tx2)}
+.st .bd h4{margin-bottom:5px}
+
+/* kandidaten */
+.cands{display:grid;gap:12px;margin-top:22px}
+.cand{border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;background:var(--card)}
+.cand.win{border-color:var(--lime);box-shadow:0 0 0 1px var(--lime)}
+.cand .zin{font-family:var(--fd);font-size:22px;font-weight:600;letter-spacing:-.014em;margin-bottom:8px}
+.cand .why{font-size:15px;color:var(--tx2);margin:0}
+.cand .verdict{display:inline-block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;border-radius:5px;padding:3px 7px;margin-bottom:12px}
+.cand .verdict.no{background:var(--red100);color:var(--red-tx)}
+.cand .verdict.ok{background:var(--lime100);color:var(--lime-tx)}
+.cand .verdict.mid{background:var(--orange100);color:var(--orange-tx)}
+
+/* onderscheid */
+.dist{width:100%;border-collapse:collapse;font-size:15px;margin-top:22px}
+.dist th,.dist td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.dist thead th{font-family:var(--fm);font-size:10.5px;letter-spacing:.04em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.dist td:first-child{font-weight:500;width:34%}
+.dist .v{font-family:var(--fm);font-size:11px;white-space:nowrap}
+.dist .v.y{color:var(--green-tx)}
+.dist .v.n{color:var(--red-tx)}
+.dist tr:last-child td{border-bottom:none}
+.tblwrap{overflow-x:auto}
+
+/* beslissingen */
+.dec{border:1px solid var(--ln-s);border-radius:18px;background:var(--card);padding:26px 28px;margin-top:14px}
+.dec .hd{display:flex;align-items:baseline;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.dec .num{font-family:var(--fm);font-size:11px;color:var(--tx3);flex:none}
+.dec h4{font-size:19px;flex:1;min-width:220px;margin:0}
+.dec .tag{font-family:var(--fm);font-size:9.5px;letter-spacing:.05em;border-radius:5px;padding:3px 7px}
+.dec .tag.blok{background:var(--red100);color:var(--red-tx)}
+.dec .tag.schaal{background:var(--orange100);color:var(--orange-tx)}
+.dec .tag.scherp{background:var(--b100);color:var(--act)}
+.dec .q{font-size:16px;color:var(--tx2);margin:0 0 16px}
+.dec .adv{background:var(--b50);border-left:3px solid var(--act);border-radius:0 10px 10px 0;padding:16px 18px}
+.dec .adv .al{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.06em;color:var(--act);margin-bottom:7px}
+.dec .adv p{font-size:15.5px;margin:0 0 10px}
+.dec .adv p:last-child{margin-bottom:0}
+
+/* vast */
+.locked{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-top:22px}
+.lk{background:var(--card);border:1px solid var(--ln-s);border-radius:14px;padding:18px 20px}
+.lk .t{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--green-tx);margin-bottom:7px}
+.lk .b{font-size:15px;color:var(--tx2);line-height:1.45}
+.lk .b b{color:var(--tx)}
+
+.warn{background:var(--orange100);border-radius:18px;padding:24px 26px;margin-top:26px}
+.warn h4{color:var(--orange-tx)}
+.warn p{color:var(--orange-tx);opacity:.94;font-size:15.5px;max-width:none}
+.foot{padding-block:44px 64px;font-size:13px;color:var(--tx3);text-align:center}
+
+@media (max-width:734px){
+  :root{--g:20px}
+  body{font-size:16px}
+  .sec{padding-block:48px}
+  .hero{padding-block:44px 28px}
+  .st{grid-template-columns:1fr;gap:10px}
+  .key{padding:24px 22px}
+  .dec{padding:22px 20px}
+}
+<style>
+.sc{width:100%;border-collapse:collapse;font-size:15px}
+.sc th,.sc td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.sc thead th{font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.sc tbody tr:last-child td{border-bottom:none}
+.tblwrap{overflow-x:auto}
+.mail{background:var(--card);border:1px solid var(--ln);border-radius:18px;padding:0;overflow:hidden;margin-top:22px}
+.mail .mh{background:var(--alt);padding:14px 24px;border-bottom:1px solid var(--ln-s);
+  font-family:var(--fm);font-size:12px;color:var(--tx2)}
+.mail .mh b{color:var(--tx);font-weight:500}
+.mail .mb{padding:26px 28px}
+.mail .mb p{font-size:15.5px;line-height:1.62;margin:0 0 15px;max-width:66ch}
+.mail .mb p:last-child{margin-bottom:0}
+.mail .mb ul{margin:0 0 15px;padding-left:20px;max-width:66ch}
+.mail .mb li{font-size:15.5px;line-height:1.62;margin-bottom:5px}
+.sct{margin-top:28px}
+.sct h4{font-family:var(--fd);font-size:19px;font-weight:600;letter-spacing:-.014em;
+  padding-bottom:8px;border-bottom:2px solid var(--ln)}
+.sct .si{font-size:14px;color:var(--tx2);margin:10px 0 0;max-width:70ch}
+.vlds{margin-top:6px}
+.vl{padding:14px 0;border-bottom:1px solid var(--ln-s)}
+.vl:last-child{border-bottom:none}
+.vk{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.vk .lb{font-size:15.5px;font-weight:500;line-height:1.4}
+.vk .tp{font-family:var(--fm);font-size:9.5px;letter-spacing:.04em;color:var(--tx3);
+  border:1px solid var(--ln-s);border-radius:5px;padding:2px 7px;white-space:nowrap}
+.vl.opt .vk .lb{font-weight:400;color:var(--tx2)}
+.vl.opt .vk .lb::after{content:"optioneel";font-family:var(--fm);font-size:9.5px;color:var(--tx3);margin-left:8px}
+.vl .hn{font-size:13.5px;color:var(--tx2);margin:4px 0 0;max-width:68ch;line-height:1.5}
+.vl .wv{display:block;font-family:var(--fm);font-size:10.5px;color:var(--blue);margin-top:6px}
+.tel{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-top:22px}
+.telc{background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:20px 22px}
+.telc .g{font-family:var(--fd);font-size:30px;font-weight:700;letter-spacing:-.024em;font-variant-numeric:tabular-nums}
+.telc .t{display:block;font-size:13.5px;color:var(--tx2);margin-top:4px;line-height:1.45}
+</style>
+
+<div class="bar"><div class="bar-in">
+  <b>Intakeformulier</b>
+  <a href="#waarom">Waarom zo</a>
+  <a href="#deel1">Deel 1</a>
+  <a href="#toelichting">De toelichting</a>
+  <a href="#deel2">Deel 2</a>
+  <a href="#niet">Wat we niet vragen</a>
+  <button id="themeBtn" type="button">Donker</button>
+</div></div>
+
+<header class="wrap hdr">
+  <p class="kicker">STAP 1 &middot; ONDERDEEL 01 &middot; HANDELING 1</p>
+  <h1>Het intakeformulier</h1>
+  <p class="lead">Het formulier waar handeling 1 naar verwijst, plus de toelichting die ermee meegaat. Twee delen: negen vragen v&oacute;&oacute;r de offerte, de rest na de handtekening.</p>
+</header>
+
+<main class="wrap">
+
+<section class="sec" id="waarom">
+  <p class="kicker">DE OPZET</p>
+  <h2>Twee delen, twee momenten</h2>
+  <p class="note">Er stond tot nu toe &eacute;&eacute;n formulier in het fundament. Dat kan niet, want twee antwoorden bepalen je pr&iacute;js en de rest bepaalt je w&eacute;rk. Vraag je alles tegelijk, dan leg je een vragenlijst van veertig minuten neer bij iemand die nog niet heeft getekend.</p>
+  <div class="tel">
+    <div class="telc"><span class="g">10</span><span class="t">vragen v&oacute;&oacute;r de offerte, ongeveer vijf minuten</span></div>
+    <div class="telc"><span class="g">47</span><span class="t">vragen na de handtekening, ongeveer veertig minuten</span></div>
+    <div class="telc"><span class="g">42</span><span class="t">daarvan verplicht &mdash; de rest maakt het beter, niet mogelijk</span></div>
+    <div class="telc"><span class="g">26</span><span class="t">van de 28 onderdelen halen hier hun input uit</span></div>
+  </div>
+  <div class="key" style="margin-top:26px">
+    <span class="k">DE REGEL DIE HET FORMULIER KORT HOUDT</span>
+    <p class="big">Geen veld zonder bestemming.</p>
+    <p>Achter elke vraag staat in welk onderdeel het antwoord wordt gebruikt. Kun je die bestemming niet noemen, dan gaat de vraag eruit. Dat is de enige manier om te voorkomen dat dit formulier over een jaar tachtig velden telt omdat iedereen er &eacute;&eacute;n handige vraag bij heeft gezet.</p>
+  </div>
+</section>
+
+<section class="sec" id="deel1">
+  <p class="kicker">DEEL 1 &middot; BIJ DE AANVRAAG</p>
+  <h2>Tien vragen die je prijs bepalen</h2>
+  <p class="note">Dit hoort bij het eerste contact, niet bij de onboarding. Drie ervan bepalen rechtstreeks een bedrag in je voorstel: lijstgrootte, verkeer en afspraken inplannen. De vierde, wie er code in je site kan plaatsen, bepaalt of we &uuml;berhaupt beginnen. Zonder die antwoorden staat er &ldquo;vanaf&rdquo; in je offerte, en dat is precies wat we niet meer doen.</p>
+  <div class="vlds"><div class="vl"><div class="vk"><span class="lb">Bedrijfsnaam</span><span class="tp">tekst</span></div><span class="wv">&rarr; Advertentieaccounts</span></div><div class="vl"><div class="vk"><span class="lb">Website</span><span class="tp">url</span></div><span class="wv">&rarr; Technische audit</span></div><div class="vl"><div class="vk"><span class="lb">Wat verkoop je, in &eacute;&eacute;n zin?</span><span class="tp">tekst</span></div><p class="hn">Geen slogan. Gewoon: wat koopt iemand bij jou.</p><span class="wv">&rarr; Conversiedefinitie</span></div><div class="vl"><div class="vk"><span class="lb">Hoeveel aanvragen krijg je nu per maand?</span><span class="tp">getal</span></div><p class="hn">Weet je het niet precies, schat dan. We meten het zelf na.</p><span class="wv">&rarr; Intake verwerken &middot; De nulmeting</span></div><div class="vl"><div class="vk"><span class="lb">Wat levert een nieuwe klant je gemiddeld op?</span><span class="tp">bedrag</span></div><p class="hn">Over de hele klantrelatie, niet alleen de eerste order.</p><span class="wv">&rarr; Intake verwerken</span></div><div class="vl"><div class="vk"><span class="lb">Hoeveel e-mailadressen staan er in je bestand?</span><span class="tp">getal</span></div><p class="hn">Van klanten en ge&iuml;nteresseerden samen. Bij benadering.</p><span class="wv">&rarr; Intake verwerken &middot; E-mailplatform</span></div><div class="vl"><div class="vk"><span class="lb">Hoeveel bezoekers krijgt je site per maand?</span><span class="tp">getal</span></div><p class="hn">Uit je analytics. Weet je het niet, dan zoeken wij het op.</p><span class="wv">&rarr; Intake verwerken &middot; Bezoekersherkenning</span></div><div class="vl"><div class="vk"><span class="lb">Laat je afspraken inplannen? Zo ja, met hoeveel mensen?</span><span class="tp">keuze</span></div><p class="hn">Nee / Ja, met &hellip; personen</p><span class="wv">&rarr; Intake verwerken &middot; Afsprakenplanner</span></div><div class="vl"><div class="vk"><span class="lb">Wie kan er code in je website plaatsen?</span><span class="tp">keuze</span></div><p class="hn">Ikzelf / mijn webbouwer / niemand. Dit bepaalt of we kunnen meten.</p><span class="wv">&rarr; Technische audit &middot; Meetopzet</span></div><div class="vl"><div class="vk"><span class="lb">Draait er nu al ergens een advertentiecampagne?</span><span class="tp">keuze</span></div><p class="hn">Nee / Google / Meta / Allebei / Anders</p><span class="wv">&rarr; Advertentieaccounts</span></div></div>
+</section>
+
+<section class="sec" id="toelichting">
+  <p class="kicker">DE TOELICHTING</p>
+  <h2>Wat er met deel 2 meegaat</h2>
+  <p class="note">Gaat mee met de getekende overeenkomst. Kort, want een lange toelichting bij een lang formulier leest niemand.</p>
+  <div class="mail">
+    <div class="mh">Onderwerp: <b>Voordat we beginnen &mdash; het laatste wat we van je vragen</b></div>
+    <div class="mb">
+      <p>Hoi [naam],</p>
+      <p>Fijn dat we gaan samenwerken. Hieronder staat de vragenlijst waar we het over hadden. Het is het meeste denkwerk dat we van je vragen, en daarna nemen wij het over.</p>
+      <p>Reken op veertig minuten. Doe het in &eacute;&eacute;n keer, op een moment dat je even niet gestoord wordt &mdash; dat gaat sneller dan er drie keer aan beginnen.</p>
+      <p><b>Waarom we dit vragen.</b> Wij kunnen je doelgroep en je propositie niet verzinnen. Wat jij hier neerzet, maken wij scherp en zetten we om in advertenties, een landingspagina en een campagne. Hoe concreter je antwoord, hoe minder wij hoeven te gokken.</p>
+      <p><b>Drie dingen die het meest opleveren.</b></p>
+      <ul>
+        <li>Je klantenbestand of omzetoverzicht. Daar toetsen we je antwoorden aan, en dat levert bijna altijd een verrassing op.</li>
+        <li>De toegangen. Zolang die er niet zijn kunnen we niet starten, en schuift alles op.</li>
+        <li>Wie er belt als er een aanvraag binnenkomt. De beste campagne loopt stuk op opvolging die niet gebeurt.</li>
+      </ul>
+      <p><b>Wat als je iets niet weet.</b> Vul in dat je het niet weet. Dat is een bruikbaar antwoord &mdash; dan zoeken wij het op of nemen we een aanname en schrijven we erbij dat het er &eacute;&eacute;n is. Wat we niet kunnen gebruiken is een gokje dat eruitziet als een cijfer.</p>
+      <p><b>Wanneer.</b> Graag binnen vijf werkdagen. Het tijdpad van vier weken begint op de dag dat dit binnen is en we overal bij kunnen, niet op de dag van ondertekening.</p>
+      <p>Loop je ergens op vast, bel dan. Dat is sneller dan een veld leeg laten.</p>
+      <p>Groet,<br>[naam]</p>
+    </div>
+  </div>
+  <div class="key" style="margin-top:24px">
+    <span class="k">WAT ER BEWUST NIET IN STAAT</span>
+    <p class="big">Geen verontschuldiging voor de lengte.</p>
+    <p>&ldquo;Sorry dat het zoveel is&rdquo; nodigt uit om het half in te vullen. Er staat waarom het lang is en wat het oplevert, en daarmee is het een investering in plaats van een verplichting. De zin die het werk doet is de laatste: bel als je vastloopt. Dat is goedkoper dan een leeg veld dat je in week twee alsnog moet uitvragen.</p>
+  </div>
+</section>
+
+<section class="sec" id="deel2">
+  <p class="kicker">DEEL 2 &middot; NA DE HANDTEKENING</p>
+  <h2>Elf blokken, zevenenveertig vragen</h2>
+  <p class="note">In deze volgorde, want zo gebruiken wij ze ook. Achter elke vraag staat waar het antwoord terechtkomt.</p>
+  <div class="sct"><h4>WAT JE WILT HALEN</h4><p class="si">Hieruit volgt je doel, je budget en waar we op afgerekend worden.</p><div class="vlds"><div class="vl"><div class="vk"><span class="lb">Hoeveel extra omzet wil je komend jaar halen?</span><span class="tp">bedrag</span></div><p class="hn">Een getal, geen bandbreedte. We rekenen het samen terug naar aanvragen per maand.</p><span class="wv">&rarr; Intake verwerken</span></div><div class="vl"><div class="vk"><span class="lb">Hoeveel van je aanvragen wordt nu klant?</span><span class="tp">percentage</span></div><p class="hn">Weet je het niet, dan nemen we een branchegemiddelde en schrijven we erbij dat het een aanname is.</p><span class="wv">&rarr; Intake verwerken</span></div><div class="vl"><div class="vk"><span class="lb">Kun je meer werk aan? Waar loopt het vast als het verdubbelt?</span><span class="tp">tekst lang</span></div><p class="hn">Eerlijk antwoord graag. Aanvragen die je niet kunt bedienen kosten alleen maar geld.</p><span class="wv">&rarr; Intake verwerken</span></div><div class="vl opt"><div class="vk"><span class="lb">Is er werk dat je liever niet meer doet?</span><span class="tp">tekst lang</span></div><p class="hn">Dan sturen we daar niet op.</p><span class="wv">&rarr; Doelgroep uitwerken</span></div><div class="vl opt"><div class="vk"><span class="lb">Waar wil je over een jaar staan?</span><span class="tp">tekst lang</span></div><p class="hn">In je eigen woorden.</p><span class="wv">&rarr; Intake verwerken</span></div></div></div><div class="sct"><h4>WIE JE KLANT IS</h4><p class="si">Wij toetsen je antwoord aan je eigen bestand. Dat levert bijna altijd een verrassing op.</p><div class="vlds"><div class="vl"><div class="vk"><span class="lb">Beschrijf je beste klant</span><span class="tp">tekst lang</span></div><p class="hn">Niet de klant die je w&iacute;lt, maar degene waar je het meest aan verdient en het prettigst mee werkt.</p><span class="wv">&rarr; Doelgroep uitwerken</span></div><div class="vl"><div class="vk"><span class="lb">In welk gebied wil je klanten?</span><span class="tp">tekst</span></div><p class="hn">Straal, provincie, of heel Nederland.</p><span class="wv">&rarr; Campagnestructuur</span></div><div class="vl"><div class="vk"><span class="lb">Zakelijk, particulier of allebei?</span><span class="tp">keuze</span></div><span class="wv">&rarr; Doelgroep uitwerken &middot; Bezoekersherkenning</span></div><div class="vl"><div class="vk"><span class="lb">Waarom stelt iemand de aankoop uit?</span><span class="tp">tekst lang</span></div><p class="hn">Prijs, twijfel, geen haast, of iets anders. Hier zit je beste advertentietekst.</p><span class="wv">&rarr; Propositie aanscherpen</span></div><div class="vl"><div class="vk"><span class="lb">Hoe lang duurt het van eerste contact tot opdracht?</span><span class="tp">keuze</span></div><p class="hn">Dagen / weken / maanden</p><span class="wv">&rarr; Biedstrategie en retargeting</span></div><div class="vl opt"><div class="vk"><span class="lb">Upload je klantenbestand of omzetoverzicht</span><span class="tp">bestand</span></div><p class="hn">Postcode, ordergrootte en branche zijn genoeg. Hier toetsen we je antwoorden aan.</p><span class="wv">&rarr; Doelgroep uitwerken</span></div></div></div><div class="sct"><h4>WAAROM JIJ</h4><p class="si">Dit wordt letterlijk je advertentietekst en je landingspagina.</p><div class="vlds"><div class="vl"><div class="vk"><span class="lb">Waarom kiezen mensen voor jou en niet voor de ander?</span><span class="tp">tekst lang</span></div><p class="hn">Drie redenen. Als ze ook bij je concurrent hadden kunnen staan, zoek dan door.</p><span class="wv">&rarr; Propositie aanscherpen</span></div><div class="vl opt"><div class="vk"><span class="lb">Wat zeggen klanten die net klant zijn geworden?</span><span class="tp">tekst lang</span></div><p class="hn">Letterlijke zinnen uit gesprekken of reviews werken beter dan wat jij ervan maakt.</p><span class="wv">&rarr; Propositie aanscherpen</span></div><div class="vl opt"><div class="vk"><span class="lb">Waar ben je duurder dan de rest, en waarom mag dat?</span><span class="tp">tekst lang</span></div><span class="wv">&rarr; Propositie aanscherpen</span></div><div class="vl opt"><div class="vk"><span class="lb">Heb je een aanbod waarmee iemand laagdrempelig kan beginnen?</span><span class="tp">tekst lang</span></div><p class="hn">Een gratis check, een proefopdracht, een adviesgesprek.</p><span class="wv">&rarr; Landingspagina</span></div></div></div><div class="sct"><h4>JE CONCURRENTEN</h4><p class="si">Wij kijken wat ze draaien en waar het gat zit. Noem er drie, ook als het pijn doet.</p><div class="vlds"><div class="vl"><div class="vk"><span class="lb">Drie concurrenten met hun website</span><span class="tp">tekst lang</span></div><p class="hn">Degenen waar je klanten ook offertes opvragen.</p><span class="wv">&rarr; Concurrentieanalyse</span></div><div class="vl"><div class="vk"><span class="lb">Van wie verlies je het vaakst, en waarop?</span><span class="tp">tekst lang</span></div><span class="wv">&rarr; Concurrentieanalyse</span></div><div class="vl opt"><div class="vk"><span class="lb">Wie zou je nooit als concurrent willen worden?</span><span class="tp">tekst</span></div><p class="hn">Zegt vaak meer over je positie dan de vorige twee vragen.</p><span class="wv">&rarr; Propositie aanscherpen</span></div></div></div><div class="sct"><h4>WAAR WE OP GAAN ADVERTEREN</h4><p class="si">Niet alles tegelijk. We beginnen bij wat geld oplevert en waar je capaciteit voor hebt.</p><div class="vlds"><div class="vl"><div class="vk"><span class="lb">Welke dienst of welk product moet de campagne opleveren?</span><span class="tp">tekst lang</span></div><p class="hn">Maximaal drie. Meer wordt niets.</p><span class="wv">&rarr; Zoekwoordonderzoek</span></div><div class="vl"><div class="vk"><span class="lb">Wat is dat gemiddeld waard per opdracht?</span><span class="tp">bedrag</span></div><p class="hn">Per dienst, als ze verschillen.</p><span class="wv">&rarr; Campagnestructuur</span></div><div class="vl opt"><div class="vk"><span class="lb">Welke woorden gebruiken je klanten hiervoor?</span><span class="tp">tekst lang</span></div><p class="hn">Vaak niet jouw vakterm. Schrijf op wat ze aan de telefoon zeggen.</p><span class="wv">&rarr; Zoekwoordonderzoek</span></div><div class="vl opt"><div class="vk"><span class="lb">Zijn er partijen die we moeten uitsluiten?</span><span class="tp">tekst lang</span></div><p class="hn">Bestaande klanten, sollicitanten, concurrenten.</p><span class="wv">&rarr; Doelgroepen en targeting</span></div></div></div><div class="sct"><h4>JE MERK EN JE BEELD</h4><p class="si">We beoordelen of er genoeg ligt om mee te adverteren. Niet of het mooi is.</p><div class="vlds"><div class="vl"><div class="vk"><span class="lb">Upload je logo</span><span class="tp">bestand</span></div><p class="hn">Liefst als vector, anders zo groot mogelijk.</p><span class="wv">&rarr; Merkcheck</span></div><div class="vl opt"><div class="vk"><span class="lb">Heb je een huisstijlhandboek of merkrichtlijnen?</span><span class="tp">bestand</span></div><p class="hn">Kleurcodes en lettertypen zijn genoeg.</p><span class="wv">&rarr; Merkcheck</span></div><div class="vl opt"><div class="vk"><span class="lb">Heb je eigen foto- of videomateriaal?</span><span class="tp">bestand</span></div><p class="hn">Een map of een link. Stock hoeven we niet te zien.</p><span class="wv">&rarr; Merkcheck &middot; Montage</span></div><div class="vl opt"><div class="vk"><span class="lb">Is er iets wat je absoluut niet wilt zien in je advertenties?</span><span class="tp">tekst lang</span></div><span class="wv">&rarr; Advertenties schrijven</span></div></div></div><div class="sct"><h4>JE WEBSITE EN JE TECHNIEK</h4><p class="si">Hier meten we, we herstellen niets zelf. Wat niet deugt gaat als apart voorstel naar Webmix.</p><div class="vlds"><div class="vl"><div class="vk"><span class="lb">Waar draait je website?</span><span class="tp">tekst</span></div><p class="hn">Naam van je hostingpartij, of wie het voor je regelt.</p><span class="wv">&rarr; Technische audit</span></div><div class="vl"><div class="vk"><span class="lb">Waarmee is hij gebouwd?</span><span class="tp">tekst</span></div><p class="hn">WordPress, Shopify, maatwerk, of je weet het niet.</p><span class="wv">&rarr; Technische audit &middot; Landingspagina</span></div><div class="vl"><div class="vk"><span class="lb">Bij wie staat je domeinnaam?</span><span class="tp">tekst</span></div><p class="hn">Nodig voor je e-mail en je subdomein.</p><span class="wv">&rarr; Meetopzet &middot; E-mailplatform</span></div><div class="vl"><div class="vk"><span class="lb">Gebruik je nu al analytics?</span><span class="tp">keuze</span></div><p class="hn">Ja, GA4 / Ja, iets anders / Nee / Weet ik niet</p><span class="wv">&rarr; Meetopzet &middot; De nulmeting</span></div><div class="vl"><div class="vk"><span class="lb">Toegangen</span><span class="tp">toegang</span></div><p class="hn">Website, hosting, domein, analytics, bestaande advertentieaccounts en je e-mailplatform. Beheerdersrechten, geen redacteursrechten.</p><span class="wv">&rarr; Technische audit &middot; Advertentieaccounts</span></div></div></div><div class="sct"><h4>JE E-MAILBESTAND</h4><p class="si">We beginnen vanaf dag &eacute;&eacute;n adressen te verzamelen, dus dit staat er meteen.</p><div class="vlds"><div class="vl"><div class="vk"><span class="lb">Op welk platform staat je bestand nu?</span><span class="tp">tekst</span></div><p class="hn">Mailchimp, Laposta, een Excel, of nergens.</p><span class="wv">&rarr; E-mailplatform</span></div><div class="vl opt"><div class="vk"><span class="lb">Upload een export van je bestand</span><span class="tp">bestand</span></div><p class="hn">Met de velden die je hebt. Wij schonen op en ontdubbelen.</p><span class="wv">&rarr; E-mailplatform</span></div><div class="vl"><div class="vk"><span class="lb">Weet je hoe die adressen zijn verzameld?</span><span class="tp">keuze</span></div><p class="hn">Met toestemming / deels / dat weten we niet. Eerlijk antwoord voorkomt een boete.</p><span class="wv">&rarr; E-mailplatform</span></div><div class="vl opt"><div class="vk"><span class="lb">Zitten er groepen in die je gescheiden wilt houden?</span><span class="tp">tekst lang</span></div><p class="hn">Klanten, prospects, nieuwsbrief, per vestiging.</p><span class="wv">&rarr; E-mailplatform</span></div></div></div><div class="sct"><h4>WAT ER GEBEURT NA EEN AANVRAAG</h4><p class="si">Hier valt of staat het. De beste campagne loopt stuk op opvolging die niet gebeurt.</p><div class="vlds"><div class="vl"><div class="vk"><span class="lb">Wie neemt contact op met een nieuwe aanvraag?</span><span class="tp">tekst</span></div><p class="hn">Naam en functie. Niet &ldquo;het team&rdquo;.</p><span class="wv">&rarr; Kickoff met je team &middot; Je leadportal</span></div><div class="vl"><div class="vk"><span class="lb">Binnen hoeveel tijd?</span><span class="tp">keuze</span></div><p class="hn">Binnen een uur / dezelfde dag / binnen twee dagen</p><span class="wv">&rarr; Kickoff met je team</span></div><div class="vl"><div class="vk"><span class="lb">Wat gebeurt er als diegene er niet is?</span><span class="tp">tekst lang</span></div><span class="wv">&rarr; Kickoff met je team</span></div><div class="vl"><div class="vk"><span class="lb">Waar wil je de melding krijgen?</span><span class="tp">keuze</span></div><p class="hn">E-mail / WhatsApp / allebei</p><span class="wv">&rarr; Je leadportal</span></div></div></div><div class="sct"><h4>DE DRAAIDAG</h4><p class="si">E&eacute;n dagdeel bij jou. Zonder eigen beeld beginnen we met stock, en dat werkt aantoonbaar slechter.</p><div class="vlds"><div class="vl"><div class="vk"><span class="lb">Waar kunnen we filmen?</span><span class="tp">tekst</span></div><p class="hn">Adres, en of er meerdere locaties zijn.</p><span class="wv">&rarr; Voorbereiding</span></div><div class="vl"><div class="vk"><span class="lb">Wie kunnen we voor de camera zetten?</span><span class="tp">tekst lang</span></div><p class="hn">Namen en rollen. Iemand die het werk doet werkt beter dan de directeur.</p><span class="wv">&rarr; Voorbereiding</span></div><div class="vl"><div class="vk"><span class="lb">Wat moet er in beeld?</span><span class="tp">tekst lang</span></div><p class="hn">Producten, machines, een project, het pand.</p><span class="wv">&rarr; Voorbereiding &middot; De draaidag</span></div><div class="vl"><div class="vk"><span class="lb">Welke dagdelen komen je uit?</span><span class="tp">tekst</span></div><p class="hn">Twee of drie opties in de komende drie weken.</p><span class="wv">&rarr; Voorbereiding</span></div></div></div><div class="sct"><h4>PRAKTISCH</h4><div class="vlds"><div class="vl"><div class="vk"><span class="lb">Wie is onze vaste contactpersoon?</span><span class="tp">tekst</span></div><p class="hn">Degene die wij bellen en die bij ons in de portal komt.</p><span class="wv">&rarr; Je leadportal &middot; Je dashboard</span></div><div class="vl"><div class="vk"><span class="lb">Wie beslist over doelgroep en propositie?</span><span class="tp">tekst</span></div><p class="hn">Als dat iemand anders is, willen we die bij de sessie.</p><span class="wv">&rarr; Doelgroep uitwerken</span></div><div class="vl"><div class="vk"><span class="lb">Facturatiegegevens en incassomachtiging</span><span class="tp">formulier</span></div><span class="wv">&rarr; &mdash;</span></div><div class="vl opt"><div class="vk"><span class="lb">Is er iets wat wij moeten weten en niet hebben gevraagd?</span><span class="tp">tekst lang</span></div><span class="wv">&rarr; &mdash;</span></div></div></div>
+</section>
+
+<section class="sec" id="niet">
+  <p class="kicker">DE GRENS</p>
+  <h2>Wat we bewust niet vragen</h2>
+  <div class="tblwrap">
+  <table class="sc">
+    <thead><tr><th>Niet vragen</th><th>Waarom niet</th></tr></thead>
+    <tbody>
+      <tr><td>Wat is je marketingbudget?</td><td>Dan krijg je een bedrag dat hij ooit ergens heeft gehoord. Het budget volgt uit zijn doel en zijn klantwaarde, en dat rekenen wij uit.</td></tr>
+      <tr><td>Welke kanalen wil je inzetten?</td><td>Dat is onze beslissing en niet de zijne. Vraag je het toch, dan moet je later uitleggen waarom je zijn antwoord niet volgt.</td></tr>
+      <tr><td>Wat vind je van je huidige website?</td><td>Wij meten hem. Een mening is niet nodig en maakt het gesprek over de bevindingen alleen maar moeilijker.</td></tr>
+      <tr><td>Wat is je grootste marketinguitdaging?</td><td>Levert een alinea op waar niemand iets mee doet. De vragen hierboven zijn concreter en geven hetzelfde antwoord.</td></tr>
+      <tr><td>Wie zijn je stakeholders?</td><td>We vragen wie beslist en wie belt. Dat is wat we nodig hebben.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section class="sec" id="open">
+  <p class="kicker">NOG TE BESLISSEN</p>
+  <h2>Drie dingen voordat dit gebouwd wordt</h2>
+  <div class="stack">
+    <div class="st"><span class="lab">WAARIN</span><div class="bd"><h4>Waar leeft dit formulier?</h4><p>In het leadportal is het logischste, want daar komt de klant toch. Maar dat bestaat nog niet. Tot die tijd een formulier in je eigen omgeving waarvan de antwoorden automatisch in ClickUp landen &mdash; niet een Word-document dat je heen en weer mailt, want dan is er geen enkele standaard.</p></div></div>
+    <div class="st"><span class="lab">TUSSENTIJDS</span><div class="bd"><h4>Opslaan en later verder</h4><p>Veertig minuten is te lang voor &eacute;&eacute;n zitting met een bestand erbij. Zonder tussentijds opslaan krijg je halve formulieren terug en heb je alsnog het nabelwerk dat je wilde voorkomen.</p></div></div>
+    <div class="st"><span class="lab">TOEGANGEN</span><div class="bd"><h4>Het toegangenveld is geen veld</h4><p>Dat is zes toegangen die elk via een eigen route lopen: een uitnodiging in Google Ads, een partnerverzoek in Meta, een gebruiker in WordPress, een DNS-record. Dat wordt een aparte checklist met per regel een instructie voor de klant. Anders is dit het veld waar elke onboarding op vastloopt.</p></div></div>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap foot">James Robinson &mdash; Marketing &amp; Branding &middot; Het intakeformulier, concept september 2026</footer>
+
+<script>
+(function(){
+  var root=document.documentElement,tb=document.getElementById('themeBtn');
+  if(!tb) return;
+  function cur(){var t=root.getAttribute('data-theme');return t||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}
+  function sync(){tb.textContent=cur()==='dark'?'Licht':'Donker'}
+  sync();
+  tb.addEventListener('click',function(){root.setAttribute('data-theme',cur()==='dark'?'light':'dark');sync()});
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',sync);
+})();
+</script>
