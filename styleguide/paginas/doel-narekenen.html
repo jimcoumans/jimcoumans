@@ -1,0 +1,398 @@
+<title>Doel narekenen &middot; James Robinson</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@600;700&display=swap">
+<style>
+:root{
+  --page:#fbfbfd; --card:#fff; --alt:#f5f5f7;
+  --tx:#1d1d1f; --tx2:#6e6e73; --tx3:#86868b;
+  --ln:#d2d2d7; --ln-s:#e5e5e9;
+  --blue:#007aff; --link:#0066cc; --act:#0857c3;
+  --b100:#e0efff; --b50:#f4f9ff;
+  --lime:#c4f000; --lime-tx:#5a7000; --lime100:#f2fccc;
+  --green-tx:#1d7d3f; --green100:#e6f7eb;
+  --orange-tx:#94590a; --orange100:#fef2e0;
+  --red-tx:#c02a22; --red100:#fdecea;
+  --black:#1c1c1e; --inv:#f5f5f7; --inv2:#a1a1a6;
+  --fd:"Inter Tight","Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --ft:"Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --fm:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --e:cubic-bezier(.25,.1,.25,1);--g:32px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}}
+:root[data-theme="dark"]{
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--tx);font-family:var(--ft);font-size:16.5px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition-duration:.01ms!important}}
+:focus-visible{outline:none;box-shadow:0 0 0 4px rgba(0,122,255,.4);border-radius:8px}
+p{margin:0 0 18px;max-width:70ch}
+p:last-child{margin-bottom:0}
+h1,h2,h3,h4{font-family:var(--fd);margin:0;text-wrap:balance}
+code{font-family:var(--fm);font-size:.86em;background:var(--alt);padding:2px 6px;border-radius:5px}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:60;background:rgba(251,251,253,.86);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--ln-s)}
+:root[data-theme="dark"] .bar,:root:not([data-theme="light"]) .bar{background:rgba(0,0,0,.74)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .bar{background:rgba(251,251,253,.86)}}
+.bar-in{max-width:1080px;margin:0 auto;padding:0 var(--g);display:flex;align-items:center;gap:5px;min-height:48px;overflow-x:auto;scrollbar-width:none}
+.bar-in::-webkit-scrollbar{display:none}
+.bar b{font-family:var(--fd);font-size:14.5px;font-weight:700;letter-spacing:-.016em;margin-right:8px;white-space:nowrap}
+.bar a{font-size:12.5px;color:var(--tx2);text-decoration:none;padding:6px 8px;border-radius:7px;white-space:nowrap}
+.bar a:hover{color:var(--tx)}
+.bar button{margin-left:auto;flex:none;font:inherit;font-size:12px;cursor:pointer;background:transparent;border:1px solid var(--ln);color:var(--tx2);border-radius:980px;padding:5px 13px}
+
+.wrap{max-width:1080px;margin:0 auto;padding-inline:var(--g)}
+.hero{padding-block:76px 40px}
+h1{font-size:clamp(34px,5.4vw,58px);font-weight:700;line-height:1.06;letter-spacing:-.026em;margin-bottom:20px}
+.lead{font-size:20px;line-height:1.5;color:var(--tx2);max-width:64ch}
+.sec{padding-block:60px;border-top:1px solid var(--ln-s)}
+h2{font-size:clamp(26px,3.4vw,38px);font-weight:700;line-height:1.12;letter-spacing:-.02em;margin-bottom:8px}
+.sec > .kicker{font-family:var(--fm);font-size:11px;letter-spacing:.06em;color:var(--tx3);margin-bottom:14px}
+h3{font-size:21px;font-weight:600;line-height:1.24;letter-spacing:-.012em;margin:38px 0 10px}
+h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
+.note{color:var(--tx2)}
+.note b,b{color:var(--tx);font-weight:600}
+
+/* kernblok */
+.key{background:var(--black);color:var(--inv);border-radius:22px;padding:34px 32px;margin:26px 0}
+.key .k{display:block;font-family:var(--fm);font-size:10.5px;letter-spacing:.06em;color:var(--lime);margin-bottom:14px}
+.key p{color:var(--inv2);font-size:17.5px;max-width:64ch}
+.key strong{color:#fff;font-weight:600}
+.key .big{font-family:var(--fd);font-size:clamp(22px,3vw,30px);font-weight:600;line-height:1.2;letter-spacing:-.018em;color:#fff;margin-bottom:16px}
+
+/* lagen van het aanbod */
+.stack{display:grid;gap:12px;margin-top:24px}
+.st{background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;display:grid;grid-template-columns:132px 1fr;gap:20px;align-items:start}
+.st .lab{font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;color:var(--act);padding-top:3px}
+.st .bd p{margin:0;font-size:15.5px;color:var(--tx2)}
+.st .bd h4{margin-bottom:5px}
+
+/* kandidaten */
+.cands{display:grid;gap:12px;margin-top:22px}
+.cand{border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;background:var(--card)}
+.cand.win{border-color:var(--lime);box-shadow:0 0 0 1px var(--lime)}
+.cand .zin{font-family:var(--fd);font-size:22px;font-weight:600;letter-spacing:-.014em;margin-bottom:8px}
+.cand .why{font-size:15px;color:var(--tx2);margin:0}
+.cand .verdict{display:inline-block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;border-radius:5px;padding:3px 7px;margin-bottom:12px}
+.cand .verdict.no{background:var(--red100);color:var(--red-tx)}
+.cand .verdict.ok{background:var(--lime100);color:var(--lime-tx)}
+.cand .verdict.mid{background:var(--orange100);color:var(--orange-tx)}
+
+/* onderscheid */
+.dist{width:100%;border-collapse:collapse;font-size:15px;margin-top:22px}
+.dist th,.dist td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.dist thead th{font-family:var(--fm);font-size:10.5px;letter-spacing:.04em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.dist td:first-child{font-weight:500;width:34%}
+.dist .v{font-family:var(--fm);font-size:11px;white-space:nowrap}
+.dist .v.y{color:var(--green-tx)}
+.dist .v.n{color:var(--red-tx)}
+.dist tr:last-child td{border-bottom:none}
+.tblwrap{overflow-x:auto}
+
+/* beslissingen */
+.dec{border:1px solid var(--ln-s);border-radius:18px;background:var(--card);padding:26px 28px;margin-top:14px}
+.dec .hd{display:flex;align-items:baseline;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.dec .num{font-family:var(--fm);font-size:11px;color:var(--tx3);flex:none}
+.dec h4{font-size:19px;flex:1;min-width:220px;margin:0}
+.dec .tag{font-family:var(--fm);font-size:9.5px;letter-spacing:.05em;border-radius:5px;padding:3px 7px}
+.dec .tag.blok{background:var(--red100);color:var(--red-tx)}
+.dec .tag.schaal{background:var(--orange100);color:var(--orange-tx)}
+.dec .tag.scherp{background:var(--b100);color:var(--act)}
+.dec .q{font-size:16px;color:var(--tx2);margin:0 0 16px}
+.dec .adv{background:var(--b50);border-left:3px solid var(--act);border-radius:0 10px 10px 0;padding:16px 18px}
+.dec .adv .al{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.06em;color:var(--act);margin-bottom:7px}
+.dec .adv p{font-size:15.5px;margin:0 0 10px}
+.dec .adv p:last-child{margin-bottom:0}
+
+/* vast */
+.locked{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-top:22px}
+.lk{background:var(--card);border:1px solid var(--ln-s);border-radius:14px;padding:18px 20px}
+.lk .t{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--green-tx);margin-bottom:7px}
+.lk .b{font-size:15px;color:var(--tx2);line-height:1.45}
+.lk .b b{color:var(--tx)}
+
+.warn{background:var(--orange100);border-radius:18px;padding:24px 26px;margin-top:26px}
+.warn h4{color:var(--orange-tx)}
+.warn p{color:var(--orange-tx);opacity:.94;font-size:15.5px;max-width:none}
+.foot{padding-block:44px 64px;font-size:13px;color:var(--tx3);text-align:center}
+
+@media (max-width:734px){
+  :root{--g:20px}
+  body{font-size:16px}
+  .sec{padding-block:48px}
+  .hero{padding-block:44px 28px}
+  .st{grid-template-columns:1fr;gap:10px}
+  .key{padding:24px 22px}
+  .dec{padding:22px 20px}
+}
+<style>
+.sc{width:100%;border-collapse:collapse;font-size:15px}
+.sc th,.sc td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.sc thead th{font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.sc tbody tr:last-child td{border-bottom:none}
+.sc td.n{text-align:right;font-family:var(--fm);font-size:13px;white-space:nowrap}
+.tblwrap{overflow-x:auto}
+.calc{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:24px}
+@media(max-width:860px){.calc{grid-template-columns:1fr}}
+.cbox{background:var(--card);border:1px solid var(--ln-s);border-radius:18px;padding:26px 28px}
+.cbox h4{font-family:var(--fd);font-size:17px;font-weight:600;padding-bottom:12px;border-bottom:1px solid var(--ln-s)}
+.inr{display:grid;grid-template-columns:1fr 122px;gap:14px;align-items:center;padding:12px 0;
+  border-bottom:1px solid var(--ln-s)}
+.inr:last-child{border-bottom:none}
+.inr label{font-size:14.5px;line-height:1.4}
+.inr label span{display:block;font-size:12.5px;color:var(--tx3);margin-top:2px}
+.inr .wrap2{display:flex;align-items:stretch}
+.inr .af{display:flex;align-items:center;padding:0 9px;background:var(--alt);border:1px solid var(--ln);
+  color:var(--tx2);font-size:13.5px}
+.inr .af.l{border-right:none;border-radius:8px 0 0 8px}
+.inr .af.r{border-left:none;border-radius:0 8px 8px 0}
+.inr input{width:100%;min-width:0;font:inherit;font-size:14.5px;text-align:right;color:var(--tx);
+  background:var(--page);border:1px solid var(--ln);padding:8px 10px;font-variant-numeric:tabular-nums}
+.inr .af.l + input{border-radius:0 8px 8px 0}
+.inr input:has(+ .af.r){border-radius:8px 0 0 8px}
+.inr .wrap2 input{border-radius:0}
+.inr .wrap2 .af.l ~ input{border-radius:0 8px 8px 0}
+.inr input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,122,255,.15)}
+.ur{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:baseline;padding:12px 0;
+  border-bottom:1px solid var(--ln-s)}
+.ur:last-of-type{border-bottom:none}
+.ur .l{font-size:14.5px;color:var(--tx2)}
+.ur .l em{display:block;font-style:normal;font-family:var(--fm);font-size:11px;color:var(--tx3);margin-top:2px}
+.ur .v{font-family:var(--fm);font-size:15px;color:var(--tx);white-space:nowrap;font-variant-numeric:tabular-nums}
+.ur.big{border-top:2px solid var(--ln);border-bottom:none;margin-top:8px;padding-top:16px}
+.ur.big .l{color:var(--tx);font-weight:600;font-size:15.5px}
+.ur.big .v{font-family:var(--fd);font-size:23px;font-weight:700;letter-spacing:-.02em}
+.oor{margin-top:16px;padding:16px 18px;border-radius:12px;font-size:14.5px;line-height:1.55}
+.oor.ok{background:var(--green100);color:var(--green-tx)}
+.oor.nee{background:var(--red100);color:var(--red-tx)}
+.oor b{font-weight:600}
+.keten{counter-reset:s;list-style:none;margin:22px 0 0;padding:0}
+.keten li{counter-increment:s;display:grid;grid-template-columns:30px 1fr 190px;gap:18px;
+  padding:15px 0;border-bottom:1px solid var(--ln-s);align-items:start}
+.keten li:last-child{border-bottom:none}
+.keten li::before{content:counter(s);font-family:var(--fm);font-size:12px;color:var(--blue);padding-top:3px}
+.keten b{display:block;font-family:var(--fd);font-size:16px;font-weight:600}
+.keten p{font-size:14px;color:var(--tx2);line-height:1.5;margin-top:3px}
+.keten .fm{font-family:var(--fm);font-size:12px;color:var(--tx2);background:var(--alt);
+  border-radius:8px;padding:9px 11px;line-height:1.5}
+@media(max-width:820px){.keten li{grid-template-columns:30px 1fr}.keten .fm{grid-column:2}}
+.bron{display:inline-block;font-family:var(--fm);font-size:9.5px;letter-spacing:.04em;padding:2px 7px;
+  border-radius:5px;margin-top:6px}
+.bron.f{background:var(--b100);color:var(--link)}
+.bron.s{background:var(--alt);color:var(--tx2)}
+.bron.w{background:var(--orange100);color:var(--orange-tx)}
+</style>
+
+<div class="bar"><div class="bar-in">
+  <b>Doel narekenen</b>
+  <a href="#keten">De rekenketen</a>
+  <a href="#reken">Doorrekenen</a>
+  <a href="#toets">De drie toetsen</a>
+  <a href="#vast">Wat je vastlegt</a>
+  <button id="themeBtn" type="button">Donker</button>
+</div></div>
+
+<header class="wrap hdr">
+  <p class="kicker">ONDERDEEL 01 &middot; HANDELING 3 &middot; 0,5 UUR</p>
+  <h1>Doel narekenen en vastleggen</h1>
+  <p class="lead">Van de omzet die de klant wil halen naar het aantal aanvragen per maand en het bedrag dat een aanvraag maximaal mag kosten. Zes sommen in een vaste volgorde, drie toetsen erachter, en &eacute;&eacute;n regel die eruit komt.</p>
+</header>
+
+<main class="wrap">
+
+<section class="sec" id="keten">
+  <p class="kicker">DE REKENKETEN</p>
+  <h2>Zes sommen, in deze volgorde</h2>
+  <p class="note">Elke stap gebruikt de uitkomst van de vorige. Ga je ergens afronden op een rond getal, dan schuift alles daarna mee &mdash; dus reken door met de precieze uitkomst en rond pas af bij wat je opschrijft.</p>
+  <ol class="keten">
+    <li><div><b>Hoeveel nieuwe klanten heb je nodig?</b>
+      <p>De gewenste extra omzet gedeeld door wat een klant gemiddeld opbrengt.</p>
+      <span class="bron f">BEIDE UIT HET FORMULIER</span></div>
+      <span class="fm">extra omzet &divide; omzet per klant</span></li>
+    <li><div><b>Hoeveel aanvragen horen daarbij?</b>
+      <p>Niet elke aanvraag wordt klant. Deel door het percentage dat wel klant wordt.</p>
+      <span class="bron f">UIT HET FORMULIER</span> <span class="bron w">OF BRANCHEGEMIDDELDE</span></div>
+      <span class="fm">klanten &divide; conversie%</span></li>
+    <li><div><b>Hoeveel is dat per maand?</b>
+      <p>Door twaalf. Dit zijn aanvragen b&oacute;venop wat hij nu al krijgt, niet inclusief.</p>
+      <span class="bron s">REKENSTAP</span></div>
+      <span class="fm">aanvragen per jaar &divide; 12</span></li>
+    <li><div><b>Wat houdt hij over aan een klant?</b>
+      <p>Omzet is geen ruimte. Je kunt alleen uitgeven van wat er onder de streep overblijft.</p>
+      <span class="bron w">ONTBREEKT NOG IN HET FORMULIER</span></div>
+      <span class="fm">omzet per klant &times; brutomarge%</span></li>
+    <li><div><b>Hoeveel daarvan mag naar het binnenhalen?</b>
+      <p>Een keuze, geen berekening. Wij hanteren standaard een kwart van de marge; dat laat driekwart over voor leveren en winst.</p>
+      <span class="bron s">ONZE STANDAARD, 25%</span></div>
+      <span class="fm">marge per klant &times; acquisitieruimte%</span></li>
+    <li><div><b>Wat mag een aanvraag dan kosten?</b>
+      <p>De ruimte per klant, verdeeld over alle aanvragen die je nodig had om die ene klant te krijgen.</p>
+      <span class="bron s">REKENSTAP</span></div>
+      <span class="fm">ruimte per klant &times; conversie%</span></li>
+  </ol>
+  <div class="key" style="margin-top:26px">
+    <span class="k">WAT DIT GETAL W&Eacute;L EN NIET IS</span>
+    <p class="big">Dit is het plafond, niet de verwachting.</p>
+    <p>Wat een aanvraag daadwerkelijk gaat kosten weten we hier nog niet; dat komt uit de klikprijzen en conversiecijfers van zijn branche, en dat rekenen we door in de sessie. Hier stellen we alleen vast wat het m&aacute;g kosten voordat het niet meer uitkan. Zit de verwachting daar later boven, dan is dat geen tegenvaller maar de reden om nee te zeggen.</p>
+  </div>
+</section>
+
+<section class="sec" id="reken">
+  <p class="kicker">DOORREKENEN</p>
+  <h2>Het rekenblad</h2>
+  <p class="note">Ingevuld met een voorbeeld. Pas de vijf getallen aan en de rest loopt mee, inclusief het oordeel welk pakket erbij hoort.</p>
+  <div class="calc">
+    <div class="cbox">
+      <h4>Wat je invult</h4>
+      <div class="inr"><label>Gewenste extra omzet per jaar<span>Uit het formulier</span></label>
+        <div class="wrap2"><span class="af l">&euro;</span><input id="iA" value="500000"></div></div>
+      <div class="inr"><label>Gemiddelde omzet per klant<span>Over de hele klantrelatie</span></label>
+        <div class="wrap2"><span class="af l">&euro;</span><input id="iB" value="10000"></div></div>
+      <div class="inr"><label>Brutomarge<span>Wat er overblijft na directe kosten</span></label>
+        <div class="wrap2"><input id="iC" value="30"><span class="af r">%</span></div></div>
+      <div class="inr"><label>Aanvragen die klant worden<span>Of het branchegemiddelde</span></label>
+        <div class="wrap2"><input id="iD" value="20"><span class="af r">%</span></div></div>
+      <div class="inr"><label>Acquisitieruimte<span>Onze standaard: 25% van de marge</span></label>
+        <div class="wrap2"><input id="iF" value="25"><span class="af r">%</span></div></div>
+    </div>
+    <div class="cbox">
+      <h4>Wat eruit komt</h4>
+      <div class="ur"><span class="l">Nieuwe klanten nodig<em>PER JAAR</em></span><span class="v" id="oK">&mdash;</span></div>
+      <div class="ur"><span class="l">Aanvragen nodig<em>PER JAAR</em></span><span class="v" id="oJ">&mdash;</span></div>
+      <div class="ur"><span class="l">Marge per klant</span><span class="v" id="oM">&mdash;</span></div>
+      <div class="ur"><span class="l">Ruimte per klant<em>VOOR BINNENHALEN</em></span><span class="v" id="oR">&mdash;</span></div>
+      <div class="ur big"><span class="l">Extra aanvragen per maand</span><span class="v" id="oP">&mdash;</span></div>
+      <div class="ur big"><span class="l">Maximaal per aanvraag</span><span class="v" id="oC">&mdash;</span></div>
+      <div class="ur"><span class="l">Plafond mediabudget<em>PER MAAND</em></span><span class="v" id="oB">&mdash;</span></div>
+      <div class="oor" id="oor"></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="toets">
+  <p class="kicker">DE DRIE TOETSEN</p>
+  <h2>Wat je met de uitkomst doet</h2>
+  <p class="note">De som geeft getallen, geen oordeel. Deze drie vragen geven het oordeel, en ze staan in deze volgorde omdat de eerste de andere twee overbodig kan maken.</p>
+  <div class="tblwrap">
+  <table class="sc">
+    <thead><tr><th>De toets</th><th>Hoe je hem doet</th><th>Als het niet lukt</th></tr></thead>
+    <tbody>
+      <tr><td><b>1. Is het te leveren?</b></td>
+        <td>Leg de extra aanvragen per maand naast wat hij nu krijgt. Van 12 naar 33 is een verdrievoudiging van zijn werkaanbod.</td>
+        <td>Terug naar zijn antwoord op &ldquo;waar loopt het vast als het verdubbelt&rdquo;. Kan hij het niet leveren, dan verlaag je het doel &mdash; niet het budget.</td></tr>
+      <tr><td><b>2. Past het bij een pakket?</b></td>
+        <td>Het plafond van het mediabudget bepaalt het pakket: onder &euro; 2.500 is dat Enter, tot &euro; 7.500 Compete, daarboven Own.</td>
+        <td>Zit hij onder de ondergrens van Enter, dan is er te weinig budget om iets te sturen. Dat is een reden om nee te zeggen, geen reden om het goedkoper te maken.</td></tr>
+      <tr><td><b>3. Houdt de 50%-regel?</b></td>
+        <td>Onze fee mag nooit meer zijn dan de helft van het mediabudget. Deel de retainer door het budgetplafond.</td>
+        <td>Komt de fee boven de helft, dan betaalt hij ons om te sturen op een bedrag dat te klein is om mee te sturen. Voorstellen om het doel te verhogen, of niet beginnen.</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="key" style="margin-top:26px">
+    <span class="k">WAT JE ERBIJ ZEGT, ALTIJD</span>
+    <p class="big">Dit doel geldt vanaf maand vier, niet vanaf maand &eacute;&eacute;n.</p>
+    <p>De eerste weken leert het algoritme en zijn de kosten per aanvraag hoger. Reken je het jaardoel over twaalf maanden en beloof je dat vanaf dag &eacute;&eacute;n, dan sta je in maand drie achter op een schema dat nooit klopte. Zeg dat vooraf: het jaardoel wordt in vijftien maanden gehaald, of het maanddoel geldt vanaf het tweede kwartaal. Kies er &eacute;&eacute;n en houd hem vast.</p>
+  </div>
+</section>
+
+<section class="sec" id="vast">
+  <p class="kicker">DE OPLEVERING</p>
+  <h2>E&eacute;n regel, en waar hij terugkomt</h2>
+  <div class="key">
+    <span class="k">DE DOELREGEL</span>
+    <p class="big">&ldquo;21 extra aanvragen per maand, tegen maximaal &euro; 150 per aanvraag, vanaf het tweede kwartaal.&rdquo;</p>
+    <p>Dat is de hele oplevering van deze handeling. Geen document, geen presentatie &mdash; &eacute;&eacute;n regel die de klant kan onthouden en die hij kan narekenen omdat hij de getallen zelf heeft aangeleverd.</p>
+  </div>
+  <div class="tblwrap">
+  <table class="sc" style="margin-top:22px">
+    <thead><tr><th>Waar die regel terugkomt</th><th>Waarvoor</th></tr></thead>
+    <tbody>
+      <tr><td>Op het scoreboard van het drieluik</td><td>Handgeschreven, tijdens de sessie.</td></tr>
+      <tr><td>In het voorstel</td><td>Als de belofte waar we op afgerekend worden.</td></tr>
+      <tr><td>Als doellijn in het dashboard</td><td>Zodat elke week zichtbaar is of we erboven of eronder zitten.</td></tr>
+      <tr><td>Bij de budgetverdeling over de campagnes</td><td>Het plafond per aanvraag bepaalt waar we stoppen met bieden.</td></tr>
+      <tr><td>In elk performanceblok</td><td>De enige vraag die daar telt: zitten we op de regel, en zo nee waarom niet.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section class="sec" id="mist">
+  <p class="kicker">WAT WE ONDERWEG MISSEN</p>
+  <h2>Terug naar het formulier</h2>
+  <div class="stack">
+    <div class="st"><span class="lab">ONTBREEKT</span><div class="bd"><h4>Brutomarge</h4><p>Stap 4 kan niet zonder. We vragen nu alleen wat een klant opl&eacute;vert, en dat is omzet. Uitgeven doe je van je marge. Zonder dit getal moeten we een branchegemiddelde nemen voor een som die zijn hele budget bepaalt &mdash; dat is de zwakste schakel in de hele keten.</p></div></div>
+    <div class="st"><span class="lab">TE BEPALEN</span><div class="bd"><h4>De acquisitieruimte van 25%</h4><p>Dat is nu mijn aanname en hij bepaalt rechtstreeks zijn budget. Bij 20% zakt het plafond met een vijfde, bij 33% stijgt het met een derde. Zet hem vast, en zet erbij of hij per branche verschilt &mdash; bij hoge herhaalaankopen mag hij hoger.</p></div></div>
+    <div class="st"><span class="lab">TE BEPALEN</span><div class="bd"><h4>De branchegemiddelden voor conversie</h4><p>Het formulier laat toe dat de klant dit leeg laat, en dan vullen wij een gemiddelde in. Die gemiddelden bestaan nog niet. Nu draaien we op Amerikaanse cijfers waarvan niemand kan uitleggen of ze hier gelden.</p></div></div>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap foot">James Robinson &mdash; Marketing &amp; Branding &middot; Doel narekenen, concept september 2026</footer>
+
+<script>
+(function(){
+  function g(id){var v=parseFloat((document.getElementById(id).value||'').replace(/\./g,'').replace(',','.'));return isNaN(v)?0:v}
+  function eur(n){return '\u20ac '+n.toLocaleString('nl-NL',{maximumFractionDigits:0})}
+  var PK=[[2500,'Enter',1000],[7500,'Compete',1500],[1e12,'Own',2000]];
+  function calc(){
+    var A=g('iA'),B=g('iB'),C=g('iC'),D=g('iD'),F=g('iF');
+    var k=(B>0)?A/B:0, j=(D>0)?k/(D/100):0, pm=j/12;
+    var m=B*C/100, r=m*F/100, cpl=r*D/100, bud=Math.ceil(pm)*cpl;
+    document.getElementById('oK').textContent=Math.ceil(k).toLocaleString('nl-NL');
+    document.getElementById('oJ').textContent=Math.ceil(j).toLocaleString('nl-NL');
+    document.getElementById('oM').textContent=eur(m);
+    document.getElementById('oR').textContent=eur(r);
+    document.getElementById('oP').textContent=Math.ceil(pm).toLocaleString('nl-NL');
+    document.getElementById('oC').textContent=eur(cpl);
+    document.getElementById('oB').textContent=eur(bud);
+    var el=document.getElementById('oor');
+    if(!(bud>0)){el.className='oor';el.textContent='';return}
+    if(bud<1000){
+      el.className='oor nee';
+      el.innerHTML='<b>Te klein.</b> Het plafond ligt onder de ondergrens van Enter ('+eur(1000)+' mediabudget). '+
+        'Er is te weinig budget om op te sturen. Verhoog het doel of zeg nee.';return;
+    }
+    var p=PK.find(function(x){return bud<=x[0]})||PK[2];
+    var pct=Math.round(p[2]/bud*100);
+    if(pct>50){
+      el.className='oor nee';
+      el.innerHTML='<b>'+p[1]+' past niet.</b> De retainer van '+eur(p[2])+' is '+pct+'% van het mediabudget, '+
+        'en onze eigen regel is maximaal 50%. Doel verhogen, of niet beginnen.';
+    }else{
+      el.className='oor ok';
+      el.innerHTML='<b>'+p[1]+'.</b> De retainer van '+eur(p[2])+' is '+pct+'% van het mediabudget van '+eur(bud)+
+        ' per maand. Dat past binnen de 50%-regel.';
+    }
+  }
+  ['iA','iB','iC','iD','iF'].forEach(function(id){
+    document.getElementById(id).addEventListener('input',calc)});
+  calc();
+})();
+(function(){
+  var root=document.documentElement,tb=document.getElementById('themeBtn');
+  if(!tb) return;
+  function cur(){var t=root.getAttribute('data-theme');return t||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}
+  function sync(){tb.textContent=cur()==='dark'?'Licht':'Donker'}
+  sync();
+  tb.addEventListener('click',function(){root.setAttribute('data-theme',cur()==='dark'?'light':'dark');sync()});
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',sync);
+})();
+</script>
