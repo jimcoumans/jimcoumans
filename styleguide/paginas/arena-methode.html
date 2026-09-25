@@ -1,0 +1,344 @@
+<title>De ARENA-methode &middot; James Robinson</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@600;700&display=swap">
+<style>
+:root{
+  --page:#fbfbfd; --card:#fff; --alt:#f5f5f7;
+  --tx:#1d1d1f; --tx2:#6e6e73; --tx3:#86868b;
+  --ln:#d2d2d7; --ln-s:#e5e5e9;
+  --blue:#007aff; --link:#0066cc; --act:#0857c3;
+  --b100:#e0efff; --b50:#f4f9ff;
+  --lime:#c4f000; --lime-tx:#5a7000; --lime100:#f2fccc;
+  --green-tx:#1d7d3f; --green100:#e6f7eb;
+  --orange-tx:#94590a; --orange100:#fef2e0;
+  --red-tx:#c02a22; --red100:#fdecea;
+  --black:#1c1c1e; --inv:#f5f5f7; --inv2:#a1a1a6;
+  --fd:"Inter Tight","Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --ft:"Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --fm:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --e:cubic-bezier(.25,.1,.25,1);--g:32px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}}
+:root[data-theme="dark"]{
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--tx);font-family:var(--ft);font-size:16.5px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition-duration:.01ms!important}}
+:focus-visible{outline:none;box-shadow:0 0 0 4px rgba(0,122,255,.4);border-radius:8px}
+p{margin:0 0 18px;max-width:70ch}
+p:last-child{margin-bottom:0}
+h1,h2,h3,h4{font-family:var(--fd);margin:0;text-wrap:balance}
+code{font-family:var(--fm);font-size:.86em;background:var(--alt);padding:2px 6px;border-radius:5px}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:60;background:rgba(251,251,253,.86);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--ln-s)}
+:root[data-theme="dark"] .bar,:root:not([data-theme="light"]) .bar{background:rgba(0,0,0,.74)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .bar{background:rgba(251,251,253,.86)}}
+.bar-in{max-width:1080px;margin:0 auto;padding:0 var(--g);display:flex;align-items:center;gap:5px;min-height:48px;overflow-x:auto;scrollbar-width:none}
+.bar-in::-webkit-scrollbar{display:none}
+.bar b{font-family:var(--fd);font-size:14.5px;font-weight:700;letter-spacing:-.016em;margin-right:8px;white-space:nowrap}
+.bar a{font-size:12.5px;color:var(--tx2);text-decoration:none;padding:6px 8px;border-radius:7px;white-space:nowrap}
+.bar a:hover{color:var(--tx)}
+.bar button{margin-left:auto;flex:none;font:inherit;font-size:12px;cursor:pointer;background:transparent;border:1px solid var(--ln);color:var(--tx2);border-radius:980px;padding:5px 13px}
+
+.wrap{max-width:1080px;margin:0 auto;padding-inline:var(--g)}
+.hero{padding-block:76px 40px}
+h1{font-size:clamp(34px,5.4vw,58px);font-weight:700;line-height:1.06;letter-spacing:-.026em;margin-bottom:20px}
+.lead{font-size:20px;line-height:1.5;color:var(--tx2);max-width:64ch}
+.sec{padding-block:60px;border-top:1px solid var(--ln-s)}
+h2{font-size:clamp(26px,3.4vw,38px);font-weight:700;line-height:1.12;letter-spacing:-.02em;margin-bottom:8px}
+.sec > .kicker{font-family:var(--fm);font-size:11px;letter-spacing:.06em;color:var(--tx3);margin-bottom:14px}
+h3{font-size:21px;font-weight:600;line-height:1.24;letter-spacing:-.012em;margin:38px 0 10px}
+h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
+.note{color:var(--tx2)}
+.note b,b{color:var(--tx);font-weight:600}
+
+/* kernblok */
+.key{background:var(--black);color:var(--inv);border-radius:22px;padding:34px 32px;margin:26px 0}
+.key .k{display:block;font-family:var(--fm);font-size:10.5px;letter-spacing:.06em;color:var(--lime);margin-bottom:14px}
+.key p{color:var(--inv2);font-size:17.5px;max-width:64ch}
+.key strong{color:#fff;font-weight:600}
+.key .big{font-family:var(--fd);font-size:clamp(22px,3vw,30px);font-weight:600;line-height:1.2;letter-spacing:-.018em;color:#fff;margin-bottom:16px}
+
+/* lagen van het aanbod */
+.stack{display:grid;gap:12px;margin-top:24px}
+.st{background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;display:grid;grid-template-columns:132px 1fr;gap:20px;align-items:start}
+.st .lab{font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;color:var(--act);padding-top:3px}
+.st .bd p{margin:0;font-size:15.5px;color:var(--tx2)}
+.st .bd h4{margin-bottom:5px}
+
+/* kandidaten */
+.cands{display:grid;gap:12px;margin-top:22px}
+.cand{border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;background:var(--card)}
+.cand.win{border-color:var(--lime);box-shadow:0 0 0 1px var(--lime)}
+.cand .zin{font-family:var(--fd);font-size:22px;font-weight:600;letter-spacing:-.014em;margin-bottom:8px}
+.cand .why{font-size:15px;color:var(--tx2);margin:0}
+.cand .verdict{display:inline-block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;border-radius:5px;padding:3px 7px;margin-bottom:12px}
+.cand .verdict.no{background:var(--red100);color:var(--red-tx)}
+.cand .verdict.ok{background:var(--lime100);color:var(--lime-tx)}
+.cand .verdict.mid{background:var(--orange100);color:var(--orange-tx)}
+
+/* onderscheid */
+.dist{width:100%;border-collapse:collapse;font-size:15px;margin-top:22px}
+.dist th,.dist td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.dist thead th{font-family:var(--fm);font-size:10.5px;letter-spacing:.04em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.dist td:first-child{font-weight:500;width:34%}
+.dist .v{font-family:var(--fm);font-size:11px;white-space:nowrap}
+.dist .v.y{color:var(--green-tx)}
+.dist .v.n{color:var(--red-tx)}
+.dist tr:last-child td{border-bottom:none}
+.tblwrap{overflow-x:auto}
+
+/* beslissingen */
+.dec{border:1px solid var(--ln-s);border-radius:18px;background:var(--card);padding:26px 28px;margin-top:14px}
+.dec .hd{display:flex;align-items:baseline;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.dec .num{font-family:var(--fm);font-size:11px;color:var(--tx3);flex:none}
+.dec h4{font-size:19px;flex:1;min-width:220px;margin:0}
+.dec .tag{font-family:var(--fm);font-size:9.5px;letter-spacing:.05em;border-radius:5px;padding:3px 7px}
+.dec .tag.blok{background:var(--red100);color:var(--red-tx)}
+.dec .tag.schaal{background:var(--orange100);color:var(--orange-tx)}
+.dec .tag.scherp{background:var(--b100);color:var(--act)}
+.dec .q{font-size:16px;color:var(--tx2);margin:0 0 16px}
+.dec .adv{background:var(--b50);border-left:3px solid var(--act);border-radius:0 10px 10px 0;padding:16px 18px}
+.dec .adv .al{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.06em;color:var(--act);margin-bottom:7px}
+.dec .adv p{font-size:15.5px;margin:0 0 10px}
+.dec .adv p:last-child{margin-bottom:0}
+
+/* vast */
+.locked{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-top:22px}
+.lk{background:var(--card);border:1px solid var(--ln-s);border-radius:14px;padding:18px 20px}
+.lk .t{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--green-tx);margin-bottom:7px}
+.lk .b{font-size:15px;color:var(--tx2);line-height:1.45}
+.lk .b b{color:var(--tx)}
+
+.warn{background:var(--orange100);border-radius:18px;padding:24px 26px;margin-top:26px}
+.warn h4{color:var(--orange-tx)}
+.warn p{color:var(--orange-tx);opacity:.94;font-size:15.5px;max-width:none}
+.foot{padding-block:44px 64px;font-size:13px;color:var(--tx3);text-align:center}
+
+@media (max-width:734px){
+  :root{--g:20px}
+  body{font-size:16px}
+  .sec{padding-block:48px}
+  .hero{padding-block:44px 28px}
+  .st{grid-template-columns:1fr;gap:10px}
+  .key{padding:24px 22px}
+  .dec{padding:22px 20px}
+}
+<style>
+.sc,.mx,.rt{width:100%;border-collapse:collapse;font-size:15px}
+.sc th,.sc td,.rt th,.rt td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.sc thead th,.rt thead th{font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.sc tbody tr:last-child td,.rt tbody tr:last-child td{border-bottom:none}
+.tblwrap{overflow-x:auto}
+.mx{margin-top:24px}
+.mx th,.mx td{padding:12px 12px;border-bottom:1px solid var(--ln-s);text-align:center;vertical-align:top}
+.mx thead th{border-bottom:2px solid var(--ln)}
+.mx thead th b{display:block;font-family:var(--fd);font-size:14px;font-weight:600;letter-spacing:-.012em}
+.mx thead th span{display:block;font-family:var(--fm);font-size:10px;color:var(--tx3);margin-top:3px;font-weight:400}
+.mx td.lt{text-align:left;width:230px}
+.mx td.lt b{font-family:var(--fd);font-size:26px;font-weight:700;letter-spacing:-.03em;line-height:1;
+  display:inline-block;width:22px;color:var(--tx)}
+.mx td.lt span{font-family:var(--fd);font-size:15px;font-weight:600;letter-spacing:-.012em}
+.mx td.lt em{display:block;font-style:normal;font-size:12.5px;color:var(--tx2);margin-top:2px;line-height:1.4;padding-left:22px}
+.mx td.nog{color:var(--tx3);font-family:var(--fm);font-size:12px}
+.mx td.in{font-family:var(--fm);font-size:10.5px;color:var(--orange-tx);background:var(--orange100)}
+.mx td.aan{font-family:var(--fm);font-size:10.5px;color:var(--green-tx);background:var(--green100);font-weight:500}
+.mx tbody tr:last-child td{border-bottom:none}
+.fase{background:var(--card);border:1px solid var(--ln-s);border-radius:20px;padding:28px 30px;margin-top:18px}
+.fh{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;padding-bottom:12px;border-bottom:2px solid var(--ln)}
+.fn{font-family:var(--fm);font-size:10px;letter-spacing:.06em;color:var(--tx3)}
+.fh h3{font-family:var(--fd);font-size:24px;font-weight:700;letter-spacing:-.02em;flex:1;min-width:0}
+.fm{display:flex;gap:8px;flex-wrap:wrap}
+.fm span{font-family:var(--fm);font-size:10.5px;color:var(--blue);border:1px solid var(--ln);
+  border-radius:980px;padding:4px 11px;white-space:nowrap}
+.fd{font-size:16px;line-height:1.55;margin-top:14px;max-width:76ch}
+.fk{display:grid;grid-template-columns:1.25fr 1fr;gap:26px;margin-top:20px}
+@media(max-width:860px){.fk{grid-template-columns:1fr}}
+.lbl{display:block;font-family:var(--fm);font-size:9.5px;letter-spacing:.07em;color:var(--tx3);margin-bottom:7px}
+.ls{list-style:none;margin:0;padding:0}
+.ls li{font-size:14.5px;line-height:1.5;color:var(--tx2);padding:7px 0 7px 16px;position:relative}
+.ls li::before{content:"";position:absolute;left:0;top:14px;width:5px;height:5px;border-radius:50%;background:var(--blue)}
+.ls.kl li::before{background:var(--green-tx)}
+.opl{font-size:14.5px;line-height:1.5;color:var(--tx);font-weight:500;max-width:46ch}
+.nb{font-size:13px;color:var(--tx3);line-height:1.5;margin-top:14px;padding-top:12px;border-top:1px solid var(--ln-s)}
+.rt td.c{text-align:center;font-family:var(--fm);font-size:12.5px}
+.rt td:first-child{font-weight:500}
+.rt td span{display:block;font-size:13px;color:var(--tx2);font-weight:400;margin-top:2px;max-width:40ch}
+</style>
+
+<div class="bar"><div class="bar-in">
+  <b>De ARENA-methode</b>
+  <a href="#matrix">Het model</a>
+  <a href="#fasen">De vijf fasen</a>
+  <a href="#ritme">Het ritme</a>
+  <a href="#open">Nog te beslissen</a>
+  <button id="themeBtn" type="button">Donker</button>
+</div></div>
+
+<header class="wrap hdr">
+  <p class="kicker">DE METHODE &middot; CONCEPT</p>
+  <h1>De ARENA-methode</h1>
+  <p class="lead">Vijf onderdelen, vijf fasen. Ze gaan niet allemaal tegelijk aan &mdash; dat is precies waarom het werkt. Adverteren is de motor en start als eerste; SEO, CRO en e&#8209;mail komen erbij zodra er data is om ze op te richten. Hieronder staat per fase wat we doen, wat we van de klant nodig hebben en wat er aan het eind ligt.</p>
+</header>
+
+<main class="wrap">
+
+<section class="sec" id="matrix">
+  <p class="kicker">HET MODEL</p>
+  <h2>Wat wanneer aan gaat</h2>
+  <p class="note">De fout die de meeste bureaus maken is alles tegelijk aanzetten. Dan draait alles half en weet je van niets of het werkt. Wij zetten &eacute;&eacute;n motor aan en bouwen de rest erop, in deze volgorde.</p>
+  <div class="tblwrap">
+  <table class="mx">
+    <thead><tr><th style="text-align:left">&nbsp;</th><th><b>0 &middot; Kennismaking</b><span>2 weken</span></th><th><b>1 &middot; Fundament</b><span>maand 1</span></th><th><b>2 &middot; Aanzetten</b><span>maand 1&ndash;3</span></th><th><b>3 &middot; Optimaliseren</b><span>maand 4&ndash;9</span></th><th><b>4 &middot; Uitbouwen</b><span>maand 10+</span></th></tr></thead>
+    <tbody><tr><td class="lt"><b>A</b><span>Attention</span><em>Gevonden worden door mensen die nu iets zoeken</em></td><td class="nog">&mdash;</td><td class="in">ingericht</td><td class="aan">draait</td><td class="aan">draait</td><td class="aan">draait</td></tr><tr><td class="lt"><b>R</b><span>Retention</span><em>Klanten die terugkomen hoef je niet opnieuw te kopen</em></td><td class="nog">&mdash;</td><td class="in">ingericht</td><td class="in">ingericht</td><td class="aan">draait</td><td class="aan">draait</td></tr><tr><td class="lt"><b>E</b><span>Experience</span><em>Wat er gebeurt tussen de klik en de klant</em></td><td class="nog">&mdash;</td><td class="in">ingericht</td><td class="in">ingericht</td><td class="aan">draait</td><td class="aan">draait</td></tr><tr><td class="lt"><b>N</b><span>Numbers</span><em>Wat je niet meet kun je niet sturen</em></td><td class="in">ingericht</td><td class="in">ingericht</td><td class="aan">draait</td><td class="aan">draait</td><td class="aan">draait</td></tr><tr><td class="lt"><b>A</b><span>Authority</span><em>Waarom ze jou kiezen en niet de ander</em></td><td class="nog">&mdash;</td><td class="in">ingericht</td><td class="aan">draait</td><td class="aan">draait</td><td class="aan">draait</td></tr></tbody>
+  </table>
+  </div>
+  <div class="key" style="margin-top:26px">
+    <span class="k">LET OP DE ONDERSTE RIJ</span>
+    <p class="big">Numbers staat als enige al aan v&oacute;&oacute;r de handtekening.</p>
+    <p>In de kennismaking meten we al: de technische quickscan en de doorrekening van het doel. Dat is geen verkooptruc maar de volgorde van het hele model &mdash; zonder meting weet je niet waar je begint, en zonder vertrekpunt is elk cijfer daarna een mening. Het is ook de reden dat de klant het bevindingenrapport krijgt, ook als hij niet met ons verdergaat.</p>
+  </div>
+</section>
+
+<section class="sec" id="fasen">
+  <p class="kicker">DE UITVOERING</p>
+  <h2>Vijf fasen</h2>
+  <p class="note">Er is geen harde overgang tussen de fasen; het gaat geleidelijk. Maar de volgorde ligt vast, en een klant die in maand twee om SEO vraagt krijgt hetzelfde antwoord als een klant die in maand acht om een nieuwe website vraagt.</p>
+  <article class="fase" id="f0">
+ <div class="fh"><span class="fn">FASE 0</span><h3>Kennismaking</h3>
+   <div class="fm"><span>Ongeveer twee weken</span><span>&euro; 0 voor de klant</span></div></div>
+ <p class="fd">Vaststellen of dit kan en wat het moet opleveren. Wij meten al, nog voordat er iets is afgesproken.</p>
+ <div class="fk">
+   <div><span class="lbl">WAT WIJ DOEN</span><ul class="ls"><li>Tien vragen bij de aanvraag, waaronder de vier die de prijs en de haalbaarheid bepalen</li><li>Technische quickscan: dezelfde metingen als in het fundament, alleen de uitkomsten</li><li>De ARENA-sessie: diagnose en doorrekening, samen aan tafel</li><li>Het doel narekenen: van omzetwens naar aanvragen per maand en maximale kosten per aanvraag</li><li>Voorstel met de tarievenkaart, v&oacute;&oacute;r de volledige diagnose</li></ul></div>
+   <div><span class="lbl">WAT WE VAN DE KLANT NODIG HEBBEN</span><ul class="ls kl"><li>Tien antwoorden</li><li>Toegang om te mogen meten (kijkrechten)</li><li>Anderhalf uur met iemand die beslist</li></ul>
+     <span class="lbl" style="margin-top:16px">WAT ER AAN HET EIND LIGT</span><p class="opl">E&eacute;n doelregel en een voorstel waarin elk bedrag vaststaat</p>
+     <p class="nb">Onze kosten: 5 uur per traject, 15 uur per gewonnen klant</p></div>
+ </div>
+</article><article class="fase" id="f1">
+ <div class="fh"><span class="fn">FASE 1</span><h3>Fundament</h3>
+   <div class="fm"><span>Maand 1, circa 19 werkdagen</span><span>&euro; 4.500 eenmalig</span></div></div>
+ <p class="fd">Alles inrichten en de eerste campagne maken en aanzetten. Alle vijf de onderdelen worden klaargezet; geen enkele draait al op volle kracht.</p>
+ <div class="fk">
+   <div><span class="lbl">WAT WIJ DOEN</span><ul class="ls"><li>De basis: doel en plan, techniek en meting, onze systemen</li><li>De eerste campagne: zoekwoorden, structuur, advertenties, landingspagina</li><li>E&eacute;n volledige draaidag en de montage in drie beeldverhoudingen</li><li>Kickoff met het team van de klant en een testaanvraag door de hele keten</li><li>De eerste week dagelijks meekijken</li></ul></div>
+   <div><span class="lbl">WAT WE VAN DE KLANT NODIG HEBBEN</span><ul class="ls kl"><li>Het volledige intakeformulier, binnen vijf werkdagen</li><li>Beheerderstoegang tot zes systemen</li><li>E&eacute;n sessie van anderhalf uur</li><li>E&eacute;n dagdeel voor de draaidag</li></ul>
+     <span class="lbl" style="margin-top:16px">WAT ER AAN HET EIND LIGT</span><p class="opl">75 stappen af, 52 uur, en een campagne die draait</p>
+     <p class="nb">Alles wat hier niet in zit is een apart project met een eigen prijs</p></div>
+ </div>
+</article><article class="fase" id="f2">
+ <div class="fh"><span class="fn">FASE 2</span><h3>Aanzetten</h3>
+   <div class="fm"><span>Maand 1 tot en met 3</span><span>Retainer + mediabudget</span></div></div>
+ <p class="fd">Alleen de motor draait. We leren wat werkt en brengen de kosten per aanvraag tot rust. Hier voegen we bewust niets toe.</p>
+ <div class="fk">
+   <div><span class="lbl">WAT WIJ DOEN</span><ul class="ls"><li>Adverteren op Google en Meta: budgetten, biedingen, zoekwoorden, uitsluitingen</li><li>Wekelijks bijsturen op kosten per aanvraag, niet op bereik of klikken</li><li>De advertenties uit de draaidag tegen elkaar testen</li><li>Elke aanvraag volgen tot in het leadportal en terugkoppelen wat de kwaliteit is</li><li>Aan het eind: het eerste performanceblok</li></ul></div>
+   <div><span class="lbl">WAT WE VAN DE KLANT NODIG HEBBEN</span><ul class="ls kl"><li>Opvolging binnen de afgesproken tijd</li><li>Terugkoppeling op de kwaliteit van de aanvragen</li></ul>
+     <span class="lbl" style="margin-top:16px">WAT ER AAN HET EIND LIGT</span><p class="opl">Een stabiele kostprijs per aanvraag en een basislijn om tegen te optimaliseren</p>
+     <p class="nb">Wat we hier niet doen: SEO, e-mailcampagnes, nieuwe kanalen</p></div>
+ </div>
+</article><article class="fase" id="f3">
+ <div class="fh"><span class="fn">FASE 3</span><h3>Optimaliseren</h3>
+   <div class="fm"><span>Maand 4 tot en met 9</span><span>Retainer + mediabudget</span></div></div>
+ <p class="fd">De boosters gaan aan. Zelfde budget, meer aanvragen &mdash; dat is het hele punt van deze fase.</p>
+ <div class="fk">
+   <div><span class="lbl">WAT WIJ DOEN</span><ul class="ls"><li>CRO: varianten van de landingspagina tegen elkaar testen</li><li>E-mail en automation naar de adressen die inmiddels binnen zijn</li><li>Nieuwe advertentiesets en een volgende draaidag, naar pakketgrootte</li><li>Retargeting verfijnen op basis van echt gedrag in plaats van aannames</li><li>Per performanceblok vastleggen wat is geleerd en wat er verandert</li></ul></div>
+   <div><span class="lbl">WAT WE VAN DE KLANT NODIG HEBBEN</span><ul class="ls kl"><li>Beslissingen op voorstellen binnen twee weken</li><li>Beschikbaarheid voor de draaidag</li></ul>
+     <span class="lbl" style="margin-top:16px">WAT ER AAN HET EIND LIGT</span><p class="opl">Aantoonbaar lagere kosten per aanvraag dan in fase 2, zichtbaar in hetzelfde dashboard</p>
+     <p class="nb">Dit is waar de klant blijft: we worden meetbaar beter, niet drukker</p></div>
+ </div>
+</article><article class="fase" id="f4">
+ <div class="fh"><span class="fn">FASE 4</span><h3>Uitbouwen</h3>
+   <div class="fm"><span>Vanaf maand 10</span><span>Retainer + hoger mediabudget</span></div></div>
+ <p class="fd">Nu pas SEO. Je weet inmiddels welke woorden converteren en tegen welke prijs; daar bouw je organisch op door.</p>
+ <div class="fk">
+   <div><span class="lbl">WAT WIJ DOEN</span><ul class="ls"><li>SEO op de zoekwoorden die aantoonbaar converteren</li><li>Nieuwe doelgroepen of diensten toevoegen aan de motor</li><li>Budget opschalen, of het doel verhogen bij gelijk budget</li><li>Pakket herzien: past Compete nog, of is het Own geworden</li></ul></div>
+   <div><span class="lbl">WAT WE VAN DE KLANT NODIG HEBBEN</span><ul class="ls kl"><li>Een nieuw doel voor het volgende jaar</li></ul>
+     <span class="lbl" style="margin-top:16px">WAT ER AAN HET EIND LIGT</span><p class="opl">Een deel van het verkeer hoeft niet meer gekocht te worden</p>
+     <p class="nb">Hier komt de vraag of het pakket nog past</p></div>
+ </div>
+</article>
+</section>
+
+<section class="sec" id="ritme">
+  <p class="kicker">HET RITME</p>
+  <h2>Wat er wanneer gebeurt, elke maand opnieuw</h2>
+  <p class="note">Vanaf fase 2 is dit het vaste stramien. Het verschil tussen de pakketten zit niet in het ritme maar in de hoeveelheid: hoe vaak er nieuwe sets komen, hoe vaak we draaien, en hoe vaak we samen de diepte in gaan.</p>
+  <div class="tblwrap">
+  <table class="rt">
+    <thead><tr><th>Wanneer</th><th>Wat</th><th class="c" style="text-align:center">Enter</th><th class="c" style="text-align:center">Compete</th><th class="c" style="text-align:center">Own</th></tr></thead>
+    <tbody>
+      <tr><td>Dagelijks<span>Alleen de eerste week na livegang</span></td><td>Controle op uitgaven, afkeuringen en de eerste aanvragen</td><td class="c">&bull;</td><td class="c">&bull;</td><td class="c">&bull;</td></tr>
+      <tr><td>Wekelijks<span>Zonder overleg, tenzij er iets is</span></td><td>Bijsturen op kosten per aanvraag: budgetten, biedingen, uitsluitingen</td><td class="c">&bull;</td><td class="c">&bull;</td><td class="c">&bull;</td></tr>
+      <tr><td>Maandelijks</td><td>Korte schriftelijke update in het dashboard: staan we op de doelregel, en zo nee waarom niet</td><td class="c">&bull;</td><td class="c">&bull;</td><td class="c">&bull;</td></tr>
+      <tr><td>Nieuwe advertentiesets</td><td>Nieuwe varianten om tegen de bestaande te testen</td><td class="c">1&times; per kwartaal</td><td class="c">1&times; per maand</td><td class="c">2&times; per maand</td></tr>
+      <tr><td>Draaidag</td><td>Nieuw beeld, want advertenties slijten</td><td class="c">1&times; per jaar</td><td class="c">2&times; per jaar</td><td class="c">4&times; per jaar</td></tr>
+      <tr><td>Performanceblok</td><td>Samen de diepte in: wat hebben we geleerd, wat verandert er, wat is het volgende doel</td><td class="c">1&times; per jaar</td><td class="c">1&times; per kwartaal</td><td class="c">doorlopend</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="key" style="margin-top:26px">
+    <span class="k">WAT ER BEWUST NIET IN STAAT</span>
+    <p class="big">Geen maandelijks overleg.</p>
+    <p>Een vast uur per maand bellen kost je twaalf uur per klant per jaar en levert niets op wat niet in het dashboard staat. De klant kijkt live mee; als hij iets wil weten ziet hij het, en als er iets aan de hand is bellen wij. Het performanceblok is het moment waarop we w&eacute;l gaan zitten, en dan gaat het ergens over.</p>
+  </div>
+</section>
+
+<section class="sec" id="grens">
+  <p class="kicker">DE GRENS</p>
+  <h2>Wat binnen de retainer valt en wat niet</h2>
+  <p class="note">Dit is de lijst waar je team naar wijst als een klant iets vraagt. Twijfelgevallen bestaan niet: staat het niet links, dan is het rechts.</p>
+  <div class="tblwrap">
+  <table class="sc">
+    <thead><tr><th>In de retainer</th><th>Apart project, eigen offerte</th><th>Doen we niet meer</th></tr></thead>
+    <tbody>
+      <tr><td>Adverteren op Google en Meta</td><td>Webdevelopment</td><td>Social media beheer</td></tr>
+      <tr><td>Landingspagina&rsquo;s bij ons, aanpassen en testen</td><td>Design en branding</td><td>Losse campagnes zonder samenwerking</td></tr>
+      <tr><td>SEO op converterende zoekwoorden, vanaf fase 4</td><td>Een nieuwe of vernieuwde website</td><td>E-commerce als propositie</td></tr>
+      <tr><td>E-mail en automation vanaf fase 3</td><td>Content b&oacute;ven de afgesproken draaidagen</td><td>Werving als propositie</td></tr>
+      <tr><td>Draaidagen en advertentiesets naar pakketgrootte</td><td>Een huisstijl ontwikkelen</td><td>Leads opvolgen</td></tr>
+      <tr><td>Dashboard, leadportal en rapportage</td><td>Koppelingen met systemen van de klant</td><td>Uren verantwoorden</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section class="sec" id="open">
+  <p class="kicker">NOG TE BESLISSEN</p>
+  <h2>Wat hier nog niet vastligt</h2>
+  <div class="stack">
+    <div class="st"><span class="lab">SPANNING</span><div class="bd"><h4>De resultaatafspraak versus &ldquo;extra content is een project&rdquo;</h4><p>Als het doel niet gehaald wordt en er is meer beeld nodig, kun je dan een offerte sturen? Dan verkoop je jezelf uit je eigen belofte. Mijn voorstel: de resultaatafspraak geldt binnen de afgesproken middelen &mdash; dit doel, bij dit mediabudget en deze hoeveelheid content. Blijkt er meer nodig, dan is dat een gesprek over het doel of over het budget, geen factuur.</p></div></div>
+    <div class="st"><span class="lab">ONTBREEKT</span><div class="bd"><h4>Wat er gebeurt als het doel niet gehaald wordt</h4><p>De methode beschrijft nu wat we doen, niet wat de consequentie is. Zolang dat niet vastligt is de resultaatafspraak een intentie. Kies er &eacute;&eacute;n: een gratis performanceblok, een maand kwijtschelding, of het recht om per direct op te zeggen &mdash; en zet erbij welke voorwaarden de klant zelf moet hebben gehaald.</p></div></div>
+    <div class="st"><span class="lab">TE TOETSEN</span><div class="bd"><h4>Drie maanden fase 2 is een aanname</h4><p>Hoe lang het duurt voordat de kosten per aanvraag tot rust komen hangt af van het volume. Bij twintig conversies per maand leert het sneller dan bij drie. Toets dit aan de laatste vijf campagnes die jullie hebben opgezet en maak er een norm van, anders beloof je fase 3 op een moment dat je hem niet kunt starten.</p></div></div>
+    <div class="st"><span class="lab">GEVOLG</span><div class="bd"><h4>De 75 stappen moeten bijgewerkt</h4><p>Ze zijn geschreven v&oacute;&oacute;r de beslissingen van deze week. Er komt minstens &eacute;&eacute;n stap bij in fase 1: het vastleggen van de doelregel en de resultaatafspraak, met de voorwaarden erbij. En fase 2 tot en met 4 hebben nog helemaal geen stappenlijst &mdash; dat is het volgende stuk werk.</p></div></div>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap foot">James Robinson &mdash; Marketing &amp; Branding &middot; De ARENA-methode, concept september 2026</footer>
+
+<script>
+(function(){
+  var root=document.documentElement,tb=document.getElementById('themeBtn');
+  if(!tb) return;
+  function cur(){var t=root.getAttribute('data-theme');return t||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}
+  function sync(){tb.textContent=cur()==='dark'?'Licht':'Donker'}
+  sync();
+  tb.addEventListener('click',function(){root.setAttribute('data-theme',cur()==='dark'?'light':'dark');sync()});
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',sync);
+})();
+</script>
