@@ -141,25 +141,47 @@ h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
   .dec{padding:22px 20px}
 }
 <style>
-.sc,.mx,.rt{width:100%;border-collapse:collapse;font-size:15px}
-.sc th,.sc td,.rt th,.rt td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.sc,.rt{width:100%;border-collapse:collapse;font-size:15px}
+.sc th,.sc td,.rt th,.rt td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--ln-s);vertical-align:top}
 .sc thead th,.rt thead th{font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
 .sc tbody tr:last-child td,.rt tbody tr:last-child td{border-bottom:none}
 .tblwrap{overflow-x:auto}
-.mx{margin-top:24px}
-.mx th,.mx td{padding:12px 12px;border-bottom:1px solid var(--ln-s);text-align:center;vertical-align:top}
-.mx thead th{border-bottom:2px solid var(--ln)}
-.mx thead th b{display:block;font-family:var(--fd);font-size:14px;font-weight:600;letter-spacing:-.012em}
-.mx thead th span{display:block;font-family:var(--fm);font-size:10px;color:var(--tx3);margin-top:3px;font-weight:400}
-.mx td.lt{text-align:left;width:230px}
-.mx td.lt b{font-family:var(--fd);font-size:26px;font-weight:700;letter-spacing:-.03em;line-height:1;
-  display:inline-block;width:22px;color:var(--tx)}
-.mx td.lt span{font-family:var(--fd);font-size:15px;font-weight:600;letter-spacing:-.012em}
-.mx td.lt em{display:block;font-style:normal;font-size:12.5px;color:var(--tx2);margin-top:2px;line-height:1.4;padding-left:22px}
-.mx td.nog{color:var(--tx3);font-family:var(--fm);font-size:12px}
-.mx td.in{font-family:var(--fm);font-size:10.5px;color:var(--orange-tx);background:var(--orange100)}
-.mx td.aan{font-family:var(--fm);font-size:10.5px;color:var(--green-tx);background:var(--green100);font-weight:500}
-.mx tbody tr:last-child td{border-bottom:none}
+.rt td.c{text-align:center;font-family:var(--fm);font-size:12.5px}
+.rt td:first-child{font-weight:500}
+.rt td span{display:block;font-size:13px;color:var(--tx2);font-weight:400;margin-top:2px;max-width:40ch}
+
+/* het model */
+.mod{margin-top:26px}
+.laag{border-radius:18px;padding:24px 26px}
+.laag .k{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.07em;margin-bottom:7px}
+.laag h3{font-family:var(--fd);font-size:22px;font-weight:700;letter-spacing:-.02em;line-height:1.15}
+.laag p{font-size:15px;line-height:1.55;margin-top:9px;max-width:72ch}
+.motor{background:var(--card);border:1px solid var(--ln)}
+.motor .k{color:var(--blue)}
+.mid{background:var(--black);color:var(--inv);border:1px solid var(--black)}
+.mid .k{color:var(--lime)}
+.mid h3{color:#fff;font-size:26px}
+.mid p{color:var(--inv2)}
+.pijl{display:flex;align-items:center;justify-content:center;gap:10px;padding:12px 0;
+  font-family:var(--fm);font-size:11px;color:var(--tx3);letter-spacing:.04em}
+.pijl::before,.pijl::after{content:"";height:1px;width:40px;background:var(--ln)}
+.vers{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:0}
+@media(max-width:820px){.vers{grid-template-columns:1fr}}
+.vc{background:var(--alt);border-radius:16px;padding:20px 22px}
+.vc .n{display:block;font-family:var(--fm);font-size:9.5px;letter-spacing:.06em;color:var(--tx3)}
+.vc h4{font-family:var(--fd);font-size:17px;font-weight:600;letter-spacing:-.014em;margin-top:4px}
+.vc p{font-size:13.5px;line-height:1.5;color:var(--tx2);margin-top:7px}
+.vc .ef{display:block;font-size:13px;color:var(--green-tx);margin-top:10px;padding-top:9px;
+  border-top:1px solid var(--ln-s);font-weight:500}
+
+.vlg{counter-reset:v;list-style:none;margin:22px 0 0;padding:0}
+.vlg li{counter-increment:v;display:grid;grid-template-columns:34px 1fr;gap:16px;
+  padding:16px 0;border-bottom:1px solid var(--ln-s);align-items:start}
+.vlg li:last-child{border-bottom:none}
+.vlg li::before{content:counter(v);font-family:var(--fm);font-size:13px;color:var(--blue);padding-top:2px}
+.vlg b{display:block;font-family:var(--fd);font-size:17px;font-weight:600}
+.vlg p{font-size:14.5px;color:var(--tx2);line-height:1.55;margin-top:3px;max-width:72ch}
+
 .fase{background:var(--card);border:1px solid var(--ln-s);border-radius:20px;padding:28px 30px;margin-top:18px}
 .fh{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;padding-bottom:12px;border-bottom:2px solid var(--ln)}
 .fn{font-family:var(--fm);font-size:10px;letter-spacing:.06em;color:var(--tx3)}
@@ -177,65 +199,96 @@ h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
 .ls.kl li::before{background:var(--green-tx)}
 .opl{font-size:14.5px;line-height:1.5;color:var(--tx);font-weight:500;max-width:46ch}
 .nb{font-size:13px;color:var(--tx3);line-height:1.5;margin-top:14px;padding-top:12px;border-top:1px solid var(--ln-s)}
-.rt td.c{text-align:center;font-family:var(--fm);font-size:12.5px}
-.rt td:first-child{font-weight:500}
-.rt td span{display:block;font-size:13px;color:var(--tx2);font-weight:400;margin-top:2px;max-width:40ch}
 </style>
 
 <div class="bar"><div class="bar-in">
-  <b>De ARENA-methode</b>
-  <a href="#matrix">Het model</a>
+  <b>De methode</b>
+  <a href="#model">Het model</a>
+  <a href="#volgorde">De volgorde</a>
   <a href="#fasen">De vijf fasen</a>
   <a href="#ritme">Het ritme</a>
-  <a href="#open">Nog te beslissen</a>
+  <a href="#grens">De grens</a>
   <button id="themeBtn" type="button">Donker</button>
 </div></div>
 
 <header class="wrap hdr">
   <p class="kicker">DE METHODE &middot; CONCEPT</p>
-  <h1>De ARENA-methode</h1>
-  <p class="lead">Vijf onderdelen, vijf fasen. Ze gaan niet allemaal tegelijk aan &mdash; dat is precies waarom het werkt. Adverteren is de motor en start als eerste; SEO, CRO en e&#8209;mail komen erbij zodra er data is om ze op te richten. Hieronder staat per fase wat we doen, wat we van de klant nodig hebben en wat er aan het eind ligt.</p>
+  <h1>E&eacute;n middelpunt, &eacute;&eacute;n motor, drie versnellers</h1>
+  <p class="lead">Je website is de plek waar iemand klant wordt. Adverteren op Google en Meta brengt kopers daarheen. SEO, CRO, e&#8209;mail en automation zorgen dat elke klant daarna goedkoper wordt. Ze gaan niet tegelijk aan, en dat is precies waarom het werkt.</p>
 </header>
 
 <main class="wrap">
 
-<section class="sec" id="matrix">
+<section class="sec" id="model">
   <p class="kicker">HET MODEL</p>
-  <h2>Wat wanneer aan gaat</h2>
-  <p class="note">De fout die de meeste bureaus maken is alles tegelijk aanzetten. Dan draait alles half en weet je van niets of het werkt. Wij zetten &eacute;&eacute;n motor aan en bouwen de rest erop, in deze volgorde.</p>
-  <div class="tblwrap">
-  <table class="mx">
-    <thead><tr><th style="text-align:left">&nbsp;</th><th><b>0 &middot; Kennismaking</b><span>2 weken</span></th><th><b>1 &middot; Fundament</b><span>maand 1</span></th><th><b>2 &middot; Aanzetten</b><span>maand 1&ndash;3</span></th><th><b>3 &middot; Optimaliseren</b><span>maand 4&ndash;9</span></th><th><b>4 &middot; Uitbouwen</b><span>maand 10+</span></th></tr></thead>
-    <tbody><tr><td class="lt"><b>A</b><span>Attention</span><em>Gevonden worden door mensen die nu iets zoeken</em></td><td class="nog">&mdash;</td><td class="in">ingericht</td><td class="aan">draait</td><td class="aan">draait</td><td class="aan">draait</td></tr><tr><td class="lt"><b>R</b><span>Retention</span><em>Klanten die terugkomen hoef je niet opnieuw te kopen</em></td><td class="nog">&mdash;</td><td class="in">ingericht</td><td class="in">ingericht</td><td class="aan">draait</td><td class="aan">draait</td></tr><tr><td class="lt"><b>E</b><span>Experience</span><em>Wat er gebeurt tussen de klik en de klant</em></td><td class="nog">&mdash;</td><td class="in">ingericht</td><td class="in">ingericht</td><td class="aan">draait</td><td class="aan">draait</td></tr><tr><td class="lt"><b>N</b><span>Numbers</span><em>Wat je niet meet kun je niet sturen</em></td><td class="in">ingericht</td><td class="in">ingericht</td><td class="aan">draait</td><td class="aan">draait</td><td class="aan">draait</td></tr><tr><td class="lt"><b>A</b><span>Authority</span><em>Waarom ze jou kiezen en niet de ander</em></td><td class="nog">&mdash;</td><td class="in">ingericht</td><td class="aan">draait</td><td class="aan">draait</td><td class="aan">draait</td></tr></tbody>
-  </table>
+  <h2>Drie lagen, geen acht diensten</h2>
+  <p class="note">Elke laag heeft &eacute;&eacute;n taak. Zodra een bureau die taken door elkaar haalt, wordt marketing een verzameling activiteiten in plaats van een systeem dat ergens op uitkomt.</p>
+
+  <div class="mod">
+    <div class="laag motor">
+      <span class="k">DE MOTOR</span>
+      <h3>Adverteren op Google en Meta</h3>
+      <p>Het enige kanaal dat je vandaag aanzet en morgen kunt meten. Je koopt je markt in: mensen die nu zoeken, en mensen die passen bij wie er al koopt. Duur, maar direct stuurbaar &mdash; en daarom de enige plek om te beginnen.</p>
+    </div>
+    <div class="pijl">BRENGT KOPERS NAAR</div>
+    <div class="laag mid">
+      <span class="k">HET MIDDELPUNT</span>
+      <h3>Je website</h3>
+      <p>Hier wordt iemand klant, of niet. Alles wat wij doen komt hier samen en wordt hier gemeten: elke advertentie landt hier, elk formulier staat hier, elk cijfer komt hier vandaan. Daarom begint het fundament met deze plek meetbaar en snel maken &mdash; niet met advertenties.</p>
+    </div>
+    <div class="pijl">WORDT GOEDKOPER GEMAAKT DOOR</div>
+    <div class="vers">
+      <div class="vc"><span class="n">VERSNELLER 01</span><h4>CRO</h4>
+        <p>Meer van hetzelfde verkeer wordt klant. Kortere formulieren, duidelijkere pagina&rsquo;s, bezwaren wegnemen waar ze opkomen.</p>
+        <span class="ef">Zelfde budget, meer aanvragen</span></div>
+      <div class="vc"><span class="n">VERSNELLER 02</span><h4>E-mail en automation</h4>
+        <p>Mensen die er al waren terughalen zonder opnieuw te betalen. En bestaande klanten meer laten opleveren.</p>
+        <span class="ef">Hogere klantwaarde, dus meer ruimte per aanvraag</span></div>
+      <div class="vc"><span class="n">VERSNELLER 03</span><h4>SEO</h4>
+        <p>Verkeer dat je niet hoeft te kopen, op precies de woorden waarvan je inmiddels weet dat ze klanten opleveren.</p>
+        <span class="ef">Een deel van het verkeer wordt gratis</span></div>
+    </div>
   </div>
-  <div class="key" style="margin-top:26px">
-    <span class="k">LET OP DE ONDERSTE RIJ</span>
-    <p class="big">Numbers staat als enige al aan v&oacute;&oacute;r de handtekening.</p>
-    <p>In de kennismaking meten we al: de technische quickscan en de doorrekening van het doel. Dat is geen verkooptruc maar de volgorde van het hele model &mdash; zonder meting weet je niet waar je begint, en zonder vertrekpunt is elk cijfer daarna een mening. Het is ook de reden dat de klant het bevindingenrapport krijgt, ook als hij niet met ons verdergaat.</p>
+
+  <div class="key" style="margin-top:28px">
+    <span class="k">WAAROM DIT G&Eacute;&Eacute;N LOSSE DIENSTEN ZIJN</span>
+    <p class="big">Drie verschillende mechanismen, &eacute;&eacute;n getal.</p>
+    <p>CRO verhoogt je conversie, e-mail verhoogt je klantwaarde, SEO verlaagt je klikkosten. Ze doen alle drie iets anders, maar ze komen alle drie uit op hetzelfde cijfer: wat een klant je kost. Daarom verkopen we ze niet los &mdash; los verkocht heeft geen van de drie een ijkpunt, en dan is het weer een dienst waarvan je hoopt dat hij helpt.</p>
   </div>
+</section>
+
+<section class="sec" id="volgorde">
+  <p class="kicker">DE VOLGORDE</p>
+  <h2>Waarom niet alles tegelijk</h2>
+  <p class="note">Dit is het antwoord op de klant die in maand twee om SEO vraagt, en op het bureau dat ermee b&eacute;gint.</p>
+  <ol class="vlg">
+    <li><div><b>Eerst het middelpunt meetbaar maken</b><p>Zonder betrouwbare meting weet je van niets of het werkt. Een campagne aanzetten op een site waar de conversiemeting niet klopt, betekent maanden sturen op cijfers die niet kloppen. Dit is ook waarom wij de landingspagina bij ons bouwen: dan is de snelheid en de meting van ons, en niet van zijn webbouwer.</p></div></li>
+    <li><div><b>Dan de motor, en alleen de motor</b><p>Ads leveren binnen weken data die andere kanalen pas na maanden geven: welke woorden, welke doelgroepen, welke boodschap. Die data heb je nodig om de versnellers ergens op te richten. Drie maanden lang alleen dit, zodat de kostprijs per aanvraag tot rust komt en je een basislijn hebt.</p></div></li>
+    <li><div><b>Dan CRO en e-mail</b><p>CRO kan pas als er verkeer is om op te testen. E-mail kan pas als er adressen zijn, en die verzamel je met de motor. Allebei werken ze op wat er al binnenkomt, dus ze kosten geen extra mediabudget &mdash; ze maken het bestaande budget meer waard.</p></div></li>
+    <li><div><b>En pas daarna SEO</b><p>Nu weet je welke zoekwoorden daadwerkelijk klanten opleveren en wat ze mogen kosten. Begin je met SEO, dan investeer je maanden in woorden waarvan je niet weet of ze converteren &mdash; en merk je dat pas als het geld op is. Dit is precies de fout waar wij vroeger onze eigen fundamenten mee weggaven.</p></div></li>
+  </ol>
 </section>
 
 <section class="sec" id="fasen">
   <p class="kicker">DE UITVOERING</p>
   <h2>Vijf fasen</h2>
-  <p class="note">Er is geen harde overgang tussen de fasen; het gaat geleidelijk. Maar de volgorde ligt vast, en een klant die in maand twee om SEO vraagt krijgt hetzelfde antwoord als een klant die in maand acht om een nieuwe website vraagt.</p>
+  <p class="note">Er is geen harde overgang; het gaat geleidelijk. Maar de volgorde ligt vast, en een klant die in maand twee om SEO vraagt krijgt hetzelfde antwoord als een klant die in maand acht om een nieuwe website vraagt.</p>
   <article class="fase" id="f0">
  <div class="fh"><span class="fn">FASE 0</span><h3>Kennismaking</h3>
    <div class="fm"><span>Ongeveer twee weken</span><span>&euro; 0 voor de klant</span></div></div>
- <p class="fd">Vaststellen of dit kan en wat het moet opleveren. Wij meten al, nog voordat er iets is afgesproken.</p>
+ <p class="fd">Vaststellen of dit kan en wat het moet opleveren. We meten al voordat er iets is afgesproken &mdash; anders weet je niet waar je begint.</p>
  <div class="fk">
-   <div><span class="lbl">WAT WIJ DOEN</span><ul class="ls"><li>Tien vragen bij de aanvraag, waaronder de vier die de prijs en de haalbaarheid bepalen</li><li>Technische quickscan: dezelfde metingen als in het fundament, alleen de uitkomsten</li><li>De ARENA-sessie: diagnose en doorrekening, samen aan tafel</li><li>Het doel narekenen: van omzetwens naar aanvragen per maand en maximale kosten per aanvraag</li><li>Voorstel met de tarievenkaart, v&oacute;&oacute;r de volledige diagnose</li></ul></div>
-   <div><span class="lbl">WAT WE VAN DE KLANT NODIG HEBBEN</span><ul class="ls kl"><li>Tien antwoorden</li><li>Toegang om te mogen meten (kijkrechten)</li><li>Anderhalf uur met iemand die beslist</li></ul>
+   <div><span class="lbl">WAT WIJ DOEN</span><ul class="ls"><li>Tien vragen bij de aanvraag, waaronder de vier die de prijs en de haalbaarheid bepalen</li><li>Technische quickscan van de website: snelheid, meting, toegang</li><li>De sessie: diagnose en doorrekening, samen aan tafel</li><li>Het doel narekenen: van omzetwens naar aanvragen per maand en maximale kosten per aanvraag</li><li>Voorstel met de tarievenkaart, v&oacute;&oacute;r de volledige diagnose</li></ul></div>
+   <div><span class="lbl">WAT WE VAN DE KLANT NODIG HEBBEN</span><ul class="ls kl"><li>Tien antwoorden</li><li>Kijkrechten op de site en de statistieken</li><li>Anderhalf uur met iemand die beslist</li></ul>
      <span class="lbl" style="margin-top:16px">WAT ER AAN HET EIND LIGT</span><p class="opl">E&eacute;n doelregel en een voorstel waarin elk bedrag vaststaat</p>
      <p class="nb">Onze kosten: 5 uur per traject, 15 uur per gewonnen klant</p></div>
  </div>
 </article><article class="fase" id="f1">
  <div class="fh"><span class="fn">FASE 1</span><h3>Fundament</h3>
    <div class="fm"><span>Maand 1, circa 19 werkdagen</span><span>&euro; 4.500 eenmalig</span></div></div>
- <p class="fd">Alles inrichten en de eerste campagne maken en aanzetten. Alle vijf de onderdelen worden klaargezet; geen enkele draait al op volle kracht.</p>
+ <p class="fd">Het middelpunt meetbaar maken en de motor bouwen. De versnellers worden voorbereid maar nog niet aangezet.</p>
  <div class="fk">
-   <div><span class="lbl">WAT WIJ DOEN</span><ul class="ls"><li>De basis: doel en plan, techniek en meting, onze systemen</li><li>De eerste campagne: zoekwoorden, structuur, advertenties, landingspagina</li><li>E&eacute;n volledige draaidag en de montage in drie beeldverhoudingen</li><li>Kickoff met het team van de klant en een testaanvraag door de hele keten</li><li>De eerste week dagelijks meekijken</li></ul></div>
+   <div><span class="lbl">WAT WIJ DOEN</span><ul class="ls"><li>De website meetbaar maken: analytics, conversies, consent, en een landingspagina bij ons op zijn subdomein</li><li>De motor bouwen: zoekwoorden, campagnestructuur, advertenties, doelgroepen, biedstrategie</li><li>E&eacute;n volledige draaidag en montage in drie beeldverhoudingen</li><li>De systemen: advertentieaccounts op zijn naam, e-mailplatform, leadportal, dashboard</li><li>Kickoff, testaanvraag door de hele keten, en de eerste week dagelijks meekijken</li></ul></div>
    <div><span class="lbl">WAT WE VAN DE KLANT NODIG HEBBEN</span><ul class="ls kl"><li>Het volledige intakeformulier, binnen vijf werkdagen</li><li>Beheerderstoegang tot zes systemen</li><li>E&eacute;n sessie van anderhalf uur</li><li>E&eacute;n dagdeel voor de draaidag</li></ul>
      <span class="lbl" style="margin-top:16px">WAT ER AAN HET EIND LIGT</span><p class="opl">75 stappen af, 52 uur, en een campagne die draait</p>
      <p class="nb">Alles wat hier niet in zit is een apart project met een eigen prijs</p></div>
@@ -243,29 +296,29 @@ h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
 </article><article class="fase" id="f2">
  <div class="fh"><span class="fn">FASE 2</span><h3>Aanzetten</h3>
    <div class="fm"><span>Maand 1 tot en met 3</span><span>Retainer + mediabudget</span></div></div>
- <p class="fd">Alleen de motor draait. We leren wat werkt en brengen de kosten per aanvraag tot rust. Hier voegen we bewust niets toe.</p>
+ <p class="fd">Alleen de motor draait. We leren welke zoekwoorden, doelgroepen en advertenties werken, en brengen de kosten per aanvraag tot rust. Hier voegen we bewust niets toe.</p>
  <div class="fk">
-   <div><span class="lbl">WAT WIJ DOEN</span><ul class="ls"><li>Adverteren op Google en Meta: budgetten, biedingen, zoekwoorden, uitsluitingen</li><li>Wekelijks bijsturen op kosten per aanvraag, niet op bereik of klikken</li><li>De advertenties uit de draaidag tegen elkaar testen</li><li>Elke aanvraag volgen tot in het leadportal en terugkoppelen wat de kwaliteit is</li><li>Aan het eind: het eerste performanceblok</li></ul></div>
+   <div><span class="lbl">WAT WIJ DOEN</span><ul class="ls"><li>Adverteren op Google en Meta: budgetten, biedingen, zoekwoorden, uitsluitingen</li><li>Wekelijks bijsturen op kosten per aanvraag &mdash; niet op bereik, niet op klikken</li><li>De advertenties uit de draaidag tegen elkaar testen</li><li>Elke aanvraag volgen tot in het leadportal en terugkoppelen wat de kwaliteit is</li><li>Aan het eind: het eerste performanceblok</li></ul></div>
    <div><span class="lbl">WAT WE VAN DE KLANT NODIG HEBBEN</span><ul class="ls kl"><li>Opvolging binnen de afgesproken tijd</li><li>Terugkoppeling op de kwaliteit van de aanvragen</li></ul>
-     <span class="lbl" style="margin-top:16px">WAT ER AAN HET EIND LIGT</span><p class="opl">Een stabiele kostprijs per aanvraag en een basislijn om tegen te optimaliseren</p>
-     <p class="nb">Wat we hier niet doen: SEO, e-mailcampagnes, nieuwe kanalen</p></div>
+     <span class="lbl" style="margin-top:16px">WAT ER AAN HET EIND LIGT</span><p class="opl">Een stabiele kostprijs per aanvraag, en de eerste data over wat converteert</p>
+     <p class="nb">Wat we hier niet doen: SEO, e-mailcampagnes, nieuwe kanalen. Er is nog niets om ze op te richten</p></div>
  </div>
 </article><article class="fase" id="f3">
- <div class="fh"><span class="fn">FASE 3</span><h3>Optimaliseren</h3>
+ <div class="fh"><span class="fn">FASE 3</span><h3>Versnellen</h3>
    <div class="fm"><span>Maand 4 tot en met 9</span><span>Retainer + mediabudget</span></div></div>
- <p class="fd">De boosters gaan aan. Zelfde budget, meer aanvragen &mdash; dat is het hele punt van deze fase.</p>
+ <p class="fd">De eerste twee versnellers gaan aan. Zelfde mediabudget, lagere kosten per klant &mdash; dat is het hele punt van deze fase.</p>
  <div class="fk">
-   <div><span class="lbl">WAT WIJ DOEN</span><ul class="ls"><li>CRO: varianten van de landingspagina tegen elkaar testen</li><li>E-mail en automation naar de adressen die inmiddels binnen zijn</li><li>Nieuwe advertentiesets en een volgende draaidag, naar pakketgrootte</li><li>Retargeting verfijnen op basis van echt gedrag in plaats van aannames</li><li>Per performanceblok vastleggen wat is geleerd en wat er verandert</li></ul></div>
+   <div><span class="lbl">WAT WIJ DOEN</span><ul class="ls"><li>CRO: varianten van de landingspagina tegen elkaar testen, formulier verkorten, bezwaren wegnemen</li><li>E-mail en automation naar de adressen die inmiddels zijn verzameld</li><li>Nieuwe advertentiesets en een volgende draaidag, naar pakketgrootte</li><li>Retargeting verfijnen op echt gedrag in plaats van op aannames</li><li>Per performanceblok vastleggen wat is geleerd en wat er verandert</li></ul></div>
    <div><span class="lbl">WAT WE VAN DE KLANT NODIG HEBBEN</span><ul class="ls kl"><li>Beslissingen op voorstellen binnen twee weken</li><li>Beschikbaarheid voor de draaidag</li></ul>
-     <span class="lbl" style="margin-top:16px">WAT ER AAN HET EIND LIGT</span><p class="opl">Aantoonbaar lagere kosten per aanvraag dan in fase 2, zichtbaar in hetzelfde dashboard</p>
+     <span class="lbl" style="margin-top:16px">WAT ER AAN HET EIND LIGT</span><p class="opl">Aantoonbaar lagere kosten per klant dan in fase 2, zichtbaar in hetzelfde dashboard</p>
      <p class="nb">Dit is waar de klant blijft: we worden meetbaar beter, niet drukker</p></div>
  </div>
 </article><article class="fase" id="f4">
  <div class="fh"><span class="fn">FASE 4</span><h3>Uitbouwen</h3>
    <div class="fm"><span>Vanaf maand 10</span><span>Retainer + hoger mediabudget</span></div></div>
- <p class="fd">Nu pas SEO. Je weet inmiddels welke woorden converteren en tegen welke prijs; daar bouw je organisch op door.</p>
+ <p class="fd">Nu pas SEO. Je weet inmiddels welke woorden klanten opleveren en tegen welke prijs; daar bouw je organisch op door.</p>
  <div class="fk">
-   <div><span class="lbl">WAT WIJ DOEN</span><ul class="ls"><li>SEO op de zoekwoorden die aantoonbaar converteren</li><li>Nieuwe doelgroepen of diensten toevoegen aan de motor</li><li>Budget opschalen, of het doel verhogen bij gelijk budget</li><li>Pakket herzien: past Compete nog, of is het Own geworden</li></ul></div>
+   <div><span class="lbl">WAT WIJ DOEN</span><ul class="ls"><li>SEO op de zoekwoorden die aantoonbaar converteren &mdash; niet op de woorden met het meeste volume</li><li>Nieuwe doelgroepen of diensten toevoegen aan de motor</li><li>Budget opschalen, of het doel verhogen bij gelijk budget</li><li>Pakket herzien: past Compete nog, of is het Own geworden</li></ul></div>
    <div><span class="lbl">WAT WE VAN DE KLANT NODIG HEBBEN</span><ul class="ls kl"><li>Een nieuw doel voor het volgende jaar</li></ul>
      <span class="lbl" style="margin-top:16px">WAT ER AAN HET EIND LIGT</span><p class="opl">Een deel van het verkeer hoeft niet meer gekocht te worden</p>
      <p class="nb">Hier komt de vraag of het pakket nog past</p></div>
@@ -275,8 +328,8 @@ h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
 
 <section class="sec" id="ritme">
   <p class="kicker">HET RITME</p>
-  <h2>Wat er wanneer gebeurt, elke maand opnieuw</h2>
-  <p class="note">Vanaf fase 2 is dit het vaste stramien. Het verschil tussen de pakketten zit niet in het ritme maar in de hoeveelheid: hoe vaak er nieuwe sets komen, hoe vaak we draaien, en hoe vaak we samen de diepte in gaan.</p>
+  <h2>Wat er elke maand gebeurt</h2>
+  <p class="note">Vanaf fase 2 is dit het vaste stramien. Het verschil tussen de pakketten zit niet in het ritme maar in de hoeveelheid.</p>
   <div class="tblwrap">
   <table class="rt">
     <thead><tr><th>Wanneer</th><th>Wat</th><th class="c" style="text-align:center">Enter</th><th class="c" style="text-align:center">Compete</th><th class="c" style="text-align:center">Own</th></tr></thead>
@@ -300,17 +353,17 @@ h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
 <section class="sec" id="grens">
   <p class="kicker">DE GRENS</p>
   <h2>Wat binnen de retainer valt en wat niet</h2>
-  <p class="note">Dit is de lijst waar je team naar wijst als een klant iets vraagt. Twijfelgevallen bestaan niet: staat het niet links, dan is het rechts.</p>
+  <p class="note">De lijst waar je team naar wijst als een klant iets vraagt. Twijfelgevallen bestaan niet: staat het niet links, dan is het rechts.</p>
   <div class="tblwrap">
   <table class="sc">
     <thead><tr><th>In de retainer</th><th>Apart project, eigen offerte</th><th>Doen we niet meer</th></tr></thead>
     <tbody>
       <tr><td>Adverteren op Google en Meta</td><td>Webdevelopment</td><td>Social media beheer</td></tr>
       <tr><td>Landingspagina&rsquo;s bij ons, aanpassen en testen</td><td>Design en branding</td><td>Losse campagnes zonder samenwerking</td></tr>
-      <tr><td>SEO op converterende zoekwoorden, vanaf fase 4</td><td>Een nieuwe of vernieuwde website</td><td>E-commerce als propositie</td></tr>
+      <tr><td>CRO op alles waar ons verkeer landt</td><td>Een nieuwe of vernieuwde website</td><td>E-commerce als propositie</td></tr>
       <tr><td>E-mail en automation vanaf fase 3</td><td>Content b&oacute;ven de afgesproken draaidagen</td><td>Werving als propositie</td></tr>
-      <tr><td>Draaidagen en advertentiesets naar pakketgrootte</td><td>Een huisstijl ontwikkelen</td><td>Leads opvolgen</td></tr>
-      <tr><td>Dashboard, leadportal en rapportage</td><td>Koppelingen met systemen van de klant</td><td>Uren verantwoorden</td></tr>
+      <tr><td>SEO op converterende zoekwoorden, vanaf fase 4</td><td>Een huisstijl ontwikkelen</td><td>Leads opvolgen</td></tr>
+      <tr><td>Draaidagen en advertentiesets naar pakketgrootte</td><td>Koppelingen met systemen van de klant</td><td>Uren verantwoorden</td></tr>
     </tbody>
   </table>
   </div>
@@ -320,16 +373,17 @@ h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
   <p class="kicker">NOG TE BESLISSEN</p>
   <h2>Wat hier nog niet vastligt</h2>
   <div class="stack">
-    <div class="st"><span class="lab">SPANNING</span><div class="bd"><h4>De resultaatafspraak versus &ldquo;extra content is een project&rdquo;</h4><p>Als het doel niet gehaald wordt en er is meer beeld nodig, kun je dan een offerte sturen? Dan verkoop je jezelf uit je eigen belofte. Mijn voorstel: de resultaatafspraak geldt binnen de afgesproken middelen &mdash; dit doel, bij dit mediabudget en deze hoeveelheid content. Blijkt er meer nodig, dan is dat een gesprek over het doel of over het budget, geen factuur.</p></div></div>
-    <div class="st"><span class="lab">ONTBREEKT</span><div class="bd"><h4>Wat er gebeurt als het doel niet gehaald wordt</h4><p>De methode beschrijft nu wat we doen, niet wat de consequentie is. Zolang dat niet vastligt is de resultaatafspraak een intentie. Kies er &eacute;&eacute;n: een gratis performanceblok, een maand kwijtschelding, of het recht om per direct op te zeggen &mdash; en zet erbij welke voorwaarden de klant zelf moet hebben gehaald.</p></div></div>
-    <div class="st"><span class="lab">TE TOETSEN</span><div class="bd"><h4>Drie maanden fase 2 is een aanname</h4><p>Hoe lang het duurt voordat de kosten per aanvraag tot rust komen hangt af van het volume. Bij twintig conversies per maand leert het sneller dan bij drie. Toets dit aan de laatste vijf campagnes die jullie hebben opgezet en maak er een norm van, anders beloof je fase 3 op een moment dat je hem niet kunt starten.</p></div></div>
-    <div class="st"><span class="lab">GEVOLG</span><div class="bd"><h4>De 75 stappen moeten bijgewerkt</h4><p>Ze zijn geschreven v&oacute;&oacute;r de beslissingen van deze week. Er komt minstens &eacute;&eacute;n stap bij in fase 1: het vastleggen van de doelregel en de resultaatafspraak, met de voorwaarden erbij. En fase 2 tot en met 4 hebben nog helemaal geen stappenlijst &mdash; dat is het volgende stuk werk.</p></div></div>
+    <div class="st"><span class="lab">SPANNING</span><div class="bd"><h4>&ldquo;Website centraal&rdquo; versus &ldquo;wij bouwen de landingspagina bij ons&rdquo;</h4><p>Die twee moeten in &eacute;&eacute;n zin passen, anders vraagt de eerste klant erop door. Mijn voorstel: het middelpunt is de plek waar iemand klant wordt, en wij zorgen dat die plek snel, meetbaar en aanpasbaar is. Bij een gezonde WordPress-site kan dat in zijn eigen website; bij een gesloten platform bouwen we hem bij ons op zijn subdomein. De plek is niet het principe, de controle erover wel.</p></div></div>
+    <div class="st"><span class="lab">SPANNING</span><div class="bd"><h4>De resultaatafspraak versus &ldquo;extra content is een project&rdquo;</h4><p>Als het doel niet gehaald wordt en er is meer beeld nodig, kun je dan een offerte sturen? Mijn voorstel: de resultaatafspraak geldt binnen de afgesproken middelen &mdash; dit doel, bij dit mediabudget en deze hoeveelheid content.</p></div></div>
+    <div class="st"><span class="lab">ONTBREEKT</span><div class="bd"><h4>Wat er gebeurt als het doel niet gehaald wordt</h4><p>De methode beschrijft wat we doen, niet wat de consequentie is. Kies er &eacute;&eacute;n: een gratis performanceblok, een maand kwijtschelding, of het recht om per direct op te zeggen &mdash; met de voorwaarden erbij die de klant zelf moet hebben gehaald.</p></div></div>
+    <div class="st"><span class="lab">TE TOETSEN</span><div class="bd"><h4>Drie maanden fase 2 is een aanname</h4><p>Hoe lang het duurt voordat de kosten per aanvraag tot rust komen hangt af van het volume. Bij twintig conversies per maand leert het sneller dan bij drie. Toets dit aan de laatste vijf campagnes en maak er een norm van.</p></div></div>
+    <div class="st"><span class="lab">GEVOLG</span><div class="bd"><h4>Fase 2 tot en met 4 hebben nog geen stappenlijst</h4><p>Het fundament is opengewerkt in 75 stappen. De twaalf maanden daarna &mdash; waar je geld verdient en waar de resultaatafspraak op landt &mdash; nog niet. Dat is het volgende stuk werk.</p></div></div>
   </div>
 </section>
 
 </main>
 
-<footer class="wrap foot">James Robinson &mdash; Marketing &amp; Branding &middot; De ARENA-methode, concept september 2026</footer>
+<footer class="wrap foot">James Robinson &mdash; Marketing &amp; Branding &middot; De methode, concept september 2026</footer>
 
 <script>
 (function(){
