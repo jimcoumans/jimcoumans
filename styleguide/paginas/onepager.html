@@ -1,0 +1,166 @@
+<title>Propositie &middot; one-pager</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@600;700&display=swap">
+<style>
+:root{--tx:#1d1d1f;--tx2:#5c5c61;--tx3:#86868b;--ln:#d2d2d7;--ln-s:#e5e5e9;
+ --blue:#0066cc;--alt:#f5f5f7;--lime:#c4f000;--lime-tx:#4d6000;--red:#c02a22;--grn:#1d7d3f;
+ --fd:"Inter Tight","Inter",Helvetica,Arial,sans-serif;--ft:"Inter",Helvetica,Arial,sans-serif;
+ --fm:"SF Mono",ui-monospace,Menlo,Consolas,monospace}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:#e9e9ec;font-family:var(--ft);color:var(--tx);-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,p,ul{margin:0}
+.tb{position:sticky;top:0;z-index:9;background:rgba(255,255,255,.93);backdrop-filter:blur(16px);
+ border-bottom:1px solid var(--ln);padding:10px 20px;display:flex;gap:12px;align-items:center}
+.tb b{font-family:var(--fd);font-size:14px}.tb span{font-size:12.5px;color:var(--tx2)}
+.tb button{margin-left:auto;font:inherit;font-size:12.5px;cursor:pointer;background:var(--tx);color:#fff;
+ border:none;border-radius:980px;padding:7px 16px}
+.deck{padding:26px 16px 50px;display:flex;justify-content:center}
+.sheet{width:210mm;min-height:297mm;background:#fff;box-shadow:0 2px 20px rgba(0,0,0,.15);
+ padding:9mm 10mm;display:flex;flex-direction:column}
+@media(max-width:840px){.sheet{width:100%;padding:20px;min-height:0}}
+.hd{border-bottom:2.5pt solid var(--tx);padding-bottom:3.5mm}
+.hd .eb{font-family:var(--fm);font-size:6.5pt;letter-spacing:.11em;color:var(--tx3)}
+.hd h1{font-family:var(--fd);font-size:17.5pt;font-weight:700;letter-spacing:-.024em;line-height:1.05;margin-top:1.5mm}
+.hd .sub{font-size:7.9pt;color:var(--tx2);line-height:1.42;margin-top:1.8mm;max-width:150mm}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:6mm;margin-top:3.6mm}
+.bk{break-inside:avoid}
+.bk h2{font-family:var(--fm);font-size:6.5pt;letter-spacing:.1em;color:var(--blue);
+ padding-bottom:1.6mm;border-bottom:.4pt solid var(--ln)}
+.bk .t{font-family:var(--fd);font-size:10pt;font-weight:700;letter-spacing:-.016em;margin-top:2.2mm;line-height:1.2}
+.bk p{font-size:7.5pt;line-height:1.42;color:var(--tx2);margin-top:1.4mm}
+.vn{margin-top:2.5mm}
+.vn .r{display:grid;grid-template-columns:1fr 4mm 1fr;gap:2mm;align-items:start;
+ padding:1.4mm 0;border-bottom:.4pt solid var(--ln-s);font-size:7.4pt;line-height:1.3}
+.vn .r:last-child{border-bottom:none}
+.vn .o{color:var(--tx3);text-decoration:line-through}
+.vn .p{color:var(--tx3);text-align:center;font-family:var(--fm);font-size:7pt}
+.vn .n{color:var(--tx);font-weight:500}
+table{width:100%;border-collapse:collapse;margin-top:2.5mm}
+th,td{text-align:left;padding:1.3mm 1.3mm;border-bottom:.4pt solid var(--ln-s);font-size:7.5pt;vertical-align:top}
+thead th{font-family:var(--fm);font-size:6pt;letter-spacing:.06em;color:var(--tx3);font-weight:500;border-bottom:.5pt solid var(--ln)}
+td.n,th.n{text-align:right;font-family:var(--fm);font-size:7.1pt;white-space:nowrap}
+tbody tr:last-child td{border-bottom:none}
+tr.tot td{border-top:.8pt solid var(--ln);font-weight:600;color:var(--tx)}
+.rg{margin-top:2.5mm;list-style:none;padding:0}
+.rg li{font-size:7.4pt;line-height:1.38;color:var(--tx2);padding:1.35mm 0 1.35mm 4.2mm;position:relative;
+ border-bottom:.4pt solid var(--ln-s)}
+.rg li:last-child{border-bottom:none}
+.rg li::before{content:"";position:absolute;left:0;top:2.5mm;width:1.5mm;height:1.5mm;border-radius:50%;background:var(--tx)}
+.rg li b{color:var(--tx);font-weight:600}
+.nee li::before{background:var(--red)}
+.hot{background:var(--tx);color:#fff;border-radius:2.5mm;padding:4mm 5mm;margin-top:4mm}
+.hot h2{color:var(--lime);border-bottom-color:rgba(255,255,255,.2)}
+.hot .t{color:#fff}
+.hot ol{margin:2.5mm 0 0;padding-left:5mm}
+.hot li{font-size:7.4pt;line-height:1.38;color:#e6e6ea;margin-bottom:1.2mm}
+.hot li b{color:#fff;font-weight:600}
+.ft{margin-top:auto;padding-top:3mm;border-top:.4pt solid var(--ln-s);
+ display:flex;justify-content:space-between;font-family:var(--fm);font-size:6.5pt;color:var(--tx3)}
+@media print{@page{size:A4;margin:0}body{background:#fff}.tb{display:none}.deck{padding:0}
+ .sheet{box-shadow:none;width:210mm}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style>
+
+<div class="tb"><b>Propositie &mdash; one-pager</b><span>A4 &middot; intern &middot; kwartaaloverleg</span>
+<button onclick="window.print()" type="button">Afdrukken / PDF</button></div>
+
+<div class="deck"><div class="sheet">
+
+<div class="hd">
+  <p class="eb">INTERN &middot; KWARTAALOVERLEG &middot; SEPTEMBER 2026</p>
+  <h1>Van fullservice naar &eacute;&eacute;n motor met drie boosters</h1>
+  <p class="sub">Wij verkopen geen marketing meer, maar aanvragen tegen een vaste prijs per stuk. Adverteren is de motor. SEO, CRO en e&#8209;mail liggen daar bovenop en maken elke euro effici&euml;nter. Alles wat niet aan die motor bijdraagt, valt af.</p>
+</div>
+
+<div class="row">
+  <div class="bk">
+    <h2>WAT ER VERANDERT</h2>
+    <p class="t">Minder aanbieden, meer opleveren</p>
+    <div class="vn">
+      <div class="r"><span class="o">Social media beheer als dienst</span><span class="p">&rarr;</span><span class="n">Vervalt. Adverteren op Meta blijft, als kanaal in de motor</span></div>
+      <div class="r"><span class="o">SEO, CRO en e-mail als losse diensten</span><span class="p">&rarr;</span><span class="n">Boosters binnen de retainer, niet los verkrijgbaar</span></div>
+      <div class="r"><span class="o">E-commerce en werving</span><span class="p">&rarr;</span><span class="n">Geschrapt. Passen niet in dit model</span></div>
+      <div class="r"><span class="o">Losse projecten en maatwerk</span><span class="p">&rarr;</span><span class="n">Alleen partnerships, vaste inhoud</span></div>
+      <div class="r"><span class="o">Retainers &euro; 1.650 &ndash; 4.950</span><span class="p">&rarr;</span><span class="n">&euro; 1.000 / 1.500 / 2.000 met harde scope</span></div>
+      <div class="r"><span class="o">Offerte n&aacute; de diagnose</span><span class="p">&rarr;</span><span class="n">Prijslijst v&oacute;&oacute;r de diagnose</span></div>
+    </div>
+  </div>
+  <div class="bk">
+    <h2>WAAROM</h2>
+    <p class="t">We leverden een fundament waar een ander op scoorde</p>
+    <p>Klanten vertrokken na een jaar naar een bureau dat verder bouwde op wat wij hadden neergelegd. Dat komt doordat wij alles deden en daardoor nergens hard op konden sturen. Acht diensten tegelijk levert acht halve resultaten.</p>
+    <p style="margin-top:2.6mm"><b style="color:var(--tx)">De belofte wordt narekenbaar:</b> zoveel aanvragen per maand, tegen maximaal zoveel per aanvraag. Uit z&iacute;jn cijfers, niet uit onze inschatting.</p>
+  </div>
+</div>
+
+<div class="row">
+  <div class="bk">
+    <h2>HET AANBOD</h2>
+    <table>
+      <thead><tr><th>Eenmalig</th><th class="n">&nbsp;</th></tr></thead>
+      <tbody>
+        <tr><td><b>Starting line-up</b> &mdash; de basis plus je eerste campagne, inclusief draaidag</td><td class="n">&euro; 4.500</td></tr>
+      </tbody>
+      <thead><tr><th style="padding-top:3mm">Per maand</th><th class="n" style="padding-top:3mm">Mediabudget</th></tr></thead>
+      <tbody>
+        <tr><td><b>Enter</b> &euro; 1.000</td><td class="n">&euro; 1.000 &ndash; 2.500</td></tr>
+        <tr><td><b>Compete</b> &euro; 1.500</td><td class="n">&euro; 2.500 &ndash; 7.500</td></tr>
+        <tr><td><b>Own</b> &euro; 2.000</td><td class="n">vanaf &euro; 7.500</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:2mm">Zelfde inhoud in alle drie: Attention, Retention, Experience, Numbers, Authority. Alleen de ho&eacute;veelheid verschilt.</p>
+  </div>
+  <div class="bk">
+    <h2>WAT EEN KLANT OPLEVERT</h2>
+    <table>
+      <thead><tr><th>Jaar 1</th><th class="n">Enter</th><th class="n">Compete</th><th class="n">Own</th></tr></thead>
+      <tbody>
+        <tr><td>Naar ons</td><td class="n">16.500</td><td class="n">22.500</td><td class="n">28.500</td></tr>
+        <tr><td>Naar media en tools</td><td class="n">12.270</td><td class="n">30.270</td><td class="n">90.270</td></tr>
+        <tr class="tot"><td>Totale investering</td><td class="n">28.770</td><td class="n">52.770</td><td class="n">118.770</td></tr>
+        <tr><td>Ons aandeel</td><td class="n">57%</td><td class="n">43%</td><td class="n">24%</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:2mm">Fundament: 52 uur, kostprijs &euro; 2.050, dus &euro; 86 per uur. Een klant winnen kost &euro; 585 aan verkooptijd &mdash; 3,5% van een jaar Enter.</p>
+  </div>
+</div>
+
+<div class="row">
+  <div class="bk">
+    <h2>DE REGELS DIE HET SCHAALBAAR MAKEN</h2>
+    <ul class="rg">
+      <li><b>Onze fee is nooit meer dan de helft van het mediabudget.</b> Anders sturen we op een bedrag dat te klein is om mee te sturen.</li>
+      <li><b>Wij koppelen niet met systemen van de klant.</b> Aanvragen landen in ons leadportal; hij krijgt toegang tot onze systemen, wij niet tot de zijne.</li>
+      <li><b>Landingspagina's bouwen we bij ons</b>, op zijn subdomein. In zijn site komt alleen meetcode.</li>
+      <li><b>Geen uurtarief, geen meerwerk.</b> Vaste prijs, vaste inhoud, maandelijkse incasso.</li>
+      <li><b>Wij volgen geen leads op.</b> Wij halen ze binnen, hij belt ze.</li>
+      <li><b>Negen metingen met vaste normen</b> bepalen wat er hersteld moet worden. Herstel gaat naar Webmix, niet naar ons.</li>
+    </ul>
+  </div>
+  <div class="bk">
+    <h2>WANNEER WE NEE ZEGGEN</h2>
+    <ul class="rg nee">
+      <li><b>Te weinig volume.</b> Niche B2B met veertig afnemers in Europa.</li>
+      <li><b>Beperkte categorie.</b> Medische claims, financi&euml;le producten.</li>
+      <li><b>Te lang, te klein.</b> Achttien maanden beslistraject in een kleine markt.</li>
+      <li><b>Het aanbod deugt niet.</b> Ads versterken alleen wat er al is.</li>
+      <li><b>We kunnen niet meten.</b> Geen meetcode in de site te krijgen betekent blind sturen.</li>
+    </ul>
+    <p style="margin-top:2.6mm"><b style="color:var(--tx)">En de zesde, nieuw:</b> het rekenblad wijst hem af. Komt onze fee boven 50% van zijn mediabudget uit, dan is de klant te klein &mdash; dat is nu een rekenuitkomst en geen gevoel.</p>
+  </div>
+</div>
+
+<div class="hot">
+  <h2>WAAR IK JULLIE AKKOORD OP VRAAG</h2>
+  <p class="t">Vier beslissingen, vandaag</p>
+  <ol>
+    <li><b>Schrappen we social media beheer, e-commerce en werving?</b> Dat raakt lopende klanten. We hebben een migratieplan nodig, en de vraag is of we dat aflopend doen of per contractdatum.</li>
+    <li><b>Gaan de retainers naar &euro; 1.000 / 1.500 / 2.000?</b> Lager dan nu, met een veel hardere scope. De rekensom achter het aandeel staat hierboven.</li>
+    <li><b>Bouwen we het leadportal?</b> Zonder dat kan de belofte &ldquo;wij koppelen niet met jouw CRM&rdquo; niet, en die draagt het hele model. Dit is het enige echte bouwproject.</li>
+    <li><b>Wie schrijft de zes AI-instructies?</b> Twaalf van de 75 stappen hangen eraan. Zonder goede prompts kost het fundament geen 52 maar 60+ uur, en dan zakt ons uurtarief van &euro; 86 naar &euro; 75.</li>
+  </ol>
+</div>
+
+<div class="ft"><span>James Robinson &mdash; Marketing &amp; Branding</span><span>Concept &middot; niet extern delen</span></div>
+
+</div></div>
