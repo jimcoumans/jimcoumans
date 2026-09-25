@@ -1,0 +1,328 @@
+<title>Waarom deze keuzes &middot; James Robinson</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@600;700&display=swap">
+<style>
+:root{
+  --page:#fbfbfd; --card:#fff; --alt:#f5f5f7;
+  --tx:#1d1d1f; --tx2:#6e6e73; --tx3:#86868b;
+  --ln:#d2d2d7; --ln-s:#e5e5e9;
+  --blue:#007aff; --link:#0066cc; --act:#0857c3;
+  --b100:#e0efff; --b50:#f4f9ff;
+  --lime:#c4f000; --lime-tx:#5a7000; --lime100:#f2fccc;
+  --green-tx:#1d7d3f; --green100:#e6f7eb;
+  --orange-tx:#94590a; --orange100:#fef2e0;
+  --red-tx:#c02a22; --red100:#fdecea;
+  --black:#1c1c1e; --inv:#f5f5f7; --inv2:#a1a1a6;
+  --fd:"Inter Tight","Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --ft:"Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --fm:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --e:cubic-bezier(.25,.1,.25,1);--g:32px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}}
+:root[data-theme="dark"]{
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--tx);font-family:var(--ft);font-size:16.5px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition-duration:.01ms!important}}
+:focus-visible{outline:none;box-shadow:0 0 0 4px rgba(0,122,255,.4);border-radius:8px}
+p{margin:0 0 18px;max-width:70ch}
+p:last-child{margin-bottom:0}
+h1,h2,h3,h4{font-family:var(--fd);margin:0;text-wrap:balance}
+code{font-family:var(--fm);font-size:.86em;background:var(--alt);padding:2px 6px;border-radius:5px}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:60;background:rgba(251,251,253,.86);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--ln-s)}
+:root[data-theme="dark"] .bar,:root:not([data-theme="light"]) .bar{background:rgba(0,0,0,.74)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .bar{background:rgba(251,251,253,.86)}}
+.bar-in{max-width:1080px;margin:0 auto;padding:0 var(--g);display:flex;align-items:center;gap:5px;min-height:48px;overflow-x:auto;scrollbar-width:none}
+.bar-in::-webkit-scrollbar{display:none}
+.bar b{font-family:var(--fd);font-size:14.5px;font-weight:700;letter-spacing:-.016em;margin-right:8px;white-space:nowrap}
+.bar a{font-size:12.5px;color:var(--tx2);text-decoration:none;padding:6px 8px;border-radius:7px;white-space:nowrap}
+.bar a:hover{color:var(--tx)}
+.bar button{margin-left:auto;flex:none;font:inherit;font-size:12px;cursor:pointer;background:transparent;border:1px solid var(--ln);color:var(--tx2);border-radius:980px;padding:5px 13px}
+
+.wrap{max-width:1080px;margin:0 auto;padding-inline:var(--g)}
+.hero{padding-block:76px 40px}
+h1{font-size:clamp(34px,5.4vw,58px);font-weight:700;line-height:1.06;letter-spacing:-.026em;margin-bottom:20px}
+.lead{font-size:20px;line-height:1.5;color:var(--tx2);max-width:64ch}
+.sec{padding-block:60px;border-top:1px solid var(--ln-s)}
+h2{font-size:clamp(26px,3.4vw,38px);font-weight:700;line-height:1.12;letter-spacing:-.02em;margin-bottom:8px}
+.sec > .kicker{font-family:var(--fm);font-size:11px;letter-spacing:.06em;color:var(--tx3);margin-bottom:14px}
+h3{font-size:21px;font-weight:600;line-height:1.24;letter-spacing:-.012em;margin:38px 0 10px}
+h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
+.note{color:var(--tx2)}
+.note b,b{color:var(--tx);font-weight:600}
+
+/* kernblok */
+.key{background:var(--black);color:var(--inv);border-radius:22px;padding:34px 32px;margin:26px 0}
+.key .k{display:block;font-family:var(--fm);font-size:10.5px;letter-spacing:.06em;color:var(--lime);margin-bottom:14px}
+.key p{color:var(--inv2);font-size:17.5px;max-width:64ch}
+.key strong{color:#fff;font-weight:600}
+.key .big{font-family:var(--fd);font-size:clamp(22px,3vw,30px);font-weight:600;line-height:1.2;letter-spacing:-.018em;color:#fff;margin-bottom:16px}
+
+/* lagen van het aanbod */
+.stack{display:grid;gap:12px;margin-top:24px}
+.st{background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;display:grid;grid-template-columns:132px 1fr;gap:20px;align-items:start}
+.st .lab{font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;color:var(--act);padding-top:3px}
+.st .bd p{margin:0;font-size:15.5px;color:var(--tx2)}
+.st .bd h4{margin-bottom:5px}
+
+/* kandidaten */
+.cands{display:grid;gap:12px;margin-top:22px}
+.cand{border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;background:var(--card)}
+.cand.win{border-color:var(--lime);box-shadow:0 0 0 1px var(--lime)}
+.cand .zin{font-family:var(--fd);font-size:22px;font-weight:600;letter-spacing:-.014em;margin-bottom:8px}
+.cand .why{font-size:15px;color:var(--tx2);margin:0}
+.cand .verdict{display:inline-block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;border-radius:5px;padding:3px 7px;margin-bottom:12px}
+.cand .verdict.no{background:var(--red100);color:var(--red-tx)}
+.cand .verdict.ok{background:var(--lime100);color:var(--lime-tx)}
+.cand .verdict.mid{background:var(--orange100);color:var(--orange-tx)}
+
+/* onderscheid */
+.dist{width:100%;border-collapse:collapse;font-size:15px;margin-top:22px}
+.dist th,.dist td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.dist thead th{font-family:var(--fm);font-size:10.5px;letter-spacing:.04em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.dist td:first-child{font-weight:500;width:34%}
+.dist .v{font-family:var(--fm);font-size:11px;white-space:nowrap}
+.dist .v.y{color:var(--green-tx)}
+.dist .v.n{color:var(--red-tx)}
+.dist tr:last-child td{border-bottom:none}
+.tblwrap{overflow-x:auto}
+
+/* beslissingen */
+.dec{border:1px solid var(--ln-s);border-radius:18px;background:var(--card);padding:26px 28px;margin-top:14px}
+.dec .hd{display:flex;align-items:baseline;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.dec .num{font-family:var(--fm);font-size:11px;color:var(--tx3);flex:none}
+.dec h4{font-size:19px;flex:1;min-width:220px;margin:0}
+.dec .tag{font-family:var(--fm);font-size:9.5px;letter-spacing:.05em;border-radius:5px;padding:3px 7px}
+.dec .tag.blok{background:var(--red100);color:var(--red-tx)}
+.dec .tag.schaal{background:var(--orange100);color:var(--orange-tx)}
+.dec .tag.scherp{background:var(--b100);color:var(--act)}
+.dec .q{font-size:16px;color:var(--tx2);margin:0 0 16px}
+.dec .adv{background:var(--b50);border-left:3px solid var(--act);border-radius:0 10px 10px 0;padding:16px 18px}
+.dec .adv .al{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.06em;color:var(--act);margin-bottom:7px}
+.dec .adv p{font-size:15.5px;margin:0 0 10px}
+.dec .adv p:last-child{margin-bottom:0}
+
+/* vast */
+.locked{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-top:22px}
+.lk{background:var(--card);border:1px solid var(--ln-s);border-radius:14px;padding:18px 20px}
+.lk .t{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--green-tx);margin-bottom:7px}
+.lk .b{font-size:15px;color:var(--tx2);line-height:1.45}
+.lk .b b{color:var(--tx)}
+
+.warn{background:var(--orange100);border-radius:18px;padding:24px 26px;margin-top:26px}
+.warn h4{color:var(--orange-tx)}
+.warn p{color:var(--orange-tx);opacity:.94;font-size:15.5px;max-width:none}
+.foot{padding-block:44px 64px;font-size:13px;color:var(--tx3);text-align:center}
+
+@media (max-width:734px){
+  :root{--g:20px}
+  body{font-size:16px}
+  .sec{padding-block:48px}
+  .hero{padding-block:44px 28px}
+  .st{grid-template-columns:1fr;gap:10px}
+  .key{padding:24px 22px}
+  .dec{padding:22px 20px}
+}
+<style>
+.sc{width:100%;border-collapse:collapse;font-size:15px}
+.sc th,.sc td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.sc thead th{font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.sc tbody tr:last-child td{border-bottom:none}
+.tblwrap{overflow-x:auto}
+
+.euro{margin-top:26px;display:grid;gap:20px}
+.eu{background:var(--card);border:1px solid var(--ln-s);border-radius:18px;padding:24px 26px}
+.eu .kp{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.eu .kp b{font-family:var(--fd);font-size:19px;font-weight:600;letter-spacing:-.016em}
+.eu .kp span{font-family:var(--fm);font-size:11px;color:var(--tx3)}
+.balk{display:flex;height:46px;border-radius:10px;overflow:hidden;margin-top:14px}
+.balk div{display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:11px;
+  letter-spacing:.04em;text-align:center;padding:0 10px}
+.b-arb{background:var(--tx2);color:#fff}
+.b-ber{background:var(--lime);color:var(--black)}
+.b-niks{background:var(--ln-s);color:var(--tx3)}
+.eu .ond{font-size:14px;color:var(--tx2);line-height:1.55;margin-top:12px;max-width:74ch}
+.eu .ond b{color:var(--tx);font-weight:600}
+
+.oef{background:var(--black);color:var(--inv);border-radius:20px;padding:30px 34px;margin-top:26px}
+.oef .k{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.07em;color:var(--lime);margin-bottom:10px}
+.oef h3{font-family:var(--fd);font-size:26px;font-weight:700;letter-spacing:-.022em;color:#fff;line-height:1.15}
+.oef p{font-size:15.5px;line-height:1.6;color:var(--inv2);margin-top:12px;max-width:70ch}
+.oef ol{margin:16px 0 0;padding-left:22px}
+.oef li{font-size:15.5px;line-height:1.6;color:var(--inv2);margin-bottom:6px}
+.oef li b{color:#fff;font-weight:600}
+
+.kr{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px}
+@media(max-width:860px){.kr{grid-template-columns:1fr}}
+.krc{background:var(--alt);border-radius:16px;padding:22px 24px}
+.krc .n{display:block;font-family:var(--fm);font-size:9.5px;letter-spacing:.06em;color:var(--tx3)}
+.krc h4{font-family:var(--fd);font-size:18px;font-weight:600;letter-spacing:-.014em;margin-top:5px;line-height:1.2}
+.krc p{font-size:14px;line-height:1.55;color:var(--tx2);margin-top:9px}
+.krc .gev{display:block;font-size:13.5px;color:var(--red-tx);margin-top:12px;padding-top:10px;
+  border-top:1px solid var(--ln);font-weight:500}
+
+.wel{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:24px}
+.wc{background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;
+  border-top:3px solid var(--ln)}
+.wc.ret{border-top-color:var(--green-tx)}
+.wc.prj{border-top-color:var(--blue)}
+.wc .pl{display:block;font-family:var(--fm);font-size:9.5px;letter-spacing:.06em;margin-bottom:6px}
+.wc.ret .pl{color:var(--green-tx)}
+.wc.prj .pl{color:var(--blue)}
+.wc h4{font-family:var(--fd);font-size:17px;font-weight:600;letter-spacing:-.014em}
+.wc p{font-size:14px;line-height:1.55;color:var(--tx2);margin-top:8px}
+</style>
+
+<div class="bar"><div class="bar-in">
+  <b>Waarom deze keuzes</b>
+  <a href="#euro">Waar je euro heen gaat</a>
+  <a href="#volgers">Je volgers</a>
+  <a href="#krachten">Drie krachten</a>
+  <a href="#viraal">Viraal gaan</a>
+  <a href="#wel">Wat we w&eacute;l doen</a>
+  <button id="themeBtn" type="button">Donker</button>
+</div></div>
+
+<header class="wrap hdr">
+  <p class="kicker">DE ONDERBOUWING</p>
+  <h1>Waarom wij dit w&eacute;l doen en dat niet</h1>
+  <p class="lead">Social media beheer is voor veel ondernemers het gezicht van marketing. Wij doen het niet meer, en dat is geen smaakkwestie. Het gaat om waar je geld heen gaat, wie het ziet en wat je ervan leert. Hieronder staat de rekensom.</p>
+</header>
+
+<main class="wrap">
+
+<section class="sec" id="euro">
+  <p class="kicker">DE EURO</p>
+  <h2>Waar gaat je geld heen?</h2>
+  <p class="note">Neem duizend euro per maand. Je kunt hem aan twee dingen besteden, en het verschil zit niet in de hoeveelheid werk maar in wat je ervoor terugkrijgt.</p>
+  <div class="euro">
+    <div class="eu">
+      <div class="kp"><b>&euro; 1.000 aan social media beheer</b><span>ONGEVEER TIEN UUR</span></div>
+      <div class="balk"><div class="b-arb" style="flex:1">ARBEID &middot; IEMAND MAAKT EN PLAATST BERICHTEN</div></div>
+      <p class="ond">Het hele bedrag gaat naar m&aacute;&aacute;ktijd. Er gaat geen cent naar bereik, want organisch bereik koop je niet &mdash; je krijgt wat het platform je geeft. <b>Je betaalt een bureautarief om berichten te maken voor mensen die je al volgen.</b></p>
+    </div>
+    <div class="eu">
+      <div class="kp"><b>&euro; 1.000 aan adverteren</b><span>NUL UUR MAAKTIJD UIT DIT BEDRAG</span></div>
+      <div class="balk"><div class="b-ber" style="flex:1">BEREIK &middot; MENSEN DIE JE ZELF KIEST ZIEN JE</div></div>
+      <p class="ond">Het hele bedrag gaat naar bereik bij mensen die je nog niet kennen. Het werk om het te sturen zit in de retainer die je al betaalt, en dat werk is <b>voor honderd klanten hetzelfde werk</b> &mdash; daarom kan het uit. Berichten maken is voor elke klant weer nieuw werk.</p>
+    </div>
+  </div>
+  <div class="key" style="margin-top:26px">
+    <span class="k">DAT IS HET HELE VERSCHIL</span>
+    <p class="big">Bij het ene betaal je voor tijd, bij het andere voor bereik.</p>
+    <p>En tijd schaalt niet. Tien uur berichten maken levert tien uur berichten op, elke maand opnieuw, bij elke klant apart. Duizend euro advertentiebudget levert meetbaar bereik op waar wij met dezelfde handgrepen op sturen als bij elke andere klant. Daar zit ook de reden waarom wij dit niet meer aanbieden: we kunnen het niet beter of goedkoper dan jij, en we kunnen er niet op sturen.</p>
+  </div>
+</section>
+
+<section class="sec" id="volgers">
+  <p class="kicker">HET BEREIK</p>
+  <h2>Je volgers zijn je markt niet</h2>
+  <p class="note">Dit is het punt waar het gesprek meestal kantelt, en je hebt er geen onderzoek voor nodig.</p>
+  <div class="oef">
+    <span class="k">DOE DIT ZELF, NU</span>
+    <h3>Open je volgerslijst en tel de eerste vijftig.</h3>
+    <ol>
+      <li><b>Bestaande klanten.</b> Die hoef je niet te overtuigen, die heb je al.</li>
+      <li><b>Oud-medewerkers, sollicitanten en stagiairs.</b> Die kopen niets.</li>
+      <li><b>Concurrenten en leveranciers.</b> Die kijken mee, maar niet om te kopen.</li>
+      <li><b>Vrienden, familie, kennissen.</b> Die zijn aardig.</li>
+      <li><b>Mensen die klant kunnen worden.</b> Tel ze.</li>
+    </ol>
+    <p>Wat er van die vijftig overblijft in de laatste groep, is je markt op dat kanaal. En van die groep ziet maar een deel je bericht, want het platform bepaalt aan wie het wordt getoond. Daar zet je dus tien uur per maand tegenover.</p>
+  </div>
+  <div class="key" style="margin-top:24px">
+    <span class="k">EN DAAROM W&Eacute;L ADVERTEREN OP DEZELFDE KANALEN</span>
+    <p class="big">Adverteren op Meta is geen social media beheer.</p>
+    <p>Bij een bericht bepaalt het algoritme wie het ziet, en dat is grotendeels je bestaande publiek. Bij een advertentie bepaal jij het: gebied, leeftijd, gedrag, interesses, en mensen die lijken op wie er al bij je koopt. Zelfde platform, tegenovergesteld mechanisme. Wij zitten dus w&eacute;l op Instagram en Facebook &mdash; maar dan bij mensen die je nog niet volgen.</p>
+  </div>
+</section>
+
+<section class="sec" id="krachten">
+  <p class="kicker">DE RICHTING</p>
+  <h2>Drie krachten die dit alleen maar erger maken</h2>
+  <p class="note">Het gaat niet alleen om hoe het nu is, maar om welke kant het op beweegt. Alle drie de bewegingen gaan dezelfde kant op.</p>
+  <div class="kr">
+    <div class="krc"><span class="n">KRACHT 01</span><h4>De platformen zijn pay-to-play geworden</h4>
+      <p>Meta, LinkedIn en TikTok verdienen aan advertenties, niet aan het gratis bereik van bedrijfspagina&rsquo;s. Elke functie die goed werkt voor bedrijven wordt uiteindelijk betaald. Dat is geen samenzwering maar hun verdienmodel.</p>
+      <span class="gev">Je organische bereik wordt elk jaar minder waard</span></div>
+    <div class="krc"><span class="n">KRACHT 02</span><h4>Het algoritme kiest voor de kijker, niet voor jou</h4>
+      <p>Een tijdlijn toont wat iemand waarschijnlijk boeiend vindt. Een bedrijfsbericht concurreert daarin met vrienden, familie en professionele makers die er de hele dag mee bezig zijn.</p>
+      <span class="gev">Je kunt niet kiezen wie je bericht ziet</span></div>
+    <div class="krc"><span class="n">KRACHT 03</span><h4>Het is arbeidsintensief en het schaalt niet</h4>
+      <p>Bedenken, maken, plaatsen, reageren. Elke maand opnieuw, voor elke klant apart. Er is geen template, geen automatisering en geen leercurve die dat goedkoper maakt.</p>
+      <span class="gev">De kosten blijven gelijk, het rendement daalt</span></div>
+  </div>
+</section>
+
+<section class="sec" id="viraal">
+  <p class="kicker">HET TEGENARGUMENT</p>
+  <h2>&ldquo;Maar als het viraal gaat&hellip;&rdquo;</h2>
+  <div class="key">
+    <span class="k">HET KAN. ALLEEN IS HET GEEN PLAN</span>
+    <p class="big">Je kunt geen omzetdoel bouwen op een uitzondering.</p>
+    <p>Viraal gaan is niet te herhalen, niet in te plannen en niet in te kopen. Je kunt het niet beloven, dus kunnen wij er niet op sturen en kun jij er niet op rekenen. En als het gebeurt, bereikt het meestal vooral mensen die niets bij je gaan kopen &mdash; bereik is niet hetzelfde als vraag.</p>
+    <p style="margin-top:14px">Wat er w&eacute;l gebeurt bij bedrijven die erop mikken: elke maand tijd investeren in de hoop op de uitschieter, en ondertussen geen enkel kanaal hebben dat voorspelbaar aanvragen oplevert. Wij bouwen liever het voorspelbare kanaal. Gaat er daarna iets viraal, dan is dat een meevaller in plaats van je strategie.</p>
+  </div>
+</section>
+
+<section class="sec" id="wel">
+  <p class="kicker">DE UITKOMST</p>
+  <h2>Wat we dan w&eacute;l doen</h2>
+  <p class="note">Social media bijhouden is niet zinloos. Mensen die je naam horen kijken of je nog bestaat, en dan wil je dat er iets staat. Maar dat is onderhoud van je etalage, geen marketinginvestering met een rendement dat je kunt sturen. Daarom hoort het bij jou &mdash; en kunnen wij je helpen zonder het over te nemen.</p>
+  <div class="wel">
+    <div class="wc ret"><span class="pl">IN DE RETAINER</span><h4>Adverteren op Meta</h4>
+      <p>Instagram en Facebook, maar dan bij mensen die je nog niet volgen en die je zelf hebt gekozen. Dit is bereik dat je kunt sturen en meten, dus dit hoort bij ons.</p></div>
+    <div class="wc prj"><span class="pl">LOSSE OPDRACHT</span><h4>Social media templates</h4>
+      <p>Een set sjablonen in jouw stijl, zodat je zelf snel iets kunt plaatsen dat er goed uitziet. E&eacute;nmalig gemaakt, daarna gebruik je ze jarenlang. Jij plaatst, wij niet.</p></div>
+    <div class="wc prj"><span class="pl">LOSSE OPDRACHT</span><h4>Contentsessie</h4>
+      <p>Wij draaien een dag bij jou en leveren een voorraad beeld op waar je een kwartaal mee vooruit kunt. Wat je daarmee doet op je eigen kanalen is aan jou.</p></div>
+  </div>
+  <div class="key" style="margin-top:26px">
+    <span class="k">HET ONDERSCHEID DAT IEDEREEN BIJ ONS MOET KENNEN</span>
+    <p class="big">Wij stoppen met posten, niet met social media.</p>
+    <p>Als een klant vraagt of wij &ldquo;iets met social doen&rdquo;, is het antwoord ja &mdash; we adverteren erop, en dat zit in elk pakket. Wat we niet meer doen is zijn kanalen bijhouden. Dat onderscheid moet in &eacute;&eacute;n zin uit te leggen zijn, anders klinkt het als een dienst die we hebben geschrapt om ons leven makkelijker te maken.</p>
+  </div>
+</section>
+
+<section class="sec" id="open">
+  <p class="kicker">NOG TE BESLISSEN</p>
+  <h2>Wat hier nog niet vastligt</h2>
+  <div class="stack">
+    <div class="st"><span class="lab">PRIJS</span><div class="bd"><h4>Wat kosten de templates en de contentsessie?</h4><p>Allebei staan ze nu als losse opdracht zonder bedrag. Zonder prijs is het geen alternatief maar een afwijzing met een vriendelijk randje &mdash; en juist deze twee heb je nodig om het gesprek positief te eindigen.</p></div></div>
+    <div class="st"><span class="lab">CIJFERS</span><div class="bd"><h4>De tien uur is een aanname</h4><p>Ik heb gerekend met ongeveer tien uur per maand voor social media beheer. Toets dat aan wat jullie er nu feitelijk aan besteden bij de klanten waar het nog in de retainer zit. Klopt het niet, dan valt de hele rekensom op de eerste pagina om.</p></div></div>
+    <div class="st"><span class="lab">BEWUST WEGGELATEN</span><div class="bd"><h4>Geen percentages over dalend organisch bereik</h4><p>Er circuleren cijfers over hoeveel procent van je volgers een bericht nog ziet, maar die verschillen per platform, per jaar en per onderzoek. E&eacute;n aanvechtbaar cijfer maakt je hele betoog aanvechtbaar. De scroll-oefening werkt beter: de klant rekent het zelf uit en dan is het zijn conclusie in plaats van jouw claim.</p></div></div>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap foot">James Robinson &mdash; Marketing &amp; Branding &middot; Waarom deze keuzes, concept september 2026</footer>
+
+<script>
+(function(){
+  var root=document.documentElement,tb=document.getElementById('themeBtn');
+  if(!tb) return;
+  function cur(){var t=root.getAttribute('data-theme');return t||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}
+  function sync(){tb.textContent=cur()==='dark'?'Licht':'Donker'}
+  sync();
+  tb.addEventListener('click',function(){root.setAttribute('data-theme',cur()==='dark'?'light':'dark');sync()});
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',sync);
+})();
+</script>
