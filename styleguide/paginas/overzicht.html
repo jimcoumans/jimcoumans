@@ -1,0 +1,257 @@
+<title>Overzicht &middot; James Robinson</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@600;700&display=swap">
+<style>
+:root{
+  --page:#fbfbfd; --card:#fff; --alt:#f5f5f7;
+  --tx:#1d1d1f; --tx2:#6e6e73; --tx3:#86868b;
+  --ln:#d2d2d7; --ln-s:#e5e5e9;
+  --blue:#007aff; --link:#0066cc; --act:#0857c3;
+  --b100:#e0efff; --b50:#f4f9ff;
+  --lime:#c4f000; --lime-tx:#5a7000; --lime100:#f2fccc;
+  --green-tx:#1d7d3f; --green100:#e6f7eb;
+  --orange-tx:#94590a; --orange100:#fef2e0;
+  --red-tx:#c02a22; --red100:#fdecea;
+  --black:#1c1c1e; --inv:#f5f5f7; --inv2:#a1a1a6;
+  --fd:"Inter Tight","Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --ft:"Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --fm:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --e:cubic-bezier(.25,.1,.25,1);--g:32px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}}
+:root[data-theme="dark"]{
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--tx);font-family:var(--ft);font-size:16.5px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition-duration:.01ms!important}}
+:focus-visible{outline:none;box-shadow:0 0 0 4px rgba(0,122,255,.4);border-radius:8px}
+p{margin:0 0 18px;max-width:70ch}
+p:last-child{margin-bottom:0}
+h1,h2,h3,h4{font-family:var(--fd);margin:0;text-wrap:balance}
+code{font-family:var(--fm);font-size:.86em;background:var(--alt);padding:2px 6px;border-radius:5px}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:60;background:rgba(251,251,253,.86);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--ln-s)}
+:root[data-theme="dark"] .bar,:root:not([data-theme="light"]) .bar{background:rgba(0,0,0,.74)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .bar{background:rgba(251,251,253,.86)}}
+.bar-in{max-width:1080px;margin:0 auto;padding:0 var(--g);display:flex;align-items:center;gap:5px;min-height:48px;overflow-x:auto;scrollbar-width:none}
+.bar-in::-webkit-scrollbar{display:none}
+.bar b{font-family:var(--fd);font-size:14.5px;font-weight:700;letter-spacing:-.016em;margin-right:8px;white-space:nowrap}
+.bar a{font-size:12.5px;color:var(--tx2);text-decoration:none;padding:6px 8px;border-radius:7px;white-space:nowrap}
+.bar a:hover{color:var(--tx)}
+.bar button{margin-left:auto;flex:none;font:inherit;font-size:12px;cursor:pointer;background:transparent;border:1px solid var(--ln);color:var(--tx2);border-radius:980px;padding:5px 13px}
+
+.wrap{max-width:1080px;margin:0 auto;padding-inline:var(--g)}
+.hero{padding-block:76px 40px}
+h1{font-size:clamp(34px,5.4vw,58px);font-weight:700;line-height:1.06;letter-spacing:-.026em;margin-bottom:20px}
+.lead{font-size:20px;line-height:1.5;color:var(--tx2);max-width:64ch}
+.sec{padding-block:60px;border-top:1px solid var(--ln-s)}
+h2{font-size:clamp(26px,3.4vw,38px);font-weight:700;line-height:1.12;letter-spacing:-.02em;margin-bottom:8px}
+.sec > .kicker{font-family:var(--fm);font-size:11px;letter-spacing:.06em;color:var(--tx3);margin-bottom:14px}
+h3{font-size:21px;font-weight:600;line-height:1.24;letter-spacing:-.012em;margin:38px 0 10px}
+h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
+.note{color:var(--tx2)}
+.note b,b{color:var(--tx);font-weight:600}
+
+/* kernblok */
+.key{background:var(--black);color:var(--inv);border-radius:22px;padding:34px 32px;margin:26px 0}
+.key .k{display:block;font-family:var(--fm);font-size:10.5px;letter-spacing:.06em;color:var(--lime);margin-bottom:14px}
+.key p{color:var(--inv2);font-size:17.5px;max-width:64ch}
+.key strong{color:#fff;font-weight:600}
+.key .big{font-family:var(--fd);font-size:clamp(22px,3vw,30px);font-weight:600;line-height:1.2;letter-spacing:-.018em;color:#fff;margin-bottom:16px}
+
+/* lagen van het aanbod */
+.stack{display:grid;gap:12px;margin-top:24px}
+.st{background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;display:grid;grid-template-columns:132px 1fr;gap:20px;align-items:start}
+.st .lab{font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;color:var(--act);padding-top:3px}
+.st .bd p{margin:0;font-size:15.5px;color:var(--tx2)}
+.st .bd h4{margin-bottom:5px}
+
+/* kandidaten */
+.cands{display:grid;gap:12px;margin-top:22px}
+.cand{border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;background:var(--card)}
+.cand.win{border-color:var(--lime);box-shadow:0 0 0 1px var(--lime)}
+.cand .zin{font-family:var(--fd);font-size:22px;font-weight:600;letter-spacing:-.014em;margin-bottom:8px}
+.cand .why{font-size:15px;color:var(--tx2);margin:0}
+.cand .verdict{display:inline-block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;border-radius:5px;padding:3px 7px;margin-bottom:12px}
+.cand .verdict.no{background:var(--red100);color:var(--red-tx)}
+.cand .verdict.ok{background:var(--lime100);color:var(--lime-tx)}
+.cand .verdict.mid{background:var(--orange100);color:var(--orange-tx)}
+
+/* onderscheid */
+.dist{width:100%;border-collapse:collapse;font-size:15px;margin-top:22px}
+.dist th,.dist td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.dist thead th{font-family:var(--fm);font-size:10.5px;letter-spacing:.04em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.dist td:first-child{font-weight:500;width:34%}
+.dist .v{font-family:var(--fm);font-size:11px;white-space:nowrap}
+.dist .v.y{color:var(--green-tx)}
+.dist .v.n{color:var(--red-tx)}
+.dist tr:last-child td{border-bottom:none}
+.tblwrap{overflow-x:auto}
+
+/* beslissingen */
+.dec{border:1px solid var(--ln-s);border-radius:18px;background:var(--card);padding:26px 28px;margin-top:14px}
+.dec .hd{display:flex;align-items:baseline;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.dec .num{font-family:var(--fm);font-size:11px;color:var(--tx3);flex:none}
+.dec h4{font-size:19px;flex:1;min-width:220px;margin:0}
+.dec .tag{font-family:var(--fm);font-size:9.5px;letter-spacing:.05em;border-radius:5px;padding:3px 7px}
+.dec .tag.blok{background:var(--red100);color:var(--red-tx)}
+.dec .tag.schaal{background:var(--orange100);color:var(--orange-tx)}
+.dec .tag.scherp{background:var(--b100);color:var(--act)}
+.dec .q{font-size:16px;color:var(--tx2);margin:0 0 16px}
+.dec .adv{background:var(--b50);border-left:3px solid var(--act);border-radius:0 10px 10px 0;padding:16px 18px}
+.dec .adv .al{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.06em;color:var(--act);margin-bottom:7px}
+.dec .adv p{font-size:15.5px;margin:0 0 10px}
+.dec .adv p:last-child{margin-bottom:0}
+
+/* vast */
+.locked{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-top:22px}
+.lk{background:var(--card);border:1px solid var(--ln-s);border-radius:14px;padding:18px 20px}
+.lk .t{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--green-tx);margin-bottom:7px}
+.lk .b{font-size:15px;color:var(--tx2);line-height:1.45}
+.lk .b b{color:var(--tx)}
+
+.warn{background:var(--orange100);border-radius:18px;padding:24px 26px;margin-top:26px}
+.warn h4{color:var(--orange-tx)}
+.warn p{color:var(--orange-tx);opacity:.94;font-size:15.5px;max-width:none}
+.foot{padding-block:44px 64px;font-size:13px;color:var(--tx3);text-align:center}
+
+@media (max-width:734px){
+  :root{--g:20px}
+  body{font-size:16px}
+  .sec{padding-block:48px}
+  .hero{padding-block:44px 28px}
+  .st{grid-template-columns:1fr;gap:10px}
+  .key{padding:24px 22px}
+  .dec{padding:22px 20px}
+}
+<style>
+.sc{width:100%;border-collapse:collapse;font-size:15px}
+.sc th,.sc td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.sc thead th{font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.sc tbody tr:last-child td{border-bottom:none}
+.sc td:first-child{width:22%}
+.sc td:nth-child(2){width:28%;color:var(--tx2);font-size:14px;line-height:1.5}
+.sc td.ng{color:var(--tx2);font-size:14px;line-height:1.5}
+.sc td b{font-weight:500;display:block;line-height:1.35}
+.sc td b a{color:var(--link);text-decoration:none}
+.sc td b a:hover{text-decoration:underline}
+.bs{display:block;font-family:var(--fm);font-size:10px;color:var(--tx3);margin-top:3px}
+.tblwrap{overflow-x:auto}
+.st{display:inline-block;font-family:var(--fm);font-size:10px;padding:3px 9px;border-radius:980px;white-space:nowrap}
+.st.ok{background:var(--green100);color:var(--green-tx)}
+.st.fi{background:var(--b100);color:var(--link)}
+.st.hz{background:var(--orange100);color:var(--orange-tx)}
+.st.pk{background:var(--alt);color:var(--tx3)}
+.st.nw{background:var(--red100);color:var(--red-tx)}
+.grp{margin-top:40px}
+.gh{padding-bottom:12px;border-bottom:2px solid var(--tx);margin-bottom:4px}
+.gh h3{font-family:var(--fd);font-size:20px;font-weight:700;letter-spacing:-.018em}
+.gh p{font-size:14px;color:var(--tx2);margin-top:4px}
+.tel{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-top:24px}
+.tc{background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:20px 22px;border-top:3px solid var(--ln)}
+.tc.ok{border-top-color:var(--green-tx)}.tc.fi{border-top-color:var(--blue)}
+.tc.hz{border-top-color:var(--orange-tx)}.tc.pk{border-top-color:var(--ln)}.tc.nw{border-top-color:var(--red-tx)}
+.tc b{display:block;font-family:var(--fd);font-size:30px;font-weight:700;letter-spacing:-.024em}
+.tc span{display:block;font-size:13.5px;color:var(--tx2);margin-top:3px;line-height:1.45}
+.leg{list-style:none;margin:20px 0 0;padding:0;display:grid;gap:0}
+.leg li{display:grid;grid-template-columns:120px 1fr;gap:16px;padding:10px 0;
+  border-bottom:1px solid var(--ln-s);font-size:14.5px;color:var(--tx2);align-items:start}
+.leg li:last-child{border-bottom:none}
+</style>
+
+<div class="bar"><div class="bar-in">
+  <b>Overzicht</b>
+  <a href="#stand">De stand</a>
+  <a href="#lijst">Alle documenten</a>
+  <a href="#volgorde">Wat ik eerst zou doen</a>
+  <button id="themeBtn" type="button">Donker</button>
+</div></div>
+
+<header class="wrap hdr">
+  <p class="kicker">INTERN &middot; 25 SEPTEMBER 2026</p>
+  <h1>Alles wat er ligt</h1>
+  <p class="lead">Vijfendertig documenten, waarvan zevenentwintig bestaan en acht nog niet. Per stuk een fase en een status, plus wat er nog moet gebeuren. De statussen zijn mijn inschatting &mdash; jij beslist.</p>
+</header>
+
+<main class="wrap">
+
+<section class="sec" id="stand">
+  <p class="kicker">DE STAND</p>
+  <h2>Waar het staat</h2>
+  <div class="tel">
+    <div class="tc ok"><b>3</b><span>Klaar. Bruikbaar zoals het er staat.</span></div>
+    <div class="tc fi"><b>11</b><span>Finetunen. Goed, maar er ontbreekt iets concreets.</span></div>
+    <div class="tc hz"><b>7</b><span>Herzien. Geschreven v&oacute;&oacute;r de koerswijziging.</span></div>
+    <div class="tc pk"><b>6</b><span>Parkeren. Heeft zijn werk gedaan.</span></div>
+    <div class="tc nw"><b>8</b><span>Nog beginnen. Bestaat niet.</span></div>
+  </div>
+  <div class="key" style="margin-top:28px">
+    <span class="k">WAT DEZE VERDELING ZEGT</span>
+    <p class="big">Maand 1 is af. Maand 2 tot en met 12 bestaat nog niet.</p>
+    <p>Alles wat je onder onboarding ziet staan is opengewerkt tot op handelingsniveau: 75 stappen, 27 middelen, werkinstructies. Onder samenwerking staat vijf keer &ldquo;nog beginnen&rdquo;. Dat is het echte beeld: je hebt de eerste maand tot in detail uitgewerkt en de twaalf maanden waar je je geld verdient nog niet. En juist daar leg je nu een resultaatafspraak op.</p>
+    <p style="margin-top:14px">De elf op finetunen zijn geen probleem, maar ze hangen wel aan elkaar. Drie dingen blokkeren er zes: de Webmix-tarieven, de staffels van MailerLite en Leadinfo, en de branchenormen. Los die drie op en de helft van deze lijst is klaar.</p>
+  </div>
+  <ul class="leg">
+    <li><span class="st ok">Klaar</span><span>Af. Er hoeft niets aan tot er iets anders verandert.</span></li>
+    <li><span class="st fi">Finetunen</span><span>De inhoud klopt; er ontbreekt een cijfer, een prijs of een aansluiting op een ander document.</span></li>
+    <li><span class="st hz">Herzien</span><span>Geschreven voordat we ads-first, legacy en de resultaatafspraak besloten. Moet langs de nieuwe lijn.</span></li>
+    <li><span class="st pk">Parkeren</span><span>Heeft gedaan waar het voor was. Bewaren als herkomst, niet meer bijwerken.</span></li>
+    <li><span class="st nw">Nog beginnen</span><span>Bestaat niet en is wel nodig.</span></li>
+  </ul>
+</section>
+
+<section class="sec" id="lijst">
+  <p class="kicker">DE LIJST</p>
+  <h2>Alle documenten</h2>
+  <p class="note">Gegroepeerd naar waar ze in het traject zitten. Titels met een link openen het document; de rest staat in de repository onder <code>styleguide/paginas/</code>.</p>
+  <div class="grp"><div class="gh"><h3>0 &middot; POSITIONERING</h3><p>Waar we voor staan. Intern, bepaalt alles daarna.</p></div><div class="tblwrap"><table class="sc"><thead><tr><th>Document</th><th>Waar het over gaat</th><th>Status</th><th>Wat er nog moet gebeuren</th></tr></thead><tbody><tr><td><b><a href="https://claude.ai/artifact/NoBMg8r3UnKQPUqF34Hb6S" target="_blank" rel="noopener">Propositie &mdash; one-pager</a></b><span class="bs">onepager.html</span></td><td>Probleem, wens, waarom dit werkt, en vier beslissingen. Gebruikt in het kwartaaloverleg.</td><td><span class="st ok">Klaar</span></td><td class="ng">Niets. Besluiten zijn genomen; bewaar hem als vastlegging van dat moment.</td></tr><tr><td><b><a href="https://claude.ai/artifact/TCKWH7aLc9CRhppchdUsJ4" target="_blank" rel="noopener">Waarom deze keuzes</a></b><span class="bs">keuzes.html</span></td><td>De onderbouwing onder het schrappen van social media beheer: arbeid tegenover bereik, de scroll-oefening, drie krachten.</td><td><span class="st fi">Finetunen</span></td><td class="ng">Prijs voor templates en contentsessie. En de tien uur toetsen aan wat jullie er nu feitelijk aan besteden.</td></tr><tr><td><b><a href="https://claude.ai/artifact/DqFd3EsMp5uryN8W5nB9DV" target="_blank" rel="noopener">De methode</a></b><span class="bs">arena-methode.html</span></td><td>Middelpunt, motor, versnellers. Vijf fasen, het ritme per pakket en de grens tussen retainer en project.</td><td><span class="st fi">Finetunen</span></td><td class="ng">De spanning tussen resultaatafspraak en &ldquo;extra content is een project&rdquo; oplossen. En de consequentie bepalen als het doel niet gehaald wordt.</td></tr><tr><td><b>De propositie</b><span class="bs">propositie.html</span></td><td>Het oorspronkelijke propositiedocument, met de motor-sectie erin verwerkt.</td><td><span class="st hz">Herzien</span></td><td class="ng">Geschreven v&oacute;&oacute;r de besluiten over legacy, resultaatafspraak en het schrappen van social beheer. Moet langs de nieuwe lijn.</td></tr><tr><td><b><a href="https://claude.ai/artifact/N4o7G7tEAuguyAUTnaj4Vs" target="_blank" rel="noopener">De trechter</a></b><span class="bs">trechter.html</span></td><td>Wat we meten, de drie percentages, en per knelpunt de knoppen. Plus wat wij niet kunnen oplossen.</td><td><span class="st ok">Klaar</span></td><td class="ng">Alleen de branchenormen ontbreken: wanneer is een percentage goed en wanneer niet.</td></tr></tbody></table></div></div><div class="grp"><div class="gh"><h3>1 &middot; VERKOOP</h3><p>Wat de klant ziet, van eerste contact tot handtekening.</p></div><div class="tblwrap"><table class="sc"><thead><tr><th>Document</th><th>Waar het over gaat</th><th>Status</th><th>Wat er nog moet gebeuren</th></tr></thead><tbody><tr><td><b><a href="https://claude.ai/artifact/3wvHd94vLGXJUD4voVhwH1" target="_blank" rel="noopener">Drieluik &mdash; drukwerk</a></b><span class="bs">drieluik-drukwerk.html</span></td><td>De gatefold A3 die op tafel komt: line-up, gameplan, eerste campagne. Drukklaar.</td><td><span class="st fi">Finetunen</span></td><td class="ng">Kaft kiezen, drie Webmix-bedragen vastzetten, staffels invullen. Pas daarna naar de drukker.</td></tr><tr><td><b><a href="https://claude.ai/artifact/DRmSDuqCbCatZbdvgeq5XU" target="_blank" rel="noopener">Tarieven</a></b><span class="bs">tarieven.html</span></td><td>De volledige prijslijst die de klant krijgt n&aacute; de intake en v&oacute;&oacute;r de diagnose, met de negen metingen.</td><td><span class="st fi">Finetunen</span></td><td class="ng">Staffels van MailerLite en Leadinfo, Webmix-tarieven, en de negen metingen meetbaar maken.</td></tr><tr><td><b><a href="https://claude.ai/artifact/1588QStq1wRnDQEPFCBUj3" target="_blank" rel="noopener">Pakketten</a></b><span class="bs">pakketten.html</span></td><td>Enter, Compete en Own met hun scope.</td><td><span class="st fi">Finetunen</span></td><td class="ng">Aansluiten op de methode en de grenslijst. Controleren of de draaidag in de set-up meetelt als draaidag van het jaar.</td></tr><tr><td><b><a href="https://claude.ai/artifact/QPqaaoJkp2k7WQoAKyM5Qf" target="_blank" rel="noopener">ARENA-sessie</a></b><span class="bs">arena-sessie.html</span></td><td>Het presentatie-instrument voor aan tafel: diagnose, doorrekening, voorstel.</td><td><span class="st hz">Herzien</span></td><td class="ng">Draait nog op de oude retainers en vier opbrengsttypen. Dit is het zwaarste herzieningsklusje en ook het meest urgente, want je gebruikt het aan tafel.</td></tr><tr><td><b><a href="https://claude.ai/artifact/EAi1TbvfBtz8VK6i6soSh2" target="_blank" rel="noopener">Het drieluik &mdash; inhoud</a></b><span class="bs">drieluik.html</span></td><td>Het werkdocument waarin de inhoud van het drieluik is uitgedacht.</td><td><span class="st pk">Parkeren</span></td><td class="ng">Opgegaan in het drukwerk. Bewaren als verantwoording, niet meer bijwerken.</td></tr><tr><td><b>De ARENA-diagnose</b><span class="bs">diagnose.html</span></td><td>Typering van klanten op basis van wat er n&aacute; de conversie gebeurt.</td><td><span class="st hz">Herzien</span></td><td class="ng">Toetsen of deze indeling nog past nu ecom en werving zijn geschrapt. Mogelijk grotendeels overbodig.</td></tr></tbody></table></div></div><div class="grp"><div class="gh"><h3>2 &middot; ONBOARDING</h3><p>Maand 1. Het fundament, opengewerkt tot op handelingsniveau.</p></div><div class="tblwrap"><table class="sc"><thead><tr><th>Document</th><th>Waar het over gaat</th><th>Status</th><th>Wat er nog moet gebeuren</th></tr></thead><tbody><tr><td><b><a href="https://claude.ai/artifact/2cRdiCAwLjNSNgapJrKBiq" target="_blank" rel="noopener">Het fundament</a></b><span class="bs">fundament.html</span></td><td>28 onderdelen in 75 stappen, 52 uur, &euro; 4.500. Met de posten die erbij kunnen komen.</td><td><span class="st fi">Finetunen</span></td><td class="ng">Bijwerken naar de besluiten van deze week: content vast in de set-up, en een stap voor het vastleggen van de doelregel en de resultaatafspraak.</td></tr><tr><td><b><a href="https://claude.ai/artifact/2G2SR7dMLsarsdFKdcCtoc" target="_blank" rel="noopener">Het playbook</a></b><span class="bs">playbook.html</span></td><td>Dezelfde 75 stappen met per stap de rol, het middel en het afvinkpunt. Plus de bouwlijst van 27 standaarden.</td><td><span class="st fi">Finetunen</span></td><td class="ng">Volgt automatisch uit het fundament; bijwerken zodra dat is aangepast.</td></tr><tr><td><b><a href="https://claude.ai/artifact/WzeqRLH8woNAdt5PezsqwG" target="_blank" rel="noopener">De werkinstructies</a></b><span class="bs">werkinstructies.html</span></td><td>Per onderdeel: doel, benodigdheden, handelingen, valkuil en klaar-als.</td><td><span class="st fi">Finetunen</span></td><td class="ng">Toetsen door iemand uit het team die het onderdeel nooit heeft gedaan. Daar waar hij vastloopt staat te weinig.</td></tr><tr><td><b><a href="https://claude.ai/artifact/E6xKJ1iY2hJUuxbw9XDQW3" target="_blank" rel="noopener">Het intakeformulier</a></b><span class="bs">intakeformulier.html</span></td><td>Tien vragen bij de aanvraag, zesenveertig na de handtekening, met de toelichting.</td><td><span class="st fi">Finetunen</span></td><td class="ng">Vier velden toevoegen: huidige omzet, huidige marketinguitgaven, seizoen en brutomarge.</td></tr><tr><td><b><a href="https://claude.ai/artifact/VpvAd5jmXtjmkZGpv59Qp1" target="_blank" rel="noopener">Antwoorden beoordelen</a></b><span class="bs">antwoorden-beoordelen.html</span></td><td>Handeling 2: per vraag wanneer een antwoord bruikbaar is, en wat je doet als het dat niet is.</td><td><span class="st ok">Klaar</span></td><td class="ng">Niets, tot het formulier verandert.</td></tr><tr><td><b><a href="https://claude.ai/artifact/6esJ97gyMhPoqK9vEPNGpJ" target="_blank" rel="noopener">Doel narekenen</a></b><span class="bs">doel-narekenen.html</span></td><td>Handeling 3: zes sommen van omzetdoel naar aanvragen per maand en maximale kosten per aanvraag, met rekenblad.</td><td><span class="st fi">Finetunen</span></td><td class="ng">De acquisitieruimte van 25% vastzetten en de branchegemiddelden voor conversie bepalen.</td></tr></tbody></table></div></div><div class="grp"><div class="gh"><h3>3 &middot; SAMENWERKING</h3><p>Maand 2 tot en met 12. Hier verdien je je geld, en hier ligt het minste vast.</p></div><div class="tblwrap"><table class="sc"><thead><tr><th>Document</th><th>Waar het over gaat</th><th>Status</th><th>Wat er nog moet gebeuren</th></tr></thead><tbody><tr><td><b>Stappenlijst fase 2 tot en met 4</b><span class="bs">&mdash;</span></td><td>Dezelfde oefening als de 75 stappen, maar dan voor de twaalf maanden na de onboarding.</td><td><span class="st nw">Nog beginnen</span></td><td class="ng">Nog te beginnen. Dit is het grootste gat: je verkoopt een resultaatafspraak over werk dat nergens beschreven staat.</td></tr><tr><td><b>Het leadportal</b><span class="bs">&mdash;</span></td><td>Waar aanvragen landen. De voorwaarde onder &ldquo;wij koppelen niet met jouw CRM&rdquo;.</td><td><span class="st nw">Nog beginnen</span></td><td class="ng">Specificeren en bouwen. Langste doorlooptijd van alles op deze lijst, dus parallel starten.</td></tr><tr><td><b>De zes AI-instructies</b><span class="bs">&mdash;</span></td><td>Vaste prompts voor doelgroep, propositie, concurrentieanalyse, bevindingenrapport, advertentieteksten en zoekwoorden.</td><td><span class="st nw">Nog beginnen</span></td><td class="ng">Twaalf van de 75 stappen hangen eraan. Begin met de propositie-instructie: die raakt vier stappen.</td></tr><tr><td><b>Checklist technische audit</b><span class="bs">&mdash;</span></td><td>De negen metingen met per meting het gereedschap en de drempelwaarde.</td><td><span class="st nw">Nog beginnen</span></td><td class="ng">Zonder drempels kun je de tarievenkaart niet publiceren, want daar wijst een meting naar een bedrag.</td></tr><tr><td><b>De toegangenlijst</b><span class="bs">&mdash;</span></td><td>Zes toegangen met per stuk een instructie voor de klant.</td><td><span class="st nw">Nog beginnen</span></td><td class="ng">Het veld waar elke onboarding op vastloopt als je het niet apart uitwerkt.</td></tr></tbody></table></div></div><div class="grp"><div class="gh"><h3>&middot; BEDRIJFSVOERING</h3><p>Niet klantgericht, wel bepalend.</p></div><div class="tblwrap"><table class="sc"><thead><tr><th>Document</th><th>Waar het over gaat</th><th>Status</th><th>Wat er nog moet gebeuren</th></tr></thead><tbody><tr><td><b>Legacy- en scopebeleid</b><span class="bs">&mdash;</span></td><td>Wat vervalt, wat projectmatig wordt, de legacy-regeling tot 31 december 2027 en de standaardgesprekken.</td><td><span class="st nw">Nog beginnen</span></td><td class="ng">Nog te beginnen. Hier zit de tussenmijlpaal die ik zou toevoegen: 1 juli 2027 heeft elke legacy-klant getekend of een opzegdatum.</td></tr><tr><td><b>Migratieplan bestaande klanten</b><span class="bs">&mdash;</span></td><td>Per klant: past hij in het nieuwe model, en zo nee per wanneer en met welk gesprek.</td><td><span class="st nw">Nog beginnen</span></td><td class="ng">Nog te beginnen. Volgt uit het legacybeleid.</td></tr><tr><td><b>Leadinfo sales sheet</b><span class="bs">&mdash;</span></td><td>Wat het is, voor wie wel en niet, de staffel, en dat wij de set-up kosteloos regelen.</td><td><span class="st nw">Nog beginnen</span></td><td class="ng">Eerst beslissen hoe je omgaat met de vergoeding die je erop krijgt.</td></tr><tr><td><b><a href="https://claude.ai/artifact/YaciX3Ayq3Rdy7bsaPnoeF" target="_blank" rel="noopener">Backlog</a></b><span class="bs">backlog.html</span></td><td>Wat er nog ligt, in volgorde van wat het verhaal het meest afmaakt.</td><td><span class="st fi">Finetunen</span></td><td class="ng">Bijwerken met alles wat sinds deze week is bijgekomen. Of vervangen door dit overzicht.</td></tr></tbody></table></div></div><div class="grp"><div class="gh"><h3>&middot; EIGEN WEBSITE</h3><p>Gemaakt v&oacute;&oacute;r de koerswijziging. De site volgt de propositie, dus dit wacht.</p></div><div class="tblwrap"><table class="sc"><thead><tr><th>Document</th><th>Waar het over gaat</th><th>Status</th><th>Wat er nog moet gebeuren</th></tr></thead><tbody><tr><td><b>Homepage</b><span class="bs">homepage.html</span></td><td>Concept voor de eigen homepage.</td><td><span class="st hz">Herzien</span></td><td class="ng">Wacht tot de propositie vastligt. Nu herschrijven is dubbel werk.</td></tr><tr><td><b>Werkwijze</b><span class="bs">werkwijze.html</span></td><td>Hoe we werken, voor op de site.</td><td><span class="st hz">Herzien</span></td><td class="ng">Idem.</td></tr><tr><td><b>Social advertising</b><span class="bs">social-advertising.html</span></td><td>Dienstpagina.</td><td><span class="st hz">Herzien</span></td><td class="ng">Past inhoudelijk beter bij de nieuwe koers dan de rest, maar moet langs de nieuwe lijn.</td></tr><tr><td><b>Website roadmap</b><span class="bs">roadmap.html</span></td><td>Zevenenveertig items verdeeld over een jaar.</td><td><span class="st hz">Herzien</span></td><td class="ng">Gemaakt op de oude propositie. Opnieuw prioriteren zodra de nieuwe staat.</td></tr><tr><td><b>Het datamodel</b><span class="bs">datamodel.html</span></td><td>Hoe de site technisch groeit zonder herbouw.</td><td><span class="st pk">Parkeren</span></td><td class="ng">Technisch en los van de propositie. Oppakken als de site aan de beurt is.</td></tr></tbody></table></div></div><div class="grp"><div class="gh"><h3>&middot; ARCHIEF</h3><p>Denkwerk dat zijn werk heeft gedaan. Niet weggooien, wel parkeren.</p></div><div class="tblwrap"><table class="sc"><thead><tr><th>Document</th><th>Waar het over gaat</th><th>Status</th><th>Wat er nog moet gebeuren</th></tr></thead><tbody><tr><td><b>ARENA &mdash; de naam</b><span class="bs">stadion.html</span></td><td>De metafoor en het fundament in drie lagen.</td><td><span class="st pk">Parkeren</span></td><td class="ng">ARENA blijft de naam, maar de vijf letters zijn geen model meer. Bewaren als herkomst.</td></tr><tr><td><b>Het speelveld</b><span class="bs">speelveld.html</span></td><td>De vijf onderdelen uitgetekend met hun onderlinge werking.</td><td><span class="st pk">Parkeren</span></td><td class="ng">Vervangen door de methode: middelpunt, motor, versnellers.</td></tr><tr><td><b>CUBE</b><span class="bs">cube.html</span></td><td>Een eerder indelingsmodel: zes vlakken, twee ringen, &eacute;&eacute;n grens.</td><td><span class="st pk">Parkeren</span></td><td class="ng">Afgevallen.</td></tr><tr><td><b>Het doel</b><span class="bs">doel.html</span></td><td>De laag onder de propositie: zonder afgesproken doel is elke activiteit te verdedigen.</td><td><span class="st pk">Parkeren</span></td><td class="ng">De kern hiervan zit nu in het rekenblad en de trechter.</td></tr></tbody></table></div></div>
+</section>
+
+<section class="sec" id="volgorde">
+  <p class="kicker">ADVIES</p>
+  <h2>Wat ik eerst zou doen</h2>
+  <p class="note">Niet op belangrijkheid maar op wat het meeste deblokkeert, want een deel van deze lijst wacht op elkaar.</p>
+  <div class="stack">
+    <div class="st" style="display:block"><span class="lab">DEZE WEEK &middot; DEBLOKKEERT ZES DOCUMENTEN</span><div class="bd"><h4>Drie keer een telefoontje</h4><p>Webmix bellen voor de drie hersteltarieven. De staffels van MailerLite en Leadinfo ophalen. En de negen metingen voorzien van een gereedschap en een drempelwaarde. Dat is bij elkaar minder dan een dag werk en het haalt de tarievenkaart, het drieluik, het fundament, de trechter en de sales sheet van hun blokkade af.</p></div></div>
+    <div class="st" style="display:block"><span class="lab">PARALLEL, WANT HET DUURT HET LANGST</span><div class="bd"><h4>Het leadportal specificeren</h4><p>Alles op deze lijst is beschrijven en dat gaat snel. Dit is bouwen. Als je hem niet nu start, is hij niet af wanneer de eerste nieuwe klant tekent &mdash; en dan kun je de belofte die je hele model draagt niet waarmaken.</p></div></div>
+    <div class="st" style="display:block"><span class="lab">DAARNA &middot; HET GROOTSTE GAT</span><div class="bd"><h4>De stappenlijst voor fase 2 tot en met 4</h4><p>Twaalf maanden dienstverlening die nergens beschreven staan, met een resultaatafspraak eroverheen. Dit is waar je je geld verdient en waar je risico zit. Dezelfde oefening als de 75 stappen, alleen groter.</p></div></div>
+    <div class="st" style="display:block"><span class="lab">URGENT, MAAR PAS ALS DE REST STAAT</span><div class="bd"><h4>De ARENA-sessie herzien</h4><p>Het enige document dat je fysiek aan tafel gebruikt en het draait nog op de oude retainers en vier opbrengsttypen. Het staat hier laag omdat het pas te herzien is als de tarieven en de methode vastliggen &mdash; maar zodra dat zo is, is dit het eerste wat moet.</p></div></div>
+  </div>
+  <div class="key" style="margin-top:26px">
+    <span class="k">EN E&Eacute;N WAARSCHUWING</span>
+    <p class="big">Vijfendertig documenten is geen probleem. Vijfendertig documenten die elkaar tegenspreken w&eacute;l.</p>
+    <p>Op dit moment staat het bedrag voor de afsprakenplanner op vier plekken, de negen metingen op drie, en de pakketinhoud op vier. Elke keer dat je iets wijzigt moet je weten waar het nog meer staat. Daar is nu &eacute;&eacute;n oplossing voor die weinig kost: houd dit overzicht bij als de enige plek waar de stand staat, en zet bij elk document dat je aanpast welke andere documenten dan mee moeten. Doe je dat niet, dan is over een maand niet meer te zeggen welk document de waarheid bevat.</p>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap foot">James Robinson &mdash; Marketing &amp; Branding &middot; Overzicht, 25 september 2026</footer>
+
+<script>
+(function(){
+  var root=document.documentElement,tb=document.getElementById('themeBtn');
+  if(!tb) return;
+  function cur(){var t=root.getAttribute('data-theme');return t||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}
+  function sync(){tb.textContent=cur()==='dark'?'Licht':'Donker'}
+  sync();
+  tb.addEventListener('click',function(){root.setAttribute('data-theme',cur()==='dark'?'light':'dark');sync()});
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',sync);
+})();
+</script>
