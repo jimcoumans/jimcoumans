@@ -1,0 +1,388 @@
+<title>De trechter &middot; James Robinson</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@600;700&display=swap">
+<style>
+:root{
+  --page:#fbfbfd; --card:#fff; --alt:#f5f5f7;
+  --tx:#1d1d1f; --tx2:#6e6e73; --tx3:#86868b;
+  --ln:#d2d2d7; --ln-s:#e5e5e9;
+  --blue:#007aff; --link:#0066cc; --act:#0857c3;
+  --b100:#e0efff; --b50:#f4f9ff;
+  --lime:#c4f000; --lime-tx:#5a7000; --lime100:#f2fccc;
+  --green-tx:#1d7d3f; --green100:#e6f7eb;
+  --orange-tx:#94590a; --orange100:#fef2e0;
+  --red-tx:#c02a22; --red100:#fdecea;
+  --black:#1c1c1e; --inv:#f5f5f7; --inv2:#a1a1a6;
+  --fd:"Inter Tight","Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --ft:"Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --fm:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --e:cubic-bezier(.25,.1,.25,1);--g:32px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}}
+:root[data-theme="dark"]{
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--tx);font-family:var(--ft);font-size:16.5px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition-duration:.01ms!important}}
+:focus-visible{outline:none;box-shadow:0 0 0 4px rgba(0,122,255,.4);border-radius:8px}
+p{margin:0 0 18px;max-width:70ch}
+p:last-child{margin-bottom:0}
+h1,h2,h3,h4{font-family:var(--fd);margin:0;text-wrap:balance}
+code{font-family:var(--fm);font-size:.86em;background:var(--alt);padding:2px 6px;border-radius:5px}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:60;background:rgba(251,251,253,.86);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--ln-s)}
+:root[data-theme="dark"] .bar,:root:not([data-theme="light"]) .bar{background:rgba(0,0,0,.74)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .bar{background:rgba(251,251,253,.86)}}
+.bar-in{max-width:1080px;margin:0 auto;padding:0 var(--g);display:flex;align-items:center;gap:5px;min-height:48px;overflow-x:auto;scrollbar-width:none}
+.bar-in::-webkit-scrollbar{display:none}
+.bar b{font-family:var(--fd);font-size:14.5px;font-weight:700;letter-spacing:-.016em;margin-right:8px;white-space:nowrap}
+.bar a{font-size:12.5px;color:var(--tx2);text-decoration:none;padding:6px 8px;border-radius:7px;white-space:nowrap}
+.bar a:hover{color:var(--tx)}
+.bar button{margin-left:auto;flex:none;font:inherit;font-size:12px;cursor:pointer;background:transparent;border:1px solid var(--ln);color:var(--tx2);border-radius:980px;padding:5px 13px}
+
+.wrap{max-width:1080px;margin:0 auto;padding-inline:var(--g)}
+.hero{padding-block:76px 40px}
+h1{font-size:clamp(34px,5.4vw,58px);font-weight:700;line-height:1.06;letter-spacing:-.026em;margin-bottom:20px}
+.lead{font-size:20px;line-height:1.5;color:var(--tx2);max-width:64ch}
+.sec{padding-block:60px;border-top:1px solid var(--ln-s)}
+h2{font-size:clamp(26px,3.4vw,38px);font-weight:700;line-height:1.12;letter-spacing:-.02em;margin-bottom:8px}
+.sec > .kicker{font-family:var(--fm);font-size:11px;letter-spacing:.06em;color:var(--tx3);margin-bottom:14px}
+h3{font-size:21px;font-weight:600;line-height:1.24;letter-spacing:-.012em;margin:38px 0 10px}
+h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
+.note{color:var(--tx2)}
+.note b,b{color:var(--tx);font-weight:600}
+
+/* kernblok */
+.key{background:var(--black);color:var(--inv);border-radius:22px;padding:34px 32px;margin:26px 0}
+.key .k{display:block;font-family:var(--fm);font-size:10.5px;letter-spacing:.06em;color:var(--lime);margin-bottom:14px}
+.key p{color:var(--inv2);font-size:17.5px;max-width:64ch}
+.key strong{color:#fff;font-weight:600}
+.key .big{font-family:var(--fd);font-size:clamp(22px,3vw,30px);font-weight:600;line-height:1.2;letter-spacing:-.018em;color:#fff;margin-bottom:16px}
+
+/* lagen van het aanbod */
+.stack{display:grid;gap:12px;margin-top:24px}
+.st{background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;display:grid;grid-template-columns:132px 1fr;gap:20px;align-items:start}
+.st .lab{font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;color:var(--act);padding-top:3px}
+.st .bd p{margin:0;font-size:15.5px;color:var(--tx2)}
+.st .bd h4{margin-bottom:5px}
+
+/* kandidaten */
+.cands{display:grid;gap:12px;margin-top:22px}
+.cand{border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;background:var(--card)}
+.cand.win{border-color:var(--lime);box-shadow:0 0 0 1px var(--lime)}
+.cand .zin{font-family:var(--fd);font-size:22px;font-weight:600;letter-spacing:-.014em;margin-bottom:8px}
+.cand .why{font-size:15px;color:var(--tx2);margin:0}
+.cand .verdict{display:inline-block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;border-radius:5px;padding:3px 7px;margin-bottom:12px}
+.cand .verdict.no{background:var(--red100);color:var(--red-tx)}
+.cand .verdict.ok{background:var(--lime100);color:var(--lime-tx)}
+.cand .verdict.mid{background:var(--orange100);color:var(--orange-tx)}
+
+/* onderscheid */
+.dist{width:100%;border-collapse:collapse;font-size:15px;margin-top:22px}
+.dist th,.dist td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.dist thead th{font-family:var(--fm);font-size:10.5px;letter-spacing:.04em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.dist td:first-child{font-weight:500;width:34%}
+.dist .v{font-family:var(--fm);font-size:11px;white-space:nowrap}
+.dist .v.y{color:var(--green-tx)}
+.dist .v.n{color:var(--red-tx)}
+.dist tr:last-child td{border-bottom:none}
+.tblwrap{overflow-x:auto}
+
+/* beslissingen */
+.dec{border:1px solid var(--ln-s);border-radius:18px;background:var(--card);padding:26px 28px;margin-top:14px}
+.dec .hd{display:flex;align-items:baseline;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.dec .num{font-family:var(--fm);font-size:11px;color:var(--tx3);flex:none}
+.dec h4{font-size:19px;flex:1;min-width:220px;margin:0}
+.dec .tag{font-family:var(--fm);font-size:9.5px;letter-spacing:.05em;border-radius:5px;padding:3px 7px}
+.dec .tag.blok{background:var(--red100);color:var(--red-tx)}
+.dec .tag.schaal{background:var(--orange100);color:var(--orange-tx)}
+.dec .tag.scherp{background:var(--b100);color:var(--act)}
+.dec .q{font-size:16px;color:var(--tx2);margin:0 0 16px}
+.dec .adv{background:var(--b50);border-left:3px solid var(--act);border-radius:0 10px 10px 0;padding:16px 18px}
+.dec .adv .al{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.06em;color:var(--act);margin-bottom:7px}
+.dec .adv p{font-size:15.5px;margin:0 0 10px}
+.dec .adv p:last-child{margin-bottom:0}
+
+/* vast */
+.locked{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-top:22px}
+.lk{background:var(--card);border:1px solid var(--ln-s);border-radius:14px;padding:18px 20px}
+.lk .t{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--green-tx);margin-bottom:7px}
+.lk .b{font-size:15px;color:var(--tx2);line-height:1.45}
+.lk .b b{color:var(--tx)}
+
+.warn{background:var(--orange100);border-radius:18px;padding:24px 26px;margin-top:26px}
+.warn h4{color:var(--orange-tx)}
+.warn p{color:var(--orange-tx);opacity:.94;font-size:15.5px;max-width:none}
+.foot{padding-block:44px 64px;font-size:13px;color:var(--tx3);text-align:center}
+
+@media (max-width:734px){
+  :root{--g:20px}
+  body{font-size:16px}
+  .sec{padding-block:48px}
+  .hero{padding-block:44px 28px}
+  .st{grid-template-columns:1fr;gap:10px}
+  .key{padding:24px 22px}
+  .dec{padding:22px 20px}
+}
+<style>
+.sc{width:100%;border-collapse:collapse;font-size:15px}
+.sc th,.sc td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.sc thead th{font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.sc tbody tr:last-child td{border-bottom:none}
+.tblwrap{overflow-x:auto}
+
+.tr{margin-top:26px}
+.sch{background:var(--card);border:1px solid var(--ln);border-radius:16px;padding:20px 24px;
+  display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center}
+.sch .nm{font-family:var(--fd);font-size:20px;font-weight:700;letter-spacing:-.018em}
+.sch .om{font-size:14px;color:var(--tx2);margin-top:3px;max-width:56ch;line-height:1.5}
+.sch .vl{font-family:var(--fd);font-size:30px;font-weight:700;letter-spacing:-.024em;
+  font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right}
+.sch .vl em{display:block;font-style:normal;font-family:var(--fm);font-size:10px;color:var(--tx3);
+  letter-spacing:.05em;font-weight:400;margin-top:3px}
+.sch.eind{background:var(--black);border-color:var(--black)}
+.sch.eind .nm,.sch.eind .vl{color:#fff}
+.sch.eind .om{color:var(--inv2)}
+.pc{display:flex;align-items:center;gap:14px;padding:10px 0 10px 24px}
+.pc .bar{width:2px;height:30px;background:var(--ln)}
+.pc .lb{font-family:var(--fm);font-size:11px;color:var(--tx3);letter-spacing:.04em}
+.pc .pv{font-family:var(--fm);font-size:15px;color:var(--blue);font-weight:600}
+
+.calc{background:var(--alt);border-radius:18px;padding:26px 28px;margin-top:24px}
+.calc h4{font-family:var(--fd);font-size:18px;font-weight:600}
+.ci{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-top:18px}
+.ci label{display:block;font-size:13.5px;color:var(--tx2)}
+.ci .w2{display:flex;margin-top:6px}
+.ci input{width:100%;min-width:0;font:inherit;font-size:15px;text-align:right;color:var(--tx);
+  background:var(--card);border:1px solid var(--ln);padding:9px 11px;border-radius:8px;font-variant-numeric:tabular-nums}
+.ci .af{display:flex;align-items:center;padding:0 10px;background:var(--card);border:1px solid var(--ln);
+  color:var(--tx2);font-size:14px}
+.ci .af.l{border-right:none;border-radius:8px 0 0 8px}
+.ci .af.r{border-left:none;border-radius:0 8px 8px 0}
+.ci .w2 .af.l + input{border-radius:0 8px 8px 0}
+.ci .w2 input:first-child{border-radius:8px 0 0 8px}
+.ci input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,122,255,.15)}
+.co{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px;margin-top:20px;
+  padding-top:18px;border-top:1px solid var(--ln)}
+.co div span{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--tx3)}
+.co div b{display:block;font-family:var(--fd);font-size:24px;font-weight:700;letter-spacing:-.022em;
+  font-variant-numeric:tabular-nums;margin-top:4px}
+.hef{margin-top:18px;padding:14px 16px;background:var(--lime100);border-radius:12px;
+  font-size:14.5px;line-height:1.55;color:var(--lime-tx)}
+.hef b{font-weight:600}
+
+.blok{background:var(--card);border:1px solid var(--ln-s);border-radius:20px;padding:26px 28px;margin-top:16px}
+.bh{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;padding-bottom:12px;border-bottom:2px solid var(--ln)}
+.bl{font-family:var(--fd);font-size:26px;font-weight:700;letter-spacing:-.03em;line-height:1;color:var(--tx3)}
+.bh h3{font-family:var(--fd);font-size:21px;font-weight:600;letter-spacing:-.016em;flex:1;min-width:0}
+.wie{font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--blue);
+  border:1px solid var(--ln);border-radius:980px;padding:4px 11px;white-space:nowrap}
+.bz{font-size:15px;line-height:1.55;color:var(--tx2);margin-top:13px;max-width:76ch}
+.bk{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:18px}
+@media(max-width:820px){.bk{grid-template-columns:1fr}}
+.lbl{display:block;font-family:var(--fm);font-size:9.5px;letter-spacing:.07em;color:var(--tx3);margin-bottom:7px}
+.ls{list-style:none;margin:0;padding:0}
+.ls li{font-size:14.5px;line-height:1.5;color:var(--tx2);padding:6px 0 6px 16px;position:relative}
+.ls li::before{content:"";position:absolute;left:0;top:13px;width:5px;height:5px;border-radius:50%}
+.ls.o li::before{background:var(--orange-tx)}
+.ls.k li::before{background:var(--green-tx)}
+</style>
+
+<div class="bar"><div class="bar-in">
+  <b>De trechter</b>
+  <a href="#keten">De keten</a>
+  <a href="#hefboom">De hefboom</a>
+  <a href="#vast">Als het vastloopt</a>
+  <a href="#buiten">Wat wij niet oplossen</a>
+  <button id="themeBtn" type="button">Donker</button>
+</div></div>
+
+<header class="wrap hdr">
+  <p class="kicker">VERWACHTINGSMANAGEMENT &middot; VOORAF</p>
+  <h1>Wat we meten, en wat het kan zijn als het tegenvalt</h1>
+  <p class="lead">Vier schakels tussen een advertentie en een klant. Elke schakel heeft een percentage, en elk percentage heeft zijn eigen knoppen. Dit leggen we uit v&oacute;&oacute;r de start &mdash; niet omdat we een voorbehoud willen maken, maar omdat je dan in maand zes niet hoeft te horen dat het aan je huisstijl ligt.</p>
+</header>
+
+<main class="wrap">
+
+<section class="sec" id="keten">
+  <p class="kicker">DE KETEN</p>
+  <h2>Vier schakels, drie percentages</h2>
+  <p class="note">De getallen hieronder zijn het voorbeeld uit de doorrekening: 21 aanvragen per maand tegen maximaal &euro; 150. Bij jouw cijfers ziet het er anders uit, maar de keten is altijd deze.</p>
+  <div class="tr">
+    <div class="sch"><div><p class="nm">Weergaven</p><p class="om">Hoe vaak je advertentie is getoond aan iemand die past bij wie we zoeken.</p></div>
+      <div class="vl">23.333<em>PER MAAND</em></div></div>
+    <div class="pc"><span class="bar"></span><span class="lb">DOORKLIKRATIO</span><span class="pv">3%</span></div>
+    <div class="sch"><div><p class="nm">Websitebezoekers</p><p class="om">Mensen die geklikt hebben en op je landingspagina terechtkomen. Hier betaal je voor, per klik.</p></div>
+      <div class="vl">700<em>PER MAAND</em></div></div>
+    <div class="pc"><span class="bar"></span><span class="lb">CONVERSIERATIO</span><span class="pv">3%</span></div>
+    <div class="sch"><div><p class="nm">Aanvragen</p><p class="om">Bezoekers die het formulier invullen of bellen. Dit is waar wij op afgerekend worden.</p></div>
+      <div class="vl">21<em>PER MAAND</em></div></div>
+    <div class="pc"><span class="bar"></span><span class="lb">SCORINGSRATIO</span><span class="pv">20%</span></div>
+    <div class="sch eind"><div><p class="nm">Klanten</p><p class="om">Aanvragen die opdracht worden. Vanaf hier is het jouw verkoopgesprek &mdash; wij leveren de aanvraag, jij maakt er een klant van.</p></div>
+      <div class="vl">4<em>PER MAAND</em></div></div>
+  </div>
+  <div class="key" style="margin-top:28px">
+    <span class="k">DE BELANGRIJKSTE REGEL VAN DEZE PAGINA</span>
+    <p class="big">Van de vier schakels zijn er drie van ons en &eacute;&eacute;n van jou.</p>
+    <p>Wij zorgen dat er weergaven zijn, dat er geklikt wordt en dat er aangevraagd wordt. Of die aanvraag klant wordt, bepaal jij &mdash; met hoe snel je belt, met je aanbod en met je prijs. Dat is geen voorbehoud maar een taakverdeling, en hij staat hier zodat je hem kent voordat we beginnen in plaats van erna.</p>
+  </div>
+</section>
+
+<section class="sec" id="hefboom">
+  <p class="kicker">DE HEFBOOM</p>
+  <h2>Waarom die percentages het hele verhaal zijn</h2>
+  <p class="note">Verander &eacute;&eacute;n getal en kijk wat er met de kosten per aanvraag gebeurt. Dit is precies wat de versnellers doen: ze raken een percentage, niet je budget.</p>
+  <div class="calc">
+    <h4>Reken het zelf door</h4>
+    <div class="ci">
+      <div><label>Mediabudget per maand</label><div class="w2"><span class="af l">&euro;</span><input id="iB" value="3150"></div></div>
+      <div><label>Kosten per klik</label><div class="w2"><span class="af l">&euro;</span><input id="iC" value="4,50"></div></div>
+      <div><label>Doorklikratio</label><div class="w2"><input id="iT" value="3"><span class="af r">%</span></div></div>
+      <div><label>Conversieratio</label><div class="w2"><input id="iV" value="3"><span class="af r">%</span></div></div>
+    </div>
+    <div class="co">
+      <div><span>WEERGAVEN</span><b id="oW">&mdash;</b></div>
+      <div><span>BEZOEKERS</span><b id="oK">&mdash;</b></div>
+      <div><span>AANVRAGEN</span><b id="oA">&mdash;</b></div>
+      <div><span>PER AANVRAAG</span><b id="oP">&mdash;</b></div>
+    </div>
+    <p class="hef" id="hef"></p>
+  </div>
+  <div class="key" style="margin-top:26px">
+    <span class="k">WAT DIT LAAT ZIEN</span>
+    <p class="big">Een procentpunt op de conversieratio is meer waard dan duizend euro extra budget.</p>
+    <p>Van 3% naar 4% conversie levert zeven extra aanvragen op zonder dat er &eacute;&eacute;n euro bij komt, en de kostprijs per aanvraag zakt van &euro; 150 naar &euro; 112. Meer budget levert je meer aanvragen tegen dezelfde prijs; een beter percentage levert je meer aanvragen tegen een l&aacute;gere prijs. Daarom beginnen we met de motor, maar verdienen we ons geld met de versnellers.</p>
+  </div>
+</section>
+
+<section class="sec" id="vast">
+  <p class="kicker">ALS HET TEGENVALT</p>
+  <h2>Vier plekken waar het kan vastlopen</h2>
+  <p class="note">Elk tegenvallend resultaat zit in precies &eacute;&eacute;n van deze vier. Het dashboard laat meteen zien welke, en dan weet je uit deze lijst al waar we gaan kijken. Geen discussie achteraf over wat het zou kunnen zijn.</p>
+  <article class="blok">
+  <div class="bh"><span class="bl">A</span><h3>Te weinig weergaven</h3><span class="wie">wij draait hieraan</span></div>
+  <p class="bz">De advertenties worden nauwelijks getoond. Het budget wordt niet eens opgemaakt.</p>
+  <div class="bk">
+    <div><span class="lbl">WAT HET KAN ZIJN</span><ul class="ls o"><li>Er wordt simpelweg te weinig op gezocht &mdash; de markt is kleiner dan gedacht</li><li>De doelgroep of het gebied is te smal ingesteld</li><li>We bieden te laag en verliezen de veiling van concurrenten</li><li>Het budget is te laag om mee te doen</li></ul></div>
+    <div><span class="lbl">WELKE KNOPPEN WE DAN DRAAIEN</span><ul class="ls k"><li>Doelgroep of gebied verbreden</li><li>Biedstrategie aanpassen</li><li>Zoekwoorden uitbreiden naar bredere intentie</li><li>Tweede kanaal erbij: Meta naast Google of andersom</li><li>Budget verhogen</li></ul></div>
+  </div>
+</article><article class="blok">
+  <div class="bh"><span class="bl">B</span><h3>Veel weergaven, weinig kliks</h3><span class="wie">wij draait hieraan</span></div>
+  <p class="bz">Je advertentie wordt vaak getoond maar mensen klikken niet. Het doorklikpercentage blijft onder de norm.</p>
+  <div class="bk">
+    <div><span class="lbl">WAT HET KAN ZIJN</span><ul class="ls o"><li>De advertentie sluit niet aan op wat mensen zoeken</li><li>De boodschap is te algemeen &mdash; hij had van iedereen kunnen zijn</li><li>Een concurrent heeft een scherper aanbod of een bekendere naam</li><li>Het beeld is versleten: mensen hebben het al te vaak gezien</li></ul></div>
+    <div><span class="lbl">WELKE KNOPPEN WE DAN DRAAIEN</span><ul class="ls k"><li>Nieuwe advertentievarianten tegen elkaar testen</li><li>De boodschap aanscherpen op het bezwaar in plaats van op de dienst</li><li>Zoekwoorden opschonen: weg met de woorden zonder koopintentie</li><li>Nieuw beeld uit de volgende draaidag</li></ul></div>
+  </div>
+</article><article class="blok">
+  <div class="bh"><span class="bl">C</span><h3>Veel kliks, weinig aanvragen</h3><span class="wie">wij, behalve de laatste draait hieraan</span></div>
+  <p class="bz">Mensen komen wel op je site maar doen niets. Dit is de plek waar het het vaakst vastloopt, en de plek met de meeste knoppen.</p>
+  <div class="bk">
+    <div><span class="lbl">WAT HET KAN ZIJN</span><ul class="ls o"><li>De landingspagina maakt niet binnen vijf seconden duidelijk wat je moet doen</li><li>De belofte uit de advertentie komt niet terug op de pagina</li><li>Het formulier vraagt te veel, of op het verkeerde moment</li><li>Er is te weinig bewijs: geen reviews, geen cases, geen gezichten</li><li>De prijs schrikt af &mdash; of ontbreekt, wat vaak erger is</li><li>De site is te traag, vooral op mobiel</li><li>Te lage autoriteit: de bezoeker vertrouwt het merk niet genoeg om zijn gegevens achter te laten</li></ul></div>
+    <div><span class="lbl">WELKE KNOPPEN WE DAN DRAAIEN</span><ul class="ls k"><li>CRO: varianten van de pagina tegen elkaar testen</li><li>Formulier inkorten of opsplitsen</li><li>Bewijs toevoegen: reviews, cases, echte mensen</li><li>Snelheid: terug naar de norm uit de diagnose</li><li>Beeld van de draaidag inzetten in plaats van stock</li><li>Merk en autoriteit versterken &mdash; dit valt buiten de retainer</li></ul></div>
+  </div>
+</article><article class="blok">
+  <div class="bh"><span class="bl">D</span><h3>Veel aanvragen, weinig klanten</h3><span class="wie">samen draait hieraan</span></div>
+  <p class="bz">De aanvragen komen binnen maar worden geen opdracht. Hier houdt onze invloed grotendeels op.</p>
+  <div class="bk">
+    <div><span class="lbl">WAT HET KAN ZIJN</span><ul class="ls o"><li>Er wordt te laat of niet teruggebeld</li><li>De aanvragen passen niet: de targeting staat te breed</li><li>Het aanbod of de prijs is niet concurrerend</li><li>Het verkoopgesprek zelf</li></ul></div>
+    <div><span class="lbl">WELKE KNOPPEN WE DAN DRAAIEN</span><ul class="ls k"><li>Wij: targeting aanscherpen en kwalificerende vragen in het formulier</li><li>Wij: de bronnen die slechte aanvragen leveren uitzetten</li><li>Jij: sneller opvolgen &mdash; de afspraak uit de kickoff</li><li>Jij: aanbod of prijs herzien</li></ul></div>
+  </div>
+</article>
+</section>
+
+<section class="sec" id="buiten">
+  <p class="kicker">DE GRENS</p>
+  <h2>Vier dingen die wij niet kunnen oplossen</h2>
+  <p class="note">Dit is het eerlijke deel. Deze vier kunnen je resultaat maken of breken en ze vallen buiten wat wij binnen de retainer doen. Ze staan hier zodat het geen verrassing is &mdash; en zodat je nu al kunt beslissen of je er iets aan wilt doen.</p>
+  <div class="tblwrap">
+  <table class="sc">
+    <thead><tr><th>Wat</th><th>Waarom het je resultaat raakt</th><th>Wat je eraan kunt doen</th></tr></thead>
+    <tbody>
+      <tr><td><b>Je merk en je autoriteit</b></td>
+        <td>Bij twee vergelijkbare aanbieders kiest iemand de partij die hij vertrouwt. Onbekendheid, een verouderde uitstraling of het ontbreken van reviews kost je conversie op precies dezelfde pagina.</td>
+        <td>Een apart traject met een eigen prijs. Binnen het fundament kiezen we alleen kleur en typografie om mee te kunnen werken.</td></tr>
+      <tr><td><b>Je aanbod en je prijs</b></td>
+        <td>Advertenties versterken wat er is. Is je aanbod duurder of vager dan dat van de concurrent, dan koop je met adverteren vooral duur bewijs dat dat zo is.</td>
+        <td>Wij signaleren het op basis van wat we in de markt zien. Wijzigen is jouw beslissing.</td></tr>
+      <tr><td><b>Je opvolging</b></td>
+        <td>Een aanvraag die twee dagen blijft liggen is vaak al bij een ander. Dit is de grootste onbenutte hefboom bij bijna elke klant.</td>
+        <td>In de kickoff leggen we vast wie belt en binnen hoeveel tijd. Daarna is het aan jou.</td></tr>
+      <tr><td><b>Je capaciteit</b></td>
+        <td>Meer aanvragen dan je kunt bedienen levert geen omzet op maar wel slechte reviews. Daarom vragen we in de intake waar het vastloopt als het verdubbelt.</td>
+        <td>We verlagen het doel liever dan dat we je vastdraaien. Dat gesprek voeren we v&oacute;&oacute;r de start.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section class="sec" id="gebruik">
+  <p class="kicker">HOE WE DIT GEBRUIKEN</p>
+  <h2>Drie momenten</h2>
+  <div class="stack">
+    <div class="st"><span class="lab">IN DE SESSIE</span><div class="bd"><h4>De keten invullen met zijn eigen cijfers</h4><p>Niet ons voorbeeld maar zijn getallen. Dat maakt meteen zichtbaar waar bij hem de smalste schakel zit &mdash; en dat is vaak een ander gesprek dan hij verwachtte.</p></div></div>
+    <div class="st"><span class="lab">IN HET VOORSTEL</span><div class="bd"><h4>Als bijlage, ongewijzigd</h4><p>Dezelfde vier blokken, met de grens erbij. Hij tekent dus voor een taakverdeling waarin staat dat opvolging en aanbod van hem zijn. Dat is geen kleine letters maar een paginagroot hoofdstuk.</p></div></div>
+    <div class="st"><span class="lab">IN ELK PERFORMANCEBLOK</span><div class="bd"><h4>E&eacute;n vraag: welke schakel is de smalste?</h4><p>Het gesprek gaat niet over wat we hebben gedaan maar over welk percentage omhoog moet en welke knop we daarvoor pakken. Dat is dezelfde structuur als bij de start, dus niemand hoeft opnieuw uitgelegd te krijgen hoe het werkt.</p></div></div>
+  </div>
+</section>
+
+<section class="sec" id="open">
+  <p class="kicker">NOG TE BESLISSEN</p>
+  <h2>Wat hier nog niet vastligt</h2>
+  <div class="stack">
+    <div class="st"><span class="lab">CIJFERS</span><div class="bd"><h4>De normen per branche ontbreken</h4><p>Wanneer is 3% doorklikratio goed en wanneer slecht? Zonder eigen normen per branche is &ldquo;onder de norm&rdquo; een mening. Dit staat al op de lijst en het wordt hier urgent, want deze hele pagina draait op de vraag of een percentage tegenvalt.</p></div></div>
+    <div class="st"><span class="lab">KEUZE</span><div class="bd"><h4>Noemen we de scoringsratio in het voorstel?</h4><p>Het maakt de taakverdeling glashelder, maar het legt ook een cijfer van de klant op tafel dat hij misschien niet kent of niet wil noemen. Mijn advies: w&eacute;l noemen, juist omdat het de enige schakel is die niet van ons is.</p></div></div>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap foot">James Robinson &mdash; Marketing &amp; Branding &middot; De trechter, concept september 2026</footer>
+
+<script>
+(function(){
+  function g(id){var v=parseFloat((document.getElementById(id).value||'').replace(/\./g,'').replace(',','.'));return isNaN(v)?0:v}
+  function n(x,d){return x.toLocaleString('nl-NL',{minimumFractionDigits:d||0,maximumFractionDigits:d||0})}
+  function calc(){
+    var B=g('iB'),C=g('iC'),T=g('iT'),V=g('iV');
+    var k=(C>0)?B/C:0, w=(T>0)?k/(T/100):0, a=k*V/100, p=(a>0)?B/a:0;
+    document.getElementById('oW').textContent=n(Math.round(w));
+    document.getElementById('oK').textContent=n(Math.round(k));
+    document.getElementById('oA').textContent=n(Math.round(a));
+    document.getElementById('oP').textContent='\u20ac '+n(Math.round(p));
+    var a2=k*(V+1)/100, p2=(a2>0)?B/a2:0;
+    document.getElementById('hef').innerHTML= a>0
+      ? '<b>E&eacute;n procentpunt erbij op de conversieratio:</b> '+n(Math.round(a2))+' aanvragen in plaats van '+
+        n(Math.round(a))+', en \u20ac '+n(Math.round(p2))+' per aanvraag in plaats van \u20ac '+n(Math.round(p))+
+        '. Zonder dat er \u00e9\u00e9n euro budget bij komt.'
+      : '';
+  }
+  ['iB','iC','iT','iV'].forEach(function(id){document.getElementById(id).addEventListener('input',calc)});
+  calc();
+})();
+(function(){
+  var root=document.documentElement,tb=document.getElementById('themeBtn');
+  if(!tb) return;
+  function cur(){var t=root.getAttribute('data-theme');return t||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}
+  function sync(){tb.textContent=cur()==='dark'?'Licht':'Donker'}
+  sync();
+  tb.addEventListener('click',function(){root.setAttribute('data-theme',cur()==='dark'?'light':'dark');sync()});
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',sync);
+})();
+</script>
