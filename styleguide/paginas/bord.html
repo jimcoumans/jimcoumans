@@ -273,18 +273,27 @@ document.getElementById('pStatus').addEventListener('change',function(e){
 
 teken();
 (async function(){
-  try{ DB = await claude.use('db'); }catch(e){ DB=null }
+  try{
+    DB = (typeof claude!=='undefined' && claude.use) ? await claude.use('db') : null;
+  }catch(e){ DB=null }
   if(!DB){
     melding('Dit bord kan de opgeslagen gegevens niet bereiken. Je ziet een lege lijst en wijzigingen worden niet bewaard.');
     return;
   }
   DB.collection('docs').onSnapshot(function(snap){
-    var n=[];
-    snap.forEach(function(doc){ var d=doc.data()||{}; d.id=doc.id; n.push(d) });
-    DOCS=n; tekenFilters(); teken();
-    if(OPEN){ var d=vind(OPEN); if(d && document.activeElement!==document.getElementById('pNog')) vulPaneel(d) }
-    if(!DOCS.length) melding('Er staan nog geen documenten op dit bord.');
-    else document.getElementById('melding').classList.remove('aan');
+    try{
+      var n=[];
+      (snap.docs||[]).forEach(function(doc){
+        if(doc.exists===false) return;
+        var d=doc.data()||{}; d.id=doc.id; n.push(d);
+      });
+      DOCS=n; tekenFilters(); teken();
+      if(OPEN){ var d=vind(OPEN); if(d && document.activeElement!==document.getElementById('pNog')) vulPaneel(d) }
+      if(!DOCS.length) melding('Er staan nog geen documenten op dit bord.');
+      else document.getElementById('melding').classList.remove('aan');
+    }catch(err){
+      melding('Het bord kon de gegevens niet tonen: '+(err&&err.message||err)+'. Laat dit weten, dan los ik het op.');
+    }
   }, function(e){
     melding('De verbinding met de opgeslagen gegevens is verbroken ('+(e&&e.code||'onbekend')+'). Herlaad de pagina.');
   });
