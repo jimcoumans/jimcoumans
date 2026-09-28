@@ -1,0 +1,952 @@
+<title>De klantreis &middot; James Robinson</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@600;700&display=swap">
+<style>
+:root{
+  --page:#fbfbfd; --card:#fff; --alt:#f5f5f7;
+  --tx:#1d1d1f; --tx2:#6e6e73; --tx3:#86868b;
+  --ln:#d2d2d7; --ln-s:#e5e5e9;
+  --blue:#007aff; --link:#0066cc; --act:#0857c3;
+  --b100:#e0efff; --b50:#f4f9ff;
+  --lime:#c4f000; --lime-tx:#5a7000; --lime100:#f2fccc;
+  --green-tx:#1d7d3f; --green100:#e6f7eb;
+  --orange-tx:#94590a; --orange100:#fef2e0;
+  --red-tx:#c02a22; --red100:#fdecea;
+  --black:#1c1c1e; --inv:#f5f5f7; --inv2:#a1a1a6;
+  --fd:"Inter Tight","Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --ft:"Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --fm:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --e:cubic-bezier(.25,.1,.25,1);--g:32px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}}
+:root[data-theme="dark"]{
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--tx);font-family:var(--ft);font-size:16.5px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition-duration:.01ms!important}}
+:focus-visible{outline:none;box-shadow:0 0 0 4px rgba(0,122,255,.4);border-radius:8px}
+p{margin:0 0 18px;max-width:70ch}
+p:last-child{margin-bottom:0}
+h1,h2,h3,h4{font-family:var(--fd);margin:0;text-wrap:balance}
+code{font-family:var(--fm);font-size:.86em;background:var(--alt);padding:2px 6px;border-radius:5px}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:60;background:rgba(251,251,253,.86);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--ln-s)}
+:root[data-theme="dark"] .bar,:root:not([data-theme="light"]) .bar{background:rgba(0,0,0,.74)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .bar{background:rgba(251,251,253,.86)}}
+.bar-in{max-width:1080px;margin:0 auto;padding:0 var(--g);display:flex;align-items:center;gap:5px;min-height:48px;overflow-x:auto;scrollbar-width:none}
+.bar-in::-webkit-scrollbar{display:none}
+.bar b{font-family:var(--fd);font-size:14.5px;font-weight:700;letter-spacing:-.016em;margin-right:8px;white-space:nowrap}
+.bar a{font-size:12.5px;color:var(--tx2);text-decoration:none;padding:6px 8px;border-radius:7px;white-space:nowrap}
+.bar a:hover{color:var(--tx)}
+.bar button{margin-left:auto;flex:none;font:inherit;font-size:12px;cursor:pointer;background:transparent;border:1px solid var(--ln);color:var(--tx2);border-radius:980px;padding:5px 13px}
+
+.wrap{max-width:1080px;margin:0 auto;padding-inline:var(--g)}
+.hero{padding-block:76px 40px}
+h1{font-size:clamp(34px,5.4vw,58px);font-weight:700;line-height:1.06;letter-spacing:-.026em;margin-bottom:20px}
+.lead{font-size:20px;line-height:1.5;color:var(--tx2);max-width:64ch}
+.sec{padding-block:60px;border-top:1px solid var(--ln-s)}
+h2{font-size:clamp(26px,3.4vw,38px);font-weight:700;line-height:1.12;letter-spacing:-.02em;margin-bottom:8px}
+.sec > .kicker{font-family:var(--fm);font-size:11px;letter-spacing:.06em;color:var(--tx3);margin-bottom:14px}
+h3{font-size:21px;font-weight:600;line-height:1.24;letter-spacing:-.012em;margin:38px 0 10px}
+h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
+.note{color:var(--tx2)}
+.note b,b{color:var(--tx);font-weight:600}
+
+/* kernblok */
+.key{background:var(--black);color:var(--inv);border-radius:22px;padding:34px 32px;margin:26px 0}
+.key .k{display:block;font-family:var(--fm);font-size:10.5px;letter-spacing:.06em;color:var(--lime);margin-bottom:14px}
+.key p{color:var(--inv2);font-size:17.5px;max-width:64ch}
+.key strong{color:#fff;font-weight:600}
+.key .big{font-family:var(--fd);font-size:clamp(22px,3vw,30px);font-weight:600;line-height:1.2;letter-spacing:-.018em;color:#fff;margin-bottom:16px}
+
+/* lagen van het aanbod */
+.stack{display:grid;gap:12px;margin-top:24px}
+.st{background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;display:grid;grid-template-columns:132px 1fr;gap:20px;align-items:start}
+.st .lab{font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;color:var(--act);padding-top:3px}
+.st .bd p{margin:0;font-size:15.5px;color:var(--tx2)}
+.st .bd h4{margin-bottom:5px}
+
+/* kandidaten */
+.cands{display:grid;gap:12px;margin-top:22px}
+.cand{border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;background:var(--card)}
+.cand.win{border-color:var(--lime);box-shadow:0 0 0 1px var(--lime)}
+.cand .zin{font-family:var(--fd);font-size:22px;font-weight:600;letter-spacing:-.014em;margin-bottom:8px}
+.cand .why{font-size:15px;color:var(--tx2);margin:0}
+.cand .verdict{display:inline-block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;border-radius:5px;padding:3px 7px;margin-bottom:12px}
+.cand .verdict.no{background:var(--red100);color:var(--red-tx)}
+.cand .verdict.ok{background:var(--lime100);color:var(--lime-tx)}
+.cand .verdict.mid{background:var(--orange100);color:var(--orange-tx)}
+
+/* onderscheid */
+.dist{width:100%;border-collapse:collapse;font-size:15px;margin-top:22px}
+.dist th,.dist td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.dist thead th{font-family:var(--fm);font-size:10.5px;letter-spacing:.04em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.dist td:first-child{font-weight:500;width:34%}
+.dist .v{font-family:var(--fm);font-size:11px;white-space:nowrap}
+.dist .v.y{color:var(--green-tx)}
+.dist .v.n{color:var(--red-tx)}
+.dist tr:last-child td{border-bottom:none}
+.tblwrap{overflow-x:auto}
+
+/* beslissingen */
+.dec{border:1px solid var(--ln-s);border-radius:18px;background:var(--card);padding:26px 28px;margin-top:14px}
+.dec .hd{display:flex;align-items:baseline;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.dec .num{font-family:var(--fm);font-size:11px;color:var(--tx3);flex:none}
+.dec h4{font-size:19px;flex:1;min-width:220px;margin:0}
+.dec .tag{font-family:var(--fm);font-size:9.5px;letter-spacing:.05em;border-radius:5px;padding:3px 7px}
+.dec .tag.blok{background:var(--red100);color:var(--red-tx)}
+.dec .tag.schaal{background:var(--orange100);color:var(--orange-tx)}
+.dec .tag.scherp{background:var(--b100);color:var(--act)}
+.dec .q{font-size:16px;color:var(--tx2);margin:0 0 16px}
+.dec .adv{background:var(--b50);border-left:3px solid var(--act);border-radius:0 10px 10px 0;padding:16px 18px}
+.dec .adv .al{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.06em;color:var(--act);margin-bottom:7px}
+.dec .adv p{font-size:15.5px;margin:0 0 10px}
+.dec .adv p:last-child{margin-bottom:0}
+
+/* vast */
+.locked{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-top:22px}
+.lk{background:var(--card);border:1px solid var(--ln-s);border-radius:14px;padding:18px 20px}
+.lk .t{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--green-tx);margin-bottom:7px}
+.lk .b{font-size:15px;color:var(--tx2);line-height:1.45}
+.lk .b b{color:var(--tx)}
+
+.warn{background:var(--orange100);border-radius:18px;padding:24px 26px;margin-top:26px}
+.warn h4{color:var(--orange-tx)}
+.warn p{color:var(--orange-tx);opacity:.94;font-size:15.5px;max-width:none}
+.foot{padding-block:44px 64px;font-size:13px;color:var(--tx3);text-align:center}
+
+@media (max-width:734px){
+  :root{--g:20px}
+  body{font-size:16px}
+  .sec{padding-block:48px}
+  .hero{padding-block:44px 28px}
+  .st{grid-template-columns:1fr;gap:10px}
+  .key{padding:24px 22px}
+  .dec{padding:22px 20px}
+}
+
+</style><style>
+.stp{border-top:1px solid var(--ln-s);padding-top:26px;margin-top:34px}
+.stp:first-of-type{border-top:none}
+.sh{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:10px}
+.sh .sn{font-family:var(--fm);font-size:12px;color:var(--act);flex:none}
+.sh h3{font-size:24px;font-weight:600;letter-spacing:-.016em;margin:0;flex:1;min-width:200px}
+.sh .sw{font-family:var(--fm);font-size:11px;color:var(--tx3);white-space:nowrap}
+.si{font-size:16px;color:var(--tx2);max-width:78ch;margin:0 0 22px}
+
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+.col{background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:20px 22px}
+.cl{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.07em;color:var(--tx3);margin-bottom:14px}
+.sub{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--act);margin:0 0 8px}
+.col .sub + ul + .sub{margin-top:16px}
+.leeg{font-size:14px;color:var(--tx3);margin:0}
+
+.ml{list-style:none;margin:0;padding:0}
+.ml li{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start;padding:9px 0;border-bottom:1px solid var(--ln-s)}
+.ml li:last-child{border-bottom:none}
+.ml b{font-size:15px;font-weight:600;display:block;line-height:1.35}
+.ml .d{display:block;font-size:13.5px;color:var(--tx2);line-height:1.45;margin-top:2px}
+.ch{font-style:normal;font-family:var(--fm);font-size:9.5px;letter-spacing:.04em;border-radius:5px;padding:3px 7px;white-space:nowrap;margin-top:2px}
+.ch.ok{background:var(--green100);color:var(--green-tx)}
+.ch.mid{background:var(--orange100);color:var(--orange-tx)}
+.ch.no{background:var(--red100);color:var(--red-tx)}
+
+.ql{list-style:none;margin:0 0 4px;padding:0}
+.ql li{font-size:14.5px;line-height:1.5;color:var(--tx);padding:6px 0 6px 16px;position:relative}
+.ql li::before{content:"";position:absolute;left:0;top:13px;width:5px;height:5px;border-radius:50%;background:var(--ln)}
+.ql.w li{color:var(--tx2)}
+.ql.w li::before{background:transparent;border:1px solid var(--ln)}
+
+.kzl{display:grid;gap:12px}
+.kz{border-left:3px solid var(--act);border-radius:0 10px 10px 0;background:var(--b50);padding:13px 15px}
+.kz b{display:block;font-size:15px;font-weight:600;line-height:1.35;margin-bottom:5px}
+.kz .o{display:block;font-size:13.5px;color:var(--tx2);line-height:1.5}
+.kz .nb{display:block;font-size:12.5px;color:var(--tx3);line-height:1.5;margin-top:8px;padding-top:8px;border-top:1px solid var(--ln-s)}
+
+.sl{margin:0;padding-left:20px}
+.sl li{font-size:14.5px;line-height:1.5;padding:5px 0;color:var(--tx)}
+.sl li::marker{font-family:var(--fm);font-size:11px;color:var(--tx3)}
+
+.lo{background:var(--orange100);border-radius:14px;padding:16px 20px;margin-top:16px}
+.ll{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.06em;color:var(--orange-tx);margin-bottom:6px}
+.lo p{color:var(--orange-tx);opacity:.95;font-size:14.5px;margin:0;max-width:82ch}
+
+.bkop{margin-top:66px}
+.bkop:first-of-type{margin-top:0}
+.bkop h2{margin-bottom:6px}
+.bkop p{font-size:16.5px;color:var(--tx2);max-width:74ch;margin:0}
+
+.tel{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:26px}
+.tl{background:var(--card);border:1px solid var(--ln-s);border-radius:14px;padding:18px 20px}
+.tl .g{display:block;font-family:var(--fd);font-size:30px;font-weight:700;letter-spacing:-.02em;line-height:1}
+.tl .l{display:block;font-size:13px;color:var(--tx2);margin-top:6px;line-height:1.4}
+.tl.rood .g{color:var(--red-tx)}
+.tl.oranje .g{color:var(--orange-tx)}
+.tl.groen .g{color:var(--green-tx)}
+
+.nav2{display:flex;flex-wrap:wrap;gap:6px;margin-top:24px}
+.nav2 a{font-family:var(--fm);font-size:11px;color:var(--tx2);text-decoration:none;border:1px solid var(--ln-s);border-radius:8px;padding:6px 9px;background:var(--card)}
+.nav2 a:hover{border-color:var(--ln);color:var(--tx)}
+
+@media (max-width:860px){ .cols{grid-template-columns:1fr} }
+@media (max-width:734px){
+  .col{padding:18px 18px}
+  .sh h3{font-size:21px}
+  .ml li{grid-template-columns:1fr;gap:6px}
+  .ch{justify-self:start}
+}
+</style>
+</head><body>
+<nav class="bar"><div class="bar-in"><b>De klantreis</b>
+<a href="#voor">Voor het gesprek</a><a href="#tafel">Aan tafel</a><a href="#na">Na het gesprek</a><a href="#on">Onboarding</a><a href="#besluiten">Besluiten</a>
+<button id="tg">Thema</button></div></nav>
+
+<header class="wrap hero">
+<h1>Van tafel tot campagne</h1>
+<p class="lead">Achttien momenten tussen het eerste gesprek en de eerste lead. Per moment: welk middel je nodig hebt, welke vragen beantwoord moeten worden, welke keuze de klant maakt, en wat wij doen.</p>
+</header>
+
+<main class="wrap">
+<section class="sec" id="tellen"><div class="kicker">Wat er ligt</div><h2>De stand</h2>
+<p class="note">Wat hieronder staat is de inhoud, niet de vorm. Of iets een brochure, een animatie, een formulier of een A4 wordt, bepalen we pas als duidelijk is wat het moet doen.</p>
+<div class="tel">
+<div class="tl"><span class="g">18</span><span class="l">momenten van gesprek tot maandritme</span></div>
+<div class="tl"><span class="g">57</span><span class="l">middelen nodig</span></div>
+<div class="tl groen"><span class="g">6</span><span class="l">daarvan bestaan</span></div>
+<div class="tl oranje"><span class="g">13</span><span class="l">bestaan half</span></div>
+<div class="tl rood"><span class="g">38</span><span class="l">bestaan nog niet</span></div>
+</div>
+<div class="tel">
+<div class="tl"><span class="g">52</span><span class="l">vragen die de klant beantwoordt</span></div>
+<div class="tl"><span class="g">67</span><span class="l">vragen die wij beantwoorden</span></div>
+<div class="tl"><span class="g">22</span><span class="l">keuzes die de klant maakt</span></div>
+<div class="tl"><span class="g">65</span><span class="l">handelingen van ons</span></div>
+</div>
+<div class="key"><span class="k">De kern</span><p class="big">Van de 57 middelen bestaan er 6. De inhoud is af; de transactie niet.</p><p>Alles wat gaat over <strong>wat we vinden en hoe we werken</strong> ligt er. Alles wat gaat over <strong>afspreken, vastleggen en overdragen</strong> &mdash; voorstel, contract, toegangenlijst, jaarplan &mdash; bestaat nog niet. Dat is precies omgekeerd aan wat je nodig hebt om dit zonder jou te laten draaien.</p></div>
+<div class="nav2">
+<a href="#s01">01 &middot; Intake deel 1 &mdash; tien vragen</a>
+<a href="#s02">02 &middot; De quickscan</a>
+<a href="#s03">03 &middot; Het gesprek voorbereiden</a>
+<a href="#s04">04 &middot; Waar je nu staat</a>
+<a href="#s05">05 &middot; Wat wij zien</a>
+<a href="#s06">06 &middot; Hoe wij werken</a>
+<a href="#s07">07 &middot; Wat we niet doen</a>
+<a href="#s08">08 &middot; Wat je kunt verwachten</a>
+<a href="#s09">09 &middot; Het doel narekenen</a>
+<a href="#s10">10 &middot; Wat het kost</a>
+<a href="#s11">11 &middot; Wat wij van jou nodig hebben</a>
+<a href="#s12">12 &middot; Het voorstel</a>
+<a href="#s13">13 &middot; Het besluit</a>
+<a href="#s14">14 &middot; Tekenen en betalen</a>
+<a href="#s15">15 &middot; Intake deel 2 en toegangen</a>
+<a href="#s16">16 &middot; Het fundament</a>
+<a href="#s17">17 &middot; Live</a>
+<a href="#s18">18 &middot; Over naar het maandritme</a>
+</div>
+</section>
+<section class="sec" id="voor">
+<div class="bkop"><div class="kicker">Stap 01 t/m 03</div><h2>Voor het gesprek</h2><p>Drie stappen die bepalen of het gesprek ergens over gaat. Alles wat je hier niet doet, moet je aan tafel goedmaken &mdash; en daar heb je geen tijd voor.</p></div>
+<article class="stp" id="s01">
+<div class="sh"><span class="sn">01</span><h3>Intake deel 1 &mdash; tien vragen</h3><span class="sw">Binnen 24 uur na de aanvraag</span></div>
+<p class="si">Je stuurt tien vragen v&oacute;&oacute;r je elkaar spreekt. Niet om tijd te besparen, maar omdat het gesprek dan ergens over gaat. Wie het niet invult, komt niet aan tafel. Dat is de eerste test, en hij kost je niets.</p>
+<div class="cols">
+<section class="col"><span class="cl">Verkoopondersteuning</span>
+<ul class="ml">
+<li><div><b>Tien vragen, in te vullen in vijf minuten</b><span class="d">De vorm bepaalt of hij wordt ingevuld. Tien is het maximum.</span></div><em class="ch mid">finetunen</em></li>
+<li><div><b>Begeleidende tekst</b><span class="d">Waarom we dit vragen, wat je ervoor terugkrijgt, hoelang het duurt.</span></div><em class="ch no">nog niet</em></li>
+<li><div><b>Herinnering op dag drie</b><span class="d">E&eacute;n keer, kort. Daarna is het een nee.</span></div><em class="ch no">nog niet</em></li>
+</ul>
+</section>
+<section class="col"><span class="cl">Vragen</span>
+<span class="sub">De klant beantwoordt</span><ul class="ql">
+<li>Wat doe je, aan wie verkoop je, en in welk gebied?</li>
+<li>Wat wil je bereiken, en op welke termijn?</li>
+<li>Wie kan er code in je website plaatsen?</li>
+<li>Hoeveel bezoekers krijgt je website per maand?</li>
+<li>Hoe groot is je e-maillijst en waar staat die?</li>
+<li>Adverteer je nu &mdash; waar, en voor hoeveel per maand?</li>
+<li>Moeten mensen bij je een afspraak kunnen inplannen?</li>
+<li>Wie volgt een aanvraag op, en hoe snel?</li>
+<li>Wat is je brutomarge, en wat is een klant gemiddeld waard?</li>
+<li>Wat geef je nu per maand uit aan marketing, alles bij elkaar?</li>
+</ul>
+<span class="sub">Wij beantwoorden</span><ul class="ql w">
+<li>Zeggen we ja tegen deze klant? De vijf nee-redenen, stuk voor stuk.</li>
+<li>In welke orde van grootte valt de eenmalige fee?</li>
+<li>Welke retainer past bij wat ze kunnen uitgeven?</li>
+<li>Is dit doel haalbaar met dit budget, of staat het nu al scheef?</li>
+</ul>
+</section>
+<section class="col"><span class="cl">Keuzes voor de klant</span>
+<div class="kzl">
+<div class="kz"><b>Invullen of niet</b><span class="o">Wel: je krijgt een afspraak met een diagnose. Niet: je krijgt geen afspraak.</span><span class="nb">Dit is alleen een filter als je het ook doet. Maak je een uitzondering, dan is het geen filter meer.</span></div>
+</div>
+</section>
+<section class="col"><span class="cl">Wat wij doen</span><ol class="sl">
+<li>Bevestiging en formulier binnen 24 uur de deur uit.</li>
+<li>Herinnering op dag drie.</li>
+<li>Antwoorden langs de norm leggen &mdash; drie stapels, maximaal acht vragen terug.</li>
+<li>De vijf nee-redenen expliciet afvinken. Niet op gevoel.</li>
+<li>Quickscan inplannen, of de nee-mail sturen.</li>
+<li>Afspraak inplannen, minimaal vijf werkdagen vooruit &mdash; je hebt voorbereidingstijd nodig.</li>
+</ol></section>
+</div>
+<div class="lo"><span class="ll">Let op</span><p>De vier vragen over marge, omzet, huidige uitgaven en seizoen staan nu nog niet in het formulier. Je hebt ze aan tafel nodig om na te rekenen. Vraag je ze pas dan, dan is het narekenen gokwerk en verlies je het scherpste moment van het gesprek.</p></div>
+</article>
+<article class="stp" id="s02">
+<div class="sh"><span class="sn">02</span><h3>De quickscan</h3><span class="sw">Tussen intake en gesprek &middot; ongeveer een uur</span></div>
+<p class="si">Je komt niet binnen met vragen, je komt binnen met een diagnose. Dat verandert het gesprek van een verkooppraatje in een consult, en het verandert de prijsvraag van &lsquo;wat kost het&rsquo; in &lsquo;wat kost het mij nu dat dit niet op orde is&rsquo;.</p>
+<div class="cols">
+<section class="col"><span class="cl">Verkoopondersteuning</span>
+<ul class="ml">
+<li><div><b>Scanprotocol</b><span class="d">Tien punten, waarmee je ze checkt, en wanneer iets rood, oranje of groen is.</span></div><em class="ch no">nog niet</em></li>
+<li><div><b>Scanrapport voor de klant</b><span class="d">Tien punten met kleur, en per rood punt het gevolg in leads of geld.</span></div><em class="ch no">nog niet</em></li>
+<li><div><b>De drie hostinguitkomsten</b><span class="d">Niets doen, verhuizen, of blijven met een permanente kanttekening.</span></div><em class="ch mid">finetunen</em></li>
+</ul>
+</section>
+<section class="col"><span class="cl">Vragen</span>
+<span class="sub">Wij beantwoorden</span><ul class="ql w">
+<li>Waar staat de site, hoe snel laadt hij, wat zeggen de Core Web Vitals?</li>
+<li>Welk CMS en welke bouwer? WordPress met Elementor betekent dat we zelf door kunnen; iets anders kost tijd en maakt ons afhankelijk.</li>
+<li>Staat er meting &mdash; en meet die &uuml;berhaupt een aanvraag, of alleen bezoek?</li>
+<li>Waar komt een aanvraag binnen, krijgt iemand daar bericht van, en is er een bedankpagina?</li>
+<li>Staat er cookie-consent, en blokkeert dat de meting?</li>
+<li>Bestaan de advertentieaccounts, wie is eigenaar, en wat staat erin aan historie?</li>
+<li>Staat er een productfeed, en klopt die?</li>
+<li>Hoe groot is de e-maillijst, waar staat hij, en is er toestemming?</li>
+<li>Wat vind je als je hun merknaam zoekt?</li>
+<li>Adverteren concurrenten op hun termen, en met welke boodschap?</li>
+</ul>
+</section>
+<section class="col"><span class="cl">Keuzes voor de klant</span>
+<p class="leeg">Geen keuze op dit moment.</p>
+</section>
+<section class="col"><span class="cl">Wat wij doen</span><ol class="sl">
+<li>Scan uitvoeren en vastleggen.</li>
+<li>Herstelbedrag bepalen en hostingadvies vaststellen.</li>
+<li>De drie scherpste bevindingen kiezen &mdash; die worden de opening van het gesprek.</li>
+<li>Concept-eenmalig bedrag berekenen. Dat noem je nog niet.</li>
+</ol></section>
+</div>
+<div class="lo"><span class="ll">Let op</span><p>Dit rapport wordt je sterkste verkoopmiddel, want het gaat over hen en niet over jou. Maar alleen met een gevolg erbij. &lsquo;Je meting staat niet goed&rsquo; is een constatering. &lsquo;Je meet nu ongeveer vier op de tien aanvragen niet, dus elke beslissing die je neemt gaat over de verkeerde helft&rsquo; is een argument.</p></div>
+</article>
+<article class="stp" id="s03">
+<div class="sh"><span class="sn">03</span><h3>Het gesprek voorbereiden</h3><span class="sw">Dag ervoor &middot; een half uur</span></div>
+<p class="si">Acht delen, in een vaste volgorde. Die volgorde is het verschil tussen een gesprek dat jij stuurt en een gesprek dat over prijs gaat omdat de klant er als eerste over begint.</p>
+<div class="cols">
+<section class="col"><span class="cl">Verkoopondersteuning</span>
+<ul class="ml">
+<li><div><b>Gespreksleidraad</b><span class="d">De acht delen hieronder, met per deel wat je wilt horen en waar je naartoe werkt.</span></div><em class="ch no">nog niet</em></li>
+<li><div><b>Bezwarenkaart</b><span class="d">De acht vragen die altijd komen, met het antwoord erbij.</span></div><em class="ch no">nog niet</em></li>
+</ul>
+</section>
+<section class="col"><span class="cl">Vragen</span>
+<span class="sub">Wij beantwoorden</span><ul class="ql w">
+<li>Wat is de kern van hun probleem, in &eacute;&eacute;n zin?</li>
+<li>Welk pakket ga ik voorstellen, en waarom dat?</li>
+<li>Wat is het grootste risico bij deze klant: te klein budget, slechte opvolging, geen beslisser, of te hoge verwachting?</li>
+<li>Wat wordt mijn eerste zin?</li>
+</ul>
+</section>
+<section class="col"><span class="cl">Keuzes voor de klant</span>
+<p class="leeg">Geen keuze op dit moment.</p>
+</section>
+<section class="col"><span class="cl">Wat wij doen</span><ol class="sl">
+<li>Leidraad doornemen en de drie scanbevindingen klaarleggen.</li>
+<li>Materiaal klaarleggen: scanrapport, trechter, tarieven, drieluik.</li>
+<li>Twee scenario&rsquo;s bedenken: ze willen te snel, en ze willen te veel.</li>
+</ol></section>
+</div>
+</article>
+</section>
+<section class="sec" id="tafel">
+<div class="bkop"><div class="kicker">Stap 04 t/m 11</div><h2>Aan tafel</h2><p>Acht delen in een vaste volgorde. Die volgorde is zelf het verkoopargument: je begint bij hun situatie en komt pas bij deel zeven uit bij je prijs.</p></div>
+<article class="stp" id="s04">
+<div class="sh"><span class="sn">04</span><h3>Waar je nu staat</h3><span class="sw">Aan tafel &middot; ongeveer 20 minuten</span></div>
+<p class="si">Je begint niet met jezelf. Je haalt hun verhaal op en je vult de getallen aan die je straks nodig hebt om na te rekenen. Alles wat je hier niet vraagt, moet je later aannemen.</p>
+<div class="cols">
+<section class="col"><span class="cl">Verkoopondersteuning</span>
+<ul class="ml">
+<li><div><b>Jouw vragenlijst</b><span class="d">Voor jezelf, niet voor de klant. Acht vragen, in deze volgorde.</span></div><em class="ch no">nog niet</em></li>
+</ul>
+</section>
+<section class="col"><span class="cl">Vragen</span>
+<span class="sub">De klant beantwoordt</span><ul class="ql">
+<li>Wat wil je over twaalf maanden bereikt hebben? Geef me een getal.</li>
+<li>Wat heb je tot nu toe geprobeerd, en wat leverde het op?</li>
+<li>Wie doet nu de marketing, en hoeveel tijd kost dat?</li>
+<li>Hoeveel aanvragen kun je per maand aan?</li>
+<li>Wie belt een aanvraag terug, en binnen hoeveel tijd?</li>
+<li>Wat gebeurt er met een aanvraag die geen klant wordt &mdash; weet je waarom niet?</li>
+<li>Hoe seizoensgevoelig ben je?</li>
+<li>Wie beslist hierover, behalve jij?</li>
+</ul>
+<span class="sub">Wij beantwoorden</span><ul class="ql w">
+<li>Kan deze organisatie de leads aan die we gaan leveren?</li>
+<li>Zit de beslisser aan tafel, of moet dit straks nog ergens langs?</li>
+<li>Is het probleem marketing &mdash; of is het aanbod, prijs, opvolging of capaciteit? Als het dat laatste is, lost adverteren het niet op.</li>
+</ul>
+</section>
+<section class="col"><span class="cl">Keuzes voor de klant</span>
+<p class="leeg">Geen keuze op dit moment.</p>
+</section>
+<section class="col"><span class="cl">Wat wij doen</span><ol class="sl">
+<li>Vragen stellen en antwoorden letterlijk noteren &mdash; je citeert ze terug in het voorstel.</li>
+<li>Het doel omzetten in een getal, hardop, en laten bevestigen.</li>
+</ol></section>
+</div>
+<div class="lo"><span class="ll">Let op</span><p>De vraag over capaciteit wordt bijna altijd overgeslagen. Een klant die twintig aanvragen per maand wil maar er vijf kan opvolgen, is na drie maanden ontevreden over jou &mdash; en heeft op papier gelijk, want jij hebt geleverd.</p></div>
+</article>
+<article class="stp" id="s05">
+<div class="sh"><span class="sn">05</span><h3>Wat wij zien</h3><span class="sw">Aan tafel &middot; ongeveer 15 minuten</span></div>
+<p class="si">Hier leg je het scanrapport op tafel. Dit is het kantelmoment van het gesprek: het gaat niet meer over wat jij kost, maar over wat hun huidige situatie kost.</p>
+<div class="cols">
+<section class="col"><span class="cl">Verkoopondersteuning</span>
+<ul class="ml">
+<li><div><b>Het scanrapport</b><span class="d">Tien punten, kleur, gevolg. Dit is het enige document dat over hen gaat.</span></div><em class="ch no">nog niet</em></li>
+<li><div><b>Uitleg wat een gebrekkige meting kost</b><span class="d">Meet je vier op de tien aanvragen niet, dan optimaliseer je op de verkeerde helft.</span></div><em class="ch no">nog niet</em></li>
+<li><div><b>De drie hostinguitkomsten met hun gevolg</b><span class="d">Inclusief de kanttekening die blijft staan als ze niet verhuizen.</span></div><em class="ch mid">finetunen</em></li>
+</ul>
+</section>
+<section class="col"><span class="cl">Vragen</span>
+<span class="sub">De klant beantwoordt</span><ul class="ql">
+<li>Wist je dit?</li>
+<li>Wie heeft dit gebouwd, en is die er nog?</li>
+<li>Zit je ergens aan vast &mdash; een contract, een hostingpartij, een bureau?</li>
+</ul>
+<span class="sub">Wij beantwoorden</span><ul class="ql w">
+<li>Wat moet er sowieso gerepareerd worden voordat adverteren zin heeft?</li>
+<li>Wat is optioneel, en wat is een harde voorwaarde?</li>
+</ul>
+</section>
+<section class="col"><span class="cl">Keuzes voor de klant</span>
+<div class="kzl">
+<div class="kz"><b>Herstelwerk: wel of niet, en op welk niveau</b><span class="o">Wel: we beginnen op een schone basis. Niet: we kunnen starten, maar bij alles wat we daarna meten staat een kanttekening.</span><span class="nb">De drie herstelbedragen zijn nu nog jouw schattingen. Tot Webmix vastligt, noem je getallen die je niet kunt waarmaken.</span></div>
+<div class="kz"><b>Hosting: verhuizen of blijven</b><span class="o">Verhuizen: snelheid en meting zijn van ons. Blijven: dezelfde kanttekening, permanent.</span><span class="nb">Hosting is een advies, geen voorwaarde. Dat onderscheid moet je hardop maken, anders voelt het als verplichte winkelnering.</span></div>
+<div class="kz"><b>Toegang: wie krijgt van ons welke rechten</b><span class="o">Volledige toegang: wij kunnen zelf door. Geen toegang: elke wijziging loopt via een derde.</span><span class="nb">Geen toegang is de vijfde reden om nee te zeggen. Hier stel je dat vast, niet halverwege het fundament.</span></div>
+</div>
+</section>
+<section class="col"><span class="cl">Wat wij doen</span><ol class="sl">
+<li>Rapport doornemen, te beginnen bij de drie scherpste punten.</li>
+<li>Per rood punt het gevolg benoemen &mdash; in leads of in geld, nooit in techniek.</li>
+<li>De drie keuzes voorleggen en het antwoord noteren. Die gaan letterlijk het voorstel in.</li>
+</ol></section>
+</div>
+</article>
+<article class="stp" id="s06">
+<div class="sh"><span class="sn">06</span><h3>Hoe wij werken</h3><span class="sw">Aan tafel &middot; ongeveer 15 minuten</span></div>
+<p class="si">Het enige abstracte deel van het gesprek. Je website is het middelpunt, adverteren is de motor die er kopers naartoe brengt, en CRO, e-mail en SEO komen daarna om diezelfde machine effici&euml;nter te maken. Drie mechanismen, &eacute;&eacute;n getal.</p>
+<div class="cols">
+<section class="col"><span class="cl">Verkoopondersteuning</span>
+<ul class="ml">
+<li><div><b>De drie lagen</b><span class="d">Middelpunt, motor, versnellers. Met de volgorde erbij, want die is het argument.</span></div><em class="ch mid">finetunen</em></li>
+<li><div><b>De grens tussen retainer en project</b><span class="d">Wat er standaard in zit, en wat per definitie los is.</span></div><em class="ch mid">finetunen</em></li>
+<li><div><b>De vier fases over twaalf maanden</b><span class="d">Waar het zwaartepunt per fase ligt, en wanneer welke versneller komt.</span></div><em class="ch no">nog niet</em></li>
+</ul>
+</section>
+<section class="col"><span class="cl">Vragen</span>
+<span class="sub">De klant beantwoordt</span><ul class="ql">
+<li>Is dit wat je verwacht had?</li>
+<li>Waar zou je zelf als eerste beginnen?</li>
+</ul>
+<span class="sub">Wij beantwoorden</span><ul class="ql w">
+<li>Waarom is de website het middelpunt en niet social?</li>
+<li>Waarom adverteren eerst en SEO later? SEO levert pas na maanden; adverteren levert morgen &mdash; en de data uit adverteren vertelt je waar SEO op moet mikken.</li>
+<li>Wat doen die drie versnellers precies, en wanneer komen ze?</li>
+<li>Wat zit er in de retainer, en wat is per definitie een project?</li>
+</ul>
+</section>
+<section class="col"><span class="cl">Keuzes voor de klant</span>
+<p class="leeg">Geen keuze op dit moment.</p>
+</section>
+<section class="col"><span class="cl">Wat wij doen</span><ol class="sl">
+<li>De drie lagen uitleggen, in die volgorde.</li>
+<li>De volgorde verantwoorden &mdash; dat is het echte verhaal, niet de lagen zelf.</li>
+<li>De grens retainer/project neerleggen v&oacute;&oacute;rdat de klant met een wens komt die eroverheen gaat.</li>
+</ol></section>
+</div>
+<div class="lo"><span class="ll">Let op</span><p>Dit is het enige deel dat je niet met hun eigen cijfers kunt vertellen. Daarmee is het ook het deel waar een beeld, schema of animatie het meeste verschil maakt &mdash; en tegelijk het deel waar je het snelst in jargon vervalt.</p></div>
+</article>
+<article class="stp" id="s07">
+<div class="sh"><span class="sn">07</span><h3>Wat we niet doen</h3><span class="sw">Aan tafel &middot; ongeveer 10 minuten</span></div>
+<p class="si">Elke klant vraagt het: en wie doet dan mijn Instagram? Heb je daar geen rustig antwoord op, dan ondermijnt die ene vraag de rest van het gesprek. Je zegt het dus zelf, voordat zij het vragen.</p>
+<div class="cols">
+<section class="col"><span class="cl">Verkoopondersteuning</span>
+<ul class="ml">
+<li><div><b>Arbeid tegenover bereik</b><span class="d">Duizend euro aan social beheer is honderd procent arbeid. Duizend euro aan adverteren is honderd procent bereik.</span></div><em class="ch mid">finetunen</em></li>
+<li><div><b>De volgerslijst-oefening</b><span class="d">Open je volgerslijst en tel de eerste vijftig. Hoeveel daarvan kunnen klant worden?</span></div><em class="ch mid">finetunen</em></li>
+<li><div><b>De drie alternatieven met hun prijs</b><span class="d">Templates, contentsessie, of elders beleggen. Met bedragen, anders is het geen alternatief.</span></div><em class="ch no">nog niet</em></li>
+</ul>
+</section>
+<section class="col"><span class="cl">Vragen</span>
+<span class="sub">De klant beantwoordt</span><ul class="ql">
+<li>Wat levert je social je nu concreet op? Kun je &eacute;&eacute;n klant noemen die eruit is gekomen?</li>
+<li>Wie doet het nu, en hoeveel uur kost dat per week?</li>
+<li>Wat zou het betekenen als je ermee stopt?</li>
+</ul>
+<span class="sub">Wij beantwoorden</span><ul class="ql w">
+<li>Waarom is dit geen bezuiniging maar een keuze?</li>
+<li>Wat bieden we in plaats daarvan, en wat kost dat?</li>
+</ul>
+</section>
+<section class="col"><span class="cl">Keuzes voor de klant</span>
+<div class="kzl">
+<div class="kz"><b>Social beheer: stopt het, of beleg je het elders?</b><span class="o">Bij ons als project: templates of een contentsessie. Bij een ander: prima, maar het valt buiten de retainer. Zelf doen: ook prima, met dezelfde grens.</span><span class="nb">Wat je ook kiest, het valt buiten de resultaatafspraak. Dat moet hier gezegd worden, niet in het contract.</span></div>
+</div>
+</section>
+<section class="col"><span class="cl">Wat wij doen</span><ol class="sl">
+<li>Zelf beginnen over social, voordat de klant het vraagt.</li>
+<li>Het verschil tussen arbeid en bereik laten zien.</li>
+<li>De drie alternatieven noemen, met prijs.</li>
+<li>De keuze vastleggen en in het voorstel opnemen &mdash; ook als het antwoord &lsquo;stoppen&rsquo; is.</li>
+</ol></section>
+</div>
+<div class="lo"><span class="ll">Let op</span><p>Je hebt geen prijs voor de templates en de contentsessie. Zolang die ontbreekt kun je alleen nee zeggen en geen alternatief bieden &mdash; en dan voelt het als wegbezuinigen in plaats van als scherpte.</p></div>
+</article>
+<article class="stp" id="s08">
+<div class="sh"><span class="sn">08</span><h3>Wat je kunt verwachten</h3><span class="sw">Aan tafel &middot; ongeveer 15 minuten</span></div>
+<p class="si">Het belangrijkste deel van het gesprek. Je legt de keten neer &mdash; weergaven, bezoekers, aanvragen, klanten &mdash; en je benoemt v&oacute;&oacute;raf welke vier dingen er kapot kunnen gaan en van wie die zijn. Doe je dat nu, dan is het een diagnose. Doe je het in maand zes, dan is het een smoes.</p>
+<div class="cols">
+<section class="col"><span class="cl">Verkoopondersteuning</span>
+<ul class="ml">
+<li><div><b>De trechter met hun getallen</b><span class="d">Weergaven, bezoekers, aanvragen, klanten, met de percentages ertussen.</span></div><em class="ch mid">finetunen</em></li>
+<li><div><b>De curve</b><span class="d">Wat een aanvraag kost in maand &eacute;&eacute;n en wat in maand zes. Dit is waar je pay-off wordt waargemaakt of niet.</span></div><em class="ch no">nog niet</em></li>
+<li><div><b>De vier knelpunten met eigenaar</b><span class="d">Per knelpunt: waar het aan ligt, aan welke knop we draaien, en wie die knop heeft.</span></div><em class="ch mid">finetunen</em></li>
+<li><div><b>Wat wij niet kunnen oplossen</b><span class="d">Merk en autoriteit, aanbod en prijs, opvolging, capaciteit.</span></div><em class="ch mid">finetunen</em></li>
+</ul>
+</section>
+<section class="col"><span class="cl">Vragen</span>
+<span class="sub">De klant beantwoordt</span><ul class="ql">
+<li>Als de eerste aanvragen drie keer zo duur zijn als het doel, hoelang geef je dat?</li>
+<li>Wat is voor jou het moment om te zeggen: dit werkt niet?</li>
+<li>Als blijkt dat bezoekers wel komen maar niet aanvragen, ben je dan bereid iets aan je website of je aanbod te veranderen?</li>
+</ul>
+<span class="sub">Wij beantwoorden</span><ul class="ql w">
+<li>Hoeveel weergaven zijn er nodig voor hun aantal aanvragen?</li>
+<li>Wat gebeurt er als de conversie &eacute;&eacute;n procent is in plaats van drie?</li>
+<li>Wat doen we dan, en in welke volgorde?</li>
+</ul>
+</section>
+<section class="col"><span class="cl">Keuzes voor de klant</span>
+<div class="kzl">
+<div class="kz"><b>Bevestigen dat de eerste maanden duur zijn</b><span class="o">Geen keuze met twee uitkomsten, maar een bevestiging die je hardop moet uitlokken en noteren.</span><span class="nb">Dit is de kern van &lsquo;Momentum first. Mastery later.&rsquo; Wie hier niet ja zegt, zegt in maand twee alsnog nee.</span></div>
+</div>
+</section>
+<section class="col"><span class="cl">Wat wij doen</span><ol class="sl">
+<li>De keten uittekenen met hun eigen getallen uit de intake.</li>
+<li>De vier knelpunten benoemen, met eigenaar, v&oacute;&oacute;rdat er resultaten zijn.</li>
+<li>De curve laten zien en de bevestiging vragen.</li>
+<li>Noteren wat zij zeggen over hun geduld. Dat citaat gebruik je in maand twee.</li>
+</ol></section>
+</div>
+<div class="lo"><span class="ll">Let op</span><p>Dit is precies het punt dat je zelf hebt aangewezen: niet in maand zes aankomen met &lsquo;ja maar je huisstijl&rsquo;. De hele waarde van dit deel zit erin dat het v&oacute;&oacute;r de start gebeurt en dat het vastgelegd wordt.</p></div>
+</article>
+<article class="stp" id="s09">
+<div class="sh"><span class="sn">09</span><h3>Het doel narekenen</h3><span class="sw">Aan tafel &middot; ongeveer 15 minuten</span></div>
+<p class="si">Hier wordt &lsquo;ik wil groeien&rsquo; een getal. Meestal is dit het ongemakkelijkste moment van het gesprek, en dat is goed: als doel en budget niet bij elkaar passen, kun je dat maar beter nu ontdekken.</p>
+<div class="cols">
+<section class="col"><span class="cl">Verkoopondersteuning</span>
+<ul class="ml">
+<li><div><b>De zes sommen</b><span class="d">Van gewenste omzet naar aanvragen per maand, maximale kosten per aanvraag en mediabudget.</span></div><em class="ch ok">bestaat</em></li>
+<li><div><b>Een manier om de uitkomst ter plekke te tonen</b><span class="d">Samen invullen werkt beter dan achteraf een berekening opsturen.</span></div><em class="ch no">nog niet</em></li>
+</ul>
+</section>
+<section class="col"><span class="cl">Vragen</span>
+<span class="sub">De klant beantwoordt</span><ul class="ql">
+<li>Hoeveel omzet wil je erbij?</li>
+<li>Wat is een klant gemiddeld waard?</li>
+<li>Wat is je brutomarge?</li>
+<li>Welk deel van je marge mag naar acquisitie?</li>
+</ul>
+<span class="sub">Wij beantwoorden</span><ul class="ql w">
+<li>Hoeveel klanten, hoeveel aanvragen, hoeveel per maand?</li>
+<li>Wat mag een aanvraag maximaal kosten?</li>
+<li>Welk mediabudget hoort daarbij?</li>
+<li>Staat onze fee in verhouding tot dat budget? Boven de helft van het mediabudget klopt de verhouding niet.</li>
+</ul>
+</section>
+<section class="col"><span class="cl">Keuzes voor de klant</span>
+<div class="kzl">
+<div class="kz"><b>Het doel bijstellen, of het budget bijstellen</b><span class="o">Als de sommen niet uitkomen, moet er &eacute;&eacute;n van twee&euml;n wijken. De klant kiest welke.</span><span class="nb">Er is een derde uitkomst: geen van beide kan, en dan zeggen wij nee. Dit is het tweede nee-moment in het traject, en een betere plek om af te haken dan maand vier.</span></div>
+</div>
+</section>
+<section class="col"><span class="cl">Wat wij doen</span><ol class="sl">
+<li>Samen invullen, niet voorrekenen.</li>
+<li>De drie toetsen langslopen: is het aantal haalbaar, past het budget, klopt de verhouding fee/media?</li>
+<li>De uitkomst laten bevestigen en in het voorstel overnemen.</li>
+</ol></section>
+</div>
+</article>
+<article class="stp" id="s10">
+<div class="sh"><span class="sn">10</span><h3>Wat het kost</h3><span class="sw">Aan tafel &middot; ongeveer 15 minuten</span></div>
+<p class="si">Vier bedragen, strikt gescheiden: eenmalig, maandelijks, tooling, mediabudget. Zodra die door elkaar lopen, gaat de klant onderhandelen over het verkeerde getal &mdash; meestal over jouw fee, terwijl het mediabudget het resultaat bepaalt.</p>
+<div class="cols">
+<section class="col"><span class="cl">Verkoopondersteuning</span>
+<ul class="ml">
+<li><div><b>De tarievenkaart</b><span class="d">Gedeeld v&oacute;&oacute;r de diagnose, zodat het eenmalige bedrag narekenbaar is.</span></div><em class="ch ok">bestaat</em></li>
+<li><div><b>De drieluik</b><span class="d">Wat er in de basis zit, wat de eerste campagne is, en waar je bij een retainer toegang toe krijgt.</span></div><em class="ch ok">bestaat</em></li>
+<li><div><b>Uitleg van het fundament</b><span class="d">Waarom basis en eerste campagne &eacute;&eacute;n bedrag zijn en niet los te koop.</span></div><em class="ch ok">bestaat</em></li>
+<li><div><b>De drie retainers</b><span class="d">Wat er per niveau verandert &mdash; niet in diensten, maar in hoeveelheid.</span></div><em class="ch mid">finetunen</em></li>
+<li><div><b>De losse onderdelen met hun prijs</b><span class="d">Afsprakenplanner, Leadinfo, hosting, extra tooling.</span></div><em class="ch mid">finetunen</em></li>
+</ul>
+</section>
+<section class="col"><span class="cl">Vragen</span>
+<span class="sub">Wij beantwoorden</span><ul class="ql w">
+<li>Hoe komen we aan dit eenmalige bedrag? Dat moet herleidbaar zijn naar de scan, punt voor punt.</li>
+<li>Wat gebeurt er als je wilt opzeggen?</li>
+<li>Wat is extra, en wat zit erin?</li>
+<li>Waarom is het mediabudget geen onderdeel van onze fee?</li>
+</ul>
+</section>
+<section class="col"><span class="cl">Keuzes voor de klant</span>
+<div class="kzl">
+<div class="kz"><b>Het retainerniveau</b><span class="o">Drie pakketten. Dezelfde onderdelen, andere hoeveelheid.</span><span class="nb">Laat het volgen uit de rekensom van stap 09, niet uit wat ze willen uitgeven.</span></div>
+<div class="kz"><b>Het mediabudget</b><span class="o">Volgt uit de rekensom. Hier bevestigen ze het.</span><span class="nb">Een klant die het mediabudget verlaagt en het doel laat staan, moet je terugsturen naar stap 09.</span></div>
+<div class="kz"><b>De losse onderdelen</b><span class="o">Afsprakenplanner, Leadinfo, hosting, extra tooling. Per stuk een ja of een nee.</span><span class="nb">Drie van deze tarieven liggen nog niet vast.</span></div>
+</div>
+</section>
+<section class="col"><span class="cl">Wat wij doen</span><ol class="sl">
+<li>De vier bedragen apart op tafel leggen en apart houden.</li>
+<li>Het eenmalige bedrag herleiden naar de scan.</li>
+<li>Het pakket voorstellen dat uit de rekensom volgt, en dat verantwoorden.</li>
+<li>De losse onderdelen langslopen en per stuk een besluit noteren.</li>
+</ol></section>
+</div>
+<div class="lo"><span class="ll">Let op</span><p>Drie tarieven op die kaart zijn nu nog jouw middelpunten: het herstelwerk bij Webmix, de staffel van MailerLite en de staffel van Leadinfo. Zolang die niet vastliggen, noem je aan tafel bedragen die je later moet corrigeren. Dat is het soort correctie waar vertrouwen op stukloopt.</p></div>
+</article>
+<article class="stp" id="s11">
+<div class="sh"><span class="sn">11</span><h3>Wat wij van jou nodig hebben</h3><span class="sw">Aan tafel &middot; ongeveer 10 minuten</span></div>
+<p class="si">Het deel dat nu nergens bestaat, en het deel dat je resultaatverplichting houdbaar maakt. De helft van de trechter is van hen. Beloof je resultaat zonder vast te leggen wat zij leveren, dan is de afspraak eenzijdig.</p>
+<div class="cols">
+<section class="col"><span class="cl">Verkoopondersteuning</span>
+<ul class="ml">
+<li><div><b>Een blad &lsquo;jouw kant&rsquo;</b><span class="d">Vijf verplichtingen, met een termijn per stuk. Kort genoeg om te ondertekenen.</span></div><em class="ch no">nog niet</em></li>
+<li><div><b>De tegenhanger: onze resultaatafspraak</b><span class="d">Wat wij beloven, waarop, en wat er gebeurt als het niet gehaald wordt.</span></div><em class="ch no">nog niet</em></li>
+</ul>
+</section>
+<section class="col"><span class="cl">Vragen</span>
+<span class="sub">De klant beantwoordt</span><ul class="ql">
+<li>Kun je alle toegangen binnen tien werkdagen regelen?</li>
+<li>Heb je beeldmateriaal, of mogen we het maken?</li>
+<li>Wie is de &eacute;&eacute;n die beslist, en is die binnen twee werkdagen bereikbaar?</li>
+<li>Binnen hoeveel uur wordt een aanvraag opgevolgd, en door wie?</li>
+<li>Wie koppelt terug of een lead goed was?</li>
+<li>Wie zit er elke maand bij het overleg?</li>
+</ul>
+<span class="sub">Wij beantwoorden</span><ul class="ql w">
+<li>Kunnen we op deze afspraken een resultaatverplichting aangaan, of niet?</li>
+<li>Wat doen we als zij hun kant niet nakomen &mdash; vervalt de resultaatafspraak, of vervalt er meer?</li>
+</ul>
+</section>
+<section class="col"><span class="cl">Keuzes voor de klant</span>
+<div class="kzl">
+<div class="kz"><b>De vijf verplichtingen accepteren, of niet</b><span class="o">Wel: een resultaatafspraak. Niet: een inspanningsafspraak. Allebei eerlijk, maar niet allebei hetzelfde.</span><span class="nb">Door het alternatief te noemen wordt de keuze scherp in plaats van een formaliteit die niemand leest.</span></div>
+</div>
+</section>
+<section class="col"><span class="cl">Wat wij doen</span><ol class="sl">
+<li>Het blad voorleggen en punt voor punt langslopen.</li>
+<li>Termijnen invullen samen met de klant, niet vooraf.</li>
+<li>De keuze tussen resultaat en inspanning expliciet maken.</li>
+<li>Het ondertekend of bevestigd meenemen naar het voorstel.</li>
+</ol></section>
+</div>
+<div class="lo"><span class="ll">Let op</span><p>Zonder terugkoppeling op leadkwaliteit kun je niet optimaliseren op waarde, alleen op aantal. Dan levert de campagne precies op waar je op stuurt: veel goedkope leads die niets waard zijn. Die ene verplichting is technisch belangrijker dan alle andere.</p></div>
+</article>
+</section>
+<section class="sec" id="na">
+<div class="bkop"><div class="kicker">Stap 12 t/m 14</div><h2>Na het gesprek</h2><p>Van gesprek naar handtekening. Het inhoudelijke werk is gedaan; hier gaat het mis op papier en op opvolging.</p></div>
+<article class="stp" id="s12">
+<div class="sh"><span class="sn">12</span><h3>Het voorstel</h3><span class="sw">Binnen drie werkdagen</span></div>
+<p class="si">Acht onderdelen, in deze volgorde. Het begint bij hun doel en komt pas bij punt zes uit bij jouw prijs. Alles daarvoor is de onderbouwing van dat bedrag.</p>
+<div class="cols">
+<section class="col"><span class="cl">Verkoopondersteuning</span>
+<ul class="ml">
+<li><div><b>Voorstelsjabloon</b><span class="d">Acht vaste onderdelen, zodat iedereen in het team hetzelfde voorstel maakt.</span></div><em class="ch no">nog niet</em></li>
+<li><div><b>Het jaarplan</b><span class="d">Vier fases, met per fase wat wij doen, wat jij levert, en wat je mag verwachten.</span></div><em class="ch no">nog niet</em></li>
+<li><div><b>E&eacute;n uitgewerkt voorbeeldvoorstel</b><span class="d">Om het sjabloon aan te toetsen en om intern op te leiden.</span></div><em class="ch no">nog niet</em></li>
+</ul>
+</section>
+<section class="col"><span class="cl">Vragen</span>
+<span class="sub">Wij beantwoorden</span><ul class="ql w">
+<li>1. Wat we begrepen hebben &mdash; hun doel, in hun woorden, in een getal.</li>
+<li>2. Wat we gezien hebben &mdash; de scan, teruggebracht tot de drie scherpste punten.</li>
+<li>3. De rekensom &mdash; aanvragen per maand, wat er een mag kosten, welk mediabudget daarbij hoort.</li>
+<li>4. Wat we gaan doen &mdash; het fundament, en daarna de vier fases.</li>
+<li>5. Wanneer de eerste advertentie live gaat &mdash; een datum, geen termijn.</li>
+<li>6. Wat het kost &mdash; vier bedragen, apart.</li>
+<li>7. Wat we van jou nodig hebben &mdash; het blad uit stap 11.</li>
+<li>8. De afspraken &mdash; resultaat, opzegtermijn, wat project is en wat retainer.</li>
+</ul>
+</section>
+<section class="col"><span class="cl">Keuzes voor de klant</span>
+<div class="kzl">
+<div class="kz"><b>Ja, nee, of aanpassen</b><span class="o">Bij aanpassen: wat precies, en wat is het gevolg voor de rekensom?</span><span class="nb">Elke aanpassing die het mediabudget raakt, raakt het doel. Dat moet zichtbaar blijven.</span></div>
+</div>
+</section>
+<section class="col"><span class="cl">Wat wij doen</span><ol class="sl">
+<li>Voorstel maken binnen drie werkdagen, met hun citaten erin.</li>
+<li>Toelichten in een gesprek of een korte opname &mdash; niet alleen mailen.</li>
+<li>Een geldigheidsduur eraan hangen.</li>
+</ol></section>
+</div>
+<div class="lo"><span class="ll">Let op</span><p>Punt vijf is waar je pay-off staat of valt. Als &lsquo;Momentum first&rsquo; waar moet zijn, moet daar een datum staan die kort na de start ligt. Dan moet het fundament in twee&euml;n: wat er minimaal moet staan om te kunnen adverteren, en de rest terwijl het al loopt.</p></div>
+</article>
+<article class="stp" id="s13">
+<div class="sh"><span class="sn">13</span><h3>Het besluit</h3><span class="sw">Binnen twee weken na het voorstel</span></div>
+<p class="si">Drie uitkomsten, en je hebt er nu &eacute;&eacute;n uitgewerkt. Een nee zonder opvolging en een &lsquo;later&rsquo; zonder ritme zijn allebei weggegooid werk &mdash; je hebt er een scan en een gesprek in zitten.</p>
+<div class="cols">
+<section class="col"><span class="cl">Verkoopondersteuning</span>
+<ul class="ml">
+<li><div><b>Onderhandelingsgrenzen</b><span class="d">Wat mag wel weg, wat nooit, en wat mag je in ruil vragen.</span></div><em class="ch no">nog niet</em></li>
+<li><div><b>Opvolgritme bij twijfel</b><span class="d">Wanneer je belt, wat je dan brengt, en wanneer je stopt.</span></div><em class="ch no">nog niet</em></li>
+<li><div><b>Nee-mail en wat daarna</b><span class="d">Iemand die nu nee zegt, kan over zes maanden ja zeggen.</span></div><em class="ch no">nog niet</em></li>
+</ul>
+</section>
+<section class="col"><span class="cl">Vragen</span>
+<span class="sub">De klant beantwoordt</span><ul class="ql">
+<li>Wat houdt je tegen?</li>
+<li>Wat zou er waar moeten zijn om wel te beginnen?</li>
+</ul>
+<span class="sub">Wij beantwoorden</span><ul class="ql w">
+<li>Waar zit de aarzeling: prijs, vertrouwen, timing, of interne besluitvorming? Vier verschillende bezwaren, vier verschillende antwoorden.</li>
+<li>Wat mag ik weggeven, en wat nooit?</li>
+</ul>
+</section>
+<section class="col"><span class="cl">Keuzes voor de klant</span>
+<div class="kzl">
+<div class="kz"><b>Ja, nee, of later</b><span class="o">Bij later: op welke datum praten we opnieuw, en wat is er dan anders?</span><span class="nb">&lsquo;Later&rsquo; zonder datum is een nee waar je alleen nog niet van weet.</span></div>
+</div>
+</section>
+<section class="col"><span class="cl">Wat wij doen</span><ol class="sl">
+<li>Zelf bellen, niet wachten.</li>
+<li>Het bezwaar benoemen in plaats van het te weerleggen.</li>
+<li>Bij nee: vastleggen waarom, en een moment afspreken.</li>
+<li>Bij ja: direct door naar tekenen, dezelfde week.</li>
+</ol></section>
+</div>
+<div class="lo"><span class="ll">Let op</span><p>Korting geven op de eenmalige fee is de gevaarlijkste toegeving die je kunt doen, want dat bedrag is opgebouwd uit 52 uur werk die je toch maakt. Als er iets moet wijken, laat dan de scope wijken en niet het uurtarief.</p></div>
+</article>
+<article class="stp" id="s14">
+<div class="sh"><span class="sn">14</span><h3>Tekenen en betalen</h3><span class="sw">Dezelfde week als het ja</span></div>
+<p class="si">Het grootste papieren gat in de hele reis. De propositie is veranderd &mdash; resultaatverplichting, maandelijks opzegbaar, alles buiten de retainer is een project &mdash; en er is geen contract dat dat draagt.</p>
+<div class="cols">
+<section class="col"><span class="cl">Verkoopondersteuning</span>
+<ul class="ml">
+<li><div><b>Overeenkomst voor de nieuwe propositie</b><span class="d">Retainer, resultaatafspraak, opzegtermijn, en de grens met projecten.</span></div><em class="ch no">nog niet</em></li>
+<li><div><b>Algemene voorwaarden, getoetst op de resultaatverplichting</b><span class="d">Juridisch laten nakijken. Een resultaatverplichting is iets anders dan een belofte.</span></div><em class="ch no">nog niet</em></li>
+<li><div><b>Incassomachtiging</b><span class="d">Eenmalig bedrag en maandelijkse termijn, met de tooling apart.</span></div><em class="ch no">nog niet</em></li>
+<li><div><b>Vertrekregeling</b><span class="d">Wat een klant meeneemt en wat niet.</span></div><em class="ch no">nog niet</em></li>
+<li><div><b>Legacy- en scopebeleid</b><span class="d">Besloten, maar nog niet opgeschreven. Zonder tekst is het geen beleid maar een voornemen.</span></div><em class="ch no">nog niet</em></li>
+</ul>
+</section>
+<section class="col"><span class="cl">Vragen</span>
+<span class="sub">Wij beantwoorden</span><ul class="ql w">
+<li>Wat gebeurt er als het resultaat niet gehaald wordt? Dit is nog onbeslist en het staat straks wel in een contract.</li>
+<li>Wat houdt de klant bij vertrek? De landingspagina staat op onze omgeving, niet op die van hen.</li>
+<li>Wanneer start de klok: bij ondertekening of bij de eerste betaling?</li>
+<li>Wat als de klant zijn kant van stap 11 niet nakomt?</li>
+</ul>
+</section>
+<section class="col"><span class="cl">Keuzes voor de klant</span>
+<div class="kzl">
+<div class="kz"><b>Incasso of factuur</b><span class="o">Incasso is voorspelbaar, factuur geeft meer ruimte voor discussie.</span></div>
+<div class="kz"><b>De startdatum</b><span class="o">En daarmee de datum waarop de eerste advertentie live gaat.</span><span class="nb">Koppel die twee aan elkaar in de bevestiging. Dan is uitloop aan de klantkant zichtbaar en niet jouw probleem.</span></div>
+</div>
+</section>
+<section class="col"><span class="cl">Wat wij doen</span><ol class="sl">
+<li>Contract en machtiging versturen.</li>
+<li>Eerste factuur.</li>
+<li>Bevestiging met twee datums: startdatum en live-datum.</li>
+<li>Direct doorzetten naar de onboarding &mdash; niet wachten op de betaling om te beginnen met de toegangen.</li>
+</ol></section>
+</div>
+<div class="lo"><span class="ll">Let op</span><p>De resultaatafspraak heeft nog geen gevolg. Zonder gevolg is het een inspanningsverplichting met een ander woord ervoor, en daar prikt een klant doorheen op het moment dat het misgaat &mdash; precies wanneer je het niet kunt gebruiken.</p></div>
+</article>
+</section>
+<section class="sec" id="on">
+<div class="bkop"><div class="kicker">Stap 15 t/m 18</div><h2>Onboarding en uitvoering</h2><p>De klant heeft getekend en ziet nog niets. Vanaf hier is het geen verkoop meer, maar de kwaliteit van deze weken bepaalt of de handtekening volgend jaar er nog is.</p></div>
+<article class="stp" id="s15">
+<div class="sh"><span class="sn">15</span><h3>Intake deel 2 en toegangen</h3><span class="sw">Week 1 na tekenen</span></div>
+<p class="si">Het gevaarlijkste moment in de hele reis. De klant heeft net betaald en ziet nog niets. Wat je hier stuurt bepaalt of de eerste weken voelen als voortgang of als stilte.</p>
+<div class="cols">
+<section class="col"><span class="cl">Verkoopondersteuning</span>
+<ul class="ml">
+<li><div><b>De 46 vragen in elf blokken</b><span class="d">De inhoudelijke intake: propositie, aanbod, doelgroep, toon, beeld.</span></div><em class="ch mid">finetunen</em></li>
+<li><div><b>Toegangenlijst met instructies</b><span class="d">Per platform: waar klik je, welke rol geef je ons, en wat gaat er mis als je een andere rol kiest.</span></div><em class="ch no">nog niet</em></li>
+<li><div><b>Kick-offbericht</b><span class="d">Dit gebeurt er de komende weken, en op deze dagen hoor je van ons.</span></div><em class="ch no">nog niet</em></li>
+</ul>
+</section>
+<section class="col"><span class="cl">Vragen</span>
+<span class="sub">De klant beantwoordt</span><ul class="ql">
+<li>De 46 vragen &mdash; propositie, aanbod, doelgroep, bezwaren, bewijs, beeldmateriaal.</li>
+<li>Wat mag er nooit over jou gezegd worden?</li>
+<li>Welke klanten wil je juist niet?</li>
+</ul>
+<span class="sub">Wij beantwoorden</span><ul class="ql w">
+<li>Hebben we genoeg om een advertentie te schrijven die niet over &lsquo;kwaliteit en service&rsquo; gaat?</li>
+<li>Welke toegangen ontbreken er nog, en wat blokkeert dat?</li>
+</ul>
+</section>
+<section class="col"><span class="cl">Keuzes voor de klant</span>
+<div class="kzl">
+<div class="kz"><b>Wat zetten we centraal in de eerste campagne</b><span class="o">&Eacute;&eacute;n aanbod, &eacute;&eacute;n doelgroep, &eacute;&eacute;n belofte. Niet alles tegelijk.</span><span class="nb">Dit is de belangrijkste inhoudelijke keuze van het hele traject en hij wordt nu vaak impliciet gemaakt.</span></div>
+<div class="kz"><b>Welk beeldmateriaal we gebruiken</b><span class="o">Bestaand materiaal, of nieuw laten maken als project.</span><span class="nb">Slecht beeld is de snelste manier om een goede campagne duur te maken.</span></div>
+</div>
+</section>
+<section class="col"><span class="cl">Wat wij doen</span><ol class="sl">
+<li>Formulier en toegangenlijst versturen op dag &eacute;&eacute;n.</li>
+<li>Kick-off inplannen binnen vijf werkdagen.</li>
+<li>Toegangen controleren, niet aannemen dat ze kloppen.</li>
+<li>Bij vertraging na vijf dagen bellen, niet mailen.</li>
+</ol></section>
+</div>
+<div class="lo"><span class="ll">Let op</span><p>Toegangen zijn oorzaak nummer &eacute;&eacute;n van uitloop. Zet er een datum op en koppel die aan de live-datum uit het voorstel: schuift de een, dan schuift de ander. Dat is geen dreigement, dat is de enige manier om de belofte houdbaar te houden.</p></div>
+</article>
+<article class="stp" id="s16">
+<div class="sh"><span class="sn">16</span><h3>Het fundament</h3><span class="sw">Ongeveer drie weken &middot; 75 stappen, 52 uur</span></div>
+<p class="si">Het best uitgewerkte deel van de hele reis. Wat ontbreekt is niet de inhoud maar het ritme aan de klantkant: drie weken waarin zij niets zien terwijl er het meeste gebeurt.</p>
+<div class="cols">
+<section class="col"><span class="cl">Verkoopondersteuning</span>
+<ul class="ml">
+<li><div><b>De 75 stappen met rol, middel en afvinkpunt</b><span class="d">Wie doet wat, waarmee, en waaraan zie je dat het klaar is.</span></div><em class="ch ok">bestaat</em></li>
+<li><div><b>De 28 werkinstructies</b><span class="d">Doel, wat je nodig hebt, de handelingen, waar het misgaat, klaar als.</span></div><em class="ch ok">bestaat</em></li>
+<li><div><b>ClickUp-template</b><span class="d">De 75 stappen als aan te vinken taken, anders bestaat het alleen op papier.</span></div><em class="ch no">nog niet</em></li>
+<li><div><b>Zes AI-instructies</b><span class="d">Twaalf van de 75 stappen hangen eraan.</span></div><em class="ch no">nog niet</em></li>
+<li><div><b>Het leadportal</b><span class="d">De voorwaarde voor de belofte dat we niet met jouw CRM koppelen.</span></div><em class="ch no">nog niet</em></li>
+</ul>
+</section>
+<section class="col"><span class="cl">Vragen</span>
+<span class="sub">De klant beantwoordt</span><ul class="ql">
+<li>Keur je de landingspagina goed?</li>
+<li>Keur je de advertenties goed?</li>
+<li>Bevestig je het mediabudget?</li>
+</ul>
+<span class="sub">Wij beantwoorden</span><ul class="ql w">
+<li>Wat moet er minimaal staan om te kunnen adverteren, en wat kan later?</li>
+<li>Hoeveel doorlooptijd kosten 52 uur bij onze bezetting?</li>
+<li>Waar hangt het op dit moment op, en is dat van ons of van de klant?</li>
+</ul>
+</section>
+<section class="col"><span class="cl">Keuzes voor de klant</span>
+<div class="kzl">
+<div class="kz"><b>Goedkeuring op de landingspagina</b><span class="o">Met een termijn. Anders is het een open einde.</span></div>
+<div class="kz"><b>Goedkeuring op de advertenties</b><span class="o">Idem. Drie momenten, drie termijnen.</span><span class="nb">Een klant die twee weken doet over een goedkeuring, heeft zijn eigen live-datum verschoven. Leg dat vooraf vast.</span></div>
+<div class="kz"><b>Bevestiging van het mediabudget</b><span class="o">Het laatste moment waarop dit nog kan wijzigen zonder het doel te raken.</span></div>
+</div>
+</section>
+<section class="col"><span class="cl">Wat wij doen</span><ol class="sl">
+<li>De 75 stappen in de vastgelegde volgorde.</li>
+<li>Week 1: laten weten wat we gevonden hebben.</li>
+<li>Week 2: preview van pagina en advertenties.</li>
+<li>Week 3: live, met bericht.</li>
+</ol></section>
+</div>
+<div class="lo"><span class="ll">Let op</span><p>Hier zit de spanning met je eigen pay-off. Drie weken tussen betalen en de eerste lead is geen momentum. Of je knipt het fundament in twee&euml;n &mdash; wat minimaal nodig is om te adverteren, en de rest terwijl het loopt &mdash; of de belofte klopt niet met de uitvoering.</p></div>
+</article>
+<article class="stp" id="s17">
+<div class="sh"><span class="sn">17</span><h3>Live</h3><span class="sw">Het moment zelf, en de twee weken erna</span></div>
+<p class="si">De campagne gaat aan. Dit is het moment waar de hele verkoop naartoe werkte, en er is nu niets om het mee te markeren.</p>
+<div class="cols">
+<section class="col"><span class="cl">Verkoopondersteuning</span>
+<ul class="ml">
+<li><div><b>Het leadportal</b><span class="d">Waar de klant zijn leads ziet binnenkomen.</span></div><em class="ch no">nog niet</em></li>
+<li><div><b>Het dashboard</b><span class="d">De keten uit stap 08, met echte getallen.</span></div><em class="ch no">nog niet</em></li>
+<li><div><b>Het live-bericht</b><span class="d">Dit staat er nu, hier komen je leads binnen, dit doen we de komende twee weken.</span></div><em class="ch no">nog niet</em></li>
+</ul>
+</section>
+<section class="col"><span class="cl">Vragen</span>
+<span class="sub">De klant beantwoordt</span><ul class="ql">
+<li>Komen de leads aan bij de juiste persoon?</li>
+<li>Waren de eerste leads goed? Waarom wel of niet?</li>
+</ul>
+<span class="sub">Wij beantwoorden</span><ul class="ql w">
+<li>Meet alles wat we dachten te meten &mdash; echt, geverifieerd, niet aangenomen?</li>
+<li>Wat zijn de eerste kosten per aanvraag, en hoe verhouden die zich tot de curve die we lieten zien?</li>
+</ul>
+</section>
+<section class="col"><span class="cl">Keuzes voor de klant</span>
+<p class="leeg">Geen keuze op dit moment.</p>
+</section>
+<section class="col"><span class="cl">Wat wij doen</span><ol class="sl">
+<li>Aanzetten en de eerste 48 uur dagelijks kijken.</li>
+<li>De eerste lead bellen, niet mailen.</li>
+<li>Na twee weken de eerste bijstelling, en uitleggen wat er is bijgesteld en waarom.</li>
+</ol></section>
+</div>
+<div class="lo"><span class="ll">Let op</span><p>De eerste lead is een moment. Als jij eerder belt dan het systeem meldt, is dat het verschil tussen een leverancier en een partner &mdash; en het kost je vijf minuten.</p></div>
+</article>
+<article class="stp" id="s18">
+<div class="sh"><span class="sn">18</span><h3>Over naar het maandritme</h3><span class="sw">Vanaf maand 2</span></div>
+<p class="si">Twaalf maanden dienstverlening die nergens beschreven staan, terwijl de resultaatafspraak er wel op rust. Alles hiervoor gaat over verkopen. Dit gaat over waarmaken, en dat is waar je propositie uiteindelijk op wordt afgerekend.</p>
+<div class="cols">
+<section class="col"><span class="cl">Verkoopondersteuning</span>
+<ul class="ml">
+<li><div><b>Het jaarplan als levend document</b><span class="d">Vier fases, met per fase het zwaartepunt en de verwachte curve.</span></div><em class="ch no">nog niet</em></li>
+<li><div><b>Maandrapportage</b><span class="d">De keten uit stap 08, elke maand dezelfde vorm.</span></div><em class="ch no">nog niet</em></li>
+<li><div><b>Overlegvorm en vaste agenda</b><span class="d">Wat bespreken we wel en wat niet &mdash; resultaat, geen story posts.</span></div><em class="ch no">nog niet</em></li>
+<li><div><b>Wat er gebeurt bij achterstand</b><span class="d">Op welk moment grijpen we in, en hoe.</span></div><em class="ch no">nog niet</em></li>
+</ul>
+</section>
+<section class="col"><span class="cl">Vragen</span>
+<span class="sub">De klant beantwoordt</span><ul class="ql">
+<li>Zijn de leads die binnenkomen de klanten die je wilt?</li>
+<li>Wat is er bij jou veranderd in aanbod, prijs of capaciteit?</li>
+<li>Wanneer wil je opschalen?</li>
+</ul>
+<span class="sub">Wij beantwoorden</span><ul class="ql w">
+<li>Wat gebeurt er elke maand, wie doet het, en hoeveel uur is het?</li>
+<li>Wanneer komt welke versneller &mdash; CRO, e-mail, SEO?</li>
+<li>Wanneer schalen we op, en wanneer grijpen we in?</li>
+<li>Hoe toetsen we de resultaatafspraak, en op welke dag?</li>
+</ul>
+</section>
+<section class="col"><span class="cl">Keuzes voor de klant</span>
+<div class="kzl">
+<div class="kz"><b>Per fase: wanneer komt welke versneller</b><span class="o">CRO als de bezoekers wel komen maar niet aanvragen. E-mail als er een lijst is om mee te werken. SEO als duidelijk is waarop.</span><span class="nb">Laat de volgorde volgen uit het knelpunt, niet uit het pakket.</span></div>
+<div class="kz"><b>Opschalen of niet</b><span class="o">Meer mediabudget bij dezelfde kosten per aanvraag is de makkelijkste groei die er is.</span><span class="nb">Dit is het moment waarop een retainer groeit. Als je er geen vast moment voor hebt, gebeurt het niet.</span></div>
+</div>
+</section>
+<section class="col"><span class="cl">Wat wij doen</span><ol class="sl">
+<li>Maandritme vastleggen: welke dag, welke vorm, wie erbij.</li>
+<li>Rapportage automatiseren zodat het niet aan een persoon hangt.</li>
+<li>Per kwartaal het jaarplan bijwerken met de echte curve.</li>
+</ol></section>
+</div>
+<div class="lo"><span class="ll">Let op</span><p>Dit is het grootste gat in de reis. Je verkoopt straks een resultaatafspraak over twaalf maanden waarvan je elf maanden nog niet hebt beschreven.</p></div>
+</article>
+</section>
+<section class="sec" id="besluiten"><div class="kicker">Wat ik van jou nodig heb</div><h2>Zeven besluiten</h2>
+<p class="note">Deze zeven kan ik niet voor je nemen, en ze blokkeren de rest. De eerste twee bepalen of je propositie klopt met wat je levert.</p>
+<div class="dec"><div class="hd"><span class="num">01</span><h4>Knippen we het fundament in twee&euml;n?</h4><span class="tag blok">blokkeert</span></div><p class="q">&lsquo;Momentum first&rsquo; belooft snelheid, maar er zitten nu drie weken tussen tekenen en de eerste lead. Wat moet er minimaal staan om verantwoord te kunnen adverteren &mdash; en wat kan gebouwd worden terwijl de campagne al loopt?</p><div class="adv"><span class="al">Mijn advies</span><p>Mijn inschatting: 12 tot 16 van de 52 uur is genoeg om live te gaan. Meting, &eacute;&eacute;n landingspagina, &eacute;&eacute;n campagne, leadafhandeling. De rest &mdash; e-mail, automation, de volledige contentset, de versnellers &mdash; kan in week 2 tot 4 terwijl er al leads binnenkomen. Dat maakt de belofte waar zonder de prijs te raken.</p></div></div>
+<div class="dec"><div class="hd"><span class="num">02</span><h4>Wat gebeurt er als het resultaat niet gehaald wordt?</h4><span class="tag blok">blokkeert</span></div><p class="q">Je wilt een resultaatverplichting. Zonder gevolg is dat een inspanningsverplichting met een ander woord ervoor, en dat blijkt op het slechtst denkbare moment.</p><div class="adv"><span class="al">Mijn advies</span><p>Er zijn drie werkbare vormen: doorwerken zonder fee tot het gehaald is, een deel van de fee terug, of een uitstapmoment zonder opzegtermijn. De derde is het goedkoopst en het geloofwaardigst, en hij past bij maandelijks opzegbaar.</p></div></div>
+<div class="dec"><div class="hd"><span class="num">03</span><h4>Wat neemt een vertrekkende klant mee?</h4><span class="tag blok">blokkeert</span></div><p class="q">De landingspagina staat op onze omgeving. Advertentieaccounts, e-maillijst, meting en content staan verspreid.</p><div class="adv"><span class="al">Mijn advies</span><p>Leg per onderdeel vast of het meegaat, tegen welke voorwaarde. Dat is geen juridische kwestie maar een verkoopargument: een klant die weet dat hij weg kan, hoeft minder lang na te denken.</p></div></div>
+<div class="dec"><div class="hd"><span class="num">04</span><h4>Wie doet dit gesprek, behalve jij?</h4><span class="tag schaal">schaalbaarheid</span></div><p class="q">De hele reis hierboven is nu op &eacute;&eacute;n persoon gebouwd. Je grootste uitdaging is schaalbaarheid, en dit proces schaalt niet.</p><div class="adv"><span class="al">Mijn advies</span><p>De gespreksleidraad, de bezwarenkaart en het voorbeeldvoorstel zijn de drie middelen die dit overdraagbaar maken. Zonder die drie is elke verkoop een Jim-verkoop.</p></div></div>
+<div class="dec"><div class="hd"><span class="num">05</span><h4>Komt het scanrapport v&oacute;&oacute;r of tijdens het gesprek?</h4><span class="tag scherp">scherpte</span></div><p class="q">Vooraf sturen geeft de klant tijd om te schrikken &mdash; en om zelf iemand te bellen die zegt dat het meevalt. Aan tafel openen is sterker, maar dan kan hij er niet over nadenken.</p><div class="adv"><span class="al">Mijn advies</span><p>Aan tafel openen, direct na de opening, en daarna meegeven. Het rapport is de reden dat je gesprek anders is dan dat van een ander bureau; dat effect wil je live.</p></div></div>
+<div class="dec"><div class="hd"><span class="num">06</span><h4>Wat kosten de templates en de contentsessie?</h4><span class="tag scherp">scherpte</span></div><p class="q">Zonder prijs kun je social beheer alleen afwijzen, niet vervangen. Dan voelt de keuze als bezuiniging.</p><div class="adv"><span class="al">Mijn advies</span><p>Twee bedragen zijn genoeg: een set templates en een contentsessie per dagdeel. Ze hoeven niet goedkoop te zijn &mdash; ze moeten bestaan.</p></div></div>
+<div class="dec"><div class="hd"><span class="num">07</span><h4>Vier vragen erbij in intake deel 1</h4><span class="tag scherp">scherpte</span></div><p class="q">Huidige omzet, huidige marketinguitgaven, seizoen en brutomarge. Zonder die vier kun je aan tafel niet narekenen.</p><div class="adv"><span class="al">Mijn advies</span><p>Dan zijn het er veertien in plaats van tien. Dat is nog steeds onder de grens waarop mensen afhaken, en het scheelt een gesprek.</p></div></div>
+</section>
+<div class="foot">James Robinson &middot; De klantreis, van eerste gesprek tot maandritme &middot; intern werkdocument</div>
+</main>
+<script>
+(function(){var b=document.getElementById('tg');if(!b)return;
+b.addEventListener('click',function(){var r=document.documentElement;
+var d=r.getAttribute('data-theme')||(window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+r.setAttribute('data-theme',d==='dark'?'light':'dark');});})();
+</script>
+</body></html>
