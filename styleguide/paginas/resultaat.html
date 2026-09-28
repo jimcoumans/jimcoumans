@@ -1,0 +1,490 @@
+<title>Als het resultaat tegenvalt &middot; James Robinson</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@600;700&display=swap">
+<style>
+:root{
+  --page:#fbfbfd; --card:#fff; --alt:#f5f5f7;
+  --tx:#1d1d1f; --tx2:#6e6e73; --tx3:#86868b;
+  --ln:#d2d2d7; --ln-s:#e5e5e9;
+  --blue:#007aff; --link:#0066cc; --act:#0857c3;
+  --b100:#e0efff; --b50:#f4f9ff;
+  --lime:#c4f000; --lime-tx:#5a7000; --lime100:#f2fccc;
+  --green-tx:#1d7d3f; --green100:#e6f7eb;
+  --orange-tx:#94590a; --orange100:#fef2e0;
+  --red-tx:#c02a22; --red100:#fdecea;
+  --black:#1c1c1e; --inv:#f5f5f7; --inv2:#a1a1a6;
+  --fd:"Inter Tight","Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --ft:"Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --fm:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --e:cubic-bezier(.25,.1,.25,1);--g:32px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}}
+:root[data-theme="dark"]{
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--tx);font-family:var(--ft);font-size:16.5px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition-duration:.01ms!important}}
+:focus-visible{outline:none;box-shadow:0 0 0 4px rgba(0,122,255,.4);border-radius:8px}
+p{margin:0 0 18px;max-width:70ch}
+p:last-child{margin-bottom:0}
+h1,h2,h3,h4{font-family:var(--fd);margin:0;text-wrap:balance}
+code{font-family:var(--fm);font-size:.86em;background:var(--alt);padding:2px 6px;border-radius:5px}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:60;background:rgba(251,251,253,.86);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--ln-s)}
+:root[data-theme="dark"] .bar,:root:not([data-theme="light"]) .bar{background:rgba(0,0,0,.74)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .bar{background:rgba(251,251,253,.86)}}
+.bar-in{max-width:1080px;margin:0 auto;padding:0 var(--g);display:flex;align-items:center;gap:5px;min-height:48px;overflow-x:auto;scrollbar-width:none}
+.bar-in::-webkit-scrollbar{display:none}
+.bar b{font-family:var(--fd);font-size:14.5px;font-weight:700;letter-spacing:-.016em;margin-right:8px;white-space:nowrap}
+.bar a{font-size:12.5px;color:var(--tx2);text-decoration:none;padding:6px 8px;border-radius:7px;white-space:nowrap}
+.bar a:hover{color:var(--tx)}
+.bar button{margin-left:auto;flex:none;font:inherit;font-size:12px;cursor:pointer;background:transparent;border:1px solid var(--ln);color:var(--tx2);border-radius:980px;padding:5px 13px}
+
+.wrap{max-width:1080px;margin:0 auto;padding-inline:var(--g)}
+.hero{padding-block:76px 40px}
+h1{font-size:clamp(34px,5.4vw,58px);font-weight:700;line-height:1.06;letter-spacing:-.026em;margin-bottom:20px}
+.lead{font-size:20px;line-height:1.5;color:var(--tx2);max-width:64ch}
+.sec{padding-block:60px;border-top:1px solid var(--ln-s)}
+h2{font-size:clamp(26px,3.4vw,38px);font-weight:700;line-height:1.12;letter-spacing:-.02em;margin-bottom:8px}
+.sec > .kicker{font-family:var(--fm);font-size:11px;letter-spacing:.06em;color:var(--tx3);margin-bottom:14px}
+h3{font-size:21px;font-weight:600;line-height:1.24;letter-spacing:-.012em;margin:38px 0 10px}
+h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
+.note{color:var(--tx2)}
+.note b,b{color:var(--tx);font-weight:600}
+
+/* kernblok */
+.key{background:var(--black);color:var(--inv);border-radius:22px;padding:34px 32px;margin:26px 0}
+.key .k{display:block;font-family:var(--fm);font-size:10.5px;letter-spacing:.06em;color:var(--lime);margin-bottom:14px}
+.key p{color:var(--inv2);font-size:17.5px;max-width:64ch}
+.key strong{color:#fff;font-weight:600}
+.key .big{font-family:var(--fd);font-size:clamp(22px,3vw,30px);font-weight:600;line-height:1.2;letter-spacing:-.018em;color:#fff;margin-bottom:16px}
+
+/* lagen van het aanbod */
+.stack{display:grid;gap:12px;margin-top:24px}
+.st{background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;display:grid;grid-template-columns:132px 1fr;gap:20px;align-items:start}
+.st .lab{font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;color:var(--act);padding-top:3px}
+.st .bd p{margin:0;font-size:15.5px;color:var(--tx2)}
+.st .bd h4{margin-bottom:5px}
+
+/* kandidaten */
+.cands{display:grid;gap:12px;margin-top:22px}
+.cand{border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;background:var(--card)}
+.cand.win{border-color:var(--lime);box-shadow:0 0 0 1px var(--lime)}
+.cand .zin{font-family:var(--fd);font-size:22px;font-weight:600;letter-spacing:-.014em;margin-bottom:8px}
+.cand .why{font-size:15px;color:var(--tx2);margin:0}
+.cand .verdict{display:inline-block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;border-radius:5px;padding:3px 7px;margin-bottom:12px}
+.cand .verdict.no{background:var(--red100);color:var(--red-tx)}
+.cand .verdict.ok{background:var(--lime100);color:var(--lime-tx)}
+.cand .verdict.mid{background:var(--orange100);color:var(--orange-tx)}
+
+/* onderscheid */
+.dist{width:100%;border-collapse:collapse;font-size:15px;margin-top:22px}
+.dist th,.dist td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.dist thead th{font-family:var(--fm);font-size:10.5px;letter-spacing:.04em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.dist td:first-child{font-weight:500;width:34%}
+.dist .v{font-family:var(--fm);font-size:11px;white-space:nowrap}
+.dist .v.y{color:var(--green-tx)}
+.dist .v.n{color:var(--red-tx)}
+.dist tr:last-child td{border-bottom:none}
+.tblwrap{overflow-x:auto}
+
+/* beslissingen */
+.dec{border:1px solid var(--ln-s);border-radius:18px;background:var(--card);padding:26px 28px;margin-top:14px}
+.dec .hd{display:flex;align-items:baseline;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.dec .num{font-family:var(--fm);font-size:11px;color:var(--tx3);flex:none}
+.dec h4{font-size:19px;flex:1;min-width:220px;margin:0}
+.dec .tag{font-family:var(--fm);font-size:9.5px;letter-spacing:.05em;border-radius:5px;padding:3px 7px}
+.dec .tag.blok{background:var(--red100);color:var(--red-tx)}
+.dec .tag.schaal{background:var(--orange100);color:var(--orange-tx)}
+.dec .tag.scherp{background:var(--b100);color:var(--act)}
+.dec .q{font-size:16px;color:var(--tx2);margin:0 0 16px}
+.dec .adv{background:var(--b50);border-left:3px solid var(--act);border-radius:0 10px 10px 0;padding:16px 18px}
+.dec .adv .al{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.06em;color:var(--act);margin-bottom:7px}
+.dec .adv p{font-size:15.5px;margin:0 0 10px}
+.dec .adv p:last-child{margin-bottom:0}
+
+/* vast */
+.locked{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-top:22px}
+.lk{background:var(--card);border:1px solid var(--ln-s);border-radius:14px;padding:18px 20px}
+.lk .t{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--green-tx);margin-bottom:7px}
+.lk .b{font-size:15px;color:var(--tx2);line-height:1.45}
+.lk .b b{color:var(--tx)}
+
+.warn{background:var(--orange100);border-radius:18px;padding:24px 26px;margin-top:26px}
+.warn h4{color:var(--orange-tx)}
+.warn p{color:var(--orange-tx);opacity:.94;font-size:15.5px;max-width:none}
+.foot{padding-block:44px 64px;font-size:13px;color:var(--tx3);text-align:center}
+
+@media (max-width:734px){
+  :root{--g:20px}
+  body{font-size:16px}
+  .sec{padding-block:48px}
+  .hero{padding-block:44px 28px}
+  .st{grid-template-columns:1fr;gap:10px}
+  .key{padding:24px 22px}
+  .dec{padding:22px 20px}
+}
+
+</style><style>
+/* keten */
+.ket{margin-top:28px;overflow-x:auto;padding-bottom:4px}
+.ketin{display:grid;grid-template-columns:repeat(4,minmax(170px,1fr));gap:10px;min-width:760px}
+.kp{background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:18px 18px 16px;position:relative}
+.kp .kt{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.06em;color:var(--tx3);margin-bottom:8px}
+.kp .kn{display:block;font-family:var(--fd);font-size:17px;font-weight:600;letter-spacing:-.01em;line-height:1.25;margin-bottom:12px}
+.kp .kb{display:flex;gap:6px;flex-wrap:wrap}
+.kb a{font-family:var(--fm);font-size:11px;text-decoration:none;background:var(--alt);color:var(--tx2);border-radius:7px;padding:4px 8px}
+.kb a:hover{background:var(--b100);color:var(--act)}
+.kpijl{display:grid;grid-template-columns:repeat(4,minmax(170px,1fr));gap:10px;min-width:760px;margin-top:8px}
+.kpijl span{font-family:var(--fm);font-size:10.5px;color:var(--tx3);text-align:center}
+.kmeting{margin-top:10px;min-width:760px;background:var(--black);border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.kmeting b{color:#fff;font-size:15px;font-weight:600}
+.kmeting span{color:var(--inv2);font-size:14px}
+.kmeting a{font-family:var(--fm);font-size:11px;text-decoration:none;background:rgba(255,255,255,.12);color:var(--lime);border-radius:7px;padding:4px 8px}
+
+/* drempeltabel */
+.dr{width:100%;border-collapse:collapse;font-size:15px;margin-top:22px}
+.dr th,.dr td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.dr thead th{font-family:var(--fm);font-size:10.5px;letter-spacing:.04em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.dr td.n,.dr th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;font-family:var(--fm);font-size:13px}
+.dr tbody tr:last-child td{border-bottom:none}
+.dr tr.geen td{color:var(--tx3)}
+.dr tr.uitspraak td.n:first-child{color:var(--green-tx)}
+.dr .st{font-family:var(--fm);font-size:9.5px;letter-spacing:.04em;border-radius:5px;padding:3px 7px;white-space:nowrap}
+.dr .st.geen{background:var(--red100);color:var(--red-tx)}
+.dr .st.richting{background:var(--orange100);color:var(--orange-tx)}
+.dr .st.uitspraak{background:var(--green100);color:var(--green-tx)}
+
+/* oorzaak */
+.oz{border:1px solid var(--ln-s);border-radius:20px;background:var(--card);padding:26px 28px;margin-top:16px}
+.oz .oh2{display:flex;align-items:baseline;gap:13px;flex-wrap:wrap;margin-bottom:8px}
+.oz .on{font-family:var(--fm);font-size:12px;color:var(--act);flex:none}
+.oz h4{font-size:20px;flex:1;min-width:220px;margin:0}
+.oz .op{font-family:var(--fm);font-size:9.5px;letter-spacing:.05em;background:var(--alt);color:var(--tx2);border-radius:5px;padding:3px 8px;white-space:nowrap}
+.ozg{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
+.ozb .bl2{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.06em;color:var(--tx3);margin-bottom:9px}
+.zl{list-style:none;margin:0;padding:0}
+.zl li{font-size:14.5px;line-height:1.5;padding:5px 0 5px 17px;position:relative;color:var(--tx)}
+.zl li::before{content:"";position:absolute;left:0;top:12px;width:6px;height:6px;border-radius:2px;background:var(--ln)}
+.ozb.bet p{font-size:14.5px;color:var(--tx2);margin:0;max-width:none}
+.ol2{list-style:none;margin:0;padding:0}
+.ol2 li{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--ln-s);font-size:14.5px;line-height:1.45}
+.ol2 li:last-child{border-bottom:none}
+.tg{font-family:var(--fm);font-size:9.5px;letter-spacing:.04em;border-radius:5px;padding:3px 7px;white-space:nowrap}
+.tg.o{background:var(--lime100);color:var(--lime-tx)}
+.tg.j{background:var(--b100);color:var(--act)}
+.tg.g{background:var(--orange100);color:var(--orange-tx)}
+.vz{background:var(--b50);border-left:3px solid var(--act);border-radius:0 12px 12px 0;padding:15px 18px;margin-top:18px}
+.vz .vl{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.06em;color:var(--act);margin-bottom:7px}
+.vz p{font-size:15px;margin:0;max-width:none}
+
+/* afspraken */
+.af{border-top:1px solid var(--ln-s);padding:20px 0}
+.af:first-of-type{border-top:none}
+.af .ah{display:flex;align-items:baseline;gap:13px;margin-bottom:6px}
+.af .an{font-family:var(--fm);font-size:11px;color:var(--tx3);flex:none}
+.af h4{font-size:18px;margin:0}
+.af p{font-size:15.5px;color:var(--tx2);margin:0 0 0 30px;max-width:76ch}
+
+.tel{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:26px}
+.tl{background:var(--card);border:1px solid var(--ln-s);border-radius:14px;padding:18px 20px}
+.tl .g{display:block;font-family:var(--fd);font-size:30px;font-weight:700;letter-spacing:-.02em;line-height:1}
+.tl .l{display:block;font-size:13px;color:var(--tx2);margin-top:6px;line-height:1.4}
+.tl.o .g{color:var(--lime-tx)} .tl.j .g{color:var(--act)} .tl.g2 .g{color:var(--orange-tx)}
+
+@media (max-width:860px){ .ozg{grid-template-columns:1fr} }
+@media (max-width:734px){ .oz{padding:22px 20px} .af p{margin-left:0} }
+</style>
+</head><body>
+<nav class="bar"><div class="bar-in"><b>Als het tegenvalt</b>
+<a href="#drempel">De drempel</a><a href="#keten">De keten</a><a href="#oorzaken">Tien oorzaken</a><a href="#wie">Wie draait de knop</a><a href="#afspraken">Vooraf afgesproken</a>
+<button id="tg">Thema</button></div></nav>
+
+<header class="wrap hero">
+<h1>Als het resultaat tegenvalt</h1>
+<p class="lead">Tien redenen waarom de cijfers kunnen achterblijven, met per reden het cijferpatroon dat hem isoleert en wat eraan te doen is. Bedoeld om v&oacute;&oacute;raf te bespreken, niet pas op het moment dat het zo ver is.</p>
+</header>
+
+<main class="wrap">
+<section class="sec"><div class="kicker">Het uitgangspunt</div><h2>Een diagnose, geen discussie</h2>
+<p class="note">We sturen op cijfers: dit is het resultaat, dit is wat we eraan kunnen doen. Dat werkt alleen als de meetlat er ligt v&oacute;&oacute;rdat er iets te meten valt. Anders wordt elke tegenvaller achteraf een verhaal, en elk verhaal achteraf klinkt als een excuus &mdash; ook als het waar is.</p>
+<div class="key"><span class="k">De belofte die hieronder ligt</span><p class="big">Wij zeggen het zelf als het niet werkt.</p><p>Elke oorzaak hieronder heeft een cijferpatroon dat hem onderscheidt van de negen andere. Dat patroon staat in het dashboard, is voor beide partijen zichtbaar, en is niet voor tweeërlei uitleg vatbaar. Beweegt er na optimalisatie niets, dan melden wij dat uit onszelf en leggen we de opties voor &mdash; waaronder stoppen. <strong>Maandelijks opzegbaar geldt beide kanten op.</strong></p></div>
+</section>
+<section class="sec" id="drempel"><div class="kicker">Eerst dit</div><h2>Wanneer mag je iets zeggen?</h2>
+<p class="note">Voordat je een oorzaak kunt aanwijzen, moet je genoeg waarnemingen hebben om te weten dat het geen toeval is. Dat is geen kwestie van ervaring maar van rekenen: bij <code>n</code> conversies is de onzekerheid ongeveer <code>1 &divide; &radic;n</code>. Bij tien conversies is dat ruim dertig procent &mdash; dan is een variant die &lsquo;dertig procent beter scoort&rsquo; gewoon ruis.</p>
+<div class="tblwrap"><table class="dr"><thead><tr><th class="n">Conversies</th><th class="n">Onzekerheid</th><th>Wat je ermee kunt</th><th></th></tr></thead><tbody>
+<tr class="geen"><td class="n">10</td><td class="n">&plusmn; 32%</td><td>Zegt niets. Een verschil van 30% tussen twee varianten is hier toeval.</td><td><span class="st geen">geen</span></td></tr>
+<tr class="richting"><td class="n">30</td><td class="n">&plusmn; 18%</td><td>Eerste richting. Grote verschillen worden zichtbaar, kleine niet.</td><td><span class="st richting">richting</span></td></tr>
+<tr class="richting"><td class="n">50</td><td class="n">&plusmn; 14%</td><td>Bruikbaar voor een besluit over stoppen of doorgaan met een variant.</td><td><span class="st richting">richting</span></td></tr>
+<tr class="uitspraak"><td class="n">100</td><td class="n">&plusmn; 10%</td><td>Uitspraak over verschillen van meer dan een kwart.</td><td><span class="st uitspraak">uitspraak</span></td></tr>
+<tr class="uitspraak"><td class="n">200</td><td class="n">&plusmn; 7%</td><td>Uitspraak over verschillen van meer dan vijftien procent.</td><td><span class="st uitspraak">uitspraak</span></td></tr>
+<tr class="uitspraak"><td class="n">400</td><td class="n">&plusmn; 5%</td><td>Uitspraak over kleine verschillen. Zelden haalbaar in de eerste maanden.</td><td><span class="st uitspraak">uitspraak</span></td></tr>
+</tbody></table></div>
+<div class="warn"><h4>Wat dit betekent voor de eerste maanden</h4><p>Bij twintig aanvragen per maand duurt het anderhalve maand voordat een uitspraak over conversiepercentages standhoudt, en een half jaar voordat kleine verschillen zichtbaar worden. Daarom kijken we in de eerste weken niet naar conversie maar naar de tussenstappen: weergaven, kosten per duizend weergaven, doorklikratio en kosten per klik. Die halen hun aantallen veel eerder.</p></div>
+</section>
+<section class="sec" id="keten"><div class="kicker">Waar zit het</div><h2>Vier meetpunten, tien oorzaken</h2>
+<p class="note">Elke oorzaak zit op een vaste plek in de keten. Door van links naar rechts te lopen en te kijken waar het getal voor het eerst afwijkt, houd je er steeds minder over. Dat is de hele diagnose.</p>
+<div class="ket"><div class="ketin">
+<div class="kp"><span class="kt">MEETPUNT 1</span><span class="kn">Bereik</span><span class="kt" style="margin:-6px 0 10px;text-transform:none;letter-spacing:0;font-family:var(--ft);font-size:13px;color:var(--tx2)">Hoeveel mensen zien je &uuml;berhaupt</span><div class="kb">
+<a href="#o01">01</a>
+<a href="#o02">02</a>
+<a href="#o03">03</a>
+</div></div>
+<div class="kp"><span class="kt">MEETPUNT 2</span><span class="kn">Bezoekers</span><span class="kt" style="margin:-6px 0 10px;text-transform:none;letter-spacing:0;font-family:var(--ft);font-size:13px;color:var(--tx2)">Hoeveel daarvan klikken door</span><div class="kb">
+<a href="#o04">04</a>
+</div></div>
+<div class="kp"><span class="kt">MEETPUNT 3</span><span class="kn">Aanvragen</span><span class="kt" style="margin:-6px 0 10px;text-transform:none;letter-spacing:0;font-family:var(--ft);font-size:13px;color:var(--tx2)">Hoeveel daarvan vullen iets in</span><div class="kb">
+<a href="#o05">05</a>
+<a href="#o06">06</a>
+<a href="#o07">07</a>
+</div></div>
+<div class="kp"><span class="kt">MEETPUNT 4</span><span class="kn">Klanten</span><span class="kt" style="margin:-6px 0 10px;text-transform:none;letter-spacing:0;font-family:var(--ft);font-size:13px;color:var(--tx2)">Hoeveel daarvan kopen</span><div class="kb">
+<a href="#o08">08</a>
+<a href="#o09">09</a>
+</div></div>
+</div>
+<div class="kpijl"><span>&darr; kosten per duizend weergaven</span><span>&darr; doorklikratio</span><span>&darr; paginaconversie</span><span>&darr; conversie naar klant</span></div>
+<div class="kmeting"><b>Oorzaak 10 &mdash; de meting</b><span>Raakt alle vier de punten tegelijk en maakt de negen andere diagnoses onbetrouwbaar.</span><a href="#o10">10</a></div>
+</div></section>
+<section class="sec" id="oorzaken"><div class="kicker">De kern</div><h2>Tien oorzaken</h2>
+<p class="note">Per oorzaak: het cijferpatroon dat hem isoleert, wat het betekent, wat eraan te doen is en van wie die knop is, en wat we er v&oacute;&oacute;raf over zeggen.</p>
+<article class="oz" id="o01">
+<div class="oh2"><span class="on">01</span><h4>Het budget is te klein voor het doel</h4><span class="op">Bereik</span></div>
+<div class="ozg">
+<div class="ozb"><span class="bl2">Wat je ziet</span><ul class="zl">
+<li>Het aantal aanvragen blijft onder doel.</li>
+<li>De kosten per aanvraag zitten <b>op of onder</b> het doelbedrag.</li>
+<li>Het budget is elke dag volledig besteed.</li>
+<li>Het platform meldt dat bereik wordt beperkt door budget.</li>
+</ul></div>
+<div class="ozb"><span class="bl2">Wat eraan te doen is</span><ul class="ol2">
+<li><span>Mediabudget verhogen naar het bedrag dat uit de rekensom volgt</span><em class="tg g" style="font-style:normal">kost geld</em></li>
+<li><span>Het doel verlagen naar wat het huidige budget kan dragen</span><em class="tg j" style="font-style:normal">jij</em></li>
+<li><span>De acquisitieruimte herzien &mdash; misschien mag een aanvraag meer kosten dan je dacht</span><em class="tg j" style="font-style:normal">jij</em></li>
+<li><span>Budget herverdelen van het slechtst presterende kanaal naar het beste</span><em class="tg o" style="font-style:normal">wij</em></li>
+</ul></div>
+</div>
+<div class="ozb bet" style="margin-top:18px"><span class="bl2">Wat het betekent</span><p>De machine werkt. Hij draait alleen te langzaam. Dit is het beste slechte nieuws dat er bestaat, want er is precies &eacute;&eacute;n knop en die werkt lineair: elke extra euro levert hetzelfde op als de vorige, tot het plafond uit oorzaak 02.</p></div>
+<div class="vz"><span class="vl">Wat we hierover vooraf zeggen</span><p>Dit is de reden waarom we nu al zeggen dat we kunnen adviseren het budget te verhogen. Zitten de kosten per aanvraag op doel en het aantal niet, dan is budget de enige knop die er nog is. Dan is verhogen geen vlucht naar voren maar de conclusie.</p></div>
+</article>
+<article class="oz" id="o02">
+<div class="oh2"><span class="on">02</span><h4>De markt is te klein voor dit budget</h4><span class="op">Bereik</span></div>
+<div class="ozg">
+<div class="ozb"><span class="bl2">Wat je ziet</span><ul class="zl">
+<li>De frequentie loopt op: dezelfde mensen zien je advertentie steeds vaker.</li>
+<li>Het bereik vlakt af terwijl het budget gelijk blijft.</li>
+<li>De kosten per duizend weergaven stijgen zonder dat er iets is veranderd.</li>
+<li>De kosten per aanvraag lopen langzaam op in plaats van omlaag.</li>
+</ul></div>
+<div class="ozb"><span class="bl2">Wat eraan te doen is</span><ul class="ol2">
+<li><span>Het gebied vergroten</span><em class="tg o" style="font-style:normal">wij</em></li>
+<li><span>De doelgroep verbreden naar aangrenzende profielen</span><em class="tg o" style="font-style:normal">wij</em></li>
+<li><span>Een tweede kanaal openen dat we nog niet gebruiken</span><em class="tg o" style="font-style:normal">wij</em></li>
+<li><span>Een aangrenzend aanbod toevoegen voor een andere doelgroep</span><em class="tg j" style="font-style:normal">jij</em></li>
+<li><span>Het budget juist verl&aacute;gen naar het verzadigingspunt en de rest elders inzetten</span><em class="tg o" style="font-style:normal">wij</em></li>
+</ul></div>
+</div>
+<div class="ozb bet" style="margin-top:18px"><span class="bl2">Wat het betekent</span><p>Je praat tegen dezelfde mensen. Boven het verzadigingspunt levert een extra euro minder op dan de vorige, en op een gegeven moment niets meer. Dat plafond kennen we pas als we ertegenaan zitten.</p></div>
+<div class="vz"><span class="vl">Wat we hierover vooraf zeggen</span><p>Er is een plafond, en we weten vooraf niet waar het ligt. Zodra we het raken, zeggen we het &mdash; ook als dat betekent dat we adviseren minder uit te geven.</p></div>
+</article>
+<article class="oz" id="o03">
+<div class="oh2"><span class="on">03</span><h4>Seizoen</h4><span class="op">Bereik</span></div>
+<div class="ozg">
+<div class="ozb"><span class="bl2">Wat je ziet</span><ul class="zl">
+<li>De dip valt samen met de dip die je omzet elk jaar heeft.</li>
+<li>Jaar op jaar laat hetzelfde patroon zien.</li>
+<li>De doorklikratio en de paginaconversie blijven normaal; alleen het volume zakt.</li>
+</ul></div>
+<div class="ozb"><span class="bl2">Wat eraan te doen is</span><ul class="ol2">
+<li><span>Budget herverdelen over het jaar: minder in het dal, meer in de piek</span><em class="tg o" style="font-style:normal">wij</em></li>
+<li><span>In het dal sturen op merk en op het opbouwen van je e-maillijst</span><em class="tg o" style="font-style:normal">wij</em></li>
+<li><span>Maandnormen afspreken in plaats van een jaargemiddelde</span><em class="tg o" style="font-style:normal">wij</em></li>
+<li><span>De piek voorbereiden in het dal, zodat je er klaar voor staat</span><em class="tg j" style="font-style:normal">jij</em></li>
+</ul></div>
+</div>
+<div class="ozb bet" style="margin-top:18px"><span class="bl2">Wat het betekent</span><p>Het ligt niet aan de campagne. Zonder maandnormen lijkt elke winter een probleem en elke zomer een succes, en ga je aan de verkeerde knoppen draaien.</p></div>
+<div class="vz"><span class="vl">Wat we hierover vooraf zeggen</span><p>We spreken normen per maand af, geen jaargemiddelde. Dat vraagt van jou dat je vooraf vertelt hoe je seizoen loopt &mdash; en dat staat daarom in de intake.</p></div>
+</article>
+<article class="oz" id="o04">
+<div class="oh2"><span class="on">04</span><h4>De advertentie werkt niet</h4><span class="op">Weergaven &rarr; bezoekers</span></div>
+<div class="ozg">
+<div class="ozb"><span class="bl2">Wat je ziet</span><ul class="zl">
+<li>De kosten per duizend weergaven zijn normaal.</li>
+<li>De doorklikratio ligt onder de norm.</li>
+<li>Dat geldt over meerdere varianten en meerdere doelgroepen.</li>
+</ul></div>
+<div class="ozb"><span class="bl2">Wat eraan te doen is</span><ul class="ol2">
+<li><span>Nieuwe hoeken testen &mdash; ander vertrekpunt, niet alleen andere woorden</span><em class="tg o" style="font-style:normal">wij</em></li>
+<li><span>Ander beeld inzetten uit de bestaande set</span><em class="tg o" style="font-style:normal">wij</em></li>
+<li><span>Video in plaats van stilstaand beeld</span><em class="tg o" style="font-style:normal">wij</em></li>
+<li><span>Het aanbod naar de eerste seconde halen</span><em class="tg o" style="font-style:normal">wij</em></li>
+<li><span>De draaidag naar voren halen als we nog met stock of bestaand beeld draaien</span><em class="tg o" style="font-style:normal">wij</em></li>
+</ul></div>
+</div>
+<div class="ozb bet" style="margin-top:18px"><span class="bl2">Wat het betekent</span><p>Mensen zien het en het doet ze niets. Dit zit in de advertentie zelf: het beeld, de eerste seconde, de kop, of het aanbod dat te ver naar achteren staat.</p></div>
+<div class="vz"><span class="vl">Wat we hierover vooraf zeggen</span><p>Dit is de snelste en goedkoopste knop die er is, en hij is van ons. Is dit de oorzaak, dan is het binnen twee weken zichtbaar en zit het in je retainer.</p></div>
+</article>
+<article class="oz" id="o05">
+<div class="oh2"><span class="on">05</span><h4>De landingspagina werkt niet</h4><span class="op">Bezoekers &rarr; aanvragen</span></div>
+<div class="ozg">
+<div class="ozb"><span class="bl2">Wat je ziet</span><ul class="zl">
+<li>De doorklikratio is op orde: mensen komen wel aan.</li>
+<li>De paginaconversie ligt onder de norm.</li>
+<li>Hoge uitstap, korte verblijfsduur, of mensen die het formulier beginnen en niet afmaken.</li>
+</ul></div>
+<div class="ozb"><span class="bl2">Wat eraan te doen is</span><ul class="ol2">
+<li><span>De pagina korter maken en de belofte naar boven halen</span><em class="tg o" style="font-style:normal">wij</em></li>
+<li><span>Het formulier korter maken of in stappen knippen</span><em class="tg o" style="font-style:normal">wij</em></li>
+<li><span>Bewijs toevoegen: reviews, cijfers, namen, gezichten</span><em class="tg o" style="font-style:normal">wij</em></li>
+<li><span>Laadtijd aanpakken</span><em class="tg o" style="font-style:normal">wij</em></li>
+<li><span>Een aparte pagina per doelgroep in plaats van &eacute;&eacute;n voor iedereen</span><em class="tg o" style="font-style:normal">wij</em></li>
+</ul></div>
+</div>
+<div class="ozb bet" style="margin-top:18px"><span class="bl2">Wat het betekent</span><p>Tussen de klik en het formulier gaat het mis. Dat is een vormprobleem, niet een aanbodprobleem &mdash; het onderscheid met oorzaak 06 zit erin dat het hier bij &eacute;&eacute;n variant blijft hangen en daar bij allemaal.</p></div>
+<div class="vz"><span class="vl">Wat we hierover vooraf zeggen</span><p>Hier zeggen we niets over v&oacute;&oacute;r duizend kliks op de pagina. Daaronder is elk verschil ruis.</p></div>
+</article>
+<article class="oz" id="o06">
+<div class="oh2"><span class="on">06</span><h4>Het aanbod is niet scherp genoeg</h4><span class="op">Bezoekers &rarr; aanvragen</span></div>
+<div class="ozg">
+<div class="ozb"><span class="bl2">Wat je ziet</span><ul class="zl">
+<li>De advertentie werkt: doorklikratio op of boven norm.</li>
+<li>De pagina is technisch in orde en snel.</li>
+<li>De conversie blijft laag over <b>meerdere</b> paginavarianten en <b>meerdere</b> doelgroepen.</li>
+<li>Concurrenten adverteren hetzelfde met een lagere drempel of een lagere prijs.</li>
+</ul></div>
+<div class="ozb"><span class="bl2">Wat eraan te doen is</span><ul class="ol2">
+<li><span>Een instapaanbod maken met een lagere drempel</span><em class="tg j" style="font-style:normal">jij</em></li>
+<li><span>De prijs of de voorwaarden veranderen</span><em class="tg j" style="font-style:normal">jij</em></li>
+<li><span>Een garantie of proefperiode toevoegen</span><em class="tg j" style="font-style:normal">jij</em></li>
+<li><span>De gevraagde stap verkleinen &mdash; van offerte naar gratis check</span><em class="tg j" style="font-style:normal">jij</em></li>
+<li><span>Ander bewijs verzamelen dat het verschil maakt</span><em class="tg j" style="font-style:normal">jij</em></li>
+</ul></div>
+</div>
+<div class="ozb bet" style="margin-top:18px"><span class="bl2">Wat het betekent</span><p>Het ligt niet aan de vorm maar aan wat er staat. Mensen begrijpen het, willen het niet genoeg, of vinden de eerste stap te groot.</p></div>
+<div class="vz"><span class="vl">Wat we hierover vooraf zeggen</span><p>Dit kunnen wij niet voor je oplossen. We kunnen het wel meten en melden. Is dit de oorzaak, dan vraagt het een beslissing van jou over je aanbod &mdash; en dat is vaak de beslissing waar het meest aan vastzit.</p></div>
+</article>
+<article class="oz" id="o07">
+<div class="oh2"><span class="on">07</span><h4>Te weinig merk en autoriteit</h4><span class="op">Bezoekers &rarr; aanvragen</span></div>
+<div class="ozg">
+<div class="ozb"><span class="bl2">Wat je ziet</span><ul class="zl">
+<li>Warme doelgroepen &mdash; mensen die je al kennen &mdash; converteren normaal.</li>
+<li>Koude doelgroepen blijven er ver bij achter.</li>
+<li>Mensen zoeken na de advertentie op je merknaam en vinden weinig.</li>
+<li>Weinig reviews, oude reviews, of reviews op de verkeerde plek.</li>
+</ul></div>
+<div class="ozb"><span class="bl2">Wat eraan te doen is</span><ul class="ol2">
+<li><span>Reviews verzamelen bij je bestaande klanten</span><em class="tg j" style="font-style:normal">jij</em></li>
+<li><span>Bewijs zichtbaar maken: namen, cases, cijfers</span><em class="tg j" style="font-style:normal">jij</em></li>
+<li><span>Je bedrijfsprofiel op orde brengen</span><em class="tg o" style="font-style:normal">wij</em></li>
+<li><span>Een merkcampagne toevoegen naast de verkoopcampagne</span><em class="tg g" style="font-style:normal">kost geld</em></li>
+<li><span>Een langere aanloop accepteren en het doel over meer maanden spreiden</span><em class="tg j" style="font-style:normal">jij</em></li>
+</ul></div>
+</div>
+<div class="ozb bet" style="margin-top:18px"><span class="bl2">Wat het betekent</span><p>De advertentie werkt, het vertrouwen ontbreekt. Mensen doen de moeite om je op te zoeken en haken af op wat ze vinden, of op wat ze niet vinden.</p></div>
+<div class="vz"><span class="vl">Wat we hierover vooraf zeggen</span><p>Dit is de traagste van de tien. Hier werkt geen knop binnen een maand. Daarom vragen we in de intake naar je reviews en je bedrijfsprofiel: dan weten we het v&oacute;&oacute;r we beginnen, niet in maand vier.</p></div>
+</article>
+<article class="oz" id="o08">
+<div class="oh2"><span class="on">08</span><h4>Leads worden te laat of niet opgevolgd</h4><span class="op">Aanvragen &rarr; klanten</span></div>
+<div class="ozg">
+<div class="ozb"><span class="bl2">Wat je ziet</span><ul class="zl">
+<li>Het aantal aanvragen zit op doel.</li>
+<li>De kosten per aanvraag zitten op doel.</li>
+<li>Het aantal klanten blijft achter.</li>
+<li>De tijd tussen aanvraag en eerste contact loopt op, of is onbekend.</li>
+</ul></div>
+<div class="ozb"><span class="bl2">Wat eraan te doen is</span><ul class="ol2">
+<li><span>Een opvolgtermijn afspreken en die meten</span><em class="tg j" style="font-style:normal">jij</em></li>
+<li><span>Vastleggen wie verantwoordelijk is, en wie het overneemt bij afwezigheid</span><em class="tg j" style="font-style:normal">jij</em></li>
+<li><span>Automatische bevestiging aan de aanvrager, zodat de aandacht niet wegvalt</span><em class="tg o" style="font-style:normal">wij</em></li>
+<li><span>Een afsprakenplanner, zodat mensen zichzelf inplannen</span><em class="tg g" style="font-style:normal">kost geld</em></li>
+<li><span>Een belscript, zodat het eerste contact niet van de dagvorm afhangt</span><em class="tg o" style="font-style:normal">wij</em></li>
+</ul></div>
+</div>
+<div class="ozb bet" style="margin-top:18px"><span class="bl2">Wat het betekent</span><p>Wij leveren. Tussen je portal en je telefoon gaat het verloren. Dit is de meest voorkomende oorzaak van een teleurstellend resultaat, en ook de goedkoopste om op te lossen.</p></div>
+<div class="vz"><span class="vl">Wat we hierover vooraf zeggen</span><p>We meten de opvolgtijd vanaf dag &eacute;&eacute;n. Niet om je te controleren, maar omdat dit anders het enige punt in de keten is waarover we het oneens kunnen worden zonder cijfers.</p></div>
+</article>
+<article class="oz" id="o09">
+<div class="oh2"><span class="on">09</span><h4>De leads zijn van slechte kwaliteit</h4><span class="op">Aanvragen &rarr; klanten</span></div>
+<div class="ozg">
+<div class="ozb"><span class="bl2">Wat je ziet</span><ul class="zl">
+<li>Veel aanvragen, lage kosten per aanvraag.</li>
+<li>Lage conversie naar klant.</li>
+<li>De aanvragen passen niet: verkeerd gebied, verkeerd budget, verkeerde vraag.</li>
+<li>Er komt geen terugkoppeling over welke leads goed waren.</li>
+</ul></div>
+<div class="ozb"><span class="bl2">Wat eraan te doen is</span><ul class="ol2">
+<li><span>Terugkoppeling inregelen: per lead goed of niet goed</span><em class="tg j" style="font-style:normal">jij</em></li>
+<li><span>Kwalificatievragen in het formulier opnemen</span><em class="tg o" style="font-style:normal">wij</em></li>
+<li><span>De doelgroep aanscherpen en uitsluitingen uitbreiden</span><em class="tg o" style="font-style:normal">wij</em></li>
+<li><span>Waardegericht bieden in plaats van op aantal</span><em class="tg o" style="font-style:normal">wij</em></li>
+<li><span>De prijs of de ondergrens in de advertentie noemen om te filteren</span><em class="tg o" style="font-style:normal">wij</em></li>
+</ul></div>
+</div>
+<div class="ozb bet" style="margin-top:18px"><span class="bl2">Wat het betekent</span><p>We sturen op aantal in plaats van op waarde. Meestal omdat we niet weten welke leads iets waard waren &mdash; en dan levert de campagne precies op waar we op sturen.</p></div>
+<div class="vz"><span class="vl">Wat we hierover vooraf zeggen</span><p>Zonder terugkoppeling over leadkwaliteit kunnen wij alleen op aantal sturen. Dit is daarom de belangrijkste van de vijf dingen die we van je vragen &mdash; technisch belangrijker dan alle andere.</p></div>
+</article>
+<article class="oz" id="o10">
+<div class="oh2"><span class="on">10</span><h4>De meting klopt niet</h4><span class="op">Onder alles</span></div>
+<div class="ozg">
+<div class="ozb"><span class="bl2">Wat je ziet</span><ul class="zl">
+<li>Jouw telling en ons dashboard lopen uiteen.</li>
+<li>Conversies verdwijnen na een wijziging aan de site of aan de cookiebanner.</li>
+<li>Een plotselinge knik in de cijfers zonder dat er iets in de campagne veranderde.</li>
+<li>Aanvragen die wel in je mailbox staan en niet in het dashboard.</li>
+</ul></div>
+<div class="ozb"><span class="bl2">Wat eraan te doen is</span><ul class="ol2">
+<li><span>De meetopzet herstellen en opnieuw doortesten</span><em class="tg o" style="font-style:normal">wij</em></li>
+<li><span>De cookiebanner en consent mode nalopen</span><em class="tg o" style="font-style:normal">wij</em></li>
+<li><span>Server-side meten waar de browser te veel laat vallen</span><em class="tg o" style="font-style:normal">wij</em></li>
+<li><span>Offline conversies terugkoppelen, zodat we op klanten sturen en niet op aanvragen</span><em class="tg o" style="font-style:normal">wij</em></li>
+<li><span>Hosting aanpakken als laadtijd conversies laat verdampen</span><em class="tg g" style="font-style:normal">kost geld</em></li>
+</ul></div>
+</div>
+<div class="ozb bet" style="margin-top:18px"><span class="bl2">Wat het betekent</span><p>Dit is geen resultaatprobleem maar een diagnoseprobleem &mdash; en het is het ergste van de tien, want het maakt de negen andere diagnoses onbetrouwbaar. Elk gesprek daarna is een meningsverschil in plaats van een analyse.</p></div>
+<div class="vz"><span class="vl">Wat we hierover vooraf zeggen</span><p>Dit is de reden dat de nulmeting en de meetopzet blokkerend zijn voor de start. We adverteren niet voordat we meten, ook niet als je haast hebt.</p></div>
+</article>
+</section>
+<section class="sec" id="wie"><div class="kicker">Verdeling</div><h2>Wie draait de knop</h2>
+<div class="tel">
+<div class="tl o"><span class="g">29</span><span class="l">oplossingen die wij zelf kunnen doorvoeren, binnen de retainer</span></div>
+<div class="tl j"><span class="g">15</span><span class="l">oplossingen waarvoor een beslissing of actie van de klant nodig is</span></div>
+<div class="tl g2"><span class="g">4</span><span class="l">oplossingen die extra geld kosten</span></div>
+<div class="tl"><span class="g">48</span><span class="l">oplossingen in totaal, over tien oorzaken</span></div>
+</div>
+<div class="key"><span class="k">Waarom deze verdeling het gesprek verandert</span><p class="big">Bij 7 van de tien oorzaken ligt minstens &eacute;&eacute;n knop bij de klant.</p><p>Dat is geen manier om verantwoordelijkheid af te schuiven, maar het is wel de reden dat het v&oacute;&oacute;raf gezegd moet worden. Zeg je het achteraf, dan hoort een klant &lsquo;het ligt aan jou&rsquo;. Zeg je het bij de start &mdash; met de cijfers erbij die het zouden aantonen &mdash; dan is het een afspraak die allebei de kanten scherp houdt.</p></div>
+</section>
+<section class="sec" id="afspraken"><div class="kicker">In het voorstel</div><h2>Zeven zinnen die vooraf vastliggen</h2>
+<p class="note">Dit zijn de afspraken die in het voorstel en in de overeenkomst horen. Niet als kleine lettertjes, maar als onderdeel van het gesprek aan tafel &mdash; ze maken de belofte geloofwaardiger, niet zwakker.</p>
+<div class="af"><div class="ah"><span class="an">01</span><h4>De eerste aanvragen zijn duur</h4></div><p>Reken in de eerste maand op twee tot drie keer het doelbedrag per aanvraag. Dat is geen tegenvaller, dat is de leerfase. De curve hoort omlaag te lopen; het niveau van maand &eacute;&eacute;n zegt niets.</p></div>
+<div class="af"><div class="ah"><span class="an">02</span><h4>V&oacute;&oacute;r dertig conversies zeggen we niets</h4></div><p>Ook niet als je het vraagt. Onder dat aantal is de onzekerheid groter dan de verschillen die we zouden bespreken. Wat we w&eacute;l doen is de tussenstappen laten zien: weergaven, kliks, bezoekers.</p></div>
+<div class="af"><div class="ah"><span class="an">03</span><h4>Het kan zijn dat we adviseren je budget te verhogen</h4></div><p>Zitten de kosten per aanvraag op doel en het aantal niet, dan is budget de enige knop die er nog is. Hou daar nu al rekening mee, zodat het later geen verrassing is en geen verkooppraatje lijkt.</p></div>
+<div class="af"><div class="ah"><span class="an">04</span><h4>Het kan zijn dat we adviseren je aanbod of je prijs te veranderen</h4></div><p>Blijft de conversie laag over meerdere varianten en meerdere doelgroepen, dan ligt het niet aan de vorm. Die beslissing is van jou en wij kunnen hem niet voor je nemen.</p></div>
+<div class="af"><div class="ah"><span class="an">05</span><h4>Vier dingen kunnen wij niet oplossen</h4></div><p>Je merk, je aanbod en prijs, je opvolging en je capaciteit. We meten ze wel, en we melden ze op het moment dat ze de oorzaak zijn &mdash; niet pas als je ernaar vraagt.</p></div>
+<div class="af"><div class="ah"><span class="an">06</span><h4>We meten je opvolgtijd, en jij koppelt leadkwaliteit terug</h4></div><p>Allebei vanaf dag &eacute;&eacute;n. Zonder het eerste kunnen we niet zien waar het misgaat; zonder het tweede kunnen we alleen op aantal sturen in plaats van op waarde.</p></div>
+<div class="af"><div class="ah"><span class="an">07</span><h4>Bewegen de cijfers niet, dan zeggen wij het zelf</h4></div><p>Als er na een afgesproken termijn geen beweging in zit ondanks optimalisatie, melden wij dat uit onszelf en leggen we de opties voor &mdash; waaronder stoppen. Maandelijks opzegbaar geldt beide kanten op.</p></div>
+</section>
+<div class="foot">James Robinson &middot; Als het resultaat tegenvalt &middot; tien oorzaken, hun cijferpatroon en hun knoppen</div>
+</main>
+<script>
+(function(){var b=document.getElementById('tg');if(!b)return;
+b.addEventListener('click',function(){var r=document.documentElement;
+var d=r.getAttribute('data-theme')||(window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+r.setAttribute('data-theme',d==='dark'?'light':'dark');});})();
+</script>
+</body></html>
