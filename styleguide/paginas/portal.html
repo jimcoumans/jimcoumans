@@ -1,0 +1,384 @@
+<title>Het marketingdashboard &middot; James Robinson</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@600;700&display=swap">
+<style>
+:root{
+  --page:#fbfbfd; --card:#fff; --alt:#f5f5f7;
+  --tx:#1d1d1f; --tx2:#6e6e73; --tx3:#86868b;
+  --ln:#d2d2d7; --ln-s:#e5e5e9;
+  --blue:#007aff; --link:#0066cc; --act:#0857c3;
+  --b100:#e0efff; --b50:#f4f9ff;
+  --lime:#c4f000; --lime-tx:#5a7000; --lime100:#f2fccc;
+  --green-tx:#1d7d3f; --green100:#e6f7eb;
+  --orange-tx:#94590a; --orange100:#fef2e0;
+  --red-tx:#c02a22; --red100:#fdecea;
+  --black:#1c1c1e; --inv:#f5f5f7; --inv2:#a1a1a6;
+  --fd:"Inter Tight","Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --ft:"Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --fm:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --e:cubic-bezier(.25,.1,.25,1);--g:32px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}}
+:root[data-theme="dark"]{
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--tx);font-family:var(--ft);font-size:16.5px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition-duration:.01ms!important}}
+:focus-visible{outline:none;box-shadow:0 0 0 4px rgba(0,122,255,.4);border-radius:8px}
+p{margin:0 0 18px;max-width:70ch}
+p:last-child{margin-bottom:0}
+h1,h2,h3,h4{font-family:var(--fd);margin:0;text-wrap:balance}
+code{font-family:var(--fm);font-size:.86em;background:var(--alt);padding:2px 6px;border-radius:5px}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:60;background:rgba(251,251,253,.86);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--ln-s)}
+:root[data-theme="dark"] .bar,:root:not([data-theme="light"]) .bar{background:rgba(0,0,0,.74)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .bar{background:rgba(251,251,253,.86)}}
+.bar-in{max-width:1080px;margin:0 auto;padding:0 var(--g);display:flex;align-items:center;gap:5px;min-height:48px;overflow-x:auto;scrollbar-width:none}
+.bar-in::-webkit-scrollbar{display:none}
+.bar b{font-family:var(--fd);font-size:14.5px;font-weight:700;letter-spacing:-.016em;margin-right:8px;white-space:nowrap}
+.bar a{font-size:12.5px;color:var(--tx2);text-decoration:none;padding:6px 8px;border-radius:7px;white-space:nowrap}
+.bar a:hover{color:var(--tx)}
+.bar button{margin-left:auto;flex:none;font:inherit;font-size:12px;cursor:pointer;background:transparent;border:1px solid var(--ln);color:var(--tx2);border-radius:980px;padding:5px 13px}
+
+.wrap{max-width:1080px;margin:0 auto;padding-inline:var(--g)}
+.hero{padding-block:76px 40px}
+h1{font-size:clamp(34px,5.4vw,58px);font-weight:700;line-height:1.06;letter-spacing:-.026em;margin-bottom:20px}
+.lead{font-size:20px;line-height:1.5;color:var(--tx2);max-width:64ch}
+.sec{padding-block:60px;border-top:1px solid var(--ln-s)}
+h2{font-size:clamp(26px,3.4vw,38px);font-weight:700;line-height:1.12;letter-spacing:-.02em;margin-bottom:8px}
+.sec > .kicker{font-family:var(--fm);font-size:11px;letter-spacing:.06em;color:var(--tx3);margin-bottom:14px}
+h3{font-size:21px;font-weight:600;line-height:1.24;letter-spacing:-.012em;margin:38px 0 10px}
+h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
+.note{color:var(--tx2)}
+.note b,b{color:var(--tx);font-weight:600}
+
+/* kernblok */
+.key{background:var(--black);color:var(--inv);border-radius:22px;padding:34px 32px;margin:26px 0}
+.key .k{display:block;font-family:var(--fm);font-size:10.5px;letter-spacing:.06em;color:var(--lime);margin-bottom:14px}
+.key p{color:var(--inv2);font-size:17.5px;max-width:64ch}
+.key strong{color:#fff;font-weight:600}
+.key .big{font-family:var(--fd);font-size:clamp(22px,3vw,30px);font-weight:600;line-height:1.2;letter-spacing:-.018em;color:#fff;margin-bottom:16px}
+
+/* lagen van het aanbod */
+.stack{display:grid;gap:12px;margin-top:24px}
+.st{background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;display:grid;grid-template-columns:132px 1fr;gap:20px;align-items:start}
+.st .lab{font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;color:var(--act);padding-top:3px}
+.st .bd p{margin:0;font-size:15.5px;color:var(--tx2)}
+.st .bd h4{margin-bottom:5px}
+
+/* kandidaten */
+.cands{display:grid;gap:12px;margin-top:22px}
+.cand{border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;background:var(--card)}
+.cand.win{border-color:var(--lime);box-shadow:0 0 0 1px var(--lime)}
+.cand .zin{font-family:var(--fd);font-size:22px;font-weight:600;letter-spacing:-.014em;margin-bottom:8px}
+.cand .why{font-size:15px;color:var(--tx2);margin:0}
+.cand .verdict{display:inline-block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;border-radius:5px;padding:3px 7px;margin-bottom:12px}
+.cand .verdict.no{background:var(--red100);color:var(--red-tx)}
+.cand .verdict.ok{background:var(--lime100);color:var(--lime-tx)}
+.cand .verdict.mid{background:var(--orange100);color:var(--orange-tx)}
+
+/* onderscheid */
+.dist{width:100%;border-collapse:collapse;font-size:15px;margin-top:22px}
+.dist th,.dist td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.dist thead th{font-family:var(--fm);font-size:10.5px;letter-spacing:.04em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.dist td:first-child{font-weight:500;width:34%}
+.dist .v{font-family:var(--fm);font-size:11px;white-space:nowrap}
+.dist .v.y{color:var(--green-tx)}
+.dist .v.n{color:var(--red-tx)}
+.dist tr:last-child td{border-bottom:none}
+.tblwrap{overflow-x:auto}
+
+/* beslissingen */
+.dec{border:1px solid var(--ln-s);border-radius:18px;background:var(--card);padding:26px 28px;margin-top:14px}
+.dec .hd{display:flex;align-items:baseline;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.dec .num{font-family:var(--fm);font-size:11px;color:var(--tx3);flex:none}
+.dec h4{font-size:19px;flex:1;min-width:220px;margin:0}
+.dec .tag{font-family:var(--fm);font-size:9.5px;letter-spacing:.05em;border-radius:5px;padding:3px 7px}
+.dec .tag.blok{background:var(--red100);color:var(--red-tx)}
+.dec .tag.schaal{background:var(--orange100);color:var(--orange-tx)}
+.dec .tag.scherp{background:var(--b100);color:var(--act)}
+.dec .q{font-size:16px;color:var(--tx2);margin:0 0 16px}
+.dec .adv{background:var(--b50);border-left:3px solid var(--act);border-radius:0 10px 10px 0;padding:16px 18px}
+.dec .adv .al{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.06em;color:var(--act);margin-bottom:7px}
+.dec .adv p{font-size:15.5px;margin:0 0 10px}
+.dec .adv p:last-child{margin-bottom:0}
+
+/* vast */
+.locked{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-top:22px}
+.lk{background:var(--card);border:1px solid var(--ln-s);border-radius:14px;padding:18px 20px}
+.lk .t{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--green-tx);margin-bottom:7px}
+.lk .b{font-size:15px;color:var(--tx2);line-height:1.45}
+.lk .b b{color:var(--tx)}
+
+.warn{background:var(--orange100);border-radius:18px;padding:24px 26px;margin-top:26px}
+.warn h4{color:var(--orange-tx)}
+.warn p{color:var(--orange-tx);opacity:.94;font-size:15.5px;max-width:none}
+.foot{padding-block:44px 64px;font-size:13px;color:var(--tx3);text-align:center}
+
+@media (max-width:734px){
+  :root{--g:20px}
+  body{font-size:16px}
+  .sec{padding-block:48px}
+  .hero{padding-block:44px 28px}
+  .st{grid-template-columns:1fr;gap:10px}
+  .key{padding:24px 22px}
+  .dec{padding:22px 20px}
+}
+
+</style><style>
+.grens{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:26px}
+.gk{border-radius:18px;padding:24px 26px}
+.gk.w{background:var(--card);border:1px solid var(--ln-s)}
+.gk.n{background:var(--alt);border:1px solid var(--ln-s)}
+.gk .gl{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.06em;margin-bottom:14px}
+.gk.w .gl{color:var(--green-tx)} .gk.n .gl{color:var(--red-tx)}
+.gk ul{list-style:none;margin:0;padding:0}
+.gk li{padding:11px 0;border-bottom:1px solid var(--ln-s)}
+.gk li:last-child{border-bottom:none}
+.gk b{display:block;font-size:15.5px;font-weight:600;line-height:1.35}
+.gk span{display:block;font-size:14px;color:var(--tx2);line-height:1.45;margin-top:3px}
+
+.sc2{border:1px solid var(--ln-s);border-radius:18px;background:var(--card);padding:24px 26px;margin-top:14px}
+.sc2 .s2h{display:flex;align-items:baseline;gap:13px;flex-wrap:wrap;margin-bottom:14px}
+.sc2 .s2n{font-family:var(--fm);font-size:11px;color:var(--act)}
+.sc2 h4{font-size:19px;margin:0}
+.sc2 .s2s{font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--tx3)}
+.sc2 ul{list-style:none;margin:0;padding:0}
+.sc2 li{font-size:15px;line-height:1.5;padding:6px 0 6px 17px;position:relative}
+.sc2 li::before{content:"";position:absolute;left:0;top:13px;width:5px;height:5px;border-radius:50%;background:var(--ln)}
+.sc2 .wh{background:var(--b50);border-left:3px solid var(--act);border-radius:0 10px 10px 0;padding:13px 16px;margin-top:14px;font-size:14.5px;color:var(--tx2)}
+
+.ing{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px}
+.in1{background:var(--card);border:1px solid var(--ln-s);border-radius:18px;padding:22px 24px;display:flex;flex-direction:column}
+.in1 .il{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--tx3);margin-bottom:6px}
+.in1 h4{font-size:18px;margin-bottom:10px}
+.in1 p{font-size:14.5px;color:var(--tx2);margin:0 0 12px;max-width:none}
+.in1 .iw{margin-top:auto;font-size:13.5px;color:var(--tx3);border-top:1px solid var(--ln-s);padding-top:12px;line-height:1.5}
+
+.rd{width:100%;border-collapse:collapse;font-size:15px;margin-top:22px}
+.rd th,.rd td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.rd thead th{font-family:var(--fm);font-size:10.5px;letter-spacing:.04em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.rd td:first-child{font-weight:600;width:24%}
+.rd td:nth-child(2){color:var(--tx2);width:30%}
+.rd tbody tr:last-child td{border-bottom:none}
+
+.vlg{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-top:24px}
+.vl{background:var(--card);border:1px solid var(--ln-s);border-radius:14px;padding:18px 20px}
+.vl .vt{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--act);margin-bottom:9px}
+.vl ul{list-style:none;margin:0;padding:0}
+.vl li{font-family:var(--fm);font-size:12.5px;color:var(--tx2);padding:4px 0;line-height:1.4}
+
+.fz{border-left:3px solid var(--ln);padding:0 0 26px 22px;position:relative;margin-left:6px}
+.fz:last-child{padding-bottom:0}
+.fz::before{content:"";position:absolute;left:-7px;top:6px;width:11px;height:11px;border-radius:50%;background:var(--act);box-shadow:0 0 0 4px var(--page)}
+.fz .fh{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+.fz .fv{font-family:var(--fm);font-size:13px;color:var(--act);font-weight:500}
+.fz h4{font-size:18px;margin:0}
+.fz .fw{font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--tx3)}
+.fz > p{font-size:15.5px;color:var(--tx2);margin:0 0 12px}
+.fz ul{list-style:none;margin:0 0 12px;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.fz ul li{font-family:var(--fm);font-size:11.5px;background:var(--alt);color:var(--tx2);border-radius:7px;padding:5px 9px}
+.fz .fn{background:var(--b50);border-radius:10px;padding:13px 16px;font-size:14.5px;color:var(--tx2)}
+
+@media (max-width:860px){ .grens{grid-template-columns:1fr} .ing{grid-template-columns:1fr} }
+@media (max-width:734px){ .gk,.sc2{padding:20px 20px} }
+</style>
+</head><body>
+<nav class="bar"><div class="bar-in"><b>Het dashboard</b>
+<a href="#grens">De grens</a><a href="#schermen">Vijf schermen</a><a href="#lus">De lus</a><a href="#redenen">Zes redenen</a><a href="#velden">Wat we opslaan</a><a href="#fasering">Fasering</a><a href="#besluiten">Besluiten</a>
+<button id="tg">Thema</button></div></nav>
+
+<header class="wrap hero">
+<h1>Hun marketingdashboard</h1>
+<p class="lead">E&eacute;n plek waar de klant ziet wat zijn marketing doet, en waar hij met &eacute;&eacute;n klik zegt of een lead iets waard was. Staat n&aacute;ast hun eigen systeem, vervangt het nooit.</p>
+</header>
+
+<main class="wrap">
+<section class="sec"><div class="kicker">Waarom het bestaat</div><h2>Hun systeem kent de lead. Alleen wij weten waar hij vandaan kwam.</h2>
+<p class="note">Dat is de hele bestaansreden, en het is de enige claim die hun eigen software niet kan overnemen. Een makelaarspakket weet wie er belde. Het weet niet dat hij binnenkwam via een Meta-advertentie met de tweede video, op een telefoon, om kwart over acht &rsquo;s avonds. Dat verband bestaat alleen hier.</p>
+<div class="key"><span class="k">Het getal dat dit verkoopt</span><p class="big">Je weet nu niet hoeveel van je leads nergens over gaan.</p><p>Bij 21 aanvragen per maand tegen &euro; 150 is elke aanvraag die nergens over gaat weggegooid geld. Zijn dat er acht, dan is dat <strong>&euro; 1.200 per maand</strong> &mdash; &euro; 14.400 per jaar. Niemand kent dat aantal, want niemand telt het. De eerste maand labelen geeft het antwoord al, ook als je er daarna niets mee doet. <strong>Dat is rekenwerk, geen belofte.</strong></p></div>
+<div class="warn"><h4>Wat je hier niet over moet zeggen</h4><p>&ldquo;Je feedback maakt het algoritme slimmer&rdquo; klopt pas bij tientallen conversies per week. Bij 21 leads per maand voed je de platforms met een handvol signalen en leren ze niets. Wat w&eacute;l werkt bij dat aantal: een mens die ze leest. Zes slechte leads is geen statistiek maar een lijstje &mdash; en als ze alle zes van dezelfde zoekterm komen, zie je dat met het blote oog en sluit je hem uit.</p></div>
+</section>
+<section class="sec" id="grens"><div class="kicker">De grens</div><h2>Een dashboard, geen CRM</h2>
+<p class="note">Zodra er pijplijnstatussen in komen, concurreert het met software die het tien jaar langer doet &mdash; en verliest het. Erger: dan wordt het maatwerk zonder einde, precies wat je hebt verboden. De grens moet scherp zijn en moet blijven liggen.</p>
+<div class="grens">
+<div class="gk w"><span class="gl">WEL</span><ul>
+<li><b>Elke lead, met zijn herkomst</b><span>Niet alleen wie het is, maar via welk kanaal, welke campagne, welke advertentie en welke zoekterm hij binnenkwam.</span></li>
+<li><b>&Eacute;&eacute;n oordeel per lead</b><span>Goede lead of geen goede lead, met een reden uit een korte lijst. Meer niet.</span></li>
+<li><b>De keten met echte getallen</b><span>Weergaven, bezoekers, aanvragen, klanten &mdash; en wat elke stap kost.</span></li>
+<li><b>Kosten per aanvraag en per g&oacute;&eacute;de aanvraag</b><span>Het tweede getal is het enige dat er werkelijk toe doet, en niemand rekent het nu uit.</span></li>
+<li><b>De opvolgtijd</b><span>Tussen binnenkomst en eerste actie. Niet om te controleren, maar omdat het anders het enige punt in de keten is waar cijfers ontbreken.</span></li>
+</ul></div>
+<div class="gk n"><span class="gl">NOOIT</span><ul>
+<li><b>Pijplijnstatussen en deals</b><span>Offerte verstuurd, onderhandeling, gewonnen. Dat staat in hun systeem en daar hoort het.</span></li>
+<li><b>Taken, herinneringen en agenda</b><span>Zodra je dit bouwt, concurreer je met software die het tien jaar langer doet.</span></li>
+<li><b>Notities en gespreksgeschiedenis</b><span>E&eacute;n notitieveld per lead is genoeg. Een tijdlijn is een CRM.</span></li>
+<li><b>E-mails versturen naar leads</b><span>Dat is MailerLite. Twee plekken die mailen worden twee plekken die elkaar tegenspreken.</span></li>
+<li><b>Gebruikersrollen en rechten</b><span>In versie &eacute;&eacute;n ziet iedereen alles. Rechten bouw je als iemand erom vraagt, niet ervoor.</span></li>
+</ul></div>
+</div></section>
+<section class="sec" id="schermen"><div class="kicker">Wat de klant ziet</div><h2>Vijf schermen</h2>
+<div class="sc2"><div class="s2h"><span class="s2n">01</span><h4>Overzicht</h4><span class="s2s">Wat het dashboard opent</span></div><ul>
+<li>De vier ketengetallen van deze maand, elk tegen het doel uit de rekensom.</li>
+<li>Kosten per aanvraag, en daarnaast kosten per g&oacute;&eacute;de aanvraag.</li>
+<li>&Eacute;&eacute;n teller met een kleur: <b>zes leads wachten op je oordeel</b>.</li>
+<li>De trend van de laatste zes maanden, niet van de laatste zeven dagen.</li>
+</ul>
+<div class="wh">Die ene teller is het hele ontwerp. Hij is de reden dat iemand terugkomt, en hij is de enige plek waar je om iets vraagt.</div>
+</div>
+<div class="sc2"><div class="s2h"><span class="s2n">02</span><h4>Leads</h4><span class="s2s">De lijst</span></div><ul>
+<li>Nieuwste boven. Per regel: datum, naam, wat ze invulden, waar ze vandaan kwamen.</li>
+<li>Twee knoppen per regel. E&eacute;n klik en de regel is klaar.</li>
+<li>Standaardfilter staat op <b>nog geen oordeel</b>, niet op alles.</li>
+<li>Zoeken op naam, filteren op kanaal, campagne of periode.</li>
+</ul>
+<div class="wh">Wie hier binnenkomt ziet niet zijn hele historie maar zijn werkvoorraad. Dat verschil bepaalt of het gebruikt wordt.</div>
+</div>
+<div class="sc2"><div class="s2h"><span class="s2n">03</span><h4>E&eacute;n lead</h4><span class="s2s">Het detail</span></div><ul>
+<li>Alles wat ze invulden, precies zoals ze het invulden.</li>
+<li>De volledige herkomst: kanaal, campagne, advertentiegroep, advertentie, zoekterm, landingspagina, apparaat, gebied.</li>
+<li>Het oordeel, de reden, en &eacute;&eacute;n vrij notitieveld.</li>
+<li>Wie het oordeel gaf en wanneer.</li>
+</ul>
+<div class="wh">Dit scherm is de reden dat ze het niet in hun eigen systeem kunnen doen. Hun CRM kent de lead. Alleen jij weet waar hij vandaan kwam.</div>
+</div>
+<div class="sc2"><div class="s2h"><span class="s2n">04</span><h4>Marketing</h4><span class="s2s">Wat de campagne doet</span></div><ul>
+<li>De keten over tijd, uitgesplitst naar Google en Meta.</li>
+<li>Per campagne: uitgaven, aanvragen, kosten per aanvraag, aandeel goede leads.</li>
+<li>De zoektermen en advertenties die de meeste slechte leads leverden.</li>
+<li>Wat wij de afgelopen maand hebben bijgesteld, en waarom.</li>
+</ul>
+<div class="wh">Die laatste regel is geen rapportage maar bewijs van werk. Hij maakt de retainer zichtbaar op de dagen dat er weinig gebeurt.</div>
+</div>
+<div class="sc2"><div class="s2h"><span class="s2n">05</span><h4>Instellingen</h4><span class="s2s">Klein houden</span></div><ul>
+<li>Wie krijgt een melding bij een nieuwe lead, op welk adres.</li>
+<li>Wie krijgt de weekmail.</li>
+<li>Meer niet.</li>
+</ul>
+</div>
+</section>
+<section class="sec" id="lus"><div class="kicker">Het hart</div><h2>Drie ingangen voor &eacute;&eacute;n klik</h2>
+<p class="note">De feedback is het enige wat je van de klant vraagt, dus hij moet goedkoper zijn dan wat hij oplevert. Wie moet inloggen, zoeken en een formulier invullen, stopt in week drie. Daarom drie ingangen, oplopend in moeite &mdash; en de makkelijkste is de belangrijkste.</p>
+<div class="ing">
+<div class="in1"><span class="il">Direct bij binnenkomst</span><h4>De meldingsmail</h4><p>Onder de leadgegevens twee knoppen: <b>goede lead</b> en <b>geen goede lead</b>. E&eacute;n klik, geen inlog &mdash; een ondertekende link die alleen dit ene ding doet. Klikt iemand op &lsquo;geen goede lead&rsquo;, dan opent een pagina met de zes redenen en verder niets.</p><div class="iw">Hier komt verreweg het grootste deel van de oordelen vandaan. Alles wat meer moeite kost, gebeurt na week drie niet meer.</div></div>
+<div class="in1"><span class="il">Maandagochtend</span><h4>De weekmail</h4><p>&lsquo;Vijf leads van vorige week wachten nog op je oordeel.&rsquo; Per regel dezelfde twee knoppen. Geen leads open? Dan geen mail.</p><div class="iw">Dit is de enige herinnering die je stuurt. Vaker dan wekelijks wordt het ruis en ruis wordt uitgezet.</div></div>
+<div class="in1"><span class="il">Voor wie meer wil</span><h4>De portal zelf</h4><p>Terugkijken, een reden aanvullen, een notitie toevoegen, filteren. Voor de klant die er echt in zit.</p><div class="iw">Een minderheid komt hier. Ontwerp daar niet voor, maar sluit ze ook niet uit.</div></div>
+</div>
+<div class="key"><span class="k">De regel die het draaiende houdt</span><p class="big">Een lead zonder oordeel blijft zichtbaar.</p><p>De teller op het overzicht heet niet &lsquo;leads&rsquo; maar <strong>&lsquo;zes wachten op je oordeel&rsquo;</strong>. Dat is de enige manier om dit vol te houden zonder erom te vragen &mdash; en het is de reden dat iemand het dashboard &uuml;berhaupt opent.</p></div>
+</section>
+<section class="sec" id="redenen"><div class="kicker">Geen vrij tekstveld</div><h2>Zes redenen, zes knoppen</h2>
+<p class="note">Vrije tekst is onbruikbaar om op te sturen. Zes vaste redenen w&eacute;l, want elke reden heeft een handeling die eraan vastzit. Daarmee is het geen enqu&ecirc;te maar een bedieningspaneel.</p>
+<div class="tblwrap"><table class="rd"><thead><tr><th>Reden</th><th>Wat het betekent</th><th>Wat wij dan doen</th></tr></thead><tbody>
+<tr><td>Verkeerd gebied</td><td>De aanvrager zit buiten je werkgebied.</td><td>Gebied uitsluiten of de straal aanpassen. Bij Google: locatie-instelling van &lsquo;interesse in&rsquo; naar &lsquo;aanwezig in&rsquo;.</td></tr>
+<tr><td>Te klein of verkeerd budget</td><td>Ze willen iets dat niet bij je prijs past.</td><td>Prijsindicatie in de advertentie of op de pagina zetten. Kwalificatievraag over budget in het formulier.</td></tr>
+<tr><td>Zocht iets anders</td><td>Ze zochten een product of dienst die je niet levert.</td><td>Zoekterm uitsluiten. Advertentietekst aanscherpen. Landingspagina duidelijker maken over wat je w&eacute;l doet.</td></tr>
+<tr><td>Onbereikbaar of nepgegevens</td><td>Verkeerd nummer, geen reactie, onzin ingevuld.</td><td>Telefoonveld verplicht of verifi&euml;ren. Bot-filter. Iets meer wrijving in het formulier &mdash; minder leads, betere leads.</td></tr>
+<tr><td>Concurrent of leverancier</td><td>Geen koper.</td><td>Registreren, maar vaak geen knop. Bij B2B: bedrijven uitsluiten via Leadinfo.</td></tr>
+<tr><td>Was al klant</td><td>Bestaande klant die opnieuw aanvraagt.</td><td>Klantenlijst uploaden als uitsluiting. Scheelt direct geld en is de makkelijkste van de zes.</td></tr>
+</tbody></table></div></section>
+<section class="sec" id="velden"><div class="kicker">Datamodel</div><h2>Wat we per lead opslaan</h2>
+<p class="note">Zes groepen. De derde is waar de waarde zit, de vierde is waar de toekomst zit.</p>
+<div class="vlg">
+<div class="vl"><span class="vt">Identiteit</span><ul>
+<li>id</li>
+<li>binnengekomen op (datum en tijd)</li>
+</ul></div>
+<div class="vl"><span class="vt">Wat ze invulden</span><ul>
+<li>naam</li>
+<li>e-mailadres</li>
+<li>telefoonnummer</li>
+<li>bericht</li>
+<li>klantspecifieke velden uit het formulier</li>
+</ul></div>
+<div class="vl"><span class="vt">Waar ze vandaan komen</span><ul>
+<li>kanaal (Google, Meta, direct, organisch)</li>
+<li>campagne</li>
+<li>advertentiegroep of adset</li>
+<li>advertentie</li>
+<li>zoekterm, als het platform hem doorgeeft</li>
+<li>landingspagina</li>
+<li>apparaat</li>
+<li>gebied</li>
+</ul></div>
+<div class="vl"><span class="vt">Technisch, nu bewaren</span><ul>
+<li>click id (gclid of fbclid)</li>
+<li>consent-status op het moment van invullen</li>
+<li>sessie-id</li>
+</ul></div>
+<div class="vl"><span class="vt">Jouw oordeel</span><ul>
+<li>label: goed, niet goed, nog geen oordeel</li>
+<li>reden (uit de zes)</li>
+<li>notitie</li>
+<li>door wie</li>
+<li>wanneer</li>
+</ul></div>
+<div class="vl"><span class="vt">Opvolging</span><ul>
+<li>eerste contact, als het bekend is</li>
+<li>tijd tussen binnenkomst en eerste oordeel</li>
+</ul></div>
+</div>
+<div class="warn"><h4>De goedkoopste beslissing van dit hele document</h4><p>Sla de click id &mdash; gclid bij Google, fbclid bij Meta &mdash; vanaf dag &eacute;&eacute;n op, ook al doe je er voorlopig niets mee. Dat getal is de sleutel om later goede leads terug te melden aan de platforms. Sla je hem niet op, dan kun je er nooit meer bij, ook niet over twee jaar als het volume er w&eacute;l is. Het kost nu niets en het is onherstelbaar als je het vergeet.</p></div>
+</section>
+<section class="sec" id="fasering"><div class="kicker">Volgorde</div><h2>Drie versies</h2>
+<p class="note">De verleiding is om v1 te bouwen. Doe v0 eerst &mdash; die beantwoordt de vraag waar alles aan hangt: labelen klanten &uuml;berhaupt?</p>
+<div class="fz"><div class="fh"><span class="fv">v0</span><h4>Alleen de mail</h4><span class="fw">Kan over twee weken</span></div><p>De meldingsmail met twee knoppen, en een database erachter. Geen portal, geen inlog, geen schermen.</p><ul>
+<li>Twee knoppen onder elke meldingsmail</li>
+<li>Een pagina met de zes redenen</li>
+<li>Een tabel waar de oordelen in landen</li>
+<li>Wij lezen ze handmatig</li>
+</ul><div class="fn">Dit levert jou al bijna alle waarde op &mdash; de labels &mdash; zonder dat er iets staat. Bouw dit eerst, ook als de portal er komt. Dan weet je binnen een maand of klanten &uuml;berhaupt labelen, v&oacute;&oacute;rdat je maanden in software steekt.</div></div>
+<div class="fz"><div class="fh"><span class="fv">v1</span><h4>Het dashboard</h4><span class="fw">Het fundament vraagt erom</span></div><p>De vijf schermen, &eacute;&eacute;n omgeving per klant, leads en oordelen en de keten.</p><ul>
+<li>De vijf schermen hierboven</li>
+<li>Formulieren gekoppeld, herkomst opgeslagen</li>
+<li>Bronnen gekoppeld: Google Ads, Meta, GA4</li>
+<li>Doelen uit de rekensom ingevuld</li>
+<li>De weekmail</li>
+</ul><div class="fn">Dit is wat er in het fundament staat en wat je aan tafel belooft. Zonder dit kun je &lsquo;wij koppelen niet met jouw CRM&rsquo; niet waarmaken.</div></div>
+<div class="fz"><div class="fh"><span class="fv">v2</span><h4>Terugkoppelen</h4><span class="fw">Als er volume is</span></div><p>Uitsplitsen, terugkoppelen naar de platforms, exporteren.</p><ul>
+<li>Kosten per goede aanvraag per campagne en per zoekterm</li>
+<li>Offline conversies terugsturen naar Google en Meta</li>
+<li>Export naar hun eigen systeem</li>
+<li>Rechten en meerdere gebruikers</li>
+</ul><div class="fn">De terugkoppeling naar de platforms werkt pas bij tientallen conversies per week. Bouw hem niet eerder, maar <b>sla de click id vanaf dag &eacute;&eacute;n op</b> &mdash; zonder dat getal kun je er later niet meer bij.</div></div>
+</section>
+<section class="sec"><div class="kicker">Gevolg</div><h2>Wat dit met het fundament doet</h2>
+<p class="note">In het fundament staan nu twee aparte onderdelen: <b>Je leadportal</b> (1,5 uur) en <b>Je dashboard</b> (2 uur). Als het &eacute;&eacute;n product is, zijn het geen twee onderdelen. Dat scheelt uitleg aan tafel &mdash; een klant snapt &eacute;&eacute;n dashboard, geen portal plus dashboard.</p>
+<div class="tblwrap"><table class="rd"><thead><tr><th>Nu</th><th>Voorstel</th><th>Uren</th></tr></thead><tbody>
+<tr><td>Je leadportal</td><td rowspan="2" style="vertical-align:middle"><b>Je marketingdashboard</b> &mdash; &eacute;&eacute;n onderdeel</td><td>1,5 &rarr; blijft</td></tr>
+<tr><td>Je dashboard</td><td>2 &rarr; blijft</td></tr>
+<tr><td>&mdash;</td><td>Meldingen instellen: wie krijgt wat, op welk adres</td><td>+ 0,5</td></tr>
+</tbody></table></div>
+<p class="note" style="margin-top:18px">Netto: van 28 naar 27 onderdelen, en van 52 naar 52,5 uur. De prijs hoeft niet mee te bewegen &mdash; een half uur op 52 valt binnen de marge waarvoor je juist geen opslagen meer hanteert.</p>
+</section>
+<section class="sec" id="besluiten"><div class="kicker">Wat ik van jou nodig heb</div><h2>Vijf besluiten</h2>
+<div class="dec"><div class="hd"><span class="num">01</span><h4>Bouwen of samenstellen?</h4><span class="tag blok">blokkeert</span></div><p class="q">Dit wordt software met klanten erop. Zelf bouwen is maanden en daarna onderhoud; samenstellen uit bestaande bouwstenen is weken maar geeft minder vrijheid.</p><div class="adv"><span class="al">Mijn advies</span><p>Begin met samenstellen. v0 kan uit een formulierkoppeling, een database en een mailtemplate &mdash; dat staat in dagen. v1 kan uit een databasetool met een klantinterface. Pas als je twintig klanten hebt en het knelt, is zelf bouwen te verdedigen. Nu is het de duurste manier om te ontdekken of klanten labelen.</p></div></div>
+<div class="dec"><div class="hd"><span class="num">02</span><h4>Wie is de eigenaar?</h4><span class="tag schaal">schaalbaarheid</span></div><p class="q">Een campagne die stukgaat kost een klant omzet. Een portal die stukgaat kost tien klanten tegelijk hun vertrouwen. Dat vraagt een andere verantwoordelijkheid dan wat er nu in het team zit.</p><div class="adv"><span class="al">Mijn advies</span><p>Wijs &eacute;&eacute;n eigenaar aan en spreek af wat er gebeurt buiten kantooruren. Doe je dat niet, dan is het bij de eerste storing van iedereen en dus van niemand.</p></div></div>
+<div class="dec"><div class="hd"><span class="num">03</span><h4>Zit het in de prijs of is het een post?</h4><span class="tag scherp">scherpte</span></div><p class="q">Nu zit het in het fundament als eenmalige uren. Maar het draait door, het kost hosting, en het moet onderhouden worden.</p><div class="adv"><span class="al">Mijn advies</span><p>Maak het geen aparte post op de tarievenkaart. Het is het bewijs van je propositie en het moet voelen als iets wat je kr&iacute;jgt. Verwerk de kosten in de retainer en houd de kaart schoon.</p></div></div>
+<div class="dec"><div class="hd"><span class="num">04</span><h4>Wat gebeurt ermee bij vertrek?</h4><span class="tag blok">blokkeert</span></div><p class="q">Dezelfde vraag als bij de landingspagina, en hij komt nu twee keer voor. Een klant die weggaat heeft daar wel zijn leadhistorie staan.</p><div class="adv"><span class="al">Mijn advies</span><p>Geef bij vertrek een volledige export mee, standaard en zonder erom te hoeven vragen. Het kost je niets en het is het verschil tussen een nette afronding en een nare laatste indruk.</p></div></div>
+<div class="dec"><div class="hd"><span class="num">05</span><h4>Wordt labelen een harde voorwaarde?</h4><span class="tag scherp">scherpte</span></div><p class="q">Het staat al bij de vijf dingen die je van een klant vraagt. Nu wordt het concreet: wat als iemand het niet doet?</p><div class="adv"><span class="al">Mijn advies</span><p>Geen oordelen betekent geen resultaatafspraak, alleen een inspanningsafspraak. Dat is eerlijk en verdedigbaar, want zonder oordelen kun je alleen op aantal sturen. Zet het in het blad &lsquo;jouw kant&rsquo; met die consequentie erbij.</p></div></div>
+</section>
+<div class="foot">James Robinson &middot; Het marketingdashboard &middot; specificatie, intern werkdocument</div>
+</main>
+<script>
+(function(){var b=document.getElementById('tg');if(!b)return;
+b.addEventListener('click',function(){var r=document.documentElement;
+var d=r.getAttribute('data-theme')||(window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+r.setAttribute('data-theme',d==='dark'?'light':'dark');});})();
+</script>
+</body></html>
