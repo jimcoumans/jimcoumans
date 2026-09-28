@@ -1,3 +1,5 @@
+> **ARCHIEF · NIET LEIDEND** · Vastgelegd bij het torenmodel, vóór de keuze voor advertising first. Leidend voor de propositie zijn de ARENA-methode (`arena-methode.html`) en de one-pager (`onepager.html`).
+
 # Propositie en site-indeling
 
 Vastgelegd na de vragenronde over het torenmodel. Basis voor alle pagina's.

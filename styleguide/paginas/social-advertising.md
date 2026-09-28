@@ -1,3 +1,5 @@
+> **IN HERZIENING** · Onderdeel van onze eigen website, die we oppakken als we de marketing aan de voorkant uitwerken. Waar dit afwijkt van de ARENA-methode, is die leidend.
+
 # Voorbeeldpagina — Social advertising
 
 Volledige uitwerking van één dienstenpagina volgens het designsysteem.
