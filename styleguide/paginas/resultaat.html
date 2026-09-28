@@ -161,7 +161,8 @@ h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
 /* drempeltabel */
 .dr{width:100%;border-collapse:collapse;font-size:15px;margin-top:22px}
 .dr th,.dr td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--ln-s);vertical-align:top}
-.dr thead th{font-family:var(--fm);font-size:10.5px;letter-spacing:.04em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.dr thead th{font-family:var(--fm);font-size:10.5px;letter-spacing:.04em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln);line-height:1.4}
+.dr td:last-child{color:var(--tx2);font-size:14.5px}
 .dr td.n,.dr th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;font-family:var(--fm);font-size:13px}
 .dr tbody tr:last-child td{border-bottom:none}
 .dr tr.geen td{color:var(--tx3)}
@@ -170,6 +171,14 @@ h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
 .dr .st.geen{background:var(--red100);color:var(--red-tx)}
 .dr .st.richting{background:var(--orange100);color:var(--orange-tx)}
 .dr .st.uitspraak{background:var(--green100);color:var(--green-tx)}
+
+/* twee vragen */
+.twee{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:24px 0 8px}
+.tw{background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:20px 22px}
+.tl2{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.06em;color:var(--act);margin-bottom:8px}
+.tw h4{font-size:17px;margin-bottom:8px}
+.tw p{font-size:14.5px;color:var(--tx2);margin:0;max-width:none}
+@media (max-width:734px){ .twee{grid-template-columns:1fr} }
 
 /* oorzaak */
 .oz{border:1px solid var(--ln-s);border-radius:20px;background:var(--card);padding:26px 28px;margin-top:16px}
@@ -227,16 +236,21 @@ h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
 <div class="key"><span class="k">De belofte die hieronder ligt</span><p class="big">Wij zeggen het zelf als het niet werkt.</p><p>Elke oorzaak hieronder heeft een cijferpatroon dat hem onderscheidt van de negen andere. Dat patroon staat in het dashboard, is voor beide partijen zichtbaar, en is niet voor tweeërlei uitleg vatbaar. Beweegt er na optimalisatie niets, dan melden wij dat uit onszelf en leggen we de opties voor &mdash; waaronder stoppen. <strong>Maandelijks opzegbaar geldt beide kanten op.</strong></p></div>
 </section>
 <section class="sec" id="drempel"><div class="kicker">Eerst dit</div><h2>Wanneer mag je iets zeggen?</h2>
-<p class="note">Voordat je een oorzaak kunt aanwijzen, moet je genoeg waarnemingen hebben om te weten dat het geen toeval is. Dat is geen kwestie van ervaring maar van rekenen: bij <code>n</code> conversies is de onzekerheid ongeveer <code>1 &divide; &radic;n</code>. Bij tien conversies is dat ruim dertig procent &mdash; dan is een variant die &lsquo;dertig procent beter scoort&rsquo; gewoon ruis.</p>
-<div class="tblwrap"><table class="dr"><thead><tr><th class="n">Conversies</th><th class="n">Onzekerheid</th><th>Wat je ermee kunt</th><th></th></tr></thead><tbody>
-<tr class="geen"><td class="n">10</td><td class="n">&plusmn; 32%</td><td>Zegt niets. Een verschil van 30% tussen twee varianten is hier toeval.</td><td><span class="st geen">geen</span></td></tr>
-<tr class="richting"><td class="n">30</td><td class="n">&plusmn; 18%</td><td>Eerste richting. Grote verschillen worden zichtbaar, kleine niet.</td><td><span class="st richting">richting</span></td></tr>
-<tr class="richting"><td class="n">50</td><td class="n">&plusmn; 14%</td><td>Bruikbaar voor een besluit over stoppen of doorgaan met een variant.</td><td><span class="st richting">richting</span></td></tr>
-<tr class="uitspraak"><td class="n">100</td><td class="n">&plusmn; 10%</td><td>Uitspraak over verschillen van meer dan een kwart.</td><td><span class="st uitspraak">uitspraak</span></td></tr>
-<tr class="uitspraak"><td class="n">200</td><td class="n">&plusmn; 7%</td><td>Uitspraak over verschillen van meer dan vijftien procent.</td><td><span class="st uitspraak">uitspraak</span></td></tr>
-<tr class="uitspraak"><td class="n">400</td><td class="n">&plusmn; 5%</td><td>Uitspraak over kleine verschillen. Zelden haalbaar in de eerste maanden.</td><td><span class="st uitspraak">uitspraak</span></td></tr>
+<p class="note">Voordat je een oorzaak kunt aanwijzen, moet je genoeg waarnemingen hebben om te weten dat het geen toeval is. Dat is geen kwestie van ervaring maar van rekenen, en er zijn <b>twee verschillende vragen</b> die elk hun eigen drempel hebben.</p>
+<div class="twee">
+<div class="tw"><span class="tl2">Vraag 1</span><h4>Hoe zeker is dit ene getal?</h4><p>Bij <code>n</code> conversies is de onzekerheid ongeveer <code>1 &divide; &radic;n</code>. Dat is de standaardfout van een telling: de spreiding op een telling <code>n</code> is <code>&radic;n</code>, dus relatief <code>&radic;n &divide; n</code>. Bij tien conversies is dat ruim dertig procent.</p></div>
+<div class="tw"><span class="tl2">Vraag 2</span><h4>Kan ik A en B uit elkaar houden?</h4><p>Veel strenger, want de onzekerheid van beide kanten stapelt en je hebt marge nodig om een verschil aan te wijzen. Het kleinste aantoonbare verschil is ongeveer <code>2,8 &times; &radic;(2 &divide; n)</code> per variant.</p></div>
+</div>
+<div class="tblwrap"><table class="dr"><thead><tr><th class="n">Conversies<br>per variant</th><th class="n">Onzekerheid<br>op 1 getal</th><th class="n">Kleinste verschil<br>dat je aantoont (95%)</th><th class="n">Idem bij<br>80%</th><th>Wat je ermee kunt</th></tr></thead><tbody>
+<tr class="geen"><td class="n">30</td><td class="n">&plusmn; 18%</td><td class="n">72%</td><td class="n">55%</td><td>Je weet ongeveer hoeveel het er zijn. Twee varianten uit elkaar houden lukt niet.</td></tr>
+<tr class="richting"><td class="n">100</td><td class="n">&plusmn; 10%</td><td class="n">40%</td><td class="n">30%</td><td>Een groot verschil wordt zichtbaar. Alles onder de helft verdwijnt in de ruis.</td></tr>
+<tr class="richting"><td class="n">200</td><td class="n">&plusmn; 7%</td><td class="n">28%</td><td class="n">21%</td><td>Bruikbaar voor een besluit over stoppen of doorgaan met een variant.</td></tr>
+<tr class="uitspraak"><td class="n">400</td><td class="n">&plusmn; 5%</td><td class="n">20%</td><td class="n">15%</td><td>Uitspraak over een verschil van een vijfde. Zelden haalbaar binnen een jaar.</td></tr>
+<tr class="uitspraak"><td class="n">1000</td><td class="n">&plusmn; 3%</td><td class="n">13%</td><td class="n">9%</td><td>Uitspraak over kleine verschillen. Alleen bij hoge volumes.</td></tr>
 </tbody></table></div>
-<div class="warn"><h4>Wat dit betekent voor de eerste maanden</h4><p>Bij twintig aanvragen per maand duurt het anderhalve maand voordat een uitspraak over conversiepercentages standhoudt, en een half jaar voordat kleine verschillen zichtbaar worden. Daarom kijken we in de eerste weken niet naar conversie maar naar de tussenstappen: weergaven, kosten per duizend weergaven, doorklikratio en kosten per klik. Die halen hun aantallen veel eerder.</p></div>
+<p class="note" style="margin-top:16px;font-size:14.5px">De laatste twee kolommen zijn de gangbare conventie: 95% zekerheid dat je geen verschil ziet dat er niet is, met 80% kans dat je een verschil dat er w&eacute;l is ook vindt. De kolom van 80% is een bewust lossere lat &mdash; sneller beslissen, vaker een keer misgrijpen. Dat is een legitieme keuze, mits je hem vooraf maakt en niet achteraf.</p>
+<div class="warn"><h4>Wat dit betekent bij 21 aanvragen per maand</h4><p>Voor &eacute;&eacute;n afgeronde test heb je twee varianten nodig die allebei het aantal uit de tabel halen. Bij 21 aanvragen per maand duurt dat <b>10 maanden</b> voor 100 per variant, <b>19 maanden</b> voor 200, en <b>38 maanden</b> voor 400. Een A/B-test op conversiepercentage is bij deze volumes dus niet af te ronden binnen een jaar.</p></div>
+<div class="key"><span class="k">De consequentie, en die is groot</span><p class="big">Bij deze volumes is optimaliseren geen testdiscipline maar een vakdiscipline.</p><p>&ldquo;Wij A/B-testen je landingspagina&rdquo; is bij twintig aanvragen per maand wiskundig een holle claim, hoe vaak je het ook hoort. Wat wij w&eacute;l doen: <strong>testen op de stappen waar volume zit</strong> &mdash; bij 700 bezoekers per maand heb je binnen weken honderden kliks, dus advertentievarianten kun je w&eacute;l tegen elkaar zetten. De conversiestap beoordelen we op de trend over maanden en op wat we zien gebeuren: waar mensen afhaken, welke velden ze niet invullen, hoe snel de pagina is. Dat is geen zwakkere methode, het is de enige die bij dit volume eerlijk is.</p></div>
 </section>
 <section class="sec" id="keten"><div class="kicker">Waar zit het</div><h2>Vier meetpunten, tien oorzaken</h2>
 <p class="note">Elke oorzaak zit op een vaste plek in de keten. Door van links naar rechts te lopen en te kijken waar het getal voor het eerst afwijkt, houd je er steeds minder over. Dat is de hele diagnose.</p>
@@ -469,15 +483,16 @@ h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
 </div>
 <div class="key"><span class="k">Waarom deze verdeling het gesprek verandert</span><p class="big">Bij 7 van de tien oorzaken ligt minstens &eacute;&eacute;n knop bij de klant.</p><p>Dat is geen manier om verantwoordelijkheid af te schuiven, maar het is wel de reden dat het v&oacute;&oacute;raf gezegd moet worden. Zeg je het achteraf, dan hoort een klant &lsquo;het ligt aan jou&rsquo;. Zeg je het bij de start &mdash; met de cijfers erbij die het zouden aantonen &mdash; dan is het een afspraak die allebei de kanten scherp houdt.</p></div>
 </section>
-<section class="sec" id="afspraken"><div class="kicker">In het voorstel</div><h2>Zeven zinnen die vooraf vastliggen</h2>
+<section class="sec" id="afspraken"><div class="kicker">In het voorstel</div><h2>De zinnen die vooraf vastliggen</h2>
 <p class="note">Dit zijn de afspraken die in het voorstel en in de overeenkomst horen. Niet als kleine lettertjes, maar als onderdeel van het gesprek aan tafel &mdash; ze maken de belofte geloofwaardiger, niet zwakker.</p>
 <div class="af"><div class="ah"><span class="an">01</span><h4>De eerste aanvragen zijn duur</h4></div><p>Reken in de eerste maand op twee tot drie keer het doelbedrag per aanvraag. Dat is geen tegenvaller, dat is de leerfase. De curve hoort omlaag te lopen; het niveau van maand &eacute;&eacute;n zegt niets.</p></div>
-<div class="af"><div class="ah"><span class="an">02</span><h4>V&oacute;&oacute;r dertig conversies zeggen we niets</h4></div><p>Ook niet als je het vraagt. Onder dat aantal is de onzekerheid groter dan de verschillen die we zouden bespreken. Wat we w&eacute;l doen is de tussenstappen laten zien: weergaven, kliks, bezoekers.</p></div>
+<div class="af"><div class="ah"><span class="an">02</span><h4>We vergelijken pas als er genoeg conversies zijn</h4></div><p>Onder de dertig is de onzekerheid op &eacute;&eacute;n getal al bijna twintig procent, en twee varianten uit elkaar houden lukt daar helemaal niet. Wat we w&eacute;l doen is de tussenstappen laten zien: weergaven, kosten per duizend weergaven, doorklikratio en kosten per klik. Die halen hun aantallen binnen weken.</p></div>
 <div class="af"><div class="ah"><span class="an">03</span><h4>Het kan zijn dat we adviseren je budget te verhogen</h4></div><p>Zitten de kosten per aanvraag op doel en het aantal niet, dan is budget de enige knop die er nog is. Hou daar nu al rekening mee, zodat het later geen verrassing is en geen verkooppraatje lijkt.</p></div>
 <div class="af"><div class="ah"><span class="an">04</span><h4>Het kan zijn dat we adviseren je aanbod of je prijs te veranderen</h4></div><p>Blijft de conversie laag over meerdere varianten en meerdere doelgroepen, dan ligt het niet aan de vorm. Die beslissing is van jou en wij kunnen hem niet voor je nemen.</p></div>
 <div class="af"><div class="ah"><span class="an">05</span><h4>Vier dingen kunnen wij niet oplossen</h4></div><p>Je merk, je aanbod en prijs, je opvolging en je capaciteit. We meten ze wel, en we melden ze op het moment dat ze de oorzaak zijn &mdash; niet pas als je ernaar vraagt.</p></div>
 <div class="af"><div class="ah"><span class="an">06</span><h4>We meten je opvolgtijd, en jij koppelt leadkwaliteit terug</h4></div><p>Allebei vanaf dag &eacute;&eacute;n. Zonder het eerste kunnen we niet zien waar het misgaat; zonder het tweede kunnen we alleen op aantal sturen in plaats van op waarde.</p></div>
-<div class="af"><div class="ah"><span class="an">07</span><h4>Bewegen de cijfers niet, dan zeggen wij het zelf</h4></div><p>Als er na een afgesproken termijn geen beweging in zit ondanks optimalisatie, melden wij dat uit onszelf en leggen we de opties voor &mdash; waaronder stoppen. Maandelijks opzegbaar geldt beide kanten op.</p></div>
+<div class="af"><div class="ah"><span class="an">07</span><h4>Je landingspagina wordt niet A/B-getest, en dat is geen tekortkoming</h4></div><p>Bij jouw volume duurt &eacute;&eacute;n afgeronde conversietest langer dan een jaar. We optimaliseren de pagina op wat we zien gebeuren en op de trend over maanden, en we testen w&eacute;l scherp op de stappen waar volume zit: advertenties, koppen, beeld.</p></div>
+<div class="af"><div class="ah"><span class="an">08</span><h4>Bewegen de cijfers niet, dan zeggen wij het zelf</h4></div><p>Als er na een afgesproken termijn geen beweging in zit ondanks optimalisatie, melden wij dat uit onszelf en leggen we de opties voor &mdash; waaronder stoppen. Maandelijks opzegbaar geldt beide kanten op.</p></div>
 </section>
 <div class="foot">James Robinson &middot; Als het resultaat tegenvalt &middot; tien oorzaken, hun cijferpatroon en hun knoppen</div>
 </main>
