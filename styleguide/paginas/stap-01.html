@@ -1,0 +1,418 @@
+<meta charset="utf-8"><title>Intake deel 1 &middot; James Robinson</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@600;700&display=swap">
+<style>
+:root{
+  --page:#fbfbfd; --card:#fff; --alt:#f5f5f7;
+  --tx:#1d1d1f; --tx2:#6e6e73; --tx3:#86868b;
+  --ln:#d2d2d7; --ln-s:#e5e5e9;
+  --blue:#007aff; --link:#0066cc; --act:#0857c3;
+  --b100:#e0efff; --b50:#f4f9ff;
+  --lime:#c4f000; --lime-tx:#5a7000; --lime100:#f2fccc;
+  --green-tx:#1d7d3f; --green100:#e6f7eb;
+  --orange-tx:#94590a; --orange100:#fef2e0;
+  --red-tx:#c02a22; --red100:#fdecea;
+  --black:#1c1c1e; --inv:#f5f5f7; --inv2:#a1a1a6;
+  --fd:"Inter Tight","Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --ft:"Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --fm:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --e:cubic-bezier(.25,.1,.25,1);--g:32px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}}
+:root[data-theme="dark"]{
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--tx);font-family:var(--ft);font-size:16.5px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition-duration:.01ms!important}}
+:focus-visible{outline:none;box-shadow:0 0 0 4px rgba(0,122,255,.4);border-radius:8px}
+p{margin:0 0 18px;max-width:70ch}
+p:last-child{margin-bottom:0}
+h1,h2,h3,h4{font-family:var(--fd);margin:0;text-wrap:balance}
+code{font-family:var(--fm);font-size:.86em;background:var(--alt);padding:2px 6px;border-radius:5px}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:60;background:rgba(251,251,253,.86);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--ln-s)}
+:root[data-theme="dark"] .bar,:root:not([data-theme="light"]) .bar{background:rgba(0,0,0,.74)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .bar{background:rgba(251,251,253,.86)}}
+.bar-in{max-width:1080px;margin:0 auto;padding:0 var(--g);display:flex;align-items:center;gap:5px;min-height:48px;overflow-x:auto;scrollbar-width:none}
+.bar-in::-webkit-scrollbar{display:none}
+.bar b{font-family:var(--fd);font-size:14.5px;font-weight:700;letter-spacing:-.016em;margin-right:8px;white-space:nowrap}
+.bar a{font-size:12.5px;color:var(--tx2);text-decoration:none;padding:6px 8px;border-radius:7px;white-space:nowrap}
+.bar a:hover{color:var(--tx)}
+.bar button{margin-left:auto;flex:none;font:inherit;font-size:12px;cursor:pointer;background:transparent;border:1px solid var(--ln);color:var(--tx2);border-radius:980px;padding:5px 13px}
+
+.wrap{max-width:1080px;margin:0 auto;padding-inline:var(--g)}
+.hero{padding-block:76px 40px}
+h1{font-size:clamp(34px,5.4vw,58px);font-weight:700;line-height:1.06;letter-spacing:-.026em;margin-bottom:20px}
+.lead{font-size:20px;line-height:1.5;color:var(--tx2);max-width:64ch}
+.sec{padding-block:60px;border-top:1px solid var(--ln-s)}
+h2{font-size:clamp(26px,3.4vw,38px);font-weight:700;line-height:1.12;letter-spacing:-.02em;margin-bottom:8px}
+.sec > .kicker{font-family:var(--fm);font-size:11px;letter-spacing:.06em;color:var(--tx3);margin-bottom:14px}
+h3{font-size:21px;font-weight:600;line-height:1.24;letter-spacing:-.012em;margin:38px 0 10px}
+h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
+.note{color:var(--tx2)}
+.note b,b{color:var(--tx);font-weight:600}
+
+/* kernblok */
+.key{background:var(--black);color:var(--inv);border-radius:22px;padding:34px 32px;margin:26px 0}
+.key .k{display:block;font-family:var(--fm);font-size:10.5px;letter-spacing:.06em;color:var(--lime);margin-bottom:14px}
+.key p{color:var(--inv2);font-size:17.5px;max-width:64ch}
+.key strong{color:#fff;font-weight:600}
+.key .big{font-family:var(--fd);font-size:clamp(22px,3vw,30px);font-weight:600;line-height:1.2;letter-spacing:-.018em;color:#fff;margin-bottom:16px}
+
+/* lagen van het aanbod */
+.stack{display:grid;gap:12px;margin-top:24px}
+.st{background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;display:grid;grid-template-columns:132px 1fr;gap:20px;align-items:start}
+.st .lab{font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;color:var(--act);padding-top:3px}
+.st .bd p{margin:0;font-size:15.5px;color:var(--tx2)}
+.st .bd h4{margin-bottom:5px}
+
+/* kandidaten */
+.cands{display:grid;gap:12px;margin-top:22px}
+.cand{border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;background:var(--card)}
+.cand.win{border-color:var(--lime);box-shadow:0 0 0 1px var(--lime)}
+.cand .zin{font-family:var(--fd);font-size:22px;font-weight:600;letter-spacing:-.014em;margin-bottom:8px}
+.cand .why{font-size:15px;color:var(--tx2);margin:0}
+.cand .verdict{display:inline-block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;border-radius:5px;padding:3px 7px;margin-bottom:12px}
+.cand .verdict.no{background:var(--red100);color:var(--red-tx)}
+.cand .verdict.ok{background:var(--lime100);color:var(--lime-tx)}
+.cand .verdict.mid{background:var(--orange100);color:var(--orange-tx)}
+
+/* onderscheid */
+.dist{width:100%;border-collapse:collapse;font-size:15px;margin-top:22px}
+.dist th,.dist td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.dist thead th{font-family:var(--fm);font-size:10.5px;letter-spacing:.04em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.dist td:first-child{font-weight:500;width:34%}
+.dist .v{font-family:var(--fm);font-size:11px;white-space:nowrap}
+.dist .v.y{color:var(--green-tx)}
+.dist .v.n{color:var(--red-tx)}
+.dist tr:last-child td{border-bottom:none}
+.tblwrap{overflow-x:auto}
+
+/* beslissingen */
+.dec{border:1px solid var(--ln-s);border-radius:18px;background:var(--card);padding:26px 28px;margin-top:14px}
+.dec .hd{display:flex;align-items:baseline;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.dec .num{font-family:var(--fm);font-size:11px;color:var(--tx3);flex:none}
+.dec h4{font-size:19px;flex:1;min-width:220px;margin:0}
+.dec .tag{font-family:var(--fm);font-size:9.5px;letter-spacing:.05em;border-radius:5px;padding:3px 7px}
+.dec .tag.blok{background:var(--red100);color:var(--red-tx)}
+.dec .tag.schaal{background:var(--orange100);color:var(--orange-tx)}
+.dec .tag.scherp{background:var(--b100);color:var(--act)}
+.dec .q{font-size:16px;color:var(--tx2);margin:0 0 16px}
+.dec .adv{background:var(--b50);border-left:3px solid var(--act);border-radius:0 10px 10px 0;padding:16px 18px}
+.dec .adv .al{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.06em;color:var(--act);margin-bottom:7px}
+.dec .adv p{font-size:15.5px;margin:0 0 10px}
+.dec .adv p:last-child{margin-bottom:0}
+
+/* vast */
+.locked{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-top:22px}
+.lk{background:var(--card);border:1px solid var(--ln-s);border-radius:14px;padding:18px 20px}
+.lk .t{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--green-tx);margin-bottom:7px}
+.lk .b{font-size:15px;color:var(--tx2);line-height:1.45}
+.lk .b b{color:var(--tx)}
+
+.warn{background:var(--orange100);border-radius:18px;padding:24px 26px;margin-top:26px}
+.warn h4{color:var(--orange-tx)}
+.warn p{color:var(--orange-tx);opacity:.94;font-size:15.5px;max-width:none}
+.foot{padding-block:44px 64px;font-size:13px;color:var(--tx3);text-align:center}
+
+@media (max-width:734px){
+  :root{--g:20px}
+  body{font-size:16px}
+  .sec{padding-block:48px}
+  .hero{padding-block:44px 28px}
+  .st{grid-template-columns:1fr;gap:10px}
+  .key{padding:24px 22px}
+  .dec{padding:22px 20px}
+}
+
+</style><style>
+.form{max-width:680px;margin:26px auto 0;background:var(--card);border:1px solid var(--ln-s);
+  border-radius:20px;padding:34px 38px}
+@media(max-width:700px){.form{padding:24px 20px;border-radius:0;border-inline:none}}
+.form .fh{padding-bottom:22px;border-bottom:1px solid var(--ln-s);margin-bottom:8px}
+.form .fh h3{font-family:var(--fd);font-size:26px;font-weight:700;letter-spacing:-.02em}
+.form .fh p{font-size:15px;color:var(--tx2);margin:10px 0 0;line-height:1.6}
+.grp{border:none;margin:0;padding:26px 0 0;border-top:1px solid var(--ln-s)}
+.grp:first-of-type{border-top:none}
+.grp legend{font-family:var(--fd);font-size:19px;font-weight:600;letter-spacing:-.014em;padding:0}
+.gi{font-size:14px;color:var(--tx2);margin:6px 0 0;line-height:1.55}
+.fld{padding:20px 0;border-bottom:1px solid var(--ln-s)}
+.fld:last-child{border-bottom:none;padding-bottom:6px}
+.q{display:block;font-size:16px;font-weight:500;line-height:1.45;color:var(--tx)}
+.q .opt{font-family:var(--ft);font-size:12.5px;font-weight:400;color:var(--tx3);margin-left:8px}
+.hint{font-size:13.5px;color:var(--tx2);margin:5px 0 0;line-height:1.5}
+.fld input[type=text],.fld input[type=url],.fld textarea{
+  width:100%;margin-top:11px;font:inherit;font-size:15px;color:var(--tx);background:var(--page);
+  border:1px solid var(--ln);border-radius:10px;padding:11px 13px}
+.fld textarea{resize:vertical;line-height:1.55}
+.fld input::placeholder,.fld textarea::placeholder{color:var(--tx3)}
+.fld input:focus,.fld textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,122,255,.15)}
+.pre{display:flex;align-items:stretch;margin-top:11px}
+.pre .pf,.pre .sf{display:flex;align-items:center;padding:0 13px;background:var(--alt);
+  border:1px solid var(--ln);color:var(--tx2);font-size:15px}
+.pre .pf{border-right:none;border-radius:10px 0 0 10px}
+.pre .sf{border-left:none;border-radius:0 10px 10px 0}
+.pre input{margin-top:0!important;border-radius:0 10px 10px 0!important}
+.pre.suf input{border-radius:10px 0 0 10px!important}
+.opts{margin-top:11px;display:grid;gap:7px}
+.ro{display:flex;align-items:center;gap:10px;padding:11px 13px;border:1px solid var(--ln);
+  border-radius:10px;cursor:pointer;background:var(--page)}
+.ro:hover{border-color:var(--tx3)}
+.ro input{width:17px;height:17px;accent-color:var(--blue);margin:0;flex:none}
+.ro span{font-size:15px;line-height:1.35}
+.drop{margin-top:11px;border:1.5px dashed var(--ln);border-radius:10px;padding:20px;
+  text-align:center;color:var(--tx3);font-size:14px;background:var(--page)}
+.note-i{display:none;font-size:13px;color:var(--blue);margin:9px 0 0;padding-left:12px;
+  border-left:2px solid var(--b100);line-height:1.5}
+body.toon .note-i{display:block}
+.knop{margin-top:26px;font:inherit;font-size:15px;font-weight:500;background:var(--act);color:#fff;
+  border:none;border-radius:980px;padding:13px 26px;cursor:pointer;width:100%}
+.schakel{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:22px}
+.schakel button{font:inherit;font-size:13px;cursor:pointer;background:transparent;border:1px solid var(--ln);
+  color:var(--tx2);border-radius:980px;padding:7px 15px}
+.schakel button[aria-pressed=true]{background:var(--tx);color:var(--page);border-color:var(--tx)}
+.schakel span{font-size:13px;color:var(--tx3)}
+.mail{background:var(--card);border:1px solid var(--ln);border-radius:18px;overflow:hidden;margin-top:22px;max-width:680px}
+.mail .mh{background:var(--alt);padding:14px 24px;border-bottom:1px solid var(--ln-s);font-family:var(--fm);font-size:12px;color:var(--tx2)}
+.mail .mh b{color:var(--tx);font-weight:500}
+.mail .mb{padding:26px 28px}
+.mail .mb p{font-size:15.5px;line-height:1.62;margin:0 0 15px;max-width:60ch}
+.mail .mb p:last-child{margin-bottom:0}
+.mail .mb ul{margin:0 0 15px;padding-left:20px}
+.mail .mb li{font-size:15.5px;line-height:1.62;margin-bottom:5px}
+
+.grp .gi{margin-bottom:4px}
+.note-i b{font-weight:600;color:var(--act)}
+.note-i .nm{display:block;margin-top:4px;color:var(--orange-tx)}
+.na{font-size:13.5px;color:var(--tx3);text-align:center;margin:12px 0 0}
+.fh .meta{display:inline-block;font-family:var(--fm);font-size:11px;letter-spacing:.04em;color:var(--tx3);margin-top:14px}
+
+.vh{width:100%;border-collapse:collapse;font-size:14.5px;margin-top:22px}
+.vh th,.vh td{text-align:left;padding:12px 12px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.vh thead th{font-family:var(--fm);font-size:10.5px;letter-spacing:.04em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.vh td:first-child{font-weight:500;width:28%}
+.vh td:nth-child(2),.vh td:nth-child(3){font-family:var(--fm);font-size:12px;white-space:nowrap;color:var(--tx2)}
+.vh td:nth-child(3){color:var(--act)}
+.vh td:last-child{color:var(--tx2)}
+.vh tbody tr:last-child td{border-bottom:none}
+
+.vl2{margin-top:24px;border-left:2px solid var(--ln);margin-left:6px}
+.vr{display:grid;grid-template-columns:110px 1fr;gap:18px;padding:0 0 18px 22px;position:relative}
+.vr::before{content:"";position:absolute;left:-6px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--act);box-shadow:0 0 0 4px var(--page)}
+.vr:last-child{padding-bottom:0}
+.vr .vd{font-family:var(--fm);font-size:11.5px;color:var(--act);padding-top:2px}
+.vr b{display:block;font-size:15.5px;font-weight:600}
+.vr span{display:block;font-size:14.5px;color:var(--tx2);margin-top:2px}
+
+.mail{max-width:680px}
+.mail .mb .mk{display:inline-block;background:var(--act);color:#fff;border-radius:980px;padding:10px 20px;font-size:14.5px;font-weight:500}
+.mail .mb .ln{color:var(--link);text-decoration:underline}
+.mail .mb .rz{display:block;background:var(--orange100);color:var(--orange-tx);border-radius:8px;padding:10px 14px;font-size:14.5px}
+.mail .mw{display:block;font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;color:var(--tx3);margin:34px 0 0}
+.mail + .wh2,.wh2{max-width:680px;background:var(--b50);border-left:3px solid var(--act);border-radius:0 10px 10px 0;padding:13px 16px;margin-top:12px;font-size:14.5px;color:var(--tx2)}
+
+.rzt{width:100%;border-collapse:collapse;font-size:14.5px;margin-top:18px;max-width:880px}
+.rzt th,.rzt td{text-align:left;padding:12px 12px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.rzt thead th{font-family:var(--fm);font-size:10.5px;letter-spacing:.04em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.rzt td:first-child{font-family:var(--fm);font-size:11.5px;color:var(--tx2);width:22%}
+.rzt td:nth-child(3){color:var(--tx3);font-size:13.5px;width:26%}
+.rzt tbody tr:last-child td{border-bottom:none}
+
+.kl{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:22px}
+.kk{border-radius:16px;padding:18px 20px;border:1px solid var(--ln-s);background:var(--card)}
+.kk .kt{display:block;font-family:var(--fm);font-size:10.5px;letter-spacing:.04em;margin-bottom:10px;font-weight:500}
+.kk.rood .kt{color:var(--red-tx)} .kk.rood{border-top:4px solid var(--red-tx)}
+.kk.oranje .kt{color:var(--orange-tx)} .kk.oranje{border-top:4px solid var(--orange-tx)}
+.kk.geel .kt{color:var(--lime-tx)} .kk.geel{border-top:4px solid var(--lime-tx)}
+.kk.groen .kt{color:var(--green-tx)} .kk.groen{border-top:4px solid var(--green-tx)}
+.kk ul{list-style:none;margin:0;padding:0}
+.kk li{font-size:14px;line-height:1.45;padding:6px 0;border-top:1px solid var(--ln-s);color:var(--tx)}
+.kk li:first-child{border-top:none;padding-top:0}
+
+.opt2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px}
+.oo{border:1px solid var(--ln-s);border-radius:16px;padding:20px 22px;background:var(--card)}
+.oo.win{border-color:var(--act);box-shadow:inset 0 0 0 1px var(--act)}
+.oo .ol{display:block;font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;color:var(--tx3);margin-bottom:8px}
+.oo.win .ol{color:var(--act)}
+.oo h4{font-size:17px;margin-bottom:8px}
+.oo p{font-size:14.5px;color:var(--tx2);margin:0;max-width:none}
+
+.sam{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:22px}
+.sm{background:var(--card);border:1px solid var(--ln-s);border-radius:14px;padding:16px 18px}
+.sm .st1{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--tx3);margin-bottom:8px}
+.sm p{font-size:14px;color:var(--tx);margin:0;line-height:1.5;max-width:none}
+
+@media (max-width:860px){ .kl,.sam{grid-template-columns:1fr 1fr} .opt2{grid-template-columns:1fr} }
+@media (max-width:560px){ .kl,.sam{grid-template-columns:1fr} .vr{grid-template-columns:1fr;gap:4px} .vh td:nth-child(2),.vh td:nth-child(3){white-space:normal} }
+</style>
+</head><body>
+<nav class="bar"><div class="bar-in"><b>Stap 01</b>
+<a href="#kort">In het kort</a><a href="#formulier">Het formulier</a><a href="#verhuist">Wat verhuist</a><a href="#verloop">Het verloop</a><a href="#mails">De mails</a><a href="#beoordelen">Beoordelen</a><a href="#open">Open</a>
+<button id="tg">Thema</button></div></nav>
+
+<header class="wrap hero">
+<h1>Intake deel 1</h1>
+<p class="lead">Het eerste wat een klant van ons invult. Het bepaalt of er een gesprek komt, en waar dat gesprek over gaat. Alles op deze pagina is uitgeschreven zoals de klant het ziet.</p>
+</header>
+<main class="wrap">
+<section class="sec" id="kort"><div class="kicker">Stap 01 in het kort</div><h2>E&eacute;n principe</h2>
+<div class="key"><span class="k">Het principe</span><p class="big">Deel 1 vraagt alleen wat we v&oacute;&oacute;r het gesprek nodig hebben.</p><p>Dat is drie dingen: <strong>kunnen we nee zeggen</strong>, <strong>wat moet de quickscan bekijken</strong>, en <strong>waar gaan we aan tafel mee rekenen</strong>. Alles wat een keuze of een prijs is, hoort aan tafel. Alles wat iemand moet opzoeken, hoort in de afspraakbevestiging &mdash; dan zoekt hij het op in plaats van te gokken.</p></div>
+<div class="sam">
+<div class="sm"><span class="st1">VERKOOPONDERSTEUNING</span><p>Het formulier, vier mails, en de beoordelingskaart met vier kleuren.</p></div>
+<div class="sm"><span class="st1">VRAGEN</span><p>Elf vragen, in drie groepjes. Zes zijn aanklikken.</p></div>
+<div class="sm"><span class="st1">KEUZES VOOR DE KLANT</span><p>E&eacute;n: invullen of niet. Wie het niet doet, krijgt geen afspraak.</p></div>
+<div class="sm"><span class="st1">WAT WIJ DOEN</span><p>Mail binnen 24 uur, beoordelen binnen twee werkdagen, tien minuten per aanvraag.</p></div>
+</div></section>
+<section class="sec" id="formulier"><div class="kicker">Zoals de klant het ziet</div><h2>Het formulier</h2>
+<p class="note">Zet de aantekeningen aan om per vraag te zien waarvoor we het antwoord gebruiken, en bij welk antwoord er iets gebeurt. Die ziet de klant niet.</p>
+<div class="schakel"><button id="bUit" aria-pressed="true">Zoals de klant het ziet</button><button id="bAan" aria-pressed="false">Met onze aantekeningen</button></div>
+<div class="form"><div class="fh"><h3>Voordat we afspreken</h3><p>Elf korte vragen, ongeveer vijf minuten. Daarmee kijken we v&oacute;&oacute;r het gesprek al naar je website en je markt, zodat we niet met een standaardverhaal aan tafel komen. Weet je iets niet precies? Schat het. We rekenen het later samen na.</p></div>
+<fieldset class="grp"><legend>Je bedrijf</legend>
+<div class="fld"><label class="q">Wat is de naam van je bedrijf?</label><input type="text" placeholder="Bijvoorbeeld: Bakkerij Janssen"><p class="note-i"><b>Waarvoor:</b> Herkenning.</p></div>
+<div class="fld"><label class="q">Wat is het adres van je website?</label><input type="url" placeholder="www.jouwbedrijf.nl"><p class="note-i"><b>Waarvoor:</b> Quickscan: hier kijken we v&oacute;&oacute;r het gesprek naar snelheid, meting en formulieren.<span class="nm"><b style="color:inherit">Norm:</b> Geen website: dan ontbreekt het middelpunt. Dat is eerst een websiteproject, geen retainer.</span></p></div>
+<div class="fld"><label class="q">Wat verkoop je, in &eacute;&eacute;n zin?</label><p class="hint">Geen slogan. Gewoon: wat koopt iemand bij jou?</p><input type="text" placeholder="Bijvoorbeeld: we installeren warmtepompen bij particulieren"><p class="note-i"><b>Waarvoor:</b> Kwalificeren.<span class="nm"><b style="color:inherit">Norm:</b> Medische claims of financi&euml;le producten: nee-reden 2, beperkte categorie.</span></p></div>
+<div class="fld"><label class="q">Aan wie verkoop je?</label><div class="opts"><label class="ro"><input type="radio" name="v4"><span>Aan bedrijven</span></label><label class="ro"><input type="radio" name="v4"><span>Aan particulieren</span></label><label class="ro"><input type="radio" name="v4"><span>Aan allebei</span></label></div><p class="note-i"><b>Waarvoor:</b> Kwalificeren, samen met de volgende twee vragen.<span class="nm"><b style="color:inherit">Norm:</b> Bedrijven + eigen regio + lang beslistraject: nee-reden 1 of 3 in beeld.</span></p></div>
+<div class="fld"><label class="q">Waar zitten je klanten?</label><div class="opts"><label class="ro"><input type="radio" name="v5"><span>In de regio rond mijn vestiging</span></label><label class="ro"><input type="radio" name="v5"><span>In heel Nederland</span></label><label class="ro"><input type="radio" name="v5"><span>In Nederland en daarbuiten</span></label></div><p class="note-i"><b>Waarvoor:</b> Quickscan: in dit gebied kijken we wie er op jouw zoektermen adverteert.</p></div>
+<div class="fld"><label class="q">Hoe lang duurt het gemiddeld van eerste contact tot opdracht?</label><div class="opts"><label class="ro"><input type="radio" name="v6"><span>Een paar dagen</span></label><label class="ro"><input type="radio" name="v6"><span>Een paar weken</span></label><label class="ro"><input type="radio" name="v6"><span>Een paar maanden</span></label><label class="ro"><input type="radio" name="v6"><span>Langer dan een half jaar</span></label></div><p class="note-i"><b>Waarvoor:</b> Kwalificeren, en het bepaalt hoe lang het duurt voordat we resultaat kunnen laten zien.<span class="nm"><b style="color:inherit">Norm:</b> Langer dan een half jaar in een kleine markt: nee-reden 3. Anders: aan tafel zeggen dat de eerste klanten pas na die termijn komen.</span></p></div>
+</fieldset>
+<fieldset class="grp"><legend>Je cijfers</legend>
+<p class="gi">Schatten mag. We vragen het nu, zodat we er aan tafel mee kunnen rekenen in plaats van ernaar te raden.</p>
+<div class="fld"><label class="q">Hoeveel aanvragen krijg je nu gemiddeld per maand?</label><p class="hint">Telefoontjes, mails en formulieren samen.</p><div class="pre suf"><input type="text" inputmode="numeric" placeholder="0"><span class="sf">per maand</span></div><p class="note-i"><b>Waarvoor:</b> Vertrekpunt: hier vergelijken we straks alles mee.<span class="nm"><b style="color:inherit">Norm:</b> Minder dan tien per maand: aan tafel zeggen dat een uitspraak over conversie maanden duurt.</span></p></div>
+<div class="fld"><label class="q">Wat levert een nieuwe klant je gemiddeld op?</label><p class="hint">Over de hele klantrelatie, niet alleen de eerste opdracht.</p><div class="pre"><span class="pf">&euro;</span><input type="text" inputmode="numeric" placeholder="0"></div><p class="note-i"><b>Waarvoor:</b> Rekensom. Met onze standaardaannames mag een aanvraag maximaal 1,5% van dit bedrag kosten.<span class="nm"><b style="color:inherit">Norm:</b> Onder &euro;&nbsp;2.000 is dat minder dan &euro;&nbsp;30 per aanvraag. Vlag, geen nee &mdash; eerst bellen. De drempel toetsen we nog aan onze eigen accounts.</span></p></div>
+<div class="fld"><label class="q">Wat geef je nu per maand uit aan marketing, alles bij elkaar?</label><p class="hint">Advertenties, bureaus, freelancers, drukwerk: alles wat je aan marketing uitgeeft.</p><div class="opts"><label class="ro"><input type="radio" name="v9"><span>Minder dan &euro;&nbsp;1.000</span></label><label class="ro"><input type="radio" name="v9"><span>&euro;&nbsp;1.000 tot &euro;&nbsp;2.500</span></label><label class="ro"><input type="radio" name="v9"><span>&euro;&nbsp;2.500 tot &euro;&nbsp;5.000</span></label><label class="ro"><input type="radio" name="v9"><span>Meer dan &euro;&nbsp;5.000</span></label></div><p class="note-i"><b>Waarvoor:</b> Budgettoets. Het kleinste pakket is &euro;&nbsp;1.000 retainer plus minimaal &euro;&nbsp;1.000 advertentiebudget.<span class="nm"><b style="color:inherit">Norm:</b> Minder dan &euro;&nbsp;1.000: het budget moet meer dan verdubbelen. Geen nee, maar eerst een telefoontje van een kwartier.</span></p></div>
+</fieldset>
+<fieldset class="grp"><legend>Je website en advertenties</legend>
+<div class="fld"><label class="q">Adverteer je nu al ergens?</label><div class="opts"><label class="ro"><input type="radio" name="v10"><span>Nee</span></label><label class="ro"><input type="radio" name="v10"><span>Ja, op Google</span></label><label class="ro"><input type="radio" name="v10"><span>Ja, op Facebook of Instagram</span></label><label class="ro"><input type="radio" name="v10"><span>Ja, op allebei</span></label><label class="ro"><input type="radio" name="v10"><span>Ja, ergens anders</span></label></div><p class="note-i"><b>Waarvoor:</b> Quickscan. Bestaande accounts nemen we over in plaats van nieuwe aan te maken &mdash; de historie is geld waard.</p></div>
+<div class="fld"><label class="q">Wie kan er code in je website plaatsen?</label><p class="hint">Om te kunnen meten wat bezoekers doen, plaatsen we &eacute;&eacute;n regel code. Die leveren wij aan.</p><div class="opts"><label class="ro"><input type="radio" name="v11"><span>Ikzelf of iemand in mijn team</span></label><label class="ro"><input type="radio" name="v11"><span>Mijn webbouwer of hostingpartij</span></label><label class="ro"><input type="radio" name="v11"><span>Niemand, dat kan niet in mijn systeem</span></label><label class="ro"><input type="radio" name="v11"><span>Dat weet ik niet</span></label></div><p class="note-i"><b>Waarvoor:</b> Kwalificeren.<span class="nm"><b style="color:inherit">Norm:</b> &lsquo;Niemand&rsquo;: nee-reden 5, we kunnen niet meten. &lsquo;Weet ik niet&rsquo;: laten uitzoeken v&oacute;&oacute;r de afspraak, &eacute;&eacute;n mail aan de webbouwer is genoeg.</span></p></div>
+</fieldset>
+<button class="knop" type="button">Versturen</button><p class="na">Binnen twee werkdagen hoor je van ons.</p></div>
+</section>
+<section class="sec" id="verhuist"><div class="kicker">Ten opzichte van de vorige versie</div><h2>Wat verhuist, en waarom</h2>
+<p class="note">De vorige versie had tien vragen, maar drie ervan vroegen de klant te kiezen voordat hij wist waartussen. En drie van de vijf nee-redenen waren pas n&aacute; de handtekening te zien, omdat de vragen daarvoor in deel 2 stonden.</p>
+<div class="tblwrap"><table class="vh"><thead><tr><th>Vraag</th><th>Stond in</th><th>Staat nu in</th><th>Waarom</th></tr></thead><tbody>
+<tr><td>Hoeveel e-mailadressen staan er in je bestand?</td><td>Deel 1</td><td>Afspraakbevestiging</td><td>Bepaalt een bedrag van een paar tientjes per maand. Dat hoort bij de prijs, niet bij de vraag of we gaan praten.</td></tr>
+<tr><td>Hoeveel bezoekers krijgt je website per maand?</td><td>Deel 1</td><td>Aan tafel, alleen bij bedrijven</td><td>Alleen nodig voor de prijs van bezoekersherkenning, en die is alleen zinvol als je aan bedrijven verkoopt.</td></tr>
+<tr><td>Laat je afspraken online inplannen?</td><td>Deel 1</td><td>Keuze aan tafel, stap 10</td><td>Dit is een keuze voor een los onderdeel. Die vraag je niet voordat iemand weet wat het is en wat het kost.</td></tr>
+<tr><td>Aan wie verkoop je?</td><td>Deel 2</td><td>Deel 1</td><td>Zonder dit antwoord kun je nee-reden 1 en 3 pas n&aacute; de handtekening zien.</td></tr>
+<tr><td>Waar zitten je klanten?</td><td>Deel 2</td><td>Deel 1</td><td>Idem, en de quickscan heeft het nodig om de concurrentie in dat gebied te bekijken.</td></tr>
+<tr><td>Hoe lang duurt het van eerste contact tot opdracht?</td><td>Deel 2</td><td>Deel 1</td><td>Nee-reden 3. En het bepaalt wat je aan tafel belooft over wanneer er resultaat is.</td></tr>
+<tr><td>Wat geef je nu per maand uit aan marketing?</td><td>&mdash;</td><td>Deel 1, nieuw</td><td>Budgettoets. Voorkomt een gesprek van anderhalf uur met iemand die het kleinste pakket niet kan betalen.</td></tr>
+<tr><td>Omzetdoel, marge, aandeel aanvragen dat klant wordt</td><td>Deel 2 of nergens</td><td>Afspraakbevestiging: meenemen</td><td>Bijna niemand kent deze uit het hoofd. In een formulier wordt het gokken of afhaken. In de bevestiging zoekt iemand ze op.</td></tr>
+</tbody></table></div>
+<div class="warn"><h4>Gevolg voor deel 2</h4><p>Drie vragen die nu in deel 2 staan &mdash; aan wie, welk gebied, hoe lang het beslistraject is &mdash; worden in deel 1 al beantwoord. Deel 2 neemt die antwoorden over in plaats van ze opnieuw te stellen. Dat scheelt de klant drie vragen en voorkomt dat hij twee verschillende antwoorden geeft.</p></div>
+</section>
+<section class="sec" id="verloop"><div class="kicker">Wat wij doen</div><h2>Het verloop</h2>
+<div class="vl2">
+<div class="vr"><span class="vd">Dag 0</span><div><b>Aanvraag binnen</b><span>Binnen 24 uur mail 1 met de vragen. Liefst automatisch, zodat het niet van iemands agenda afhangt.</span></div></div>
+<div class="vr"><span class="vd">Dag 3</span><div><b>Nog niet ingevuld</b><span>Mail 2, de herinnering. De enige.</span></div></div>
+<div class="vr"><span class="vd">Dag 7</span><div><b>Nog steeds niet</b><span>Aanvraag sluiten in ClickUp. Geen mails meer.</span></div></div>
+<div class="vr"><span class="vd">Na invullen</span><div><b>Binnen twee werkdagen</b><span>Beoordelen in tien minuten. Elke aanvraag krijgt een kleur: groen, oranje of rood.</span></div></div>
+<div class="vr"><span class="vd">Groen</span><div><b>Afspraak</b><span>Mail 3 met de tarieven. Afspraak minimaal vijf werkdagen vooruit, zodat er tijd is voor de quickscan.</span></div></div>
+<div class="vr"><span class="vd">Oranje</span><div><b>Eerst bellen</b><span>Een kwartier, over het ene punt dat oranje staat. Daarna groen of rood.</span></div></div>
+<div class="vr"><span class="vd">Rood</span><div><b>Nee</b><span>Mail 4, met de reden in &eacute;&eacute;n zin.</span></div></div>
+</div>
+<p class="note" style="margin-top:24px">Tien minuten beoordelen plus vier mails uit een sjabloon past binnen het half uur dat in het fundament staat voor &lsquo;aanvraag beoordelen en inplannen&rsquo;.</p>
+</section>
+<section class="sec" id="mails"><div class="kicker">De teksten</div><h2>Vier mails</h2>
+<span class="mw" id="m1">MAIL 1 &middot; BINNEN 24 UUR NA DE AANVRAAG</span>
+<div class="mail"><div class="mh">Onderwerp: <b>Je aanvraag bij James Robinson &mdash; &eacute;&eacute;n ding voordat we afspreken</b></div><div class="mb">
+<p>Hoi [voornaam],</p>
+<p>Dank voor je aanvraag. Voordat we een afspraak maken, vragen we je elf korte vragen te beantwoorden. Het kost je ongeveer vijf minuten.</p>
+<p><b>Waarom we dit vragen.</b> We willen niet met een standaardverhaal aan tafel komen. Met je antwoorden kijken we vooraf naar je website en je markt, zodat het gesprek meteen over jouw situatie gaat.</p>
+<p><span class='mk'>Naar de vragen</span></p>
+<p>Binnen twee werkdagen nadat je ze hebt ingevuld, hoor je van ons. Meestal met een voorstel voor een afspraak. Soms met het eerlijke antwoord dat we niet de juiste partij voor je zijn &mdash; dat hoor je dan liever nu dan na drie maanden.</p>
+<p>Groet,<br>[naam]</p>
+</div></div>
+<div class="wh2">Die laatste alinea is het belangrijkste deel van de mail. Hij zegt dat je selecteert, en dat maakt een afspraak meer waard.</div>
+<span class="mw" id="m2">MAIL 2 &middot; DAG 3, ALS HET FORMULIER NOG NIET IS INGEVULD</span>
+<div class="mail"><div class="mh">Onderwerp: <b>Nog vijf minuten</b></div><div class="mb">
+<p>Hoi [voornaam],</p>
+<p>De vragen staan nog voor je klaar.</p>
+<p><span class='mk'>Naar de vragen</span></p>
+<p>Past het nu niet, of is het niet meer actueel? Laat het even weten, dan sluiten we je aanvraag netjes af.</p>
+<p>Groet,<br>[naam]</p>
+</div></div>
+<div class="wh2">&Eacute;&eacute;n herinnering, niet meer. Wie na een week niet reageert, heeft zijn antwoord gegeven.</div>
+<span class="mw" id="m3">MAIL 3 &middot; NA EEN GROENE BEOORDELING</span>
+<div class="mail"><div class="mh">Onderwerp: <b>Onze afspraak op [dag] [datum]</b></div><div class="mb">
+<p>Hoi [voornaam],</p>
+<p>Dank voor je antwoorden. We hebben ze bekeken, en je website ook. We zien je op [dag] [datum] om [tijd], [locatie]. Reken op anderhalf uur.</p>
+<p><b>Wil je deze vijf dingen bij de hand hebben?</b> Het zijn de getallen waarmee we aan tafel gaan rekenen. Schatten mag, maar zoek ze liever even op dan dat je ze ter plekke moet bedenken.</p>
+<ul><li>Hoeveel extra omzet je komend jaar wilt halen</li><li>Je brutomarge, ongeveer</li><li>Hoeveel van je aanvragen uiteindelijk klant wordt</li><li>Hoeveel e-mailadressen er in je bestand staan</li><li>Wie er meebeslist over marketing, als je dat niet alleen doet &mdash; neem die dan mee</li></ul>
+<p><b>Alvast onze tarieven</b>, zodat je weet waar je aan toe bent voordat we elkaar spreken: <span class='ln'>[link naar tarieven]</span></p>
+<p>Tot [dag],<br>[naam]</p>
+</div></div>
+<div class="wh2">Het laatste bolletje lost vraag &lsquo;zit de beslisser aan tafel&rsquo; op zonder dat je hem hoeft te stellen. En de tarieven gaan hier mee, want dit is het moment dat je transparantie belooft: v&oacute;&oacute;r de diagnose.</div>
+<span class="mw" id="m4">MAIL 4 &middot; NA EEN RODE BEOORDELING</span>
+<div class="mail"><div class="mh">Onderwerp: <b>Je aanvraag bij James Robinson</b></div><div class="mb">
+<p>Hoi [voornaam],</p>
+<p>Dank voor je antwoorden. We hebben ze goed bekeken, en we denken dat we niet de juiste partij voor je zijn.</p>
+<p><span class='rz'>[E&eacute;n zin met de reden &mdash; zie hieronder]</span></p>
+<p>We zeggen dat liever nu dan na drie maanden en een factuur.</p>
+<p>Veel succes, en als er iets verandert, weet je ons te vinden.</p>
+<p>Groet,<br>[naam]</p>
+</div></div>
+<table class="rzt"><thead><tr><th>Reden</th><th>De zin in de mail</th><th>Let op</th></tr></thead><tbody>
+<tr><td>Geen website</td><td>Je hebt nog geen website, en die is bij ons het middelpunt waar alles naartoe leidt. Dat is eerst een websiteproject. Daar denken we graag over mee, maar dan als los project en niet als retainer.</td><td>Geen nee, een andere route.</td></tr>
+<tr><td>Nee-reden 2 &middot; beperkte categorie</td><td>In jouw categorie gelden zulke strenge advertentieregels dat we niet kunnen doen waar we goed in zijn.</td><td></td></tr>
+<tr><td>Nee-reden 5 &middot; niet meten</td><td>Op je website kan geen meetcode worden geplaatst. Zonder die code kunnen we niet zien wat je advertenties opleveren, en dan sturen we blind. Dat doen we niet. Wissel je ooit van website, dan praten we graag verder.</td><td></td></tr>
+<tr><td>Nee-reden 1 of 3 &middot; na het telefoontje</td><td>Je markt is zo klein en specifiek, en het beslistraject zo lang, dat advertenties vooral mensen bereiken die nooit klant worden. Daar werkt persoonlijk contact beter dan welk kanaal met bereik ook.</td><td>Alleen na het telefoontje van een kwartier, nooit op basis van het formulier alleen.</td></tr>
+<tr><td>Nee-reden 4 &middot; het aanbod</td><td>&mdash;</td><td>Niet via deze mail. Een zwak aanbod zie je niet in een formulier; dat komt pas aan tafel, en dan zeg je het daar.</td></tr>
+</tbody></table>
+</section>
+<section class="sec" id="beoordelen"><div class="kicker">Intern &middot; tien minuten</div><h2>Beoordelen in vier kleuren</h2>
+<p class="note">Elke aanvraag krijgt binnen twee werkdagen een kleur. Dat is geen gevoel maar een lijstje, zodat iemand anders dan jij het kan doen.</p>
+<div class="kl">
+<div class="kk rood"><span class="kt">Rood &middot; nee-mail</span><ul>
+<li>&lsquo;Niemand&rsquo; kan code plaatsen</li>
+<li>Beperkte categorie: medische claims, financi&euml;le producten</li>
+<li>Geen website &mdash; dan de projectvariant van de mail</li>
+</ul></div>
+<div class="kk oranje"><span class="kt">Oranje &middot; eerst een kwartier bellen</span><ul>
+<li>Marketinguitgaven onder &euro;&nbsp;1.000 per maand</li>
+<li>Klantwaarde onder &euro;&nbsp;2.000</li>
+<li>Bedrijven + eigen regio + langer dan een half jaar beslistraject</li>
+</ul></div>
+<div class="kk geel"><span class="kt">Uitzoeken &middot; afspraak onder voorbehoud</span><ul>
+<li>&lsquo;Dat weet ik niet&rsquo; bij wie code kan plaatsen: laten navragen bij de webbouwer v&oacute;&oacute;r de afspraak</li>
+</ul></div>
+<div class="kk groen"><span class="kt">Groen &middot; afspraak</span><ul>
+<li>Alles wat niet rood, oranje of geel is</li>
+</ul></div>
+</div>
+<div class="key"><span class="k">Waarom oranje een telefoontje is en geen afspraak</span><p class="big">Een kwartier bellen is goedkoper dan anderhalf uur ontdekken dat het niet past.</p><p>Wie nu minder dan &euro;&nbsp;1.000 per maand aan marketing uitgeeft, moet dat meer dan verdubbelen voor het kleinste pakket. Dat kan, maar het is het eerste wat je bespreekt &mdash; niet iets wat je na een uur ARENA-uitleg op tafel legt. <strong>Het telefoontje gaat over &eacute;&eacute;n ding: het punt dat oranje staat.</strong> Daarna is het groen of rood.</p></div>
+</section>
+<section class="sec" id="open"><div class="kicker">Nog te beslissen</div><h2>E&eacute;n open vraag</h2>
+<p class="note">Het vorige formulier zei: &lsquo;Dit staat op je website als aanvraagformulier.&rsquo; De klantreis zegt: &lsquo;Binnen 24 uur na de aanvraag.&rsquo; Dat is niet hetzelfde, en het bepaalt of er naam, e-mail en telefoon in dit formulier moeten.</p>
+<div class="opt2">
+<div class="oo"><span class="ol">OPTIE A</span><h4>Dit is het aanvraagformulier op de website</h4><p>Filtert maximaal. Maar elf vragen als eerste contact kost aanvragen, en dat is precies wat we een klant zouden afraden &mdash; oorzaak 05 in &lsquo;als het resultaat tegenvalt&rsquo;: het formulier te lang.</p></div>
+<div class="oo win"><span class="ol">OPTIE B &middot; MIJN ADVIES</span><h4>Kort aanvraagformulier, dit erachteraan</h4><p>Op de website alleen naam, e-mail, telefoon en website. Direct daarna gaat mail 1 automatisch de deur uit. De drempel blijft laag, het filter blijft staan, en je doet zelf wat je een klant adviseert. Komt iemand via de telefoon of via een klant binnen, dan loop je de vragen in vijf minuten samen door.</p></div>
+</div></section>
+<div class="foot">James Robinson &middot; Stap 01 &middot; Intake deel 1 &middot; werkdocument</div>
+</main>
+<script>
+(function(){var aan=document.getElementById('bAan'),uit=document.getElementById('bUit');
+function set(t){document.body.classList.toggle('toon',t);aan.setAttribute('aria-pressed',t?'true':'false');uit.setAttribute('aria-pressed',t?'false':'true');}
+aan.addEventListener('click',function(){set(true)});uit.addEventListener('click',function(){set(false)});})();
+(function(){var b=document.getElementById('tg');if(!b)return;
+b.addEventListener('click',function(){var r=document.documentElement;
+var d=r.getAttribute('data-theme')||(window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+r.setAttribute('data-theme',d==='dark'?'light':'dark');});})();
+</script>
+</body></html>
