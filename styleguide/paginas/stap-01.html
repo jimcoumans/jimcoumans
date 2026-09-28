@@ -286,7 +286,7 @@ body.toon .note-i{display:block}
 .pill.groen{background:var(--green100);color:var(--green-tx)} .pill.oranje{background:var(--orange100);color:var(--orange-tx)} .pill.rood{background:var(--red100);color:var(--red-tx)}
 
 /* bedankpagina's */
-.bk{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px}
+.bk{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:22px}
 .bp{background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:20px 20px;border-top:4px solid}
 .bp.groen{border-top-color:var(--green-tx)} .bp.oranje{border-top-color:var(--orange-tx)} .bp.rood{border-top-color:var(--red-tx)}
 .bp .bl3{display:block;font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;margin-bottom:12px}
@@ -332,6 +332,55 @@ body.toon .note-i{display:block}
 .ch{font-family:var(--fm);font-size:9.5px;letter-spacing:.04em;border-radius:5px;padding:3px 7px;white-space:nowrap}
 .ch.er{background:var(--green100);color:var(--green-tx)} .ch.nee{background:var(--red100);color:var(--red-tx)}
 
+/* schermen */
+.screens{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-top:22px}
+.scrn{background:var(--card);border:1px solid var(--ln-s);border-radius:18px;padding:20px 20px 18px;display:flex;flex-direction:column}
+.scrn .scr{margin-bottom:10px}
+.scrn .ack{font-size:13.5px;color:var(--tx3);margin:0 0 6px}
+.scrn .q{font-size:17px;font-weight:600;font-family:var(--fd);letter-spacing:-.01em}
+.scrn .why{font-size:13px;color:var(--act);background:var(--b50);border-radius:8px;padding:8px 10px;margin:10px 0 0;line-height:1.45}
+.scrn .why b{font-weight:600;color:var(--act)}
+.scrn input[type=text],.scrn input[type=url],.scrn textarea{width:100%;margin-top:11px;font:inherit;font-size:15px;color:var(--tx);background:var(--page);border:1px solid var(--ln);border-radius:10px;padding:11px 13px}
+.scrn textarea{min-height:92px;resize:vertical}
+.scrn .opts{gap:6px}
+.scrn .ro{padding:9px 12px}
+.scrn .ro span{font-size:14.5px}
+.scrn .grow{flex:1}
+.scrn .knop{margin-top:16px;padding:11px 20px;font-size:14.5px}
+.scrn .pbar{height:3px;border-radius:2px;background:var(--ln-s);margin-top:14px;overflow:hidden}
+.scrn .pbar i{display:block;height:100%;background:var(--act);border-radius:2px}
+.scrn.rw{border-top:4px solid}
+.scrn.rw.groen{border-top-color:var(--green-tx)} .scrn.rw.oranje{border-top-color:var(--orange-tx)}
+.scrn.rw h4{font-size:19px;margin:0 0 6px}
+.scrn.rw p.sub{font-size:14.5px;color:var(--tx2);margin:0}
+.scrn .pre .sf,.scrn .pre .pf{white-space:nowrap}
+.scrn .pre{margin-top:11px}
+.scrn .pre input{margin-top:0}
+.scrn .optl{font-family:var(--ft);font-size:12.5px;font-weight:400;color:var(--tx3);margin-left:6px}
+
+.vb{list-style:none;margin:18px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.vb li{background:var(--card);border:1px solid var(--ln-s);border-radius:12px;padding:13px 15px}
+.vb b{display:block;font-size:14.5px;font-weight:600}
+.vb span{display:block;font-size:13.5px;color:var(--tx2);margin-top:2px;line-height:1.45}
+
+/* later-kleur */
+.oc.later{border-left:4px solid var(--act)}
+.dot.later{background:var(--act)}
+.pill.later{background:var(--b100);color:var(--act)}
+.bp.later{border-top-color:var(--act)} .bp.later .bl3{color:var(--act)}
+
+/* leren */
+.lr{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px;align-items:start}
+.lrk{background:var(--card);border:1px solid var(--ln-s);border-radius:18px;padding:20px 22px;border-top:4px solid}
+.lrk.over{border-top-color:var(--green-tx)} .lrk.aan{border-top-color:var(--orange-tx)} .lrk.niet{border-top-color:var(--red-tx)}
+.lrk .lh{display:block;font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;margin-bottom:6px}
+.lrk.over .lh{color:var(--green-tx)} .lrk.aan .lh{color:var(--orange-tx)} .lrk.niet .lh{color:var(--red-tx)}
+.lrk .li{padding:12px 0;border-top:1px solid var(--ln-s)}
+.lrk .li:first-of-type{border-top:none}
+.lrk .li b{display:block;font-size:15px;font-weight:600;line-height:1.35}
+.lrk .li span{display:block;font-size:13.5px;color:var(--tx2);line-height:1.5;margin-top:3px}
+
+@media (max-width:980px){ .lr{grid-template-columns:1fr} }
 @media (max-width:900px){ .bk,.mensen{grid-template-columns:1fr 1fr} .vid{grid-template-columns:1fr} }
 @media (max-width:620px){ .bk,.mensen,.lf{grid-template-columns:1fr} .lti{grid-template-columns:1fr;gap:6px} .ww td:first-child{white-space:normal} }
 </style>
@@ -351,11 +400,12 @@ body.toon .note-i{display:block}
 <div class="ar">&rarr;</div>
 <div class="fc"><span class="fl">B</span><h4>De landingspagina</h4><p>Video van drie minuten, &eacute;&eacute;n knop</p><span class="who auto">AUTOMATISCH</span></div>
 <div class="ar">&rarr;</div>
-<div class="fc"><span class="fl">C</span><h4>De vragenlijst</h4><p>Elf vragen, vier schermen</p><span class="who auto">AUTOMATISCH</span></div>
+<div class="fc"><span class="fl">C</span><h4>De vragenlijst</h4><p>Veertien vragen, &eacute;&eacute;n per scherm</p><span class="who auto">AUTOMATISCH</span></div>
 <div class="ar">&rarr;</div>
 <div class="outs">
 <div class="oc groen"><b>Het gesprek</b><span>Zelf inplannen, anderhalf uur</span></div>
 <div class="oc oranje"><b>Eerst een kwartier</b><span>Telefoontje over &eacute;&eacute;n punt</span></div>
+<div class="oc later"><b>Nog niet</b><span>E&eacute;n bericht op het juiste moment</span></div>
 <div class="oc rood"><b>Een eerlijk nee</b><span>De reden, en de nieuwsbrief</span></div>
 </div></div>
 <div class="flow2"><div class="down">&darr; klikt niet door</div></div>
@@ -363,10 +413,11 @@ body.toon .note-i{display:block}
 <div class="tblwrap"><table class="ww"><thead><tr><th></th><th>Wat</th><th>Waar</th><th>Wanneer</th><th>Hoe</th><th>Daarna</th></tr></thead><tbody>
 <tr><td><span class="fl2">A</span>Het leadformulier</td><td>Naam en e-mailadres. Meer niet.</td><td>Op jamesrobinson.nl, achter elke knop &lsquo;Plan een gesprek&rsquo;.</td><td>Altijd. Dit is het eerste contact.</td><td>Twee kleine stappen. Gaat direct naar MailerLite en start de reeks van blok D.</td><td>Door naar de landingspagina.</td></tr>
 <tr><td><span class="fl2">B</span>De landingspagina</td><td>Een video van drie minuten waarin we uitleggen hoe we werken, en &eacute;&eacute;n knop.</td><td>Een eigen pagina op de website, bijvoorbeeld /aan-de-slag.</td><td>Direct na het leadformulier.</td><td>E&eacute;n keer opgenomen door Jim Coumans. Knop: &lsquo;Plan je gesprek in&rsquo;.</td><td>Klikt door: de vragenlijst. Klikt niet door: de reeks.</td></tr>
-<tr><td><span class="fl2">C</span>De vragenlijst</td><td>Elf vragen in vier korte schermen. Dit is de kwalificatie.</td><td>Achter de knop op de landingspagina, en als link in elke mail van de reeks.</td><td>Wanneer de klant eraan toe is.</td><td>Een formuliertool met voorwaardelijke logica. Naam en e-mail staan al ingevuld.</td><td>De antwoorden bepalen de uitkomst: groen, oranje of rood.</td></tr>
+<tr><td><span class="fl2">C</span>De vragenlijst</td><td>Veertien vragen, &eacute;&eacute;n per scherm. Dit is de kwalificatie. Telefoon en bedrijfsnaam pas aan het eind, als het past.</td><td>Achter de knop op de landingspagina, en als link in elke mail van de reeks.</td><td>Wanneer de klant eraan toe is.</td><td>Een formuliertool met voorwaardelijke logica. Naam en e-mail staan al ingevuld.</td><td>De antwoorden bepalen de uitkomst: groen, oranje, later of rood.</td></tr>
 <tr><td><span class="fl2">D</span>De reeks</td><td>Vijf mails, elk met iets bruikbaars en met de link naar de vragenlijst.</td><td>MailerLite.</td><td>Start bij het leadformulier. Stopt zodra de vragenlijst binnen is.</td><td>Een automation in MailerLite.</td><td>Na de vijfde mail stopt het, tenzij iemand zich voor de nieuwsbrief heeft aangemeld.</td></tr>
 <tr class="sub"><td><span class="dot groen"></span>Het gesprek</td><td>De klant plant zelf het gesprek in.</td><td>Afsprakenplanner op de bedankpagina.</td><td>Minimaal drie werkdagen vooruit, zodat de quickscan past.</td><td>Na het boeken gaat de afspraakbevestiging automatisch de deur uit, met de tarieven.</td><td>Wij doen de quickscan. Dan het gesprek.</td></tr>
 <tr class="sub"><td><span class="dot oranje"></span>Eerst een kwartier</td><td>De klant plant een telefoontje van een kwartier in, over het ene punt dat oranje staat.</td><td>Afsprakenplanner op de bedankpagina, een aparte agenda van vijftien minuten.</td><td>Binnen een paar werkdagen.</td><td>De bedankpagina zegt waar het over gaat: budget, klantwaarde of je markt.</td><td>Na het telefoontje: groen of rood.</td></tr>
+<tr class="sub"><td><span class="dot later"></span>Nog niet</td><td>Nu geen gesprek. E&eacute;n bericht rond het moment dat de klant zelf noemde.</td><td>De bedankpagina, en een geplande mail in MailerLite.</td><td>Over een, drie of zes maanden, afhankelijk van het antwoord.</td><td>De nieuwsbrief is ook hier een eigen keuze.</td><td>Is het zover, dan vult hij de vragenlijst opnieuw in.</td></tr>
 <tr class="sub"><td><span class="dot rood"></span>Een eerlijk nee</td><td>De reden in &eacute;&eacute;n zin, en de mogelijkheid om op de hoogte te blijven.</td><td>De bedankpagina, en dezelfde tekst per mail.</td><td>Direct.</td><td>Aanmelden voor de nieuwsbrief is een aparte, eigen keuze.</td><td>Niets, tot er iets verandert.</td></tr>
 </tbody></table></div>
 <div class="key"><span class="k">Waar een mens nodig is</span><p class="big">Pas bij de quickscan. Alles daarvoor gaat vanzelf.</p><p>Dat is het verschil met hoe het nu gaat, en het raakt precies je grootste uitdaging: dit deel draait zonder jou of Jim Kikken. <strong>Een mens komt pas in beeld als iemand zich al gekwalificeerd heeft</strong> &mdash; en dan alleen op deze vier plekken.</p></div>
@@ -384,64 +435,86 @@ body.toon .note-i{display:block}
 </div></section>
 <section class="sec" id="b"><div class="kicker">B &middot; De landingspagina</div><h2>Drie minuten video, &eacute;&eacute;n knop</h2>
 <p class="note">De video doet vooraf wat nu aan tafel een kwartier kost: uitleggen hoe we werken, wat we niet doen en wanneer we nee zeggen. Wie daarna doorklikt, heeft zichzelf al half gekwalificeerd.</p>
-<div class="vid"><div><div class="vph"><span class="pl">&#9654;</span><small>VIDEO &middot; 3 MINUTEN &middot; JIM COUMANS</small></div><div class="vcta"><button class="knop" type="button">Plan je gesprek in</button><p>Elf vragen, vijf minuten. Daarna kies je zelf een moment.</p></div></div><div>
+<div class="vid"><div><div class="vph"><span class="pl">&#9654;</span><small>VIDEO &middot; 3 MINUTEN &middot; JIM COUMANS</small></div><div class="vcta"><button class="knop" type="button">Plan je gesprek in</button><p>Een paar korte vragen, &eacute;&eacute;n per scherm. Daarna kies je zelf een moment.</p></div></div><div>
 <div class="scene"><span class="tc">0:00</span><div><b>Voor wie dit is</b><span>Bedrijven die meer aanvragen willen, een website hebben, en bereid zijn te adverteren. Ben je dat niet, dan kun je hier stoppen &mdash; en dat is prima.</span></div></div>
 <div class="scene"><span class="tc">0:20</span><div><b>Wat we anders doen</b><span>We beginnen met adverteren, niet met een plan. Je website is het middelpunt. Social media beheren doen we niet. Momentum first, mastery later.</span></div></div>
 <div class="scene"><span class="tc">1:00</span><div><b>Wat je krijgt voordat je iets betaalt</b><span>We kijken naar je website en je markt voordat we elkaar spreken. Het gesprek gaat over jouw cijfers. En je krijgt onze tarieven vooraf, volledig.</span></div></div>
 <div class="scene"><span class="tc">1:40</span><div><b>Wanneer we nee zeggen</b><span>De vijf redenen, kort. Dit is het deel dat het meeste vertrouwen oplevert, juist omdat bijna niemand het zegt.</span></div></div>
-<div class="scene"><span class="tc">2:20</span><div><b>Wat je nu doet</b><span>Elf vragen, vijf minuten. Daarna plan je zelf een moment in. Geen verkoper die je terugbelt.</span></div></div>
+<div class="scene"><span class="tc">2:20</span><div><b>Wat je nu doet</b><span>Veertien korte vragen, &eacute;&eacute;n per scherm, zo&rsquo;n vijf minuten. Daarna plan je zelf een moment in. Geen verkoper die je terugbelt.</span></div></div>
 </div></div>
 <div class="warn"><h4>Waarom de knop niet &lsquo;gratis strategiegesprek&rsquo; heet</h4><p>Omdat dat het meest gebruikte lokmiddel in de branche is, en iedereen weet wat er dan volgt: een verkoopgesprek. Wij zeggen gewoon wat je krijgt &mdash; iemand die v&oacute;&oacute;r het gesprek naar je website en je markt heeft gekeken, en een gesprek over jouw cijfers.</p></div>
 </section>
 <section class="sec" id="c"><div class="kicker">C &middot; Zoals de klant het ziet</div><h2>De vragenlijst</h2>
-<p class="note">Elf vragen in vier korte schermen. Dit is de kwalificatie. Zet de aantekeningen aan om per vraag te zien waarvoor we het antwoord gebruiken, en wat het met de uitkomst doet.</p>
+<p class="note">Veertien vragen, &eacute;&eacute;n per scherm, en daarna pas de contactgegevens &mdash; alleen voor wie groen of oranje is. De volgorde loopt van makkelijk naar gevoelig en weer terug naar makkelijk, zoals bij King Kong. Zet de aantekeningen aan om per vraag te zien waarvoor we het antwoord gebruiken.</p>
 <div class="schakel"><button id="bUit" aria-pressed="true">Zoals de klant het ziet</button><button id="bAan" aria-pressed="false">Met onze aantekeningen</button></div>
-<div class="form"><div class="fh"><h3>Plan je gesprek in</h3><p>Elf korte vragen, ongeveer vijf minuten. Daarmee kijken we v&oacute;&oacute;r het gesprek al naar je website en je markt, zodat we niet met een standaardverhaal aan tafel komen. Weet je iets niet precies? Schat het.</p></div>
-<fieldset class="grp"><span class="scr">SCHERM 1 VAN 4</span><legend>Je bedrijf</legend>
-<div class="fld"><label class="q">Wat is de naam van je bedrijf?</label><input type="text" placeholder="Bijvoorbeeld: Bakkerij Janssen"><p class="note-i"><b>Waarvoor:</b> Herkenning.</p></div>
-<div class="fld"><label class="q">Wat is het adres van je website?</label><input type="url" placeholder="www.jouwbedrijf.nl"><label class="chk"><input type="checkbox"> Ik heb nog geen website</label><p class="note-i"><b>Waarvoor:</b> Quickscan: hier kijken we v&oacute;&oacute;r het gesprek naar snelheid, meting en formulieren.<span class="nm"><b style="color:inherit">Norm:</b> &lsquo;Nog geen website&rsquo;: rood. Dan ontbreekt het middelpunt en is het eerst een websiteproject.</span></p></div>
-<div class="fld"><label class="q">Wat verkoop je, in &eacute;&eacute;n zin?</label><p class="hint">Geen slogan. Gewoon: wat koopt iemand bij jou?</p><input type="text" placeholder="Bijvoorbeeld: we installeren warmtepompen bij particulieren"><p class="note-i"><b>Waarvoor:</b> Kwalificeren.<span class="nm"><b style="color:inherit">Norm:</b> Medische claims of financi&euml;le producten: nee-reden 2. Niet automatisch &mdash; dit zien we in de quickscan.</span></p></div>
-</fieldset>
-<fieldset class="grp"><span class="scr">SCHERM 2 VAN 4</span><legend>Je markt</legend>
-<div class="fld"><label class="q">Aan wie verkoop je?</label><div class="opts"><label class="ro"><input type="radio" name="v4"><span>Aan bedrijven</span></label><label class="ro"><input type="radio" name="v4"><span>Aan particulieren</span></label><label class="ro"><input type="radio" name="v4"><span>Aan allebei</span></label></div><p class="note-i"><b>Waarvoor:</b> Kwalificeren, samen met de volgende twee vragen.<span class="nm"><b style="color:inherit">Norm:</b> Bedrijven + eigen regio + langer dan een half jaar: oranje.</span></p></div>
-<div class="fld"><label class="q">Waar zitten je klanten?</label><div class="opts"><label class="ro"><input type="radio" name="v5"><span>In de regio rond mijn vestiging</span></label><label class="ro"><input type="radio" name="v5"><span>In heel Nederland</span></label><label class="ro"><input type="radio" name="v5"><span>In Nederland en daarbuiten</span></label></div><p class="note-i"><b>Waarvoor:</b> Quickscan: in dit gebied kijken we wie er op jouw zoektermen adverteert.</p></div>
-<div class="fld"><label class="q">Hoe lang duurt het gemiddeld van eerste contact tot opdracht?</label><div class="opts"><label class="ro"><input type="radio" name="v6"><span>Een paar dagen</span></label><label class="ro"><input type="radio" name="v6"><span>Een paar weken</span></label><label class="ro"><input type="radio" name="v6"><span>Een paar maanden</span></label><label class="ro"><input type="radio" name="v6"><span>Langer dan een half jaar</span></label></div><p class="note-i"><b>Waarvoor:</b> Kwalificeren, en het bepaalt wanneer je resultaat kunt laten zien.<span class="nm"><b style="color:inherit">Norm:</b> Aan tafel zeggen dat de eerste klanten pas na deze termijn komen.</span></p></div>
-</fieldset>
-<fieldset class="grp"><span class="scr">SCHERM 3 VAN 4</span><legend>Je cijfers</legend>
-<p class="gi">Schatten mag. We vragen het nu, zodat we er aan tafel mee kunnen rekenen.</p>
-<div class="fld"><label class="q">Hoeveel aanvragen krijg je nu gemiddeld per maand?</label><p class="hint">Telefoontjes, mails en formulieren samen.</p><div class="pre suf"><input type="text" inputmode="numeric" placeholder="0"><span class="sf">per maand</span></div><p class="note-i"><b>Waarvoor:</b> Vertrekpunt: hier vergelijken we straks alles mee.<span class="nm"><b style="color:inherit">Norm:</b> Minder dan tien per maand: aan tafel zeggen dat een uitspraak over conversie maanden duurt.</span></p></div>
-<div class="fld"><label class="q">Wat levert een nieuwe klant je gemiddeld op?</label><p class="hint">Over de hele klantrelatie, niet alleen de eerste opdracht.</p><div class="pre"><span class="pf">&euro;</span><input type="text" inputmode="numeric" placeholder="0"></div><p class="note-i"><b>Waarvoor:</b> Rekensom. Met onze standaardaannames mag een aanvraag maximaal 1,5% van dit bedrag kosten.<span class="nm"><b style="color:inherit">Norm:</b> Onder &euro;&nbsp;2.000: oranje. De drempel toetsen we nog aan onze eigen accounts.</span></p></div>
-<div class="fld"><label class="q">Wat geef je nu per maand uit aan marketing, alles bij elkaar?</label><p class="hint">Advertenties, bureaus, freelancers, drukwerk: alles wat je aan marketing uitgeeft.</p><div class="opts"><label class="ro"><input type="radio" name="v9"><span>Minder dan &euro;&nbsp;1.000</span></label><label class="ro"><input type="radio" name="v9"><span>&euro;&nbsp;1.000 tot &euro;&nbsp;2.500</span></label><label class="ro"><input type="radio" name="v9"><span>&euro;&nbsp;2.500 tot &euro;&nbsp;5.000</span></label><label class="ro"><input type="radio" name="v9"><span>Meer dan &euro;&nbsp;5.000</span></label></div><p class="note-i"><b>Waarvoor:</b> Budgettoets. Het kleinste pakket is &euro;&nbsp;1.000 retainer plus minimaal &euro;&nbsp;1.000 advertentiebudget.<span class="nm"><b style="color:inherit">Norm:</b> Minder dan &euro;&nbsp;1.000: oranje.</span></p></div>
-</fieldset>
-<fieldset class="grp"><span class="scr">SCHERM 4 VAN 4</span><legend>Je website en advertenties</legend>
-<div class="fld"><label class="q">Adverteer je nu al ergens?</label><div class="opts"><label class="ro"><input type="radio" name="v10"><span>Nee</span></label><label class="ro"><input type="radio" name="v10"><span>Ja, op Google</span></label><label class="ro"><input type="radio" name="v10"><span>Ja, op Facebook of Instagram</span></label><label class="ro"><input type="radio" name="v10"><span>Ja, op allebei</span></label><label class="ro"><input type="radio" name="v10"><span>Ja, ergens anders</span></label></div><p class="note-i"><b>Waarvoor:</b> Quickscan. Bestaande accounts nemen we over &mdash; de historie is geld waard.</p></div>
-<div class="fld"><label class="q">Wie kan er code in je website plaatsen?</label><p class="hint">Om te kunnen meten wat bezoekers doen, plaatsen we &eacute;&eacute;n regel code. Die leveren wij aan.</p><div class="opts"><label class="ro"><input type="radio" name="v11"><span>Ikzelf of iemand in mijn team</span></label><label class="ro"><input type="radio" name="v11"><span>Mijn webbouwer of hostingpartij</span></label><label class="ro"><input type="radio" name="v11"><span>Niemand, dat kan niet in mijn systeem</span></label><label class="ro"><input type="radio" name="v11"><span>Dat weet ik niet</span></label></div><p class="note-i"><b>Waarvoor:</b> Kwalificeren.<span class="nm"><b style="color:inherit">Norm:</b> &lsquo;Niemand&rsquo;: rood. &lsquo;Weet ik niet&rsquo;: groen, met een extra alinea in de bevestiging.</span></p></div>
-</fieldset>
-<button class="knop" type="button">Versturen</button></div>
-<h3>De regels</h3><p class="note">Wat de formuliertool met de antwoorden doet. Rood gaat voor oranje, oranje gaat voor groen. Staan er meerdere punten op oranje, dan is het nog steeds &eacute;&eacute;n telefoontje.</p>
+<div class="screens">
+<div class="scrn"><span class="scr">SCHERM 1 VAN 15</span><p class="ack">Zo&rsquo;n vijf minuten, &eacute;&eacute;n vraag per scherm. We beginnen makkelijk.</p><label class="q">Aan wie verkoop je?</label><div class="grow"><div class="opts"><label class="ro"><input type="radio" name="v1"><span>Aan bedrijven</span></label><label class="ro"><input type="radio" name="v1"><span>Aan particulieren</span></label><label class="ro"><input type="radio" name="v1"><span>Aan allebei</span></label></div></div><button class="knop" type="button">Verder</button><div class="pbar"><i style="width:7%"></i></div><p class="note-i"><b>Waarvoor:</b> Kwalificeren, samen met gebied en beslistraject.<span class="nm"><b style="color:inherit">Norm:</b> Bedrijven + eigen regio + langer dan een half jaar: oranje.</span></p></div>
+<div class="scrn"><span class="scr">SCHERM 2 VAN 15</span><label class="q">Wat verkoop je, in &eacute;&eacute;n zin?</label><p class="hint">Geen slogan. Gewoon: wat koopt iemand bij jou, en ongeveer voor welk bedrag?</p><div class="grow"><input type="text" placeholder="Bijvoorbeeld: warmtepompen voor particulieren, rond de &euro;&nbsp;12.000"></div><button class="knop" type="button">Verder</button><div class="pbar"><i style="width:13%"></i></div><p class="note-i"><b>Waarvoor:</b> Kwalificeren en quickscan.<span class="nm"><b style="color:inherit">Norm:</b> Medische claims of financi&euml;le producten: nee-reden 2. Niet automatisch &mdash; dit zien we in de quickscan.</span></p></div>
+<div class="scrn"><span class="scr">SCHERM 3 VAN 15</span><label class="q">Waar zitten je klanten?</label><div class="grow"><div class="opts"><label class="ro"><input type="radio" name="v3"><span>In de regio rond mijn vestiging</span></label><label class="ro"><input type="radio" name="v3"><span>In heel Nederland</span></label><label class="ro"><input type="radio" name="v3"><span>In Nederland en daarbuiten</span></label></div></div><button class="knop" type="button">Verder</button><div class="pbar"><i style="width:20%"></i></div><p class="note-i"><b>Waarvoor:</b> Quickscan: in dit gebied kijken we wie er op jouw zoektermen adverteert.</p></div>
+<div class="scrn"><span class="scr">SCHERM 4 VAN 15</span><label class="q">Welke marketing doe je nu?</label><p class="hint">Kies alles wat van toepassing is.</p><div class="grow"><div class="opts"><label class="ro"><input type="checkbox" name="v4"><span>Adverteren op Google</span></label><label class="ro"><input type="checkbox" name="v4"><span>Adverteren op Facebook of Instagram</span></label><label class="ro"><input type="checkbox" name="v4"><span>Vindbaar zijn in Google zonder advertenties</span></label><label class="ro"><input type="checkbox" name="v4"><span>E-mail of nieuwsbrief</span></label><label class="ro"><input type="checkbox" name="v4"><span>Social media zonder advertenties</span></label><label class="ro"><input type="checkbox" name="v4"><span>Drukwerk, radio of tv</span></label><label class="ro"><input type="checkbox" name="v4"><span>Nog niets</span></label></div></div><button class="knop" type="button">Verder</button><div class="pbar"><i style="width:27%"></i></div><p class="note-i"><b>Waarvoor:</b> Quickscan. Bestaande advertentieaccounts nemen we over &mdash; de historie is geld waard.<span class="nm"><b style="color:inherit">Norm:</b> Alleen social media zonder advertenties: gespreksonderwerp, het verhaal van wat we niet doen.</span></p></div>
+<div class="scrn"><span class="scr">SCHERM 5 VAN 15</span><label class="q">Wat is het adres van je website?</label><div class="grow"><input type="url" placeholder="www.jouwbedrijf.nl"><label class="chk"><input type="checkbox"> Ik heb nog geen website</label></div><button class="knop" type="button">Verder</button><div class="pbar"><i style="width:33%"></i></div><p class="note-i"><b>Waarvoor:</b> Quickscan: snelheid, meting en formulieren.<span class="nm"><b style="color:inherit">Norm:</b> &lsquo;Nog geen website&rsquo;: rood. Eerst een websiteproject.</span></p></div>
+<div class="scrn"><span class="scr">SCHERM 6 VAN 15</span><label class="q">Wie kan er code in je website plaatsen?</label><p class="hint">Om te kunnen meten wat bezoekers doen, plaatsen we &eacute;&eacute;n regel code. Die leveren wij aan.</p><div class="grow"><div class="opts"><label class="ro"><input type="radio" name="v6"><span>Ikzelf of iemand in mijn team</span></label><label class="ro"><input type="radio" name="v6"><span>Mijn webbouwer of hostingpartij</span></label><label class="ro"><input type="radio" name="v6"><span>Niemand, dat kan niet in mijn systeem</span></label><label class="ro"><input type="radio" name="v6"><span>Dat weet ik niet</span></label></div></div><button class="knop" type="button">Verder</button><div class="pbar"><i style="width:40%"></i></div><p class="note-i"><b>Waarvoor:</b> Kwalificeren.<span class="nm"><b style="color:inherit">Norm:</b> &lsquo;Niemand&rsquo;: rood. &lsquo;Weet ik niet&rsquo;: groen, met een extra alinea in de bevestiging.</span></p></div>
+<div class="scrn"><span class="scr">SCHERM 7 VAN 15</span><p class="ack">Nu drie cijfers. Schatten mag.</p><label class="q">Wat geef je nu per maand uit aan marketing, alles bij elkaar?</label><p class="hint">Advertenties, bureaus, freelancers, drukwerk.</p><div class="grow"><div class="opts"><label class="ro"><input type="radio" name="v7"><span>Minder dan &euro;&nbsp;1.000</span></label><label class="ro"><input type="radio" name="v7"><span>&euro;&nbsp;1.000 tot &euro;&nbsp;2.500</span></label><label class="ro"><input type="radio" name="v7"><span>&euro;&nbsp;2.500 tot &euro;&nbsp;5.000</span></label><label class="ro"><input type="radio" name="v7"><span>Meer dan &euro;&nbsp;5.000</span></label></div><p class="why"><b>Waarom we dit vragen.</b> Om te zien of we bij je passen. Ons kleinste pakket kost, samen met het advertentiebudget, ongeveer &euro;&nbsp;2.000 per maand.</p></div><button class="knop" type="button">Verder</button><div class="pbar"><i style="width:47%"></i></div><p class="note-i"><b>Waarvoor:</b> Budgettoets. Anders dan King Kong noemen we ons minimum erbij.<span class="nm"><b style="color:inherit">Norm:</b> Minder dan &euro;&nbsp;1.000: oranje.</span></p></div>
+<div class="scrn"><span class="scr">SCHERM 8 VAN 15</span><label class="q">Wat levert een nieuwe klant je gemiddeld op?</label><p class="hint">Over de hele klantrelatie, niet alleen de eerste opdracht.</p><div class="grow"><div class="pre"><span class="pf">&euro;</span><input type="text" inputmode="numeric" placeholder="0"></div><p class="why"><b>Waarom we dit vragen.</b> Hieruit rekenen we uit wat een aanvraag je maximaal mag kosten.</p></div><button class="knop" type="button">Verder</button><div class="pbar"><i style="width:53%"></i></div><p class="note-i"><b>Waarvoor:</b> Rekensom. Met onze standaardaannames mag een aanvraag maximaal 1,5% van dit bedrag kosten.<span class="nm"><b style="color:inherit">Norm:</b> Onder &euro;&nbsp;2.000: oranje. De drempel toetsen we nog aan onze eigen accounts.</span></p></div>
+<div class="scrn"><span class="scr">SCHERM 9 VAN 15</span><label class="q">Hoeveel aanvragen krijg je nu gemiddeld per maand?</label><p class="hint">Telefoontjes, mails en formulieren samen.</p><div class="grow"><div class="pre suf"><input type="text" inputmode="numeric" placeholder="0"><span class="sf">per maand</span></div><p class="why"><b>Waarom we dit vragen.</b> Dit is het vertrekpunt waar we straks alles mee vergelijken.</p></div><button class="knop" type="button">Verder</button><div class="pbar"><i style="width:60%"></i></div><p class="note-i"><b>Waarvoor:</b> Vertrekpunt.<span class="nm"><b style="color:inherit">Norm:</b> Minder dan tien per maand: aan tafel zeggen dat een uitspraak over conversie maanden duurt.</span></p></div>
+<div class="scrn"><span class="scr">SCHERM 10 VAN 15</span><label class="q">Hoe lang duurt het gemiddeld van eerste contact tot opdracht?</label><div class="grow"><div class="opts"><label class="ro"><input type="radio" name="v10"><span>Een paar dagen</span></label><label class="ro"><input type="radio" name="v10"><span>Een paar weken</span></label><label class="ro"><input type="radio" name="v10"><span>Een paar maanden</span></label><label class="ro"><input type="radio" name="v10"><span>Langer dan een half jaar</span></label></div></div><button class="knop" type="button">Verder</button><div class="pbar"><i style="width:67%"></i></div><p class="note-i"><b>Waarvoor:</b> Kwalificeren, en het bepaalt wanneer je resultaat kunt laten zien.<span class="nm"><b style="color:inherit">Norm:</b> Aan tafel zeggen dat de eerste klanten pas na deze termijn komen.</span></p></div>
+<div class="scrn"><span class="scr">SCHERM 11 VAN 15</span><p class="ack">Bijna klaar.</p><label class="q">Wat houdt je op dit moment het meest tegen?</label><p class="hint">Schrijf het op zoals je het tegen een collega zou zeggen. Hoe eerlijker, hoe beter we ons kunnen voorbereiden.</p><div class="grow"><textarea placeholder=""></textarea></div><button class="knop" type="button">Verder</button><div class="pbar"><i style="width:73%"></i></div><p class="note-i"><b>Waarvoor:</b> Voorbereiding. Hiermee open je het gesprek: &lsquo;je schreef dat&hellip;&rsquo;<span class="nm"><b style="color:inherit">Norm:</b> Gaat het over prijs, aanbod of onbekendheid, dan is nee-reden 4 in beeld. Lezen in de quickscan.</span></p></div>
+<div class="scrn"><span class="scr">SCHERM 12 VAN 15</span><label class="q">Wanneer wil je beginnen?</label><div class="grow"><div class="opts"><label class="ro"><input type="radio" name="v12"><span>Zo snel mogelijk</span></label><label class="ro"><input type="radio" name="v12"><span>Binnen een maand</span></label><label class="ro"><input type="radio" name="v12"><span>Binnen drie maanden</span></label><label class="ro"><input type="radio" name="v12"><span>Later dan drie maanden</span></label><label class="ro"><input type="radio" name="v12"><span>Ik ori&euml;nteer me nog</span></label></div></div><button class="knop" type="button">Verder</button><div class="pbar"><i style="width:80%"></i></div><p class="note-i"><b>Waarvoor:</b> Planning en prioriteit.<span class="nm"><b style="color:inherit">Norm:</b> &lsquo;Later dan drie maanden&rsquo; of &lsquo;ori&euml;nteer me nog&rsquo;: uitkomst later.</span></p></div>
+<div class="scrn"><span class="scr">SCHERM 13 VAN 15</span><label class="q">Waar hoorde je voor het eerst van ons?<span class="optl">optioneel</span></label><div class="grow"><div class="opts"><label class="ro"><input type="radio" name="v13"><span>Via Google</span></label><label class="ro"><input type="radio" name="v13"><span>Via social media</span></label><label class="ro"><input type="radio" name="v13"><span>Via een klant of bekende</span></label><label class="ro"><input type="radio" name="v13"><span>Via een evenement of netwerk</span></label><label class="ro"><input type="radio" name="v13"><span>Anders</span></label></div><p class="why"><b>Waarom we dit vragen.</b> We zijn oprecht benieuwd. Het helpt ons te zien wat werkt.</p></div><button class="knop" type="button">Verder</button><div class="pbar"><i style="width:87%"></i></div><p class="note-i"><b>Waarvoor:</b> Onze eigen meting. De bronregistratie ziet alleen de laatste klik; dit is de eerste.</p></div>
+<div class="scrn"><span class="scr">SCHERM 14 VAN 15</span><p class="ack">Laatste vraag.</p><label class="q">Kom je ook echt?</label><p class="hint">Als je een gesprek inplant, kijken we vooraf naar je website en je markt. Dat werk doen we &eacute;&eacute;n keer. Spreek je af dat je komt, of dat je uiterlijk een dag van tevoren verzet?</p><div class="grow"><div class="opts"><label class="ro"><input type="radio" name="v14"><span>Ja, afgesproken</span></label><label class="ro"><input type="radio" name="v14"><span>Nee</span></label></div></div><button class="knop" type="button">Verder</button><div class="pbar"><i style="width:93%"></i></div><p class="note-i"><b>Waarvoor:</b> Minder wegblijvers. Een kleine, uitgesproken toezegging kost niets.<span class="nm"><b style="color:inherit">Norm:</b> &lsquo;Nee&rsquo;: uitkomst later.</span></p></div>
+<div class="scrn rw groen"><span class="scr">SCHERM 15 VAN 15 &middot; ALLEEN GROEN</span><h4>Dit ziet er goed uit, [voornaam].</h4><p class="sub">We denken dat we je kunnen helpen. Nog drie gegevens, dan kies je een moment.</p><div class="grow">
+<input type="text" placeholder="Je achternaam">
+<input type="text" placeholder="Je telefoonnummer">
+<input type="text" placeholder="De naam van je bedrijf">
+</div><button class="knop" type="button">Kies een moment</button><div class="pbar"><i style="width:100%"></i></div>
+<p class="note-i"><b>Waarvoor:</b> contact en herkenning. Pas hier, omdat het niet nodig is om te kwalificeren &mdash; en omdat iemand het na &lsquo;dit ziet er goed uit&rsquo; het makkelijkst geeft.</p></div>
+<div class="scrn rw oranje"><span class="scr">SCHERM 15 VAN 15 &middot; ALLEEN ORANJE</span><h4>Nog &eacute;&eacute;n ding, [voornaam].</h4><p class="sub">E&eacute;n punt willen we eerst even kort met je afstemmen. Nog drie gegevens, dan plan je een telefoontje van een kwartier.</p><div class="grow">
+<input type="text" placeholder="Je achternaam">
+<input type="text" placeholder="Je telefoonnummer">
+<input type="text" placeholder="De naam van je bedrijf">
+</div><button class="knop" type="button">Plan het telefoontje</button><div class="pbar"><i style="width:100%"></i></div>
+<p class="note-i"><b>Waarvoor:</b> contact en herkenning. Pas hier, omdat het niet nodig is om te kwalificeren &mdash; en omdat iemand het na &lsquo;dit ziet er goed uit&rsquo; het makkelijkst geeft.</p></div>
+</div>
+<h3>Wat onzichtbaar meegaat</h3><p class="note">Bij elke lead slaan we op waar hij vandaan kwam. Dat is wat we onze klanten in het marketingdashboard beloven; dan doen we het bij onszelf ook.</p><ul class="vb">
+<li><b>Bron, medium en campagne</b><span>Uit de link waarmee iemand binnenkwam.</span></li>
+<li><b>Zoekterm</b><span>Als het platform hem doorgeeft.</span></li>
+<li><b>Click id</b><span>Van Google of Meta. Zelfde reden als in het dashboard: zonder dit getal kun je later niets terugmelden.</span></li>
+<li><b>De pagina</b><span>Waar het leadformulier werd ingevuld.</span></li>
+<li><b>Datum en tijd</b><span>Van het leadformulier en van de vragenlijst. Het verschil zegt hoe lang iemand twijfelde.</span></li>
+<li><b>Contactnummer</b><span>Uit MailerLite. Daarmee horen A, B en C bij dezelfde persoon.</span></li>
+</ul>
+<div class="warn"><h4>E&eacute;n harde regel</h4><p>In de link van stap naar stap gaat alleen het contactnummer mee. Nooit naam, e-mailadres, telefoonnummer of IP-adres &mdash; links belanden in statistieken, serverlogs, browsergeschiedenis en bij derde partijen. King Kong doet dit wel. Wij niet.</p></div>
+<h3>De regels</h3><p class="note">Wat de formuliertool met de antwoorden doet. Rood gaat voor later, later gaat voor oranje, oranje gaat voor groen. Staan er meerdere punten op oranje, dan is het nog steeds &eacute;&eacute;n telefoontje.</p>
 <div class="tblwrap"><table class="rg2"><thead><tr><th>Als het antwoord is</th><th>Uitkomst</th><th>Wat de klant daarna ziet</th></tr></thead><tbody>
 <tr><td>&lsquo;Niemand&rsquo; kan code plaatsen</td><td><span class="pill rood">rood</span></td><td>De reden: we kunnen niet meten.</td></tr>
 <tr><td>&lsquo;Ik heb nog geen website&rsquo;</td><td><span class="pill rood">rood</span></td><td>De reden: eerst een websiteproject.</td></tr>
+<tr><td>Beginnen &lsquo;later dan drie maanden&rsquo; of &lsquo;ik ori&euml;nteer me nog&rsquo;</td><td><span class="pill later">later</span></td><td>Nu geen gesprek. E&eacute;n bericht rond het moment dat ze noemden.</td></tr>
+<tr><td>&lsquo;Nee&rsquo; bij kom je ook echt</td><td><span class="pill later">later</span></td><td>Nu geen gesprek.</td></tr>
 <tr><td>Marketinguitgaven &lsquo;minder dan &euro;&nbsp;1.000&rsquo;</td><td><span class="pill oranje">oranje</span></td><td>Een kwartier bellen over het budget.</td></tr>
 <tr><td>Klantwaarde onder &euro;&nbsp;2.000</td><td><span class="pill oranje">oranje</span></td><td>Een kwartier bellen over wat een aanvraag mag kosten.</td></tr>
 <tr><td>Bedrijven + eigen regio + langer dan een half jaar</td><td><span class="pill oranje">oranje</span></td><td>Een kwartier bellen over je markt.</td></tr>
 <tr><td>&lsquo;Dat weet ik niet&rsquo; bij wie code kan plaatsen</td><td><span class="pill groen">groen</span></td><td>Extra alinea in de bevestiging: vraag het je webbouwer v&oacute;&oacute;r het gesprek.</td></tr>
 <tr><td>Al het andere</td><td><span class="pill groen">groen</span></td><td>Het gesprek zelf inplannen.</td></tr>
 </tbody></table></div>
-<p class="note" style="margin-top:14px;font-size:14.5px">E&eacute;n nee-reden gaat niet automatisch: de beperkte categorie. &lsquo;Wat verkoop je&rsquo; is een open vraag, en een formulier kan geen medische claim herkennen. Die vang je in de quickscan, v&oacute;&oacute;r het gesprek.</p>
+<p class="note" style="margin-top:14px;font-size:14.5px">Twee dingen gaan niet automatisch, omdat het open vragen zijn: de beperkte categorie en een zwak aanbod. Die lees je in &lsquo;wat verkoop je&rsquo; en &lsquo;wat houdt je tegen&rsquo;, tijdens de quickscan &mdash; v&oacute;&oacute;r het gesprek.</p>
 </section>
-<section class="sec" id="uitkomsten"><div class="kicker">Zoals de klant het ziet</div><h2>De drie bedankpagina&rsquo;s</h2>
-<p class="note">Direct na het versturen. Wat iemand hier ziet, hangt af van de regels hierboven.</p>
+<section class="sec" id="uitkomsten"><div class="kicker">Zoals de klant het ziet</div><h2>De vier bedankpagina&rsquo;s</h2>
+<p class="note">Wat iemand na de laatste vraag ziet. Bij groen en oranje eerst het scherm met de contactgegevens, dan de afsprakenplanner.</p>
 <div class="bk">
 <div class="bp groen"><span class="bl3">GROEN</span>
-<p><b>Dank je. Kies hieronder een moment voor ons gesprek.</b></p>
+<p><b>Kies een moment voor ons gesprek.</b></p>
 <p>Reken op anderhalf uur. We plannen minimaal drie werkdagen vooruit, omdat we eerst naar je website en je markt kijken. Zo gaat het gesprek over jouw situatie en niet over ons.</p>
 <span class='ag'>Afsprakenplanner &middot; gesprek van anderhalf uur</span>
 </div>
 <div class="bp oranje"><span class="bl3">ORANJE</span>
-<p><b>Dank je. Eén punt willen we eerst even met je afstemmen.</b></p>
+<p><b>Kies een moment voor een telefoontje.</b></p>
 <p>Het gaat over <span class='vv'>[je budget / wat een aanvraag mag kosten / je markt]</span>. Dat bespreken we liever in een kwartier aan de telefoon dan dat we je anderhalf uur laten reserveren voor iets wat misschien niet past.</p>
 <span class='ag'>Afsprakenplanner &middot; telefoontje van een kwartier</span>
+</div>
+<div class="bp later"><span class="bl3">LATER</span>
+<p><b>Dank je, [voornaam]. Dan plannen we nu nog niets.</b></p>
+<p>Je gaf aan dat je <span class='vv'>[binnen drie maanden / later]</span> wilt beginnen. Rond die tijd sturen we je &eacute;&eacute;n bericht om te vragen of het zover is. Tot die tijd hoor je niets van ons.</p>
+<label class='nb2'><input type='checkbox'> Houd me op de hoogte via de nieuwsbrief. Eens per maand, afmelden kan altijd.</label>
 </div>
 <div class="bp rood"><span class="bl3">ROOD</span>
 <p><b>Dank je voor je antwoorden.</b></p>
@@ -450,12 +523,12 @@ body.toon .note-i{display:block}
 <label class='nb2'><input type='checkbox'> Houd me op de hoogte via de nieuwsbrief. Eens per maand, afmelden kan altijd.</label>
 </div>
 </div>
-<div class="key"><span class="k">Waarom rood de nieuwsbrief aanbiedt</span><p class="big">Wie nu nee krijgt, kan over een jaar wel passen.</p><p>King Kong zet iedereen die niet kwalificeert op de mailinglijst. Wij vragen het &mdash; en dat is geen beleefdheid maar de regel. Tegelijk is het het beste moment om het te vragen: iemand heeft net een eerlijk antwoord gekregen in plaats van een verkooppraatje.</p></div>
+<div class="key"><span class="k">Waarom rood de nieuwsbrief aanbiedt</span><p class="big">Wie nu nee krijgt, kan over een jaar wel passen.</p><p>King Kong zet iedereen die niet kwalificeert op de mailinglijst. Wij vragen het, bij rood &eacute;n bij later &mdash; en dat is geen beleefdheid maar de regel. Tegelijk is het het beste moment om het te vragen: iemand heeft net een eerlijk antwoord gekregen in plaats van een verkooppraatje.</p></div>
 </section>
 <section class="sec" id="d"><div class="kicker">D &middot; Voor wie niet doorklikt</div><h2>De reeks</h2>
 <p class="note">Vijf mails in twaalf dagen. Elke mail heeft iets bruikbaars en dezelfde knop naar de vragenlijst. Zodra de vragenlijst binnen is, stopt de reeks. Na de vijfde is het klaar.</p>
 <div class="mw"><span class="md">DIRECT</span><span class="mdoel">Voor wie de pagina sloot voordat hij klaar was.</span></div>
-<div class="mail"><div class="mh">Onderwerp: <b>De video, en de volgende stap</b></div><div class="mb"><p>Hoi [voornaam],</p><p>Hier is de video nog een keer, voor als je hem later wilt terugkijken: <span class='ln'>[link]</span>.</p><p>De volgende stap is elf vragen. Het kost vijf minuten, en daarna kies je zelf een moment voor het gesprek. Voordat we elkaar spreken, kijken we naar je website en je markt &mdash; dus het gesprek gaat over jouw cijfers, niet over ons.</p><p><span class="mk">Plan je gesprek in</span></p></div></div>
+<div class="mail"><div class="mh">Onderwerp: <b>De video, en de volgende stap</b></div><div class="mb"><p>Hoi [voornaam],</p><p>Hier is de video nog een keer, voor als je hem later wilt terugkijken: <span class='ln'>[link]</span>.</p><p>De volgende stap is een paar korte vragen, &eacute;&eacute;n per scherm. Het kost zo&rsquo;n vijf minuten, en daarna kies je zelf een moment voor het gesprek. Voordat we elkaar spreken, kijken we naar je website en je markt &mdash; dus het gesprek gaat over jouw cijfers, niet over ons.</p><p><span class="mk">Plan je gesprek in</span></p></div></div>
 <div class="mw"><span class="md">DAG 2</span><span class="mdoel">Laat zien wat de quickscan is, zonder hem weg te geven.</span></div>
 <div class="mail"><div class="mh">Onderwerp: <b>Drie dingen die we vaak tegenkomen</b></div><div class="mb"><p>Hoi [voornaam],</p><p>Voor elk gesprek kijken we eerst naar de website. Drie dingen komen we vaak tegen:</p><ul><li><b>Aanvragen die niet worden gemeten.</b> Het formulier werkt, maar niemand telt het. Dan weet je niet welke advertentie iets oplevert.</li><li><b>Een trage mobiele site.</b> Elke seconde laadtijd kost bezoekers die je al hebt betaald.</li><li><b>Een formulier zonder bevestiging.</b> Iemand vraagt iets aan en hoort niets tot jij belt.</li></ul><p>Benieuwd hoe dat bij jou zit?</p><p><span class="mk">Plan je gesprek in</span></p></div></div>
 <div class="mw"><span class="md">DAG 5</span><span class="mdoel">De propositie in drie alinea&rsquo;s.</span></div>
@@ -465,11 +538,14 @@ body.toon .note-i{display:block}
 <div class="mw"><span class="md">DAG 12</span><span class="mdoel">Prijs als laatste, en een belofte om te stoppen. Beide zijn radicale transparantie.</span></div>
 <div class="mail"><div class="mh">Onderwerp: <b>Wat het kost</b></div><div class="mb"><p>Hoi [voornaam],</p><p>Laatste mail van deze reeks. Omdat prijs vaak de reden is om te twijfelen, hier zijn onze tarieven, volledig: <span class='ln'>[link]</span>.</p><p>Het fundament is &euro;&nbsp;4.500 eenmalig. De retainer begint bij &euro;&nbsp;1.000 per maand. Daarnaast je advertentiebudget, dat rechtstreeks naar Google en Meta gaat en niet naar ons.</p><p>Past dat, dan zien we je graag. Past het nu niet, dan hoor je verder niets meer van ons &mdash; tenzij je je voor de nieuwsbrief hebt aangemeld.</p><p><span class="mk">Plan je gesprek in</span></p></div></div>
 </section>
-<section class="sec" id="mails"><div class="kicker">Na de vragenlijst</div><h2>Twee mails</h2>
+<section class="sec" id="mails"><div class="kicker">Na de vragenlijst</div><h2>Drie mails</h2>
 <div class="mw"><span class="md">GROEN &middot; NA HET INPLANNEN</span><span class="mdoel">Automatisch, zodra de afspraak geboekt is.</span></div>
 <div class="mail"><div class="mh">Onderwerp: <b>Onze afspraak op [dag] [datum]</b></div><div class="mb"><p>Hoi [voornaam],</p><p>Dank voor je antwoorden. We zien je op [dag] [datum] om [tijd], [locatie]. Reken op anderhalf uur. Voor die tijd kijken we naar je website en je markt.</p><p><b>Wil je deze vijf dingen bij de hand hebben?</b> Het zijn de getallen waarmee we aan tafel gaan rekenen. Schatten mag, maar zoek ze liever even op dan dat je ze ter plekke moet bedenken.</p><ul><li>Hoeveel extra omzet je komend jaar wilt halen</li><li>Je brutomarge, ongeveer</li><li>Hoeveel van je aanvragen uiteindelijk klant wordt</li><li>Hoeveel e-mailadressen er in je bestand staan</li><li>Wie er meebeslist over marketing, als je dat niet alleen doet &mdash; neem die dan mee</li></ul><p><span class='vv'>[Alleen bij &lsquo;weet ik niet&rsquo;:] Wil je v&oacute;&oacute;r het gesprek even aan je webbouwer vragen of hij een regel code in je website kan plaatsen? Dat bepaalt of we kunnen meten, en zonder meten beginnen we niet.</span></p><p><b>Alvast onze tarieven</b>, zodat je weet waar je aan toe bent: <span class='ln'>[link naar tarieven]</span></p><p>Tot [dag],<br>[naam]</p></div></div>
 <div class="mw"><span class="md">ROOD &middot; DIRECT</span><span class="mdoel">Dezelfde tekst als de bedankpagina, voor wie het tabblad al had gesloten.</span></div>
 <div class="mail"><div class="mh">Onderwerp: <b>Je aanvraag bij James Robinson</b></div><div class="mb"><p>Hoi [voornaam],</p><p>Dank voor je antwoorden. We hebben ze goed bekeken, en we denken dat we niet de juiste partij voor je zijn.</p><p><span class='vv'>[De reden in &eacute;&eacute;n zin]</span></p><p>We zeggen dat liever nu dan na drie maanden en een factuur. Als er iets verandert, weet je ons te vinden.</p><p>Groet,<br>[naam]</p></div></div>
+<div class="mw"><span class="md">LATER &middot; OP HET MOMENT DAT ZE NOEMDEN</span><span class="mdoel">E&eacute;n keer. Gepland in MailerLite op basis van het antwoord.</span></div>
+<div class="mail"><div class="mh">Onderwerp: <b>Is het zover?</b></div><div class="mb"><p>Hoi [voornaam],</p><p>Een tijdje terug gaf je aan dat je rond deze tijd met je marketing aan de slag wilde. Is dat nog zo? Dan kun je hier direct verder.</p><p>Is het nog niet zover, dan hoef je niets te doen. Dit was het enige bericht dat we je hadden beloofd.</p><p>Groet,<br>[naam]</p><p><span class="mk">Verder met de vragen</span></p></div></div>
+<p class="note" style="margin-top:22px">De redenen voor de rode mail:</p>
 <table class="rzt"><thead><tr><th>Reden</th><th>De zin</th></tr></thead><tbody>
 <tr><td>Niet meten</td><td>Op je website kan geen meetcode worden geplaatst. Zonder die code kunnen we niet zien wat je advertenties opleveren, en dan sturen we blind. Dat doen we niet. Wissel je ooit van website, dan praten we graag verder.</td></tr>
 <tr><td>Geen website</td><td>Je hebt nog geen website, en die is bij ons het middelpunt waar alles naartoe leidt. Dat is eerst een websiteproject. Daar denken we graag over mee, maar dan als los project en niet als retainer.</td></tr>
@@ -478,42 +554,64 @@ body.toon .note-i{display:block}
 </tbody></table>
 <p class="note" style="margin-top:14px;font-size:14.5px">De laatste twee gebruik je alleen na het kwartier bellen, nooit op basis van het formulier alleen. Oranje heeft geen eigen mail nodig: de bevestiging van de afsprakenplanner is genoeg.</p>
 </section>
-<section class="sec" id="kingkong"><div class="kicker">Vergeleken</div><h2>Wat we overnemen, en wat niet</h2>
-<div class="tblwrap"><table class="vh"><thead><tr><th></th><th>King Kong</th><th>Wij</th><th>Waarom</th></tr></thead><tbody>
-<tr><td>Eerste stap</td><td>Naam en e-mail</td><td>Hetzelfde</td><td>De laagste drempel. En wie daarna afhaakt, ben je niet kwijt.</td></tr>
-<tr><td>Landingspagina</td><td>Video met &eacute;&eacute;n knop</td><td>Hetzelfde, door Jim Coumans</td><td>Wat nu aan tafel een kwartier uitleg kost, is vooraf al gezegd. Het gesprek begint verder.</td></tr>
-<tr><td>De knop</td><td>&lsquo;Claim your free strategy call&rsquo;</td><td>&lsquo;Plan je gesprek in&rsquo;, met erbij wat je krijgt</td><td>&lsquo;Gratis strategiegesprek&rsquo; is het meest gebruikte lokmiddel in de branche. Wij zeggen wat je krijgt: een quickscan en een gesprek over je eigen cijfers.</td></tr>
-<tr><td>Kwalificatie</td><td>Vragenlijst</td><td>Hetzelfde, met vaste regels</td><td>&mdash;</td></tr>
-<tr><td>Gekwalificeerd</td><td>Direct inplannen</td><td>Direct inplannen, minimaal drie werkdagen vooruit</td><td>Wij doen de quickscan v&oacute;&oacute;r het gesprek. Daar is tijd voor nodig.</td></tr>
-<tr><td>Bijna gekwalificeerd</td><td>&mdash;</td><td>Een kwartier bellen</td><td>Nieuw. Wie bijna past, verdient een kwartier &mdash; geen nee, en geen anderhalf uur.</td></tr>
-<tr><td>Niet gekwalificeerd</td><td>Op de mailinglijst</td><td>Eerlijke reden, nieuwsbrief alleen met toestemming</td><td>Australi&euml; is Nederland niet. Zie hieronder.</td></tr>
-</tbody></table></div></section>
+<section class="sec" id="kingkong"><div class="kicker">Vergeleken met hun vragenlijst</div><h2>Wat we van King Kong leren</h2>
+<p class="note">Hun vragenlijst heeft zeventien schermen en eindigt in een agenda. Het meeste nemen we over. Een paar dingen passen we aan, en een paar laten we bewust liggen.</p>
+<div class="lr">
+<div class="lrk over"><span class="lh">OVERNEMEN &middot; 9</span>
+<div class="li"><b>E&eacute;n vraag per scherm</b><span>Niet het aantal vragen bepaalt of iemand afhaakt, maar hoe zwaar elk scherm voelt. Veertien kleine stappen voelen korter dan vier volle schermen.</span></div>
+<div class="li"><b>De naam gebruiken</b><span>&lsquo;Wat is je e-mailadres, [voornaam]?&rsquo; Een formulier dat terugpraat. Kost niets.</span></div>
+<div class="li"><b>Bij elke gevoelige vraag zeggen waarom</b><span>Zij doen het bij budget, omzet en doel. Wij doen het overal waar we naar geld vragen.</span></div>
+<div class="li"><b>Wanneer wil je beginnen?</b><span>De vraag die wij niet hadden en die het meest scheelt. Wie pas over een half jaar wil beginnen, hoort nu geen gesprek te krijgen &mdash; wel een bericht over een half jaar.</span></div>
+<div class="li"><b>Het grootste obstakel, in eigen woorden</b><span>Het beste voorbereidingsmateriaal dat er is. Je opent het gesprek met hun eigen zin.</span></div>
+<div class="li"><b>Waar je ons het &eacute;&eacute;rst van hoorde</b><span>Ze vragen bewust naar de eerste keer. De bronregistratie ziet alleen de laatste klik, en de eerste is vaak een klant of een verjaardag. Wij prediken meten; dan moeten we het bij onszelf ook doen.</span></div>
+<div class="li"><b>De toezegging om te komen</b><span>Wij doen de quickscan v&oacute;&oacute;r het gesprek. Wie niet komt, kost ons meer dan King Kong.</span></div>
+<div class="li"><b>Telefoon en bedrijfsnaam pas na de kwalificatie</b><span>Pas als iemand hoort dat het past, is de reden om zijn telefoonnummer te geven duidelijk. Dat is ook het moment waarop hij het het makkelijkst geeft.</span></div>
+<div class="li"><b>De bron van elke lead opslaan</b><span>In hun URL staan velden voor bron, medium en campagne. Precies wat wij onze klanten beloven in het marketingdashboard.</span></div>
+</div>
+<div class="lrk aan"><span class="lh">AANPASSEN &middot; 5</span>
+<div class="li"><b>Het budget</b><span>King Kong vraagt het budget zonder hun minimum te noemen. Wij vragen wat je nu uitgeeft, en zeggen er ons minimum bij. Wie dat te veel vindt, hoeft niet verder.</span></div>
+<div class="li"><b>Omzet nu en omzetdoel</b><span>King Kong vraagt het in het formulier, met een schuifje. Wij vragen het doel in de afspraakbevestiging: de rekensom aan tafel heeft een echt getal nodig, geen stand van een schuifje.</span></div>
+<div class="li"><b>Naam en e-mail</b><span>King Kong vraagt ze twee keer. Wij nemen ze over uit het leadformulier. Alleen wie via een losse link binnenkomt, krijgt ze te zien.</span></div>
+<div class="li"><b>De toon</b><span>&lsquo;Pinky promise&rsquo;, &lsquo;BOOM&rsquo;, &lsquo;to the moon&rsquo; past bij King Kong. Bij ons: dezelfde korte tussenzinnen, zonder uitroeptekens.</span></div>
+<div class="li"><b>De beloning</b><span>&lsquo;It looks like we can DRAMATICALLY help you&rsquo; wordt: &lsquo;Dit ziet er goed uit. We denken dat we je kunnen helpen.&rsquo;</span></div>
+</div>
+<div class="lrk niet"><span class="lh">NIET OVERNEMEN &middot; 4</span>
+<div class="li"><b>De motivatieschaal van 1 tot 10</b><span>Iedereen vult een acht in. &lsquo;Wanneer wil je beginnen&rsquo; meet hetzelfde, maar dan met een datum in plaats van een gevoel.</span></div>
+<div class="li"><b>&lsquo;$1000 value&rsquo; en &lsquo;strictly for people hungry for growth&rsquo;</b><span>Een waarde die niemand kan controleren. Wij zeggen wat je krijgt, niet wat het zou kosten.</span></div>
+<div class="li"><b>Persoonsgegevens in de URL</b><span>Hun bedankpagina krijgt voornaam, e-mailadres en IP-adres mee in de link. Links belanden in statistieken, serverlogs, browsergeschiedenis en bij derde partijen. Bij ons gaat alleen een contactnummer mee.</span></div>
+<div class="li"><b>Bureau of cursus</b><span>Zij verkopen twee dingen. Wij &eacute;&eacute;n. Wie iets anders nodig heeft, zoals een website, krijgt dat eerlijk te horen in de rode uitkomst.</span></div>
+</div>
+</div>
+<div class="key"><span class="k">E&eacute;n vraag die open blijft</span><p class="big">King Kong vraagt een half uur. Wij vragen anderhalf uur.</p><p>Dat is een grotere drempel om in te plannen. Tegelijk krijg je bij ons meer: een quickscan vooraf, een rekensom aan tafel, en daarna een voorstel. <strong>Mijn voorstel: laten staan, en meten hoeveel groene aanvragen uiteindelijk n&iacute;et inplannen.</strong> Is dat meer dan een op de vijf, dan is anderhalf uur te veel en splitsen we het op.</p></div>
+</section>
 <section class="sec" id="verhuist"><div class="kicker">Ten opzichte van het oude intakeformulier</div><h2>Wat verhuist</h2>
 <p class="note">Het oude deel 1 vroeg de klant te kiezen voordat hij wist waartussen, en kon drie van de vijf nee-redenen pas n&aacute; de handtekening zien.</p>
 <div class="tblwrap"><table class="vh"><thead><tr><th>Vraag</th><th>Stond in</th><th>Staat nu in</th><th>Waarom</th></tr></thead><tbody>
 <tr><td>Hoeveel e-mailadressen staan er in je bestand?</td><td>Oude deel 1</td><td>Afspraakbevestiging</td><td>Bepaalt een bedrag van een paar tientjes per maand. Dat hoort bij de prijs, niet bij de vraag of we gaan praten.</td></tr>
-<tr><td>Hoeveel bezoekers krijgt je website per maand?</td><td>Oude deel 1</td><td>Aan tafel, alleen bij bedrijven</td><td>Alleen nodig voor de prijs van bezoekersherkenning, en die is alleen zinvol als je aan bedrijven verkoopt.</td></tr>
-<tr><td>Laat je afspraken online inplannen?</td><td>Oude deel 1</td><td>Keuze aan tafel</td><td>Een keuze voor een los onderdeel. Die vraag je niet voordat iemand weet wat het is en wat het kost.</td></tr>
-<tr><td>Aan wie verkoop je?</td><td>Deel 2</td><td>Vragenlijst</td><td>Zonder dit antwoord zag je nee-reden 1 en 3 pas n&aacute; de handtekening.</td></tr>
-<tr><td>Waar zitten je klanten?</td><td>Deel 2</td><td>Vragenlijst</td><td>Idem, en de quickscan heeft het nodig om de concurrentie in dat gebied te bekijken.</td></tr>
-<tr><td>Hoe lang duurt het van eerste contact tot opdracht?</td><td>Deel 2</td><td>Vragenlijst</td><td>Nee-reden 3. En het bepaalt wat je aan tafel belooft over wanneer er resultaat is.</td></tr>
-<tr><td>Wat geef je nu per maand uit aan marketing?</td><td>&mdash;</td><td>Vragenlijst, nieuw</td><td>Budgettoets.</td></tr>
+<tr><td>Hoeveel bezoekers krijgt je website per maand?</td><td>Oude deel 1</td><td>Aan tafel, alleen bij bedrijven</td><td>Alleen nodig voor de prijs van bezoekersherkenning.</td></tr>
+<tr><td>Laat je afspraken online inplannen?</td><td>Oude deel 1</td><td>Keuze aan tafel</td><td>Een keuze voor een los onderdeel. Die vraag je niet voordat iemand weet wat het is.</td></tr>
+<tr><td>Wat is de naam van je bedrijf?</td><td>Oude deel 1, eerste vraag</td><td>Na de kwalificatie</td><td>Niet nodig om te kwalificeren. Samen met telefoon en achternaam aan het eind.</td></tr>
+<tr><td>Adverteer je nu al ergens?</td><td>Oude deel 1</td><td>Welke marketing doe je nu, meerdere antwoorden</td><td>Geeft een vollediger beeld, en laat zien wie alleen op social zit.</td></tr>
+<tr><td>Aan wie verkoop je? Waar zitten je klanten? Hoe lang duurt het?</td><td>Deel 2</td><td>Vragenlijst</td><td>Zonder deze drie zag je nee-reden 1 en 3 pas n&aacute; de handtekening.</td></tr>
+<tr><td>Wat geef je nu per maand uit aan marketing?</td><td>&mdash;</td><td>Vragenlijst, nieuw</td><td>Budgettoets, met ons minimum erbij.</td></tr>
+<tr><td>Wat houdt je het meest tegen? Wanneer wil je beginnen? Waar hoorde je voor het eerst van ons? Kom je ook echt?</td><td>&mdash;</td><td>Vragenlijst, nieuw</td><td>Van King Kong.</td></tr>
 <tr><td>Omzetdoel, marge, aandeel aanvragen dat klant wordt</td><td>Deel 2 of nergens</td><td>Afspraakbevestiging: meenemen</td><td>Bijna niemand kent deze uit het hoofd. In een formulier wordt het gokken of afhaken.</td></tr>
 </tbody></table></div></section>
 <section class="sec" id="letop"><div class="kicker">Blinde vlekken</div><h2>Waar je op moet letten</h2><div class="lt">
 <div class="lti"><b>De video is alles</b><p>Bij King Kong werkt het model omdat de video verkoopt. Een slechte video is erger dan geen video, want hij staat tussen iedereen en de vragenlijst. Neem hem op, laat hem door drie mensen van buiten bekijken, en neem hem opnieuw op.</p></div>
-<div class="lti"><b>Toestemming</b><p>Een Australisch model is niet een-op-een te kopi&euml;ren. In Nederland mag je iemand niet zomaar marketingmail sturen omdat hij een video wilde zien. Zet onder het leadformulier letterlijk wat er gebeurt &mdash; de video en een korte reeks &mdash; en maak de nieuwsbrief een aparte, eigen keuze. Laat dit nakijken door iemand die de regels kent; ik ben geen jurist.</p></div>
-<div class="lti"><b>Regels maken fouten</b><p>Een onterechte groene kost je anderhalf uur. Een onterechte rode kost je een klant. Kijk de eerste drie maanden elke week de rode en oranje uitkomsten na, en stel de regels bij.</p></div>
+<div class="lti"><b>Veertien vragen is veel</b><p>E&eacute;n per scherm maakt het lichter, en de reeks vangt wie afhaakt. Maar meet het: een goede formuliertool laat per scherm zien hoeveel mensen er afhaken. Verliest &eacute;&eacute;n scherm opvallend veel mensen, dan ligt het aan die vraag. Precies wat we een klant zouden adviseren.</p></div>
+<div class="lti"><b>Toestemming</b><p>Een Australisch model is niet een-op-een te kopi&euml;ren. In Nederland mag je iemand niet zomaar marketingmail sturen omdat hij een video wilde zien. Zet onder het leadformulier letterlijk wat er gebeurt, en maak de nieuwsbrief een aparte keuze. Laat dit nakijken door iemand die de regels kent; ik ben geen jurist.</p></div>
+<div class="lti"><b>Regels maken fouten</b><p>Een onterechte groene kost je anderhalf uur. Een onterechte rode kost je een klant. Kijk de eerste drie maanden elke week de rode, oranje en latere uitkomsten na, en stel de regels bij.</p></div>
 <div class="lti"><b>Zuid-Limburg is klein</b><p>King Kong mailt een wereld vol vreemden. Jullie mailen mensen die je volgende week op een verjaardag tegenkomt. Vijf mails, elk met iets bruikbaars, en dan stoppen &mdash; zoals de laatste mail belooft.</p></div>
-<div class="lti"><b>Netwerk en telefoon</b><p>Wie via een klant of telefonisch binnenkomt, slaat blok A en B over. Stuur de link naar de vragenlijst, of vul hem in vijf minuten samen in aan de telefoon.</p></div>
+<div class="lti"><b>Netwerk en telefoon</b><p>Wie via een klant of telefonisch binnenkomt, slaat blok A en B over. Stuur de link naar de vragenlijst, of loop hem in vijf minuten samen door aan de telefoon.</p></div>
 </div></section>
 <section class="sec" id="nodig"><div class="kicker">Om het te bouwen</div><h2>Wat je nodig hebt</h2><ul class="nd">
-<li><div><b>MailerLite</b><span>Hebben jullie. De reeks en de nieuwsbrief.</span></div><em class="ch er" style="font-style:normal">HEBBEN WE</em></li>
+<li><div><b>MailerLite</b><span>Hebben jullie. De reeks, de nieuwsbrief en het geplande bericht voor wie later wil beginnen.</span></div><em class="ch er" style="font-style:normal">HEBBEN WE</em></li>
 <li><div><b>De afsprakenplanner</b><span>Dezelfde die jullie klanten verkopen. Twee agenda&rsquo;s: anderhalf uur en een kwartier.</span></div><em class="ch er" style="font-style:normal">HEBBEN WE</em></li>
 <li><div><b>De website</b><span>Het leadformulier en de landingspagina, op jullie eigen WordPress.</span></div><em class="ch er" style="font-style:normal">HEBBEN WE</em></li>
-<li><div><b>Een formuliertool met voorwaardelijke logica</b><span>Die per uitkomst naar een andere bedankpagina kan sturen, en naam en e-mail kan overnemen uit stap A. Nog te kiezen.</span></div><em class="ch nee" style="font-style:normal">NOG NIET</em></li>
+<li><div><b>Een formuliertool</b><span>Eisen: &eacute;&eacute;n vraag per scherm, voorwaardelijke logica, verborgen velden, per uitkomst naar een andere pagina, en per scherm zien waar mensen afhaken. Nog te kiezen.</span></div><em class="ch nee" style="font-style:normal">NOG NIET</em></li>
 <li><div><b>De video</b><span>Drie minuten, door Jim Coumans. Nog op te nemen.</span></div><em class="ch nee" style="font-style:normal">NOG NIET</em></li>
-<li><div><b>ClickUp-koppeling</b><span>Elke ingevulde vragenlijst automatisch als taak, met de kleur erbij.</span></div><em class="ch nee" style="font-style:normal">NOG NIET</em></li>
+<li><div><b>ClickUp-koppeling</b><span>Elke ingevulde vragenlijst automatisch als taak, met de uitkomst en het obstakel erbij.</span></div><em class="ch nee" style="font-style:normal">NOG NIET</em></li>
 </ul>
 <div class="warn"><h4>Nog open, niet blokkerend</h4><p>De twee oranje drempels &mdash; klantwaarde onder &euro;&nbsp;2.000 en marketinguitgaven onder &euro;&nbsp;1.000 &mdash; komen later terug. En het oude intakeformulier heeft nog het oude deel 1 en stelt in deel 2 drie vragen die voortaan hier staan. Dat trekken we gelijk zodra deze versie staat.</p></div>
 </section>
