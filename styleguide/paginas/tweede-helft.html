@@ -1,0 +1,389 @@
+<meta charset="utf-8"><title>De tweede helft &middot; James Robinson</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@600;700&display=swap">
+<style>
+:root{
+  --page:#fbfbfd; --card:#fff; --alt:#f5f5f7;
+  --tx:#1d1d1f; --tx2:#6e6e73; --tx3:#86868b;
+  --ln:#d2d2d7; --ln-s:#e5e5e9;
+  --blue:#007aff; --link:#0066cc; --act:#0857c3;
+  --b100:#e0efff; --b50:#f4f9ff;
+  --lime:#c4f000; --lime-tx:#5a7000; --lime100:#f2fccc;
+  --green-tx:#1d7d3f; --green100:#e6f7eb;
+  --orange-tx:#94590a; --orange100:#fef2e0;
+  --red-tx:#c02a22; --red100:#fdecea;
+  --black:#1c1c1e; --inv:#f5f5f7; --inv2:#a1a1a6;
+  --fd:"Inter Tight","Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --ft:"Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --fm:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --e:cubic-bezier(.25,.1,.25,1);--g:32px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}}
+:root[data-theme="dark"]{
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--tx);font-family:var(--ft);font-size:16.5px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition-duration:.01ms!important}}
+:focus-visible{outline:none;box-shadow:0 0 0 4px rgba(0,122,255,.4);border-radius:8px}
+p{margin:0 0 18px;max-width:70ch}
+p:last-child{margin-bottom:0}
+h1,h2,h3,h4{font-family:var(--fd);margin:0;text-wrap:balance}
+code{font-family:var(--fm);font-size:.86em;background:var(--alt);padding:2px 6px;border-radius:5px}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:60;background:rgba(251,251,253,.86);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--ln-s)}
+:root[data-theme="dark"] .bar,:root:not([data-theme="light"]) .bar{background:rgba(0,0,0,.74)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .bar{background:rgba(251,251,253,.86)}}
+.bar-in{max-width:1080px;margin:0 auto;padding:0 var(--g);display:flex;align-items:center;gap:5px;min-height:48px;overflow-x:auto;scrollbar-width:none}
+.bar-in::-webkit-scrollbar{display:none}
+.bar b{font-family:var(--fd);font-size:14.5px;font-weight:700;letter-spacing:-.016em;margin-right:8px;white-space:nowrap}
+.bar a{font-size:12.5px;color:var(--tx2);text-decoration:none;padding:6px 8px;border-radius:7px;white-space:nowrap}
+.bar a:hover{color:var(--tx)}
+.bar button{margin-left:auto;flex:none;font:inherit;font-size:12px;cursor:pointer;background:transparent;border:1px solid var(--ln);color:var(--tx2);border-radius:980px;padding:5px 13px}
+
+.wrap{max-width:1080px;margin:0 auto;padding-inline:var(--g)}
+.hero{padding-block:76px 40px}
+h1{font-size:clamp(34px,5.4vw,58px);font-weight:700;line-height:1.06;letter-spacing:-.026em;margin-bottom:20px}
+.lead{font-size:20px;line-height:1.5;color:var(--tx2);max-width:64ch}
+.sec{padding-block:60px;border-top:1px solid var(--ln-s)}
+h2{font-size:clamp(26px,3.4vw,38px);font-weight:700;line-height:1.12;letter-spacing:-.02em;margin-bottom:8px}
+.sec > .kicker{font-family:var(--fm);font-size:11px;letter-spacing:.06em;color:var(--tx3);margin-bottom:14px}
+h3{font-size:21px;font-weight:600;line-height:1.24;letter-spacing:-.012em;margin:38px 0 10px}
+h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
+.note{color:var(--tx2)}
+.note b,b{color:var(--tx);font-weight:600}
+
+/* kernblok */
+.key{background:var(--black);color:var(--inv);border-radius:22px;padding:34px 32px;margin:26px 0}
+.key .k{display:block;font-family:var(--fm);font-size:10.5px;letter-spacing:.06em;color:var(--lime);margin-bottom:14px}
+.key p{color:var(--inv2);font-size:17.5px;max-width:64ch}
+.key strong{color:#fff;font-weight:600}
+.key .big{font-family:var(--fd);font-size:clamp(22px,3vw,30px);font-weight:600;line-height:1.2;letter-spacing:-.018em;color:#fff;margin-bottom:16px}
+
+/* lagen van het aanbod */
+.stack{display:grid;gap:12px;margin-top:24px}
+.st{background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;display:grid;grid-template-columns:132px 1fr;gap:20px;align-items:start}
+.st .lab{font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;color:var(--act);padding-top:3px}
+.st .bd p{margin:0;font-size:15.5px;color:var(--tx2)}
+.st .bd h4{margin-bottom:5px}
+
+/* kandidaten */
+.cands{display:grid;gap:12px;margin-top:22px}
+.cand{border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;background:var(--card)}
+.cand.win{border-color:var(--lime);box-shadow:0 0 0 1px var(--lime)}
+.cand .zin{font-family:var(--fd);font-size:22px;font-weight:600;letter-spacing:-.014em;margin-bottom:8px}
+.cand .why{font-size:15px;color:var(--tx2);margin:0}
+.cand .verdict{display:inline-block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;border-radius:5px;padding:3px 7px;margin-bottom:12px}
+.cand .verdict.no{background:var(--red100);color:var(--red-tx)}
+.cand .verdict.ok{background:var(--lime100);color:var(--lime-tx)}
+.cand .verdict.mid{background:var(--orange100);color:var(--orange-tx)}
+
+/* onderscheid */
+.dist{width:100%;border-collapse:collapse;font-size:15px;margin-top:22px}
+.dist th,.dist td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.dist thead th{font-family:var(--fm);font-size:10.5px;letter-spacing:.04em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.dist td:first-child{font-weight:500;width:34%}
+.dist .v{font-family:var(--fm);font-size:11px;white-space:nowrap}
+.dist .v.y{color:var(--green-tx)}
+.dist .v.n{color:var(--red-tx)}
+.dist tr:last-child td{border-bottom:none}
+.tblwrap{overflow-x:auto}
+
+/* beslissingen */
+.dec{border:1px solid var(--ln-s);border-radius:18px;background:var(--card);padding:26px 28px;margin-top:14px}
+.dec .hd{display:flex;align-items:baseline;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.dec .num{font-family:var(--fm);font-size:11px;color:var(--tx3);flex:none}
+.dec h4{font-size:19px;flex:1;min-width:220px;margin:0}
+.dec .tag{font-family:var(--fm);font-size:9.5px;letter-spacing:.05em;border-radius:5px;padding:3px 7px}
+.dec .tag.blok{background:var(--red100);color:var(--red-tx)}
+.dec .tag.schaal{background:var(--orange100);color:var(--orange-tx)}
+.dec .tag.scherp{background:var(--b100);color:var(--act)}
+.dec .q{font-size:16px;color:var(--tx2);margin:0 0 16px}
+.dec .adv{background:var(--b50);border-left:3px solid var(--act);border-radius:0 10px 10px 0;padding:16px 18px}
+.dec .adv .al{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.06em;color:var(--act);margin-bottom:7px}
+.dec .adv p{font-size:15.5px;margin:0 0 10px}
+.dec .adv p:last-child{margin-bottom:0}
+
+/* vast */
+.locked{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-top:22px}
+.lk{background:var(--card);border:1px solid var(--ln-s);border-radius:14px;padding:18px 20px}
+.lk .t{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--green-tx);margin-bottom:7px}
+.lk .b{font-size:15px;color:var(--tx2);line-height:1.45}
+.lk .b b{color:var(--tx)}
+
+.warn{background:var(--orange100);border-radius:18px;padding:24px 26px;margin-top:26px}
+.warn h4{color:var(--orange-tx)}
+.warn p{color:var(--orange-tx);opacity:.94;font-size:15.5px;max-width:none}
+.foot{padding-block:44px 64px;font-size:13px;color:var(--tx3);text-align:center}
+
+@media (max-width:734px){
+  :root{--g:20px}
+  body{font-size:16px}
+  .sec{padding-block:48px}
+  .hero{padding-block:44px 28px}
+  .st{grid-template-columns:1fr;gap:10px}
+  .key{padding:24px 22px}
+  .dec{padding:22px 20px}
+}
+
+</style><style>
+.wd{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:10px;align-items:stretch;margin-top:26px}
+.wh{background:var(--card);border:1px solid var(--ln-s);border-radius:18px;padding:22px 22px}
+.wh.rust{background:var(--alt)}
+.wh .wl{display:block;font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;color:var(--act);margin-bottom:8px}
+.wh.rust .wl{color:var(--tx3)}
+.wh h4{font-size:20px;margin:0 0 2px}
+.wh .wt{display:block;font-size:14px;color:var(--tx3);margin-bottom:10px}
+.wh p{font-size:14.5px;color:var(--tx2);margin:0;max-width:none}
+.wa{display:flex;align-items:center;color:var(--tx3);font-size:18px}
+
+.klok{margin-top:26px;border-radius:14px;overflow:hidden;display:flex;height:40px;border:1px solid var(--ln-s)}
+.klok a{display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:10.5px;color:var(--tx2);text-decoration:none;border-right:1px solid var(--ln-s);background:var(--card);white-space:nowrap;overflow:hidden;padding:0 4px}
+.klok a:nth-child(odd){background:var(--alt)}
+.klok a:last-child{border-right:none;background:var(--black);color:var(--lime)}
+.klok a:hover{color:var(--act)}
+.klokl{display:flex;justify-content:space-between;font-family:var(--fm);font-size:10.5px;color:var(--tx3);margin-top:6px}
+
+.bl{border:1px solid var(--ln-s);border-radius:20px;background:var(--card);padding:24px 26px;margin-top:16px}
+.bl .bh2{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:6px}
+.bl .bt{font-family:var(--fm);font-size:12px;color:var(--act);font-weight:500;white-space:nowrap}
+.bl h3{font-size:21px;margin:0;flex:1;min-width:200px}
+.bl .bm{font-family:var(--fm);font-size:10.5px;color:var(--tx3)}
+.bl .bd{font-size:15.5px;color:var(--tx2);margin:0 0 16px;max-width:none}
+.bg{display:grid;grid-template-columns:1.4fr 1fr;gap:16px}
+.bk2 .kl{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.06em;color:var(--tx3);margin-bottom:8px}
+.zeg{list-style:none;margin:0;padding:0}
+.zeg li{font-size:15px;line-height:1.55;padding:9px 12px 9px 14px;border-left:3px solid var(--act);background:var(--b50);border-radius:0 10px 10px 0;margin-bottom:8px}
+.zeg li:last-child{margin-bottom:0}
+.ls{list-style:none;margin:0 0 14px;padding:0}
+.ls li{font-size:14.5px;line-height:1.5;padding:5px 0 5px 16px;position:relative;color:var(--tx)}
+.ls li::before{content:"";position:absolute;left:0;top:12px;width:6px;height:6px;border-radius:2px;background:var(--ln)}
+.val{margin-top:14px;background:var(--orange100);color:var(--orange-tx);border-radius:10px;padding:11px 14px;font-size:14px}
+.val b{color:var(--orange-tx)}
+.bl.fluit{border-color:var(--black);box-shadow:inset 0 0 0 1px var(--black)}
+
+.gr{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px}
+.gk{background:var(--card);border:1px solid var(--ln-s);border-radius:18px;padding:22px 22px;border-top:4px solid}
+.gk.r{border-top-color:var(--act)} .gk.p{border-top-color:var(--orange-tx)} .gk.n{border-top-color:var(--red-tx)}
+.gk .gl{display:block;font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;color:var(--tx3);margin-bottom:6px}
+.gk h4{font-size:19px;margin:0 0 12px}
+.gk ul{list-style:none;margin:0 0 12px;padding:0}
+.gk li{font-size:14.5px;padding:5px 0;border-bottom:1px solid var(--ln-s)}
+.gk li:last-child{border-bottom:none}
+.gk p{font-size:14px;color:var(--tx2);margin:0;max-width:none}
+
+.ml{list-style:none;margin:20px 0 0;padding:0;max-width:860px}
+.ml li{display:grid;grid-template-columns:1fr auto;gap:14px;padding:12px 0;border-bottom:1px solid var(--ln-s);align-items:start}
+.ml li:last-child{border-bottom:none}
+.ml b{display:block;font-size:15px;font-weight:600}
+.ml span{display:block;font-size:14px;color:var(--tx2);margin-top:2px}
+.ch{font-style:normal;font-family:var(--fm);font-size:9.5px;letter-spacing:.04em;border-radius:5px;padding:3px 7px;white-space:nowrap}
+.ch.er{background:var(--green100);color:var(--green-tx)} .ch.deels{background:var(--orange100);color:var(--orange-tx)} .ch.nee{background:var(--red100);color:var(--red-tx)}
+
+.vh{width:100%;border-collapse:collapse;font-size:14.5px;margin-top:20px}
+.vh th,.vh td{text-align:left;padding:12px 12px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.vh thead th{font-family:var(--fm);font-size:10.5px;letter-spacing:.04em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.vh td:first-child{font-weight:500;width:36%}
+.vh td{color:var(--tx2)} .vh td:first-child{color:var(--tx)}
+.vh tbody tr:last-child td{border-bottom:none}
+
+.mail{background:var(--card);border:1px solid var(--ln);border-radius:18px;overflow:hidden;margin-top:18px;max-width:680px}
+.mail .mh{background:var(--alt);padding:14px 24px;border-bottom:1px solid var(--ln-s);font-family:var(--fm);font-size:12px;color:var(--tx2)}
+.mail .mh b{color:var(--tx);font-weight:500}
+.mail .mb{padding:24px 26px}
+.mail .mb p{font-size:15.5px;line-height:1.62;margin:0 0 14px;max-width:60ch}
+.mail .mb p:last-child{margin-bottom:0}
+.mail .mb ul{margin:0 0 14px;padding-left:20px}
+.mail .mb li{font-size:15.5px;line-height:1.62;margin-bottom:4px}
+.vv{background:var(--orange100);color:var(--orange-tx);border-radius:5px;padding:1px 5px}
+
+@media (max-width:900px){ .wd{grid-template-columns:1fr} .wa{justify-content:center;transform:rotate(90deg);padding:4px 0} .bg,.gr{grid-template-columns:1fr} }
+@media (max-width:620px){ .bl{padding:20px 18px} .klok a{font-size:0} }
+
+.key a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+.rs{list-style:none;margin:22px 0 0;padding:0}
+.rs li{display:grid;grid-template-columns:90px 1fr;gap:16px;padding:14px 0;border-bottom:1px solid var(--ln-s)}
+.rs li:last-child{border-bottom:none}
+.rs .d{font-family:var(--fm);font-size:11.5px;color:var(--act);padding-top:3px}
+.rs b{display:block;font-size:16px;margin-bottom:3px}
+.rs p{font-size:14.5px;color:var(--tx2);margin:0;max-width:74ch}
+.rk{max-width:640px;margin-top:16px;background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:6px 20px}
+.rk div{display:grid;grid-template-columns:1fr auto;gap:4px 16px;padding:9px 0;border-bottom:1px solid var(--ln-s);font-size:14.5px}
+.rk div:last-child{border-bottom:none}
+.rk span{color:var(--tx2)} .rk b{font-family:var(--fm);font-size:13.5px;font-weight:500;white-space:nowrap;text-align:right}
+.rk i{grid-column:1/-1;font-style:normal;font-size:12px;color:var(--tx3);margin-top:-4px}
+.rk div.tot{border-top:2px solid var(--ln)} .rk div.tot span{color:var(--tx);font-weight:600} .rk div.tot b{color:var(--act);font-weight:700}
+.vs{width:100%;border-collapse:collapse;font-size:14.5px;margin-top:20px;min-width:680px}
+.vs th,.vs td{text-align:left;padding:12px 12px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.vs thead th{font-family:var(--fm);font-size:10.5px;letter-spacing:.04em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.vs td:first-child{font-family:var(--fm);color:var(--act);width:32px}
+.vs td:nth-child(2){font-weight:600;width:22%}
+.vs td{color:var(--tx2)} .vs td:nth-child(2){color:var(--tx)}
+.vs td:last-child{font-family:var(--fm);font-size:11.5px;color:var(--tx3);width:18%}
+.jk{counter-reset:j;list-style:none;margin:20px 0 0;padding:0;display:grid;gap:10px}
+.jk li{counter-increment:j;display:grid;grid-template-columns:34px 1fr;gap:12px;background:var(--card);border:1px solid var(--ln-s);border-radius:14px;padding:14px 16px}
+.jk li::before{content:counter(j);font-family:var(--fd);font-size:22px;font-weight:700;color:var(--tx3);line-height:1}
+.jk b{display:block;font-size:15.5px;margin-bottom:2px}
+.jk span{font-size:14.5px;color:var(--tx2)}
+.uit3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px}
+.uit3 div{border-radius:16px;padding:18px 20px;border-top:4px solid}
+.uit3 .j{background:var(--green100);border-top-color:var(--green-tx)} .uit3 .d{background:var(--b100);border-top-color:var(--act)} .uit3 .n{background:var(--red100);border-top-color:var(--red-tx)}
+.uit3 b{display:block;font-size:17px;margin-bottom:6px}
+.uit3 p{font-size:14px;margin:0;color:var(--tx2);max-width:none}
+.mg{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
+.mg div{background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:18px 20px}
+.mg .kl{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.06em;margin-bottom:6px}
+.mg .ja .kl{color:var(--green-tx)} .mg .nee .kl{color:var(--red-tx)}
+.mg p{font-size:14.5px;color:var(--tx2);margin:0;max-width:none}
+@media (max-width:760px){ .uit3,.mg{grid-template-columns:1fr} .rs li{grid-template-columns:1fr;gap:4px} }
+@media (max-width:620px){
+ table.vs thead,table.vh thead{display:none}
+ table.vs,table.vs tbody,table.vs tr,table.vs td,table.vh,table.vh tbody,table.vh tr,table.vh td{display:block;width:auto;min-width:0}
+ table.vs tr,table.vh tr{padding:12px 0;border-bottom:1px solid var(--ln-s)}
+ table.vs td,table.vh td{border:0!important;padding:2px 0!important}
+ table.vs td,table.vh td{width:auto!important}
+ table.vs td:first-child{display:inline-block;width:24px!important}
+ table.vs td:nth-child(2){display:inline}
+ table.vs td:last-child{margin-top:4px}
+ table.vh td:first-child{font-weight:600}
+}
+</style>
+</head><body>
+<nav class="bar"><div class="bar-in"><b>De tweede helft</b>
+<a href="#rust">De rust</a><a href="#voorstel">Het voorstel</a><a href="#minuten">45 minuten</a><a href="#jouwkant">Jouw kant</a><a href="#besluit">Het besluit</a><a href="#erna">Erna</a>
+<button id="tg">Thema</button></div></nav>
+<header class="wrap hero">
+<h1>De tweede helft</h1>
+<p class="lead">Drie werkdagen na de eerste helft. In de rust maken wij het voorstel; in 45 minuten lopen we het samen door. Aan het eind is het ja, nee, of een datum waarop we het weten.</p>
+</header>
+<main class="wrap">
+<section class="sec" id="rust"><div class="kicker">Drie werkdagen</div><h2>De rust</h2>
+<p class="note">De klant hoeft niets te doen. Wij maken het voorstel uit wat er al ligt: de vragenlijst, de quickscan en wat er aan tafel is gezegd. Alles staat op de klantkaart in het portaal. Zie <a href="https://claude.ai/artifact/2BAf88dzpxzH8mj7DK1gT6" target="_blank" rel="noopener">de eerste helft</a> voor wat daar is opgehaald.</p>
+<ul class="rs"><li><span class="d">Dag 1</span><div><b>De aantekeningen staan</b><p>Wat aan tafel is gezegd staat op de klantkaart, uit het kwartier na de eerste helft: doel, marge, capaciteit, wie opvolgt, wie meebeslist. Het advies uit de quickscan is vrijgegeven.</p></div></li><li><span class="d">Dag 1</span><div><b>De rekensom</b><p>Het portaal rekent, niet de AI en niet de medewerker. Van het doel naar klanten, van klanten naar aanvragen, en wat die aanvragen samen mogen kosten. Daaruit volgt het advertentiebudget, en uit het budget het pakket.</p></div></li><li><span class="d">Dag 2</span><div><b>Het concept</b><p>Claude maakt in het portaal een concept van het voorstel uit alles wat op de klantkaart staat. Bedragen komen uit de tarieven, getallen uit de rekensom, citaten letterlijk uit de aantekeningen. De AI verzint niets en rekent niets.</p></div></li><li><span class="d">Dag 2 &ndash; 3</span><div><b>Nakijken en vrijgeven</b><p>Wie de eerste helft voerde, leest het na, maakt het af en geeft het vrij. Het portaal legt vast wie en wanneer. Dezelfde persoon voert ook de tweede helft.</p></div></li><li><span class="d">Dag 3</span><div><b>Een korte mail</b><p>Niet het voorstel zelf, wel de vraag of de beslisser erbij is: &lsquo;Morgen lopen we het voorstel door. Is [naam] erbij?&rsquo;</p></div></li></ul>
+<h3>De rekensom, voorbeeld</h3><p class="note">Het getal dat alles bepaalt is het advertentiebudget, en dat volgt uit zijn eigen cijfers. Zelfde voorbeeld als in <a href="https://claude.ai/artifact/4U4aF2yWe7MajnECJdmxxc" target="_blank" rel="noopener">de vragenlijst</a>.</p>
+<div class="rk">
+<div><span>Extra omzet die hij wil halen, komend jaar</span><b>&euro;&nbsp;90.000</b><i>eerste helft</i></div>
+<div><span>Wat een klant in het eerste jaar oplevert</span><b>&divide; &euro;&nbsp;4.500</b><i>vragenlijst: &euro;&nbsp;1.500 &times; 3 keer</i></div>
+<div><span>Nieuwe klanten nodig</span><b>= 20</b></div>
+<div><span>E&eacute;n op de vier aanvragen wordt klant</span><b>&divide; 25%</b><i>vragenlijst</i></div>
+<div><span>Aanvragen nodig per jaar</span><b>= 80</b><i>ongeveer 7 per maand</i></div>
+<div><span>Wat een aanvraag maximaal mag kosten</span><b>&times; &euro;&nbsp;337,50</b><i>vragenlijst, rekensom stap 01</i></div>
+<div class="tot"><span>Bovengrens advertentiebudget per jaar</span><b>= &euro;&nbsp;27.000</b><i>&euro;&nbsp;2.250 per maand</i></div>
+</div>
+<p class="note" style="margin-top:14px">&euro;&nbsp;2.250 per maand valt in de bandbreedte van <b>Enter</b> (&euro;&nbsp;1.000 tot &euro;&nbsp;2.500). Zo volgt het pakket uit de som. Het is een bovengrens: daaronder begin je, en de eerste aanvragen zijn duurder dan het doel. Zie <a href="https://claude.ai/artifact/DRmSDuqCbCatZbdvgeq5XU" target="_blank" rel="noopener">de tarieven</a> en <a href="https://claude.ai/artifact/3wvHd94vLGXJUD4voVhwH1" target="_blank" rel="noopener">het drieluik</a>.</p>
+<div class="key"><span class="k">De regel voor de AI</span><p class="big">Het portaal rekent, de AI schrijft, een mens geeft vrij.</p><p>Dezelfde regel als bij het advies uit de quickscan. Geen bedrag dat niet uit de tarieven komt, geen getal dat niet uit de rekensom komt, geen citaat dat niet in de aantekeningen staat. En niets gaat de deur uit zonder dat iemand het heeft nagekeken.</p></div>
+<div class="warn"><h4>Stuur het voorstel niet vooraf</h4><p>Een voorstel zonder uitleg wordt op &eacute;&eacute;n regel gelezen: de prijs. Dan begint de tweede helft met een verdediging in plaats van met zijn doel. Het voorstel gaat na het gesprek de deur uit, dezelfde dag.</p></div>
+</section>
+<section class="sec" id="voorstel"><div class="kicker">Het document</div><h2>Het voorstel, acht onderdelen</h2>
+<p class="note">In deze volgorde. Het begint bij zijn doel en komt pas bij onderdeel 6 uit bij de prijs. Alles daarvoor is de onderbouwing van dat bedrag.</p>
+<div class="tblwrap"><table class="vs"><thead><tr><th></th><th>Onderdeel</th><th>Wat erin staat</th><th>Komt uit</th></tr></thead><tbody>
+<tr><td>1</td><td>Wat we begrepen</td><td>Zijn doel in zijn eigen woorden en in &eacute;&eacute;n getal. Wat hij uit het gesprek wilde halen.</td><td>Eerste helft</td></tr>
+<tr><td>2</td><td>Wat we zagen</td><td>De drie bevindingen uit de quickscan, elk met het gevolg in zijn eigen getallen.</td><td>Quickscan</td></tr>
+<tr><td>3</td><td>De rekensom</td><td>Van het doel naar klanten, aanvragen per maand, wat een aanvraag mag kosten, en het advertentiebudget dat daarbij hoort. Plus de toets aan zijn capaciteit.</td><td>Portaal</td></tr>
+<tr><td>4</td><td>Het pakket, en waarom</td><td>Enter, Compete of Own. Het volgt uit het advertentiebudget, niet uit wat wij willen verkopen.</td><td>Tarieven</td></tr>
+<tr><td>5</td><td>Het plan en de eerste datum</td><td>Het fundament in vier weken, daarna het maandritme. En de datum waarop de eerste advertentie live staat: een datum, geen termijn.</td><td>Fundament</td></tr>
+<tr><td>6</td><td>Wat het kost</td><td>Apart, nooit als &eacute;&eacute;n totaal. Eenmalig: het fundament en de herstelposten uit de quickscan. Per maand: de retainer, het advertentiebudget en de uitrusting. Bij elk bedrag waar het naartoe gaat: naar ons, of rechtstreeks naar Google, Meta, Webmix of MailerLite.</td><td>Tarieven</td></tr>
+<tr><td>7</td><td>Jouw kant</td><td>De vijf afspraken hieronder, met een termijn per afspraak.</td><td>Dit document</td></tr>
+<tr><td>8</td><td>De afspraken</td><td>Maandelijks opzegbaar, voor allebei. Cijfers zijn leidend: werkt het niet, dan zeggen wij dat zelf. Wat in de retainer zit en wat een eigen project of partner is. Het voorstel is twee weken geldig.</td><td>Als het resultaat tegenvalt, ARENA-methode</td></tr>
+</tbody></table></div>
+<div class="lo" style="background:var(--orange100);border-radius:14px;padding:16px 20px;margin-top:18px"><p style="color:var(--orange-tx);margin:0;max-width:none"><b style="color:var(--orange-tx)">Nog open: de datum in onderdeel 5.</b> Die hangt aan &eacute;&eacute;n ding: wanneer de draaidag is. Plan A: de draaidag al bij het tekenen vastleggen, op dag 3 tot 5. Plan B: Google alvast aan, Meta na de montage. Mijn advies is plan A, want alleen dan kun je in de tweede helft een datum beloven.</p></div>
+</section>
+<section class="sec" id="minuten"><div class="kicker">Per minuut</div><h2>De 45 minuten</h2>
+<p class="note">Zeven blokken, in de volgorde van het voorstel. Ook dit gesprek is hard begrensd; dezelfde persoon als in de eerste helft voert het.</p>
+<div class="klok">
+<a href="#m0" style="flex:3" title="De aftrap">Aftrap</a>
+<a href="#m3" style="flex:7" title="Wat we begrepen en zagen">Begrepen</a>
+<a href="#m10" style="flex:8" title="De rekensom en het pakket">Rekensom</a>
+<a href="#m18" style="flex:7" title="Het plan en de eerste datum">Plan</a>
+<a href="#m25" style="flex:7" title="Wat het kost">Prijs</a>
+<a href="#m32" style="flex:7" title="Jouw kant en de afspraken">Jouw kant</a>
+<a href="#m39" style="flex:6" title="Het besluit">Besluit</a>
+</div><div class="klokl"><span>0</span><span>15</span><span>30</span><span>45</span></div>
+<article class="bl" id="m0"><div class="bh2"><span class="bt">0 &ndash; 3</span><h3>De aftrap</h3><span class="bm">3 MINUTEN</span></div><p class="bd">Terugkoppelen naar de eerste helft, en het doel van dit gesprek zetten.</p><div class="bg">
+<div class="bk2"><span class="kl">WAT JE ZEGT</span><ul class="zeg"><li>Vorige keer wilde je [wat hij op minuut 1 van de eerste helft zei]. Dit voorstel is ons antwoord daarop.</li><li>We hebben 45 minuten. Aan het eind wil ik weten: ja, nee, of wanneer je het weet.</li></ul></div>
+<div class="bk2">
+<span class="kl">WAT JE OPHAALT</span><ul class="ls"><li>Is de beslisser erbij? Zo niet: wie beslist, en wanneer spreken we die?</li></ul>
+</div></div><div class="val"><b>Valkuil.</b> Meteen naar de prijs bladeren. Wie de prijs ziet voor de som, leest de rest als verdediging.</div></article>
+<article class="bl" id="m3"><div class="bh2"><span class="bt">3 &ndash; 10</span><h3>Wat we begrepen en zagen</h3><span class="bm">7 MINUTEN</span></div><p class="bd">Onderdeel 1 en 2 van het voorstel. Controleren of het beeld nog klopt, niet opnieuw uitleggen.</p><div class="bg">
+<div class="bk2"><span class="kl">WAT JE ZEGT</span><ul class="zeg"><li>Dit is je doel, zo hebben we het opgeschreven. Klopt dat nog?</li><li>Dit zagen we in de quickscan. Is er sinds de vorige keer iets veranderd?</li></ul></div>
+<div class="bk2">
+<span class="kl">WAT JE LAAT ZIEN</span><ul class="ls"><li>Het voorstel, onderdeel 1 en 2</li></ul>
+<span class="kl">WAT JE OPHAALT</span><ul class="ls"><li>Correcties op het doel of de getallen. Rekent het portaal mee, dan zie je direct wat het met het budget doet.</li></ul>
+</div></div><div class="val"><b>Valkuil.</b> De quickscan opnieuw uitleggen. Dat was de eerste helft.</div></article>
+<article class="bl" id="m10"><div class="bh2"><span class="bt">10 &ndash; 18</span><h3>De rekensom en het pakket</h3><span class="bm">8 MINUTEN</span></div><p class="bd">Onderdeel 3 en 4. De som maakt de keuze, niet wij.</p><div class="bg">
+<div class="bk2"><span class="kl">WAT JE ZEGT</span><ul class="zeg"><li>Om [doel] te halen heb je ongeveer [aantal] aanvragen per maand nodig.</li><li>Een aanvraag mag je volgens je eigen cijfers maximaal [bedrag] kosten. Daaruit volgt een advertentiebudget van hooguit [bedrag] per maand.</li><li>Daarom adviseren we [pakket]. Wil je minder uitgeven, dan wordt het doel lager. De prijs niet.</li></ul></div>
+<div class="bk2">
+<span class="kl">WAT JE LAAT ZIEN</span><ul class="ls"><li>Het voorstel, onderdeel 3 en 4</li><li>Het drieluik</li></ul>
+<span class="kl">WAT JE OPHAALT</span><ul class="ls"><li>Kan hij [aantal] aanvragen per maand aan? Anders is het doel te hoog, niet het budget te laag.</li></ul>
+</div></div><div class="val"><b>Valkuil.</b> Het pakket verdedigen in plaats van de som uitleggen. Als de som klopt, verdedigt het pakket zichzelf.</div></article>
+<article class="bl" id="m18"><div class="bh2"><span class="bt">18 &ndash; 25</span><h3>Het plan en de eerste datum</h3><span class="bm">7 MINUTEN</span></div><p class="bd">Onderdeel 5. Momentum first: een datum die hij kan onthouden.</p><div class="bg">
+<div class="bk2"><span class="kl">WAT JE ZEGT</span><ul class="zeg"><li>Na het tekenen en de toegangen bouwen we in vier weken het fundament.</li><li>Op [datum] staat je eerste advertentie live. De eerste aanvragen zijn duur; daarna worden ze goedkoper, omdat we sturen op wat we zien.</li></ul></div>
+<div class="bk2">
+<span class="kl">WAT JE LAAT ZIEN</span><ul class="ls"><li>Het voorstel, onderdeel 5</li></ul>
+<span class="kl">WAT JE OPHAALT</span><ul class="ls"><li>Een datum voor de draaidag, en wie er op beeld kan</li></ul>
+</div></div><div class="val"><b>Valkuil.</b> Een termijn noemen (&lsquo;binnen zes weken&rsquo;) in plaats van een datum. Een termijn onthoudt niemand; een datum wel.</div></article>
+<article class="bl" id="m25"><div class="bh2"><span class="bt">25 &ndash; 32</span><h3>Wat het kost</h3><span class="bm">7 MINUTEN</span></div><p class="bd">Onderdeel 6. De bedragen noemen en dan stil zijn.</p><div class="bg">
+<div class="bk2"><span class="kl">WAT JE ZEGT</span><ul class="zeg"><li>Eenmalig: het fundament, &euro;&nbsp;4.500. De herstelposten uit de quickscan gaan rechtstreeks via Webmix.</li><li>Per maand: [pakket], [bedrag]. Het advertentiebudget gaat rechtstreeks naar Google en Meta, niet naar ons.</li><li>Er zit nergens een marge van ons op iets van een ander.</li></ul></div>
+<div class="bk2">
+<span class="kl">WAT JE LAAT ZIEN</span><ul class="ls"><li>Het voorstel, onderdeel 6</li><li>De tarieven, voor wie alles wil nalezen</li></ul>
+<span class="kl">WAT JE OPHAALT</span><ul class="ls"><li>Zijn eerste reactie. Die zegt meer dan zijn vraag.</li></ul>
+</div></div><div class="val"><b>Valkuil.</b> Na het bedrag doorpraten, een excuus maken of korting aanbieden. De tarieven zijn voor iedereen gelijk.</div></article>
+<article class="bl" id="m32"><div class="bh2"><span class="bt">32 &ndash; 39</span><h3>Jouw kant en de afspraken</h3><span class="bm">7 MINUTEN</span></div><p class="bd">Onderdeel 7 en 8. Wat wij van hem nodig hebben, en wat we elkaar beloven.</p><div class="bg">
+<div class="bk2"><span class="kl">WAT JE ZEGT</span><ul class="zeg"><li>Vijf dingen hebben we van je nodig. Zonder die vijf vertellen de cijfers niet de waarheid.</li><li>Je kunt elke maand opzeggen, en wij ook. Werkt het niet, dan zeggen wij dat zelf, met de cijfers erbij.</li></ul></div>
+<div class="bk2">
+<span class="kl">WAT JE LAAT ZIEN</span><ul class="ls"><li>Het voorstel, onderdeel 7 en 8</li></ul>
+<span class="kl">WAT JE OPHAALT</span><ul class="ls"><li>Per afspraak: haalbaar, en per wanneer?</li></ul>
+</div></div><div class="val"><b>Valkuil.</b> Hier snel overheen praten omdat het gesprek goed loopt. Dit is het deel dat je in maand drie nodig hebt.</div></article>
+<article class="bl fluit" id="m39"><div class="bh2"><span class="bt">39 &ndash; 45</span><h3>Het besluit</h3><span class="bm">6 MINUTEN</span></div><p class="bd">Ja, nee, of een datum. Nooit &lsquo;we horen van elkaar&rsquo;.</p><div class="bg">
+<div class="bk2"><span class="kl">WAT JE ZEGT</span><ul class="zeg"><li>Wat heb je nog nodig om te beslissen?</li><li>Ja: dan sturen we vandaag de overeenkomst en de machtiging, en plannen we de start.</li><li>Nog niet: op welke datum weet je het, en wat is er dan anders dan nu?</li></ul></div>
+<div class="bk2">
+<span class="kl">WAT JE OPHAALT</span><ul class="ls"><li>Ja, nee, of een datum. Bij nee: waarom, in zijn woorden.</li></ul>
+</div></div><div class="val"><b>Valkuil.</b> Een &lsquo;misschien&rsquo; accepteren zonder datum. Later zonder datum is een nee waar je alleen nog niet van weet.</div></article>
+</section>
+<section class="sec" id="jouwkant"><div class="kicker">Onderdeel 7</div><h2>Jouw kant</h2>
+<p class="note">De helft van de trechter is van de klant. Deze vijf afspraken staan in het voorstel, met een termijn per afspraak. Het is geen garantie van ons en geen straf voor hem: het is wat nodig is om de cijfers de waarheid te laten vertellen.</p>
+<ol class="jk"><li><div><b>De toegangen</b><span>Binnen tien werkdagen na het tekenen, via de toegangenlijst. Het fundament start pas als ze er zijn.</span></div></li><li><div><b>E&eacute;n beslisser</b><span>E&eacute;n persoon die over doelgroep, boodschap en budget beslist, en binnen twee werkdagen reageert.</span></div></li><li><div><b>Opvolging</b><span>Elke aanvraag binnen [de tijd uit de eerste helft] opgevolgd door [naam], met een vervanger bij vakantie of ziekte.</span></div></li><li><div><b>Een oordeel per aanvraag</b><span>In het marketingdashboard: goede aanvraag of niet, en waarom. E&eacute;n klik. Zonder oordelen kunnen we alleen op aantal sturen, niet op kwaliteit.</span></div></li><li><div><b>Beeld en inhoud</b><span>Intake deel 2 binnen vijf werkdagen, en &eacute;&eacute;n dagdeel voor de draaidag, met iemand die het werk doet op beeld.</span></div></li></ol>
+<div class="key"><span class="k">Als een afspraak niet lukt</span><p class="big">Dan zie je het in de cijfers, en zeggen wij het.</p><p>Toegangen die uitblijven schuiven de startdatum op. Opvolging die blijft liggen is een van de tien oorzaken in <a href="https://claude.ai/artifact/CEXwWMJeGjdBSig6XDMC2y" target="_blank" rel="noopener">&lsquo;Als het resultaat tegenvalt&rsquo;</a>, met een eigen cijferpatroon. We beloven geen resultaat; we beloven dat we het zeggen als het niet werkt, en waarom. Deze vijf afspraken maken dat &lsquo;waarom&rsquo; eerlijk.</p></div>
+</section>
+<section class="sec" id="besluit"><div class="kicker">Minuut 39 tot 45</div><h2>Het besluit</h2>
+<div class="uit3"><div class="j"><b>Ja</b><p>Dezelfde dag de overeenkomst en de machtiging. De startdatum en de live-datum in &eacute;&eacute;n bevestiging, zodat uitloop aan zijn kant zichtbaar is. Door naar stap 05: tekenen.</p></div><div class="d"><b>Een datum</b><p>Een concrete dag waarop hij het weet, en wat er dan anders is dan nu. Op die dag bel je; je mailt niet. Het voorstel blijft twee weken geldig.</p></div><div class="n"><b>Nee</b><p>Vastleggen waarom, in zijn woorden. Een korte mail, met de vraag of hij de nieuwsbrief wil. Iemand die nu nee zegt, kan over een jaar wel passen.</p></div></div>
+<h3>Vier bezwaren, vier antwoorden</h3><p class="note">Ook de bezwarenkaart voor de eerste helft. Benoem het bezwaar in plaats van het te weerleggen: vraag welk van de vier het is.</p>
+<div class="tblwrap"><table class="vh"><thead><tr><th>Bezwaar</th><th>Hoe het klinkt</th><th>Wat je doet</th></tr></thead><tbody>
+<tr><td>Prijs</td><td>&lsquo;Het is veel geld.&rsquo;</td><td>Terug naar de som: wat levert een klant op, hoeveel heb je er nodig, wat mag dat kosten? Is het echt te veel, dan wordt het doel lager. Nooit de prijs.</td></tr>
+<tr><td>Vertrouwen</td><td>&lsquo;Hoe weet ik dat het werkt?&rsquo;</td><td>Dat weet niemand vooraf, en dat zeggen we. Wel: je ziet het elke dag in het dashboard, je kunt elke maand opzeggen, en wij zeggen het zelf als het niet werkt.</td></tr>
+<tr><td>Timing</td><td>&lsquo;Niet nu.&rsquo;</td><td>Vragen wat er dan anders is. Is het echt timing, dan een datum afspreken. Is het iets anders, dan is dat het echte bezwaar.</td></tr>
+<tr><td>Besluitvorming</td><td>&lsquo;Ik moet het nog voorleggen.&rsquo;</td><td>Aan wie, en wanneer? Aanbieden om het samen te doen. Een voorstel dat zonder ons wordt voorgelegd, wordt op prijs beoordeeld.</td></tr>
+</tbody></table></div>
+<h3>Wat mag schuiven, en wat nooit</h3><div class="mg"><div class="ja"><span class="kl">MAG SCHUIVEN</span><p>Het doel, en daarmee het budget en het pakket. De startdatum. Welke dienst we als eerste in de campagne zetten.</p></div><div class="nee"><span class="kl">SCHUIFT NOOIT</span><p>De tarieven: geen korting, voor niemand. Het fundament: niet los, niet in delen, niet overslaan. Maandelijks opzegbaar: niet langer vastleggen om een lagere prijs te krijgen.</p></div></div>
+<div class="warn"><h4>De gevaarlijkste toegeving</h4><p>Korting op het fundament. Dat bedrag is opgebouwd uit 52,5 uur werk die je toch maakt. Moet er iets wijken, laat dan het doel wijken, niet de prijs.</p></div>
+</section>
+<section class="sec" id="erna"><div class="kicker">Na het fluitsignaal</div><h2>Dezelfde dag</h2>
+<p class="note">Het voorstel gaat nu pas de deur uit, met de afspraken uit het gesprek erbij.</p>
+<div class="mail"><div class="mh">Onderwerp: <b>Het voorstel, zoals besproken</b></div><div class="mb"><p>Hoi [voornaam],</p><p>Dank voor het gesprek. Hierbij het voorstel dat we samen hebben doorgelopen: <span class="vv">[link]</span>.</p><ul><li><span class="vv">[het doel, in zijn woorden]</span></li><li><span class="vv">[het pakket, en waarom]</span></li><li><span class="vv">[de datum waarop de eerste advertentie live staat]</span></li></ul><p><span class="vv">[Bij ja: de overeenkomst en de machtiging zitten erbij.]</span> <span class="vv">[Bij een datum: ik bel je op [dag datum].]</span></p><p>Het voorstel is geldig tot <span class="vv">[datum, twee weken]</span>.</p><p>Groet,<br>[naam]</p></div></div>
+<h3>Opvolgen</h3><ul class="ls" style="max-width:760px"><li>Op de afgesproken datum bellen, niet mailen.</li><li>Geen reactie na twee weken: &eacute;&eacute;n keer bellen. Daarna wordt het &lsquo;later&rsquo;: &eacute;&eacute;n bericht over drie maanden, zoals in stap 01.</li><li>Alles op de klantkaart: de uitkomst, het bezwaar, de datum.</li></ul>
+<h3>Wat het ons kost</h3><p class="note">Zelfde getallen als in <a href="https://claude.ai/artifact/2BAf88dzpxzH8mj7DK1gT6" target="_blank" rel="noopener">de eerste helft</a>: voorstel opstellen een uur (met het concept uit het portaal), de tweede helft een uur (45 minuten plus vastleggen), opvolgen een half uur.</p>
+</section>
+<div class="foot">James Robinson &middot; De tweede helft &middot; werkdocument</div>
+</main>
+<script>
+(function(){var b=document.getElementById('tg');if(!b)return;
+b.addEventListener('click',function(){var r=document.documentElement;
+var d=r.getAttribute('data-theme')||(window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+r.setAttribute('data-theme',d==='dark'?'light':'dark');});})();
+</script>
+</body></html>
