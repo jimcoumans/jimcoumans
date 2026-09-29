@@ -212,6 +212,44 @@ h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
   .ch{justify-self:start}
 }
 
+.qk{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:22px}
+.qk div{background:var(--card);border:1px solid var(--ln-s);border-radius:14px;padding:16px 18px}
+.qk b{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.06em;color:var(--tx3);margin-bottom:6px;font-weight:500}
+.qk span{display:block;font-size:14.5px;line-height:1.5}
+.qh{font-size:19px;margin:44px 0 6px}
+.qn{font-size:15px;color:var(--tx2);max-width:78ch;margin:0 0 14px}
+.qt{width:100%;border-collapse:collapse;font-size:14px;margin-top:8px;min-width:880px}
+.qt th,.qt td{text-align:left;padding:11px 10px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.qt thead th{font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.qt td.nr{font-family:var(--fm);font-size:11.5px;color:var(--tx3);width:28px}
+.qt td.wat b{display:block;font-weight:600;font-size:14.5px}
+.qt td.wat span{display:block;color:var(--tx2);font-size:13px;margin-top:2px;line-height:1.45}
+.qt td{color:var(--tx2);line-height:1.45}
+.qt td.g{color:var(--green-tx)} .qt td.r{color:var(--red-tx)}
+.qt tr.grp td{background:var(--alt);font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;color:var(--tx);padding:9px 10px}
+.wie{font-family:var(--fm);font-size:9.5px;letter-spacing:.04em;border-radius:5px;padding:3px 7px;white-space:nowrap;display:inline-block}
+.wie.tool{background:var(--b100);color:var(--act)} .wie.ai{background:var(--lime100);color:var(--lime-tx)} .wie.mens{background:var(--orange100);color:var(--orange-tx)}
+.post{display:block;font-size:12.5px;color:var(--tx);margin-top:4px}
+.vp{font-family:var(--fm);font-size:10px;color:var(--orange-tx)}
+.qflow{list-style:none;margin:18px 0 0;padding:0;display:grid;gap:10px}
+.qflow li{display:grid;grid-template-columns:150px 1fr;gap:16px;background:var(--card);border:1px solid var(--ln-s);border-radius:14px;padding:14px 18px}
+.qflow li.nu{border-color:var(--act);box-shadow:inset 0 0 0 1px var(--act)}
+.qflow b{font-size:15px}
+.qflow span{font-size:14.5px;color:var(--tx2);line-height:1.5}
+.qgeld{display:grid;gap:10px;margin-top:16px}
+.qgeld div{border-left:3px solid var(--act);background:var(--b50);border-radius:0 12px 12px 0;padding:13px 16px}
+.qgeld b{display:block;font-size:14.5px;font-weight:600;margin-bottom:4px}
+.qgeld span{display:block;font-size:14.5px;color:var(--tx2);line-height:1.5}
+.qgeld em{font-style:normal;color:var(--tx)}
+.qfase{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+.qfase div{background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:18px 20px;border-top:4px solid var(--ln)}
+.qfase div.f1{border-top-color:var(--orange-tx)} .qfase div.f2{border-top-color:var(--act)} .qfase div.f3{border-top-color:var(--lime)}
+.qfase .fl{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.06em;color:var(--tx3);margin-bottom:6px}
+.qfase b{display:block;font-size:16px;margin-bottom:6px}
+.qfase p{font-size:14px;color:var(--tx2);margin:0 0 8px;line-height:1.5}
+.qfase .tijd{font-family:var(--fm);font-size:11px;color:var(--tx)}
+@media (max-width:860px){.qfase{grid-template-columns:1fr}.qflow li{grid-template-columns:1fr;gap:4px}}
+
 .idx{display:grid;gap:12px;margin-top:24px}
 .ix{display:grid;grid-template-columns:56px 1fr auto;gap:18px;align-items:start;background:var(--card);border:1px solid var(--ln-s);border-radius:18px;padding:20px 22px;text-decoration:none;color:inherit}
 .ix .n{font-family:var(--fd);font-size:28px;font-weight:700;letter-spacing:-.02em;color:var(--tx3);line-height:1}
@@ -244,8 +282,8 @@ h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
 <main class="wrap">
 <section class="sec" id="index"><div class="kicker">&Eacute;&eacute;n onderwerp, &eacute;&eacute;n leidend document</div><h2>De acht stappen</h2><div class="idx">
 <div class="ix"><span class="n">01</span><div><h3>Van aanvraag tot afspraak</h3><p>Leadformulier, video, een vragenlijst van vijftien vragen die automatisch kwalificeert, en een reeks voor wie afhaakt. Groen plant zelf de eerste helft in.</p><div class="dl"><a href="https://claude.ai/artifact/4U4aF2yWe7MajnECJdmxxc" target="_blank" rel="noopener">Van aanvraag tot afspraak</a></div><p class="op"><b>Nog open:</b> Een formuliertool kiezen; De video opnemen; De twee oranje drempels toetsen aan eigen accounts</p></div><span class="stt klaar">UITGEWERKT</span></div>
-<div class="ix"><span class="n">02</span><div><h3>De quickscan</h3><p>Wat wij v&oacute;&oacute;r de eerste helft zelf uitzoeken, en het scanrapport dat daaruit komt.</p><div class="dl"><a href="#u02">Uitwerking hieronder</a></div><p class="op"><b>Nog open:</b> Scanprotocol; Scanrapport</p></div><span class="stt open">NOG NIET UITGEWERKT</span></div>
-<div class="ix"><span class="n">03</span><div><h3>De eerste helft</h3><p>Het eerste gesprek: 45 minuten diagnose, hard begrensd. Eerst over de klant, dan over ons, dan de drie retainers. De tweede helft wordt gepland voordat de klant opstaat.</p><div class="dl"><a href="https://claude.ai/artifact/2BAf88dzpxzH8mj7DK1gT6" target="_blank" rel="noopener">De eerste helft</a><a href="https://claude.ai/artifact/N4o7G7tEAuguyAUTnaj4Vs" target="_blank" rel="noopener">De trechter</a><a href="https://claude.ai/artifact/6esJ97gyMhPoqK9vEPNGpJ" target="_blank" rel="noopener">Doel narekenen</a><a href="https://claude.ai/artifact/3wvHd94vLGXJUD4voVhwH1" target="_blank" rel="noopener">Drieluik</a><a href="https://claude.ai/artifact/CEXwWMJeGjdBSig6XDMC2y" target="_blank" rel="noopener">Als het resultaat tegenvalt</a><a href="https://claude.ai/artifact/TCKWH7aLc9CRhppchdUsJ4" target="_blank" rel="noopener">Waarom deze keuzes</a><a href="https://claude.ai/artifact/DqFd3EsMp5uryN8W5nB9DV" target="_blank" rel="noopener">De ARENA-methode</a></div><p class="op"><b>Nog open:</b> De bezwarenkaart; De partnerlijst; Het scanrapport (stap 02)</p></div><span class="stt klaar">UITGEWERKT</span></div>
+<div class="ix"><span class="n">02</span><div><h3>De quickscan</h3><p>Een half uur kijken naar de website en de markt, van buitenaf, v&oacute;&oacute;r de eerste helft. Zestien punten met een vaste norm, drie bevindingen met een gevolg in geld, en een scanrapport van &eacute;&eacute;n A4.</p><div class="dl"><a href="#u02">Uitwerking hieronder</a></div><p class="op"><b>Nog open:</b> Sjabloon voor het A4; De gereedschappen inrichten; Normen met een * toetsen na tien scans; Fase 2 en 3 bouwen in het marketingdashboard</p></div><span class="stt deels">DEELS</span></div>
+<div class="ix"><span class="n">03</span><div><h3>De eerste helft</h3><p>Het eerste gesprek: 45 minuten diagnose, hard begrensd. Eerst over de klant, dan over ons, dan de drie retainers. De tweede helft wordt gepland voordat de klant opstaat.</p><div class="dl"><a href="https://claude.ai/artifact/2BAf88dzpxzH8mj7DK1gT6" target="_blank" rel="noopener">De eerste helft</a><a href="https://claude.ai/artifact/N4o7G7tEAuguyAUTnaj4Vs" target="_blank" rel="noopener">De trechter</a><a href="https://claude.ai/artifact/6esJ97gyMhPoqK9vEPNGpJ" target="_blank" rel="noopener">Doel narekenen</a><a href="https://claude.ai/artifact/3wvHd94vLGXJUD4voVhwH1" target="_blank" rel="noopener">Drieluik</a><a href="https://claude.ai/artifact/CEXwWMJeGjdBSig6XDMC2y" target="_blank" rel="noopener">Als het resultaat tegenvalt</a><a href="https://claude.ai/artifact/TCKWH7aLc9CRhppchdUsJ4" target="_blank" rel="noopener">Waarom deze keuzes</a><a href="https://claude.ai/artifact/DqFd3EsMp5uryN8W5nB9DV" target="_blank" rel="noopener">De ARENA-methode</a></div><p class="op"><b>Nog open:</b> De bezwarenkaart; De partnerlijst; Sjabloon voor het scanrapport (stap 02)</p></div><span class="stt klaar">UITGEWERKT</span></div>
 <div class="ix"><span class="n">04</span><div><h3>De rust en de tweede helft</h3><p>In de rust maken wij het voorstel op maat. In de tweede helft &mdash; ook 45 minuten &mdash; lopen we het samen door, tot ja, nee of een datum.</p><div class="dl"><a href="https://claude.ai/artifact/CEXwWMJeGjdBSig6XDMC2y" target="_blank" rel="noopener">Als het resultaat tegenvalt</a><a href="#u04">Uitwerking hieronder</a></div><p class="op"><b>Nog open:</b> Voorstelsjabloon; Het jaarplan; Het blad &lsquo;jouw kant&rsquo;; Onderhandelingsgrenzen</p></div><span class="stt open">NOG NIET UITGEWERKT</span></div>
 <div class="ix"><span class="n">05</span><div><h3>Tekenen en betalen</h3><p>Overeenkomst, voorwaarden, machtiging en de vertrekregeling.</p><div class="dl"><a href="#u05">Uitwerking hieronder</a></div><p class="op"><b>Nog open:</b> Overeenkomst; Algemene voorwaarden; Incassomachtiging; Vertrekregeling; Legacy- en scopebeleid</p></div><span class="stt open">NOG NIET UITGEWERKT</span></div>
 <div class="ix"><span class="n">06</span><div><h3>Onboarding</h3><p>Intake deel 2, de toegangen en de kick-off. Het gevaarlijkste moment: de klant heeft betaald en ziet nog niets.</p><div class="dl"><a href="https://claude.ai/artifact/E6xKJ1iY2hJUuxbw9XDQW3" target="_blank" rel="noopener">Intake deel 2</a><a href="https://claude.ai/artifact/VpvAd5jmXtjmkZGpv59Qp1" target="_blank" rel="noopener">Antwoorden beoordelen</a><a href="#u06">Uitwerking hieronder</a></div><p class="op"><b>Nog open:</b> De toegangenlijst; Het kick-offbericht</p></div><span class="stt deels">DEELS</span></div>
@@ -254,42 +292,56 @@ h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
 </div></section>
 <section class="sec" id="nog"><div class="kicker">Tot ze een eigen document hebben</div><h2>Nog uit te werken</h2><p class="note">De stappen zonder eigen document, met per onderdeel welk middel nodig is, welke vragen er beantwoord moeten worden, welke keuze de klant maakt en wat wij doen. Zodra een stap een eigen document krijgt, verdwijnt hij hier.</p>
 <div class="bkop" id="u02" style="margin-top:56px"><div class="kicker">Stap 02</div><h2>De quickscan</h2></div>
-<article class="stp" id="s02">
-<div class="sh"><span class="sn">02</span><h3>De quickscan</h3><span class="sw">Tussen vragenlijst en eerste helft &middot; een half uur</span></div>
-<p class="si">Je komt niet binnen met vragen, je komt binnen met een diagnose. Dat verandert het gesprek van een verkooppraatje in een consult, en het verandert de prijsvraag van &lsquo;wat kost het&rsquo; in &lsquo;wat kost het mij nu dat dit niet op orde is&rsquo;.</p>
-<div class="cols">
-<section class="col"><span class="cl">Verkoopondersteuning</span>
-<ul class="ml">
-<li><div><b>Scanprotocol</b><span class="d">Tien punten, waarmee je ze checkt, en wanneer iets rood, oranje of groen is.</span></div><em class="ch no">nog niet</em></li>
-<li><div><b>Scanrapport voor de klant</b><span class="d">Tien punten met kleur, en per rood punt het gevolg in leads of geld.</span></div><em class="ch no">nog niet</em></li>
-<li><div><b>De drie hostinguitkomsten</b><span class="d">Niets doen, verhuizen, of blijven met een permanente kanttekening.</span></div><em class="ch mid">finetunen</em></li>
-</ul>
-</section>
-<section class="col"><span class="cl">Vragen</span>
-<span class="sub">Wij beantwoorden</span><ul class="ql w">
-<li>Waar staat de site, hoe snel laadt hij, wat zeggen de Core Web Vitals?</li>
-<li>Welk CMS en welke bouwer? WordPress met Elementor betekent dat we zelf door kunnen; iets anders kost tijd en maakt ons afhankelijk.</li>
-<li>Staat er meting &mdash; en meet die &uuml;berhaupt een aanvraag, of alleen bezoek?</li>
-<li>Waar komt een aanvraag binnen, krijgt iemand daar bericht van, en is er een bedankpagina?</li>
-<li>Staat er cookie-consent, en blokkeert dat de meting?</li>
-<li>Bestaan de advertentieaccounts, wie is eigenaar, en wat staat erin aan historie?</li>
-<li>Staat er een productfeed, en klopt die?</li>
-<li>Hoe groot is de e-maillijst, waar staat hij, en is er toestemming?</li>
-<li>Wat vind je als je hun merknaam zoekt?</li>
-<li>Adverteren concurrenten op hun termen, en met welke boodschap?</li>
-</ul>
-</section>
-<section class="col"><span class="cl">Keuzes voor de klant</span>
-<p class="leeg">Geen keuze op dit moment.</p>
-</section>
-<section class="col"><span class="cl">Wat wij doen</span><ol class="sl">
-<li>Scan uitvoeren en vastleggen.</li>
-<li>Herstelbedrag bepalen en hostingadvies vaststellen.</li>
-<li>De drie scherpste bevindingen kiezen &mdash; die worden de opening van het gesprek.</li>
-<li>Concept-eenmalig bedrag berekenen. Dat noem je nog niet.</li>
-</ol></section>
-</div>
-<div class="lo"><span class="ll">Let op</span><p>Dit rapport wordt je sterkste verkoopmiddel, want het gaat over hen en niet over jou. Maar alleen met een gevolg erbij. &lsquo;Je meting staat niet goed&rsquo; is een constatering. &lsquo;Je meet nu ongeveer vier op de tien aanvragen niet, dus elke beslissing die je neemt gaat over de verkeerde helft&rsquo; is een argument.</p></div>
+<article class="stp" id="s02q">
+<p class="si">Een half uur kijken naar de website en de markt, v&oacute;&oacute;r de eerste helft. Van buitenaf: we hebben nog geen toegang. Er komen drie dingen uit: drie bevindingen met een gevolg in geld, een scanrapport van &eacute;&eacute;n A4, en een werklijst voor het fundament.</p>
+<div class="qk"><div><b>WANNEER</b><span>Zodra de afspraak geboekt is. Uiterlijk &eacute;&eacute;n werkdag v&oacute;&oacute;r de eerste helft klaar.</span></div><div><b>WIE</b><span>Een vaste medewerker. Niet Jim Coumans of Jim Kikken: vaste gereedschappen en vaste normen, dus iedereen kan het.</span></div><div><b>HOE LANG</b><span>Een half uur. De eerste tien keer een uur. Met AI: tien minuten nakijken.</span></div><div><b>WAT WE GEBRUIKEN</b><span>De vragenlijst: de website, het gebied, wat hij verkoopt, waar hij nu aan uitgeeft, en de getallen voor de rekensom.</span></div></div>
+<h3 class="qh">De checklist</h3>
+<p class="qn">Zestien punten met de hand, acht erbij zodra het met AI kan. Per punt: waarmee je het bekijkt, wanneer het groen of rood is, en wie het doet. Wat tussen groen en rood valt is oranje. Normen met een <span class="vp">*</span> zijn een voorstel: we toetsen ze na de eerste tien scans. De rest zijn vaste normen, zoals die van Google voor snelheid.</p>
+<div class="tblwrap"><table class="qt"><thead><tr><th></th><th>Wat we bekijken</th><th>Waarmee</th><th>Groen</th><th>Rood</th><th>Wie</th><th>Gevolg of post</th></tr></thead><tbody>
+<tr class="grp"><td colspan="7">TECHNIEK &middot; KAN HIJ METEN, EN IS DE SITE IN ORDE</td></tr>
+<tr><td class="nr">1</td><td class="wat"><b>Snelheid op mobiel</b><span>Homepage en de belangrijkste dienstpagina.</span></td><td>PageSpeed Insights</td><td class="g">Grootste element binnen 2,5 seconden</td><td class="r">Langer dan 4 seconden</td><td><span class="wie tool">TOOL</span></td><td>Post: snelheid in de site &middot; &euro;&nbsp;750 via Webmix</td></tr>
+<tr><td class="nr">2</td><td class="wat"><b>Beveiliging</b><span>Certificaat en versleuteling.</span></td><td>SSL Labs</td><td class="g">Score A <span class="vp">*</span></td><td class="r">Geen https, verlopen certificaat, of lager dan B</td><td><span class="wie tool">TOOL</span></td><td>Via de hosting</td></tr>
+<tr><td class="nr">3</td><td class="wat"><b>Redirects en dode links</b><span>Interne links die nergens heen gaan, en omleidingen die doorverwijzen naar een omleiding.</span></td><td>Screaming Frog (gratis tot 500 pagina&rsquo;s)</td><td class="g">Geen dode interne links <span class="vp">*</span></td><td class="r">Meer dan vijf dode links, of ketens van omleidingen</td><td><span class="wie tool">TOOL</span></td><td>Post: redirects en dode links &middot; &euro;&nbsp;500 via Webmix</td></tr>
+<tr><td class="nr">4</td><td class="wat"><b>E-mailauthenticatie</b><span>Of mail van hun domein in de spam belandt.</span></td><td>MXToolbox</td><td class="g">SPF en DMARC staan, DKIM gevonden</td><td class="r">SPF of DMARC ontbreekt</td><td><span class="wie tool">TOOL</span></td><td>Post: e-mailauthenticatie &middot; &euro;&nbsp;250 via Webmix</td></tr>
+<tr><td class="nr">5</td><td class="wat"><b>Hosting</b><span>Waar de site draait en of dat een partij is waar we mee kunnen werken.</span></td><td>IP- en DNS-opzoeking</td><td class="g">Bekende partij, snelheid in orde</td><td class="r">Onbekende of trage partij</td><td><span class="wie mens">MENS</span></td><td>Een van drie: niets doen, verhuizen (&euro;&nbsp;85 p/m via Webmix), of blijven met een kanttekening</td></tr>
+<tr><td class="nr">6</td><td class="wat"><b>Meting</b><span>Staat er Google Analytics, en maar &eacute;&eacute;n keer?</span></td><td>Tag Assistant</td><td class="g">GA4 staat, &eacute;&eacute;n keer</td><td class="r">Geen GA4, of dubbel</td><td><span class="wie tool">TOOL</span></td><td>In het fundament</td></tr>
+<tr><td class="nr">7</td><td class="wat"><b>Toestemming</b><span>Werkt de cookiebanner, en wachten de meetcodes op toestemming?</span></td><td>De browser, zonder toestemming te geven</td><td class="g">Banner staat, codes wachten</td><td class="r">Geen banner, of codes gaan af v&oacute;&oacute;r toestemming</td><td><span class="wie mens">MENS</span></td><td>Post: Cookiescript &middot; &euro;&nbsp;150 p/j via Webmix</td></tr>
+<tr><td class="nr">8</td><td class="wat"><b>Platform</b><span>Waarop de site gebouwd is, en of er een meetcode in kan.</span></td><td>Wappalyzer</td><td class="g">Er kan code in</td><td class="r">Er kan geen code in</td><td><span class="wie mens">MENS</span></td><td>Rood is de stopknop: de afspraak gaat niet door</td></tr>
+<tr><td class="nr">9</td><td class="wat"><b>Vindbaarheid</b><span>Staan de belangrijkste pagina&rsquo;s in Google?</span></td><td>Google: site:domein.nl</td><td class="g">Dienstpagina&rsquo;s gevonden <span class="vp">*</span></td><td class="r">Bijna niets gevonden, of pagina&rsquo;s op &lsquo;niet indexeren&rsquo;</td><td><span class="wie mens">MENS</span></td><td>In het fundament</td></tr>
+<tr class="grp"><td colspan="7">HET AANVRAAGPAD &middot; WORDT EEN BEZOEKER EEN AANVRAAG</td></tr>
+<tr><td class="nr">10</td><td class="wat"><b>Aanvragen op mobiel</b><span>Kun je vanaf de homepage iets aanvragen?</span></td><td>Je eigen telefoon</td><td class="g">Binnen twee tikken een formulier of een klikbaar nummer <span class="vp">*</span></td><td class="r">Geen zichtbare manier om iets aan te vragen</td><td><span class="wie mens">MENS</span></td><td>Landingspagina, in het fundament</td></tr>
+<tr><td class="nr">11</td><td class="wat"><b>Bedankpagina</b><span>Volgt er na verzenden een eigen pagina? Dat is waar een aanvraag geteld wordt.</span></td><td>De crawl of de formulierinstelling. Niet zelf een aanvraag doen.</td><td class="g">Eigen bedankpagina</td><td class="r">Alleen een melding op dezelfde pagina</td><td><span class="wie mens">MENS</span></td><td>Zonder dit kunnen advertenties niet leren wat werkt</td></tr>
+<tr><td class="nr">12</td><td class="wat"><b>Wat verkoop je, meteen</b><span>Is binnen vijf seconden duidelijk wat ze verkopen, aan wie en waar?</span></td><td>Je eigen ogen, op mobiel</td><td class="g">Aanbod, doelgroep en gebied boven de vouw <span class="vp">*</span></td><td class="r">Alleen een slogan</td><td><span class="wie mens">MENS</span></td><td>Propositie, in het fundament</td></tr>
+<tr class="grp"><td colspan="7">DE MARKT &middot; WIE STAAT ER NAAST HEM</td></tr>
+<tr><td class="nr">13</td><td class="wat"><b>Adverteert de klant al?</b><span>Leggen we naast wat hij in de vragenlijst invulde.</span></td><td>Google Ads Transparency Center en Meta Ad Library</td><td class="g">&mdash;</td><td class="r">&mdash;</td><td><span class="wie mens">MENS</span></td><td>Bestaande accounts nemen we over; de historie is geld waard</td></tr>
+<tr><td class="nr">14</td><td class="wat"><b>Wie adverteert op zijn zoekwoorden, in zijn gebied?</b><span>Twee of drie zoektermen uit &lsquo;wat verkoop je&rsquo;.</span></td><td>Google in een incognitovenster, en Meta Ad Library</td><td class="g">&mdash;</td><td class="r">&mdash;</td><td><span class="wie mens">MENS</span></td><td>Bepaalt hoe duur een klik wordt, dus de rekensom</td></tr>
+<tr><td class="nr">15</td><td class="wat"><b>Wat ziet wie hem zoekt?</b><span>Zijn bedrijfsnaam googlen.</span></td><td>Google</td><td class="g">Hijzelf staat bovenaan</td><td class="r">Een concurrent adverteert op zijn naam</td><td><span class="wie mens">MENS</span></td><td>Merkcampagne, in het fundament</td></tr>
+<tr><td class="nr">16</td><td class="wat"><b>Bedrijfsprofiel en reviews</b><span>Aantal, gemiddelde, en of hij reageert.</span></td><td>Google Maps</td><td class="g">Twintig reviews of meer, gemiddeld 4,3 of hoger, reacties erop <span class="vp">*</span></td><td class="r">Minder dan tien, of onder de 4</td><td><span class="wie mens">MENS</span></td><td>Gaat altijd mee als het rood is, ook al lossen wij het niet op</td></tr>
+<tr class="grp"><td colspan="7">ALLEEN MET AI &middot; DE HELE SITE, NIET ALLEEN DE HOMEPAGE</td></tr>
+<tr><td class="nr">17</td><td class="wat"><b>Spelling en grammatica</b><span>Op elke pagina, niet alleen de homepage.</span></td><td>Claude, pagina voor pagina</td><td class="g">&mdash;</td><td class="r">&mdash;</td><td><span class="wie ai">AI</span></td><td>Werklijst</td></tr>
+<tr><td class="nr">18</td><td class="wat"><b>Paginatitels en -beschrijvingen</b><span>Aanwezig, uniek, niet te lang.</span></td><td>Crawler</td><td class="g">&mdash;</td><td class="r">&mdash;</td><td><span class="wie tool">TOOL</span></td><td>Werklijst, later SEO</td></tr>
+<tr><td class="nr">19</td><td class="wat"><b>Koppen en alt-teksten</b><span>E&eacute;n H1 per pagina, beschrijvende alt-teksten.</span></td><td>Crawler</td><td class="g">&mdash;</td><td class="r">&mdash;</td><td><span class="wie tool">TOOL</span></td><td>Werklijst</td></tr>
+<tr><td class="nr">20</td><td class="wat"><b>Interne links</b><span>Pagina&rsquo;s waar geen enkele andere pagina naar linkt.</span></td><td>Crawler</td><td class="g">&mdash;</td><td class="r">&mdash;</td><td><span class="wie tool">TOOL</span></td><td>Werklijst</td></tr>
+<tr><td class="nr">21</td><td class="wat"><b>Snelheid per soort pagina</b><span>Niet alleen de homepage, maar elk type pagina.</span></td><td>PageSpeed-koppeling</td><td class="g">Zelfde norm als punt 1</td><td class="r">Zelfde norm als punt 1</td><td><span class="wie tool">TOOL</span></td><td>Onderbouwt punt 1</td></tr>
+<tr><td class="nr">22</td><td class="wat"><b>Codes v&oacute;&oacute;r toestemming</b><span>Automatisch getest in plaats van met de hand.</span></td><td>Een geautomatiseerde browser</td><td class="g">Zelfde norm als punt 7</td><td class="r">Zelfde norm als punt 7</td><td><span class="wie tool">TOOL</span></td><td>Onderbouwt punt 7</td></tr>
+<tr><td class="nr">23</td><td class="wat"><b>Aanvragen op elke dienstpagina</b><span>Kan iemand op elke dienstpagina iets aanvragen?</span></td><td>Claude</td><td class="g">&mdash;</td><td class="r">&mdash;</td><td><span class="wie ai">AI</span></td><td>Werklijst, landingspagina&rsquo;s</td></tr>
+<tr><td class="nr">24</td><td class="wat"><b>De concurrententest</b><span>Vervang de bedrijfsnaam door die van een concurrent. Klopt de tekst dan nog, dan onderscheidt hij niet.</span></td><td>Claude, altijd gelabeld als oordeel</td><td class="g">&mdash;</td><td class="r">&mdash;</td><td><span class="wie ai">AI</span></td><td>Propositie, in het fundament</td></tr>
+</tbody></table></div>
+<p class="qn" style="margin-top:12px"><span class="wie tool">TOOL</span> meet, en meet elke keer hetzelfde. <span class="wie mens">MENS</span> kijkt en beoordeelt. <span class="wie ai">AI</span> beoordeelt ook, en dat is een oordeel, geen meting: twee keer draaien kan net iets anders opleveren. Op het rapport staat daarom altijd wat gemeten is en wat een oordeel is.</p>
+<h3 class="qh">Van bevinding naar geld</h3>
+<p class="qn">Een bevinding zonder gevolg is een constatering. Het gevolg reken je uit met de getallen uit de vragenlijst, nooit met een branchecijfer dat we niet kunnen onderbouwen. E&eacute;n aanvechtbaar cijfer maakt het hele rapport aanvechtbaar.</p>
+<div class="qgeld"><div><b>Geen bedankpagina</b><span>&lsquo;Je krijgt ongeveer <em>twintig aanvragen per maand</em>, maar geen enkele is aan een bron te koppelen. Adverteer je straks <em>&euro;&nbsp;1.500 per maand</em>, dan weet je van al dat geld niet wat het opleverde, en kan Google niet leren welke klik een klant werd.&rsquo;</span></div><div><b>Een concurrent adverteert op zijn naam</b><span>&lsquo;Wie jou googelt, ziet eerst <em>[concurrent]</em>. Dat zijn mensen die al voor jou kwamen.&rsquo;</span></div><div><b>Een trage mobiele site</b><span>&lsquo;Je grootste pagina doet er <em>zes seconden</em> over, Google vindt 2,5 goed. Google rekent de pagina mee in wat je per klik betaalt, dus je betaalt meer voor dezelfde bezoeker.&rsquo;</span></div></div>
+<h3 class="qh">Welke drie het worden</h3>
+<ol class="sl"><li>Het raakt wat de klant bij &lsquo;waar loop je tegenaan&rsquo; invulde, of zijn doel.</li><li>Het gevolg is uit te drukken in zijn eigen getallen.</li><li>Het grootste probleem gaat altijd mee, ook als wij het niet oplossen. Slechte reviews zijn niet ons werk, maar als dat is wat hem klanten kost, zeggen we het.</li></ol>
+<h3 class="qh">Wat eruit komt</h3>
+<div class="cols"><section class="col"><span class="cl">Voor de klant</span><ul class="ml"><li><div><b>Drie bevindingen</b><span class="d">Met hun gevolg. Dit is blok 3 van de eerste helft: &lsquo;Wat wij zagen&rsquo;.</span></div></li><li><div><b>Het scanrapport, &eacute;&eacute;n A4</b><span class="d">Zestien punten met een kleur, de drie bevindingen uitgeschreven, en per rood punt de post uit de tarieven met het bedrag. Gaat mee met de mail van dezelfde dag, ook als hij niet met ons verdergaat.</span></div></li></ul></section><section class="col"><span class="cl">Voor ons</span><ul class="ml"><li><div><b>De werklijst</b><span class="d">Alles wat niet in de drie zit. Gaat naar het fundament als hij tekent. Hier komen spelling, titels en links terecht &mdash; niet op het A4.</span></div></li><li><div><b>De stopknop</b><span class="d">Kan er geen meetcode in de site, of mag er in zijn branche nauwelijks geadverteerd worden, dan gaat de afspraak niet door. Afzeggen met de mail &lsquo;niet meten&rsquo; uit stap 01, uiterlijk een werkdag van tevoren.</span></div></li></ul></section></div>
+<h3 class="qh">Hoe het samenkomt</h3>
+<ul class="qflow"><li><b>Vragenlijst</b><span>Levert de website, het gebied, wat hij verkoopt en de getallen voor de rekensom.</span></li><li class="nu"><b>Quickscan</b><span>Gebruikt de vragenlijst. Levert drie bevindingen, het A4 en de posten die al vaststaan.</span></li><li><b>Eerste helft</b><span>De drie bevindingen komen in blok 3. Aan tafel halen we op wat de scan niet kan zien: het doel, de marge, de capaciteit, wie opvolgt.</span></li><li><b>Rust</b><span>Hier komt alles samen. Het voorstel is: zijn doel, wat daar nu in de weg staat, en wat het kost.</span></li><li><b>Tweede helft</b><span>Het voorstel, met de herstelposten die al sinds de quickscan vaststaan.</span></li></ul>
+<h3 class="qh">Van hand naar AI</h3>
+<p class="qn">Eerst de inhoud, dan de vorm. De checklist hierboven heb je sowieso nodig. Hoe hij wordt uitgevoerd, groeit mee.</p>
+<div class="qfase"><div class="f1"><span class="fl">FASE 1 &middot; NU</span><b>Met de hand</b><p>Punt 1 tot en met 16, met een sjabloon voor het A4. Bij de eerste tien scans houden we bij hoe lang het duurt en welke bevindingen aan tafel echt landen.</p><span class="tijd">EEN UUR, DAARNA EEN HALF UUR</span></div><div class="f2"><span class="fl">FASE 2</span><b>Meten gaat vanzelf</b><p>Alles met <span class="wie tool">TOOL</span> draait zodra de afspraak geboekt is. De medewerker doet alleen het aanvraagpad, de markt, en kiest de drie.</p><span class="tijd">EEN KWARTIER</span></div><div class="f3"><span class="fl">FASE 3</span><b>AI erbij, in het marketingdashboard</b><p>De hele site, punt 17 tot en met 24. Claude schrijft een concept van het A4 en stelt drie bevindingen voor. Een mens kijkt het na, kiest de drie en tekent af.</p><span class="tijd">TIEN MINUTEN NAKIJKEN</span></div></div>
+<div class="key" style="margin-top:22px"><span class="k">Wat met AI niet verandert</span><p class="big">De klant krijgt nog steeds drie bevindingen en &eacute;&eacute;n A4.</p><p>AI vindt er veertig. Die veertig zijn voor ons, als werklijst. Een rapport van veertig punten voelt als een verkooppraatje voor meer werk, en verstopt het ene punt dat ertoe doet. En er gaat niets de deur uit dat een mens niet heeft nagekeken.</p></div>
+<div class="lo"><span class="ll">Let op</span><p><b>Doe zelf geen aanvraag op hun site.</b> Dat vervuilt hun cijfers en voelt als een truc als het uitkomt. <b>Van buitenaf zie je niet alles:</b> back-ups, updates en of de conversies goed staan komen pas uit de audit in het fundament. Zet dat op het A4, anders lijkt groen een garantie. <b>Wijkt de scan af van de vragenlijst</b> &mdash; hij schreef dat hij op Google adverteert en er is niets te vinden &mdash; dan is dat een vraag aan tafel, geen betrapping.</p></div>
 </article>
 <div class="bkop" id="u04" style="margin-top:56px"><div class="kicker">Stap 04</div><h2>De rust en de tweede helft</h2></div>
 <article class="stp" id="s11">
@@ -556,6 +608,8 @@ h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
 <li><span class="stt klaar">BESLOTEN</span><div><b>Komt het scanrapport v&oacute;&oacute;r of tijdens het gesprek?</b><span class="t">Tijdens: in blok 3 van de eerste helft, en daarna als bijlage bij de mail van dezelfde dag.</span><span class="w">STAP 03</span></div></li>
 <li><span class="stt open">OPEN</span><div><b>Wat kosten de templates en de contentsessie?</b><span class="t">Eigen project of partner, per vraag. Zolang er geen bedrag is, kun je aan tafel alleen verwijzen.</span><span class="w">STAP 03</span></div></li>
 <li><span class="stt klaar">BESLOTEN</span><div><b>Welke cijfers vragen we v&oacute;&oacute;r het gesprek?</b><span class="t">Vijftien vragen in de vragenlijst; omzetdoel en marge aan tafel.</span><span class="w">STAP 01</span></div></li>
+<li><span class="stt klaar">BESLOTEN</span><div><b>Welke metingen doen we v&oacute;&oacute;r het tekenen?</b><span class="t">Alles wat van buitenaf te meten is, en daarmee alle herstelposten van Webmix. Zo staat de prijs vast voordat de klant tekent.</span><span class="w">STAP 02</span></div></li>
+<li><span class="stt open">OPEN</span><div><b>Wat als de audit na het tekenen nog iets vindt?</b><span class="t">Back-ups, updates en conversie-instellingen zie je pas met toegang. Binnen de &euro;&nbsp;4.500, of in de tweede helft al noemen dat er een post bij kan komen.</span><span class="w">STAP 02</span></div></li>
 <li><span class="stt klaar">BESLOTEN</span><div><b>Horen webwinkels bij de propositie?</b><span class="t">Nee. E-commerce staat in de ARENA-methode onder &lsquo;doen we niet&rsquo;. In de vragenlijst is &lsquo;direct online&rsquo; een rode uitkomst, met een partner als doorverwijzing.</span><span class="w">STAP 01</span></div></li>
 </ul></section>
 <div class="foot">James Robinson &middot; De klantreis &middot; index van de acht stappen</div>
