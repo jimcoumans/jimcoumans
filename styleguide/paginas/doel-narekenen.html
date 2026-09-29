@@ -210,40 +210,44 @@ h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
 <header class="wrap hdr">
   <p class="kicker">ONDERDEEL 01 &middot; HANDELING 3 &middot; 0,5 UUR</p>
   <h1>Doel narekenen en vastleggen</h1>
-  <p class="lead">Van de omzet die de klant wil halen naar het aantal aanvragen per maand en het bedrag dat een aanvraag maximaal mag kosten. Zes sommen in een vaste volgorde, drie toetsen erachter, en &eacute;&eacute;n regel die eruit komt.</p>
+  <p class="lead">Van de omzet die de klant wil halen naar het aantal aanvragen per maand en het bedrag dat een aanvraag maximaal mag kosten. Zeven sommen in een vaste volgorde, drie toetsen erachter, en &eacute;&eacute;n regel die eruit komt. Alles wat de klant aan marketing uitgeeft zit erin, en het moet zich binnen de terugverdientijd terugbetalen.</p>
 </header>
 
 <main class="wrap">
 
 <section class="sec" id="keten">
   <p class="kicker">DE REKENKETEN</p>
-  <h2>Zes sommen, in deze volgorde</h2>
+  <h2>Zeven sommen, in deze volgorde</h2>
   <p class="note">Elke stap gebruikt de uitkomst van de vorige. Ga je ergens afronden op een rond getal, dan schuift alles daarna mee &mdash; dus reken door met de precieze uitkomst en rond pas af bij wat je opschrijft.</p>
   <ol class="keten">
     <li><div><b>Hoeveel nieuwe klanten heb je nodig?</b>
-      <p>De gewenste extra omzet gedeeld door wat een klant gemiddeld opbrengt.</p>
-      <span class="bron f">BEIDE UIT HET FORMULIER</span></div>
-      <span class="fm">extra omzet &divide; omzet per klant</span></li>
+      <p>De gewenste extra omzet gedeeld door wat een klant per jaar opbrengt: gemiddelde opdracht keer hoe vaak per jaar. Blijft een klant korter dan een jaar, dan telt alleen dat deel.</p>
+      <span class="bron f">VRAGENLIJST EN AAN TAFEL</span></div>
+      <span class="fm">extra omzet &divide; omzet per klant per jaar</span></li>
     <li><div><b>Hoeveel aanvragen horen daarbij?</b>
       <p>Niet elke aanvraag wordt klant. Deel door het percentage dat wel klant wordt.</p>
-      <span class="bron f">UIT HET FORMULIER</span> <span class="bron w">OF BRANCHEGEMIDDELDE</span></div>
+      <span class="bron f">UIT DE VRAGENLIJST</span> <span class="bron w">OF BRANCHEGEMIDDELDE</span></div>
       <span class="fm">klanten &divide; conversie%</span></li>
     <li><div><b>Hoeveel is dat per maand?</b>
       <p>Door twaalf. Dit zijn aanvragen b&oacute;venop wat hij nu al krijgt, niet inclusief.</p>
       <span class="bron s">REKENSTAP</span></div>
       <span class="fm">aanvragen per jaar &divide; 12</span></li>
-    <li><div><b>Wat houdt hij over aan een klant?</b>
-      <p>Omzet is geen ruimte. Je kunt alleen uitgeven van wat er onder de streep overblijft.</p>
-      <span class="bron w">ONTBREEKT NOG IN HET FORMULIER</span></div>
-      <span class="fm">omzet per klant &times; brutomarge%</span></li>
-    <li><div><b>Hoeveel daarvan mag naar het binnenhalen?</b>
-      <p>Een keuze, geen berekening. Wij hanteren standaard een kwart van de marge; dat laat driekwart over voor leveren en winst.</p>
-      <span class="bron s">ONZE STANDAARD, 25%</span></div>
-      <span class="fm">marge per klant &times; acquisitieruimte%</span></li>
-    <li><div><b>Wat mag een aanvraag dan kosten?</b>
-      <p>De ruimte per klant, verdeeld over alle aanvragen die je nodig had om die ene klant te krijgen.</p>
+    <li><div><b>Wat mag alle marketing samen kosten?</b>
+      <p>Omzet is geen ruimte; je kunt alleen uitgeven van je marge. En die uitgave moet zich terugbetalen binnen de terugverdientijd. Standaard is dat twaalf maanden: alles wat hij in jaar 1 uitgeeft, verdient de extra marge van jaar 1 terug.</p>
+      <span class="bron f">MARGE AAN TAFEL</span> <span class="bron s">TERUGVERDIENTIJD, STANDAARD 12 MAANDEN</span></div>
+      <span class="fm">extra omzet &times; marge% &times; terugverdientijd &divide; 12</span></li>
+    <li><div><b>Wat gaat daar vast vanaf?</b>
+      <p>Alles wat niet naar advertenties gaat: het fundament, de herstelposten die hij kiest, de retainer en de licenties (MailerLite, Cookiescript en het marketingdashboard).</p>
+      <span class="bron s">TARIEVEN</span></div>
+      <span class="fm">fundament + herstel + 12 &times; (retainer + licenties)</span></li>
+    <li><div><b>Wat blijft er over voor advertenties?</b>
+      <p>De rest is het advertentiebudget. Dat bepaalt het pakket: het grootste pakket waarvan het minimum nog gehaald wordt.</p>
       <span class="bron s">REKENSTAP</span></div>
-      <span class="fm">ruimte per klant &times; conversie%</span></li>
+      <span class="fm">marketingruimte &minus; vaste kosten</span></li>
+    <li><div><b>Wat mag een aanvraag aan advertenties kosten?</b>
+      <p>Het advertentiebudget verdeeld over alle aanvragen die nodig zijn. Dit is het plafond waarop we bieden.</p>
+      <span class="bron s">REKENSTAP</span></div>
+      <span class="fm">advertentiebudget &divide; aanvragen per jaar</span></li>
   </ol>
   <div class="key" style="margin-top:26px">
     <span class="k">WAT DIT GETAL W&Eacute;L EN NIET IS</span>
@@ -255,30 +259,35 @@ h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
 <section class="sec" id="reken">
   <p class="kicker">DOORREKENEN</p>
   <h2>Het rekenblad</h2>
-  <p class="note">Ingevuld met een voorbeeld. Pas de vijf getallen aan en de rest loopt mee, inclusief het oordeel welk pakket erbij hoort.</p>
+  <p class="note">Ingevuld met een voorbeeld. Pas de getallen aan en de rest loopt mee, inclusief het oordeel welk pakket erbij hoort. Het fundament staat op &euro; 4.500.</p>
   <div class="calc">
     <div class="cbox">
       <h4>Wat je invult</h4>
-      <div class="inr"><label>Gewenste extra omzet per jaar<span>Uit het formulier</span></label>
-        <div class="wrap2"><span class="af l">&euro;</span><input id="iA" value="500000"></div></div>
-      <div class="inr"><label>Gemiddelde omzet per klant<span>Over de hele klantrelatie</span></label>
-        <div class="wrap2"><span class="af l">&euro;</span><input id="iB" value="10000"></div></div>
-      <div class="inr"><label>Brutomarge<span>Wat er overblijft na directe kosten</span></label>
+      <div class="inr"><label>Gewenste extra omzet per jaar<span>Aan tafel</span></label>
+        <div class="wrap2"><span class="af l">&euro;</span><input id="iA" value="120000"></div></div>
+      <div class="inr"><label>Omzet per klant per jaar<span>Opdracht &times; keer per jaar</span></label>
+        <div class="wrap2"><span class="af l">&euro;</span><input id="iB" value="4500"></div></div>
+      <div class="inr"><label>Brutomarge<span>Aan tafel; zonder antwoord 30%</span></label>
         <div class="wrap2"><input id="iC" value="30"><span class="af r">%</span></div></div>
-      <div class="inr"><label>Aanvragen die klant worden<span>Of het branchegemiddelde</span></label>
-        <div class="wrap2"><input id="iD" value="20"><span class="af r">%</span></div></div>
-      <div class="inr"><label>Acquisitieruimte<span>Onze standaard: 25% van de marge</span></label>
-        <div class="wrap2"><input id="iF" value="25"><span class="af r">%</span></div></div>
+      <div class="inr"><label>Aanvragen die klant worden<span>Uit de vragenlijst</span></label>
+        <div class="wrap2"><input id="iD" value="25"><span class="af r">%</span></div></div>
+      <div class="inr"><label>Terugverdientijd<span>Standaard 12 maanden</span></label>
+        <div class="wrap2"><input id="iT" value="12"><span class="af r">mnd</span></div></div>
+      <div class="inr"><label>Herstelposten<span>Eenmalig, uit de quickscan</span></label>
+        <div class="wrap2"><span class="af l">&euro;</span><input id="iH" value="0"></div></div>
+      <div class="inr"><label>Licenties per maand<span>MailerLite, Cookiescript, dashboard</span></label>
+        <div class="wrap2"><span class="af l">&euro;</span><input id="iL" value="32,40"></div></div>
     </div>
     <div class="cbox">
       <h4>Wat eruit komt</h4>
       <div class="ur"><span class="l">Nieuwe klanten nodig<em>PER JAAR</em></span><span class="v" id="oK">&mdash;</span></div>
       <div class="ur"><span class="l">Aanvragen nodig<em>PER JAAR</em></span><span class="v" id="oJ">&mdash;</span></div>
-      <div class="ur"><span class="l">Marge per klant</span><span class="v" id="oM">&mdash;</span></div>
-      <div class="ur"><span class="l">Ruimte per klant<em>VOOR BINNENHALEN</em></span><span class="v" id="oR">&mdash;</span></div>
+      <div class="ur"><span class="l">Marketingruimte<em>ALLES SAMEN, JAAR 1</em></span><span class="v" id="oR">&mdash;</span></div>
+      <div class="ur"><span class="l">Vaste kosten<em>FUNDAMENT, HERSTEL, RETAINER, LICENTIES</em></span><span class="v" id="oV">&mdash;</span></div>
       <div class="ur big"><span class="l">Extra aanvragen per maand</span><span class="v" id="oP">&mdash;</span></div>
-      <div class="ur big"><span class="l">Maximaal per aanvraag</span><span class="v" id="oC">&mdash;</span></div>
-      <div class="ur"><span class="l">Plafond mediabudget<em>PER MAAND</em></span><span class="v" id="oB">&mdash;</span></div>
+      <div class="ur big"><span class="l">Advertentiebudget<em>PER MAAND</em></span><span class="v" id="oB">&mdash;</span></div>
+      <div class="ur"><span class="l">Maximaal per aanvraag<em>AAN ADVERTENTIES</em></span><span class="v" id="oC">&mdash;</span></div>
+      <div class="ur"><span class="l">Alles bij elkaar per aanvraag<em>ZOALS IN DE VRAGENLIJST</em></span><span class="v" id="oA">&mdash;</span></div>
       <div class="oor" id="oor"></div>
     </div>
   </div>
@@ -296,11 +305,11 @@ h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
         <td>Leg de extra aanvragen per maand naast wat hij nu krijgt. Van 12 naar 33 is een verdrievoudiging van zijn werkaanbod.</td>
         <td>Terug naar zijn antwoord op &ldquo;waar loopt het vast als het verdubbelt&rdquo;. Kan hij het niet leveren, dan verlaag je het doel &mdash; niet het budget.</td></tr>
       <tr><td><b>2. Past het bij een pakket?</b></td>
-        <td>Het plafond van het mediabudget bepaalt het pakket: onder &euro; 2.500 is dat Enter, tot &euro; 7.500 Compete, daarboven Own.</td>
-        <td>Zit hij onder de ondergrens van Enter, dan is er te weinig budget om iets te sturen. Dat is een reden om nee te zeggen, geen reden om het goedkoper te maken.</td></tr>
+        <td>Wat er overblijft voor advertenties bepaalt het pakket: minimaal &euro; 1.000 per maand is Enter, &euro; 2.500 Compete, &euro; 7.500 Own. Enter kost in jaar 1 alles bij elkaar &plusmn; &euro; 28.900; bij 30% marge en twaalf maanden terugverdienen hoort daar &plusmn; &euro; 96.000 extra omzet bij, bij 50% marge &plusmn; &euro; 58.000.</td>
+        <td>Zit hij onder de ondergrens van Enter, dan zijn er drie uitwegen: een hoger doel, een langere terugverdientijd, of nee. Nooit het goedkoper maken.</td></tr>
       <tr><td><b>3. Houdt de 50%-regel?</b></td>
-        <td>Onze fee mag nooit meer zijn dan de helft van het mediabudget. Deel de retainer door het budgetplafond.</td>
-        <td>Komt de fee boven de helft, dan betaalt hij ons om te sturen op een bedrag dat te klein is om mee te sturen. Voorstellen om het doel te verhogen, of niet beginnen.</td></tr>
+        <td>Onze retainer is nooit meer dan de helft van wat hij per maand aan marketing uitgeeft: retainer plus advertentiebudget. Anders gezegd: het advertentiebudget is minstens zo hoog als de retainer. Eenmalige kosten en licenties tellen niet mee.</td>
+        <td>Met de minimumbudgetten per pakket klopt dit altijd. Wil hij onder het minimum gaan zitten, dan betaalt hij ons om te sturen op een bedrag dat te klein is om mee te sturen. Dan niet.</td></tr>
     </tbody>
   </table>
   </div>
@@ -316,7 +325,7 @@ h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
   <h2>E&eacute;n regel, en waar hij terugkomt</h2>
   <div class="key">
     <span class="k">DE DOELREGEL</span>
-    <p class="big">&ldquo;21 extra aanvragen per maand, tegen maximaal &euro; 150 per aanvraag, vanaf het tweede kwartaal.&rdquo;</p>
+    <p class="big">&ldquo;9 extra aanvragen per maand, tegen maximaal &euro; 179 per aanvraag aan advertenties, vanaf het tweede kwartaal.&rdquo;</p>
     <p>Dat is de hele oplevering van deze handeling. Geen document, geen presentatie &mdash; &eacute;&eacute;n regel die de klant kan onthouden en die hij kan narekenen omdat hij de getallen zelf heeft aangeleverd.</p>
   </div>
   <div class="tblwrap">
@@ -324,7 +333,7 @@ h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
     <thead><tr><th>Waar die regel terugkomt</th><th>Waarvoor</th></tr></thead>
     <tbody>
       <tr><td>Op het scoreboard van het drieluik</td><td>Handgeschreven, tijdens de sessie.</td></tr>
-      <tr><td>In het voorstel</td><td>Als de belofte waar we op afgerekend worden.</td></tr>
+      <tr><td>In het voorstel</td><td>Als het doel waar de cijfers elke maand naast worden gelegd. Geen resultaatbelofte.</td></tr>
       <tr><td>Als doellijn in het dashboard</td><td>Zodat elke week zichtbaar is of we erboven of eronder zitten.</td></tr>
       <tr><td>Bij de budgetverdeling over de campagnes</td><td>Het plafond per aanvraag bepaalt waar we stoppen met bieden.</td></tr>
       <tr><td>In elk performanceblok</td><td>De enige vraag die daar telt: zitten we op de regel, en zo nee waarom niet.</td></tr>
@@ -337,8 +346,9 @@ h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
   <p class="kicker">WAT WE ONDERWEG MISSEN</p>
   <h2>Terug naar het formulier</h2>
   <div class="stack">
-    <div class="st"><span class="lab">ONTBREEKT</span><div class="bd"><h4>Brutomarge</h4><p>Stap 4 kan niet zonder. We vragen nu alleen wat een klant opl&eacute;vert, en dat is omzet. Uitgeven doe je van je marge. Zonder dit getal moeten we een branchegemiddelde nemen voor een som die zijn hele budget bepaalt &mdash; dat is de zwakste schakel in de hele keten.</p></div></div>
-    <div class="st"><span class="lab">TE BEPALEN</span><div class="bd"><h4>De acquisitieruimte van 25%</h4><p>Dat is nu mijn aanname en hij bepaalt rechtstreeks zijn budget. Bij 20% zakt het plafond met een vijfde, bij 33% stijgt het met een derde. Zet hem vast, en zet erbij of hij per branche verschilt &mdash; bij hoge herhaalaankopen mag hij hoger.</p></div></div>
+    <div class="st"><span class="lab">AAN TAFEL</span><div class="bd"><h4>Brutomarge</h4><p>Stap 4 kan niet zonder. De vragenlijst vraagt wat een klant opl&eacute;vert, en dat is omzet; de marge vragen we aan tafel. Zonder antwoord rekenen we met 30%, en dat zeggen we erbij.</p></div></div>
+    <div class="st"><span class="lab">BESLOTEN</span><div class="bd"><h4>Terugverdientijd in plaats van een percentage</h4><p>Eerder rekenden we met 25% van de marge over de hele klantrelatie. Dat hing aan hoe lang een klant blijft, het slechtst geschatte getal uit de vragenlijst. Nu: alles wat hij aan marketing uitgeeft verdient zich terug binnen de terugverdientijd, standaard twaalf maanden. Een ondernemer kan die vraag zelf beantwoorden; een percentage niet.</p></div></div>
+    <div class="st"><span class="lab">OPEN</span><div class="bd"><h4>Het fundament en het dashboard</h4><p>Het fundament staat op &euro; 4.500 en wordt herrekend (52,5 uur). Het marketingdashboard kost voorlopig &euro; 10 per maand. Verandert een van de twee, dan verandert alleen het getal in het rekenblad; de som blijft.</p></div></div>
     <div class="st"><span class="lab">TE BEPALEN</span><div class="bd"><h4>De branchegemiddelden voor conversie</h4><p>Het formulier laat toe dat de klant dit leeg laat, en dan vullen wij een gemiddelde in. Die gemiddelden bestaan nog niet. Nu draaien we op Amerikaanse cijfers waarvan niemand kan uitleggen of ze hier gelden.</p></div></div>
   </div>
 </section>
@@ -351,38 +361,37 @@ h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
 (function(){
   function g(id){var v=parseFloat((document.getElementById(id).value||'').replace(/\./g,'').replace(',','.'));return isNaN(v)?0:v}
   function eur(n){return '\u20ac '+n.toLocaleString('nl-NL',{maximumFractionDigits:0})}
-  var PK=[[2500,'Enter',1000],[7500,'Compete',1500],[1e12,'Own',2000]];
+  var PK=[['Own',2000,7500],['Compete',1500,2500],['Enter',1000,1000]], FUND=4500;
   function calc(){
-    var A=g('iA'),B=g('iB'),C=g('iC'),D=g('iD'),F=g('iF');
+    var A=g('iA'),B=g('iB'),C=g('iC'),D=g('iD'),T=g('iT'),H=g('iH'),L=g('iL');
     var k=(B>0)?A/B:0, j=(D>0)?k/(D/100):0, pm=j/12;
-    var m=B*C/100, r=m*F/100, cpl=r*D/100, bud=Math.ceil(pm)*cpl;
+    var R=A*C/100*T/12;
+    var p=null,ads=0,vast=0;
+    for(var i=0;i<PK.length;i++){
+      var v=FUND+H+12*(PK[i][1]+L), a=(R-v)/12;
+      if(a>=PK[i][2]){p=PK[i];ads=a;vast=v;break}
+      if(i==PK.length-1){ads=a;vast=v}
+    }
     document.getElementById('oK').textContent=Math.ceil(k).toLocaleString('nl-NL');
     document.getElementById('oJ').textContent=Math.ceil(j).toLocaleString('nl-NL');
-    document.getElementById('oM').textContent=eur(m);
-    document.getElementById('oR').textContent=eur(r);
+    document.getElementById('oR').textContent=eur(R);
+    document.getElementById('oV').textContent=eur(vast);
     document.getElementById('oP').textContent=Math.ceil(pm).toLocaleString('nl-NL');
-    document.getElementById('oC').textContent=eur(cpl);
-    document.getElementById('oB').textContent=eur(bud);
+    document.getElementById('oB').textContent=ads>0?eur(ads):'\u2014';
+    document.getElementById('oC').textContent=(ads>0&&j>0)?eur(ads*12/j):'\u2014';
+    document.getElementById('oA').textContent=j>0?eur(R/j):'\u2014';
     var el=document.getElementById('oor');
-    if(!(bud>0)){el.className='oor';el.textContent='';return}
-    if(bud<1000){
+    if(!(R>0)){el.className='oor';el.textContent='';return}
+    if(!p){
       el.className='oor nee';
-      el.innerHTML='<b>Te klein.</b> Het plafond ligt onder de ondergrens van Enter ('+eur(1000)+' mediabudget). '+
-        'Er is te weinig budget om op te sturen. Verhoog het doel of zeg nee.';return;
+      el.innerHTML='<b>Te klein.</b> Na fundament, retainer en licenties blijft er '+(ads>0?eur(ads):'niets')+' per maand over voor advertenties; Enter vraagt minimaal '+eur(1000)+'. '+
+        'Hoger doel, langere terugverdientijd, of nee.';return;
     }
-    var p=PK.find(function(x){return bud<=x[0]})||PK[2];
-    var pct=Math.round(p[2]/bud*100);
-    if(pct>50){
-      el.className='oor nee';
-      el.innerHTML='<b>'+p[1]+' past niet.</b> De retainer van '+eur(p[2])+' is '+pct+'% van het mediabudget, '+
-        'en onze eigen regel is maximaal 50%. Doel verhogen, of niet beginnen.';
-    }else{
-      el.className='oor ok';
-      el.innerHTML='<b>'+p[1]+'.</b> De retainer van '+eur(p[2])+' is '+pct+'% van het mediabudget van '+eur(bud)+
-        ' per maand. Dat past binnen de 50%-regel.';
-    }
+    el.className='oor ok';
+    el.innerHTML='<b>'+p[0]+'.</b> Retainer '+eur(p[1])+', advertentiebudget '+eur(ads)+' per maand. '+
+      'De retainer is '+Math.round(p[1]/(p[1]+ads)*100)+'% van wat hij per maand aan marketing uitgeeft; de 50%-regel houdt.';
   }
-  ['iA','iB','iC','iD','iF'].forEach(function(id){
+  ['iA','iB','iC','iD','iT','iH','iL'].forEach(function(id){
     document.getElementById(id).addEventListener('input',calc)});
   calc();
 })();
