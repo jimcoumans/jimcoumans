@@ -299,7 +299,7 @@ COMM = """
 <p style="margin-top:16px"><b>Waarom support@.</b> In de nieuwe propositie zijn we niet de collega of de externe marketingafdeling van de klant. De klant koopt een product: een fundament en een retainer met een vaste inhoud. Bij een product hoort support: een plek waar je terechtkunt, met een vaste termijn. Dat is duidelijker dan een persoonlijk adres, en het past bij hoe we willen dat klanten naar ons kijken.</p>
 """ + grid(2, [
  kaart('Wat automatisch blijft', ul(['Meldingen van nieuwe aanvragen, per mail of WhatsApp: dat is een melding van het dashboard, geen gesprek', 'Het startbericht en de datums, vanaf support@', 'De maandelijkse update in het dashboard'], ''), 'GEEN GESPREK', 'l'),
- kaart('De regel voor ons team', ul(['Nooit antwoorden vanaf een persoonlijk adres', 'Mail van een klant naar een persoonlijk adres gaat automatisch naar support@', 'Een verzoek dat werk vraagt, wordt een taak in ClickUp; de mail is niet de takenlijst'], ''), 'INTERN', 'o'),
+ kaart('De regel voor ons team', ul(['Nooit antwoorden vanaf een persoonlijk adres', 'Mail van een klant naar een persoonlijk adres gaat automatisch naar support@', 'Een verzoek dat werk vraagt, wordt een taak in ClickUp; de mail is niet de takenlijst', 'Persoonlijke mailadressen verdwijnen op termijn voor klantcontact'], ''), 'INTERN', 'o'),
 ]) + raakt(ul([
  '<b>Een mail heeft een hogere drempel dan een appje.</b> Klanten die elk detail in de groep gooiden, sturen minder, en wat ze sturen is beter te behandelen.',
  '<b>In Front zien we per klant hoeveel gesprekken er lopen en hoe snel we reageren.</b> Leg dat naast wat de retainer oplevert, en je ziet welke klant ons meer kost dan hij betaalt. Data beats opinion, ook intern.',

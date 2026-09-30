@@ -157,7 +157,7 @@ BESLUITEN = """
  ['30 sep 2026', 'We adverteren in zoekmachines en op social: Google, Microsoft Ads (Bing), Meta, LinkedIn en TikTok. Welke, bepalen doelgroep en cijfers. We vullen geen social feeds, alleen advertising.'],
  ['30 sep 2026', 'Content zit in de motor: marketingcontent (foto, video, animatie, graphics). Geen bedrijfsvideo’s, geen branded content tenzij de advertenties erom vragen.'],
  ['30 sep 2026', 'Het intakegesprek heeft een vaste vragenlijst van 24 vragen, waarvan vier verplicht voor het voorstel.'],
- ['30 sep 2026', 'Alle klantcommunicatie via support@jamesrobinson.nl, in Front toegewezen aan de marketingmanager. Antwoord binnen één werkdag. Dringend: bellen naar kantoor. De WhatsApp-groepen worden verwijderd.'],
+ ['30 sep 2026', 'Alle klantcommunicatie via support@jamesrobinson.nl, in Front toegewezen aan de marketingmanager. Antwoord binnen één werkdag. Dringend: bellen naar kantoor. De WhatsApp-groepen worden verwijderd; persoonlijke mailadressen verdwijnen op termijn voor klantcontact.'],
  ['30 sep 2026', 'We zijn geen collega of externe marketingafdeling, maar een performancebureau met een vast product.'],
  ['30 sep 2026', 'Het marketingoverleg blijft, korter en gestructureerder. De invulling volgt.'],
 ]) + """
