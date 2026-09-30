@@ -26,14 +26,14 @@ SAMEN = """
 <div class="stroom">
  <div class="s"><span class="sl">STAP 03</span><b>Doel × marge × termijn</b><span>€ 120.000 × 30% × 1 jaar</span></div><div class="pijl">→</div>
  <div class="s"><span class="sl">MARKETINGRUIMTE</span><b>€ 36.000</b><span>alles samen, jaar 1</span></div><div class="pijl">−</div>
- <div class="s"><span class="sl">VASTE POSTEN</span><b>€ 17.069</b><span>fundament, retainer, licenties, herstel</span></div><div class="pijl">=</div>
- <div class="s"><span class="sl">ADVERTENTIES</span><b>€ 1.578 p/m</b><span>bepaalt het pakket: Enter</span></div>
+ <div class="s"><span class="sl">VASTE POSTEN</span><b>€ 16.044</b><span>fundament, retainer, licenties, herstel</span></div><div class="pijl">=</div>
+ <div class="s"><span class="sl">ADVERTENTIES</span><b>€ 1.814 p/m</b><span>bepaalt het pakket: Enter</span></div>
 </div>
 <div class="stroom">
- <div class="s"><span class="sl">STAP 04</span><b>€ 177 per aanvraag</b><span>budget ÷ aanvragen: het biedplafond</span></div><div class="pijl">→</div>
- <div class="s"><span class="sl">STAP 07</span><b>Doellijn in het dashboard</b><span>9 extra aanvragen per maand</span></div><div class="pijl">→</div>
+ <div class="s"><span class="sl">STAP 04</span><b>€ 187 per aanvraag</b><span>budget ÷ aanvragen: het biedplafond</span></div><div class="pijl">→</div>
+ <div class="s"><span class="sl">STAP 07</span><b>Doellijn in het dashboard</b><span>10 extra aanvragen per maand</span></div><div class="pijl">→</div>
  <div class="s"><span class="sl">STAP 08</span><b>Elk performanceblok</b><span>zitten we op de regel, en zo nee, waarom niet?</span></div><div class="pijl">→</div>
- <div class="s"><span class="sl">TOETS</span><b>50%-regel</b><span>retainer 39% van het maandbudget</span></div>
+ <div class="s"><span class="sl">TOETS</span><b>50%-regel</b><span>retainer 36% van het maandbudget</span></div>
 </div>
 
 <h3>Als één schakel schuift</h3>
@@ -43,7 +43,7 @@ SAMEN = """
  ('De draaidag ligt niet vast bij het tekenen', 'Geen live-datum in het voorstel en het startbericht', 'We beloven een datum die we niet kunnen houden, of geen datum'),
  ('Een rood punt in de quickscan (Webmix)', 'Een herstelpost vóór het tekenen', 'Minder marketingruimte voor advertenties; bij een krappe som een kleiner pakket of nee'),
  ('Er kan geen meetcode in de site', 'De stopknop: afspraak gaat niet door', 'Geen intakegesprek; rode mail “niet meten”'),
- ('Het fundament wordt duurder na de herrekening', 'Hogere vaste posten in de rekensom', 'De ondergrens voor Enter stijgt, van ± € 97.000 naar € 99.400 of € 103.800 extra omzet bij 30% marge'),
+ ('Het fundament wordt duurder na de herrekening', 'Hogere vaste posten in de rekensom', 'De ondergrens voor Enter stijgt, van ± € 90.000 naar € 92.600 of € 97.000 extra omzet bij 30% marge'),
  ('De klant belt aanvragen laat terug', 'Aanvragen worden geen klant', 'Oorzaak 08: doel niet gehaald terwijl onze cijfers kloppen'),
  ('De klant geeft geen oordeel per aanvraag', 'Wij sturen op aantal, niet op kwaliteit', 'Oorzaak 09: veel aanvragen, weinig klanten'),
  ('De meting klopt niet', 'Elke diagnose wordt een mening', 'Oorzaak 10: niet starten, of maanden sturen op cijfers die niet kloppen'),
@@ -102,20 +102,19 @@ OPEN = """
  ['Naam van het eerste bericht', '“Startbericht”; “kick-off” alleen voor de sessie in week 4', 'Teksten, portaal'],
  ['ClickCease per pakket', 'Standaard bij Compete en Own, proefperiode bij Enter; vergoeding erbij zeggen', 'Voorstelgesprek, licenties'],
  ['Wat een vertrekkende klant meeneemt', 'Volledige export, standaard en ongevraagd. Open: landingspagina en dashboard na stoppen.', 'Voorwaarden, opzeggen'],
- ['Jaar 1 in de rekensom', 'Twaalf maanden retainer (twaalf maanden live), al start de retainer in maand 2', 'Alle voorbeeldbedragen'],
  ['Extra kanalen bij de start', 'Standaard Google Ads en Meta. Uitzoeken of Microsoft Ads, LinkedIn of TikTok in het fundament extra uren kosten, en welk minimumbudget per kanaal hoort', 'Fundament, tarieven, rekensom'],
  ['Animatie en graphics', 'Graphics uit de advertentiesjablonen; animatie nog zonder eigen taak en uren', 'Blok 05 van het fundament'],
  ['Drempels voor de monitoring', 'Zoals in stap 08; vastzetten en automatisch laten melden', 'Stap 08, dashboard'],
- ['Het marketingoverleg', 'Blijft, korter en gestructureerder. Nog vast te leggen: hoe vaak per pakket, hoe lang, vaste agenda', 'Stap 08, pakketten, voorstel'],
+ ['Het marketingoverleg', 'Stramien staat; nog vast te leggen: hoe vaak per pakket en hoe lang (voorstel: Enter per kwartaal, Compete elke twee maanden, Own maandelijks, 45 minuten)', 'Stap 08, pakketten, voorstel'],
+ ['De retainers herijken', 'Namen, indeling en inhoud per retainer definitief maken. Nieuw in beeld: een retainer van € 500 voor zichtbaarheid, en € 2.500 of € 3.000 voor klanten met veel campagnes tegelijk', 'Tarieven, rekensom, pakketkeuze, drukwerk'],
  ['Communicatie via support@', 'Telefoonnummer en bereikbaarheid kantoor; Front inrichten; overstap per klant in het marketingoverleg', 'Startbericht, alle klantcontact'],
- ['Merk: v3.0 of brandbook 2024', 'v3.0 (Inter Tight en Inter, JR Lime) is leidend', 'Alles wat de klant ziet'],
 ]) + """
 <h3>Nog uit te werken</h3>
 """ + grid(2, [
  kaart('Verkoop', ul(['De partnerlijst: wie we waarvoor introduceren', 'Sjablonen: antwoorden op één A4, scanrapport', 'Wie het intakegesprek voert naast Jim Coumans', 'De oranje drempels (€ 1.000, € 30, 1 op de 10) toetsen aan eigen accounts', 'Branchegemiddelden voor conversie', 'Prijs voor social-mediatemplates en contentsessie: zonder prijs is het een afwijzing met een vriendelijk randje', 'Toestemming voor de mailreeks juridisch laten nakijken'], ''), 'FASE 1'),
  kaart('Starten', ul(['Verwerkersovereenkomst, algemene voorwaarden, btw op alle documenten (bewust later)', 'Moneybird inrichten en koppelen aan het portaal', 'Handleiding klikroute per platform', 'ClickUp-template met de 76 taken', 'Indicaties voor “wat we vaak tegenkomen”', 'Per vraag in het onboardingformulier: wanneer is een antwoord bruikbaar'], ''), 'FASE 2'),
  kaart('Samenwerken', ul(['Een stappenlijst voor maand 2 tot en met 12, zoals de 76 taken van het fundament', 'Het live-bericht en de vorm van de maandupdate', 'Het performanceblok als vaste agenda', 'Wanneer we ingrijpen, en na welke termijn zonder beweging we het zelf melden', 'Normen per branche voor doorklik en conversie', 'Drie maanden “alleen de motor” toetsen aan de laatste vijf campagnes'], ''), 'FASE 3'),
- kaart('Rondom', ul(['<b>Bestaande klanten.</b> Het legacy- en scopebeleid is besloten maar niet opgeschreven: wat vervalt, wat een project wordt, de regeling tot 31 december 2027, met als tussenmijlpaal dat op 1 juli 2027 elke bestaande klant heeft getekend of een opzegdatum heeft. Daarna per klant een migratieplan.', '<b>Het drukwerk</b> gebruikt nog de vijf ARENA-letters (Attention, Retention, Experience, Numbers, Authority) als model, terwijl de methode nu middelpunt, motor en versnellers is. Ook ontbreken het dashboard en ClickCease.', '<b>De oude pakketpagina en de ARENA-methode</b> zeggen elk iets anders over het maandoverleg (30 of 45 minuten, of helemaal niet). Het marketingoverleg blijft; de nieuwe invulling volgt.', '<b>De eigen website</b> (homepage, werkwijze, dienstpagina’s) wacht tot de propositie vastligt.'], ''), 'BUITEN DE REIS', 'o'),
+ kaart('Rondom', ul(['<b>Bestaande klanten.</b> Het legacy- en scopebeleid is besloten maar niet opgeschreven: wat vervalt, wat een project wordt, de regeling tot 31 december 2027, met als tussenmijlpaal dat op 1 juli 2027 elke bestaande klant heeft getekend of een opzegdatum heeft. Daarna per klant een migratieplan.', '<b>Het drukwerk</b> gebruikt nog de vijf ARENA-letters (Attention, Retention, Experience, Numbers, Authority) als model, terwijl de methode nu middelpunt, motor en versnellers is. Ook ontbreken het dashboard en ClickCease.', '<b>De oude pakketpagina en de ARENA-methode</b> zeggen elk iets anders over het maandoverleg (30 of 45 minuten, of helemaal niet). Het marketingoverleg in stap 08 is leidend.', '<b>De eigen website</b> (homepage, werkwijze, dienstpagina’s) wacht tot de propositie vastligt.'], ''), 'BUITEN DE REIS', 'o'),
 ]) + """
 </div></section>
 """
@@ -159,7 +158,9 @@ BESLUITEN = """
  ['30 sep 2026', 'Het intakegesprek heeft een vaste vragenlijst van 24 vragen, waarvan vier verplicht voor het voorstel.'],
  ['30 sep 2026', 'Alle klantcommunicatie via support@jamesrobinson.nl, in Front toegewezen aan de marketingmanager. Antwoord binnen één werkdag. Dringend: bellen naar kantoor. De WhatsApp-groepen worden verwijderd; persoonlijke mailadressen verdwijnen op termijn voor klantcontact.'],
  ['30 sep 2026', 'We zijn geen collega of externe marketingafdeling, maar een performancebureau met een vast product.'],
- ['30 sep 2026', 'Het marketingoverleg blijft, korter en gestructureerder. De invulling volgt.'],
+ ['30 sep 2026', 'Het marketingoverleg gaat over resultaat, op ons kantoor of online, met een vast stramien: impressies, bezoekers, aanvragen, klanten, dan diagnose en plan. We gaan niet meer naar de klant.'],
+ ['30 sep 2026', 'Jaar 1 is de set-upmaand plus elf keer de retainer. Zo rekent de rekensom.'],
+ ['30 sep 2026', 'Het volledige designsysteem v3.0 is leidend, en staat in deze gids.'],
 ]) + """
 </div></section>
 <footer class="voet"><div class="wrap">James Robinson — Marketing &amp; Branding · De James Robinson-gids · versie 30 september 2026</div></footer>

@@ -117,10 +117,10 @@ STAP04 = stap_kop('04', 'f1', 'FASE 1 · VERKOPEN', 'Voorstel maken en het voors
 """ + tbl(['#', 'Vraag', 'Som', 'Waar het getal vandaan komt'], [
  ['1', 'Hoeveel nieuwe klanten heb je nodig?', 'extra omzet ÷ omzet per klant per jaar', 'Intakegesprek en vragenlijst. Blijft een klant korter dan een jaar, dan telt alleen dat deel.'],
  ['2', 'Hoeveel aanvragen horen daarbij?', 'klanten ÷ percentage dat klant wordt', 'Vragenlijst (“weet ik niet” = 20%)'],
- ['3', 'Hoeveel is dat per maand?', 'aanvragen ÷ 12', 'Bovenop wat hij nu al krijgt'],
+ ['3', 'Hoeveel is dat per maand?', 'aanvragen ÷ 11', 'Jaar 1 is de set-upmaand plus elf maanden live. Bovenop wat hij nu al krijgt.'],
  ['4', 'Wat mag alle marketing samen kosten?', 'extra omzet × marge × terugverdientijd ÷ 12', 'Marge aan tafel (zonder antwoord 30%); termijn standaard twaalf maanden'],
- ['5', 'Wat gaat daar vast vanaf?', 'fundament + herstel + 12 × (retainer + licenties)', 'Tarieven (1.4) en de quickscan'],
- ['6', 'Wat blijft er over voor advertenties?', 'marketingruimte − vaste kosten', 'Bepaalt het pakket: het grootste pakket waarvan het minimum gehaald wordt'],
+ ['5', 'Wat gaat daar vast vanaf?', 'fundament + herstel + 11 × retainer + licenties jaar 1', 'Tarieven (1.4) en de quickscan. Jaar 1 = set-upmaand plus elf keer de retainer.'],
+ ['6', 'Wat blijft er over voor advertenties?', '(marketingruimte − vaste kosten) ÷ 11 per maand', 'Bepaalt het pakket: het grootste pakket waarvan het minimum gehaald wordt'],
  ['7', 'Wat mag een aanvraag aan advertenties kosten?', 'advertentiebudget ÷ aanvragen', 'Het plafond waarop we bieden, niet de verwachting'],
 ]) + """
 <h4 style="margin-top:26px">Het voorbeeld, doorgerekend</h4>
@@ -128,22 +128,22 @@ STAP04 = stap_kop('04', 'f1', 'FASE 1 · VERKOPEN', 'Voorstel maken en het voors
 """ + rk([
  ('Extra omzet die hij komend jaar wil halen', '€ 120.000', 'intakegesprek'), ('Zijn brutomarge', '× 30%', 'intakegesprek'), ('Terugverdiend binnen twaalf maanden', '× 1 jaar', 'standaard, aan tafel bevestigd'),
  ('Wat alle marketing in jaar 1 mag kosten', '= € 36.000', 'alles samen', 'tot'),
- ('Het fundament', '− € 4.500', 'eenmalig'), ('Retainer Enter, twaalf maanden', '− € 12.000', ''), ('Licenties, twaalf maanden', '− € 569', 'MailerLite € 9,90 + Cookiescript € 12,50 + dashboard € 25 per maand'),
- ('Over voor advertenties', '= € 18.931', '€ 1.578 per maand', 'tot'),
+ ('Het fundament', '− € 4.500', 'eenmalig'), ('Retainer Enter, elf maanden (vanaf maand 2)', '− € 11.000', ''), ('Licenties, jaar 1', '− € 544', 'MailerLite 12 × € 9,90, Cookiescript € 150, dashboard 11 × € 25'),
+ ('Over voor advertenties', '= € 19.956', '€ 1.814 per maand, elf maanden live', 'tot'),
 ]) + grid(4, [
  kaart('27 klanten', '€ 120.000 ÷ € 4.500 per klant per jaar', 'SOM 1'),
- kaart('107 aanvragen', '27 ÷ 25%, dus 9 extra per maand', 'SOM 2 EN 3'),
- kaart('€ 177', 'per aanvraag aan advertenties: € 18.931 ÷ 107', 'SOM 7'),
- kaart('39%', 'retainer als deel van retainer plus advertenties: onder de 50%', 'TOETS'),
+ kaart('107 aanvragen', '27 ÷ 25%, over elf maanden live: 10 extra per maand', 'SOM 2 EN 3'),
+ kaart('€ 187', 'per aanvraag aan advertenties: € 19.956 ÷ 107', 'SOM 7'),
+ kaart('36%', 'retainer als deel van retainer plus advertenties: onder de 50%', 'TOETS'),
 ]) + """
-<p style="margin-top:16px">€ 1.578 per maand is genoeg voor Enter (minimaal € 1.000) en te weinig voor Compete (€ 2.500). Zo volgt het pakket uit de som.</p>
-""" + key('DE OPLEVERING', '“9 extra aanvragen per maand, tegen maximaal € 177 per aanvraag aan advertenties, vanaf het tweede kwartaal.”', '<p>Dat is de doelregel: één zin die de klant kan onthouden en kan narekenen, omdat hij de getallen zelf aanleverde. Hij komt terug in het voorstel, als doellijn in het dashboard, bij de budgetverdeling over de campagnes (het plafond per aanvraag bepaalt waar we stoppen met bieden) en in elk performanceblok. <b>Altijd erbij zeggen:</b> het doel geldt vanaf maand 4. Reken je het jaardoel over twaalf maanden vanaf dag één, dan sta je in maand drie achter op een schema dat nooit klopte.</p>') + """
+<p style="margin-top:16px">€ 1.814 per maand is genoeg voor Enter (minimaal € 1.000) en te weinig voor Compete (€ 2.500). Zo volgt het pakket uit de som.</p>
+""" + key('DE OPLEVERING', '“10 extra aanvragen per maand, tegen maximaal € 187 per aanvraag aan advertenties, vanaf het tweede kwartaal.”', '<p>Dat is de doelregel: één zin die de klant kan onthouden en kan narekenen, omdat hij de getallen zelf aanleverde. Hij komt terug in het voorstel, als doellijn in het dashboard, bij de budgetverdeling over de campagnes (het plafond per aanvraag bepaalt waar we stoppen met bieden) en in elk performanceblok. <b>Altijd erbij zeggen:</b> het doel geldt vanaf maand 4. Reken je het jaardoel over twaalf maanden vanaf dag één, dan sta je in maand drie achter op een schema dat nooit klopte.</p>') + """
 <h4>Drie toetsen, in deze volgorde</h4>
 """ + jk([
  ('Is het te leveren?', 'Leg de extra aanvragen naast wat hij nu krijgt. Van 12 naar 33 per maand is een verdrievoudiging van zijn werk. Kan hij het niet aan, dan verlaag je het doel, niet het budget.'),
- ('Past het bij een pakket?', 'Minimaal € 1.000 advertentiebudget per maand is Enter, € 2.500 Compete, € 7.500 Own. Enter kost in jaar 1 alles bij elkaar ongeveer € 29.100. Bij 30% marge hoort daar ongeveer € 97.000 extra omzet bij, bij 50% marge ongeveer € 58.000.'),
+ ('Past het bij een pakket?', 'Minimaal € 1.000 advertentiebudget per maand is Enter, € 2.500 Compete, € 7.500 Own. Enter kost in jaar 1 (set-upmaand plus elf maanden) alles bij elkaar ongeveer € 27.000. Bij 30% marge hoort daar ongeveer € 90.000 extra omzet bij, bij 50% marge ongeveer € 54.000.'),
  ('Houdt de 50%-regel?', 'Het advertentiebudget is minstens zo hoog als de retainer. Met de minimumbudgetten klopt dat altijd; eenmalige kosten en licenties tellen niet mee.'),
-]) + let('<p><b>Als de som niet uitkomt.</b> Bij € 90.000 extra omzet blijft er € 828 per maand over voor advertenties: onder het minimum van Enter. Dan zijn er drie uitwegen: een hoger doel, een langere terugverdientijd, of nee. Nooit het goedkoper maken.</p><p style="margin-top:8px">Het getal uit som 7 is een plafond, geen verwachting. Wat een aanvraag echt gaat kosten, blijkt pas uit de cijfers. Zit de verwachting erboven, dan is dat geen tegenvaller maar de reden om nee te zeggen.</p>', 'ALS HET NIET UITKOMT') + """
+]) + let('<p><b>Als de som niet uitkomt.</b> Bij € 85.000 extra omzet blijft er € 860 per maand over voor advertenties: onder het minimum van Enter. Dan zijn er drie uitwegen: een hoger doel, een langere terugverdientijd, of nee. Nooit het goedkoper maken.</p><p style="margin-top:8px">Het getal uit som 7 is een plafond, geen verwachting. Wat een aanvraag echt gaat kosten, blijkt pas uit de cijfers. Zit de verwachting erboven, dan is dat geen tegenvaller maar de reden om nee te zeggen.</p>', 'ALS HET NIET UITKOMT') + """
 <h3>Het voorstel: doel, plan, voorstel</h3>
 <p>Het voorstel overtuigt; de offerte in Moneybird legt vast. Ze komen uit dezelfde klantkaart en spreken elkaar nooit tegen. Het voorstel zijn zes pagina’s A4 in de huisstijl, als pdf en als link op de klantkaart, geschreven voor de beslisser, ook als die er niet bij was. Er staat geen handtekening onder. Het begint bij zijn doel; de prijs komt pas op pagina 5.</p>
 """ + tbl(['Pagina', 'Wat erop staat', 'Komt uit'], [
@@ -158,7 +158,7 @@ STAP04 = stap_kop('04', 'f1', 'FASE 1 · VERKOPEN', 'Voorstel maken en het voors
  ['6 · Jouw kant en de afspraken', 'De vijf afspraken met een termijn. Maandelijks opzegbaar, cijfers leidend, de 50%-regel. Onderaan: “Tekenen doe je in de offerte”, met de link.', 'Dit hoofdstuk'],
 ]) + """
 <h4 style="margin-top:26px">Pagina 5, zoals de klant hem leest</h4>
-<div class="grid3">""" + col('AAN JAMES ROBINSON', [('Fundament', '€ 4.500', 'eenmalig, bij ondertekening'), ('Retainer Enter', '€ 1.000', 'per maand vooraf, vanaf maand 2'), ('Marketingdashboard', '€ 25', 'per maand, of € 250 per jaar')]) + col('RECHTSTREEKS, OP ZIJN NAAM', [('Advertentiebudget', '€ 1.578', 'per maand, uit de rekensom'), ('MailerLite', 'vanaf € 9,90', 'per maand, volgt de lijst'), ('Cookiescript', '€ 150', 'per jaar, via Webmix'), ('ClickCease', 'vanaf $ 99', 'per maand; eerst de proefperiode')]) + col('VIA WEBMIX, EIGEN OFFERTE', [('Herstelposten uit de quickscan', '€ 0', 'in dit voorbeeld geen')]) + """</div>
+<div class="grid3">""" + col('AAN JAMES ROBINSON', [('Fundament', '€ 4.500', 'eenmalig, bij ondertekening'), ('Retainer Enter', '€ 1.000', 'per maand vooraf, vanaf maand 2'), ('Marketingdashboard', '€ 25', 'per maand, of € 250 per jaar')]) + col('RECHTSTREEKS, OP ZIJN NAAM', [('Advertentiebudget', '€ 1.814', 'per maand, uit de rekensom'), ('MailerLite', 'vanaf € 9,90', 'per maand, volgt de lijst'), ('Cookiescript', '€ 150', 'per jaar, via Webmix'), ('ClickCease', 'vanaf $ 99', 'per maand; eerst de proefperiode')]) + col('VIA WEBMIX, EIGEN OFFERTE', [('Herstelposten uit de quickscan', '€ 0', 'in dit voorbeeld geen')]) + """</div>
 <p style="margin-top:14px">Geen eindtotaal, want er is geen bedrag dat hij in één keer aan één partij betaalt. Het totaal van alle marketing staat op pagina 3, in de rekensom: als de ruimte die hij zelf heeft gekozen.</p>
 """ + let('<p><b>Stuur het voorstel niet vooraf.</b> Een voorstel zonder uitleg wordt op één regel gelezen: de prijs. Dan begint het gesprek met een verdediging in plaats van met zijn doel. En de offerte gaat niet mee het gesprek in: wie aan tafel een offerte ziet, gaat regels tellen.</p>', 'DE VOLGORDE') + """
 <h3>Het voorstelgesprek: 45 minuten</h3>
@@ -231,7 +231,6 @@ STAP04 = stap_kop('04', 'f1', 'FASE 1 · VERKOPEN', 'Voorstel maken en het voors
  '<b>De draaidag: plan A of plan B.</b> Plan A: bij het tekenen vastleggen, op dag 3 tot 5; dan staat de datum al in het voorstel en het startbericht. Plan B: Google Search alvast aan, Meta na de montage; werkt niet bij vraagcreatie. Advies: plan A.',
  'Het voorstel opmaken in de huisstijl, en voorstel en offerte laten genereren vanuit het portaal.',
  'Branchegemiddelden voor conversie, voor klanten die “weet ik niet” invullen. Die bestaan nog niet.',
- '<b>Jaar 1 in de rekensom telt twaalf retainermaanden,</b> terwijl de retainer pas in maand 2 start. Dat is bewust: twaalf maanden live is het eerlijke jaar, en het rekent voorzichtig. Ter bevestiging.',
 ], '')) + stap_eind()
 
 P2B = STAP03 + STAP04

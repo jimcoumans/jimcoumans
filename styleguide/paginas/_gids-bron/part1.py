@@ -3,7 +3,7 @@ from common import *
 
 HERO = """
 <header class="hero"><div class="wrap">
-<span class="eyebrow">JAMES ROBINSON · MARKETING &amp; BRANDING</span>
+<span class="eyebrow">James Robinson · Marketing &amp; Branding</span>
 <h1>De James Robinson-gids</h1>
 <p class="lead">Hoe we werken, van de eerste klik van een klant tot maand twaalf. Lees hem van boven naar beneden: eerst waar het om draait, dan de klantreis stap voor stap, en aan het eind hoe alles samenhangt en wat nog open ligt. Wat hier staat, geldt.</p>
 <div class="meta"><span><b>Versie</b> 30 september 2026</span><span><b>Eigenaren</b> Jim Coumans en Jim Kikken</span><span><b>Status</b> werkdocument, ter review</span></div>
@@ -245,7 +245,7 @@ GELD = """
 ]) + """
 """ + raakt(ul([
  '<b>Alles wat vast is, gaat van het advertentiebudget af.</b> Fundament, retainer, licenties en herstelposten komen uit dezelfde marketingruimte als de advertenties (zie de rekensom in stap 04). Elke euro die het fundament duurder wordt, is een euro minder voor advertenties.',
- '<b>Als het fundament naar € 5.250 of € 6.563 gaat</b> (de herrekening tegen € 100 of € 125 per uur), stijgt de ondergrens voor Enter bij 30% marge van ongeveer € 97.000 naar € 99.400 of € 103.800 extra omzet. Minder klanten passen dan in het kleinste pakket.',
+ '<b>Als het fundament naar € 5.250 of € 6.563 gaat</b> (de herrekening tegen € 100 of € 125 per uur), stijgt de ondergrens voor Enter bij 30% marge van ongeveer € 90.000 naar € 92.600 of € 97.000 extra omzet. Minder klanten passen dan in het kleinste pakket.',
  '<b>De retainer start in maand 2.</b> Loopt het fundament uit, dan is de vraag of de eerste retainerfactuur meeschuift. Zie stap 06.',
 ], '')) + open_(ul([
  '<b>Fundament € 4.500 is voorlopig.</b> Jim Kikken en Stan rekenen het na tegen € 100–125 per uur. Het blijft één vaste prijs.',
@@ -286,7 +286,7 @@ COMM = """
 """ + grid(3, [
  kaart('Mailen', 'Alles naar support@jamesrobinson.nl. In Front wordt elke mail van een klant automatisch toegewezen aan zijn marketingmanager. Iedereen die aan de klant werkt, leest mee.', 'VOOR ALLES', 'b'),
  kaart('Binnen één werkdag', 'Antwoord binnen één werkdag, op werkdagen. Van degene die erover gaat, met naam en eigen handtekening, vanaf support@. Voor ieder pakket hetzelfde.', 'DE BELOFTE', 'g'),
- kaart('Bellen naar kantoor', 'Alleen als het dringend is: de campagne of de website ligt eruit, of er gaat geld verloren. Dan bellen naar kantoor op [telefoonnummer]. Al het andere gaat per mail.', 'DRINGEND', 'r'),
+ kaart('Bellen naar kantoor', 'Alleen als het dringend is: de campagne of de website ligt eruit, of er gaat geld verloren. Dan bellen naar kantoor: 045 792 0009. Al het andere gaat per mail.', 'DRINGEND', 'r'),
 ]) + """
 <h3>Waarom geen WhatsApp-groepen meer</h3>
 """ + tbl(['Wat er misging', 'Wat support@ oplost'], [
@@ -306,7 +306,7 @@ COMM = """
  '<b>Niets gratis erbij blijft gelden per mail.</b> Een verzoek buiten de retainer beantwoorden we met een voorstel en een prijs, niet met “doen we even”.',
  '<b>Het marketingoverleg blijft</b>, korter en gestructureerder dan nu. Wat daar besproken wordt, bevestigen we per mail vanaf support@, zodat ook dat op één plek staat.',
 ], '')) + open_(ul([
- 'Het telefoonnummer van kantoor en de uren waarop we bereikbaar zijn, voor in het startbericht en de handtekening.',
+ 'De uren waarop kantoor (045 792 0009) bereikbaar is, voor in het startbericht en de handtekening.',
  'Front inrichten: automatisch toewijzen per klant, doorsturen vanaf persoonlijke adressen, meten van reactietijd, en de koppeling met ClickUp.',
  'De overstap bij bestaande klanten: per klant uitleggen in het eerstvolgende marketingoverleg, daarna het bericht in de groep, en de groep verwijderen.',
 ], '')) + """
@@ -343,7 +343,7 @@ MERK = """
 ]) + grid(2, [
  kaart('Vaste afspraken', ul(['Je en jouw voor de klant, we en ons voor onszelf. U alleen in juridische teksten.', 'Uitroeptekens: nul.', 'Sportbeeld: hooguit één per pagina, en alleen als het iets uitlegt.', 'Ritme: kort, kort, lang, waar een punt moet landen.', 'Een zin hooguit 25 woorden, een alinea hooguit drie zinnen, een kop hooguit acht woorden, een knop hooguit drie.'], ''), 'SCHRIJVEN'),
  kaart('Woorden die we nooit gebruiken', '<p>Ontzorgen, oplossingen op maat, partner in, innovatief, uniek, passie voor, resultaatgericht, korte lijnen, persoonlijke aandacht, al meer dan X jaar, de beste, vrijblijvend.</p><p style="margin-top:10px"><b>Diensten beschrijven:</b> het ding, twee constateringen, een feit erbij. <b>SEO:</b> de title-tag is zoekgericht, de H1 is de dienstnaam, de regel eronder is het merk.</p>', 'NOOIT', 'r'),
-]) + open_('<p><b>Designsysteem v3.0 of brandbook 2024?</b> Het brandbook van 2024 schrijft alleen Helvetica Neue voor; v3.0 gebruikt Inter Tight en Inter en voegt JR Lime toe. Deze gids gaat uit van v3.0, omdat die het nieuwst is en in de repository staat waar de website op draait. Ter bevestiging door Jim Coumans. Alle exacte waarden, componenten en Elementor-invulbladen staan in de map styleguide van de repository.</p>') + """
+]) + vlak('grijs', 'Het volledige systeem', '<p>Dit is de korte versie. Het volledige designsysteem v3.0 staat in deel 4, aan het eind van deze gids: alle kleurtrappen, de typografie per element, ruimte, knoppen, componenten, beeld, tone of voice, diensten, SEO en merk, en de invulbladen voor Elementor. Het is leidend, ook boven het brandbook van 2024.</p>') + """
 </div></section>
 """
 
