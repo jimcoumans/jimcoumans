@@ -22,7 +22,7 @@ html = HEAD + body
 html = re.sub(r'€ (?=[\d±])', '€&nbsp;', html)
 html = html.replace('<div class="pijl">→</div>', '<div class="pijl"><span class="ph">→</span><span class="pv">↓</span></div>')
 html = re.sub(r'\$ (?=\d)', '$&nbsp;', html)
-PROPER = ['James Robinson','Google Ads','Google','Meta','Webmix','ClickCease','Leadinfo','Calendly','MailerLite','Moneybird','ClickUp','WhatsApp','Front','LinkedIn','TikTok','Microsoft Ads','Microsoft','Bing','King Kong','Keyword Planner','Enter','Compete','Own','Jim Coumans','Jim Kikken','Stan','Hulsberg','AI','CRO','SEO','B2B','GA4','CTR','DNS','CSV','A4','ARENA','CRM']
+PROPER = ['James Robinson','Google Ads','Google','Meta','Webmix','ClickCease','Leadinfo','Calendly','MailerLite','Moneybird','ClickUp','WhatsApp','Front','LinkedIn','TikTok','Microsoft Ads','Microsoft','Bing','King Kong','Keyword Planner','Enter','Compete','Own','Jim Coumans','Jim Kikken','Stan','Hulsberg','AI','CRO','SEO','B2B','GA4','CTR','DNS','CSV','A4','ARENA','CRM','Performance Review']
 def sentence(t):
     letters=[c for c in t if c.isalpha()]
     if not letters or sum(c.isupper() for c in letters) < 0.8*len(letters): return t

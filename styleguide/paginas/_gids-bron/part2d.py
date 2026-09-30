@@ -25,8 +25,8 @@ OORZAKEN = [
 
 STAP08 = stap_kop('08', 'f3', 'FASE 3 · SAMENWERKEN', 'Live en het maandritme',
  'De campagne gaat aan: stap 3 en 4 van ons plan. Eerst alleen de motor, vanaf maand 4 de versnellers, in de volgorde die de cijfers aanwijzen. Elke maand een korte update, en een telefoontje van ons als er iets is.',
- [('WANNEER', 'Vanaf dag 19 van het fundament, zolang de samenwerking loopt'), ('WIE', 'Het vaste aanspreekpunt en de campagnerol; eigenaar bij performanceblokken'), ('HOE LANG', 'Maandelijks opzegbaar; retainer vooraf vanaf maand 2'), ('KLAAR ALS', 'Nooit. Elke maand staat er een update in het dashboard, en elk kwartaal is duidelijk of we op de doelregel zitten')],
- 'stap-08') + klant('Aanvragen die binnenkomen in zijn dashboard, met bij elke aanvraag twee knoppen. De eerste aanvraag belt hij niet alleen: wij bellen hem eerder dan het systeem meldt. Elke maand een korte schriftelijke update. Een marketingoverleg op ons kantoor of online, dat over resultaat gaat en een vast stramien volgt, en een performanceblok om samen de diepte in te gaan. Vragen stelt hij via support@, en hij krijgt binnen één werkdag antwoord.') + """
+ [('WANNEER', 'Vanaf dag 19 van het fundament, zolang de samenwerking loopt'), ('WIE', 'Het vaste aanspreekpunt en de campagnerol; eigenaar bij de Performance Review'), ('HOE LANG', 'Maandelijks opzegbaar; retainer vooraf vanaf maand 2'), ('KLAAR ALS', 'Nooit. Elke maand staat er een update in het dashboard, en elk kwartaal is duidelijk of we op de doelregel zitten')],
+ 'stap-08') + klant('Aanvragen die binnenkomen in zijn dashboard, met bij elke aanvraag twee knoppen. De eerste aanvraag belt hij niet alleen: wij bellen hem eerder dan het systeem meldt. Elke maand een korte schriftelijke update. Een Performance Review op ons kantoor of online, die over resultaat gaat en een vast stramien volgt. Vragen stelt hij via support@, en hij krijgt binnen één werkdag antwoord.') + """
 <h3>Live: het moment en de twee weken erna</h3>
 """ + tl([
  ('Week 4', 'De kick-off met zijn team', 'Met wie belt, niet alleen met de directeur. Op papier: wie belt, binnen hoeveel tijd, en wat er gebeurt als diegene er niet is. Daarna een testaanvraag door de hele keten: advertentie, pagina, formulier, dashboard, melding, bevestiging.'),
@@ -63,24 +63,23 @@ STAP08 = stap_kop('08', 'f3', 'FASE 3 · SAMENWERKEN', 'Live en het maandritme',
  ['Maandelijks', 'Korte schriftelijke update in het dashboard: staan we op de doelregel, en zo nee, waarom niet', '●', '●', '●'],
  ['Nieuwe advertentiesets', 'Varianten om tegen de bestaande te testen', '1× per kwartaal', '1× per maand', '2× per maand'],
  ['Draaidag', 'Nieuw beeld, want advertenties slijten', '1× per jaar', '2× per jaar', '4× per jaar'],
- ['Performanceblok', 'Samen de diepte in: wat hebben we geleerd, wat verandert er, wat is het volgende doel', '1× per jaar', '1× per kwartaal', 'doorlopend'],
- ['Marketingoverleg', 'Over resultaat, vast stramien, op kantoor of online; bevestigd per mail', 'volgt', 'volgt', 'volgt'],
+ ['Performance Review', 'Over resultaat, vast stramien, op kantoor of online; bevestigd per mail', 'elk kwartaal', 'elke twee maanden', 'maandelijks'],
  ['Vragen en verzoeken', 'Via support@, antwoord binnen één werkdag', '●', '●', '●'],
 ])  + """
-<h3>Het marketingoverleg: over resultaat, met ons aan het roer</h3>
-<p>Het overleg gaat over resultaat, niet over wat we allemaal gedaan hebben. Op ons kantoor in Hulsberg of online; we gaan niet meer naar de klant. Wij hebben de regie: we weten precies wat de cijfers zijn, wat ze betekenen, en aan welke knoppen we kunnen draaien en gaan draaien. Elk overleg volgt hetzelfde stramien.</p>
+<h3>De Performance Review: over resultaat, met ons aan het roer</h3>
+<p>De Performance Review gaat over resultaat, niet over wat we allemaal gedaan hebben. Op ons kantoor in Hulsberg of online; we gaan niet meer naar de klant. Wij hebben de regie: we weten precies wat de cijfers zijn, wat ze betekenen, en aan welke knoppen we kunnen draaien en gaan draaien. Elk overleg volgt hetzelfde stramien.</p>
 """ + jk([
- ('Impressies', 'Hoe vaak zijn zijn advertenties getoond, per kanaal?'),
- ('Websitebezoekers, en dus de doorklikratio', 'Hoeveel mensen klikten door naar de website, en welk percentage van de impressies is dat?'),
- ('Aanvragen, en dus de conversieratio', 'Hoeveel aanvragen leverde dat op, en welk percentage van de bezoekers is dat?'),
- ('Klanten: hoeveel, en wie', 'Kwalitatief: welke aanvragen werden klant, en waren dat de klanten die hij wil? Dit is de enige schakel die van hem is, en hij levert het antwoord aan via de oordelen in het dashboard.'),
+ ('Impressies', 'Hoe vaak zijn zijn advertenties getoond, per kanaal, en wat kostte dat per duizend?'),
+ ('Websitebezoekers, en dus de doorklikratio', 'Hoeveel mensen klikten door naar de website, welk percentage van de impressies is dat, en wat kostte een klik?'),
+ ('Aanvragen, en dus de conversieratio', 'Hoeveel aanvragen leverde dat op, welk percentage van de bezoekers is dat, en wat kostte een aanvraag, naast de doelregel?'),
+ ('Klanten: hoeveel, wie, en wat een klant kostte', 'Kwalitatief: welke aanvragen werden klant, en waren dat de klanten die hij wil? Dit is de enige schakel die van hem is. Hij levert het antwoord aan met de knop “klant geworden” in het dashboard.'),
  ('Onze diagnose', 'Waar zit de smalste schakel, en waarom? Met de oorzaak uit de tien hieronder.'),
  ('Ons plan voor de periode erna', 'Welk percentage of aantal moet omhoog, en hoe we dat gaan realiseren: welke knop, welke content, welk kanaal.'),
  ('Vragen en opmerkingen', 'Daarna, en kort. De focus blijft op resultaat.'),
 ]) + grid(3, [
  kaart('Vooraf', 'Wij zetten de cijfers klaar uit het dashboard en hebben de diagnose en het plan al gemaakt. De klant heeft in het dashboard aangegeven welke aanvragen klant werden. Zonder dat laatste is stap 4 een gok.', 'VOORBEREIDING', 'b'),
  kaart('Tijdens', 'Wij leiden het gesprek, in de vaste volgorde. Geen presentatie van wat we deden, geen losse wensenlijst. Elke vraag die geen resultaat raakt, gaat naar support@.', 'REGIE', 'g'),
- kaart('Na afloop', 'Dezelfde dag een korte mail vanaf support@: de vier cijfers, de diagnose, het plan en wat er besloten is. Zo staat ook het overleg op één plek.', 'BEVESTIGING', 'l'),
+ kaart('Na afloop', 'Dezelfde dag een korte mail vanaf support@: de vier cijfers, de diagnose, het plan en wat er besloten is. Zo staat ook de review op één plek.', 'BEVESTIGING', 'l'),
 ]) + """
 
 <h3>Continu monitoren: data beats opinion</h3>
@@ -118,13 +117,13 @@ STAP08 = stap_kop('08', 'f3', 'FASE 3 · SAMENWERKEN', 'Live en het maandritme',
 <p>Maandelijks, voor allebei. Tot en met de laatste dag van de maand; de maand erna komt er geen factuur meer, mits er geen budgetten meer openstaan. Alles staat op zijn naam, dus hij neemt zijn advertentieaccounts, zijn e-maillijst en zijn licenties mee zonder dat er iets overgezet hoeft te worden. Dat maakt vertrekken makkelijk, en dat moeten we willen: een klant blijft omdat het werkt.</p>
 """ + raakt(ul([
  '<b>Het maandritme is het product.</b> Alles hiervoor is eenmalig; hier verdienen we ons geld en hier kan de klant elke maand weg. Een maand zonder zichtbare update is een maand waarin hij zich afvraagt waarvoor hij betaalt.',
- '<b>De doelregel uit stap 04</b> is de doellijn in het dashboard en de enige vraag in elk performanceblok.',
+ '<b>De doelregel uit stap 04</b> is de doellijn in het dashboard en de vraag waar elke Performance Review om draait.',
  '<b>De afspraken van jouw kant</b> worden hier cijfers: opvolgtijd (oorzaak 08) en oordelen per aanvraag (oorzaak 09) zijn zichtbaar voor allebei.',
  '<b>Continu monitoren is wat “cijfers leidend” waarmaakt.</b> Zonder dagelijkse check op meting en uitgaven ontdek je een fout pas in de maandupdate, en dan heeft de klant een maand betaald voor lucht.',
  '<b>Enter heeft maar één draaidag per jaar,</b> en die zat in het fundament. Advertenties slijten; bij Enter komt nieuw beeld pas het jaar erna, tenzij hij een extra draaidag los afneemt.',
 ], '')) + open_(ul([
- '<b>Dit is het grootste gat in de reis.</b> Het fundament is opengewerkt in 76 taken; de twaalf maanden daarna nog niet. Nodig: een stappenlijst voor maand 2 tot en met 12, het live-bericht, de vorm van de maandelijkse update, het performanceblok als vaste agenda, en het moment waarop wij ingrijpen bij achterstand.',
- '<b>Het marketingoverleg: hoe vaak per pakket, en hoe lang.</b> Het stramien staat; frequentie en duur nog niet. Voorstel: bij Enter per kwartaal, bij Compete elke twee maanden, bij Own maandelijks, telkens 45 minuten. Hoe het zich verhoudt tot het performanceblok, beslissen we samen met de nieuwe indeling van de retainers.',
+ '<b>Dit is het grootste gat in de reis.</b> Het fundament is opengewerkt in 76 taken; de twaalf maanden daarna nog niet. Nodig: een stappenlijst voor maand 2 tot en met 12, het live-bericht, de vorm van de maandelijkse update, en het moment waarop wij ingrijpen bij achterstand.',
+ '<b>De Performance Review: hoe vaak per pakket, en hoe lang.</b> Het stramien staat. Voorstel: bij Enter elk kwartaal, bij Compete elke twee maanden, bij Own maandelijks, telkens 45 minuten. Minder vaak dan maandelijks bij kleine volumes, omdat de cijfers van maand tot maand dan vooral toeval laten zien. Wordt vastgezet met de nieuwe indeling van de retainers.',
  '<b>De drempels voor de monitoring zijn een voorstel.</b> Vastzetten, en automatisch laten melden vanuit het dashboard en de platformen, zodat het niet van iemands oplettendheid afhangt.',
  '<b>Na welke termijn zonder beweging</b> melden wij het uit onszelf? “Een afgesproken termijn” is nog geen getal.',
  '<b>Drie maanden alleen de motor is een aanname.</b> Hoe snel de kosten tot rust komen, hangt af van het volume. Toetsen aan de laatste vijf campagnes en er een norm van maken.',

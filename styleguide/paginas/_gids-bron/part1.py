@@ -222,8 +222,7 @@ GELD = """
  ['Advertentiebudget per maand', '€ 1.000 – 2.500', '€ 2.500 – 7.500', 'vanaf € 7.500'],
  ['Nieuwe advertentiesets', '1 per kwartaal', '1 per maand', '2 per maand'],
  ['Draaidagen voor nieuw beeld', '1 per jaar', '2 per jaar', '4 per jaar'],
- ['Performanceblokken', '1 per jaar', '1 per kwartaal', 'doorlopend'],
- ['Marketingoverleg', 'volgt', 'volgt', 'volgt'],
+ ['Performance Review', 'elk kwartaal', 'elke twee maanden', 'maandelijks'],
 ]) + """
 <p style="margin-top:14px">De draaidag in het fundament is draaidag één van het jaar. Bij Enter betekent dat: dat jaar geen tweede. Dat zeggen we in het voorstelgesprek, niet in maand vier.</p>
 
@@ -304,11 +303,11 @@ COMM = """
  '<b>Een mail heeft een hogere drempel dan een appje.</b> Klanten die elk detail in de groep gooiden, sturen minder, en wat ze sturen is beter te behandelen.',
  '<b>In Front zien we per klant hoeveel gesprekken er lopen en hoe snel we reageren.</b> Leg dat naast wat de retainer oplevert, en je ziet welke klant ons meer kost dan hij betaalt. Data beats opinion, ook intern.',
  '<b>Niets gratis erbij blijft gelden per mail.</b> Een verzoek buiten de retainer beantwoorden we met een voorstel en een prijs, niet met “doen we even”.',
- '<b>Het marketingoverleg blijft</b>, korter en gestructureerder dan nu. Wat daar besproken wordt, bevestigen we per mail vanaf support@, zodat ook dat op één plek staat.',
+ '<b>De Performance Review blijft</b>, en gaat over resultaat. Wat daar besproken wordt, bevestigen we per mail vanaf support@, zodat ook dat op één plek staat.',
 ], '')) + open_(ul([
  'De uren waarop kantoor (045 792 0009) bereikbaar is, voor in het startbericht en de handtekening.',
  'Front inrichten: automatisch toewijzen per klant, doorsturen vanaf persoonlijke adressen, meten van reactietijd, en de koppeling met ClickUp.',
- 'De overstap bij bestaande klanten: per klant uitleggen in het eerstvolgende marketingoverleg, daarna het bericht in de groep, en de groep verwijderen.',
+ 'De overstap bij bestaande klanten: per klant uitleggen in de eerstvolgende Performance Review, daarna het bericht in de groep, en de groep verwijderen.',
 ], '')) + """
 </div></section>
 """

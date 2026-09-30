@@ -137,7 +137,7 @@ STAP04 = stap_kop('04', 'f1', 'FASE 1 · VERKOPEN', 'Voorstel maken en het voors
  kaart('36%', 'retainer als deel van retainer plus advertenties: onder de 50%', 'TOETS'),
 ]) + """
 <p style="margin-top:16px">€ 1.814 per maand is genoeg voor Enter (minimaal € 1.000) en te weinig voor Compete (€ 2.500). Zo volgt het pakket uit de som.</p>
-""" + key('DE OPLEVERING', '“10 extra aanvragen per maand, tegen maximaal € 187 per aanvraag aan advertenties, vanaf het tweede kwartaal.”', '<p>Dat is de doelregel: één zin die de klant kan onthouden en kan narekenen, omdat hij de getallen zelf aanleverde. Hij komt terug in het voorstel, als doellijn in het dashboard, bij de budgetverdeling over de campagnes (het plafond per aanvraag bepaalt waar we stoppen met bieden) en in elk performanceblok. <b>Altijd erbij zeggen:</b> het doel geldt vanaf maand 4. Reken je het jaardoel over twaalf maanden vanaf dag één, dan sta je in maand drie achter op een schema dat nooit klopte.</p>') + """
+""" + key('DE OPLEVERING', '“10 extra aanvragen per maand, tegen maximaal € 187 per aanvraag aan advertenties, vanaf het tweede kwartaal.”', '<p>Dat is de doelregel: één zin die de klant kan onthouden en kan narekenen, omdat hij de getallen zelf aanleverde. Hij komt terug in het voorstel, als doellijn in het dashboard, bij de budgetverdeling over de campagnes (het plafond per aanvraag bepaalt waar we stoppen met bieden) en in elke Performance Review. <b>Altijd erbij zeggen:</b> het doel geldt vanaf maand 4. Reken je het jaardoel over twaalf maanden vanaf dag één, dan sta je in maand drie achter op een schema dat nooit klopte.</p>') + """
 <h4>Drie toetsen, in deze volgorde</h4>
 """ + jk([
  ('Is het te leveren?', 'Leg de extra aanvragen naast wat hij nu krijgt. Van 12 naar 33 per maand is een verdrievoudiging van zijn werk. Kan hij het niet aan, dan verlaag je het doel, niet het budget.'),
@@ -184,7 +184,7 @@ STAP04 = stap_kop('04', 'f1', 'FASE 1 · VERKOPEN', 'Voorstel maken en het voors
  ['De toegangen', 'Binnen drie werkdagen na het tekenen, in één toegangensessie van 45 minuten met ons', 'Het fundament start pas als ze er zijn. Elke dag later schuift de live-datum een dag.'],
  ['Eén beslisser', 'Eén persoon beslist over doelgroep, boodschap en budget, en reageert binnen twee werkdagen', 'Akkoord in week 1 en 3 blijft liggen, en het tijdpad schuift.'],
  ['Opvolging', 'Elke aanvraag binnen [de tijd uit het intakegesprek] opgevolgd door [naam], met een vervanger bij vakantie of ziekte', 'Aanvragen worden geen klant. Dit is de meest voorkomende oorzaak van tegenvallend resultaat, en we meten het vanaf dag één.'],
- ['Een oordeel per aanvraag', 'In het dashboard: goede aanvraag of niet, en waarom. Eén klik.', 'We kunnen alleen op aantal sturen, niet op kwaliteit. Dat zeggen we erbij als de cijfers tegenvallen.'],
+ ['Een oordeel per aanvraag', 'In het dashboard: goede aanvraag of niet, en waarom, met één klik. En later: welke aanvraag klant werd.', 'We kunnen alleen op aantal sturen, niet op kwaliteit. Dat zeggen we erbij als de cijfers tegenvallen.'],
  ['Beeld en inhoud', 'Het onboardingformulier binnen drie werkdagen, en één dagdeel voor de draaidag met iemand die het werk doet op beeld', 'Zonder eigen beeld beginnen we met stock, en dat werkt aantoonbaar slechter.'],
 ]) + """
 <h3>Wat vooraf vastligt, zodat het later geen excuus is</h3>
@@ -222,7 +222,7 @@ STAP04 = stap_kop('04', 'f1', 'FASE 1 · VERKOPEN', 'Voorstel maken en het voors
 ]) + """
 <p style="margin-top:14px">Bij één op drie scoren is dat bijna dertien uur per gewonnen klant, ongeveer € 497 kostprijs. Dat is 3% van wat een jaar Enter ons oplevert, en 1,2% bij twee jaar Compete. Die kosten zitten in het tarief, niet op de factuur: fase 1 is gratis voor de klant.</p>
 """ + raakt(ul([
- '<b>De rekensom bepaalt alles wat erna komt:</b> het pakket, het advertentiebudget, de doelregel in het dashboard, het biedplafond in de campagnes, en de vraag in elk performanceblok.',
+ '<b>De rekensom bepaalt alles wat erna komt:</b> het pakket, het advertentiebudget, de doelregel in het dashboard, het biedplafond in de campagnes, en de vraag in elke Performance Review.',
  '<b>Een rood punt in de quickscan wordt hier geld.</b> Herstelposten gaan van de marketingruimte af; bij een krappe som kan dat het verschil zijn tussen Enter en nee.',
  '<b>Hoe hoger de vaste posten, hoe hoger de drempel.</b> Een duurder fundament of dashboard betekent een hogere minimale omzetwens om in Enter te passen.',
  '<b>De datum in het plan hangt aan de draaidag.</b> Alleen als de draaidag vastligt, kun je hier een live-datum beloven.',

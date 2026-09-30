@@ -22,7 +22,7 @@ SAMEN = """
 <section class="sec" id="samenhang"><div class="wrap">
 <span class="kick">3.1 · DE REKENKETEN</span>
 <h2>Eén som bepaalt bijna alles</h2>
-<p class="sub">Het doel van de klant wordt een marketingruimte, de vaste posten gaan eraf, wat overblijft is het advertentiebudget, en dat bepaalt het pakket. Daarna loopt dezelfde som door tot in elk performanceblok.</p>
+<p class="sub">Het doel van de klant wordt een marketingruimte, de vaste posten gaan eraf, wat overblijft is het advertentiebudget, en dat bepaalt het pakket. Daarna loopt dezelfde som door tot in elke Performance Review.</p>
 <div class="stroom">
  <div class="s"><span class="sl">STAP 03</span><b>Doel × marge × termijn</b><span>€ 120.000 × 30% × 1 jaar</span></div><div class="pijl">→</div>
  <div class="s"><span class="sl">MARKETINGRUIMTE</span><b>€ 36.000</b><span>alles samen, jaar 1</span></div><div class="pijl">−</div>
@@ -32,7 +32,7 @@ SAMEN = """
 <div class="stroom">
  <div class="s"><span class="sl">STAP 04</span><b>€ 187 per aanvraag</b><span>budget ÷ aanvragen: het biedplafond</span></div><div class="pijl">→</div>
  <div class="s"><span class="sl">STAP 07</span><b>Doellijn in het dashboard</b><span>10 extra aanvragen per maand</span></div><div class="pijl">→</div>
- <div class="s"><span class="sl">STAP 08</span><b>Elk performanceblok</b><span>zitten we op de regel, en zo nee, waarom niet?</span></div><div class="pijl">→</div>
+ <div class="s"><span class="sl">STAP 08</span><b>Elke Performance Review</b><span>zitten we op de regel, en zo nee, waarom niet?</span></div><div class="pijl">→</div>
  <div class="s"><span class="sl">TOETS</span><b>50%-regel</b><span>retainer 36% van het maandbudget</span></div>
 </div>
 
@@ -63,7 +63,7 @@ SAMEN = """
  ['05 · Tekenen', 'Moneybird, machtiging, factuur', '—', '—', 'Tekenen, machtigen'],
  ['06 · Onboarding', 'Startbericht, datums', '—', 'Vast aanspreekpunt: bellen, toegangensessie', 'Formulier, toegangen, betaalgegevens'],
  ['07 · Fundament', '—', 'Vijf rollen, 76 taken', 'Klantcontact: akkoorden, draaidag, kick-off', 'Akkoord week 1 en 3, draaidag'],
- ['08 · Maandritme', 'Meldingen, weekmail, dashboard', 'Wekelijks bijsturen, maandupdate', 'Performanceblok, ingrijpen', 'Opvolgen, oordeel per aanvraag'],
+ ['08 · Maandritme', 'Meldingen, weekmail, dashboard', 'Wekelijks bijsturen, maandupdate', 'Performance Review, ingrijpen', 'Opvolgen, oordeel per aanvraag'],
 ]) + """
 <h3>Wat we wanneer vragen</h3>
 <p>Elke vraag één keer, op het eerste moment dat het antwoord iets verandert. Wat we eerder weten, staat op de klantkaart en komt later terug als “klopt dit nog?”.</p>
@@ -105,16 +105,16 @@ OPEN = """
  ['Extra kanalen bij de start', 'Standaard Google Ads en Meta. Uitzoeken of Microsoft Ads, LinkedIn of TikTok in het fundament extra uren kosten, en welk minimumbudget per kanaal hoort', 'Fundament, tarieven, rekensom'],
  ['Animatie en graphics', 'Graphics uit de advertentiesjablonen; animatie nog zonder eigen taak en uren', 'Blok 05 van het fundament'],
  ['Drempels voor de monitoring', 'Zoals in stap 08; vastzetten en automatisch laten melden', 'Stap 08, dashboard'],
- ['Het marketingoverleg', 'Stramien staat; nog vast te leggen: hoe vaak per pakket en hoe lang (voorstel: Enter per kwartaal, Compete elke twee maanden, Own maandelijks, 45 minuten)', 'Stap 08, pakketten, voorstel'],
+ ['De Performance Review', 'Stramien staat; nog vast te leggen: hoe vaak per pakket en hoe lang (voorstel: Enter elk kwartaal, Compete elke twee maanden, Own maandelijks, 45 minuten)', 'Stap 08, retainers, voorstel'],
  ['De retainers herijken', 'Namen, indeling en inhoud per retainer definitief maken. Nieuw in beeld: een retainer van € 500 voor zichtbaarheid, en € 2.500 of € 3.000 voor klanten met veel campagnes tegelijk', 'Tarieven, rekensom, pakketkeuze, drukwerk'],
- ['Communicatie via support@', 'Telefoonnummer en bereikbaarheid kantoor; Front inrichten; overstap per klant in het marketingoverleg', 'Startbericht, alle klantcontact'],
+ ['Communicatie via support@', 'Telefoonnummer en bereikbaarheid kantoor; Front inrichten; overstap per klant in de Performance Review', 'Startbericht, alle klantcontact'],
 ]) + """
 <h3>Nog uit te werken</h3>
 """ + grid(2, [
  kaart('Verkoop', ul(['De partnerlijst: wie we waarvoor introduceren', 'Sjablonen: antwoorden op één A4, scanrapport', 'Wie het intakegesprek voert naast Jim Coumans', 'De oranje drempels (€ 1.000, € 30, 1 op de 10) toetsen aan eigen accounts', 'Branchegemiddelden voor conversie', 'Prijs voor social-mediatemplates en contentsessie: zonder prijs is het een afwijzing met een vriendelijk randje', 'Toestemming voor de mailreeks juridisch laten nakijken'], ''), 'FASE 1'),
  kaart('Starten', ul(['Verwerkersovereenkomst, algemene voorwaarden, btw op alle documenten (bewust later)', 'Moneybird inrichten en koppelen aan het portaal', 'Handleiding klikroute per platform', 'ClickUp-template met de 76 taken', 'Indicaties voor “wat we vaak tegenkomen”', 'Per vraag in het onboardingformulier: wanneer is een antwoord bruikbaar'], ''), 'FASE 2'),
- kaart('Samenwerken', ul(['Een stappenlijst voor maand 2 tot en met 12, zoals de 76 taken van het fundament', 'Het live-bericht en de vorm van de maandupdate', 'Het performanceblok als vaste agenda', 'Wanneer we ingrijpen, en na welke termijn zonder beweging we het zelf melden', 'Normen per branche voor doorklik en conversie', 'Drie maanden “alleen de motor” toetsen aan de laatste vijf campagnes'], ''), 'FASE 3'),
- kaart('Rondom', ul(['<b>Bestaande klanten.</b> Het legacy- en scopebeleid is besloten maar niet opgeschreven: wat vervalt, wat een project wordt, de regeling tot 31 december 2027, met als tussenmijlpaal dat op 1 juli 2027 elke bestaande klant heeft getekend of een opzegdatum heeft. Daarna per klant een migratieplan.', '<b>Het drukwerk</b> gebruikt nog de vijf ARENA-letters (Attention, Retention, Experience, Numbers, Authority) als model, terwijl de methode nu middelpunt, motor en versnellers is. Ook ontbreken het dashboard en ClickCease.', '<b>De oude pakketpagina en de ARENA-methode</b> zeggen elk iets anders over het maandoverleg (30 of 45 minuten, of helemaal niet). Het marketingoverleg in stap 08 is leidend.', '<b>De eigen website</b> (homepage, werkwijze, dienstpagina’s) wacht tot de propositie vastligt.'], ''), 'BUITEN DE REIS', 'o'),
+ kaart('Samenwerken', ul(['Een stappenlijst voor maand 2 tot en met 12, zoals de 76 taken van het fundament', 'Het live-bericht en de vorm van de maandupdate', 'Wanneer we ingrijpen, en na welke termijn zonder beweging we het zelf melden', 'Normen per branche voor doorklik en conversie', 'Drie maanden “alleen de motor” toetsen aan de laatste vijf campagnes'], ''), 'FASE 3'),
+ kaart('Rondom', ul(['<b>Bestaande klanten.</b> Het legacy- en scopebeleid is besloten maar niet opgeschreven: wat vervalt, wat een project wordt, de regeling tot 31 december 2027, met als tussenmijlpaal dat op 1 juli 2027 elke bestaande klant heeft getekend of een opzegdatum heeft. Daarna per klant een migratieplan.', '<b>Het drukwerk</b> gebruikt nog de vijf ARENA-letters (Attention, Retention, Experience, Numbers, Authority) als model, terwijl de methode nu middelpunt, motor en versnellers is. Ook ontbreken het dashboard en ClickCease.', '<b>De oude pakketpagina en de ARENA-methode</b> zeggen elk iets anders over het maandoverleg (30 of 45 minuten, of helemaal niet). De Performance Review in stap 08 is leidend.', '<b>De eigen website</b> (homepage, werkwijze, dienstpagina’s) wacht tot de propositie vastligt.'], ''), 'BUITEN DE REIS', 'o'),
 ]) + """
 </div></section>
 """
@@ -158,7 +158,7 @@ BESLUITEN = """
  ['30 sep 2026', 'Het intakegesprek heeft een vaste vragenlijst van 24 vragen, waarvan vier verplicht voor het voorstel.'],
  ['30 sep 2026', 'Alle klantcommunicatie via support@jamesrobinson.nl, in Front toegewezen aan de marketingmanager. Antwoord binnen één werkdag. Dringend: bellen naar kantoor. De WhatsApp-groepen worden verwijderd; persoonlijke mailadressen verdwijnen op termijn voor klantcontact.'],
  ['30 sep 2026', 'We zijn geen collega of externe marketingafdeling, maar een performancebureau met een vast product.'],
- ['30 sep 2026', 'Het marketingoverleg gaat over resultaat, op ons kantoor of online, met een vast stramien: impressies, bezoekers, aanvragen, klanten, dan diagnose en plan. We gaan niet meer naar de klant.'],
+ ['30 sep 2026', 'Het overleg met de klant heet de Performance Review en gaat over resultaat, op ons kantoor of online, met een vast stramien: impressies, bezoekers, aanvragen en klanten, elk met wat het kostte, dan diagnose en plan. Het vervangt het performanceblok. We gaan niet meer naar de klant.'],
  ['30 sep 2026', 'Jaar 1 is de set-upmaand plus elf keer de retainer. Zo rekent de rekensom.'],
  ['30 sep 2026', 'Het volledige designsysteem v3.0 is leidend, en staat in deze gids.'],
 ]) + """
