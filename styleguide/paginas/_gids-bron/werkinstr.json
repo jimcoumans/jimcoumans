@@ -1,0 +1,191 @@
+[
+{
+"nr": "01",
+"titel": "Onboardingformulier verwerken",
+"mis": "Je gaat het formulier tijdens het gesprek invullen. Dan kost het drie keer zoveel tijd en krijg je antwoorden die hij ter plekke verzint. Komt het formulier niet terug: nabellen, niet alvast beginnen.",
+"klaar": "Er staat één regel op papier: zoveel aanvragen per maand tegen maximaal zoveel per aanvraag. Alles daarna wordt daaraan getoetst.",
+"nodig": "Het onboardingformulier, ingevuld, een export van zijn e-mailbestand en toegang tot zijn analytics."
+},
+{
+"nr": "02",
+"titel": "Doelgroep uitwerken",
+"mis": "Je neemt zijn beschrijving over. Bijna elke ondernemer beschrijft de klant die hij wíl en niet de klant die hij hééft. Het bestand vertelt je de waarheid.",
+"klaar": "Per kanaal ligt er een targetingprofiel dat iemand anders zonder overleg in het account kan zetten.",
+"nodig": "De doelgroepvragen uit het formulier en zijn klantenbestand of omzetoverzicht."
+},
+{
+"nr": "03",
+"titel": "Propositie aanscherpen",
+"mis": "Je maakt er marketingtaal van. Als de zin ook bij zijn concurrent had kunnen staan, is hij niet af.",
+"klaar": "Er ligt één afgetekende boodschap per doelgroep, en die zin komt letterlijk terug in de advertenties en op de landingspagina.",
+"nodig": "Zijn antwoorden over waarom mensen voor hem kiezen, plus de advertentieteksten van drie concurrenten."
+},
+{
+"nr": "04",
+"titel": "Concurrentieanalyse",
+"mis": "Je maakt een overzicht van wat iedereen doet. Dat is werk zonder conclusie. De opdracht is één alinea: hier zit de ruimte.",
+"klaar": "Er staat één alinea die zegt waar wij gaan zitten en waarom daar.",
+"nodig": "De concurrenten die de klant noemt, plus de twee die hij niet noemt maar die wel op zijn woorden adverteren."
+},
+{
+"nr": "05",
+"titel": "Conversiedefinitie",
+"mis": "Je verzint een set per klant. Dan kan het dashboard hem niet lezen en is niets vergelijkbaar tussen klanten.",
+"klaar": "De klant heeft de definitie afgetekend. Hieraan hangen de meetopzet, het dashboard en de rapportage.",
+"nodig": "De standaardset conversies en het doel uit de intake."
+},
+{
+"nr": "06",
+"titel": "Merkcheck",
+"mis": "Je begint een huisstijltraject. Dat is een apart project met een eigen prijs. Hier kies je alleen kleur en typografie om mee te kunnen werken.",
+"klaar": "De advertentiesjablonen staan in alle drie de beeldverhoudingen klaar om beeld in te laten vallen.",
+"nodig": "Logo, kleuren, lettertype en beeldmateriaal, in bruikbare bestandsformaten."
+},
+{
+"nr": "07",
+"titel": "De technische audit",
+"mis": "Je meet met een ander gereedschap dan de vorige keer. Dan is de uitkomst niet vergelijkbaar en kan een klant je bedrag aanvechten. Eén gereedschap per meting, altijd hetzelfde.",
+"klaar": "Negen uitkomsten, elk groen, oranje of rood tegen een drempel die op papier stond voordat je begon.",
+"nodig": "Beheerderstoegang tot site, hosting, domein en analytics, plus de checklist met de negen drempelwaarden."
+},
+{
+"nr": "08",
+"titel": "Bevindingen doorzetten",
+"mis": "Je gaat het verkopen. Wij herstellen niets zelf en zetten er nooit iets bovenop; op het moment dat je gaat overtuigen ben je die positie kwijt.",
+"klaar": "Per bevinding staat een beslissing: nu, later of niet. En bij “niet” staat de kanttekening die daarna in elke rapportage terugkomt.",
+"nodig": "Het bevindingenrapport en de tarieven uit de prijslijst."
+},
+{
+"nr": "09",
+"titel": "Meetopzet volgens onze standaard",
+"mis": "Je zet het op en test het niet. Een event dat niet vuurt merk je pas in maand twee, en dan heb je twee maanden op lucht gestuurd.",
+"klaar": "Elk event uit de standaardset is één keer handmatig uitgelokt en aantoonbaar binnengekomen in GA4, Google Ads én Meta.",
+"nodig": "De conversiedefinitie, toegang tot de site en de mogelijkheid om een script in de head te plaatsen."
+},
+{
+"nr": "10",
+"titel": "De nulmeting",
+"mis": "Je doet hem nadat de campagne al een paar dagen loopt. Dan meet je jezelf mee en is het ijkpunt waardeloos.",
+"klaar": "De cijfers per bron staan bevroren in het dashboard, met de datum erbij.",
+"nodig": "Het dashboard met alle bronnen gekoppeld."
+},
+{
+"nr": "11",
+"titel": "Advertentieaccounts",
+"mis": "Je zet het account op onze naam omdat dat sneller gaat. Dan is de klant bij ons vertrokken zijn historie kwijt, en dat is precies het bureau dat wij niet zijn.",
+"klaar": "Beide accounts staan op naam van de klant, met zijn betaalmethode en onze beheertoegang.",
+"nodig": "De bedrijfsgegevens van de klant en zijn betaalmethode."
+},
+{
+"nr": "12",
+"titel": "MailerLite",
+"mis": "Je importeert een lijst waarvan niemand kan uitleggen hoe hij is opgebouwd. Vanaf dat moment ben jij de verzender en ligt het risico bij jou. Weet niemand het: importeren, maar eerst een opt-in sturen en verdergaan met wie reageert.",
+"klaar": "Een testinzending via elk formulier landt in de juiste groep en de bevestigingsmail komt aan.",
+"nodig": "Een export van het bestaande bestand, toegang tot het domein en de formulieren op de site."
+},
+{
+"nr": "13",
+"titel": "Leadinfo",
+"mis": "Je verkoopt het aan een klant die er niets mee gaat doen. Alleen bij B2B, en alleen als er iemand is die opvolgt. Wij volgen geen leads op.",
+"klaar": "Herkenning is zichtbaar in het dashboard en de klant weet dat wij er niets mee doen.",
+"nodig": "Toegang om een script te plaatsen en de bedrijfsgegevens voor het account."
+},
+{
+"nr": "14",
+"titel": "Je marketingdashboard",
+"mis": "Twee dingen. Je bouwt toch een koppeling omdat de klant erom vraagt — één keer toegeven en het is maatwerk dat nooit meer af is. En je levert het op zonder het door te lopen: een dashboard dat niemand begrijpt wordt niet bekeken, en leads zonder oordeel maken het sturen op kwaliteit onmogelijk.",
+"klaar": "De klant heeft een echte testaanvraag zien binnenkomen, met de bron erbij, heeft er met één klik een oordeel over gegeven, en kan aanwijzen waar zijn kosten per aanvraag staan.",
+"nodig": "De klantgegevens, de formulieren, de conversiedefinitie, toegang tot Ads, Meta en GA4, het doel en de nulmeting."
+},
+{
+"nr": "15",
+"titel": "Zoekwoordonderzoek",
+"mis": "Je verzamelt volume zonder intentie. Duizend zoekopdrachten van mensen die alleen informatie willen leveren geen aanvraag op, maar wel een rekening.",
+"klaar": "Er liggen clusters die één op één advertentiegroepen worden, plus een uitsluitingslijst.",
+"nodig": "De propositie, de doelgroepprofielen en toegang tot de zoekwoordplanner."
+},
+{
+"nr": "16",
+"titel": "Campagnestructuur",
+"mis": "Je gooit merknaam en commerciële woorden bij elkaar. Dan ziet je gemiddelde er prachtig uit en weet je niet meer wat er werkt.",
+"klaar": "De structuur staat, het budget is verdeeld naar het doel en de startbiedstrategie ligt vast met het moment waarop we omschakelen.",
+"nodig": "De zoekwoordclusters, het budget en het doel uit de intake."
+},
+{
+"nr": "17",
+"titel": "Advertenties schrijven",
+"mis": "Je schrijft één set en noemt dat af. Zonder varianten heeft het algoritme niets te leren en duurt de aanloopperiode twee keer zo lang.",
+"klaar": "Elke advertentiegroep heeft meerdere varianten, in dezelfde boodschap als de landingspagina.",
+"nodig": "De afgetekende boodschap per doelgroep en de zoekwoordclusters."
+},
+{
+"nr": "18",
+"titel": "Doelgroepen en targeting",
+"mis": "Je vergeet de uitsluitingen. Adverteren aan je eigen klanten en aan sollicitanten kost geld en levert ruis op in je cijfers.",
+"klaar": "De publieken staan en bestaande klanten en sollicitanten zijn uitgesloten.",
+"nodig": "De targetingprofielen en de klantenlijst voor uitsluitingen."
+},
+{
+"nr": "19",
+"titel": "Biedstrategie en retargeting",
+"mis": "Je start meteen op een strategie die conversiedata nodig heeft die er nog niet is. Dan leert het systeem van niets en geef je het eerste budget weg.",
+"klaar": "De startstrategie ligt vast met het omschakelmoment erbij, en de server-side meting werkt aantoonbaar.",
+"nodig": "De conversiedefinitie, de meetopzet en toegang tot beide platformen."
+},
+{
+"nr": "20",
+"titel": "Landingspagina",
+"mis": "Je bouwt hem in de website van de klant omdat hij daarom vraagt. Dan ben je afhankelijk van zijn systeem, zijn plugins en zijn bouwer, en is elke tekstwijziging een aanvraag.",
+"klaar": "De pagina staat op het subdomein, haalt de snelheidsdrempel uit de audit en zegt hetzelfde als de advertentie.",
+"nodig": "De boodschap, het beeld van de draaidag en het subdomein van de klant."
+},
+{
+"nr": "21",
+"titel": "Formulier en bedankpagina",
+"mis": "Je vraagt te veel velden. Elk extra veld kost aanvragen. Vraag wat je nodig hebt om terug te bellen, de rest vraag je aan de telefoon.",
+"klaar": "Een testinzending staat in het dashboard én de conversie is gevuurd op de bedankpagina.",
+"nodig": "Het marketingdashboard, de conversiedefinitie en de landingspagina."
+},
+{
+"nr": "22",
+"titel": "Voorbereiding",
+"mis": "Je komt zonder shotlist. Dan film je wat je toevallig tegenkomt en merk je pas bij de montage dat het belangrijkste ontbreekt.",
+"klaar": "De shotlist is ingevuld en de klant heeft datum, locatie, mensen en producten bevestigd.",
+"nodig": "Het shotlistformat, de propositie en de beschikbaarheid van de klant."
+},
+{
+"nr": "23",
+"titel": "De draaidag",
+"mis": "Je draait alles in één beeldverhouding. Wat je verticaal niet hebt gefilmd bestaat niet, en bijfilmen kost een tweede dag.",
+"klaar": "De shotlist is afgewerkt en het materiaal staat veilig en geback-upt.",
+"nodig": "De shotlist, de apparatuur en de mensen en producten die de klant heeft toegezegd."
+},
+{
+"nr": "24",
+"titel": "Montage",
+"mis": "Je maakt één perfecte film. Vijf goede varianten leveren meer op dan één mooie, want je weet vooraf niet welke werkt.",
+"klaar": "Alle drie de beeldverhoudingen zijn geëxporteerd en er liggen stills voor de pagina en de statische advertenties.",
+"nodig": "Het materiaal van de draaidag en de advertentiesjablonen."
+},
+{
+"nr": "25",
+"titel": "Kickoff met je team",
+"mis": "Je doet hem met de directeur en niet met degene die belt. Dan is de afspraak gemaakt met iemand die hem niet uitvoert.",
+"klaar": "Er staat op papier wie belt, binnen hoeveel tijd, en wat er gebeurt als diegene er niet is.",
+"nodig": "Het marketingdashboard, de gespreksleidraad en de mensen bij de klant die daadwerkelijk opvolgen."
+},
+{
+"nr": "26",
+"titel": "Testaanvraag door de keten",
+"mis": "Je test alleen het formulier. De keten breekt meestal verderop — in de melding die niet aankomt of de conversie die niet vuurt.",
+"klaar": "De tweede test is groen op alle zes de punten.",
+"nodig": "De complete keten: advertentie, pagina, formulier, dashboard en e-mail."
+},
+{
+"nr": "27",
+"titel": "De eerste week",
+"mis": "Je grijpt te snel in. Elke wijziging zet de leerfase terug. Kijken en noteren, en alleen ingrijpen bij iets wat aantoonbaar fout staat.",
+"klaar": "Zeven dagen bijgehouden, de eerste optimalisaties doorgevoerd en vastgelegd waarom.",
+"nodig": "Toegang tot beide platformen en het dashboard."
+}
+]
