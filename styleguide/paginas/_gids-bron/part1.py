@@ -54,7 +54,7 @@ WIE = """
 <p class="sub">We zorgen dat er aanvragen binnenkomen via advertenties in zoekmachines en op social media, en dat die steeds goedkoper worden. De website van de klant is daarbij het middelpunt. Wat daar niet aan bijdraagt, doen we niet, of niet zelf.</p>
 """ + grid(3, [
  kaart('Wie we zijn', 'Marketingbureau in Hulsberg, bedacht in 2017 en opgericht in 2018. Ongeveer tien mensen; zeven begonnen hier als stagiair. Eigenaren: Jim Coumans en Jim Kikken, via James Robinson Group BV.', 'JAMES ROBINSON'),
- kaart('Hoe we samenwerken', 'Als externe marketingafdeling, in langdurige samenwerkingen met een vaste maandprijs. Geen losse projecten als kern. Radicaal transparant: de klant ziet in zijn dashboard wat wij zien.', 'HET MODEL'),
+ kaart('Hoe we samenwerken', 'Als performancebureau met een vast product: een fundament en een retainer met een vaste maandprijs. Niet als collega of externe marketingafdeling. Radicaal transparant: de klant ziet in zijn dashboard wat wij zien.', 'HET MODEL'),
  kaart('Waar we naartoe willen', 'Het meest toonaangevende bureau van Limburg. Niet in omzet of grootte, maar in voorbeeld zijn: zelf de beste marketing hebben. Dat schrijven we nergens op; je moet het merken.', 'DE AMBITIE'),
 ]) + """
 <h3>Wat voor bureau we zijn</h3>
@@ -223,6 +223,7 @@ GELD = """
  ['Nieuwe advertentiesets', '1 per kwartaal', '1 per maand', '2 per maand'],
  ['Draaidagen voor nieuw beeld', '1 per jaar', '2 per jaar', '4 per jaar'],
  ['Performanceblokken', '1 per jaar', '1 per kwartaal', 'doorlopend'],
+ ['Marketingoverleg', 'volgt', 'volgt', 'volgt'],
 ]) + """
 <p style="margin-top:14px">De draaidag in het fundament is draaidag één van het jaar. Bij Enter betekent dat: dat jaar geen tweede. Dat zeggen we in het voorstelgesprek, niet in maand vier.</p>
 
@@ -276,9 +277,45 @@ REGELS = """
 </div></section>
 """
 
+
+COMM = """
+<section class="sec" id="communicatie"><div class="wrap">
+<span class="kick">1.6 · HOE WE COMMUNICEREN</span>
+<h2>Eén adres: support@jamesrobinson.nl</h2>
+<p class="sub">Alle communicatie met klanten loopt via één gedeelde mailbox. Vragen, materiaal aanleveren, akkoorden: alles naar support@. Geen WhatsApp-groepen meer, en geen gesprekken die in iemands persoonlijke inbox verdwijnen.</p>
+""" + grid(3, [
+ kaart('Mailen', 'Alles naar support@jamesrobinson.nl. In Front wordt elke mail van een klant automatisch toegewezen aan zijn marketingmanager. Iedereen die aan de klant werkt, leest mee.', 'VOOR ALLES', 'b'),
+ kaart('Binnen één werkdag', 'Antwoord binnen één werkdag, op werkdagen. Van degene die erover gaat, met naam en eigen handtekening, vanaf support@. Voor ieder pakket hetzelfde.', 'DE BELOFTE', 'g'),
+ kaart('Bellen naar kantoor', 'Alleen als het dringend is: de campagne of de website ligt eruit, of er gaat geld verloren. Dan bellen naar kantoor op [telefoonnummer]. Al het andere gaat per mail.', 'DRINGEND', 'r'),
+]) + """
+<h3>Waarom geen WhatsApp-groepen meer</h3>
+""" + tbl(['Wat er misging', 'Wat support@ oplost'], [
+ ['Always-on: appjes ’s avonds en in het weekend, en een geopend appje zakt weg en wordt vergeten', 'Een mail blijft openstaan tot iemand hem heeft afgehandeld. Niets zakt weg.'],
+ ['Iedereen zit in de groep, maar het meeste is voor één persoon bedoeld. Je moet alles lezen om niets te missen.', 'Elke mail heeft één eigenaar: de marketingmanager, of wie hij doorzet.'],
+ ['WhatsApp wekt de verwachting van direct antwoord. Soms kwam dat, soms duurde het dagen.', 'Eén belofte die we kunnen houden: binnen één werkdag. En we kunnen meten of we hem halen.'],
+ ['Gesprekken met gino@ of jim@ verdwijnen als iemand vertrekt, en niemand anders ziet ze', 'De historie blijft van het bedrijf, en is voor iedereen terug te vinden.'],
+ ['Geen zicht op de kwaliteit van een antwoord', 'Meelezen en bijsturen, zonder dat iemand ernaast hoeft te zitten.'],
+]) + """
+<p style="margin-top:16px"><b>Waarom support@.</b> In de nieuwe propositie zijn we niet de collega of de externe marketingafdeling van de klant. De klant koopt een product: een fundament en een retainer met een vaste inhoud. Bij een product hoort support: een plek waar je terechtkunt, met een vaste termijn. Dat is duidelijker dan een persoonlijk adres, en het past bij hoe we willen dat klanten naar ons kijken.</p>
+""" + grid(2, [
+ kaart('Wat automatisch blijft', ul(['Meldingen van nieuwe aanvragen, per mail of WhatsApp: dat is een melding van het dashboard, geen gesprek', 'Het startbericht en de datums, vanaf support@', 'De maandelijkse update in het dashboard'], ''), 'GEEN GESPREK', 'l'),
+ kaart('De regel voor ons team', ul(['Nooit antwoorden vanaf een persoonlijk adres', 'Mail van een klant naar een persoonlijk adres gaat automatisch naar support@', 'Een verzoek dat werk vraagt, wordt een taak in ClickUp; de mail is niet de takenlijst'], ''), 'INTERN', 'o'),
+]) + raakt(ul([
+ '<b>Een mail heeft een hogere drempel dan een appje.</b> Klanten die elk detail in de groep gooiden, sturen minder, en wat ze sturen is beter te behandelen.',
+ '<b>In Front zien we per klant hoeveel gesprekken er lopen en hoe snel we reageren.</b> Leg dat naast wat de retainer oplevert, en je ziet welke klant ons meer kost dan hij betaalt. Data beats opinion, ook intern.',
+ '<b>Niets gratis erbij blijft gelden per mail.</b> Een verzoek buiten de retainer beantwoorden we met een voorstel en een prijs, niet met “doen we even”.',
+ '<b>Het marketingoverleg blijft</b>, korter en gestructureerder dan nu. Wat daar besproken wordt, bevestigen we per mail vanaf support@, zodat ook dat op één plek staat.',
+], '')) + open_(ul([
+ 'Het telefoonnummer van kantoor en de uren waarop we bereikbaar zijn, voor in het startbericht en de handtekening.',
+ 'Front inrichten: automatisch toewijzen per klant, doorsturen vanaf persoonlijke adressen, meten van reactietijd, en de koppeling met ClickUp.',
+ 'De overstap bij bestaande klanten: per klant uitleggen in het eerstvolgende marketingoverleg, daarna het bericht in de groep, en de groep verwijderen.',
+], '')) + """
+</div></section>
+"""
+
 MERK = """
 <section class="sec alt" id="het-merk"><div class="wrap">
-<span class="kick">1.6 · HOE WE ERUITZIEN EN KLINKEN</span>
+<span class="kick">1.7 · HOE WE ERUITZIEN EN KLINKEN</span>
 <h2>Het merk</h2>
 <p class="sub">Alles wat de klant van ons ziet, van de video tot het voorstel, volgt het designsysteem v3.0 van september 2026: de rust van Apple, in het blauw van James Robinson. Naam en tagline: <b>James Robinson — Marketing &amp; Branding</b>. De tweede tagline, On top of your game, alleen als tagline, nooit in lopende tekst.</p>
 <div class="stalen">
@@ -310,4 +347,4 @@ MERK = """
 </div></section>
 """
 
-P1 = HERO + ROUTE + DEEL1_OPEN + WIE + MODEL + PLAN + GELD + REGELS + MERK
+P1 = HERO + ROUTE + DEEL1_OPEN + WIE + MODEL + PLAN + GELD + REGELS + COMM + MERK

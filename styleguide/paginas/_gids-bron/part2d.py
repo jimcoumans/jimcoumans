@@ -26,7 +26,7 @@ OORZAKEN = [
 STAP08 = stap_kop('08', 'f3', 'FASE 3 · SAMENWERKEN', 'Live en het maandritme',
  'De campagne gaat aan: stap 3 en 4 van ons plan. Eerst alleen de motor, vanaf maand 4 de versnellers, in de volgorde die de cijfers aanwijzen. Elke maand een korte update, en een telefoontje van ons als er iets is.',
  [('WANNEER', 'Vanaf dag 19 van het fundament, zolang de samenwerking loopt'), ('WIE', 'Het vaste aanspreekpunt en de campagnerol; eigenaar bij performanceblokken'), ('HOE LANG', 'Maandelijks opzegbaar; retainer vooraf vanaf maand 2'), ('KLAAR ALS', 'Nooit. Elke maand staat er een update in het dashboard, en elk kwartaal is duidelijk of we op de doelregel zitten')],
- 'stap-08') + klant('Aanvragen die binnenkomen in zijn dashboard, met bij elke aanvraag twee knoppen. De eerste aanvraag belt hij niet alleen: wij bellen hem eerder dan het systeem meldt. Elke maand een korte schriftelijke update. Geen verplicht maandoverleg; wel een telefoontje als er iets is, en een performanceblok om samen de diepte in te gaan.') + """
+ 'stap-08') + klant('Aanvragen die binnenkomen in zijn dashboard, met bij elke aanvraag twee knoppen. De eerste aanvraag belt hij niet alleen: wij bellen hem eerder dan het systeem meldt. Elke maand een korte schriftelijke update. Een marketingoverleg dat korter en gestructureerder is dan hij gewend is, en een performanceblok om samen de diepte in te gaan. Vragen stelt hij via support@, en hij krijgt binnen één werkdag antwoord.') + """
 <h3>Live: het moment en de twee weken erna</h3>
 """ + tl([
  ('Week 4', 'De kick-off met zijn team', 'Met wie belt, niet alleen met de directeur. Op papier: wie belt, binnen hoeveel tijd, en wat er gebeurt als diegene er niet is. Daarna een testaanvraag door de hele keten: advertentie, pagina, formulier, dashboard, melding, bevestiging.'),
@@ -64,7 +64,9 @@ STAP08 = stap_kop('08', 'f3', 'FASE 3 · SAMENWERKEN', 'Live en het maandritme',
  ['Nieuwe advertentiesets', 'Varianten om tegen de bestaande te testen', '1× per kwartaal', '1× per maand', '2× per maand'],
  ['Draaidag', 'Nieuw beeld, want advertenties slijten', '1× per jaar', '2× per jaar', '4× per jaar'],
  ['Performanceblok', 'Samen de diepte in: wat hebben we geleerd, wat verandert er, wat is het volgende doel', '1× per jaar', '1× per kwartaal', 'doorlopend'],
-]) + key('BEWUST NIET', 'Geen maandelijks overleg.', '<p>Een vast uur per maand bellen kost twaalf uur per klant per jaar en levert niets op wat niet in het dashboard staat. De klant kijkt live mee; als hij iets wil weten, ziet hij het, en als er iets aan de hand is, bellen wij. Het performanceblok is het moment om te zitten, en dan gaat het over één vraag: welke schakel is de smalste, welk percentage moet omhoog, en welke knop pakken we daarvoor?</p>') + """
+ ['Marketingoverleg', 'Kort en gestructureerd, over beslissingen; bevestigd per mail', 'volgt', 'volgt', 'volgt'],
+ ['Vragen en verzoeken', 'Via support@, antwoord binnen één werkdag', '●', '●', '●'],
+]) + key('HET MARKETINGOVERLEG', 'Wel overleg, maar korter, gestructureerder en duidelijker.', '<p>Het dashboard en de maandupdate doen het rapporteren; het overleg gaat over beslissingen. Eén vraag staat altijd op de agenda: welke schakel is de smalste, welk percentage moet omhoog, en welke knop pakken we daarvoor? Wat besloten wordt, bevestigen we dezelfde dag per mail vanaf support@. Hoe vaak, hoe lang en met welke vaste agenda: dat werken we nog uit.</p>') + """
 <h3>Continu monitoren: data beats opinion</h3>
 <p>Het ritme hierboven is wat de klant ziet. Daaronder kijken wij doorlopend mee, zodat we een probleem zien voordat hij het merkt. We beslissen op cijfers, niet op smaak: een discussie over welke advertentie mooier is, beslechten we met een test. Het merk bepaalt de grenzen, de data kiest binnen die grenzen.</p>
 """ + tbl(['Wat we volgen', 'Hoe vaak', 'Wanneer we in actie komen', 'Wie'], [

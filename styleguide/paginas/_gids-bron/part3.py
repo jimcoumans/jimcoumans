@@ -106,6 +106,8 @@ OPEN = """
  ['Extra kanalen bij de start', 'Standaard Google Ads en Meta. Uitzoeken of Microsoft Ads, LinkedIn of TikTok in het fundament extra uren kosten, en welk minimumbudget per kanaal hoort', 'Fundament, tarieven, rekensom'],
  ['Animatie en graphics', 'Graphics uit de advertentiesjablonen; animatie nog zonder eigen taak en uren', 'Blok 05 van het fundament'],
  ['Drempels voor de monitoring', 'Zoals in stap 08; vastzetten en automatisch laten melden', 'Stap 08, dashboard'],
+ ['Het marketingoverleg', 'Blijft, korter en gestructureerder. Nog vast te leggen: hoe vaak per pakket, hoe lang, vaste agenda', 'Stap 08, pakketten, voorstel'],
+ ['Communicatie via support@', 'Telefoonnummer en bereikbaarheid kantoor; Front inrichten; overstap per klant in het marketingoverleg', 'Startbericht, alle klantcontact'],
  ['Merk: v3.0 of brandbook 2024', 'v3.0 (Inter Tight en Inter, JR Lime) is leidend', 'Alles wat de klant ziet'],
 ]) + """
 <h3>Nog uit te werken</h3>
@@ -113,7 +115,7 @@ OPEN = """
  kaart('Verkoop', ul(['De partnerlijst: wie we waarvoor introduceren', 'Sjablonen: antwoorden op één A4, scanrapport', 'Wie het intakegesprek voert naast Jim Coumans', 'De oranje drempels (€ 1.000, € 30, 1 op de 10) toetsen aan eigen accounts', 'Branchegemiddelden voor conversie', 'Prijs voor social-mediatemplates en contentsessie: zonder prijs is het een afwijzing met een vriendelijk randje', 'Toestemming voor de mailreeks juridisch laten nakijken'], ''), 'FASE 1'),
  kaart('Starten', ul(['Verwerkersovereenkomst, algemene voorwaarden, btw op alle documenten (bewust later)', 'Moneybird inrichten en koppelen aan het portaal', 'Handleiding klikroute per platform', 'ClickUp-template met de 76 taken', 'Indicaties voor “wat we vaak tegenkomen”', 'Per vraag in het onboardingformulier: wanneer is een antwoord bruikbaar'], ''), 'FASE 2'),
  kaart('Samenwerken', ul(['Een stappenlijst voor maand 2 tot en met 12, zoals de 76 taken van het fundament', 'Het live-bericht en de vorm van de maandupdate', 'Het performanceblok als vaste agenda', 'Wanneer we ingrijpen, en na welke termijn zonder beweging we het zelf melden', 'Normen per branche voor doorklik en conversie', 'Drie maanden “alleen de motor” toetsen aan de laatste vijf campagnes'], ''), 'FASE 3'),
- kaart('Rondom', ul(['<b>Bestaande klanten.</b> Het legacy- en scopebeleid is besloten maar niet opgeschreven: wat vervalt, wat een project wordt, de regeling tot 31 december 2027, met als tussenmijlpaal dat op 1 juli 2027 elke bestaande klant heeft getekend of een opzegdatum heeft. Daarna per klant een migratieplan.', '<b>Het drukwerk</b> gebruikt nog de vijf ARENA-letters (Attention, Retention, Experience, Numbers, Authority) als model, terwijl de methode nu middelpunt, motor en versnellers is. Ook ontbreken het dashboard en ClickCease.', '<b>De oude pakketpagina</b> noemt nog een maandoverleg; die geldt niet meer.', '<b>De eigen website</b> (homepage, werkwijze, dienstpagina’s) wacht tot de propositie vastligt.'], ''), 'BUITEN DE REIS', 'o'),
+ kaart('Rondom', ul(['<b>Bestaande klanten.</b> Het legacy- en scopebeleid is besloten maar niet opgeschreven: wat vervalt, wat een project wordt, de regeling tot 31 december 2027, met als tussenmijlpaal dat op 1 juli 2027 elke bestaande klant heeft getekend of een opzegdatum heeft. Daarna per klant een migratieplan.', '<b>Het drukwerk</b> gebruikt nog de vijf ARENA-letters (Attention, Retention, Experience, Numbers, Authority) als model, terwijl de methode nu middelpunt, motor en versnellers is. Ook ontbreken het dashboard en ClickCease.', '<b>De oude pakketpagina en de ARENA-methode</b> zeggen elk iets anders over het maandoverleg (30 of 45 minuten, of helemaal niet). Het marketingoverleg blijft; de nieuwe invulling volgt.', '<b>De eigen website</b> (homepage, werkwijze, dienstpagina’s) wacht tot de propositie vastligt.'], ''), 'BUITEN DE REIS', 'o'),
 ]) + """
 </div></section>
 """
@@ -155,6 +157,9 @@ BESLUITEN = """
  ['30 sep 2026', 'We adverteren in zoekmachines en op social: Google, Microsoft Ads (Bing), Meta, LinkedIn en TikTok. Welke, bepalen doelgroep en cijfers. We vullen geen social feeds, alleen advertising.'],
  ['30 sep 2026', 'Content zit in de motor: marketingcontent (foto, video, animatie, graphics). Geen bedrijfsvideo’s, geen branded content tenzij de advertenties erom vragen.'],
  ['30 sep 2026', 'Het intakegesprek heeft een vaste vragenlijst van 24 vragen, waarvan vier verplicht voor het voorstel.'],
+ ['30 sep 2026', 'Alle klantcommunicatie via support@jamesrobinson.nl, in Front toegewezen aan de marketingmanager. Antwoord binnen één werkdag. Dringend: bellen naar kantoor. De WhatsApp-groepen worden verwijderd.'],
+ ['30 sep 2026', 'We zijn geen collega of externe marketingafdeling, maar een performancebureau met een vast product.'],
+ ['30 sep 2026', 'Het marketingoverleg blijft, korter en gestructureerder. De invulling volgt.'],
 ]) + """
 </div></section>
 <footer class="voet"><div class="wrap">James Robinson — Marketing &amp; Branding · De James Robinson-gids · versie 30 september 2026</div></footer>

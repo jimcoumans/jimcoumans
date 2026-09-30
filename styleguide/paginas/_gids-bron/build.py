@@ -5,7 +5,7 @@ from common import CSS, JS
 import part1, part2a, part2b, part2c, part2d, part3
 
 BAR = """<nav class="bar" aria-label="Hoofdstukken"><div class="bar-in"><b>De gids</b>
-<a href="#overzicht">Overzicht</a><a href="#deel-1">Waar het om draait</a><a href="#wat-het-kost">Tarieven</a><a href="#spelregels">Spelregels</a><a href="#het-merk">Merk</a>
+<a href="#overzicht">Overzicht</a><a href="#deel-1">Waar het om draait</a><a href="#wat-het-kost">Tarieven</a><a href="#spelregels">Spelregels</a><a href="#communicatie">Communicatie</a><a href="#het-merk">Merk</a>
 <a href="#stap-01">01</a><a href="#stap-02">02</a><a href="#stap-03">03</a><a href="#stap-04">04</a><a href="#stap-05">05</a><a href="#stap-06">06</a><a href="#stap-07">07</a><a href="#stap-08">08</a>
 <a href="#samenhang">Samenhang</a><a href="#open">Open</a><a href="#besluiten">Besluiten</a>
 <button type="button" id="thema">Donker</button></div></nav>"""
