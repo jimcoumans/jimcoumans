@@ -1,0 +1,435 @@
+<meta charset="utf-8"><title>Wat we wanneer vragen &middot; James Robinson</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@600;700&display=swap">
+<style>
+:root{
+  --page:#fbfbfd; --card:#fff; --alt:#f5f5f7;
+  --tx:#1d1d1f; --tx2:#6e6e73; --tx3:#86868b;
+  --ln:#d2d2d7; --ln-s:#e5e5e9;
+  --blue:#007aff; --link:#0066cc; --act:#0857c3;
+  --b100:#e0efff; --b50:#f4f9ff;
+  --lime:#c4f000; --lime-tx:#5a7000; --lime100:#f2fccc;
+  --green-tx:#1d7d3f; --green100:#e6f7eb;
+  --orange-tx:#94590a; --orange100:#fef2e0;
+  --red-tx:#c02a22; --red100:#fdecea;
+  --black:#1c1c1e; --inv:#f5f5f7; --inv2:#a1a1a6;
+  --fd:"Inter Tight","Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --ft:"Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --fm:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --e:cubic-bezier(.25,.1,.25,1);--g:32px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}}
+:root[data-theme="dark"]{
+  --page:#000;--card:#1c1c1e;--alt:#111113;--tx:#f5f5f7;--tx2:#a1a1a6;--tx3:#86868b;
+  --ln:#38383c;--ln-s:#2a2a2d;--link:#2997ff;--act:#2997ff;
+  --b100:rgba(0,122,255,.2);--b50:rgba(0,122,255,.07);
+  --lime-tx:#d9ff33;--lime100:rgba(196,240,0,.15);
+  --green-tx:#41c96a;--green100:rgba(52,199,89,.15);
+  --orange-tx:#f0a040;--orange100:rgba(246,160,39,.16);
+  --red-tx:#ff6b61;--red100:rgba(255,59,48,.14);
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--tx);font-family:var(--ft);font-size:16.5px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition-duration:.01ms!important}}
+:focus-visible{outline:none;box-shadow:0 0 0 4px rgba(0,122,255,.4);border-radius:8px}
+p{margin:0 0 18px;max-width:70ch}
+p:last-child{margin-bottom:0}
+h1,h2,h3,h4{font-family:var(--fd);margin:0;text-wrap:balance}
+code{font-family:var(--fm);font-size:.86em;background:var(--alt);padding:2px 6px;border-radius:5px}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:60;background:rgba(251,251,253,.86);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--ln-s)}
+:root[data-theme="dark"] .bar,:root:not([data-theme="light"]) .bar{background:rgba(0,0,0,.74)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .bar{background:rgba(251,251,253,.86)}}
+.bar-in{max-width:1080px;margin:0 auto;padding:0 var(--g);display:flex;align-items:center;gap:5px;min-height:48px;overflow-x:auto;scrollbar-width:none}
+.bar-in::-webkit-scrollbar{display:none}
+.bar b{font-family:var(--fd);font-size:14.5px;font-weight:700;letter-spacing:-.016em;margin-right:8px;white-space:nowrap}
+.bar a{font-size:12.5px;color:var(--tx2);text-decoration:none;padding:6px 8px;border-radius:7px;white-space:nowrap}
+.bar a:hover{color:var(--tx)}
+.bar button{margin-left:auto;flex:none;font:inherit;font-size:12px;cursor:pointer;background:transparent;border:1px solid var(--ln);color:var(--tx2);border-radius:980px;padding:5px 13px}
+
+.wrap{max-width:1080px;margin:0 auto;padding-inline:var(--g)}
+.hero{padding-block:76px 40px}
+h1{font-size:clamp(34px,5.4vw,58px);font-weight:700;line-height:1.06;letter-spacing:-.026em;margin-bottom:20px}
+.lead{font-size:20px;line-height:1.5;color:var(--tx2);max-width:64ch}
+.sec{padding-block:60px;border-top:1px solid var(--ln-s)}
+h2{font-size:clamp(26px,3.4vw,38px);font-weight:700;line-height:1.12;letter-spacing:-.02em;margin-bottom:8px}
+.sec > .kicker{font-family:var(--fm);font-size:11px;letter-spacing:.06em;color:var(--tx3);margin-bottom:14px}
+h3{font-size:21px;font-weight:600;line-height:1.24;letter-spacing:-.012em;margin:38px 0 10px}
+h4{font-size:17px;font-weight:600;letter-spacing:-.008em;margin:0 0 6px}
+.note{color:var(--tx2)}
+.note b,b{color:var(--tx);font-weight:600}
+
+/* kernblok */
+.key{background:var(--black);color:var(--inv);border-radius:22px;padding:34px 32px;margin:26px 0}
+.key .k{display:block;font-family:var(--fm);font-size:10.5px;letter-spacing:.06em;color:var(--lime);margin-bottom:14px}
+.key p{color:var(--inv2);font-size:17.5px;max-width:64ch}
+.key strong{color:#fff;font-weight:600}
+.key .big{font-family:var(--fd);font-size:clamp(22px,3vw,30px);font-weight:600;line-height:1.2;letter-spacing:-.018em;color:#fff;margin-bottom:16px}
+
+/* lagen van het aanbod */
+.stack{display:grid;gap:12px;margin-top:24px}
+.st{background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;display:grid;grid-template-columns:132px 1fr;gap:20px;align-items:start}
+.st .lab{font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;color:var(--act);padding-top:3px}
+.st .bd p{margin:0;font-size:15.5px;color:var(--tx2)}
+.st .bd h4{margin-bottom:5px}
+
+/* kandidaten */
+.cands{display:grid;gap:12px;margin-top:22px}
+.cand{border:1px solid var(--ln-s);border-radius:16px;padding:22px 24px;background:var(--card)}
+.cand.win{border-color:var(--lime);box-shadow:0 0 0 1px var(--lime)}
+.cand .zin{font-family:var(--fd);font-size:22px;font-weight:600;letter-spacing:-.014em;margin-bottom:8px}
+.cand .why{font-size:15px;color:var(--tx2);margin:0}
+.cand .verdict{display:inline-block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;border-radius:5px;padding:3px 7px;margin-bottom:12px}
+.cand .verdict.no{background:var(--red100);color:var(--red-tx)}
+.cand .verdict.ok{background:var(--lime100);color:var(--lime-tx)}
+.cand .verdict.mid{background:var(--orange100);color:var(--orange-tx)}
+
+/* onderscheid */
+.dist{width:100%;border-collapse:collapse;font-size:15px;margin-top:22px}
+.dist th,.dist td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.dist thead th{font-family:var(--fm);font-size:10.5px;letter-spacing:.04em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.dist td:first-child{font-weight:500;width:34%}
+.dist .v{font-family:var(--fm);font-size:11px;white-space:nowrap}
+.dist .v.y{color:var(--green-tx)}
+.dist .v.n{color:var(--red-tx)}
+.dist tr:last-child td{border-bottom:none}
+.tblwrap{overflow-x:auto}
+
+/* beslissingen */
+.dec{border:1px solid var(--ln-s);border-radius:18px;background:var(--card);padding:26px 28px;margin-top:14px}
+.dec .hd{display:flex;align-items:baseline;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.dec .num{font-family:var(--fm);font-size:11px;color:var(--tx3);flex:none}
+.dec h4{font-size:19px;flex:1;min-width:220px;margin:0}
+.dec .tag{font-family:var(--fm);font-size:9.5px;letter-spacing:.05em;border-radius:5px;padding:3px 7px}
+.dec .tag.blok{background:var(--red100);color:var(--red-tx)}
+.dec .tag.schaal{background:var(--orange100);color:var(--orange-tx)}
+.dec .tag.scherp{background:var(--b100);color:var(--act)}
+.dec .q{font-size:16px;color:var(--tx2);margin:0 0 16px}
+.dec .adv{background:var(--b50);border-left:3px solid var(--act);border-radius:0 10px 10px 0;padding:16px 18px}
+.dec .adv .al{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.06em;color:var(--act);margin-bottom:7px}
+.dec .adv p{font-size:15.5px;margin:0 0 10px}
+.dec .adv p:last-child{margin-bottom:0}
+
+/* vast */
+.locked{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-top:22px}
+.lk{background:var(--card);border:1px solid var(--ln-s);border-radius:14px;padding:18px 20px}
+.lk .t{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--green-tx);margin-bottom:7px}
+.lk .b{font-size:15px;color:var(--tx2);line-height:1.45}
+.lk .b b{color:var(--tx)}
+
+.warn{background:var(--orange100);border-radius:18px;padding:24px 26px;margin-top:26px}
+.warn h4{color:var(--orange-tx)}
+.warn p{color:var(--orange-tx);opacity:.94;font-size:15.5px;max-width:none}
+.foot{padding-block:44px 64px;font-size:13px;color:var(--tx3);text-align:center}
+
+@media (max-width:734px){
+  :root{--g:20px}
+  body{font-size:16px}
+  .sec{padding-block:48px}
+  .hero{padding-block:44px 28px}
+  .st{grid-template-columns:1fr;gap:10px}
+  .key{padding:24px 22px}
+  .dec{padding:22px 20px}
+}
+
+</style><style>
+.wd{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:10px;align-items:stretch;margin-top:26px}
+.wh{background:var(--card);border:1px solid var(--ln-s);border-radius:18px;padding:22px 22px}
+.wh.rust{background:var(--alt)}
+.wh .wl{display:block;font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;color:var(--act);margin-bottom:8px}
+.wh.rust .wl{color:var(--tx3)}
+.wh h4{font-size:20px;margin:0 0 2px}
+.wh .wt{display:block;font-size:14px;color:var(--tx3);margin-bottom:10px}
+.wh p{font-size:14.5px;color:var(--tx2);margin:0;max-width:none}
+.wa{display:flex;align-items:center;color:var(--tx3);font-size:18px}
+
+.klok{margin-top:26px;border-radius:14px;overflow:hidden;display:flex;height:40px;border:1px solid var(--ln-s)}
+.klok a{display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:10.5px;color:var(--tx2);text-decoration:none;border-right:1px solid var(--ln-s);background:var(--card);white-space:nowrap;overflow:hidden;padding:0 4px}
+.klok a:nth-child(odd){background:var(--alt)}
+.klok a:last-child{border-right:none;background:var(--black);color:var(--lime)}
+.klok a:hover{color:var(--act)}
+.klokl{display:flex;justify-content:space-between;font-family:var(--fm);font-size:10.5px;color:var(--tx3);margin-top:6px}
+
+.bl{border:1px solid var(--ln-s);border-radius:20px;background:var(--card);padding:24px 26px;margin-top:16px}
+.bl .bh2{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:6px}
+.bl .bt{font-family:var(--fm);font-size:12px;color:var(--act);font-weight:500;white-space:nowrap}
+.bl h3{font-size:21px;margin:0;flex:1;min-width:200px}
+.bl .bm{font-family:var(--fm);font-size:10.5px;color:var(--tx3)}
+.bl .bd{font-size:15.5px;color:var(--tx2);margin:0 0 16px;max-width:none}
+.bg{display:grid;grid-template-columns:1.4fr 1fr;gap:16px}
+.bk2 .kl{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.06em;color:var(--tx3);margin-bottom:8px}
+.zeg{list-style:none;margin:0;padding:0}
+.zeg li{font-size:15px;line-height:1.55;padding:9px 12px 9px 14px;border-left:3px solid var(--act);background:var(--b50);border-radius:0 10px 10px 0;margin-bottom:8px}
+.zeg li:last-child{margin-bottom:0}
+.ls{list-style:none;margin:0 0 14px;padding:0}
+.ls li{font-size:14.5px;line-height:1.5;padding:5px 0 5px 16px;position:relative;color:var(--tx)}
+.ls li::before{content:"";position:absolute;left:0;top:12px;width:6px;height:6px;border-radius:2px;background:var(--ln)}
+.val{margin-top:14px;background:var(--orange100);color:var(--orange-tx);border-radius:10px;padding:11px 14px;font-size:14px}
+.val b{color:var(--orange-tx)}
+.bl.fluit{border-color:var(--black);box-shadow:inset 0 0 0 1px var(--black)}
+
+.gr{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px}
+.gk{background:var(--card);border:1px solid var(--ln-s);border-radius:18px;padding:22px 22px;border-top:4px solid}
+.gk.r{border-top-color:var(--act)} .gk.p{border-top-color:var(--orange-tx)} .gk.n{border-top-color:var(--red-tx)}
+.gk .gl{display:block;font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;color:var(--tx3);margin-bottom:6px}
+.gk h4{font-size:19px;margin:0 0 12px}
+.gk ul{list-style:none;margin:0 0 12px;padding:0}
+.gk li{font-size:14.5px;padding:5px 0;border-bottom:1px solid var(--ln-s)}
+.gk li:last-child{border-bottom:none}
+.gk p{font-size:14px;color:var(--tx2);margin:0;max-width:none}
+
+.ml{list-style:none;margin:20px 0 0;padding:0;max-width:860px}
+.ml li{display:grid;grid-template-columns:1fr auto;gap:14px;padding:12px 0;border-bottom:1px solid var(--ln-s);align-items:start}
+.ml li:last-child{border-bottom:none}
+.ml b{display:block;font-size:15px;font-weight:600}
+.ml span{display:block;font-size:14px;color:var(--tx2);margin-top:2px}
+.ch{font-style:normal;font-family:var(--fm);font-size:9.5px;letter-spacing:.04em;border-radius:5px;padding:3px 7px;white-space:nowrap}
+.ch.er{background:var(--green100);color:var(--green-tx)} .ch.deels{background:var(--orange100);color:var(--orange-tx)} .ch.nee{background:var(--red100);color:var(--red-tx)}
+
+.vh{width:100%;border-collapse:collapse;font-size:14.5px;margin-top:20px}
+.vh th,.vh td{text-align:left;padding:12px 12px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.vh thead th{font-family:var(--fm);font-size:10.5px;letter-spacing:.04em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.vh td:first-child{font-weight:500;width:36%}
+.vh td{color:var(--tx2)} .vh td:first-child{color:var(--tx)}
+.vh tbody tr:last-child td{border-bottom:none}
+
+.mail{background:var(--card);border:1px solid var(--ln);border-radius:18px;overflow:hidden;margin-top:18px;max-width:680px}
+.mail .mh{background:var(--alt);padding:14px 24px;border-bottom:1px solid var(--ln-s);font-family:var(--fm);font-size:12px;color:var(--tx2)}
+.mail .mh b{color:var(--tx);font-weight:500}
+.mail .mb{padding:24px 26px}
+.mail .mb p{font-size:15.5px;line-height:1.62;margin:0 0 14px;max-width:60ch}
+.mail .mb p:last-child{margin-bottom:0}
+.mail .mb ul{margin:0 0 14px;padding-left:20px}
+.mail .mb li{font-size:15.5px;line-height:1.62;margin-bottom:4px}
+.vv{background:var(--orange100);color:var(--orange-tx);border-radius:5px;padding:1px 5px}
+
+@media (max-width:900px){ .wd{grid-template-columns:1fr} .wa{justify-content:center;transform:rotate(90deg);padding:4px 0} .bg,.gr{grid-template-columns:1fr} }
+@media (max-width:620px){ .bl{padding:20px 18px} .klok a{font-size:0} }
+
+.key a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+.rs{list-style:none;margin:22px 0 0;padding:0}
+.rs li{display:grid;grid-template-columns:90px 1fr;gap:16px;padding:14px 0;border-bottom:1px solid var(--ln-s)}
+.rs li:last-child{border-bottom:none}
+.rs .d{font-family:var(--fm);font-size:11.5px;color:var(--act);padding-top:3px}
+.rs b{display:block;font-size:16px;margin-bottom:3px}
+.rs p{font-size:14.5px;color:var(--tx2);margin:0;max-width:74ch}
+.rk{max-width:640px;margin-top:16px;background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:6px 20px}
+.rk div{display:grid;grid-template-columns:1fr auto;gap:4px 16px;padding:9px 0;border-bottom:1px solid var(--ln-s);font-size:14.5px}
+.rk div:last-child{border-bottom:none}
+.rk span{color:var(--tx2)} .rk b{font-family:var(--fm);font-size:13.5px;font-weight:500;white-space:nowrap;text-align:right}
+.rk i{grid-column:1/-1;font-style:normal;font-size:12px;color:var(--tx3);margin-top:-4px}
+.rk div.tot{border-top:2px solid var(--ln)} .rk div.tot span{color:var(--tx);font-weight:600} .rk div.tot b{color:var(--act);font-weight:700}
+.vs{width:100%;border-collapse:collapse;font-size:14.5px;margin-top:20px;min-width:680px}
+.vs th,.vs td{text-align:left;padding:12px 12px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.vs thead th{font-family:var(--fm);font-size:10.5px;letter-spacing:.04em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.vs td:first-child{font-family:var(--fm);color:var(--act);width:32px}
+.vs td:nth-child(2){font-weight:600;width:22%}
+.vs td{color:var(--tx2)} .vs td:nth-child(2){color:var(--tx)}
+.vs td:last-child{font-family:var(--fm);font-size:11.5px;color:var(--tx3);width:18%}
+.jk{counter-reset:j;list-style:none;margin:20px 0 0;padding:0;display:grid;gap:10px}
+.jk li{counter-increment:j;display:grid;grid-template-columns:34px 1fr;gap:12px;background:var(--card);border:1px solid var(--ln-s);border-radius:14px;padding:14px 16px}
+.jk li::before{content:counter(j);font-family:var(--fd);font-size:22px;font-weight:700;color:var(--tx3);line-height:1}
+.jk b{display:block;font-size:15.5px;margin-bottom:2px}
+.jk span{font-size:14.5px;color:var(--tx2)}
+.uit3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px}
+.uit3 div{border-radius:16px;padding:18px 20px;border-top:4px solid}
+.uit3 .j{background:var(--green100);border-top-color:var(--green-tx)} .uit3 .d{background:var(--b100);border-top-color:var(--act)} .uit3 .n{background:var(--red100);border-top-color:var(--red-tx)}
+.uit3 b{display:block;font-size:17px;margin-bottom:6px}
+.uit3 p{font-size:14px;margin:0;color:var(--tx2);max-width:none}
+.mg{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
+.mg div{background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:18px 20px}
+.mg .kl{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.06em;margin-bottom:6px}
+.mg .ja .kl{color:var(--green-tx)} .mg .nee .kl{color:var(--red-tx)}
+.mg p{font-size:14.5px;color:var(--tx2);margin:0;max-width:none}
+@media (max-width:760px){ .uit3,.mg{grid-template-columns:1fr} .rs li{grid-template-columns:1fr;gap:4px} }
+
+.twee2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:22px}
+.twee2 div{background:var(--card);border:1px solid var(--ln-s);border-radius:18px;padding:22px 24px}
+.twee2 .kl{display:block;font-family:var(--fm);font-size:10.5px;letter-spacing:.06em;color:var(--act);margin-bottom:6px}
+.twee2 b{display:block;font-family:var(--fd);font-size:20px;margin-bottom:8px}
+.twee2 p{font-size:15px;color:var(--tx2);margin:0;max-width:none}
+.kost{max-width:720px;margin-top:18px;display:grid;gap:12px}
+.kost section{background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:8px 20px}
+.kost h4{font-family:var(--fm);font-size:10.5px;letter-spacing:.05em;font-weight:500;color:var(--tx3);text-transform:uppercase;margin:10px 0 2px}
+.kost div{display:grid;grid-template-columns:1fr auto;gap:2px 16px;padding:9px 0;border-top:1px solid var(--ln-s);font-size:14.5px}
+.kost div:first-of-type{border-top:none}
+.kost b{font-family:var(--fm);font-size:13.5px;font-weight:500;white-space:nowrap;text-align:right}
+.kost i{grid-column:1/-1;font-style:normal;font-size:12px;color:var(--tx3);margin-top:-2px}
+.mb2{width:100%;border-collapse:collapse;font-size:14.5px;margin-top:18px}
+.mb2 th,.mb2 td{text-align:left;padding:12px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.mb2 thead th{font-family:var(--fm);font-size:10.5px;letter-spacing:.04em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.mb2 td{color:var(--tx2)} .mb2 td:first-child{color:var(--tx);font-weight:600;width:26%}
+.mb2 td:nth-child(2){font-family:var(--fm);font-size:13px;white-space:nowrap;color:var(--tx)}
+.ins{list-style:none;margin:16px 0 0;padding:0}
+.ins li{display:grid;grid-template-columns:150px 1fr;gap:16px;padding:11px 0;border-bottom:1px solid var(--ln-s);font-size:14.5px}
+.ins li:last-child{border-bottom:none}
+.ins b{font-weight:600} .ins span{color:var(--tx2)}
+.bron{list-style:none;margin:14px 0 0;padding:0;font-size:14px}
+.bron li{padding:4px 0}
+@media (max-width:760px){ .twee2{grid-template-columns:1fr} .ins li{grid-template-columns:1fr;gap:2px} }
+@media (max-width:620px){
+ table.mb2 thead{display:none}
+ table.mb2,table.mb2 tbody,table.mb2 tr,table.mb2 td{display:block;width:auto!important}
+ table.mb2 tr{padding:12px 0;border-bottom:1px solid var(--ln-s)}
+ table.mb2 td{border:0;padding:2px 0}
+}
+
+.mail{max-width:640px;margin-top:18px;background:var(--card);border:1px solid var(--ln-s);border-radius:16px;overflow:hidden}
+.mail .mh{padding:12px 20px;background:var(--alt);font-family:var(--fm);font-size:12px;color:var(--tx2);border-bottom:1px solid var(--ln-s)}
+.mail .mh b{color:var(--tx);font-weight:500}
+.mail .mb{padding:18px 20px;font-size:15px}
+.mail .mb p{margin:0 0 12px}
+.mail .mb ul{margin:0 0 12px;padding-left:20px}
+.mail .mb li{margin-bottom:6px}
+.vv{background:var(--orange100);color:var(--orange-tx);border-radius:4px;padding:0 4px}
+@media (max-width:620px){
+ table.vs thead,table.vh thead{display:none}
+ table.vs,table.vs tbody,table.vs tr,table.vs td,table.vh,table.vh tbody,table.vh tr,table.vh td{display:block;width:auto;min-width:0}
+ table.vs tr,table.vh tr{padding:12px 0;border-bottom:1px solid var(--ln-s)}
+ table.vs td,table.vh td{border:0!important;padding:2px 0!important}
+ table.vs td,table.vh td{width:auto!important}
+ table.vs td:first-child{display:inline-block;width:24px!important}
+ table.vs td:nth-child(2){display:inline}
+ table.vs td:last-child{margin-top:4px}
+ table.vh td:first-child{font-weight:600}
+}
+
+.mom{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:22px}
+.mom div{background:var(--card);border:1px solid var(--ln-s);border-radius:16px;padding:18px 20px}
+.mom .mk{display:inline-block;font-family:var(--fm);font-size:10px;letter-spacing:.05em;border-radius:5px;padding:2px 7px;margin-bottom:8px}
+.mom b{display:block;font-family:var(--fd);font-size:18px}
+.mom .mt{display:block;font-size:13px;color:var(--tx3);margin:2px 0 8px}
+.mom p{font-size:14px;color:var(--tx2);margin:0;max-width:none}
+.mk.VL{background:var(--b100);color:var(--act)} .mk.QS{background:var(--alt);color:var(--tx2);border:1px solid var(--ln-s)}
+.mk.EH{background:var(--lime100);color:var(--lime-tx)} .mk.TH{background:var(--green100);color:var(--green-tx)}
+.mk.NA{background:var(--orange100);color:var(--orange-tx)} .mk.TO{background:var(--red100);color:var(--red-tx)}
+.reg{width:100%;border-collapse:collapse;font-size:14.5px;margin-top:10px}
+.reg th,.reg td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--ln-s);vertical-align:top}
+.reg thead th{font-family:var(--fm);font-size:10.5px;letter-spacing:.04em;color:var(--tx3);font-weight:500;border-bottom:1px solid var(--ln)}
+.reg{table-layout:fixed}
+.reg th:nth-child(1){width:36%} .reg th:nth-child(2){width:15%} .reg th:nth-child(3){width:27%}
+.reg td:first-child{color:var(--tx);font-weight:500}
+.reg td{color:var(--tx2)}
+.reg td.m{white-space:nowrap}
+.reg .mk{font-family:var(--fm);font-size:10px;letter-spacing:.04em;border-radius:5px;padding:2px 7px;white-space:nowrap}
+@media (max-width:860px){ .mom{grid-template-columns:1fr 1fr} }
+@media (max-width:620px){
+ .mom{grid-template-columns:1fr}
+ table.reg thead{display:none}
+ table.reg{table-layout:auto}
+ table.reg,table.reg tbody,table.reg tr,table.reg td{display:block;width:auto!important}
+ table.reg tr{padding:10px 0;border-bottom:1px solid var(--ln-s)}
+ table.reg td{border:0;padding:2px 0}
+ table.reg td.m{margin:4px 0}
+}
+</style>
+</head><body>
+<nav class="bar"><div class="bar-in"><b>Wat we wanneer vragen</b>
+<a href="#momenten">Zes momenten</a><a href="#register">Het register</a><a href="#verschoven">Wat verschoof</a>
+<button id="tg">Thema</button></div></nav>
+<header class="wrap hero">
+<h1>Wat we wanneer vragen</h1>
+<p class="lead">Elke vraag &eacute;&eacute;n keer, op het eerste moment dat het antwoord iets verandert. Wat we eerder weten, staat op de klantkaart en komt later terug als &lsquo;klopt dit nog?&rsquo;, nooit als dezelfde vraag.</p>
+</header>
+<main class="wrap">
+<section class="sec" id="momenten"><div class="kicker">De regel</div><h2>Zes momenten</h2>
+<p class="note">Niet de tijd bepaalt waar een vraag staat, maar het proces: we vragen wat we nodig hebben op het moment dat we het nodig hebben.</p>
+<div class="mom"><div><span class="mk VL">VL</span><b>Vragenlijst</b><span class="mt">Vooraf, de klant zelf, vijf minuten</span><p>Wat nodig is om te kwalificeren en de quickscan te doen, en wat hij zonder nadenken weet. Zie <a href="https://claude.ai/artifact/4U4aF2yWe7MajnECJdmxxc" target="_blank" rel="noopener">stap 01</a>.</p></div><div><span class="mk QS">QS</span><b>Quickscan</b><span class="mt">Vooraf, wij, van buitenaf</span><p>Alles wat we zelf kunnen opzoeken. Dat vragen we nooit. Zie stap 02.</p></div><div><span class="mk EH">EH</span><b>Eerste helft</b><span class="mt">Het gesprek, een uur</span><p>Alles wat het advies of de prijs verandert, en waar je op moet kunnen doorvragen. Zie <a href="https://claude.ai/artifact/2BAf88dzpxzH8mj7DK1gT6" target="_blank" rel="noopener">de eerste helft</a>.</p></div><div><span class="mk TH">TH</span><b>Tweede helft</b><span class="mt">Het voorstel, 45 minuten</span><p>Keuzes van de klant en de afspraken van &lsquo;jouw kant&rsquo;. Zie <a href="https://claude.ai/artifact/62aVpBMM8Ak4NDq1EkChJ9" target="_blank" rel="noopener">de tweede helft</a>.</p></div><div><span class="mk NA">NA</span><b>Intake deel 2</b><span class="mt">Na akkoord, twintig minuten</span><p>Wat we pas nodig hebben om te maken, en wat werk kost om aan te leveren: bestanden, beeld, klanttaal. Zie <a href="https://claude.ai/artifact/E6xKJ1iY2hJUuxbw9XDQW3" target="_blank" rel="noopener">intake deel 2</a>.</p></div><div><span class="mk TO">TO</span><b>Toegangensessie</b><span class="mt">Na akkoord, 45 minuten samen</span><p>Toegangen en betaalgegevens, op zijn naam. Zie <a href="https://claude.ai/artifact/WZ8XuSyhQsYkk1vJ3jkivw" target="_blank" rel="noopener">de onboarding</a>.</p></div></div>
+<div class="key"><span class="k">De toets</span><p class="big">Verandert het antwoord het advies of de prijs? Dan hoort het v&oacute;&oacute;r het voorstel.</p><p>Kunnen we het zelf opzoeken? Dan vragen we het niet. Hebben we het pas nodig om te maken, en kost het werk om aan te leveren? Dan na het akkoord. Zo leert de klant ons niet pas kennen als hij al getekend heeft, en hoeft hij nergens twee keer antwoord op te geven.</p></div>
+</section>
+<section class="sec" id="register"><div class="kicker">Leidend</div><h2>Het register</h2>
+<p class="note">Dit is de lijst waar de vragenlijst, de eerste helft, de tweede helft en intake deel 2 uit putten. Een vraag erbij of eraf gaat eerst hier.</p>
+<h3>Wat hij verkoopt, en aan wie</h3><div class="tblwrap"><table class="reg"><thead><tr><th>Wat we willen weten</th><th>Wanneer</th><th>Waarvoor we het eerst nodig hebben</th><th>Komt later terug</th></tr></thead><tbody>
+<tr><td>Aan wie verkoop je?</td><td class="m"><span class="mk VL">Vragenlijst</span></td><td>Kwalificatie en route</td><td>&mdash;</td></tr>
+<tr><td>Wat verkoop je, in &eacute;&eacute;n zin?</td><td class="m"><span class="mk VL">Vragenlijst</span></td><td>Quickscan: zoekwoorden en markt</td><td>&mdash;</td></tr>
+<tr><td>Hoe word je klant bij jou?</td><td class="m"><span class="mk VL">Vragenlijst</span></td><td>Kwalificatie, en of er een laagdrempelige instap is</td><td>&mdash;</td></tr>
+<tr><td>Welke dienst of welk product moet de campagne opleveren? Welk werk juist niet meer?</td><td class="m"><span class="mk EH">Eerste helft</span></td><td>Waar we op adverteren, en daarmee de rekensom en het pakket</td><td>Voorstel, onderdeel 1</td></tr>
+<tr><td>Wie is je beste klant?</td><td class="m"><span class="mk EH">Eerste helft</span></td><td>Het advies; later de targeting</td><td>Sessie doel en plan: getoetst aan zijn klantenbestand</td></tr>
+<tr><td>Waarom kiezen klanten voor jou? Waar ben je duurder, en waarom mag dat?</td><td class="m"><span class="mk EH">Eerste helft</span></td><td>Het advies; later de advertentietekst</td><td>Sessie doel en plan: aangescherpt tot boodschap</td></tr>
+</tbody></table></div>
+<h3>De markt</h3><div class="tblwrap"><table class="reg"><thead><tr><th>Wat we willen weten</th><th>Wanneer</th><th>Waarvoor we het eerst nodig hebben</th><th>Komt later terug</th></tr></thead><tbody>
+<tr><td>Waar zitten je klanten?</td><td class="m"><span class="mk VL">Vragenlijst</span></td><td>Quickscan en targeting</td><td>Intake deel 2: &lsquo;klopt dit nog?&rsquo;</td></tr>
+<tr><td>Wie zijn je concurrenten?</td><td class="m"><span class="mk QS">Quickscan</span></td><td>Wie op zijn zoekwoorden adverteert, en de concurrententest</td><td>&mdash;</td></tr>
+<tr><td>Welke concurrenten missen we? Van wie verlies je het vaakst, en waarop?</td><td class="m"><span class="mk EH">Eerste helft</span></td><td>Het advies; later de boodschap</td><td>&mdash;</td></tr>
+</tbody></table></div>
+<h3>De cijfers</h3><div class="tblwrap"><table class="reg"><thead><tr><th>Wat we willen weten</th><th>Wanneer</th><th>Waarvoor we het eerst nodig hebben</th><th>Komt later terug</th></tr></thead><tbody>
+<tr><td>Wat geef je nu uit aan marketing, en waaraan?</td><td class="m"><span class="mk VL">Vragenlijst</span></td><td>Kwalificatie: de oranje drempel</td><td>&mdash;</td></tr>
+<tr><td>Gemiddelde opdrachtwaarde, hoe vaak, hoe lang klant</td><td class="m"><span class="mk VL">Vragenlijst</span></td><td>De rekensom</td><td>Eerste helft: per dienst, als die sterk verschilt</td></tr>
+<tr><td>Aanvragen per maand, hoeveel worden klant, en hoe lang duurt dat</td><td class="m"><span class="mk VL">Vragenlijst</span></td><td>De rekensom en de keten</td><td>&mdash;</td></tr>
+<tr><td>Brutomarge</td><td class="m"><span class="mk EH">Eerste helft</span></td><td>De rekensom</td><td>&mdash;</td></tr>
+<tr><td>Hoeveel extra omzet wil je komend jaar halen?</td><td class="m"><span class="mk EH">Eerste helft</span></td><td>De rekensom</td><td>Voorstel, onderdeel 1</td></tr>
+<tr><td>Binnen hoeveel tijd moet het zich terugverdienen?</td><td class="m"><span class="mk EH">Eerste helft</span></td><td>De rekensom; zonder antwoord twaalf maanden</td><td>&mdash;</td></tr>
+<tr><td>Hoeveel aanvragen kun je er per maand bij aan?</td><td class="m"><span class="mk EH">Eerste helft</span></td><td>Toets: is het te leveren</td><td>&mdash;</td></tr>
+<tr><td>Hoeveel e-mailadressen heb je?</td><td class="m"><span class="mk EH">Eerste helft</span></td><td>De MailerLite-staffel in het voorstel</td><td>Gevraagd in de afspraakbevestiging, meegenomen naar tafel</td></tr>
+</tbody></table></div>
+<h3>De website</h3><div class="tblwrap"><table class="reg"><thead><tr><th>Wat we willen weten</th><th>Wanneer</th><th>Waarvoor we het eerst nodig hebben</th><th>Komt later terug</th></tr></thead><tbody>
+<tr><td>Wat is het adres van je website?</td><td class="m"><span class="mk VL">Vragenlijst</span></td><td>De quickscan</td><td>&mdash;</td></tr>
+<tr><td>Platform, hosting, meting, snelheid, beveiliging, consent</td><td class="m"><span class="mk QS">Quickscan</span></td><td>De quickscan en de herstelposten</td><td>&mdash;</td></tr>
+<tr><td>Bij wie staat je domeinnaam?</td><td class="m"><span class="mk QS">Quickscan</span></td><td>De records voor landingspagina en e-mail</td><td>&mdash;</td></tr>
+<tr><td>Wie heeft de site gebouwd, en is die er nog?</td><td class="m"><span class="mk EH">Eerste helft</span></td><td>Wie de meetcode plaatst</td><td>Toegangensessie</td></tr>
+</tbody></table></div>
+<h3>Opvolging en besluit</h3><div class="tblwrap"><table class="reg"><thead><tr><th>Wat we willen weten</th><th>Wanneer</th><th>Waarvoor we het eerst nodig hebben</th><th>Komt later terug</th></tr></thead><tbody>
+<tr><td>Waar loop je nu tegenaan?</td><td class="m"><span class="mk VL">Vragenlijst</span></td><td>De opening van het gesprek</td><td>&mdash;</td></tr>
+<tr><td>Wanneer wil je beginnen?</td><td class="m"><span class="mk VL">Vragenlijst</span></td><td>Planning; &lsquo;later&rsquo; is een eigen route</td><td>&mdash;</td></tr>
+<tr><td>Wie belt een aanvraag terug, en binnen hoeveel tijd?</td><td class="m"><span class="mk EH">Eerste helft</span></td><td>De rekensom en &lsquo;jouw kant&rsquo;</td><td>Tweede helft: de afspraak, met naam; intake: login en meldingen</td></tr>
+<tr><td>Wie neemt het over bij vakantie of ziekte?</td><td class="m"><span class="mk TH">Tweede helft</span></td><td>&lsquo;Jouw kant&rsquo;</td><td>&mdash;</td></tr>
+<tr><td>Wie beslist er mee?</td><td class="m"><span class="mk EH">Eerste helft</span></td><td>Wie bij de tweede helft moet zijn</td><td>Tweede helft: &eacute;&eacute;n beslisser</td></tr>
+<tr><td>Waar ken je ons van?</td><td class="m"><span class="mk EH">Eerste helft</span></td><td>Onze eigen herkomstcijfers</td><td>&mdash;</td></tr>
+</tbody></table></div>
+<h3>Keuzes die in het voorstel staan</h3><div class="tblwrap"><table class="reg"><thead><tr><th>Wat we willen weten</th><th>Wanneer</th><th>Waarvoor we het eerst nodig hebben</th><th>Komt later terug</th></tr></thead><tbody>
+<tr><td>Laat je afspraken inplannen, en met hoeveel mensen?</td><td class="m"><span class="mk EH">Eerste helft</span></td><td>Afsprakenplanner in het voorstel: ja of nee, en hoeveel accounts</td><td>&mdash;</td></tr>
+<tr><td>Verkoop je aan bedrijven, en hoeveel bezoekers heb je?</td><td class="m"><span class="mk EH">Eerste helft</span></td><td>Leadinfo: ja of nee, en de staffel</td><td>&mdash;</td></tr>
+<tr><td>Pakket</td><td class="m"><span class="mk TH">Tweede helft</span></td><td>Volgt uit de rekensom; de klant bevestigt</td><td>Offerte</td></tr>
+<tr><td>Per licentie maand of jaar; ClickCease ja of proefperiode</td><td class="m"><span class="mk TH">Tweede helft</span></td><td>De offerte en de onboarding</td><td>Offerte, dashboard als optie</td></tr>
+<tr><td>Een dagdeel voor de draaidag</td><td class="m"><span class="mk TH">Tweede helft</span></td><td>Het plan en de live-datum</td><td>Startbericht</td></tr>
+</tbody></table></div>
+<h3>Aanleveren om te kunnen maken</h3><div class="tblwrap"><table class="reg"><thead><tr><th>Wat we willen weten</th><th>Wanneer</th><th>Waarvoor we het eerst nodig hebben</th><th>Komt later terug</th></tr></thead><tbody>
+<tr><td>Logo, huisstijl, eigen foto&rsquo;s en video, wat je niet wilt zien</td><td class="m"><span class="mk NA">Intake deel 2</span></td><td>Advertenties en landingspagina</td><td>&mdash;</td></tr>
+<tr><td>Klantenbestand of omzetoverzicht</td><td class="m"><span class="mk NA">Intake deel 2</span></td><td>De beste klant toetsen aan de cijfers</td><td>Sessie doel en plan</td></tr>
+<tr><td>Klanttaal: welke woorden klanten gebruiken, wat nieuwe klanten zeggen, waarom mensen uitstellen</td><td class="m"><span class="mk NA">Intake deel 2</span></td><td>Zoekwoorden en advertentieteksten</td><td>&mdash;</td></tr>
+<tr><td>Op wie wil je nooit lijken? Wie moeten we uitsluiten?</td><td class="m"><span class="mk NA">Intake deel 2</span></td><td>Toon en targeting</td><td>&mdash;</td></tr>
+<tr><td>E-mailbestand: waar staat het, export, toestemming, groepen</td><td class="m"><span class="mk NA">Intake deel 2</span></td><td>MailerLite vanaf dag &eacute;&eacute;n</td><td>&mdash;</td></tr>
+<tr><td>Draaidag: locatie, wie voor de camera, wat in beeld</td><td class="m"><span class="mk NA">Intake deel 2</span></td><td>De shotlist</td><td>&mdash;</td></tr>
+<tr><td>Meldingen: e-mail of WhatsApp; vaste contactpersoon</td><td class="m"><span class="mk NA">Intake deel 2</span></td><td>Het dashboard</td><td>&mdash;</td></tr>
+</tbody></table></div>
+<h3>Toegangen</h3><div class="tblwrap"><table class="reg"><thead><tr><th>Wat we willen weten</th><th>Wanneer</th><th>Waarvoor we het eerst nodig hebben</th><th>Komt later terug</th></tr></thead><tbody>
+<tr><td>Toegang tot advertentieaccounts, analytics, website, domein, en de licenties met eigen betaalgegevens</td><td class="m"><span class="mk TO">Toegangensessie</span></td><td>Dag 1 van het fundament</td><td>&mdash;</td></tr>
+</tbody></table></div>
+</section>
+<section class="sec" id="verschoven"><div class="kicker">Wat er veranderde</div><h2>Wat verschoof uit intake deel 2</h2>
+<p class="note">Intake deel 2 had 41 vragen, waarvan een groot deel al bekend was of juist v&oacute;&oacute;r het voorstel nodig is. Wat overblijft is aanleveren: ongeveer twintig minuten.</p>
+<div class="tblwrap"><table class="reg"><thead><tr><th>Vraag</th><th>Stond in</th><th>Staat nu in</th></tr></thead><tbody>
+<tr><td>Welke dienst of welk product moet het opleveren</td><td>Intake deel 2</td><td>Eerste helft</td></tr>
+<tr><td>Welk werk wil je liever niet meer</td><td>Intake deel 2</td><td>Eerste helft</td></tr>
+<tr><td>Beschrijf je beste klant</td><td>Intake deel 2</td><td>Eerste helft</td></tr>
+<tr><td>Waarom kiezen mensen voor jou; waar ben je duurder</td><td>Intake deel 2</td><td>Eerste helft</td></tr>
+<tr><td>Laagdrempelig beginnen</td><td>Intake deel 2</td><td>Vragenlijst en eerste helft</td></tr>
+<tr><td>Welke concurrenten; van wie verlies je</td><td>Intake deel 2</td><td>Quickscan en eerste helft</td></tr>
+<tr><td>Waar wil je over een jaar staan</td><td>Intake deel 2</td><td>Geschrapt: het omzetdoel uit de eerste helft</td></tr>
+<tr><td>Waar precies wil je klanten</td><td>Intake deel 2</td><td>Geschrapt: vragenlijst</td></tr>
+<tr><td>Gemiddelde waarde per opdracht</td><td>Intake deel 2</td><td>Geschrapt: vragenlijst</td></tr>
+<tr><td>Hosting, platform, domein, statistieken</td><td>Intake deel 2</td><td>Geschrapt: quickscan</td></tr>
+<tr><td>Wat je niet kunt regelen aan toegangen</td><td>Intake deel 2</td><td>Toegangensessie</td></tr>
+<tr><td>Hoe snel terugbellen; wie als diegene er niet is</td><td>Intake deel 2</td><td>Geschrapt: eerste en tweede helft</td></tr>
+<tr><td>Wie beslist over doelgroep en boodschap</td><td>Intake deel 2</td><td>Geschrapt: eerste helft</td></tr>
+</tbody></table></div>
+<div class="warn"><h4>De sessie over doel en plan in week 1 stelt geen nieuwe vragen</h4><p>Die toetst en scherpt aan: de beste klant naast zijn klantenbestand, zijn &lsquo;waarom jij&rsquo; tot een boodschap. Omdat het advies nu v&oacute;&oacute;r het voorstel wordt opgehaald, kan die sessie waarschijnlijk korter dan anderhalf uur. Te toetsen bij de eerste klanten.</p></div>
+</section>
+<div class="foot">James Robinson &middot; Wat we wanneer vragen &middot; werkdocument</div>
+</main>
+<script>
+(function(){var b=document.getElementById('tg');if(!b)return;
+b.addEventListener('click',function(){var r=document.documentElement;
+var d=r.getAttribute('data-theme')||(window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+r.setAttribute('data-theme',d==='dark'?'light':'dark');});})();
+</script>
+</body></html>
