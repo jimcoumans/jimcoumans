@@ -133,6 +133,7 @@ STAP06 = stap_kop('06', 'f2', 'FASE 2 · STARTEN', 'De onboarding',
  ['De website', 'Een beheerdersaccount, of de meetcode laten plaatsen door zijn webbouwer. De enige eis: een script in de head.', 'Hij of zijn webbouwer', 'Kan het alleen via de webbouwer, dan mailen wij die zelf, met hem in cc'],
  ['Het domein (DNS)', 'Records voor de landingspagina op zijn subdomein, e-mailauthenticatie en MailerLite. Wij leveren de records.', 'Webbouwer of hosting', 'Idem'],
  ['MailerLite', 'Een nieuw account op zijn naam en e-mailadres', 'Hij, in de sessie', 'Betaalgegevens vult hij zelf in'],
+ ['Microsoft Ads, LinkedIn, TikTok', 'Alleen als het kanaal in het plan staat. Account op zijn naam, wij als beheerder.', 'Hij, in de sessie', 'Eigen betaalmethode'],
  ['ClickCease, Leadinfo, Calendly', 'Alleen als hij ervoor kiest. Account op zijn naam.', 'Hij, in de sessie', 'Idem'],
  ['Cookiescript', 'Via Webmix', 'Wij, met Webmix', ''],
  ['Het bestaande e-mailbestand', 'Een export als csv', 'Hij, vóór de sessie', 'Upload in het onboardingformulier'],
@@ -159,11 +160,11 @@ STAP06 = stap_kop('06', 'f2', 'FASE 2 · STARTEN', 'De onboarding',
 
 # ---------------------------------------------------------------- STAP 07
 BLOKKEN = [
- ('01', 'Doelgroep en boodschap', '7,5–8', 'Doel en plan liggen vast uit het voorstelgesprek. Hier werken we ze uit tot doelgroepen, boodschap en targeting, met wat de klant in het intakegesprek vertelde en in het onboardingformulier aanleverde. Wij doen het denkwerk, niet het invulwerk.', [('Onboardingformulier verwerken', 4, '2'), ('Doelgroep uitwerken', 3, '1,5'), ('Propositie aanscherpen', 2, '1,5'), ('Concurrentieanalyse', 2, '1'), ('Conversiedefinitie', 1, '0,5'), ('Merkcheck', 3, '1–1,5')]),
+ ('01', 'Doelgroep en boodschap', '7,5–8', 'Doel en plan liggen vast uit het voorstelgesprek. Hier werken we ze uit tot doelgroepen, boodschap en targeting, met wat de klant in het intakegesprek vertelde en in het onboardingformulier aanleverde. Wij doen het denkwerk, niet het invulwerk. De merkcheck legt vast waar elke uiting aan moet voldoen: vanaf hier is alles wat we maken on-brand.', [('Onboardingformulier verwerken', 4, '2'), ('Doelgroep uitwerken', 3, '1,5'), ('Propositie aanscherpen', 2, '1,5'), ('Concurrentieanalyse', 2, '1'), ('Conversiedefinitie', 1, '0,5'), ('Merkcheck', 3, '1–1,5')]),
  ('02', 'Techniek en meting', '7', 'Wij meten volgens de checklist, nu met toegang. Wat niet voldoet, gaat naar Webmix als apart voorstel: wij herstellen geen websites binnen het fundament.', [('De technische audit', 2, '2'), ('Bevindingen doorzetten', 2, '1'), ('Meetopzet volgens onze standaard', 5, '3,5'), ('De nulmeting', 1, '0,5')]),
- ('03', 'Onze systemen', '8,5', 'Wij koppelen niet aan de systemen van de klant; hij krijgt toegang tot die van ons. Dat is het verschil tussen een product en eindeloos maatwerk.', [('Advertentieaccounts', 3, '1,5'), ('MailerLite', 5, '2,5'), ('Leadinfo', 1, '0,5'), ('Je marketingdashboard', 7, '4')]),
+ ('03', 'Onze systemen', '8,5', 'Wij koppelen niet aan de systemen van de klant; hij krijgt toegang tot die van ons. Dat is het verschil tussen een product en eindeloos maatwerk. Advertentieaccounts: standaard Google Ads en Meta, altijd allebei. Microsoft Ads, LinkedIn en TikTok zetten we op als doelgroep en cijfers erom vragen.', [('Advertentieaccounts', 3, '1,5'), ('MailerLite', 5, '2,5'), ('Leadinfo', 1, '0,5'), ('Je marketingdashboard', 7, '4')]),
  ('04', 'De campagne', '14', 'Eenmalig opzetwerk, en daarom onderdeel van het fundament. Wat daarna volgt, optimaliseren, nieuwe sets en performanceblokken, zit in de retainer.', [('Zoekwoordonderzoek', 4, '3'), ('Campagnestructuur', 3, '2'), ('Advertenties schrijven', 3, '2'), ('Doelgroepen en targeting', 2, '1'), ('Biedstrategie en retargeting', 2, '1'), ('Landingspagina', 4, '4'), ('Formulier en bedankpagina', 2, '1')]),
- ('05', 'De content', '11', 'Eén draaidag levert het materiaal voor een kwartaal. De volgende draaidagen zitten in het pakket.', [('Voorbereiding', 2, '1'), ('De draaidag', 3, '5,5'), ('Montage', 4, '4,5')]),
+ ('05', 'De content', '11', 'De brandstof van de motor. Marketingcontent, geen bedrijfsvideo en geen branded content: foto, video, animatie en graphics die in advertenties werken, in de formaten van elk kanaal en in varianten om te testen. Eén draaidag levert het materiaal voor een kwartaal; de volgende draaidagen zitten in het pakket.', [('Voorbereiding', 2, '1'), ('De draaidag', 3, '5,5'), ('Montage', 4, '4,5')]),
  ('06', 'Live', '4,5', 'De laatste stap, en de week erna. Hier blijkt of alles echt werkt.', [('Kickoff met je team', 2, '1,5'), ('Testaanvraag door de keten', 2, '1'), ('De eerste week', 2, '2')]),
 ]
 VERSCHOVEN = {'1': 'Gaat nu automatisch mee met het startbericht', '3': 'Gebeurt nu vóór het voorstel (stap 04)', '4': 'Gebeurt nu vóór het voorstel (stap 04)'}
@@ -221,7 +222,7 @@ STAP07 = stap_kop('07', 'f2', 'FASE 2 · STARTEN', 'Het fundament',
  ('Dag 5 – 10', 'Systemen en meting', 'Advertentieaccounts, MailerLite, het marketingdashboard en de meetopzet. Ons werk, af en toe een akkoord van hem.'),
  ('Dag 8', 'De draaidag', 'Eén dagdeel bij hem op locatie: locatie, mensen en producten.'),
  ('Dag 10 – 16', 'Campagne en landingspagina', 'Bouwen, schrijven, monteren. Alles staat klaar om getest te worden.'),
- ('Dag 17', 'Hij kijkt mee', 'De complete campagne voordat hij live gaat. Eén ronde feedback.'),
+ ('Dag 17', 'Hij kijkt mee', 'De complete campagne voordat hij live gaat, na onze eigen check op merk en meting. Eén ronde feedback.'),
  ('Dag 19', 'Live', 'We zetten hem aan en kijken de eerste week dagelijks mee.'),
  ('Dag 26', 'Eerste cijfers', 'Nog geen conclusies, wel de eerste aanvragen en de richting.'),
 ]) + """
@@ -260,11 +261,11 @@ STAP07 = stap_kop('07', 'f2', 'FASE 2 · STARTEN', 'Het fundament',
  ['Concurrent of leverancier', 'Registreren; bij B2B bedrijven uitsluiten via Leadinfo'],
  ['Was al klant', 'Klantenlijst uploaden als uitsluiting. Scheelt direct geld.'],
 ]) + """
-<p style="margin-top:14px"><b>Wat we per aanvraag opslaan:</b> identiteit, wat ze invulden, herkomst (kanaal, campagne, advertentiegroep, advertentie, zoekterm, pagina, apparaat, gebied), technisch (click id, consent-status, sessie), het oordeel (label, reden, notitie, door wie, wanneer) en de opvolging. <b>Sla de click id vanaf dag één op.</b> Het kost nu niets, en zonder dat getal kun je later nooit goede aanvragen terugmelden aan Google en Meta.</p>
+<p style="margin-top:14px"><b>Wat we per aanvraag opslaan:</b> identiteit, wat ze invulden, herkomst (kanaal, campagne, advertentiegroep, advertentie, zoekterm, pagina, apparaat, gebied), technisch (click id, consent-status, sessie), het oordeel (label, reden, notitie, door wie, wanneer) en de opvolging. <b>Sla de click id vanaf dag één op.</b> Het kost nu niets, en zonder dat getal kun je later nooit goede aanvragen terugmelden aan de advertentieplatformen.</p>
 """ + tbl(['Versie', 'Wat', 'Wanneer'], [
  ['v0 · alleen de mail', 'De meldingsmail met twee knoppen, een pagina met de zes redenen, een tabel erachter. Wij lezen ze met de hand.', 'Eerst, binnen dagen. Beantwoordt de vraag waar alles aan hangt: labelen klanten überhaupt?'],
  ['v1 · het dashboard', 'De vijf schermen, formulieren en bronnen gekoppeld, doelen uit de rekensom, de weekmail', 'Vóór de eerste klant op het nieuwe model. Dit beloof je aan tafel.'],
- ['v2 · terugkoppelen', 'Kosten per goede aanvraag per zoekterm, offline conversies terug naar Google en Meta, export, rechten', 'Pas bij tientallen conversies per week'],
+ ['v2 · terugkoppelen', 'Kosten per goede aanvraag per zoekterm, offline conversies terug naar de advertentieplatformen, export, rechten', 'Pas bij tientallen conversies per week'],
 ]) + """
 <h3>Naast het fundament: Webmix en tooling</h3>
 <p>Drie posten staan los van onze fee en gaan niet via ons, maar ze staan wél in het voorstel met een bedrag, zodat niemand halverwege verrast wordt.</p>
@@ -293,7 +294,7 @@ STAP07 = stap_kop('07', 'f2', 'FASE 2 · STARTEN', 'Het fundament',
  ['Fundament · eenmalig, aan ons', '€ 4.500', '€ 4.500', '€ 4.500'],
  ['Retainer · twaalf maanden, aan ons', '€ 12.000', '€ 18.000', '€ 24.000'],
  ['Dashboard · twaalf maanden, aan ons', '€ 300', '€ 300', '€ 300'],
- ['Advertentiebudget · minimum, aan Google en Meta', '€ 12.000', '€ 30.000', '€ 90.000'],
+ ['Advertentiebudget · minimum, aan de platformen', '€ 12.000', '€ 30.000', '€ 90.000'],
  ['MailerLite en Cookiescript · aan de leveranciers', '€ 269', '€ 269', '€ 269'],
  ('tot', ['Jaar 1, alles samen', '± € 29.100', '± € 53.100', '± € 119.100']),
  ['Waarvan naar ons', '€ 16.800', '€ 22.800', '€ 28.800'],
@@ -306,12 +307,15 @@ STAP07 = stap_kop('07', 'f2', 'FASE 2 · STARTEN', 'Het fundament',
 <h3>Wat er moet bestaan voordat dit werkt</h3>
 <p>27 middelen, op volgorde van hoe vaak ze terugkomen. Een middel dat in zeven stappen terugkomt, levert zeven keer tijdwinst en zeven keer minder spreiding op. Zolang een middel niet bestaat, wordt de stap elke keer opnieuw bedacht, door wie toevallig beschikbaar is, in de tijd die het die keer kost.</p>
 """ + middelen() + raakt(ul([
+ '<b>Altijd on-brand, ook onder tijdsdruk.</b> Elke uiting gaat door de merkcheck voordat hij live gaat: sjablonen, kleuren, typografie, toon. Een snelle variant die niet klopt met het merk, gaat niet live. Dat kost soms een dag, en dat is de prijs van een merk dat consistent wordt gepresenteerd.',
  '<b>De uren kloppen alleen met de middelen.</b> Zeven middelen bestaan nog niet (zes AI-instructies en het dashboard); daar hangen 16 van de 76 taken aan. De AI-stappen zijn samen ongeveer vijf uur in de begroting; zonder goede prompts eerder twaalf. Dat is het verschil tussen € 86 en € 60 per uur.',
  '<b>Het dashboard moet af zijn vóór de eerste klant.</b> Zonder dashboard geen “wij koppelen niet”, geen oordeel per aanvraag, en geen plek waar een aanvraag landt.',
  '<b>De nulmeting vóór de campagne.</b> Doe je hem later, dan meet je jezelf mee en is het ijkpunt waardeloos. Zonder ijkpunt is elk cijfer daarna een mening.',
  '<b>Intern: 52,5 uur voor € 4.500 is ongeveer € 86 per uur,</b> bij een kostprijs rond € 2.050. Er is geen bandbreedte meer: alles staat in halve uren, en alleen het halfuur kleur en typografie kan wegvallen.',
 ], '')) + open_(ul([
  '<b>De prijs van het fundament.</b> Voorlopig € 4.500. Jim Kikken en Stan rekenen het na tegen € 100–125 per uur, inclusief de verschoven taken van blok 01. Toets het ook aan de laatste drie onboardings: hoeveel uur zat erin en wat is er gefactureerd?',
+ '<b>Animatie en graphics</b> staan nu niet als eigen taak in blok 05; graphics komen uit de advertentiesjablonen (blok 01). Uitzoeken of animatie in de 11 uur past of een eigen taak met uren moet krijgen.',
+ '<b>Extra kanalen in het fundament?</b> Het fundament rekent met Google Ads en Meta. Kost een derde kanaal (Microsoft Ads, LinkedIn, TikTok) bij de start extra uren, en zo ja, is dat een los bedrag? En welk minimumbudget hoort per kanaal (LinkedIn is duur per klik)?',
  'Het ClickUp-template met de 76 taken.',
  'De zes AI-instructies. Begin met A2, de propositie-instructie: die komt drie keer terug.',
  'Het marketingdashboard bouwen, te beginnen met v0. Open: bouwen of samenstellen (advies: samenstellen tot twintig klanten), en wie de eigenaar is, ook buiten kantooruren.',

@@ -50,6 +50,8 @@ SAMEN = """
  ('Het dashboard is niet af', 'Geen plek waar aanvragen landen met herkomst', '“Wij koppelen niet” valt weg, en dan wordt het maatwerk'),
  ('De AI-instructies ontbreken', 'De taken met AI kosten twee keer zo lang', 'Van € 86 naar ongeveer € 60 per uur op het fundament'),
  ('Enter: de enige draaidag zat in het fundament', 'Geen nieuw beeld dat jaar', 'Advertenties slijten; oorzaak 04 ligt op de loer, of een extra draaidag los'),
+ ('Een uiting gaat live die niet klopt met het merk', 'Op korte termijn misschien een klik', 'Op lange termijn een merk dat inconsistent wordt gepresenteerd; daarom de merkcheck vóór elke livegang'),
+ ('Geen dagelijkse check op meting en uitgaven', 'Een fout blijft een maand onopgemerkt', 'De klant betaalt voor lucht, en “cijfers leidend” is niet waargemaakt'),
  ('Maandritme zonder zichtbare update', 'De klant ziet niet waarvoor hij betaalt', 'Opzegging, want dat kan elke maand'),
 ]) + """
 <h3>Wie waar aan zet is</h3>
@@ -69,7 +71,7 @@ SAMEN = """
  ['Vragenlijst (01)', 'De klant, vijf minuten', 'Kwalificeren en de quickscan mogelijk maken: aan wie, hoe word je klant, wat, waar, budget, website, klantwaarde, aanvragen, conversie, doorlooptijd, obstakel, start'],
  ['Afspraakbevestiging (01)', 'De klant, opzoeken', 'Omzetdoel, marge, aantal e-mailadressen, wie de site beheert, wie meebeslist'],
  ['Quickscan (02)', 'Wij, van buitenaf', 'Alles wat we zelf kunnen opzoeken. Dat vragen we nooit.'],
- ['Intakegesprek (03)', 'Een uur', 'Wat het advies of de prijs verandert: diensten, beste klant, waarom jij, concurrenten, marge, doel, termijn, capaciteit, opvolging, beslissers, afsprakenplanner, Leadinfo'],
+ ['Intakegesprek (03)', 'Een uur', 'De 24 vragen van stap 03: wat het advies of de prijs verandert, zoals doel, marge, termijn, capaciteit, opvolging, seizoen, diensten, beste klant en waar die zit, waarom jij, concurrenten, beslissers, afsprakenplanner, Leadinfo'],
  ['Voorstelgesprek (04)', '45 minuten', 'Keuzes: pakket bevestigen, maand of jaar per licentie, ClickCease, draaidag, de vijf afspraken met een naam en een termijn'],
  ['Onboardingformulier (06)', 'De klant, twintig minuten', 'Wat we pas nodig hebben om te maken: klanttaal, bestanden, beeld, e-maillijst, meldingen, draaidag'],
  ['Toegangensessie (06)', '45 minuten samen', 'Toegangen en betaalgegevens, op zijn naam'],
@@ -101,6 +103,9 @@ OPEN = """
  ['ClickCease per pakket', 'Standaard bij Compete en Own, proefperiode bij Enter; vergoeding erbij zeggen', 'Voorstelgesprek, licenties'],
  ['Wat een vertrekkende klant meeneemt', 'Volledige export, standaard en ongevraagd. Open: landingspagina en dashboard na stoppen.', 'Voorwaarden, opzeggen'],
  ['Jaar 1 in de rekensom', 'Twaalf maanden retainer (twaalf maanden live), al start de retainer in maand 2', 'Alle voorbeeldbedragen'],
+ ['Extra kanalen bij de start', 'Standaard Google Ads en Meta. Uitzoeken of Microsoft Ads, LinkedIn of TikTok in het fundament extra uren kosten, en welk minimumbudget per kanaal hoort', 'Fundament, tarieven, rekensom'],
+ ['Animatie en graphics', 'Graphics uit de advertentiesjablonen; animatie nog zonder eigen taak en uren', 'Blok 05 van het fundament'],
+ ['Drempels voor de monitoring', 'Zoals in stap 08; vastzetten en automatisch laten melden', 'Stap 08, dashboard'],
  ['Merk: v3.0 of brandbook 2024', 'v3.0 (Inter Tight en Inter, JR Lime) is leidend', 'Alles wat de klant ziet'],
 ]) + """
 <h3>Nog uit te werken</h3>
@@ -145,6 +150,11 @@ BESLUITEN = """
  ['30 sep 2026', 'De namen: intakegesprek, voorstel maken, voorstelgesprek, onboarding, onboardingformulier, afronding. Niet meer: eerste helft, rust, tweede helft, intake deel 2.'],
  ['30 sep 2026', 'Ons plan is altijd hetzelfde: set-up, content, adverteren en eerste resultaten, optimaliseren. Doel en plan horen in het voorstelgesprek.'],
  ['30 sep 2026', 'Alles staat in deze ene gids, van boven naar beneden te lezen. De losse werkdocumenten zijn bron, niet leidend.'],
+ ['30 sep 2026', 'Altijd on-brand. We zijn een performancebureau dat ook aan de lange termijn denkt: elke uiting klopt met het merk van de klant.'],
+ ['30 sep 2026', 'Data beats opinion: we monitoren continu en beslissen op cijfers, niet op smaak.'],
+ ['30 sep 2026', 'We adverteren in zoekmachines en op social: Google, Microsoft Ads (Bing), Meta, LinkedIn en TikTok. Welke, bepalen doelgroep en cijfers. We vullen geen social feeds, alleen advertising.'],
+ ['30 sep 2026', 'Content zit in de motor: marketingcontent (foto, video, animatie, graphics). Geen bedrijfsvideo’s, geen branded content tenzij de advertenties erom vragen.'],
+ ['30 sep 2026', 'Het intakegesprek heeft een vaste vragenlijst van 24 vragen, waarvan vier verplicht voor het voorstel.'],
 ]) + """
 </div></section>
 <footer class="voet"><div class="wrap">James Robinson — Marketing &amp; Branding · De James Robinson-gids · versie 30 september 2026</div></footer>

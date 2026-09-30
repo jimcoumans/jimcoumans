@@ -34,7 +34,7 @@ ROUTE = """
 <div class="geld">
  <div><b>Fase 1</b>Niets. De quickscan, het intakegesprek en het voorstel zitten in ons tarief, niet op een factuur.</div>
  <div><b>Fase 2</b>Het fundament, € 4.500, bij ondertekening. Licenties op zijn naam vanaf de dag dat ze aangaan.</div>
- <div><b>Fase 3</b>Retainer en dashboard vooraf per maand, vanaf maand 2. Advertentiebudget rechtstreeks aan Google en Meta.</div>
+ <div><b>Fase 3</b>Retainer en dashboard vooraf per maand, vanaf maand 2. Advertentiebudget rechtstreeks aan de advertentieplatformen.</div>
 </div>
 </div></section>
 """
@@ -50,12 +50,19 @@ DEEL1_OPEN = """
 WIE = """
 <section class="sec" id="wat-we-doen"><div class="wrap">
 <span class="kick">1.1 · WAT WE DOEN</span>
-<h2>Aanvragen via Google en Meta, die steeds goedkoper worden</h2>
-<p class="sub">We zorgen dat er aanvragen binnenkomen via Google en Meta, en dat die steeds goedkoper worden. De website van de klant is daarbij het middelpunt. Wat daar niet aan bijdraagt, doen we niet, of niet zelf.</p>
+<h2>Aanvragen via zoekmachines en social, die steeds goedkoper worden</h2>
+<p class="sub">We zorgen dat er aanvragen binnenkomen via advertenties in zoekmachines en op social media, en dat die steeds goedkoper worden. De website van de klant is daarbij het middelpunt. Wat daar niet aan bijdraagt, doen we niet, of niet zelf.</p>
 """ + grid(3, [
  kaart('Wie we zijn', 'Marketingbureau in Hulsberg, bedacht in 2017 en opgericht in 2018. Ongeveer tien mensen; zeven begonnen hier als stagiair. Eigenaren: Jim Coumans en Jim Kikken, via James Robinson Group BV.', 'JAMES ROBINSON'),
  kaart('Hoe we samenwerken', 'Als externe marketingafdeling, in langdurige samenwerkingen met een vaste maandprijs. Geen losse projecten als kern. Radicaal transparant: de klant ziet in zijn dashboard wat wij zien.', 'HET MODEL'),
  kaart('Waar we naartoe willen', 'Het meest toonaangevende bureau van Limburg. Niet in omzet of grootte, maar in voorbeeld zijn: zelf de beste marketing hebben. Dat schrijven we nergens op; je moet het merken.', 'DE AMBITIE'),
+]) + """
+<h3>Wat voor bureau we zijn</h3>
+<p>Een performancebureau dat ook aan de lange termijn denkt. We sturen op aanvragen en wat ze kosten, maar nooit ten koste van het merk. Drie dingen gelden bij alles wat we doen:</p>
+""" + grid(3, [
+ kaart('Performance eerst', 'We worden afgerekend op aanvragen en wat een aanvraag kost. Elke euro is meetbaar, en de klant ziet dezelfde cijfers als wij.', 'KORTE TERMIJN', 'b'),
+ kaart('Altijd on-brand', 'Elke uiting die naar buiten gaat, klopt met het merk van de klant: kleur, typografie, toon, beeld. Een advertentie die vandaag klikt maar het merk beschadigt, is op termijn duurder dan hij oplevert. Consistent herkend worden is ook performance.', 'LANGE TERMIJN', 'l'),
+ kaart('Data beats opinion', 'We monitoren continu en beslissen op wat de cijfers laten zien, niet op wat iemand mooi vindt, ook wij niet. Het merk bepaalt de grenzen; binnen die grenzen kiest de data.', 'ALTIJD', 'g'),
 ]) + """
 <h3>Waarom deze opzet</h3>
 <p>De propositie is zo gebouwd omdat de oude niet klopte. Elke keuze hieronder lost een probleem op dat we zelf hadden.</p>
@@ -76,7 +83,7 @@ MODEL = """
 <h2>Eén middelpunt, één motor, drie versnellers</h2>
 <p class="sub">Elke laag heeft één taak. Zodra die door elkaar lopen, wordt marketing een verzameling activiteiten in plaats van een systeem dat ergens op uitkomt. Intern heet dit de ARENA-methode; naar buiten noemen we het gewoon onze werkwijze.</p>
 <div class="stroom">
- <div class="s"><span class="sl">DE MOTOR</span><b>Adverteren op Google en Meta</b><span>Het enige kanaal dat je vandaag aanzet en morgen meet. Duur, maar direct stuurbaar.</span></div>
+ <div class="s"><span class="sl">DE MOTOR</span><b>Adverteren in zoekmachines en op social</b><span>Het enige dat je vandaag aanzet en morgen meet. Duur, maar direct stuurbaar. Content is de brandstof.</span></div>
  <div class="pijl">→</div>
  <div class="s"><span class="sl">HET MIDDELPUNT</span><b>De website</b><span>Hier wordt iemand klant, of niet. Elke advertentie landt hier, elk cijfer komt hier vandaan.</span></div>
  <div class="pijl">→</div>
@@ -89,6 +96,24 @@ MODEL = """
 ]) + """
 <p style="margin-top:18px">De drie versnellers doen iets anders, maar komen uit op één getal: wat een klant kost. Daarom verkopen we ze niet los. Los verkocht heeft geen van de drie een ijkpunt.</p>
 
+<h3>De kanalen: zoekmachines en social, alleen adverteren</h3>
+<p>We adverteren waar de koper van de klant zit. Welke kanalen, bepalen de doelgroep en de cijfers, niet een vaste lijst. We vullen geen social feeds: op social media doen we alleen advertenties.</p>
+""" + tbl(['Kanaal', 'Wat het doet', 'Wanneer'], [
+ ['Google Ads', 'Vangt wie nu zoekt', 'Standaard, bij iedereen'],
+ ['Meta: Facebook en Instagram', 'Zet vraag in gang bij mensen die lijken op wie er al koopt, en haalt bezoekers terug', 'Standaard, bij iedereen'],
+ ['Microsoft Ads (Bing)', 'Dezelfde zoekvraag, vaak goedkopere kliks en een ouder, zakelijker publiek', 'Als de cijfers uit Google laten zien dat er meer te halen is'],
+ ['LinkedIn', 'Bereikt op functie, branche en bedrijfsgrootte', 'Bij B2B met een duidelijke functie als koper; duurder per klik'],
+ ['TikTok', 'Bereik bij een jonger publiek, met video', 'Als de doelgroep daar zit en er videomateriaal is'],
+]) + """
+<p style="margin-top:14px">In het fundament zetten we standaard Google Ads en Meta op, altijd allebei, ook als we met één kanaal starten. Microsoft Ads, LinkedIn en TikTok komen erbij als doelgroep en cijfers erom vragen.</p>
+
+<h3>De brandstof: marketingcontent</h3>
+<p>Een motor zonder brandstof doet niets. Advertenties draaien op beeld, en beeld slijt: dezelfde advertentie werkt na een paar weken minder. Daarom zit content in de motor, niet ernaast.</p>
+""" + grid(3, [
+ kaart('Wat we maken', 'Marketingcontent: foto, video, animatie en graphics die in advertenties werken. Gemaakt voor het formaat van het kanaal (9:16, 4:5, 1:1) en in varianten om tegen elkaar te testen. Altijd on-brand.', 'WEL', 'g'),
+ kaart('Wat we niet maken', 'Geen bedrijfsvideo’s: een film over het bedrijf levert geen aanvragen op. Geen branded content, tenzij de advertenties erom vragen, bijvoorbeeld omdat de cijfers laten zien dat koude doelgroepen het merk nog niet vertrouwen.', 'NIET', 'r'),
+ kaart('Hoe het binnenkomt', 'De draaidag bij de klant op locatie levert het beeld voor een kwartaal. Graphics en animatie maken we uit dat beeld en de advertentiesjablonen. Hoeveel draaidagen, hangt aan het pakket.', 'HOE', 'b'),
+]) + """
 <h3>Waarom niet alles tegelijk</h3>
 """ + jk([
  ('Eerst het middelpunt meetbaar maken', 'Zonder betrouwbare meting weet je van niets of het werkt. Daarom bouwen we de landingspagina bij ons: dan zijn snelheid en meting van ons, niet van zijn webbouwer.'),
@@ -129,7 +154,7 @@ PLAN = """
 <div class="klok"><span style="flex:2" class="acc">SET-UP</span><span style="flex:1">CONTENT</span><span style="flex:1">LIVE</span><span style="flex:8">ADVERTEREN EN EERSTE RESULTATEN · MAAND 2 EN 3</span><span style="flex:9">OPTIMALISEREN · VANAF MAAND 4</span></div>
 """ + jk([
  ('Set-up · maand 1, week 1 tot en met 3', 'Meting, advertentieaccounts, e-mail, het marketingdashboard, de campagne en de landingspagina. Alles op naam van de klant.'),
- ('Content shooten · maand 1, week 2', 'De draaidag bij de klant op locatie, daarna de montage: video in drie formaten, en stills.'),
+ ('Content shooten · maand 1, week 2', 'De draaidag bij de klant op locatie, daarna marketingcontent in alle formaten: foto, video, animatie en graphics. Geen bedrijfsvideo, geen branded content.'),
  ('Adverteren en eerste resultaten · live eind maand 1, dan maand 2 en 3', 'Alleen de motor draait. We leren welke zoekwoorden, doelgroepen en advertenties werken, en brengen de kosten per aanvraag tot rust. Hier voegen we bewust niets toe.'),
  ('Optimaliseren · vanaf maand 4', 'Advertenties verbeteren, CRO, landingspagina’s verbeteren of toevoegen, e-mail en automation, SEO. Wat eerst komt, bepalen de cijfers: bij de een SEO, bij de ander e-mail.'),
 ]) + """
@@ -138,9 +163,9 @@ PLAN = """
 <h3>Wat we doen, en wat niet</h3>
 <p>De lijst waar het team naar wijst als een klant iets vraagt. Wat in de retainer zit, staat vast. Voor de middelste kolom kiezen we per vraag: zelf als project met een prijs vooraf, of een partner. Hoe beter de propositie loopt, hoe meer daarvan naar partners gaat. De klant mag elke marketingvraag bij ons neerleggen; soms is het antwoord “daarvoor moet je bij haar zijn”.</p>
 """ + grid(3, [
- kaart('In de retainer', ul(['Adverteren op Google en Meta', 'Landingspagina’s bij ons, aanpassen en testen', 'CRO op alles waar ons verkeer landt', 'E-mail en automation', 'SEO op woorden die converteren', 'Draaidagen en advertentiesets naar pakketgrootte'], ''), 'ALTIJD', 'g'),
- kaart('Eigen project of partner', ul(['Webdevelopment', 'Design en branding', 'Social media beheer', 'Social-mediatemplates en contentsessies', 'Content boven de afgesproken draaidagen', 'Koppelingen met systemen van de klant'], ''), 'PER VRAAG', 'o'),
- kaart('Doen we niet', ul(['Losse campagnes zonder samenwerking', 'E-commerce als propositie', 'Werving als propositie', 'Leads opvolgen', 'Uren verantwoorden', 'Marge op werk van een ander'], ''), 'NOOIT', 'r'),
+ kaart('In de retainer', ul(['Adverteren in zoekmachines en op social', 'Marketingcontent: foto, video, animatie, graphics', 'Landingspagina’s bij ons, aanpassen en testen', 'CRO op alles waar ons verkeer landt', 'E-mail en automation', 'SEO op woorden die converteren', 'Draaidagen en advertentiesets naar pakketgrootte'], ''), 'ALTIJD', 'g'),
+ kaart('Eigen project of partner', ul(['Webdevelopment', 'Design en branding', 'Social-mediatemplates en contentsessies', 'Content boven de afgesproken draaidagen', 'Koppelingen met systemen van de klant'], ''), 'PER VRAAG', 'o'),
+ kaart('Doen we niet', ul(['Losse campagnes zonder samenwerking', 'E-commerce als propositie', 'Werving als propositie', 'Social feeds vullen en beheren', 'Bedrijfsvideo’s', 'Branded content, tenzij de advertenties erom vragen', 'Leads opvolgen', 'Uren verantwoorden', 'Marge op werk van een ander'], ''), 'NOOIT', 'r'),
 ]) + """
 <p style="margin-top:18px"><b>Twee vaste keuzes in de uitvoering.</b> Landingspagina’s bouwen we op onze eigen omgeving, op een subdomein van de klant; in zijn website komen alleen de meetcode en de cookiebanner. En we koppelen niet met zijn CRM of andere systemen: aanvragen landen in het marketingdashboard, dat naast zijn eigen systeem staat.</p>
 """ + raakt(ul([
@@ -171,7 +196,7 @@ GELD = """
  ['Retainer Compete', 'James Robinson', 'Per maand vooraf, vanaf maand 2', '€ 1.500'],
  ['Retainer Own', 'James Robinson', 'Per maand vooraf, vanaf maand 2', '€ 2.000'],
  ['Marketingdashboard', 'James Robinson', 'Altijd. Blijft van hem als hij stopt', '€ 25 p/m of € 250 p/j <span class="chip o">VOORLOPIG</span>'],
- ['Advertentiebudget', 'Google en Meta, rechtstreeks', 'Per maand, via zijn eigen accounts', 'minimaal € 1.000 / 2.500 / 7.500'],
+ ['Advertentiebudget', 'De advertentieplatformen, rechtstreeks', 'Per maand, via zijn eigen accounts', 'minimaal € 1.000 / 2.500 / 7.500'],
  ['E-mailplatform (MailerLite)', 'MailerLite', 'Altijd, vanaf dag één', 'vanaf € 9,90 p/m, volgt de lijstgrootte'],
  ['Cookiescript', 'Webmix', 'Altijd: zonder toestemming mag je niet meten', '€ 150 p/j'],
  ['Klikfraudebescherming (ClickCease)', 'ClickCease', 'Aanbevolen als hij adverteert', 'vanaf $ 99 p/m'],
@@ -218,7 +243,7 @@ GELD = """
  kaart('Geen korting', 'De lijst is voor iedereen gelijk. Wie onderhandelt, onderhandelt met de vorige klant die de prijs wel betaalde.'),
 ]) + """
 """ + raakt(ul([
- '<b>Alles wat vast is, gaat van het advertentiebudget af.</b> Fundament, retainer, licenties en herstelposten komen uit dezelfde marketingruimte als de advertenties (zie de rekensom in stap 04). Elke euro die het fundament duurder wordt, is een euro minder voor Google en Meta.',
+ '<b>Alles wat vast is, gaat van het advertentiebudget af.</b> Fundament, retainer, licenties en herstelposten komen uit dezelfde marketingruimte als de advertenties (zie de rekensom in stap 04). Elke euro die het fundament duurder wordt, is een euro minder voor advertenties.',
  '<b>Als het fundament naar € 5.250 of € 6.563 gaat</b> (de herrekening tegen € 100 of € 125 per uur), stijgt de ondergrens voor Enter bij 30% marge van ongeveer € 97.000 naar € 99.400 of € 103.800 extra omzet. Minder klanten passen dan in het kleinste pakket.',
  '<b>De retainer start in maand 2.</b> Loopt het fundament uit, dan is de vraag of de eerste retainerfactuur meeschuift. Zie stap 06.',
 ], '')) + open_(ul([
@@ -235,7 +260,7 @@ GELD = """
 REGELS = """
 <section class="sec" id="spelregels"><div class="wrap">
 <span class="kick">1.5 · DE SPELREGELS</span>
-<h2>Zeven regels die altijd gelden</h2>
+<h2>Negen regels die altijd gelden</h2>
 <p class="sub">Staat iets verderop in de gids ermee in strijd, dan geldt de regel. Per regel staat wat hij in de praktijk betekent.</p>
 """ + tbl(['Regel', 'Wat het betekent', 'Wat eraan vastzit'], [
  ['<b>1 · Cijfers zijn leidend</b>', 'Geen resultaatbelofte. We beloven dat we het zelf zeggen als het niet werkt, en waarom. De cijfers staan voor allebei zichtbaar in het dashboard.', 'De meetlat moet er liggen vóór er iets te meten valt: nulmeting, doelregel, de vijf afspraken van de klant. Zonder meting geen start.'],
@@ -244,7 +269,9 @@ REGELS = """
  ['<b>4 · De 50%-regel</b>', 'Onze retainer is nooit meer dan de helft van wat de klant per maand aan marketing uitgeeft: retainer plus advertentiebudget.', 'Met de minimumbudgetten per pakket klopt het altijd. Wie onder het minimum wil, betaalt ons om te sturen op een bedrag dat te klein is om mee te sturen. Dan niet.'],
  ['<b>5 · Nooit marge erbovenop</b>', 'De klant betaalt de specialist, niet ons bovenop de specialist. Een vergoeding van een leverancier voor doorverwijzen mag (Leadinfo, ClickCease, MailerLite, de afsprakenplanner), en die zeggen we erbij.', 'Zeg nooit “we verdienen er niets aan”; zeg “we zetten er nooit iets bovenop”. Het eerste is niet waar en komt een keer uit.'],
  ['<b>6 · Niets gratis erbij</b>', 'Nooit iets “even doen omdat het klein is”. Wat buiten fundament of retainer valt, bieden we los aan met een prijs vooraf.', 'Kleine gunsten worden de norm en eten de marge op, en dan betaalt een andere klant ervoor.'],
- ['<b>7 · Alles op naam van de klant</b>', 'Advertentieaccounts, e-mail, licenties: op zijn naam, met zijn betaalgegevens, wij als beheerder. Nooit op onze naam, ook niet even.', 'Stopt hij, dan neemt hij alles mee. Dat is precies het bureau dat wij willen zijn, en het maakt vertrekken makkelijk. Dat moeten we willen.'],
+ ['<b>7 · Altijd on-brand</b>', 'Elke uiting die naar buiten gaat, klopt met het merk van de klant: kleur, typografie, toon en beeld. Ook een snelle variant, ook een test. Geen bruikbaar merk? Dan leggen we in het fundament kleur en typografie vast, en houden we ons daaraan.', 'Performance en merk zijn geen tegenstelling. Wat vandaag klikt maar het merk beschadigt, kost op termijn meer dan het oplevert. Elke uiting gaat daarom door de merkcheck voordat hij live gaat.'],
+ ['<b>8 · Data beats opinion</b>', 'We monitoren continu en beslissen op cijfers, niet op smaak. Een discussie over wat mooier is, beslechten we met een test. Het merk bepaalt de grenzen; binnen die grenzen kiest de data.', 'Vraagt om betrouwbare meting vanaf dag één en om vaste drempels, anders is ook een cijfer een mening. De monitoring staat in stap 08.'],
+ ['<b>9 · Alles op naam van de klant</b>', 'Advertentieaccounts, e-mail, licenties: op zijn naam, met zijn betaalgegevens, wij als beheerder. Nooit op onze naam, ook niet even.', 'Stopt hij, dan neemt hij alles mee. Dat is precies het bureau dat wij willen zijn, en het maakt vertrekken makkelijk. Dat moeten we willen.'],
 ]) + """
 </div></section>
 """

@@ -40,7 +40,7 @@ STAP08 = stap_kop('08', 'f3', 'FASE 3 · SAMENWERKEN', 'Live en het maandritme',
 
 <h3>Maand 2 en 3: alleen de motor</h3>
 <p>We leren welke zoekwoorden, doelgroepen en advertenties werken, en brengen de kosten per aanvraag tot rust. Hier voegen we bewust niets toe: geen SEO, geen e-mailcampagnes, geen nieuwe kanalen. Er is nog niets om ze op te richten.</p>
-""" + ul(['Adverteren op Google en Meta: budgetten, biedingen, zoekwoorden, uitsluitingen.', 'Wekelijks bijsturen op kosten per aanvraag, niet op bereik en niet op kliks.', 'De advertenties uit de draaidag tegen elkaar testen.', 'Elke aanvraag volgen tot in het dashboard, waar de klant per aanvraag zegt of hij iets waard was.', 'Van de klant: opvolging binnen de afgesproken tijd, en een oordeel per aanvraag.']) + """
+""" + ul(['Adverteren in zoekmachines en op social: budgetten, biedingen, zoekwoorden, uitsluitingen.', 'Wekelijks bijsturen op kosten per aanvraag, niet op bereik en niet op kliks.', 'De advertenties uit de draaidag tegen elkaar testen.', 'Elke aanvraag volgen tot in het dashboard, waar de klant per aanvraag zegt of hij iets waard was.', 'Van de klant: opvolging binnen de afgesproken tijd, en een oordeel per aanvraag.']) + """
 <p>Aan het eind ligt er een stabiele kostprijs per aanvraag en de eerste data over wat converteert. De doelregel uit het voorstel geldt vanaf nu.</p>
 
 <h3>Vanaf maand 4: optimaliseren</h3>
@@ -49,7 +49,8 @@ STAP08 = stap_kop('08', 'f3', 'FASE 3 · SAMENWERKEN', 'Live en het maandritme',
  ['Veel kliks, weinig aanvragen', 'CRO: pagina, formulier, bewijs', 'Zelfde budget, meer aanvragen. Een procentpunt conversie is meer waard dan duizend euro budget.'],
  ['Er is een lijst met adressen, en klanten kunnen terugkomen', 'E-mail en automation', 'Hogere klantwaarde, dus meer ruimte per aanvraag, zonder extra mediabudget'],
  ['Duidelijk welke zoekwoorden klanten opleveren, en tegen welke prijs', 'SEO op precies die woorden', 'Een deel van het verkeer hoeft niet meer gekocht te worden. Wie met SEO begint, investeert maanden in woorden waarvan niet bekend is of ze converteren.'],
- ['Weinig kliks op veel weergaven', 'Advertenties: nieuwe hoeken en beeld', 'De snelste en goedkoopste knop'],
+ ['Weinig kliks op veel weergaven', 'Advertenties: nieuwe hoeken en nieuwe content', 'De snelste en goedkoopste knop'],
+ ['De doelgroep zit ook op LinkedIn of TikTok, of Bing levert goedkopere kliks', 'Een kanaal erbij', 'Meer bereik bij dezelfde koper, of dezelfde koper goedkoper'],
  ['Kosten per aanvraag op doel, aantal niet', 'Budget opschalen', 'Meer budget bij dezelfde kosten per aanvraag is de makkelijkste groei die er is'],
 ]) + """
 <p style="margin-top:14px"><b>Opschalen en het pakket.</b> Groeit het advertentiebudget, dan groeit het pakket mee: meer campagnes, meer doelgroepen, meer bijsturen. Eén keer per jaar een nieuw doel voor het volgende jaar, en de vraag of het pakket nog past: is het Compete geworden, of Own?</p>
@@ -64,6 +65,21 @@ STAP08 = stap_kop('08', 'f3', 'FASE 3 · SAMENWERKEN', 'Live en het maandritme',
  ['Draaidag', 'Nieuw beeld, want advertenties slijten', '1× per jaar', '2× per jaar', '4× per jaar'],
  ['Performanceblok', 'Samen de diepte in: wat hebben we geleerd, wat verandert er, wat is het volgende doel', '1× per jaar', '1× per kwartaal', 'doorlopend'],
 ]) + key('BEWUST NIET', 'Geen maandelijks overleg.', '<p>Een vast uur per maand bellen kost twaalf uur per klant per jaar en levert niets op wat niet in het dashboard staat. De klant kijkt live mee; als hij iets wil weten, ziet hij het, en als er iets aan de hand is, bellen wij. Het performanceblok is het moment om te zitten, en dan gaat het over één vraag: welke schakel is de smalste, welk percentage moet omhoog, en welke knop pakken we daarvoor?</p>') + """
+<h3>Continu monitoren: data beats opinion</h3>
+<p>Het ritme hierboven is wat de klant ziet. Daaronder kijken wij doorlopend mee, zodat we een probleem zien voordat hij het merkt. We beslissen op cijfers, niet op smaak: een discussie over welke advertentie mooier is, beslechten we met een test. Het merk bepaalt de grenzen, de data kiest binnen die grenzen.</p>
+""" + tbl(['Wat we volgen', 'Hoe vaak', 'Wanneer we in actie komen', 'Wie'], [
+ ['Uitgaven per campagne en kanaal', 'Dagelijks, automatisch', 'Budget op voor de middag, of een campagne besteedt niets', 'Campagne'],
+ ['Afgekeurde advertenties en accountmeldingen', 'Dagelijks, automatisch', 'Elke afkeuring of melding', 'Campagne'],
+ ['De meting: komen conversies en aanvragen binnen', 'Dagelijks, automatisch', 'Een dag met verkeer maar zonder conversies, of dashboard en platform lopen uiteen', 'Techniek'],
+ ['Landingspagina: bereikbaarheid en snelheid', 'Doorlopend', 'Uitval, of trager dan de norm uit de quickscan', 'Techniek'],
+ ['Kosten per aanvraag tegen de doelregel', 'Wekelijks', 'Twee weken op rij boven het plafond', 'Campagne'],
+ ['Doorklik, conversie en frequentie per advertentie', 'Wekelijks', 'Onder de norm, of frequentie loopt op: de advertentie slijt', 'Campagne en content'],
+ ['Opvolgtijd en oordelen per aanvraag', 'Wekelijks', 'Aanvragen zonder oordeel, of opvolging trager dan afgesproken', 'Aanspreekpunt'],
+ ['Ongeldige kliks en klikfraude', 'Wekelijks', 'Opvallende pieken; na de proefperiode de afweging ClickCease', 'Campagne'],
+ ['De doelregel', 'Maandelijks', 'Elke maand in de update; twee maanden eronder: we zeggen het, met de oorzaak en de opties', 'Aanspreekpunt'],
+]) + """
+<p style="margin-top:14px">Nieuwe advertentiesets, draaidagen en varianten gaan net als in het fundament eerst door de merkcheck. Snel mag, off-brand niet.</p>
+
 <h3>Als het resultaat tegenvalt</h3>
 <p>Een diagnose, geen discussie. Dat werkt alleen als de meetlat er lag vóór er iets te meten viel. Loop de keten van links naar rechts en kijk waar het getal voor het eerst afwijkt: bereik, bezoekers, aanvragen, klanten. Dat is de hele diagnose.</p>
 <h4 style="margin-top:22px">Eerst: wanneer mag je iets zeggen?</h4>
@@ -86,9 +102,11 @@ STAP08 = stap_kop('08', 'f3', 'FASE 3 · SAMENWERKEN', 'Live en het maandritme',
  '<b>Het maandritme is het product.</b> Alles hiervoor is eenmalig; hier verdienen we ons geld en hier kan de klant elke maand weg. Een maand zonder zichtbare update is een maand waarin hij zich afvraagt waarvoor hij betaalt.',
  '<b>De doelregel uit stap 04</b> is de doellijn in het dashboard en de enige vraag in elk performanceblok.',
  '<b>De afspraken van jouw kant</b> worden hier cijfers: opvolgtijd (oorzaak 08) en oordelen per aanvraag (oorzaak 09) zijn zichtbaar voor allebei.',
+ '<b>Continu monitoren is wat “cijfers leidend” waarmaakt.</b> Zonder dagelijkse check op meting en uitgaven ontdek je een fout pas in de maandupdate, en dan heeft de klant een maand betaald voor lucht.',
  '<b>Enter heeft maar één draaidag per jaar,</b> en die zat in het fundament. Advertenties slijten; bij Enter komt nieuw beeld pas het jaar erna, tenzij hij een extra draaidag los afneemt.',
 ], '')) + open_(ul([
  '<b>Dit is het grootste gat in de reis.</b> Het fundament is opengewerkt in 76 taken; de twaalf maanden daarna nog niet. Nodig: een stappenlijst voor maand 2 tot en met 12, het live-bericht, de vorm van de maandelijkse update, het performanceblok als vaste agenda, en het moment waarop wij ingrijpen bij achterstand.',
+ '<b>De drempels voor de monitoring zijn een voorstel.</b> Vastzetten, en automatisch laten melden vanuit het dashboard en de platformen, zodat het niet van iemands oplettendheid afhangt.',
  '<b>Na welke termijn zonder beweging</b> melden wij het uit onszelf? “Een afgesproken termijn” is nog geen getal.',
  '<b>Drie maanden alleen de motor is een aanname.</b> Hoe snel de kosten tot rust komen, hangt af van het volume. Toetsen aan de laatste vijf campagnes en er een norm van maken.',
  '<b>Normen per branche</b> voor doorklik en conversie ontbreken. Zonder eigen normen is “onder de norm” een mening.',
