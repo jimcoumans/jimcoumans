@@ -1,0 +1,189 @@
+<title>Stoppen met posten</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@600;700&display=swap">
+<style>
+/* Layout: één A4-vel. Kop met de stelling, de herkenning, de vergelijking van € 1.000, wat er verandert in drie kolommen, waarom het in je belang is, en de afspraak. Designsysteem v3.0. */
+:root{
+  --page:#f5f5f7; --sheet:#fff; --tx:#1d1d1f; --tx2:#5f5f64; --ln:#e5e5e9;
+  --blue:#007aff; --blue-tx:#0857c3; --b100:#e0efff; --b50:#f4f9ff;
+  --red-tx:#c02a22; --red100:#fdecea; --green-tx:#1d7d3f; --green100:#e6f7eb;
+  --orange-tx:#8a5208; --orange100:#fef2e0; --ink:#1c1c1e; --ink-tx:#f5f5f7; --ink-tx2:#a1a1a6;
+  --fd:"Inter Tight","Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --ft:"Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --page:#000; --sheet:#1c1c1e; --tx:#f5f5f7; --tx2:#a8a8ad; --ln:#2a2a2d;
+  --blue:#2997ff; --blue-tx:#2997ff; --b100:rgba(0,122,255,.2); --b50:rgba(0,122,255,.08);
+  --red-tx:#ff6b61; --red100:rgba(255,59,48,.14); --green-tx:#41c96a; --green100:rgba(52,199,89,.14);
+  --orange-tx:#f0a040; --orange100:rgba(246,160,39,.15); --ink:#2c2c2e;
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --page:#000; --sheet:#1c1c1e; --tx:#f5f5f7; --tx2:#a8a8ad; --ln:#2a2a2d;
+  --blue:#2997ff; --blue-tx:#2997ff; --b100:rgba(0,122,255,.2); --b50:rgba(0,122,255,.08);
+  --red-tx:#ff6b61; --red100:rgba(255,59,48,.14); --green-tx:#41c96a; --green100:rgba(52,199,89,.14);
+  --orange-tx:#f0a040; --orange100:rgba(246,160,39,.15); --ink:#2c2c2e;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--tx);font-family:var(--ft);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;padding:24px 16px}
+.vel{max-width:860px;margin:0 auto;background:var(--sheet);border-radius:20px;overflow:hidden}
+h1,h2,h3{font-family:var(--fd);margin:0;text-wrap:balance}
+p{margin:0}
+b{font-weight:600}
+.kop{background:var(--ink);color:var(--ink-tx);padding:36px 44px 32px}
+.eyebrow{font-size:14px;font-weight:600;color:var(--blue)}
+.kop .eyebrow{color:#2997ff}
+.kop h1{font-size:clamp(30px,5vw,44px);line-height:1.05;letter-spacing:-.02em;margin-top:10px}
+.kop h1 span{color:#2997ff}
+.kop p{color:var(--ink-tx2);font-size:17px;margin-top:14px;max-width:62ch}
+.kop p b{color:var(--ink-tx)}
+.in{padding:30px 44px 34px;display:grid;gap:28px}
+h2{font-size:21px;letter-spacing:-.01em;margin-bottom:12px}
+.twee{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.twee>*{min-width:0}
+ul{margin:0;padding-left:18px} li{margin-bottom:5px} li:last-child{margin-bottom:0}
+.zacht{color:var(--tx2)}
+.oefening{background:var(--b50);border-radius:14px;padding:18px 20px}
+.oefening h3{font-size:16px;margin-bottom:6px;color:var(--blue-tx)}
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.vs>div{border-radius:14px;padding:18px 20px;min-width:0}
+.vs .a{background:var(--red100)} .vs .b{background:var(--green100)}
+.vs .bedrag{font-family:var(--fd);font-size:26px;font-weight:700;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.vs .a .bedrag{color:var(--red-tx)} .vs .b .bedrag{color:var(--green-tx)}
+.vs .wat{font-weight:600;margin:2px 0 8px}
+.drie{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.drie>div{border:1px solid var(--ln);border-radius:14px;padding:16px 18px;min-width:0}
+.label{display:inline-block;font-size:13px;font-weight:600;border-radius:980px;padding:3px 10px;margin-bottom:10px}
+.l-stop{background:var(--red100);color:var(--red-tx)}
+.l-plaats{background:var(--b100);color:var(--blue-tx)}
+.l-blijft{background:var(--orange100);color:var(--orange-tx)}
+.belang{display:grid;grid-template-columns:1fr 1fr;gap:12px 28px;counter-reset:n}
+.belang>div{display:grid;grid-template-columns:28px 1fr;gap:0 10px;min-width:0;align-content:start}
+.belang>div::before{counter-increment:n;content:counter(n);grid-row:span 2;width:28px;height:28px;border-radius:50%;background:var(--blue);color:#fff;font-weight:600;font-size:14px;display:grid;place-items:center}
+.belang h3{font-size:16px;margin:3px 0 3px}
+.afspraak{border-top:1px solid var(--ln);padding-top:22px;display:flex;flex-wrap:wrap;gap:16px 32px;align-items:flex-end;justify-content:space-between}
+.afspraak p{max-width:52ch}
+.contact{font-size:14px;color:var(--tx2);text-align:right}
+.contact b{color:var(--tx)}
+.voet{padding:14px 44px;font-size:12px;color:var(--tx2);border-top:1px solid var(--ln)}
+@media (max-width:700px){
+  .kop{padding:28px 22px 24px} .in{padding:24px 22px 28px} .voet{padding:14px 22px}
+  .twee,.vs,.drie,.belang{grid-template-columns:1fr}
+  .contact{text-align:left}
+}
+@page{size:A4;margin:8mm}
+@media print{
+  body{background:#fff;padding:0;font-size:10.8px;line-height:1.4}
+  .vel{max-width:none;border-radius:0}
+  .kop{padding:22px 26px 20px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .kop h1{font-size:28px} .kop p{font-size:12.5px;margin-top:8px}
+  .kop{padding:18px 24px 16px}
+  .in{padding:12px 24px 10px;gap:9px} h2{font-size:15px;margin-bottom:6px} .belang h3,.oefening h3{font-size:13px} li{margin-bottom:2px}
+  .vs>div,.drie>div,.oefening{padding:10px 14px} .twee{gap:20px} .belang{gap:8px 20px} .afspraak{padding-top:12px} .label{margin-bottom:6px}
+  .vs>div,.drie>div,.oefening,.label,.belang>div::before{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .vs .bedrag{font-size:19px} .voet{padding:8px 24px}
+}
+</style>
+
+<article class="vel">
+  <header class="kop">
+    <div class="eyebrow">James Robinson · Hoe we werken</div>
+    <h1>We stoppen met posten.<br><span>Niet met social media.</span></h1>
+    <p>We vullen je feed niet meer. Geen twee posts per week meer bedenken om het ritme vast te houden. De tijd en het geld die daarin gingen, steken we in wat je <b>aantoonbaar klanten oplevert</b>. Dat klinkt als minder. Het is meer.</p>
+  </header>
+
+  <div class="in">
+    <section class="twee">
+      <div>
+        <h2>Herken je dit?</h2>
+        <ul>
+          <li>Elke week opnieuw: wat posten we deze keer?</li>
+          <li>Afstemmen, aanpassen, goedkeuren, voor één bericht.</li>
+          <li>Likes en hartjes, maar geen idee wat het oplevert.</li>
+          <li>Het gevoel dat het nooit goed genoeg is, en nooit af.</li>
+        </ul>
+        <p class="zacht" style="margin-top:10px">Dat ligt niet aan jou en niet aan ons. Het ligt aan wat een feed is.</p>
+      </div>
+      <div>
+        <h2>Wat je feed wel en niet doet</h2>
+        <p>Je posts komen vooral terecht bij mensen die je al kennen, en de platformen laten ze maar aan een klein deel van hen zien: Instagram en Facebook verdienen aan advertenties, niet aan gratis bereik. In de cijfers van onze klanten zien we steeds hetzelfde: <b>de eigen feed levert van alle kanalen het minste bezoek aan de website op.</b></p>
+      </div>
+    </section>
+
+    <section class="oefening">
+      <h3>Probeer dit eens: tel je eerste vijftig volgers</h3>
+      <p>Bestaande klanten, (oud-)medewerkers, familie en vrienden, collega-ondernemers, leveranciers, concurrenten. Hoeveel blijven er over die nog klant van je kunnen worden? Dat is je markt op dat kanaal.</p>
+    </section>
+
+    <section>
+      <h2>Wat € 1.000 per maand je oplevert</h2>
+      <div class="vs">
+        <div class="a">
+          <div class="bedrag">€ 1.000</div>
+          <div class="wat">aan je feed vullen</div>
+          <ul>
+            <li>Ongeveer tien uur maakwerk. Het hele bedrag gaat op aan arbeid.</li>
+            <li>Bereikt vooral mensen die je al volgen.</li>
+            <li>Elke maand opnieuw, het werk stapelt niet op.</li>
+            <li>Wat het oplevert, is nauwelijks te meten.</li>
+          </ul>
+        </div>
+        <div class="b">
+          <div class="bedrag">€ 1.000</div>
+          <div class="wat">aan adverteren</div>
+          <ul>
+            <li>Het hele bedrag gaat naar bereik.</li>
+            <li>Bij mensen die jij kiest en die je nog niet kennen.</li>
+            <li>Op het moment dat ze zoeken of scrollen.</li>
+            <li>Per euro zichtbaar: bezoekers, aanvragen, klanten.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Wat er verandert</h2>
+      <div class="drie">
+        <div>
+          <span class="label l-stop">Stopt</span>
+          <ul>
+            <li>Twee posts per week bedenken om de feed te vullen</li>
+            <li>De contentkalender en het afstemmen per bericht</li>
+          </ul>
+        </div>
+        <div>
+          <span class="label l-plaats">Komt ervoor in de plaats</span>
+          <ul>
+            <li>Adverteren op Google, Instagram en Facebook, en op LinkedIn of TikTok als je klanten daar zitten</li>
+            <li>Samen met je website, SEO en e-mail</li>
+            <li>Foto en video, gemaakt om te presteren</li>
+          </ul>
+        </div>
+        <div>
+          <span class="label l-blijft">Blijft mogelijk</span>
+          <ul>
+            <li>Het beeld uit je lopende campagnes plaatsen we ook op je eigen kanalen, zolang de campagne loopt</li>
+            <li>Wil je zelf meer posten? Dan leveren we templates of een contentsessie, als los project</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Waarom dit in jouw belang is</h2>
+      <div class="belang">
+        <div><h3>Elke euro werkt voor nieuwe klanten</h3><p class="zacht">Niet voor het bijhouden van een kanaal, maar voor bereik bij mensen die nog bij je moeten aankloppen.</p></div>
+        <div><h3>Je ziet wat het oplevert</h3><p class="zacht">Per kanaal, tot op de aanvraag en wat die kostte. Geen likes, maar klanten.</p></div>
+        <div><h3>Je profiel blijft verzorgd</h3><p class="zacht">Wie je advertentie ziet, kijkt vaak even op je profiel. Daar staat dan hetzelfde beeld, in jouw huisstijl.</p></div>
+        <div><h3>Geen wekelijkse stress meer</h3><p class="zacht">Niemand hoeft nog te bedenken wat er deze week online moet. Die energie gaat naar je klanten.</p></div>
+      </div>
+    </section>
+
+    <section class="afspraak">
+      <p><b>Cijfers zijn leidend.</b> In elke Performance Review laten we je zien wat je marketing heeft opgeleverd, kanaal voor kanaal. Werkt iets niet, dan zeggen we het zelf, met de reden erbij.</p>
+      <div class="contact"><b>support@jamesrobinson.nl</b><br>Dringend? Bel 045 792 0009</div>
+    </section>
+  </div>
+  <footer class="voet">James Robinson · Marketing &amp; Branding · www.jamesrobinson.nl</footer>
+</article>

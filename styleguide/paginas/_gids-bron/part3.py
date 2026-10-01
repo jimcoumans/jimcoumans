@@ -167,6 +167,7 @@ BESLUITEN = """
  ['1 okt 2026', 'Per kanaal minimaal € 500 advertentiebudget per campagne per maand, op LinkedIn € 1.000. Wij kiezen de kanalen.'],
  ['1 okt 2026', 'De namen: Sub, Starter, Playmaker, Captain, Champion. Engels en uit de sport, van invaller tot kampioen. Later eventueel Legend erboven.'],
  ['1 okt 2026', 'Sub: € 500 per maand voor zichtbaarheid, alleen op verzoek, met een licht fundament van € 1.500. Een opstap, geen eindstation; de overstap bespreken we in de eerste Performance Review na drie maanden.'],
+ ['1 okt 2026', 'We bedenken geen posts meer om de feed te vullen. Beeld uit lopende campagnes plaatsen we, zolang de campagne loopt, ook organisch op de kanalen van de klant.'],
  ['1 okt 2026', 'Pakket omhoog per direct, omlaag per de 1e van de volgende maand. De Performance Review is het moment.'],
 ]) + """
 </div></section>
