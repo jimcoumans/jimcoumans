@@ -197,7 +197,7 @@ GELD = """
  ['Retainer Playmaker', 'James Robinson', 'Per maand vooraf, vanaf maand 2', '€ 1.500'],
  ['Retainer Captain', 'James Robinson', 'Per maand vooraf, vanaf maand 2', '€ 2.000'],
  ['Retainer Champion', 'James Robinson', 'Per maand vooraf, vanaf maand 2', '€ 2.500'],
- ['Retainer Spotlight', 'James Robinson', 'Alleen op verzoek, zie hieronder', '€ 500'],
+ ['Retainer Sub', 'James Robinson', 'Alleen op verzoek, zie hieronder', '€ 500'],
  ['Marketingdashboard', 'James Robinson', 'Altijd. Blijft van hem als hij stopt', '€ 25 p/m of € 250 p/j <span class="chip o">VOORLOPIG</span>'],
  ['Advertentiebudget', 'De advertentieplatformen, rechtstreeks', 'Per maand, via zijn eigen accounts', 'minimaal € 1.000 / 2.500 / 5.000 / 7.500'],
  ['E-mailplatform (MailerLite)', 'MailerLite', 'Altijd, vanaf dag één', 'vanaf € 9,90 p/m, volgt de lijstgrootte'],
@@ -219,7 +219,7 @@ GELD = """
 <p style="margin-top:14px">Bij een gezonde site is dit alles nul. Meting, indexatie en het bedrijfsprofiel leiden nooit tot een extra rekening: dat werk zit aan onze kant, en dus in het fundament.</p>
 
 <h3>Wat per pakket verschilt</h3>
-<p>Iedereen krijgt toegang tot hetzelfde: adverteren, SEO, e-mail, automation, CRO en landingspagina’s. Wat verschilt, is hoeveel, en dat meten we in campagnes, niet in uren. Het pakket volgt uit de rekensom in stap 04, niet uit wat wij willen verkopen. De namen zijn Engels en voorlopig.</p>
+<p>Iedereen krijgt toegang tot hetzelfde: adverteren, SEO, e-mail, automation, CRO en landingspagina’s. Wat verschilt, is hoeveel, en dat meten we in campagnes, niet in uren. Het pakket volgt uit de rekensom in stap 04, niet uit wat wij willen verkopen. De namen komen uit de sport: van invaller tot kampioen.</p>
 """ + grid(2, [
  kaart('Eén campagne', 'Eén aanbod, voor één doelgroep, met één doel en één landingspagina. Op alle kanalen die daarbij passen: dezelfde campagne op Google en Meta is één campagne, niet twee. Wat per kanaal in het advertentieplatform staat, heet intern een platformcampagne; naar de klant bestaat dat woord niet.', 'WAT WE TELLEN', 'b'),
  kaart('Eén contentronde', 'Een nieuwe set advertenties, beeld en tekst, in alle formaten van de campagne, om tegen de lopende te testen. Advertenties slijten; een contentronde houdt de campagne fris. Het beeld komt uit de draaidagen, de sjablonen of materiaal van de klant.', 'WAT WE MAKEN', 'l'),
@@ -238,10 +238,10 @@ GELD = """
  ('Wij kiezen de kanalen', 'Per kanaal minimaal € 500 per campagne per maand, op LinkedIn € 1.000. Een campagne op Google, Meta en LinkedIn vraagt dus minstens € 2.000 per maand. Het budget bepaalt op hoeveel kanalen een campagne kan staan, niet de wens.'),
  ('Omhoog per direct, omlaag per de 1e', 'Komt er een campagne bij of groeit het budget, dan gaat het pakket direct mee omhoog. Omlaag gaat per de 1e van de volgende maand. Het moment om het te bespreken is de Performance Review.'),
 ]) + """
-<h4 style="margin-top:26px">Spotlight: zichtbaar zijn, alleen op verzoek</h4>
+<h4 style="margin-top:26px">Sub: de invaller, alleen op verzoek</h4>
 """ + grid(2, [
- kaart('€ 500 per maand, naast de ladder', ul(['Eén campagne, doel: bereik en kliks, geen aanvragen', 'Advertentiebudget vanaf € 500 per maand', 'Een contentronde per halfjaar, geen draaidag', 'Eerste Performance Review na drie maanden, daarna elk halfjaar', 'Licht fundament € 1.500: accounts, meting, sjablonen, één campagne; geen landingspagina, geen draaidag'], ''), 'SPOTLIGHT', 'o'),
- kaart('Bedoeld om door te groeien', '<p>We bieden Spotlight niet aan; we leveren het als een klant er zelf om vraagt (“ik wil gewoon zichtbaar zijn”). In de eerste Performance Review, na drie maanden, bespreken we de overstap naar Starter. Het lichte fundament telt mee: hij betaalt het verschil, € 3.000. Geen werving: ook in Spotlight adverteren we niet voor vacatures.</p>', 'DE OVERSTAP', 'b'),
+ kaart('€ 500 per maand, op de bank', ul(['Eén campagne, doel: bereik en kliks, geen aanvragen', 'Advertentiebudget vanaf € 500 per maand', 'Een contentronde per halfjaar, geen draaidag', 'Eerste Performance Review na drie maanden, daarna elk halfjaar', 'Licht fundament € 1.500: accounts, meting, sjablonen, één campagne; geen landingspagina, geen draaidag'], ''), 'SUB', 'o'),
+ kaart('Bedoeld om door te groeien', '<p>Een invaller zit op de bank en wil het veld in. Zo is Sub bedoeld. We bieden het niet aan; we leveren het als een klant er zelf om vraagt (“ik wil gewoon zichtbaar zijn”). In de eerste Performance Review, na drie maanden, bespreken we de overstap naar Starter. Het lichte fundament telt mee: hij betaalt het verschil, € 3.000. Geen werving: ook in Sub adverteren we niet voor vacatures.</p>', 'DE OVERSTAP', 'b'),
 ]) + """
 <h3>Wat we na het tekenen vaak tegenkomen</h3>
 <p>Met de toegangen zien we meer dan de quickscan van buitenaf. Wat buiten het fundament valt, doen we nooit “even erbij omdat het klein is”: dan betaalt een ander het. We bieden het los aan, met een prijs vooraf, en de klant beslist.</p>
@@ -262,12 +262,12 @@ GELD = """
 """ + raakt(ul([
  '<b>Alles wat vast is, gaat van het advertentiebudget af.</b> Fundament, retainer, licenties en herstelposten komen uit dezelfde marketingruimte als de advertenties (zie de rekensom in stap 04). Elke euro die het fundament duurder wordt, is een euro minder voor advertenties.',
  '<b>Als het fundament naar € 5.250 of € 6.563 gaat</b> (de herrekening tegen € 100 of € 125 per uur), stijgt de ondergrens voor Starter bij 30% marge van ongeveer € 90.000 naar € 92.600 of € 97.000 extra omzet. Minder klanten passen dan in het kleinste pakket.',
- '<b>Spotlight past niet in de rekensom.</b> Er is geen doel in aanvragen, dus geen terugverdientijd en geen plafond per aanvraag. Daarom staat het naast de ladder en is het alleen op verzoek: als het een gewoon pakket wordt, verkopen we zichtbaarheid in plaats van resultaat, en dat is precies wat we niet meer willen zijn.',
+ '<b>Sub past niet in de rekensom.</b> Er is geen doel in aanvragen, dus geen terugverdientijd en geen plafond per aanvraag. Daarom is het alleen op verzoek en bedoeld als opstap: als het een gewoon pakket wordt, verkopen we zichtbaarheid in plaats van resultaat, en dat is precies wat we niet meer willen zijn.',
  '<b>Hogere pakketten leveren nu minder per uur op.</b> Champion heeft vier keer zoveel campagnes als Starter en acht keer zoveel contentrondes, voor tweeënhalf keer de retainer. Of dat uitkomt, hangt af van hoeveel werk de sjablonen en de AI-instructies uit handen nemen.',
  '<b>De retainer start in maand 2.</b> Loopt het fundament uit, dan is de vraag of de eerste retainerfactuur meeschuift. Zie stap 06.',
 ], '')) + open_(ul([
  '<b>Fundament € 4.500 is voorlopig.</b> Jim Kikken en Stan rekenen het na tegen € 100–125 per uur. Het blijft één vaste prijs.',
- '<b>De namen zijn voorlopig</b> (Spotlight, Starter, Playmaker, Captain, Champion). Engels, met karakter.',
+ '<b>Legend, later.</b> Een pakket boven Champion, voor klanten met meer dan vier campagnes tegelijk of met events. Pas uitwerken als de eerste Champion er is.',
  '<b>Uren per pakket narekenen.</b> Jim Kikken en Stan rekenen na wat een campagne en een contentronde kosten, en of Captain en Champion daarmee uitkomen.',
  '<b>Dashboard € 25 / € 250 is voorlopig.</b> Het dashboard komt er zeker.',
  '<b>De drie Webmix-bedragen zijn schattingen.</b> Vastzetten met Webmix, anders staat er een bedrag in het voorstel dat we niet kunnen waarmaken.',

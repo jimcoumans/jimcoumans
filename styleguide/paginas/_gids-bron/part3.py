@@ -106,7 +106,7 @@ OPEN = """
  ['Animatie en graphics', 'Graphics uit de advertentiesjablonen; animatie nog zonder eigen taak en uren', 'Blok 05 van het fundament'],
  ['Drempels voor de monitoring', 'Zoals in stap 08; vastzetten en automatisch laten melden', 'Stap 08, dashboard'],
  ['De Performance Review', 'Stramien en frequentie per pakket staan (1.4); nog vast te leggen: hoe lang (voorstel 45 minuten)', 'Stap 08, retainers, voorstel'],
- ['Namen van de pakketten', 'Voorlopig Spotlight, Starter, Playmaker, Captain, Champion: Engels, met karakter', 'Tarieven, voorstel, drukwerk, website'],
+ ['Legend', 'Later een pakket boven Champion, voor meer dan vier campagnes tegelijk of events. Uitwerken als de eerste Champion er is.', 'Tarieven, drukwerk, website'],
  ['Uren per pakket', 'Narekenen wat een campagne en een contentronde kosten, en of Captain en Champion daarmee uitkomen (Jim Kikken en Stan)', 'Tarieven, marge, drukwerk'],
  ['Communicatie via support@', 'Telefoonnummer en bereikbaarheid kantoor; Front inrichten; overstap per klant in de Performance Review', 'Startbericht, alle klantcontact'],
 ]) + """
@@ -162,10 +162,11 @@ BESLUITEN = """
  ['30 sep 2026', 'Het overleg met de klant heet de Performance Review en gaat over resultaat, op ons kantoor of online, met een vast stramien: impressies, bezoekers, aanvragen en klanten, elk met wat het kostte, dan diagnose en plan. Het vervangt het performanceblok. We gaan niet meer naar de klant.'],
  ['30 sep 2026', 'Jaar 1 is de set-upmaand plus elf keer de retainer. Zo rekent de rekensom.'],
  ['30 sep 2026', 'Het volledige designsysteem v3.0 is leidend, en staat in deze gids.'],
- ['1 okt 2026', 'Vier pakketten: Starter € 1.000, Playmaker € 1.500, Captain € 2.000, Champion € 2.500, met 1 tot 4 campagnes tegelijk. Het pakket is het hoogste van campagnes of budget. Vervangt Enter, Compete en Own; de namen zijn voorlopig.'],
+ ['1 okt 2026', 'Vier pakketten: Starter € 1.000, Playmaker € 1.500, Captain € 2.000, Champion € 2.500, met 1 tot 4 campagnes tegelijk. Het pakket is het hoogste van campagnes of budget. Vervangt Enter, Compete en Own.'],
  ['1 okt 2026', 'Een campagne is één aanbod, één doelgroep, één doel en één landingspagina, op alle kanalen samen. Nieuwe advertenties heten contentrondes.'],
  ['1 okt 2026', 'Per kanaal minimaal € 500 advertentiebudget per campagne per maand, op LinkedIn € 1.000. Wij kiezen de kanalen.'],
- ['1 okt 2026', 'Spotlight: € 500 per maand voor zichtbaarheid, alleen op verzoek, met een licht fundament van € 1.500. Naast de ladder, niet erop; de overstap bespreken we in de eerste Performance Review na drie maanden.'],
+ ['1 okt 2026', 'De namen: Sub, Starter, Playmaker, Captain, Champion. Engels en uit de sport, van invaller tot kampioen. Later eventueel Legend erboven.'],
+ ['1 okt 2026', 'Sub: € 500 per maand voor zichtbaarheid, alleen op verzoek, met een licht fundament van € 1.500. Een opstap, geen eindstation; de overstap bespreken we in de eerste Performance Review na drie maanden.'],
  ['1 okt 2026', 'Pakket omhoog per direct, omlaag per de 1e van de volgende maand. De Performance Review is het moment.'],
 ]) + """
 </div></section>

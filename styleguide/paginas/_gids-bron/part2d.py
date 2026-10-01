@@ -66,7 +66,7 @@ STAP08 = stap_kop('08', 'f3', 'FASE 3 · SAMENWERKEN', 'Live en het maandritme',
  ['Performance Review', 'Over resultaat, vast stramien, op kantoor of online; bevestigd per mail', 'elk kwartaal', 'elke twee maanden', 'maandelijks', 'maandelijks'],
  ['Vragen en verzoeken', 'Via support@, antwoord binnen één werkdag', '●', '●', '●', '●'],
 ])  + """
-<p style="margin-top:14px">Spotlight draait op een eigen ritme: een contentronde per halfjaar, geen draaidag, de eerste Performance Review na drie maanden en daarna elk halfjaar.</p>
+<p style="margin-top:14px">Sub draait op een eigen ritme: een contentronde per halfjaar, geen draaidag, de eerste Performance Review na drie maanden en daarna elk halfjaar.</p>
 <h3>De Performance Review: over resultaat, met ons aan het roer</h3>
 <p>De Performance Review gaat over resultaat, niet over wat we allemaal gedaan hebben. Op ons kantoor in Hulsberg of online; we gaan niet meer naar de klant. Wij hebben de regie: we weten precies wat de cijfers zijn, wat ze betekenen, en aan welke knoppen we kunnen draaien en gaan draaien. Elk overleg volgt hetzelfde stramien.</p>
 """ + jk([
