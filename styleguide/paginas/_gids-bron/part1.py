@@ -106,6 +106,7 @@ MODEL = """
  ['TikTok', 'Bereik bij een jonger publiek, met video', 'Als de doelgroep daar zit en er videomateriaal is'],
 ]) + """
 <p style="margin-top:14px">In het fundament zetten we standaard Google Ads en Meta op, altijd allebei, ook als we met één kanaal starten. Microsoft Ads, LinkedIn en TikTok komen erbij als doelgroep en cijfers erom vragen.</p>
+<p><b>De kanaalregel.</b> Per kanaal hoort minimaal € 500 advertentiebudget per campagne per maand, op LinkedIn € 1.000. Daaronder krijgt het algoritme te weinig om van te leren en sturen we op toeval. Daarom kiezen wij de kanalen, niet de klant: wie op drie kanalen wil staan met € 1.000, staat op drie kanalen nergens.</p>
 
 <h3>De brandstof: marketingcontent</h3>
 <p>Een motor zonder brandstof doet niets. Advertenties draaien op beeld, en beeld slijt: dezelfde advertentie werkt na een paar weken minder. Daarom zit content in de motor, niet ernaast.</p>
@@ -163,7 +164,7 @@ PLAN = """
 <h3>Wat we doen, en wat niet</h3>
 <p>De lijst waar het team naar wijst als een klant iets vraagt. Wat in de retainer zit, staat vast. Voor de middelste kolom kiezen we per vraag: zelf als project met een prijs vooraf, of een partner. Hoe beter de propositie loopt, hoe meer daarvan naar partners gaat. De klant mag elke marketingvraag bij ons neerleggen; soms is het antwoord “daarvoor moet je bij haar zijn”.</p>
 """ + grid(3, [
- kaart('In de retainer', ul(['Adverteren in zoekmachines en op social', 'Marketingcontent: foto, video, animatie, graphics', 'Landingspagina’s bij ons, aanpassen en testen', 'CRO op alles waar ons verkeer landt', 'E-mail en automation', 'SEO op woorden die converteren', 'Draaidagen en advertentiesets naar pakketgrootte'], ''), 'ALTIJD', 'g'),
+ kaart('In de retainer', ul(['Adverteren in zoekmachines en op social', 'Marketingcontent: foto, video, animatie, graphics', 'Landingspagina’s bij ons, aanpassen en testen', 'CRO op alles waar ons verkeer landt', 'E-mail en automation', 'SEO op woorden die converteren', 'Draaidagen en contentrondes naar pakketgrootte'], ''), 'ALTIJD', 'g'),
  kaart('Eigen project of partner', ul(['Webdevelopment', 'Design en branding', 'Social-mediatemplates en contentsessies', 'Content boven de afgesproken draaidagen', 'Koppelingen met systemen van de klant'], ''), 'PER VRAAG', 'o'),
  kaart('Doen we niet', ul(['Losse campagnes zonder samenwerking', 'E-commerce als propositie', 'Werving als propositie', 'Social feeds vullen en beheren', 'Bedrijfsvideo’s', 'Branded content, tenzij de advertenties erom vragen', 'Leads opvolgen', 'Uren verantwoorden', 'Marge op werk van een ander'], ''), 'NOOIT', 'r'),
 ]) + """
@@ -179,7 +180,7 @@ PLAN = """
 GELD = """
 <section class="sec alt" id="wat-het-kost"><div class="wrap">
 <span class="kick">1.4 · WAT HET KOST</span>
-<h2>Eén fundament, drie retainers, en de rest op naam van de klant</h2>
+<h2>Eén fundament, vier pakketten, en de rest op naam van de klant</h2>
 <p class="sub">De prijslijst is voor iedereen gelijk en de klant krijgt hem vóór het intakegesprek, dus voordat wij weten wat er bij hem mis is. De quickscan kan de prijs niet veranderen, alleen aanwijzen welke regels voor hem gelden. Alle bedragen zijn exclusief btw.</p>
 
 <h3>Het fundament: € 4.500 eenmalig</h3>
@@ -192,11 +193,13 @@ GELD = """
 <h3>Per maand en per jaar</h3>
 <p>Alleen de retainer en het dashboard gaan naar ons. De rest staat op naam van de klant en wordt rechtstreeks door de leverancier gefactureerd. Wij richten het in; hij vult zelf zijn betaalgegevens in en kiest per licentie maand of jaar.</p>
 """ + tbl(['Post', 'Aan wie', 'Wanneer', 'Bedrag'], [
- ['Retainer Enter', 'James Robinson', 'Per maand vooraf, vanaf maand 2', '€ 1.000'],
- ['Retainer Compete', 'James Robinson', 'Per maand vooraf, vanaf maand 2', '€ 1.500'],
- ['Retainer Own', 'James Robinson', 'Per maand vooraf, vanaf maand 2', '€ 2.000'],
+ ['Retainer Starter', 'James Robinson', 'Per maand vooraf, vanaf maand 2', '€ 1.000'],
+ ['Retainer Playmaker', 'James Robinson', 'Per maand vooraf, vanaf maand 2', '€ 1.500'],
+ ['Retainer Captain', 'James Robinson', 'Per maand vooraf, vanaf maand 2', '€ 2.000'],
+ ['Retainer Champion', 'James Robinson', 'Per maand vooraf, vanaf maand 2', '€ 2.500'],
+ ['Retainer Spotlight', 'James Robinson', 'Alleen op verzoek, zie hieronder', '€ 500'],
  ['Marketingdashboard', 'James Robinson', 'Altijd. Blijft van hem als hij stopt', '€ 25 p/m of € 250 p/j <span class="chip o">VOORLOPIG</span>'],
- ['Advertentiebudget', 'De advertentieplatformen, rechtstreeks', 'Per maand, via zijn eigen accounts', 'minimaal € 1.000 / 2.500 / 7.500'],
+ ['Advertentiebudget', 'De advertentieplatformen, rechtstreeks', 'Per maand, via zijn eigen accounts', 'minimaal € 1.000 / 2.500 / 5.000 / 7.500'],
  ['E-mailplatform (MailerLite)', 'MailerLite', 'Altijd, vanaf dag één', 'vanaf € 9,90 p/m, volgt de lijstgrootte'],
  ['Cookiescript', 'Webmix', 'Altijd: zonder toestemming mag je niet meten', '€ 150 p/j'],
  ['Klikfraudebescherming (ClickCease)', 'ClickCease', 'Aanbevolen als hij adverteert', 'vanaf $ 99 p/m'],
@@ -216,16 +219,30 @@ GELD = """
 <p style="margin-top:14px">Bij een gezonde site is dit alles nul. Meting, indexatie en het bedrijfsprofiel leiden nooit tot een extra rekening: dat werk zit aan onze kant, en dus in het fundament.</p>
 
 <h3>Wat per pakket verschilt</h3>
-<p>Iedereen krijgt toegang tot hetzelfde: adverteren, SEO, e-mail, automation, CRO en landingspagina’s. Wat verschilt, is hoeveel. Het pakket volgt uit de rekensom in stap 04, niet uit wat wij willen verkopen.</p>
-""" + tbl(['', 'Enter', 'Compete', 'Own'], [
- ['Retainer per maand', '€ 1.000', '€ 1.500', '€ 2.000'],
- ['Advertentiebudget per maand', '€ 1.000 – 2.500', '€ 2.500 – 7.500', 'vanaf € 7.500'],
- ['Nieuwe advertentiesets', '1 per kwartaal', '1 per maand', '2 per maand'],
- ['Draaidagen voor nieuw beeld', '1 per jaar', '2 per jaar', '4 per jaar'],
- ['Performance Review', 'elk kwartaal', 'elke twee maanden', 'maandelijks'],
+<p>Iedereen krijgt toegang tot hetzelfde: adverteren, SEO, e-mail, automation, CRO en landingspagina’s. Wat verschilt, is hoeveel, en dat meten we in campagnes, niet in uren. Het pakket volgt uit de rekensom in stap 04, niet uit wat wij willen verkopen. De namen zijn Engels en voorlopig.</p>
+""" + grid(2, [
+ kaart('Eén campagne', 'Eén aanbod, voor één doelgroep, met één doel en één landingspagina. Op alle kanalen die daarbij passen: dezelfde campagne op Google en Meta is één campagne, niet twee. Wat per kanaal in het advertentieplatform staat, heet intern een platformcampagne; naar de klant bestaat dat woord niet.', 'WAT WE TELLEN', 'b'),
+ kaart('Eén contentronde', 'Een nieuwe set advertenties, beeld en tekst, in alle formaten van de campagne, om tegen de lopende te testen. Advertenties slijten; een contentronde houdt de campagne fris. Het beeld komt uit de draaidagen, de sjablonen of materiaal van de klant.', 'WAT WE MAKEN', 'l'),
+]) + tbl(['', 'Starter', 'Playmaker', 'Captain', 'Champion'], [
+ ['Retainer per maand', '€ 1.000', '€ 1.500', '€ 2.000', '€ 2.500'],
+ ['Campagnes tegelijk', '1', '2', '3', '4'],
+ ['Advertentiebudget per maand', '€ 1.000 – 2.500', '€ 2.500 – 5.000', '€ 5.000 – 7.500', 'vanaf € 7.500'],
+ ['Contentrondes', 'elk kwartaal', 'elke twee maanden', 'maandelijks', 'twee per maand'],
+ ['Draaidagen voor nieuw beeld', '1 per jaar', '2 per jaar', '3 per jaar', '4 per jaar'],
+ ['Performance Review', 'elk kwartaal', 'elke twee maanden', 'maandelijks', 'maandelijks'],
 ]) + """
-<p style="margin-top:14px">De draaidag in het fundament is draaidag één van het jaar. Bij Enter betekent dat: dat jaar geen tweede. Dat zeggen we in het voorstelgesprek, niet in maand vier.</p>
-
+<p style="margin-top:14px">De draaidag in het fundament is draaidag één van het jaar. Bij Starter betekent dat: dat jaar geen tweede. Dat zeggen we in het voorstelgesprek, niet in maand vier.</p>
+""" + jk([
+ ('Het pakket is het hoogste van twee: campagnes of budget', 'Drie campagnes met € 3.000 budget is Captain, niet Playmaker. Eén campagne met € 6.000 budget is ook Captain. Meer campagnes is meer werk, meer budget is meer verantwoordelijkheid; allebei kosten ze sturen.'),
+ ('Tegelijk betekent tegelijk', 'Het aantal gaat over campagnes die op hetzelfde moment draaien. Een campagne stoppen en een andere starten mag altijd, binnen het aantal. Zo kan een Starter in het voorjaar adverteren op het ene aanbod en in het najaar op het andere.'),
+ ('Wij kiezen de kanalen', 'Per kanaal minimaal € 500 per campagne per maand, op LinkedIn € 1.000. Een campagne op Google, Meta en LinkedIn vraagt dus minstens € 2.000 per maand. Het budget bepaalt op hoeveel kanalen een campagne kan staan, niet de wens.'),
+ ('Omhoog per direct, omlaag per de 1e', 'Komt er een campagne bij of groeit het budget, dan gaat het pakket direct mee omhoog. Omlaag gaat per de 1e van de volgende maand. Het moment om het te bespreken is de Performance Review.'),
+]) + """
+<h4 style="margin-top:26px">Spotlight: zichtbaar zijn, alleen op verzoek</h4>
+""" + grid(2, [
+ kaart('€ 500 per maand, naast de ladder', ul(['Eén campagne, doel: bereik en kliks, geen aanvragen', 'Advertentiebudget vanaf € 500 per maand', 'Een contentronde per halfjaar, geen draaidag', 'Eerste Performance Review na drie maanden, daarna elk halfjaar', 'Licht fundament € 1.500: accounts, meting, sjablonen, één campagne; geen landingspagina, geen draaidag'], ''), 'SPOTLIGHT', 'o'),
+ kaart('Bedoeld om door te groeien', '<p>We bieden Spotlight niet aan; we leveren het als een klant er zelf om vraagt (“ik wil gewoon zichtbaar zijn”). In de eerste Performance Review, na drie maanden, bespreken we de overstap naar Starter. Het lichte fundament telt mee: hij betaalt het verschil, € 3.000. Geen werving: ook in Spotlight adverteren we niet voor vacatures.</p>', 'DE OVERSTAP', 'b'),
+]) + """
 <h3>Wat we na het tekenen vaak tegenkomen</h3>
 <p>Met de toegangen zien we meer dan de quickscan van buitenaf. Wat buiten het fundament valt, doen we nooit “even erbij omdat het klein is”: dan betaalt een ander het. We bieden het los aan, met een prijs vooraf, en de klant beslist.</p>
 """ + tbl(['Wat', 'Wanneer', 'Aan wie', 'Indicatie'], [
@@ -244,10 +261,14 @@ GELD = """
 ]) + """
 """ + raakt(ul([
  '<b>Alles wat vast is, gaat van het advertentiebudget af.</b> Fundament, retainer, licenties en herstelposten komen uit dezelfde marketingruimte als de advertenties (zie de rekensom in stap 04). Elke euro die het fundament duurder wordt, is een euro minder voor advertenties.',
- '<b>Als het fundament naar € 5.250 of € 6.563 gaat</b> (de herrekening tegen € 100 of € 125 per uur), stijgt de ondergrens voor Enter bij 30% marge van ongeveer € 90.000 naar € 92.600 of € 97.000 extra omzet. Minder klanten passen dan in het kleinste pakket.',
+ '<b>Als het fundament naar € 5.250 of € 6.563 gaat</b> (de herrekening tegen € 100 of € 125 per uur), stijgt de ondergrens voor Starter bij 30% marge van ongeveer € 90.000 naar € 92.600 of € 97.000 extra omzet. Minder klanten passen dan in het kleinste pakket.',
+ '<b>Spotlight past niet in de rekensom.</b> Er is geen doel in aanvragen, dus geen terugverdientijd en geen plafond per aanvraag. Daarom staat het naast de ladder en is het alleen op verzoek: als het een gewoon pakket wordt, verkopen we zichtbaarheid in plaats van resultaat, en dat is precies wat we niet meer willen zijn.',
+ '<b>Hogere pakketten leveren nu minder per uur op.</b> Champion heeft vier keer zoveel campagnes als Starter en acht keer zoveel contentrondes, voor tweeënhalf keer de retainer. Of dat uitkomt, hangt af van hoeveel werk de sjablonen en de AI-instructies uit handen nemen.',
  '<b>De retainer start in maand 2.</b> Loopt het fundament uit, dan is de vraag of de eerste retainerfactuur meeschuift. Zie stap 06.',
 ], '')) + open_(ul([
  '<b>Fundament € 4.500 is voorlopig.</b> Jim Kikken en Stan rekenen het na tegen € 100–125 per uur. Het blijft één vaste prijs.',
+ '<b>De namen zijn voorlopig</b> (Spotlight, Starter, Playmaker, Captain, Champion). Engels, met karakter.',
+ '<b>Uren per pakket narekenen.</b> Jim Kikken en Stan rekenen na wat een campagne en een contentronde kosten, en of Captain en Champion daarmee uitkomen.',
  '<b>Dashboard € 25 / € 250 is voorlopig.</b> Het dashboard komt er zeker.',
  '<b>De drie Webmix-bedragen zijn schattingen.</b> Vastzetten met Webmix, anders staat er een bedrag in het voorstel dat we niet kunnen waarmaken.',
  '<b>MailerLite- en Leadinfo-staffel ontbreken.</b> Zonder staffel staat er “vanaf”, en dat beloven we juist niet te doen.',

@@ -53,19 +53,20 @@ STAP08 = stap_kop('08', 'f3', 'FASE 3 · SAMENWERKEN', 'Live en het maandritme',
  ['De doelgroep zit ook op LinkedIn of TikTok, of Bing levert goedkopere kliks', 'Een kanaal erbij', 'Meer bereik bij dezelfde koper, of dezelfde koper goedkoper'],
  ['Kosten per aanvraag op doel, aantal niet', 'Budget opschalen', 'Meer budget bij dezelfde kosten per aanvraag is de makkelijkste groei die er is'],
 ]) + """
-<p style="margin-top:14px"><b>Opschalen en het pakket.</b> Groeit het advertentiebudget, dan groeit het pakket mee: meer campagnes, meer doelgroepen, meer bijsturen. Eén keer per jaar een nieuw doel voor het volgende jaar, en de vraag of het pakket nog past: is het Compete geworden, of Own?</p>
+<p style="margin-top:14px"><b>Opschalen en het pakket.</b> Groeit het advertentiebudget, dan groeit het pakket mee: meer campagnes, meer doelgroepen, meer bijsturen. Eén keer per jaar een nieuw doel voor het volgende jaar, en de vraag of het pakket nog past: zijn er campagnes bij gekomen, of is het budget gegroeid? Dan schuift het pakket mee, omhoog per direct en omlaag per de 1e van de volgende maand.</p>
 
 <h3>Het ritme</h3>
 <p>Voor ieder pakket hetzelfde. Het verschil zit in de hoeveelheid.</p>
-""" + tbl(['Wanneer', 'Wat', 'Enter', 'Compete', 'Own'], [
- ['Dagelijks', 'Alleen de eerste week na livegang: uitgaven, afkeuringen, eerste aanvragen', '●', '●', '●'],
- ['Wekelijks', 'Bijsturen op kosten per aanvraag: budgetten, biedingen, uitsluitingen. Zonder overleg, tenzij er iets is.', '●', '●', '●'],
- ['Maandelijks', 'Korte schriftelijke update in het dashboard: staan we op de doelregel, en zo nee, waarom niet', '●', '●', '●'],
- ['Nieuwe advertentiesets', 'Varianten om tegen de bestaande te testen', '1× per kwartaal', '1× per maand', '2× per maand'],
- ['Draaidag', 'Nieuw beeld, want advertenties slijten', '1× per jaar', '2× per jaar', '4× per jaar'],
- ['Performance Review', 'Over resultaat, vast stramien, op kantoor of online; bevestigd per mail', 'elk kwartaal', 'elke twee maanden', 'maandelijks'],
- ['Vragen en verzoeken', 'Via support@, antwoord binnen één werkdag', '●', '●', '●'],
+""" + tbl(['Wanneer', 'Wat', 'Starter', 'Playmaker', 'Captain', 'Champion'], [
+ ['Dagelijks', 'Alleen de eerste week na livegang: uitgaven, afkeuringen, eerste aanvragen', '●', '●', '●', '●'],
+ ['Wekelijks', 'Bijsturen op kosten per aanvraag: budgetten, biedingen, uitsluitingen. Zonder overleg, tenzij er iets is.', '●', '●', '●', '●'],
+ ['Maandelijks', 'Korte schriftelijke update in het dashboard: staan we op de doelregel, en zo nee, waarom niet', '●', '●', '●', '●'],
+ ['Contentronde', 'Een nieuwe set advertenties om tegen de lopende te testen', '1× per kwartaal', '1× per twee maanden', '1× per maand', '2× per maand'],
+ ['Draaidag', 'Nieuw beeld, want advertenties slijten', '1× per jaar', '2× per jaar', '3× per jaar', '4× per jaar'],
+ ['Performance Review', 'Over resultaat, vast stramien, op kantoor of online; bevestigd per mail', 'elk kwartaal', 'elke twee maanden', 'maandelijks', 'maandelijks'],
+ ['Vragen en verzoeken', 'Via support@, antwoord binnen één werkdag', '●', '●', '●', '●'],
 ])  + """
+<p style="margin-top:14px">Spotlight draait op een eigen ritme: een contentronde per halfjaar, geen draaidag, de eerste Performance Review na drie maanden en daarna elk halfjaar.</p>
 <h3>De Performance Review: over resultaat, met ons aan het roer</h3>
 <p>De Performance Review gaat over resultaat, niet over wat we allemaal gedaan hebben. Op ons kantoor in Hulsberg of online; we gaan niet meer naar de klant. Wij hebben de regie: we weten precies wat de cijfers zijn, wat ze betekenen, en aan welke knoppen we kunnen draaien en gaan draaien. Elk overleg volgt hetzelfde stramien.</p>
 """ + jk([
@@ -95,7 +96,7 @@ STAP08 = stap_kop('08', 'f3', 'FASE 3 · SAMENWERKEN', 'Live en het maandritme',
  ['Ongeldige kliks en klikfraude', 'Wekelijks', 'Opvallende pieken; na de proefperiode de afweging ClickCease', 'Campagne'],
  ['De doelregel', 'Maandelijks', 'Elke maand in de update; twee maanden eronder: we zeggen het, met de oorzaak en de opties', 'Aanspreekpunt'],
 ]) + """
-<p style="margin-top:14px">Nieuwe advertentiesets, draaidagen en varianten gaan net als in het fundament eerst door de merkcheck. Snel mag, off-brand niet.</p>
+<p style="margin-top:14px">Contentrondes, draaidagen en varianten gaan net als in het fundament eerst door de merkcheck. Snel mag, off-brand niet.</p>
 
 <h3>Als het resultaat tegenvalt</h3>
 <p>Een diagnose, geen discussie. Dat werkt alleen als de meetlat er lag vóór er iets te meten viel. Loop de keten van links naar rechts en kijk waar het getal voor het eerst afwijkt: bereik, bezoekers, aanvragen, klanten. Dat is de hele diagnose.</p>
@@ -120,10 +121,10 @@ STAP08 = stap_kop('08', 'f3', 'FASE 3 · SAMENWERKEN', 'Live en het maandritme',
  '<b>De doelregel uit stap 04</b> is de doellijn in het dashboard en de vraag waar elke Performance Review om draait.',
  '<b>De afspraken van jouw kant</b> worden hier cijfers: opvolgtijd (oorzaak 08) en oordelen per aanvraag (oorzaak 09) zijn zichtbaar voor allebei.',
  '<b>Continu monitoren is wat “cijfers leidend” waarmaakt.</b> Zonder dagelijkse check op meting en uitgaven ontdek je een fout pas in de maandupdate, en dan heeft de klant een maand betaald voor lucht.',
- '<b>Enter heeft maar één draaidag per jaar,</b> en die zat in het fundament. Advertenties slijten; bij Enter komt nieuw beeld pas het jaar erna, tenzij hij een extra draaidag los afneemt.',
+ '<b>Starter heeft maar één draaidag per jaar,</b> en die zat in het fundament. Advertenties slijten; bij Starter komt nieuw beeld pas het jaar erna, tenzij hij een extra draaidag los afneemt.',
 ], '')) + open_(ul([
  '<b>Dit is het grootste gat in de reis.</b> Het fundament is opengewerkt in 76 taken; de twaalf maanden daarna nog niet. Nodig: een stappenlijst voor maand 2 tot en met 12, het live-bericht, de vorm van de maandelijkse update, en het moment waarop wij ingrijpen bij achterstand.',
- '<b>De Performance Review: hoe vaak per pakket, en hoe lang.</b> Het stramien staat. Voorstel: bij Enter elk kwartaal, bij Compete elke twee maanden, bij Own maandelijks, telkens 45 minuten. Minder vaak dan maandelijks bij kleine volumes, omdat de cijfers van maand tot maand dan vooral toeval laten zien. Wordt vastgezet met de nieuwe indeling van de retainers.',
+ '<b>De Performance Review: hoe lang.</b> Stramien en frequentie staan; de frequentie volgt het pakket. Voorstel: telkens 45 minuten. Bij Starter en Playmaker bewust minder vaak dan maandelijks, omdat de cijfers van maand tot maand bij kleine volumes vooral toeval laten zien.',
  '<b>De drempels voor de monitoring zijn een voorstel.</b> Vastzetten, en automatisch laten melden vanuit het dashboard en de platformen, zodat het niet van iemands oplettendheid afhangt.',
  '<b>Na welke termijn zonder beweging</b> melden wij het uit onszelf? “Een afgesproken termijn” is nog geen getal.',
  '<b>Drie maanden alleen de motor is een aanname.</b> Hoe snel de kosten tot rust komen, hangt af van het volume. Toetsen aan de laatste vijf campagnes en er een norm van maken.',

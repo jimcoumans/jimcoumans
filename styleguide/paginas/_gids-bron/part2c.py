@@ -24,7 +24,7 @@ STAP05 = stap_kop('05', 'f2', 'FASE 2 · STARTEN', 'Tekenen en betalen',
 <p>Alleen wat naar ons gaat, krijgt een bedrag. Wat rechtstreeks naar een leverancier gaat, staat erop als tekstregel zonder bedrag. Geen bedrag wordt met de hand getypt: het portaal zet de offerte klaar met de regels uit de tarieven. Het offertenummer staat op de omslag van het voorstel, het voorstel hangt als bijlage aan de offerte. Verandert er aan tafel iets, dan op de klantkaart, en het portaal maakt beide opnieuw.</p>
 """ + tbl(['Regel', 'Bedrag excl. btw', 'Wanneer', 'Toelichting'], [
  ['Fundament: basis en eerste campagne', '€ 4.500', 'Eenmalig', 'Altijd. Omschrijving verwijst naar het voorstel, pagina 4.'],
- ['Retainer Enter, Compete of Own', '€ 1.000 / 1.500 / 2.000', 'Per maand', 'Het pakket uit de rekensom. Vanaf maand 2, vooraf: factuur op de 1e, incasso op de 4e.'],
+ ['Retainer Starter, Playmaker, Captain of Champion', '€ 1.000 / 1.500 / 2.000 / 2.500', 'Per maand', 'Het pakket uit de rekensom. Vanaf maand 2, vooraf: factuur op de 1e, incasso op de 4e.'],
  ['Marketingdashboard', '€ 25 p/m of € 250 p/j', 'Keuze van de klant', 'Twee opties op de offerte; hij vinkt er één aan bij het tekenen.'],
  ['Afsprakenplanner opzetten', '€ 250', 'Eenmalig', 'Alleen als hij afspraken laat inplannen.'],
  ['Tekstregel, zonder bedrag', '—', '—', '“Rechtstreeks aan leveranciers, niet via ons: advertentiebudget (minimaal € [..] per maand), MailerLite, Cookiescript [, hosting, afsprakenplanner]. Herstelposten aan de website: eigen offerte van Webmix.”'],
@@ -290,19 +290,19 @@ STAP07 = stap_kop('07', 'f2', 'FASE 2 · STARTEN', 'Het fundament',
 <p style="margin-top:14px"><b>In het voorstel geen “vanaf”.</b> “Vanaf € 9,90” is waar voor een lijst van vijfhonderd adressen en onwaar voor een makelaar met achtduizend. Daarom vragen we het aantal adressen in de afspraakbevestiging, en de bezoekers en de afsprakenplanner aan tafel, zodat het bedrag vóór de handtekening vaststaat.</p>
 
 <h3>Wat een klant in jaar 1 betaalt, en aan wie</h3>
-""" + tbl(['', 'Enter', 'Compete', 'Own'], [
- ['Fundament · eenmalig, aan ons', '€ 4.500', '€ 4.500', '€ 4.500'],
- ['Retainer · elf maanden, aan ons', '€ 11.000', '€ 16.500', '€ 22.000'],
- ['Dashboard · elf maanden, aan ons', '€ 275', '€ 275', '€ 275'],
- ['Advertentiebudget · minimum, elf maanden', '€ 11.000', '€ 27.500', '€ 82.500'],
- ['MailerLite en Cookiescript · aan de leveranciers', '€ 269', '€ 269', '€ 269'],
- ('tot', ['Jaar 1, alles samen', '± € 27.000', '± € 49.000', '± € 109.500']),
- ['Waarvan naar ons', '€ 15.775', '€ 21.275', '€ 26.775'],
- ['Ons aandeel', '58%', '43%', '24%'],
- ['Hosting, alleen als hij overzet', '€ 0 of € 1.020', '€ 0 of € 1.020', '€ 0 of € 1.020'],
- ['Herstelwerk, alleen als de quickscan het vindt', '€ 0 – 1.500', '€ 0 – 1.500', '€ 0 – 1.500'],
-], right=(1, 2, 3)) + """
-<p style="margin-top:12px">Jaar 1 is de set-upmaand plus elf maanden retainer. Gerekend met het laagste advertentiebudget en MailerLite op het laagste tarief. Bij Enter is ons aandeel het hoogst, en dat is logisch: het fundament is voor iedereen hetzelfde werk terwijl het budget verschilt. Vanaf het tweede jaar valt het fundament weg. Het grootste deel gaat niet naar ons, en dat is precies het punt: wij verdienen aan het sturen.</p>
+""" + tbl(['', 'Starter', 'Playmaker', 'Captain', 'Champion'], [
+ ['Fundament · eenmalig, aan ons', '€ 4.500', '€ 4.500', '€ 4.500', '€ 4.500'],
+ ['Retainer · elf maanden, aan ons', '€ 11.000', '€ 16.500', '€ 22.000', '€ 27.500'],
+ ['Dashboard · elf maanden, aan ons', '€ 275', '€ 275', '€ 275', '€ 275'],
+ ['Advertentiebudget · minimum, elf maanden', '€ 11.000', '€ 27.500', '€ 55.000', '€ 82.500'],
+ ['MailerLite en Cookiescript · aan de leveranciers', '€ 269', '€ 269', '€ 269', '€ 269'],
+ ('tot', ['Jaar 1, alles samen', '± € 27.000', '± € 49.000', '± € 82.000', '± € 115.000']),
+ ['Waarvan naar ons', '€ 15.775', '€ 21.275', '€ 26.775', '€ 32.275'],
+ ['Ons aandeel', '58%', '43%', '33%', '28%'],
+ ['Hosting, alleen als hij overzet', '€ 0 of € 1.020', '€ 0 of € 1.020', '€ 0 of € 1.020', '€ 0 of € 1.020'],
+ ['Herstelwerk, alleen als de quickscan het vindt', '€ 0 – 1.500', '€ 0 – 1.500', '€ 0 – 1.500', '€ 0 – 1.500'],
+], right=(1, 2, 3, 4)) + """
+<p style="margin-top:12px">Jaar 1 is de set-upmaand plus elf maanden retainer. Gerekend met het laagste advertentiebudget en MailerLite op het laagste tarief. Bij Starter is ons aandeel het hoogst, en dat is logisch: het fundament is voor iedereen hetzelfde werk terwijl het budget verschilt. Spotlight staat er niet in: licht fundament € 1.500, elf maanden € 500 retainer en minimaal € 500 advertenties, samen ongeveer € 13.000 in jaar 1. Vanaf het tweede jaar valt het fundament weg. Het grootste deel gaat niet naar ons, en dat is precies het punt: wij verdienen aan het sturen.</p>
 
 <h3>Wat er moet bestaan voordat dit werkt</h3>
 <p>27 middelen, op volgorde van hoe vaak ze terugkomen. Een middel dat in zeven stappen terugkomt, levert zeven keer tijdwinst en zeven keer minder spreiding op. Zolang een middel niet bestaat, wordt de stap elke keer opnieuw bedacht, door wie toevallig beschikbaar is, in de tijd die het die keer kost.</p>
@@ -315,7 +315,7 @@ STAP07 = stap_kop('07', 'f2', 'FASE 2 · STARTEN', 'Het fundament',
 ], '')) + open_(ul([
  '<b>De prijs van het fundament.</b> Voorlopig € 4.500. Jim Kikken en Stan rekenen het na tegen € 100–125 per uur, inclusief de verschoven taken van blok 01. Toets het ook aan de laatste drie onboardings: hoeveel uur zat erin en wat is er gefactureerd?',
  '<b>Animatie en graphics</b> staan nu niet als eigen taak in blok 05; graphics komen uit de advertentiesjablonen (blok 01). Uitzoeken of animatie in de 11 uur past of een eigen taak met uren moet krijgen.',
- '<b>Extra kanalen in het fundament?</b> Het fundament rekent met Google Ads en Meta. Kost een derde kanaal (Microsoft Ads, LinkedIn, TikTok) bij de start extra uren, en zo ja, is dat een los bedrag? En welk minimumbudget hoort per kanaal (LinkedIn is duur per klik)?',
+ '<b>Extra kanalen in het fundament?</b> Het fundament rekent met Google Ads en Meta. Kost een derde kanaal (Microsoft Ads, LinkedIn, TikTok) bij de start extra uren, en zo ja, is dat een los bedrag? Het minimum per kanaal staat voorlopig op € 500 per campagne per maand, op LinkedIn € 1.000; toetsen aan onze eigen accounts.',
  'Het ClickUp-template met de 76 taken.',
  'De zes AI-instructies. Begin met A2, de propositie-instructie: die komt drie keer terug.',
  'Het marketingdashboard bouwen, te beginnen met v0. Open: bouwen of samenstellen (advies: samenstellen tot twintig klanten), en wie de eigenaar is, ook buiten kantooruren.',

@@ -27,7 +27,7 @@ SAMEN = """
  <div class="s"><span class="sl">STAP 03</span><b>Doel × marge × termijn</b><span>€ 120.000 × 30% × 1 jaar</span></div><div class="pijl">→</div>
  <div class="s"><span class="sl">MARKETINGRUIMTE</span><b>€ 36.000</b><span>alles samen, jaar 1</span></div><div class="pijl">−</div>
  <div class="s"><span class="sl">VASTE POSTEN</span><b>€ 16.044</b><span>fundament, retainer, licenties, herstel</span></div><div class="pijl">=</div>
- <div class="s"><span class="sl">ADVERTENTIES</span><b>€ 1.814 p/m</b><span>bepaalt het pakket: Enter</span></div>
+ <div class="s"><span class="sl">ADVERTENTIES</span><b>€ 1.814 p/m</b><span>bepaalt het pakket: Starter</span></div>
 </div>
 <div class="stroom">
  <div class="s"><span class="sl">STAP 04</span><b>€ 187 per aanvraag</b><span>budget ÷ aanvragen: het biedplafond</span></div><div class="pijl">→</div>
@@ -43,13 +43,13 @@ SAMEN = """
  ('De draaidag ligt niet vast bij het tekenen', 'Geen live-datum in het voorstel en het startbericht', 'We beloven een datum die we niet kunnen houden, of geen datum'),
  ('Een rood punt in de quickscan (Webmix)', 'Een herstelpost vóór het tekenen', 'Minder marketingruimte voor advertenties; bij een krappe som een kleiner pakket of nee'),
  ('Er kan geen meetcode in de site', 'De stopknop: afspraak gaat niet door', 'Geen intakegesprek; rode mail “niet meten”'),
- ('Het fundament wordt duurder na de herrekening', 'Hogere vaste posten in de rekensom', 'De ondergrens voor Enter stijgt, van ± € 90.000 naar € 92.600 of € 97.000 extra omzet bij 30% marge'),
+ ('Het fundament wordt duurder na de herrekening', 'Hogere vaste posten in de rekensom', 'De ondergrens voor Starter stijgt, van ± € 90.000 naar € 92.600 of € 97.000 extra omzet bij 30% marge'),
  ('De klant belt aanvragen laat terug', 'Aanvragen worden geen klant', 'Oorzaak 08: doel niet gehaald terwijl onze cijfers kloppen'),
  ('De klant geeft geen oordeel per aanvraag', 'Wij sturen op aantal, niet op kwaliteit', 'Oorzaak 09: veel aanvragen, weinig klanten'),
  ('De meting klopt niet', 'Elke diagnose wordt een mening', 'Oorzaak 10: niet starten, of maanden sturen op cijfers die niet kloppen'),
  ('Het dashboard is niet af', 'Geen plek waar aanvragen landen met herkomst', '“Wij koppelen niet” valt weg, en dan wordt het maatwerk'),
  ('De AI-instructies ontbreken', 'De taken met AI kosten twee keer zo lang', 'Van € 86 naar ongeveer € 60 per uur op het fundament'),
- ('Enter: de enige draaidag zat in het fundament', 'Geen nieuw beeld dat jaar', 'Advertenties slijten; oorzaak 04 ligt op de loer, of een extra draaidag los'),
+ ('Starter: de enige draaidag zat in het fundament', 'Geen nieuw beeld dat jaar', 'Advertenties slijten; oorzaak 04 ligt op de loer, of een extra draaidag los'),
  ('Een uiting gaat live die niet klopt met het merk', 'Op korte termijn misschien een klik', 'Op lange termijn een merk dat inconsistent wordt gepresenteerd; daarom de merkcheck vóór elke livegang'),
  ('Geen dagelijkse check op meting en uitgaven', 'Een fout blijft een maand onopgemerkt', 'De klant betaalt voor lucht, en “cijfers leidend” is niet waargemaakt'),
  ('Maandritme zonder zichtbare update', 'De klant ziet niet waarvoor hij betaalt', 'Opzegging, want dat kan elke maand'),
@@ -86,7 +86,7 @@ OPEN = """
 <p class="sub">Alle open punten uit de stappen hierboven op één plek, gegroepeerd op hoe dringend ze zijn. Waar een voorstel staat, werken we ermee tot er een besluit is. Wie een punt afrondt, verplaatst het naar de besluiten.</p>
 <h3>Blokkeert de eerste klant op het nieuwe model</h3>
 """ + tbl(['Punt', 'Stand', 'Raakt', 'Wie'], [
- ['Prijs van het fundament', 'Voorlopig € 4.500 voor 52,5 uur; bij € 100–125 per uur € 5.250–6.563. Blok 01 herrekenen.', 'Tarieven, rekensom, Enter-grens, drukwerk', 'Jim Kikken en Stan'],
+ ['Prijs van het fundament', 'Voorlopig € 4.500 voor 52,5 uur; bij € 100–125 per uur € 5.250–6.563. Blok 01 herrekenen.', 'Tarieven, rekensom, Starter-grens, drukwerk', 'Jim Kikken en Stan'],
  ['Tarief marketingdashboard', 'Voorlopig € 25 p/m of € 250 p/j', 'Licenties in de rekensom, offerte', 'Jim Coumans en Jim Kikken'],
  ['Marketingdashboard bouwen', 'Gespecificeerd; v0 eerst. Open: bouwen of samenstellen, eigenaar ook buiten kantooruren', 'Stap 07 en 08, “wij koppelen niet”, jouw kant', 'Nog toe te wijzen'],
  ['Webmix-bedragen', '€ 750 / 500 / 250 zijn schattingen', 'Tarieven, quickscan-A4, voorstel', 'Met Webmix'],
@@ -100,13 +100,14 @@ OPEN = """
  ['Toegangen en formulier', 'Binnen drie werkdagen, niet tien', 'Past het fundament in maand 1'],
  ['Retainer bij uitloop maand 1', 'Door ons: eerste retainerfactuur schuift mee. Door de klant: niet.', 'Facturatie, verwachting'],
  ['Naam van het eerste bericht', '“Startbericht”; “kick-off” alleen voor de sessie in week 4', 'Teksten, portaal'],
- ['ClickCease per pakket', 'Standaard bij Compete en Own, proefperiode bij Enter; vergoeding erbij zeggen', 'Voorstelgesprek, licenties'],
+ ['ClickCease per pakket', 'Standaard vanaf Playmaker, proefperiode bij Starter; vergoeding erbij zeggen', 'Voorstelgesprek, licenties'],
  ['Wat een vertrekkende klant meeneemt', 'Volledige export, standaard en ongevraagd. Open: landingspagina en dashboard na stoppen.', 'Voorwaarden, opzeggen'],
- ['Extra kanalen bij de start', 'Standaard Google Ads en Meta. Uitzoeken of Microsoft Ads, LinkedIn of TikTok in het fundament extra uren kosten, en welk minimumbudget per kanaal hoort', 'Fundament, tarieven, rekensom'],
+ ['Extra kanalen bij de start', 'Standaard Google Ads en Meta. Minimum per kanaal voorlopig € 500 per campagne per maand, LinkedIn € 1.000: toetsen aan eigen accounts. Uitzoeken of Microsoft Ads, LinkedIn of TikTok in het fundament extra uren kosten', 'Fundament, tarieven, rekensom'],
  ['Animatie en graphics', 'Graphics uit de advertentiesjablonen; animatie nog zonder eigen taak en uren', 'Blok 05 van het fundament'],
  ['Drempels voor de monitoring', 'Zoals in stap 08; vastzetten en automatisch laten melden', 'Stap 08, dashboard'],
- ['De Performance Review', 'Stramien staat; nog vast te leggen: hoe vaak per pakket en hoe lang (voorstel: Enter elk kwartaal, Compete elke twee maanden, Own maandelijks, 45 minuten)', 'Stap 08, retainers, voorstel'],
- ['De retainers herijken', 'Namen, indeling en inhoud per retainer definitief maken. Nieuw in beeld: een retainer van € 500 voor zichtbaarheid, en € 2.500 of € 3.000 voor klanten met veel campagnes tegelijk', 'Tarieven, rekensom, pakketkeuze, drukwerk'],
+ ['De Performance Review', 'Stramien en frequentie per pakket staan (1.4); nog vast te leggen: hoe lang (voorstel 45 minuten)', 'Stap 08, retainers, voorstel'],
+ ['Namen van de pakketten', 'Voorlopig Spotlight, Starter, Playmaker, Captain, Champion: Engels, met karakter', 'Tarieven, voorstel, drukwerk, website'],
+ ['Uren per pakket', 'Narekenen wat een campagne en een contentronde kosten, en of Captain en Champion daarmee uitkomen (Jim Kikken en Stan)', 'Tarieven, marge, drukwerk'],
  ['Communicatie via support@', 'Telefoonnummer en bereikbaarheid kantoor; Front inrichten; overstap per klant in de Performance Review', 'Startbericht, alle klantcontact'],
 ]) + """
 <h3>Nog uit te werken</h3>
@@ -125,7 +126,7 @@ BESLUITEN = """
 <h2>Wat vastligt, en sinds wanneer</h2>
 <p class="sub">Een besluit wijzigen gaat hier eerst: een nieuwe regel met datum, daarna de tekst op de plek waar het werkt. Wat de klant te zien krijgt (tarieven, drukwerk, voorstel) maken we vanuit deze gids, nooit andersom.</p>
 """ + tbl(['Datum', 'Besluit'], [
- ['23 sep 2026', 'We verkopen geen uren. Drie vaste pakketten (Enter, Compete, Own); het advertentiebudget bepaalt het pakket.'],
+ ['23 sep 2026', 'We verkopen geen uren. Vaste pakketten; het advertentiebudget bepaalt het pakket. (Toen: Enter, Compete, Own; zie 1 okt.)'],
  ['23 sep 2026', 'Wij herstellen geen websites. Wat technisch niet deugt, gaat als voorstel naar Webmix; de klant beslist.'],
  ['23 sep 2026', 'Landingspagina’s staan op onze eigen omgeving, op een subdomein van de klant. In zijn site alleen meetcode en cookiebanner.'],
  ['23 sep 2026', 'Het fundament in halve uren, één prijs, twee delen die niet los te koop zijn.'],
@@ -161,6 +162,11 @@ BESLUITEN = """
  ['30 sep 2026', 'Het overleg met de klant heet de Performance Review en gaat over resultaat, op ons kantoor of online, met een vast stramien: impressies, bezoekers, aanvragen en klanten, elk met wat het kostte, dan diagnose en plan. Het vervangt het performanceblok. We gaan niet meer naar de klant.'],
  ['30 sep 2026', 'Jaar 1 is de set-upmaand plus elf keer de retainer. Zo rekent de rekensom.'],
  ['30 sep 2026', 'Het volledige designsysteem v3.0 is leidend, en staat in deze gids.'],
+ ['1 okt 2026', 'Vier pakketten: Starter € 1.000, Playmaker € 1.500, Captain € 2.000, Champion € 2.500, met 1 tot 4 campagnes tegelijk. Het pakket is het hoogste van campagnes of budget. Vervangt Enter, Compete en Own; de namen zijn voorlopig.'],
+ ['1 okt 2026', 'Een campagne is één aanbod, één doelgroep, één doel en één landingspagina, op alle kanalen samen. Nieuwe advertenties heten contentrondes.'],
+ ['1 okt 2026', 'Per kanaal minimaal € 500 advertentiebudget per campagne per maand, op LinkedIn € 1.000. Wij kiezen de kanalen.'],
+ ['1 okt 2026', 'Spotlight: € 500 per maand voor zichtbaarheid, alleen op verzoek, met een licht fundament van € 1.500. Naast de ladder, niet erop; de overstap bespreken we in de eerste Performance Review na drie maanden.'],
+ ['1 okt 2026', 'Pakket omhoog per direct, omlaag per de 1e van de volgende maand. De Performance Review is het moment.'],
 ]) + """
 </div></section>
 <footer class="voet"><div class="wrap">James Robinson — Marketing &amp; Branding · De James Robinson-gids · versie 30 september 2026</div></footer>
