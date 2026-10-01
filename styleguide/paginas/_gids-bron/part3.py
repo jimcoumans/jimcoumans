@@ -39,8 +39,8 @@ SAMEN = """
 <h3>Als één schakel schuift</h3>
 <p>Wat er gebeurt als iets anders loopt dan gepland. Links de oorzaak, in het midden het directe gevolg, rechts waar het uiteindelijk terechtkomt.</p>
 """ + keten([
- ('Toegangen of formulier later dan drie werkdagen', 'Dag 1 van het fundament schuift', 'De live-datum schuift evenveel dagen; bij uitloop door de klant schuift de retainer niet mee (voorstel)'),
- ('De draaidag ligt niet vast bij het tekenen', 'Geen live-datum in het voorstel en het startbericht', 'We beloven een datum die we niet kunnen houden, of geen datum'),
+ ('Toegangen of formulier later dan drie werkdagen', 'Dag 1 van het fundament schuift', 'De live-datum schuift evenveel dagen; de retainer start toch in maand 2'),
+ ('De draaidag valt pas in week 4', 'Video is pas na de montage klaar', 'Google gaat op dag 19 live, Meta met video ongeveer een week later; de retainer start toch in maand 2'),
  ('Een rood punt in de quickscan (Webmix)', 'Een herstelpost vóór het tekenen', 'Minder marketingruimte voor advertenties; bij een krappe som een kleiner pakket of nee'),
  ('Er kan geen meetcode in de site', 'De stopknop: afspraak gaat niet door', 'Geen intakegesprek; rode mail “niet meten”'),
  ('Het fundament wordt duurder na de herrekening', 'Hogere vaste posten in de rekensom', 'De ondergrens voor Starter stijgt, van ± € 90.000 naar € 92.600 of € 97.000 extra omzet bij 30% marge'),
@@ -61,8 +61,8 @@ SAMEN = """
  ['03 · Intakegesprek', '—', '—', 'Het gesprek, de klantkaart, de mail', 'Doel, marge, capaciteit, opvolging'],
  ['04 · Voorstel', 'Rekensom, concept, offerte-concept', '—', 'Nakijken, vrijgeven, het gesprek', 'Beslissen; maand of jaar per licentie'],
  ['05 · Tekenen', 'Moneybird, machtiging, factuur', '—', '—', 'Tekenen, machtigen'],
- ['06 · Onboarding', 'Startbericht, datums', '—', 'Vast aanspreekpunt: bellen, toegangensessie', 'Formulier, toegangen, betaalgegevens'],
- ['07 · Fundament', '—', 'Vijf rollen, 76 taken', 'Klantcontact: akkoorden, draaidag, kick-off', 'Akkoord week 1 en 3, draaidag'],
+ ['06 · Onboarding', 'Kick-offmail, datums', '—', 'Vast aanspreekpunt: bellen, toegangensessie', 'Formulier, toegangen, betaalgegevens'],
+ ['07 · Fundament', '—', 'Vijf rollen, 76 taken', 'Klantcontact: akkoorden, draaidag, livegang', 'Akkoord week 1 en 3, draaidag'],
  ['08 · Maandritme', 'Meldingen, weekmail, dashboard', 'Wekelijks bijsturen, maandupdate', 'Performance Review, ingrijpen', 'Opvolgen, oordeel per aanvraag'],
 ]) + """
 <h3>Wat we wanneer vragen</h3>
@@ -72,7 +72,7 @@ SAMEN = """
  ['Afspraakbevestiging (01)', 'De klant, opzoeken', 'Omzetdoel, marge, aantal e-mailadressen, wie de site beheert, wie meebeslist'],
  ['Quickscan (02)', 'Wij, van buitenaf', 'Alles wat we zelf kunnen opzoeken. Dat vragen we nooit.'],
  ['Intakegesprek (03)', 'Een uur', 'De 24 vragen van stap 03: wat het advies of de prijs verandert, zoals doel, marge, termijn, capaciteit, opvolging, seizoen, diensten, beste klant en waar die zit, waarom jij, concurrenten, beslissers, afsprakenplanner, Leadinfo'],
- ['Voorstelgesprek (04)', '45 minuten', 'Keuzes: pakket bevestigen, maand of jaar per licentie, ClickCease, draaidag, de vijf afspraken met een naam en een termijn'],
+ ['Voorstelgesprek (04)', '45 minuten', 'Keuzes: pakket bevestigen, maand of jaar per licentie, ClickCease ja of nee, de vijf afspraken met een naam en een termijn'],
  ['Onboardingformulier (06)', 'De klant, twintig minuten', 'Wat we pas nodig hebben om te maken: klanttaal, bestanden, beeld, e-maillijst, meldingen, draaidag'],
  ['Toegangensessie (06)', '45 minuten samen', 'Toegangen en betaalgegevens, op zijn naam'],
 ]) + """
@@ -96,19 +96,12 @@ OPEN = """
 ]) + """
 <h3>Voorstellen die op een besluit wachten</h3>
 """ + tbl(['Punt', 'Voorstel', 'Raakt'], [
- ['De draaidag', 'Plan A: vastleggen bij het tekenen, op dag 3 tot 5. Plan B (Google eerst, Meta na de montage) werkt niet bij vraagcreatie.', 'Live-datum in voorstel en startbericht'],
- ['Toegangen en formulier', 'Binnen drie werkdagen, niet tien', 'Past het fundament in maand 1'],
- ['Retainer bij uitloop maand 1', 'Door ons: eerste retainerfactuur schuift mee. Door de klant: niet.', 'Facturatie, verwachting'],
- ['Naam van het eerste bericht', '“Startbericht”; “kick-off” alleen voor de sessie in week 4', 'Teksten, portaal'],
- ['ClickCease per pakket', 'Standaard vanaf Playmaker, proefperiode bij Starter; vergoeding erbij zeggen', 'Voorstelgesprek, licenties'],
- ['Wat een vertrekkende klant meeneemt', 'Volledige export, standaard en ongevraagd. Open: landingspagina en dashboard na stoppen.', 'Voorwaarden, opzeggen'],
+ ['Wat een vertrekkende klant meeneemt', 'Accounts en licenties staan al op zijn naam; het dashboard houdt hij voor € 25 p/m. Open: de landingspagina’s op onze omgeving', 'Voorwaarden, opzeggen'],
  ['Extra kanalen bij de start', 'Standaard Google Ads en Meta. Minimum per kanaal voorlopig € 500 per campagne per maand, LinkedIn € 1.000: toetsen aan eigen accounts. Uitzoeken of Microsoft Ads, LinkedIn of TikTok in het fundament extra uren kosten', 'Fundament, tarieven, rekensom'],
- ['Animatie en graphics', 'Graphics uit de advertentiesjablonen; animatie nog zonder eigen taak en uren', 'Blok 05 van het fundament'],
- ['Drempels voor de monitoring', 'Zoals in stap 08; vastzetten en automatisch laten melden', 'Stap 08, dashboard'],
- ['De Performance Review', 'Stramien en frequentie per pakket staan (1.4); nog vast te leggen: hoe lang (voorstel 45 minuten)', 'Stap 08, retainers, voorstel'],
+ ['Drempels voor de monitoring', 'Zoals in stap 08; ze bepalen wat rood staat in de dagmail van 7.00 uur', 'Stap 08, dashboard'],
  ['Legend', 'Later een pakket boven Champion, voor meer dan vier campagnes tegelijk of events. Uitwerken als de eerste Champion er is.', 'Tarieven, drukwerk, website'],
  ['Uren per pakket', 'Narekenen wat een campagne en een contentronde kosten, en of Captain en Champion daarmee uitkomen (Jim Kikken en Stan)', 'Tarieven, marge, drukwerk'],
- ['Communicatie via support@', 'Telefoonnummer en bereikbaarheid kantoor; Front inrichten; overstap per klant in de Performance Review', 'Startbericht, alle klantcontact'],
+ ['Communicatie via support@', 'Telefoonnummer en bereikbaarheid kantoor; Front inrichten; overstap per klant in de Performance Review', 'Kick-offmail, alle klantcontact'],
 ]) + """
 <h3>Nog uit te werken</h3>
 """ + grid(2, [
@@ -170,6 +163,14 @@ BESLUITEN = """
  ['1 okt 2026', 'We bedenken geen posts meer om de feed te vullen. Beeld uit lopende campagnes plaatsen we, zolang de campagne loopt, ook organisch op de kanalen van de klant.'],
  ['1 okt 2026', 'Nieuwe klanten direct op het nieuwe model; bestaande klanten per 1 januari 2027. Vervangt de regeling tot 31 december 2027 en de tussenmijlpaal van 1 juli 2027.'],
  ['1 okt 2026', 'Bestaande klanten mogen boven Champion blijven. De pakketten zijn wat we nieuwe klanten aanbieden.'],
+ ['1 okt 2026', 'De draaidag ligt niet vast bij het tekenen. We filmen in week 3 of 4 van het fundament; de klant geeft in het onboardingformulier alle dagdelen op waarop het kan, en wij stemmen af met de videograaf.'],
+ ['1 okt 2026', 'Toegangen en onboardingformulier binnen drie werkdagen. Eén toegangendocument met per onderdeel wat, waarom en hoe, en “heb ik nog niet”: dan regelen wij het.'],
+ ['1 okt 2026', 'De retainer start altijd in maand 2, ook als het fundament uitloopt.'],
+ ['1 okt 2026', 'Het eerste bericht na het tekenen heet de kick-off. De sessie met zijn team in week 4 heet de livegang.'],
+ ['1 okt 2026', 'ClickCease is nergens standaard. We bieden het aan als optie; de klant beslist.'],
+ ['1 okt 2026', 'De Performance Review duurt een uur.'],
+ ['1 okt 2026', 'Elke ochtend om 7.00 uur een interne dagmail uit het dashboard met de performance van al onze campagnes.'],
+ ['1 okt 2026', 'Animatie zit niet in het fundament maar in de contentrondes. Graphics in het fundament komen uit de sjablonen.'],
  ['1 okt 2026', 'Pakket omhoog per direct, omlaag per de 1e van de volgende maand. De Performance Review is het moment.'],
 ]) + """
 </div></section>

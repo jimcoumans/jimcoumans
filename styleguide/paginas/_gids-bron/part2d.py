@@ -29,7 +29,7 @@ STAP08 = stap_kop('08', 'f3', 'FASE 3 · SAMENWERKEN', 'Live en het maandritme',
  'stap-08') + klant('Aanvragen die binnenkomen in zijn dashboard, met bij elke aanvraag twee knoppen. De eerste aanvraag belt hij niet alleen: wij bellen hem eerder dan het systeem meldt. Elke maand een korte schriftelijke update. Een Performance Review op ons kantoor of online, die over resultaat gaat en een vast stramien volgt. Vragen stelt hij via support@, en hij krijgt binnen één werkdag antwoord.') + """
 <h3>Live: het moment en de twee weken erna</h3>
 """ + tl([
- ('Week 4', 'De kick-off met zijn team', 'Met wie belt, niet alleen met de directeur. Op papier: wie belt, binnen hoeveel tijd, en wat er gebeurt als diegene er niet is. Daarna een testaanvraag door de hele keten: advertentie, pagina, formulier, dashboard, melding, bevestiging.'),
+ ('Week 4', 'De livegang met zijn team', 'Met wie belt, niet alleen met de directeur. Op papier: wie belt, binnen hoeveel tijd, en wat er gebeurt als diegene er niet is. Daarna een testaanvraag door de hele keten: advertentie, pagina, formulier, dashboard, melding, bevestiging.'),
  ('Dag 19', 'Aanzetten', 'Het live-bericht: dit staat er nu, hier komen je aanvragen binnen, dit doen we de komende twee weken.'),
  ('Dag 19 – 26', 'De eerste week dagelijks', 'Uitgaven, afkeuringen, de eerste aanvragen. Kijken en noteren; alleen ingrijpen bij iets wat aantoonbaar fout staat, want elke wijziging zet de leerfase terug.'),
  ('De eerste aanvraag', 'Wij bellen, niet mailen', 'Als wij eerder bellen dan het systeem meldt, is dat het verschil tussen een leverancier en een partner. Het kost vijf minuten.'),
@@ -63,7 +63,7 @@ STAP08 = stap_kop('08', 'f3', 'FASE 3 · SAMENWERKEN', 'Live en het maandritme',
  ['Maandelijks', 'Korte schriftelijke update in het dashboard: staan we op de doelregel, en zo nee, waarom niet', '●', '●', '●', '●'],
  ['Contentronde', 'Een nieuwe set advertenties om tegen de lopende te testen', '1× per kwartaal', '1× per twee maanden', '1× per maand', '2× per maand'],
  ['Draaidag', 'Nieuw beeld, want advertenties slijten', '1× per jaar', '2× per jaar', '3× per jaar', '4× per jaar'],
- ['Performance Review', 'Over resultaat, vast stramien, op kantoor of online; bevestigd per mail', 'elk kwartaal', 'elke twee maanden', 'maandelijks', 'maandelijks'],
+ ['Performance Review', 'Een uur over resultaat, vast stramien, op kantoor of online; bevestigd per mail', 'elk kwartaal', 'elke twee maanden', 'maandelijks', 'maandelijks'],
  ['Vragen en verzoeken', 'Via support@, antwoord binnen één werkdag', '●', '●', '●', '●'],
 ])  + """
 <p style="margin-top:14px">Sub draait op een eigen ritme: een contentronde per halfjaar, geen draaidag, de eerste Performance Review na drie maanden en daarna elk halfjaar.</p>
@@ -86,6 +86,7 @@ STAP08 = stap_kop('08', 'f3', 'FASE 3 · SAMENWERKEN', 'Live en het maandritme',
 <h3>Continu monitoren: data beats opinion</h3>
 <p>Het ritme hierboven is wat de klant ziet. Daaronder kijken wij doorlopend mee, zodat we een probleem zien voordat hij het merkt. We beslissen op cijfers, niet op smaak: een discussie over welke advertentie mooier is, beslechten we met een test. Het merk bepaalt de grenzen, de data kiest binnen die grenzen.</p>
 """ + tbl(['Wat we volgen', 'Hoe vaak', 'Wanneer we in actie komen', 'Wie'], [
+ ['Alles hieronder, voor al onze klanten', 'Elke ochtend om 7.00 uur', 'De dagmail: wat buiten een drempel valt, staat bovenaan in rood', 'Jim Coumans'],
  ['Uitgaven per campagne en kanaal', 'Dagelijks, automatisch', 'Budget op voor de middag, of een campagne besteedt niets', 'Campagne'],
  ['Afgekeurde advertenties en accountmeldingen', 'Dagelijks, automatisch', 'Elke afkeuring of melding', 'Campagne'],
  ['De meting: komen conversies en aanvragen binnen', 'Dagelijks, automatisch', 'Een dag met verkeer maar zonder conversies, of dashboard en platform lopen uiteen', 'Techniek'],
@@ -124,12 +125,11 @@ STAP08 = stap_kop('08', 'f3', 'FASE 3 · SAMENWERKEN', 'Live en het maandritme',
  '<b>Starter heeft maar één draaidag per jaar,</b> en die zat in het fundament. Advertenties slijten; bij Starter komt nieuw beeld pas het jaar erna, tenzij hij een extra draaidag los afneemt.',
 ], '')) + open_(ul([
  '<b>Dit is het grootste gat in de reis.</b> Het fundament is opengewerkt in 76 taken; de twaalf maanden daarna nog niet. Nodig: een stappenlijst voor maand 2 tot en met 12, het live-bericht, de vorm van de maandelijkse update, en het moment waarop wij ingrijpen bij achterstand.',
- '<b>De Performance Review: hoe lang.</b> Stramien en frequentie staan; de frequentie volgt het pakket. Voorstel: telkens 45 minuten. Bij Starter en Playmaker bewust minder vaak dan maandelijks, omdat de cijfers van maand tot maand bij kleine volumes vooral toeval laten zien.',
- '<b>De drempels voor de monitoring zijn een voorstel.</b> Vastzetten, en automatisch laten melden vanuit het dashboard en de platformen, zodat het niet van iemands oplettendheid afhangt.',
+ '<b>De drempels voor de monitoring zijn een voorstel.</b> Ze bepalen wat er in de dagmail van 7.00 uur rood staat. Vastzetten na de eerste maanden met echte cijfers.',
  '<b>Na welke termijn zonder beweging</b> melden wij het uit onszelf? “Een afgesproken termijn” is nog geen getal.',
  '<b>Drie maanden alleen de motor is een aanname.</b> Hoe snel de kosten tot rust komen, hangt af van het volume. Toetsen aan de laatste vijf campagnes en er een norm van maken.',
  '<b>Normen per branche</b> voor doorklik en conversie ontbreken. Zonder eigen normen is “onder de norm” een mening.',
- '<b>Wat een vertrekkende klant meeneemt.</b> Advies: een volledige export, standaard en ongevraagd. Open: de landingspagina op onze omgeving, en het dashboard na het stoppen (de tarieven zeggen dat hij het houdt).',
+ '<b>Wat een vertrekkende klant meeneemt.</b> Advertentieaccounts, e-mail en licenties staan al op zijn naam: die neemt hij gewoon mee. Het dashboard mag hij houden voor € 25 per maand. Open: de landingspagina’s. Volgens het besluit van 23 september staan die op onze omgeving, op een subdomein van zijn site. Wat gebeurt daarmee als hij stopt?',
 ], '')) + stap_eind()
 
 P2D = FASE3 + STAP08

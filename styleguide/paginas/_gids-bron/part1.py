@@ -156,7 +156,7 @@ PLAN = """
 <div class="klok"><span style="flex:2" class="acc">SET-UP</span><span style="flex:1">CONTENT</span><span style="flex:1">LIVE</span><span style="flex:8">ADVERTEREN EN EERSTE RESULTATEN · MAAND 2 EN 3</span><span style="flex:9">OPTIMALISEREN · VANAF MAAND 4</span></div>
 """ + jk([
  ('Set-up · maand 1, week 1 tot en met 3', 'Meting, advertentieaccounts, e-mail, het marketingdashboard, de campagne en de landingspagina. Alles op naam van de klant.'),
- ('Content shooten · maand 1, week 2', 'De draaidag bij de klant op locatie, daarna marketingcontent in alle formaten: foto, video, animatie en graphics. Geen bedrijfsvideo, geen branded content.'),
+ ('Content shooten · maand 1, week 3 of 4', 'De draaidag bij de klant op locatie, op een dagdeel dat hij zelf opgaf, afgestemd met onze videograaf. Daarna marketingcontent: foto en video, graphics uit de sjablonen. Animatie komt erbij in de contentrondes. Geen bedrijfsvideo, geen branded content.'),
  ('Adverteren en eerste resultaten · live eind maand 1, dan maand 2 en 3', 'Alleen de motor draait. We leren welke zoekwoorden, doelgroepen en advertenties werken, en brengen de kosten per aanvraag tot rust. Hier voegen we bewust niets toe.'),
  ('Optimaliseren · vanaf maand 4', 'Advertenties verbeteren, CRO, landingspagina’s verbeteren of toevoegen, e-mail en automation, SEO. Wat eerst komt, bepalen de cijfers: bij de een SEO, bij de ander e-mail.'),
 ]) + """
@@ -187,7 +187,7 @@ GELD = """
 <h3>Het fundament: € 4.500 eenmalig</h3>
 """ + grid(2, [
  kaart('Deel 1 · De basis', ul(['Doelgroep, boodschap en concurrentiebeeld', 'Technische audit en meetopzet', 'Advertentieaccounts op zijn naam', 'MailerLite met zijn contacten', 'Zijn marketingdashboard', 'De nulmeting'], ''), 'ONGEVEER 23 UUR · 44%', 'b'),
- kaart('Deel 2 · Je eerste campagne', ul(['Zoekwoorden, campagnestructuur, advertenties', 'Een landingspagina met formulier en bedankpagina', 'Een volledige draaidag bij de klant', 'Montage in drie formaten, plus stills', 'Kick-off, testaanvraag, eerste week dagelijks'], ''), 'ONGEVEER 29,5 UUR · 56%', 'l'),
+ kaart('Deel 2 · Je eerste campagne', ul(['Zoekwoorden, campagnestructuur, advertenties', 'Een landingspagina met formulier en bedankpagina', 'Een volledige draaidag bij de klant', 'Montage in drie formaten, plus stills', 'Livegang met zijn team, testaanvraag, eerste week dagelijks'], ''), 'ONGEVEER 29,5 UUR · 56%', 'l'),
 ]) + """
 <p style="margin-top:18px">Eén prijs, niet los verkrijgbaar. Deel 1 zonder deel 2 is een stopcontact zonder apparaat: meting en accounts leveren zelf nul aanvragen op. Deel 2 zonder deel 1 levert aanvragen op die je niet kunt meten, opvolgen of verbeteren. Naar buiten heet het nooit “set-up”: dat klinkt als accounts aanmaken en verstopt dat meer dan de helft in een echte campagne zit. Een dag filmen alleen kost extern al ongeveer € 1.500.</p>
 
@@ -203,7 +203,7 @@ GELD = """
  ['Advertentiebudget', 'De advertentieplatformen, rechtstreeks', 'Per maand, via zijn eigen accounts', 'minimaal € 1.000 / 2.500 / 5.000 / 7.500'],
  ['E-mailplatform (MailerLite)', 'MailerLite', 'Altijd, vanaf dag één', 'vanaf € 9,90 p/m, volgt de lijstgrootte'],
  ['Cookiescript', 'Webmix', 'Altijd: zonder toestemming mag je niet meten', '€ 150 p/j'],
- ['Klikfraudebescherming (ClickCease)', 'ClickCease', 'Aanbevolen als hij adverteert', 'vanaf $ 99 p/m'],
+ ['Klikfraudebescherming (ClickCease)', 'ClickCease', 'Optioneel: de klant beslist', 'vanaf $ 99 p/m'],
  ['Hosting en onderhoud', 'Webmix', 'Alleen als hij overzet; migratie is gratis', '€ 85 p/m'],
  ['Bezoekersherkenning (Leadinfo)', 'Leadinfo', 'Optioneel, alleen zinvol bij B2B', 'staffel'],
  ['Afsprakenplanner (Calendly)', 'Calendly', 'Optioneel, per gebruiker', '€ 15 p/m'],
@@ -265,7 +265,7 @@ GELD = """
  '<b>Als het fundament naar € 5.250 of € 6.563 gaat</b> (de herrekening tegen € 100 of € 125 per uur), stijgt de ondergrens voor Starter bij 30% marge van ongeveer € 90.000 naar € 92.600 of € 97.000 extra omzet. Minder klanten passen dan in het kleinste pakket.',
  '<b>Sub past niet in de rekensom.</b> Er is geen doel in aanvragen, dus geen terugverdientijd en geen plafond per aanvraag. Daarom is het alleen op verzoek en bedoeld als opstap: als het een gewoon pakket wordt, verkopen we zichtbaarheid in plaats van resultaat, en dat is precies wat we niet meer willen zijn.',
  '<b>Hogere pakketten leveren nu minder per uur op.</b> Champion heeft vier keer zoveel campagnes als Starter en acht keer zoveel contentrondes, voor tweeënhalf keer de retainer. Of dat uitkomt, hangt af van hoeveel werk de sjablonen en de AI-instructies uit handen nemen.',
- '<b>De retainer start in maand 2.</b> Loopt het fundament uit, dan is de vraag of de eerste retainerfactuur meeschuift. Zie stap 06.',
+ '<b>De retainer start altijd in maand 2,</b> ook als het fundament uitloopt. Daarom is snelheid in maand 1 ook in ons belang: elke dag later live is een dag retainer zonder resultaat.',
 ], '')) + open_(ul([
  '<b>Fundament € 4.500 is voorlopig.</b> Jim Kikken en Stan rekenen het na tegen € 100–125 per uur. Het blijft één vaste prijs.',
  '<b>Legend, later.</b> Een pakket boven Champion, voor klanten met meer dan vier campagnes tegelijk of met events. Pas uitwerken als de eerste Champion er is.',
@@ -319,7 +319,7 @@ COMM = """
 ]) + """
 <p style="margin-top:16px"><b>Waarom support@.</b> In de nieuwe propositie zijn we niet de collega of de externe marketingafdeling van de klant. De klant koopt een product: een fundament en een retainer met een vaste inhoud. Bij een product hoort support: een plek waar je terechtkunt, met een vaste termijn. Dat is duidelijker dan een persoonlijk adres, en het past bij hoe we willen dat klanten naar ons kijken.</p>
 """ + grid(2, [
- kaart('Wat automatisch blijft', ul(['Meldingen van nieuwe aanvragen, per mail of WhatsApp: dat is een melding van het dashboard, geen gesprek', 'Het startbericht en de datums, vanaf support@', 'De maandelijkse update in het dashboard'], ''), 'GEEN GESPREK', 'l'),
+ kaart('Wat automatisch blijft', ul(['Meldingen van nieuwe aanvragen, per mail of WhatsApp: dat is een melding van het dashboard, geen gesprek', 'De kick-offmail en de datums, vanaf support@', 'De maandelijkse update in het dashboard'], ''), 'GEEN GESPREK', 'l'),
  kaart('De regel voor ons team', ul(['Nooit antwoorden vanaf een persoonlijk adres', 'Mail van een klant naar een persoonlijk adres gaat automatisch naar support@', 'Een verzoek dat werk vraagt, wordt een taak in ClickUp; de mail is niet de takenlijst', 'Persoonlijke mailadressen verdwijnen op termijn voor klantcontact'], ''), 'INTERN', 'o'),
 ]) + raakt(ul([
  '<b>Een mail heeft een hogere drempel dan een appje.</b> Klanten die elk detail in de groep gooiden, sturen minder, en wat ze sturen is beter te behandelen.',
@@ -327,7 +327,7 @@ COMM = """
  '<b>Niets gratis erbij blijft gelden per mail.</b> Een verzoek buiten de retainer beantwoorden we met een voorstel en een prijs, niet met “doen we even”.',
  '<b>De Performance Review blijft</b>, en gaat over resultaat. Wat daar besproken wordt, bevestigen we per mail vanaf support@, zodat ook dat op één plek staat.',
 ], '')) + open_(ul([
- 'De uren waarop kantoor (045 792 0009) bereikbaar is, voor in het startbericht en de handtekening.',
+ 'De uren waarop kantoor (045 792 0009) bereikbaar is, voor in de kick-offmail en de handtekening.',
  'Front inrichten: automatisch toewijzen per klant, doorsturen vanaf persoonlijke adressen, meten van reactietijd, en de koppeling met ClickUp.',
  'De overstap bij bestaande klanten: per klant uitleggen in de eerstvolgende Performance Review, daarna het bericht in de groep, en de groep verwijderen.',
 ], '')) + """

@@ -19,7 +19,7 @@ DEEL2B = """
 STAP05 = stap_kop('05', 'f2', 'FASE 2 · STARTEN', 'Tekenen en betalen',
  'De klant tekent de offerte online in Moneybird, met het voorstel, de algemene voorwaarden en de verwerkersovereenkomst als bijlage. Daarna lopen machtiging en facturen automatisch.',
  [('WANNEER', 'Dezelfde dag als het akkoord; offerte veertien dagen geldig'), ('WIE', 'Het portaal zet de offerte klaar; Moneybird doet de rest'), ('HOE LANG', 'Voor de klant een paar minuten'), ('KLAAR ALS', 'Getekend, machtiging gegeven, factuur fundament verstuurd, klantkaart op “klant”')],
- 'stap-05') + klant('Eén mail met het voorstel als pdf en een link. Hij tekent online, vinkt voor het dashboard maand of jaar aan, en krijgt de getekende versie met bijlagen per mail terug. Binnen een uur daarna het startbericht (stap 06).') + """
+ 'stap-05') + klant('Eén mail met het voorstel als pdf en een link. Hij tekent online, vinkt voor het dashboard maand of jaar aan, en krijgt de getekende versie met bijlagen per mail terug. Binnen een uur daarna de kick-offmail (stap 06).') + """
 <h3>De offerte, regel voor regel</h3>
 <p>Alleen wat naar ons gaat, krijgt een bedrag. Wat rechtstreeks naar een leverancier gaat, staat erop als tekstregel zonder bedrag. Geen bedrag wordt met de hand getypt: het portaal zet de offerte klaar met de regels uit de tarieven. Het offertenummer staat op de omslag van het voorstel, het voorstel hangt als bijlage aan de offerte. Verandert er aan tafel iets, dan op de klantkaart, en het portaal maakt beide opnieuw.</p>
 """ + tbl(['Regel', 'Bedrag excl. btw', 'Wanneer', 'Toelichting'], [
@@ -36,7 +36,7 @@ STAP05 = stap_kop('05', 'f2', 'FASE 2 · STARTEN', 'Tekenen en betalen',
  ['Marketingdashboard', '€ 25 p/m of € 250 p/j', 'Altijd', 'James Robinson. Keuze op de offerte.'],
  ['MailerLite', 'vanaf € 9,90 p/m', 'Altijd', 'MailerLite. Maand of jaar, bij MailerLite.'],
  ['Cookiescript', '€ 150 p/j', 'Altijd', 'Webmix. Per jaar.'],
- ['ClickCease', 'vanaf $ 99 p/m', 'Aanbevolen bij adverteren', 'ClickCease. Maand of jaar.'],
+ ['ClickCease', 'vanaf $ 99 p/m', 'Optioneel, de klant beslist', 'ClickCease. Maand of jaar.'],
  ['Leadinfo', 'staffel', 'Optioneel, alleen B2B', 'Leadinfo, volgens hun staffel.'],
  ['Calendly', '€ 15 p/m per gebruiker', 'Optioneel', 'Calendly. Maand of jaar.'],
 ]) + grid(4, [
@@ -45,13 +45,13 @@ STAP05 = stap_kop('05', 'f2', 'FASE 2 · STARTEN', 'Tekenen en betalen',
  kaart('Wij richten in', 'Aanmaken, instellen, koppelen aan het dashboard. Dat zit in het fundament.'),
  kaart('Maand of jaar', 'Per licentie gevraagd in het voorstelgesprek, als de leverancier het aanbiedt. Het antwoord staat op de klantkaart.'),
 ]) + """
-<h4 style="margin-top:26px">ClickCease: aanbevelen, en de cijfers laten beslissen</h4>
+<h4 style="margin-top:26px">ClickCease: een optie, de klant beslist</h4>
 <p>Een deel van de kliks komt van bots, klikfarms en concurrenten. Google filtert zelf ongeldige kliks en betaalt die terug; ClickCease blokkeert daarnaast herhaalde klikkers en bots voordat ze opnieuw geld kosten. De vraag is niet of het werkt, maar of het zich terugverdient: vanaf $ 99 per maand is bij € 1.000 advertentiebudget bijna een tiende, bij € 2.500 ongeveer een vijfentwintigste, en bij € 7.500 ruim een procent. Na de proefperiode leggen we in het dashboard naast elkaar wat ClickCease tegenhield (geblokkeerde kliks keer de klikprijs) en wat het kost. Is het eerste hoger, dan houdt hij het. Zo niet, dan zeggen wij dat hij kan opzeggen. We krijgen een vergoeding van ClickCease, en dat zeggen we erbij; het advies is hetzelfde als we er niets aan zouden verdienen.</p>
 
 <h3>Na de handtekening</h3>
 """ + tl([
  ('Direct', 'Getekend', 'Moneybird zet de offerte op “geaccepteerd” en mailt de getekende versie met bijlagen naar de klant en naar ons.'),
- ('Direct', 'Het portaal ziet het', 'Via de koppeling gaat de klantkaart van “voorstel” naar “klant”. Dat start stap 06: het startbericht gaat binnen een uur.'),
+ ('Direct', 'Het portaal ziet het', 'Via de koppeling gaat de klantkaart van “voorstel” naar “klant”. Dat start stap 06: de kick-offmail gaat binnen een uur.'),
  ('Dezelfde dag', 'De machtiging', 'Een machtigingsverzoek via Moneybird: machtigen met € 0,15 via iDEAL, of met zijn IBAN.'),
  ('Bij het tekenen', 'De factuur voor het fundament', 'In één keer. Op de betaling wachten we niet: de onboarding begint dezelfde dag.'),
  ('Vanaf maand 2', 'Elke maand vooraf', 'Eén periodieke factuur voor retainer en dashboard, verstuurd op de 1e voor die maand. Moneybird incasseert drie dagen later: het geld staat op de 4e.'),
@@ -99,9 +99,10 @@ OBF = [
  ['18', 'Waar kunnen we filmen?', 'Bepaalt de planning van de dag'],
  ['19', 'Wie kunnen we voor de camera zetten?', 'Iemand die het werk doet, werkt beter dan de directeur'],
  ['20', 'Wat moet er in beeld: producten, machines, een project, het pand?', 'Wordt de shotlist'],
+ ['21', 'Op welke dagdelen in week 3 en 4 kunnen we bij je filmen? Vink alles aan wat kan.', 'Daarmee zetten we de draaidag vast met de videograaf. Hoe meer opties, hoe sneller'],
  ('grp', 'PRAKTISCH'),
- ['21', 'Wie is onze vaste contactpersoon?', 'Eén aanspreekpunt scheelt ons allebei tijd'],
- ['22', 'Is er iets wat wij moeten weten en niet hebben gevraagd? (optioneel)', ''],
+ ['22', 'Wie is onze vaste contactpersoon?', 'Eén aanspreekpunt scheelt ons allebei tijd'],
+ ['23', 'Is er iets wat wij moeten weten en niet hebben gevraagd? (optioneel)', ''],
 ]
 
 STAP06 = stap_kop('06', 'f2', 'FASE 2 · STARTEN', 'De onboarding',
@@ -111,20 +112,20 @@ STAP06 = stap_kop('06', 'f2', 'FASE 2 · STARTEN', 'De onboarding',
 <p><b>Het principe: wij halen het op, hij hoeft niet te zoeken.</b> Toegangen zijn de belangrijkste oorzaak van uitloop, en een lijst per mail is de manier om die uitloop te organiseren. Daarom doen we het samen, in één sessie. Wat bij een derde ligt, halen wij zelf op.</p>
 <h3>Drie werkdagen</h3>
 """ + tl([
- ('Dag 0, binnen een uur', 'Het startbericht', 'Automatisch vanuit het portaal zodra Moneybird de handtekening meldt, vanaf support@, ondertekend door het vaste aanspreekpunt. Tegelijk uit Moneybird: de factuur voor het fundament en het machtigingsverzoek.'),
+ ('Dag 0, binnen een uur', 'De kick-offmail', 'Automatisch vanuit het portaal zodra Moneybird de handtekening meldt, vanaf support@, ondertekend door het vaste aanspreekpunt. Tegelijk uit Moneybird: de factuur voor het fundament en het machtigingsverzoek.'),
  ('Dag 0', 'Intern klaarzetten', 'De klantkaart op “klant”. Het fundament als project in ClickUp, met datums vanaf de geplande dag 1. In Front de klant koppelen aan zijn marketingmanager, zodat elke mail van hem automatisch daar landt.'),
  ('Dag 1', 'Tien minuten bellen', 'Het aanspreekpunt belt. Geen inhoud, wel een stem: “Ik ben je aanspreekpunt, dit is de planning.” Staat de toegangensessie nog niet in de agenda, dan plannen we hem nu.'),
  ('Dag 1 – 3', 'Het onboardingformulier', 'Hij vult het zelf in: twintig minuten, tussentijds op te slaan. Uiterlijk de avond voor de toegangensessie, zodat wij het al gelezen hebben.'),
  ('Dag 2 – 3', 'De toegangensessie', '45 minuten online, met scherm delen. De toegangenlijst samen door; bij elke licentie vult hij zelf zijn betaalgegevens in. Wat niet meteen lukt, krijgt een eigenaar en een datum.'),
- ('Dag 3', 'Dag 1 van het fundament', 'Zodra alles binnen is, start de klok. Het portaal mailt de datums vanaf support@: de draaidag, de preview en de live-datum.'),
+ ('Dag 3', 'Dag 1 van het fundament', 'Zodra alles binnen is, start de klok. Het portaal mailt de datums vanaf support@: de preview en de live-datum, en de draaidag zodra die met de videograaf is afgestemd.'),
 ]) + """
-<h3>Het startbericht</h3>
-""" + mail('DAG 0 · AUTOMATISCH, BINNEN EEN UUR · DATUMS UIT HET PORTAAL', 'Welkom. Dit gebeurt er de komende vier weken', '<p>Hoi [voornaam],</p><p>Welkom bij James Robinson. Ik ben [naam], je vaste aanspreekpunt.</p><p>Mail ons altijd via support@jamesrobinson.nl. Dan leest iedereen mee die aan je campagne werkt, en krijg je binnen één werkdag antwoord. Is er iets dringends, bel dan naar kantoor: 045 792 0009.</p><p>Drie dingen hebben we van je nodig. Daar hangt de live-datum aan:</p><ol><li>Het onboardingformulier invullen, uiterlijk <span class="vv">[datum]</span>. Ongeveer twintig minuten; je kunt tussendoor opslaan. [link]</li><li>De toegangensessie inplannen, uiterlijk op <span class="vv">[datum]</span>. 45 minuten online; we doen het samen. [link]</li><li>Een dagdeel voor de draaidag. Ons voorstel: <span class="vv">[datum]</span>. [bevestigen]</li></ol><p>Daarna het fundament:</p><ul><li><b>Week 1:</b> we meten alles na en vertellen je wat we vonden, en we werken je doelgroep en boodschap uit.</li><li><b>Week 2:</b> de draaidag bij jou, en we zetten de systemen neer: advertentieaccounts, e-mail, meting en je dashboard.</li><li><b>Week 3:</b> we bouwen de campagne en de landingspagina.</li><li><b>Week 4:</b> je ziet alles voordat het live gaat, met één ronde feedback. Daarna gaat het aan, en kijken we de eerste week dagelijks mee.</li></ul><p>Vandaag krijg je van Moneybird de factuur voor het fundament, en een verzoek om een machtiging voor de maandelijkse incasso vanaf <span class="vv">[maand 2]</span>.</p><p>Tot morgen, dan bel ik je even.</p><p>Groet, [naam]</p>') + """
-<h3>Het onboardingformulier: zeven blokken, 22 vragen</h3>
-<p>Alleen wat we nodig hebben om te maken. Wat het advies en de prijs bepaalt, is vóór het voorstel gevraagd; wat we zelf kunnen opzoeken, vragen we niet; toegangen doen we samen. Het formulier leeft in het portaal, op de klantkaart, en de link staat in het startbericht. Het openingsscherm zegt: “Wat je doel is, wat je verkoopt en waarom klanten voor je kiezen, weten we al. Hier vragen we alleen nog wat we nodig hebben om te gaan maken: je beeld, de woorden van je klanten en je e-mailadressen. Weet je iets niet, vul dan in dat je het niet weet: dat is een bruikbaar antwoord. Loop je vast, bel dan even.”</p>
+<h3>De kick-offmail</h3>
+""" + mail('DAG 0 · AUTOMATISCH, BINNEN EEN UUR · DATUMS UIT HET PORTAAL', 'Welkom. Dit gebeurt er de komende vier weken', '<p>Hoi [voornaam],</p><p>Welkom bij James Robinson. Ik ben [naam], je vaste aanspreekpunt.</p><p>Mail ons altijd via support@jamesrobinson.nl. Dan leest iedereen mee die aan je campagne werkt, en krijg je binnen één werkdag antwoord. Is er iets dringends, bel dan naar kantoor: 045 792 0009.</p><p>Drie dingen hebben we van je nodig. Daar hangt de live-datum aan:</p><ol><li>Het onboardingformulier invullen, uiterlijk <span class="vv">[datum]</span>. Ongeveer twintig minuten; je kunt tussendoor opslaan. [link]</li><li>Het toegangendocument doorlopen. Per onderdeel staat hoe je ons toegang geeft. Heb je iets nog niet, vink het aan: dan regelen wij het. Wat blijft hangen, doen we samen in de toegangensessie, uiterlijk op <span class="vv">[datum]</span>. [link]</li><li>In het formulier: alle dagdelen in week 3 en 4 (<span class="vv">[datums]</span>) waarop we bij je kunnen filmen. Hoe meer je aanvinkt, hoe sneller we de draaidag met onze videograaf vastzetten.</li></ol><p>Daarna het fundament:</p><ul><li><b>Week 1:</b> we meten alles na en vertellen je wat we vonden, en we werken je doelgroep en boodschap uit.</li><li><b>Week 2:</b> we zetten de systemen neer: advertentieaccounts, e-mail, meting en je dashboard.</li><li><b>Week 3:</b> de draaidag bij jou, op een van de dagdelen die je opgaf, en we bouwen de campagne en de landingspagina.</li><li><b>Week 4:</b> je ziet alles voordat het live gaat, met één ronde feedback. Daarna gaat het aan, en kijken we de eerste week dagelijks mee.</li></ul><p>Vandaag krijg je van Moneybird de factuur voor het fundament, en een verzoek om een machtiging voor de maandelijkse incasso vanaf <span class="vv">[maand 2]</span>.</p><p>Tot morgen, dan bel ik je even.</p><p>Groet, [naam]</p>') + """
+<h3>Het onboardingformulier: zeven blokken, 23 vragen</h3>
+<p>Alleen wat we nodig hebben om te maken. Wat het advies en de prijs bepaalt, is vóór het voorstel gevraagd; wat we zelf kunnen opzoeken, vragen we niet; toegangen doen we samen. Het formulier leeft in het portaal, op de klantkaart, en de link staat in de kick-offmail. Het openingsscherm zegt: “Wat je doel is, wat je verkoopt en waarom klanten voor je kiezen, weten we al. Hier vragen we alleen nog wat we nodig hebben om te gaan maken: je beeld, de woorden van je klanten en je e-mailadressen. Weet je iets niet, vul dan in dat je het niet weet: dat is een bruikbaar antwoord. Loop je vast, bel dan even.”</p>
 """ + tbl(['#', 'Vraag', 'Waarvoor we het gebruiken'], OBF) + """
-<h3>De toegangenlijst</h3>
-<p>De lijst die we in de sessie samen afwerken. Alles staat op zijn naam; wij krijgen beheertoegang. De klikroute per platform komt in een handleiding bij de lijst: die verandert te vaak om hier vast te leggen.</p>
+<h3>Het toegangendocument</h3>
+<p>Eén document met alles waar hij ons toegang toe moet geven. Per onderdeel: wat het is, waarom we het nodig hebben, en hoe hij het doet, met de klikroute stap voor stap. Bij elk onderdeel kan hij aanvinken: <b>“heb ik nog niet”</b>. Dan maken wij het aan, op zijn naam. Het document zit bij de kick-offmail; in de toegangensessie lopen we samen na wat nog openstaat. Alles staat op zijn naam; wij krijgen beheertoegang. De klikroute houden we in het document bij, want die verandert te vaak om in deze gids vast te leggen.</p>
 """ + tbl(['Wat', 'Hoe', 'Wie', 'Let op'], [
  ['Google Ads', 'Account op zijn naam, of een uitnodiging in zijn bestaande account. Wij als beheerder.', 'Hij, in de sessie', 'Zijn eigen betaalmethode, nooit de onze'],
  ['Meta: Business Manager en advertentieaccount', 'Partnerverzoek vanuit ons Business Manager, dat hij goedkeurt', 'Hij, in de sessie', 'Idem'],
@@ -147,14 +148,10 @@ STAP06 = stap_kop('06', 'f2', 'FASE 2 · STARTEN', 'De onboarding',
  ['Het ligt aan ons', 'Dan zeggen we dat ook, op dezelfde plek, met de nieuwe datum.'],
 ]) + raakt(ul([
  '<b>Elke dag later is een dag later live.</b> Maand 1 is vier weken vanaf volledige toegang. Drie werkdagen onboarding plus 19 werkdagen fundament past net in een maand; tien werkdagen onboarding past niet.',
- '<b>Loopt maand 1 uit, dan raakt het de retainer.</b> Die start in maand 2. Zie hieronder het voorstel.',
+ '<b>Loopt maand 1 uit, dan betaalt de klant al retainer voordat hij live is.</b> De retainer start altijd in maand 2. Dat is een reden om de drie werkdagen streng te bewaken, niet om de factuur te verschuiven.',
  '<b>Het formulier voedt het fundament direct:</b> klanttaal wordt zoekwoorden en advertentietekst, het klantenbestand toetst de doelgroep, de e-maillijst gaat MailerLite in, de draaidagvragen worden de shotlist.',
 ], '')) + open_(ul([
- '<b>Toegangen en formulier binnen drie werkdagen, niet tien.</b> Voorstel; met tien werkdagen past het fundament niet in maand 1.',
- '<b>Retainer als maand 1 uitloopt.</b> Voorstel: ligt het aan ons, dan schuift de eerste retainerfactuur mee. Ligt het aan de klant (toegangen, formulier of draaidag later dan afgesproken), dan niet: ons werk loopt door en wacht op hem.',
- '<b>De naam van het eerste bericht.</b> Voorstel: “startbericht”. “Kick-off” is alleen de sessie met zijn team bij de livegang in week 4.',
- '<b>De draaidag: plan A of plan B</b> (zie stap 04). Plan A maakt het startbericht sterker: dan staat de datum er al in.',
- 'De handleiding met de klikroute per platform, en het startbericht en de toegangenlijst in het portaal bouwen.',
+ 'Het toegangendocument maken, met de klikroute per platform, en de kick-offmail en het document in het portaal bouwen.',
  'Per vraag in het formulier vastleggen wanneer een antwoord bruikbaar is. Het oude document “antwoorden beoordelen” gaat nog uit van 41 vragen.',
 ], '')) + stap_eind()
 
@@ -167,7 +164,7 @@ BLOKKEN = [
  ('05', 'De content', '11', 'De brandstof van de motor. Marketingcontent, geen bedrijfsvideo en geen branded content: foto, video, animatie en graphics die in advertenties werken, in de formaten van elk kanaal en in varianten om te testen. Eén draaidag levert het materiaal voor een kwartaal; de volgende draaidagen zitten in het pakket.', [('Voorbereiding', 2, '1'), ('De draaidag', 3, '5,5'), ('Montage', 4, '4,5')]),
  ('06', 'Live', '4,5', 'De laatste stap, en de week erna. Hier blijkt of alles echt werkt.', [('Kickoff met je team', 2, '1,5'), ('Testaanvraag door de keten', 2, '1'), ('De eerste week', 2, '2')]),
 ]
-VERSCHOVEN = {'1': 'Gaat nu automatisch mee met het startbericht', '3': 'Gebeurt nu vóór het voorstel (stap 04)', '4': 'Gebeurt nu vóór het voorstel (stap 04)'}
+VERSCHOVEN = {'1': 'Gaat nu automatisch mee met de kick-offmail', '3': 'Gebeurt nu vóór het voorstel (stap 04)', '4': 'Gebeurt nu vóór het voorstel (stap 04)'}
 
 def blok_tabel():
     out = []
@@ -211,7 +208,7 @@ def middelen():
 STAP07 = stap_kop('07', 'f2', 'FASE 2 · STARTEN', 'Het fundament',
  'Maand 1: stap 1 en 2 van ons plan, de set-up en de content. Vier weken vanaf volledige toegang, niet vanaf ondertekening. 27 onderdelen in zes blokken, opengewerkt in 76 taken, allemaal in halve uren. Wij werken uit, verrijken met AI en bouwen.',
  [('WANNEER', 'Dag 1 (alle toegangen binnen) tot dag 19 live; dag 26 eerste cijfers'), ('WIE', 'Vijf rollen: techniek, campagne, content, strategie, klantcontact'), ('HOE LANG', '52,5 tot 53 uur werk, verdeeld over vier weken'), ('KLAAR ALS', 'De campagne staat live, de testaanvraag is in het dashboard aangekomen, en de eerste week is dagelijks gecontroleerd')],
- 'stap-07') + klant('Vier weken lang elke week iets wat hij kan zien: in week 1 wat we vonden, in week 2 de draaidag, in week 4 de complete campagne voordat hij live gaat. Daartussen twee keer een akkoord, en verder niets.') + """
+ 'stap-07') + klant('Vier weken lang elke week iets wat hij kan zien: in week 1 wat we vonden, in week 3 de draaidag, in week 4 de complete campagne voordat hij live gaat. Daartussen twee keer een akkoord, en verder niets.') + """
 <h3>Het tijdpad</h3>
 <p>In werkdagen, vanaf dag 1. Elke dag die wij wachten op toegang of op een akkoord, schuift alles op.</p>
 """ + tl([
@@ -220,7 +217,7 @@ STAP07 = stap_kop('07', 'f2', 'FASE 2 · STARTEN', 'Het fundament',
  ('Dag 2 – 4', 'Doelgroep en boodschap', 'Doel en plan uit het voorstel uitwerken tot doelgroepen, boodschap en zoekwoorden. Geen extra sessie: dat gesprek is gevoerd.'),
  ('Dag 4', 'Bevindingen techniek', 'Wat niet deugt, met wat herstel kost. De klant beslist: nu, later of niet.'),
  ('Dag 5 – 10', 'Systemen en meting', 'Advertentieaccounts, MailerLite, het marketingdashboard en de meetopzet. Ons werk, af en toe een akkoord van hem.'),
- ('Dag 8', 'De draaidag', 'Eén dagdeel bij hem op locatie: locatie, mensen en producten.'),
+ ('Dag 11 – 20', 'De draaidag', 'Eén dagdeel bij hem op locatie, in week 3 of 4, gekozen uit de dagdelen die hij opgaf en afgestemd met de videograaf. Liefst vroeg in week 3: dan is de montage klaar voor de preview.'),
  ('Dag 10 – 16', 'Campagne en landingspagina', 'Bouwen, schrijven, monteren. Alles staat klaar om getest te worden.'),
  ('Dag 17', 'Hij kijkt mee', 'De complete campagne voordat hij live gaat, na onze eigen check op merk en meting. Eén ronde feedback.'),
  ('Dag 19', 'Live', 'We zetten hem aan en kijken de eerste week dagelijks mee.'),
@@ -231,12 +228,12 @@ STAP07 = stap_kop('07', 'f2', 'FASE 2 · STARTEN', 'Het fundament',
  kaart('Het onboardingformulier', 'Binnen drie werkdagen. Het meeste denkwerk dat we van hem vragen, en het scheelt ons de helft van de tijd.', 'DAG 1 – 3'),
  kaart('Beheerderstoegang', 'Binnen drie werkdagen, in de toegangensessie. Specifiek: zelf een script in de head van zijn site kunnen plaatsen. Kan dat alleen via zijn leverancier, dan nu, niet in week twee.', 'DAG 1 – 3'),
  kaart('Snel akkoord', 'Op de boodschap in week 1 en op de campagne in week 3, binnen twee werkdagen, door de persoon die beslist.', 'WEEK 1 EN 3'),
- kaart('Een dagdeel draaidag', 'Locatie, mensen en producten. Zonder eigen beeld beginnen we met stock, en dat werkt aantoonbaar slechter.', 'WEEK 2'),
+ kaart('Dagdelen voor de draaidag', 'Alle dagdelen in week 3 en 4 waarop we kunnen filmen, in het formulier. Wij stemmen af met de videograaf. Zonder eigen beeld beginnen we met stock, en dat werkt aantoonbaar slechter.', 'WEEK 3 OF 4'),
 ]) + """
 <h3>Zes blokken, 76 taken</h3>
 <p>Elk onderdeel is opengewerkt in de taken die erin zitten, met de uren per taak, de rol die hem doet, het middel waaruit hij gedaan wordt, en wat er dan af is: geen mening, maar iets wat je kunt zien. Een rol is een soort werk, geen functie: bij een kleine klant doet één persoon er drie. Techniek (27 taken) en content (16) dragen samen bijna twee derde; dat is goed voor de schaalbaarheid, want dat werk volgt een checklist. Strategie (11) zit vrijwel volledig in de eerste dagen. Klantcontact is het kleinst: zes momenten.</p>
 """ + blok_tabel() + """
-<p style="margin-top:20px"><b>Blok 01 opnieuw bekijken.</b> Drie taken zijn verschoven: het formulier gaat mee met het startbericht, en doel narekenen en toolkosten gebeuren vóór het voorstel. Die anderhalf uur horen in de herrekening van het fundament.</p>
+<p style="margin-top:20px"><b>Blok 01 opnieuw bekijken.</b> Drie taken zijn verschoven: het formulier gaat mee met de kick-offmail, en doel narekenen en toolkosten gebeuren vóór het voorstel. Die anderhalf uur horen in de herrekening van het fundament.</p>
 
 <h3>Het marketingdashboard: wat we bouwen</h3>
 <p>Eén plek waar de klant ziet wat zijn marketing doet, en waar hij met één klik zegt of een aanvraag iets waard was. Het staat náást zijn eigen systeem en vervangt het nooit. Zijn systeem kent de aanvraag; alleen wij weten waar hij vandaan kwam: via welke advertentie, welke zoekterm, welk apparaat, om kwart over acht ’s avonds. Dat verband bestaat alleen hier.</p>
@@ -253,6 +250,7 @@ STAP07 = stap_kop('07', 'f2', 'FASE 2 · STARTEN', 'Het fundament',
  ['Instellingen', 'Wie krijgt meldingen en de weekmail. Meer niet.', 'Klein houden'],
 ]) + """
 <p style="margin-top:14px"><b>Drie ingangen voor één klik.</b> De meldingsmail direct bij binnenkomst, met twee knoppen en zonder inlog: hier komt verreweg het meeste vandaan. Op maandag de weekmail, alleen als er aanvragen op een oordeel wachten; vaker wordt ruis. En het portaal zelf, voor wie meer wil. Een aanvraag zonder oordeel blijft zichtbaar. <b>Klant geworden.</b> Of een aanvraag klant werd, weet de klant pas weken later. Daarom staat die derde knop niet in de meldingsmail maar in de weekmail en het portaal, bij aanvragen die al “goed” waren. Het is het getal waar de Performance Review mee eindigt: hoeveel klanten, wie, en wat een klant kostte.</p>
+<p><b>Elke ochtend om 7.00 uur: de dagmail, voor ons.</b> Intern, niet voor de klant. Eén mail uit het dashboard met de performance van al onze campagnes van gisteren: per klant de uitgaven, de aanvragen en de kosten per aanvraag tegen de doelregel. Wat buiten een drempel uit stap 08 valt, staat bovenaan in rood. Zo begint de dag met wat aandacht nodig heeft, en hangt het niet af van wie er toevallig oplet.</p>
 """ + tbl(['Reden “geen goede aanvraag”', 'Wat wij dan doen'], [
  ['Verkeerd gebied', 'Gebied uitsluiten of straal aanpassen; bij Google “aanwezig in” in plaats van “interesse in”'],
  ['Te klein of verkeerd budget', 'Prijsindicatie in advertentie of pagina, kwalificatievraag over budget in het formulier'],
@@ -264,7 +262,7 @@ STAP07 = stap_kop('07', 'f2', 'FASE 2 · STARTEN', 'Het fundament',
 <p style="margin-top:14px"><b>Wat we per aanvraag opslaan:</b> identiteit, wat ze invulden, herkomst (kanaal, campagne, advertentiegroep, advertentie, zoekterm, pagina, apparaat, gebied), technisch (click id, consent-status, sessie), het oordeel (label: goed, niet goed of klant geworden; reden, notitie, door wie, wanneer; bij klant geworden eventueel het bedrag) en de opvolging. <b>Sla de click id vanaf dag één op.</b> Het kost nu niets, en zonder dat getal kun je later nooit goede aanvragen terugmelden aan de advertentieplatformen.</p>
 """ + tbl(['Versie', 'Wat', 'Wanneer'], [
  ['v0 · alleen de mail', 'De meldingsmail met twee knoppen, een pagina met de zes redenen, een tabel erachter. Wij lezen ze met de hand.', 'Eerst, binnen dagen. Beantwoordt de vraag waar alles aan hangt: labelen klanten überhaupt?'],
- ['v1 · het dashboard', 'De vijf schermen, formulieren en bronnen gekoppeld, doelen uit de rekensom, de weekmail', 'Vóór de eerste klant op het nieuwe model. Dit beloof je aan tafel.'],
+ ['v1 · het dashboard', 'De vijf schermen, formulieren en bronnen gekoppeld, doelen uit de rekensom, de weekmail, en de dagmail om 7.00 uur voor ons', 'Vóór de eerste klant op het nieuwe model. Dit beloof je aan tafel.'],
  ['v2 · terugkoppelen', 'Kosten per goede aanvraag per zoekterm, offline conversies terug naar de advertentieplatformen, export, rechten', 'Pas bij tientallen conversies per week'],
 ]) + """
 <h3>Naast het fundament: Webmix en tooling</h3>
@@ -307,6 +305,7 @@ STAP07 = stap_kop('07', 'f2', 'FASE 2 · STARTEN', 'Het fundament',
 <h3>Wat er moet bestaan voordat dit werkt</h3>
 <p>27 middelen, op volgorde van hoe vaak ze terugkomen. Een middel dat in zeven stappen terugkomt, levert zeven keer tijdwinst en zeven keer minder spreiding op. Zolang een middel niet bestaat, wordt de stap elke keer opnieuw bedacht, door wie toevallig beschikbaar is, in de tijd die het die keer kost.</p>
 """ + middelen() + raakt(ul([
+ '<b>Een draaidag in week 4 schuift de video.</b> Google gaat dan op dag 19 live met tekst en beeld uit de sjablonen, Meta met video zodra de montage klaar is, ongeveer een week later. De retainer start toch in maand 2. Daarom liefst vroeg in week 3, en daarom vragen we zoveel mogelijk dagdelen.',
  '<b>Altijd on-brand, ook onder tijdsdruk.</b> Elke uiting gaat door de merkcheck voordat hij live gaat: sjablonen, kleuren, typografie, toon. Een snelle variant die niet klopt met het merk, gaat niet live. Dat kost soms een dag, en dat is de prijs van een merk dat consistent wordt gepresenteerd.',
  '<b>De uren kloppen alleen met de middelen.</b> Zeven middelen bestaan nog niet (zes AI-instructies en het dashboard); daar hangen 16 van de 76 taken aan. De AI-stappen zijn samen ongeveer vijf uur in de begroting; zonder goede prompts eerder twaalf. Dat is het verschil tussen € 86 en € 60 per uur.',
  '<b>Het dashboard moet af zijn vóór de eerste klant.</b> Zonder dashboard geen “wij koppelen niet”, geen oordeel per aanvraag, en geen plek waar een aanvraag landt.',
@@ -314,7 +313,6 @@ STAP07 = stap_kop('07', 'f2', 'FASE 2 · STARTEN', 'Het fundament',
  '<b>Intern: 52,5 uur voor € 4.500 is ongeveer € 86 per uur,</b> bij een kostprijs rond € 2.050. Er is geen bandbreedte meer: alles staat in halve uren, en alleen het halfuur kleur en typografie kan wegvallen.',
 ], '')) + open_(ul([
  '<b>De prijs van het fundament.</b> Voorlopig € 4.500. Jim Kikken en Stan rekenen het na tegen € 100–125 per uur, inclusief de verschoven taken van blok 01. Toets het ook aan de laatste drie onboardings: hoeveel uur zat erin en wat is er gefactureerd?',
- '<b>Animatie en graphics</b> staan nu niet als eigen taak in blok 05; graphics komen uit de advertentiesjablonen (blok 01). Uitzoeken of animatie in de 11 uur past of een eigen taak met uren moet krijgen.',
  '<b>Extra kanalen in het fundament?</b> Het fundament rekent met Google Ads en Meta. Kost een derde kanaal (Microsoft Ads, LinkedIn, TikTok) bij de start extra uren, en zo ja, is dat een los bedrag? Het minimum per kanaal staat voorlopig op € 500 per campagne per maand, op LinkedIn € 1.000; toetsen aan onze eigen accounts.',
  'Het ClickUp-template met de 76 taken.',
  'De zes AI-instructies. Begin met A2, de propositie-instructie: die komt drie keer terug.',
