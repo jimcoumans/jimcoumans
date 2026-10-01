@@ -141,6 +141,7 @@ def body_021():
     o.append(p('Bedragen exclusief btw. Ze gaan in de rekensom van het voorstel van de marketingruimte af: een rode site kan betekenen dat er minder overblijft voor advertenties.', 'klein'))
 
     o.append(h3('Voorbeeld: een installatiebedrijf met twintig aanvragen per maand'))
+    o.append(p('De drie voor aan tafel: 11, 15 en 16. Niet 1, al is die rood: snelheid raakt deze klant minder dan dat niet te zien is welke aanvraag waar vandaan komt.'))
     o.append(tabel(['Punt', 'Kleur', 'Wat we zagen', 'Actie'], [
         ('grp', 'Webmix · op het scanrapport met bedrag'),
         ['1 · Snelheid op mobiel', chip('Rood', 'rood'), '6,1 seconden op de dienstpagina', 'Post snelheid, € 750. Klant beslist na het tekenen.'],
@@ -150,8 +151,7 @@ def body_021():
         ['15 · Wat ziet wie de klant zoekt', chip('Oranje', 'oranje'), 'Een concurrent adverteert op de naam', 'Bij “campagnestructuur”: merkcampagne vanaf dag één.'],
         ('grp', 'Klant zelf · op het blad “jouw kant”'),
         ['16 · Reviews', chip('Rood', 'rood'), '7 reviews, gemiddeld 3,8, geen reacties', 'Na elke opdracht om een review vragen en op elke review reageren. Termijn: drie maanden.'],
-    ]))
-    o.append(p('De drie voor aan tafel: 11, 15 en 16. Niet 1, al is die rood: snelheid raakt deze klant minder dan dat niet te zien is welke aanvraag waar vandaan komt.'))
+    ]).replace('<tr class="grp">', '<tr class="grp" style="break-after:avoid;page-break-after:avoid">'))
 
     o.append('<div style="break-inside:avoid">')
     o.append(h2('Compleet en vrijgegeven'))

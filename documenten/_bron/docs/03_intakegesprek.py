@@ -142,7 +142,7 @@ def draaiboek():
         ('<b>Het scanrapport.</b> Eén A4: veertien punten met een kleur, drie bevindingen, per rood punt de post en het bedrag. Het enige document dat over de klant gaat. De klant neemt het mee.', 'quickscan'),
         ('<b>De keten met de getallen van de klant.</b> Weergaven, bezoekers, aanvragen, klanten.', '03.3'),
         ('<b>De rekensom.</b> Wat een aanvraag alles bij elkaar mag kosten. Aan tafel gaan de echte marge en termijn erin.', '04.1'),
-        ('<b>Het drieluik.</b> De retainers en het fundament op papier.', 'drukwerk'),
+        ('<b>De pakketten (V.2).</b> De vier pakketten en het fundament op papier.', 'drukwerk'),
         ('<b>De partnerlijst.</b> Voor jezelf: wie je waarvoor introduceert, en waarom.', 'intern'),
         ('<b>De vragenlijst intakegesprek,</b> om met de hand in te vullen.', '03.2'),
     ]))
@@ -185,7 +185,7 @@ def voorbereiding():
         ('Het scanrapport twee keer geprint: één voor op tafel, één om mee te geven', 'quickscan'),
         ('De antwoorden uit de vragenlijst op één A4: pagina 3 van dit document', 'klantkaart'),
         ('De rekensom (04.1), met omzet per klant en het percentage dat klant wordt al ingevuld', '04.1'),
-        ('Het drieluik, en de partnerlijst voor jezelf', 'drukwerk'),
+        ('De pakketten (V.2), en de partnerlijst voor jezelf', 'drukwerk'),
         ('De vragenlijst intakegesprek (03.2) en het draaiboek (03.1)', '03.1 / 03.2'),
     ]))
 

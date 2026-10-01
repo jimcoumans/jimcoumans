@@ -305,7 +305,7 @@ def draaiboek():
          'Per maand: ' + vv('[pakket]') + ', ' + vv('[bedrag]') + '. Het advertentiebudget gaat rechtstreeks naar de advertentieplatformen.',
          'Er zit nergens een marge van ons op iets van een ander. Bij ClickCease en Leadinfo krijgen wij een vergoeding van de leverancier; jij betaalt daar niets extra voor.',
          'De licenties staan op jouw naam en betaal je zelf; wij richten ze in. Per licentie kies je maand of jaar. ClickCease is een optie, en het is jouw keuze. Kies je ervoor, dan laten we na de proefperiode zien of het zich terugverdient.'],
-        ['Het voorstel, pagina 5', 'Het drieluik', 'De tarieven, voor wie alles wil nalezen'],
+        ['Het voorstel, pagina 5', 'De pakketten (V.2)', 'De tarieven (V.1), voor wie alles wil nalezen'],
         [('De eerste reactie van de klant. Die zegt meer dan de vraag.', ''),
          ('Per licentie maand of jaar; ClickCease ja of nee; dashboard maand of jaar', '')],
         'Het pakket verdedigen in plaats van naar de som te wijzen, of na het bedrag doorpraten en korting aanbieden.'))

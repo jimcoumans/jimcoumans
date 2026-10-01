@@ -21,8 +21,20 @@ def laad():
         docs += m.DOCS
     return docs
 
+def overzicht(docs):
+    rijen, huidig = [], None
+    for d in sorted(docs, key=lambda d: (map_voor(d['code']), d['code'])):
+        m = map_voor(d['code'])
+        if m != huidig:
+            rijen.append(('grp', m[2:])); huidig = m
+        rijen.append(['<b>%s</b>' % d['code'], d['titel'] + (' ' + base.chip('concept', 'oranje') if d.get('concept') else ''), d['voor'], d['wanneer'], d['wie']])
+    body = base.kader('<p>Elk document heeft een code. De eerste twee cijfers zijn de stap in de klantreis (01 tot en met 08), V is verkoopondersteuning, I is intern. Documenten met het label concept bevatten tekst die nog niet in de gids stond: lees die eerst na voordat je ze gebruikt.</p><p>De gids is leidend. Verandert er iets, dan eerst in de gids, daarna hier.</p>', 'Zo lees je dit overzicht', 'blauw') + base.tabel(['Code', 'Document', 'Voor', 'Wanneer', 'Wie'], rijen)
+    return dict(code='00', titel='Overzicht documenten', fase='James Robinson · Alle documenten', voor='Intern', wanneer='Altijd', wie='Iedereen',
+                lead='Alle formulieren, draaiboeken, mailteksten en klantdocumenten op een rij, in de volgorde van de klantreis. %d documenten.' % len(docs), body=body)
+
 def main(alleen=None):
     docs = laad()
+    docs.append(overzicht(docs))
     if alleen: docs = [d for d in docs if any(d['code'].startswith(a) for a in alleen)]
     jobs = []
     for d in docs:
