@@ -42,10 +42,20 @@ STAP08 = stap_kop('08', 'f3', 'FASE 3 · SAMENWERKEN', 'Live en het maandritme',
 <p>We leren welke zoekwoorden, doelgroepen en advertenties werken, en brengen de kosten per aanvraag tot rust. Hier voegen we bewust niets toe: geen SEO, geen e-mailcampagnes, geen nieuwe kanalen. Er is nog niets om ze op te richten.</p>
 """ + ul(['Adverteren in zoekmachines en op social: budgetten, biedingen, zoekwoorden, uitsluitingen.', 'Wekelijks bijsturen op kosten per aanvraag, niet op bereik en niet op kliks.', 'De advertenties uit de draaidag tegen elkaar testen.', 'Elke aanvraag volgen tot in het dashboard, waar de klant per aanvraag zegt of hij iets waard was.', 'Van de klant: opvolging binnen de afgesproken tijd, en een oordeel per aanvraag.']) + """
 <p>Aan het eind ligt er een stabiele kostprijs per aanvraag en de eerste data over wat converteert. De doelregel uit het voorstel geldt vanaf nu.</p>
+""" + key('AAN HET EIND VAN MAAND 3', 'De 100-dagenreview', '<p>Ongeveer honderd dagen na het tekenen, voor elk pakket, ook als het ritme van het pakket anders is. De eerste Performance Review en het belangrijkste gesprek van het jaar: de leerfase is voorbij en de cijfers zeggen voor het eerst iets. <b>Op de agenda:</b> zijn de kosten per aanvraag tot rust gekomen, klopt de doelregel die vanaf maand 4 geldt of stellen we hem bij, en de eerste diagnose met het plan voor het kwartaal erna. Bij Sub is dit het moment om de overstap naar Starter te bespreken.</p>') + """
 
 <h3>Vanaf maand 4: optimaliseren</h3>
-<p>Advertenties verbeteren, CRO, landingspagina’s verbeteren of toevoegen, e-mail en automation, SEO. Welke eerst, bepaalt de smalste schakel in de keten, niet het pakket en niet een plan van vandaag.</p>
-""" + tbl(['Wat de cijfers laten zien', 'Wat eerst komt', 'Waarom'], [
+<p>Knallen met advertenties, en optimaliseren op wat de resultaten laten zien. Dat kan e-mail zijn, een betere of extra landingspagina, andere content, de hosting, of het merk van de klant. Er is bewust geen vaste volgorde: welke knop eerst, is de expertise van ons team, niet een stramien. Wat wel vastligt, is <b>hoe</b> we tot die keuze komen: met het diagnoseformulier.</p>
+
+<h4 style="margin-top:22px">Het diagnoseformulier</h4>
+<p>Drie vragen, in deze volgorde, en pas door naar de volgende als de vorige beantwoord is. We vullen het in vóór elke Performance Review, en zodra de dagmail of de maandupdate een afwijking laat zien. Wat eruit komt, is letterlijk het blok “diagnose” en “plan” in de review.</p>
+""" + jk([
+ ('Waar zit de bottleneck?', 'Zet de keten naast elkaar: weergaven, bezoekers (doorklikratio), aanvragen (conversieratio), klanten (scoringsratio), elk tegen het doel en tegen de vorige periode. De bottleneck is de eerste schakel die afwijkt. Altijd eerst: klopt de meting? Zo niet, dan stopt het formulier hier, want dan is elk ander antwoord een gok.'),
+ ('Wat is de oorzaak? Door uitsluiting', 'Zet de mogelijke oorzaken in die schakel onder elkaar (de tien oorzaken hieronder). Schrijf per oorzaak op wat je zou zien als dit het is, en wat je ziet. Streep weg wat niet klopt, tot er één overblijft, hooguit twee. En check of er genoeg aanvragen zijn om iets te mogen zeggen.'),
+ ('Wat is ons plan?', 'Eén ingreep, hooguit twee tegelijk, anders weet je niet wat werkte. Per ingreep: wat we doen, van wie het is (wij, de klant of samen), of het in de retainer zit of een prijs vooraf krijgt, wanneer we het effect meten, en waaraan we zien dat het werkt.'),
+]) + """
+<p style="margin-top:14px">Voorbeelden van wat er uit kan komen. Geen volgorde, wel een idee van de knoppen:</p>
+""" + tbl(['Wat de cijfers laten zien', 'Wat eruit kan komen', 'Waarom'], [
  ['Veel kliks, weinig aanvragen', 'CRO: pagina, formulier, bewijs', 'Zelfde budget, meer aanvragen. Een procentpunt conversie is meer waard dan duizend euro budget.'],
  ['Er is een lijst met adressen, en klanten kunnen terugkomen', 'E-mail en automation', 'Hogere klantwaarde, dus meer ruimte per aanvraag, zonder extra mediabudget'],
  ['Duidelijk welke zoekwoorden klanten opleveren, en tegen welke prijs', 'SEO op precies die woorden', 'Een deel van het verkeer hoeft niet meer gekocht te worden. Wie met SEO begint, investeert maanden in woorden waarvan niet bekend is of ze converteren.'],
@@ -53,20 +63,23 @@ STAP08 = stap_kop('08', 'f3', 'FASE 3 · SAMENWERKEN', 'Live en het maandritme',
  ['De doelgroep zit ook op LinkedIn of TikTok, of Bing levert goedkopere kliks', 'Een kanaal erbij', 'Meer bereik bij dezelfde koper, of dezelfde koper goedkoper'],
  ['Kosten per aanvraag op doel, aantal niet', 'Budget opschalen', 'Meer budget bij dezelfde kosten per aanvraag is de makkelijkste groei die er is'],
 ]) + """
-<p style="margin-top:14px"><b>Opschalen en het pakket.</b> Groeit het advertentiebudget, dan groeit het pakket mee: meer campagnes, meer doelgroepen, meer bijsturen. Eén keer per jaar een nieuw doel voor het volgende jaar, en de vraag of het pakket nog past: zijn er campagnes bij gekomen, of is het budget gegroeid? Dan schuift het pakket mee, omhoog per direct en omlaag per de 1e van de volgende maand.</p>
+<p style="margin-top:14px"><b>Opschalen en het pakket.</b> Groeit het advertentiebudget, dan groeit het pakket mee: meer campagnes, meer doelgroepen, meer bijsturen. In maand 11 het jaargesprek, gevoerd door de marketingmanager: de rekensom opnieuw met echte cijfers in plaats van aannames, het doel voor jaar 2, en de vraag of het pakket nog past: zijn er campagnes bij gekomen, of is het budget gegroeid? Dan schuift het pakket mee, omhoog per direct en omlaag per de 1e van de volgende maand.</p>
 
 <h3>Het ritme</h3>
 <p>Voor ieder pakket hetzelfde. Het verschil zit in de hoeveelheid.</p>
 """ + tbl(['Wanneer', 'Wat', 'Starter', 'Playmaker', 'Captain', 'Champion'], [
  ['Dagelijks', 'Alleen de eerste week na livegang: uitgaven, afkeuringen, eerste aanvragen', '●', '●', '●', '●'],
  ['Wekelijks', 'Bijsturen op kosten per aanvraag: budgetten, biedingen, uitsluitingen. Zonder overleg, tenzij er iets is.', '●', '●', '●', '●'],
- ['Maandelijks', 'Korte schriftelijke update in het dashboard: staan we op de doelregel, en zo nee, waarom niet', '●', '●', '●', '●'],
+ ['Maandelijks', 'De maandupdate in het dashboard, vóór de 5e werkdag', '●', '●', '●', '●'],
  ['Contentronde', 'Een nieuwe set advertenties om tegen de lopende te testen', '1× per kwartaal', '1× per twee maanden', '1× per maand', '2× per maand'],
  ['Draaidag', 'Nieuw beeld, want advertenties slijten', '1× per jaar', '2× per jaar', '3× per jaar', '4× per jaar'],
  ['Performance Review', 'Een uur over resultaat, vast stramien, op kantoor of online; bevestigd per mail', 'elk kwartaal', 'elke twee maanden', 'maandelijks', 'maandelijks'],
  ['Vragen en verzoeken', 'Via support@, antwoord binnen één werkdag', '●', '●', '●', '●'],
 ])  + """
 <p style="margin-top:14px">Sub draait op een eigen ritme: een contentronde per halfjaar, geen draaidag, de eerste Performance Review na drie maanden en daarna elk halfjaar.</p>
+<h4 style="margin-top:22px">De maandupdate</h4>
+<p>Het vaste contact met elke klant, elke maand, ook in de maanden zonder Performance Review. Zo kaal mogelijk, maar zonder dat hij iets hoeft te raden. Bovenaan zet het dashboard automatisch de vier ketengetallen en de kosten per aanvraag, tegen de doelregel en tegen vorige maand. Daaronder drie korte antwoorden, elk een paar zinnen:</p>
+""" + ol(['<b>Zitten we op de doelregel?</b> Ja of nee, met het getal.', '<b>Wat deden we?</b> De belangrijkste bijstellingen en waarom. Geen urenlijst.', '<b>Wat doen we nu?</b> Het plan voor de komende maand, uit het diagnoseformulier.']) + """
 <h3>De Performance Review: over resultaat, met ons aan het roer</h3>
 <p>De Performance Review gaat over resultaat, niet over wat we allemaal gedaan hebben. Op ons kantoor in Hulsberg of online; we gaan niet meer naar de klant. Wij hebben de regie: we weten precies wat de cijfers zijn, wat ze betekenen, en aan welke knoppen we kunnen draaien en gaan draaien. Elk overleg volgt hetzelfde stramien.</p>
 """ + jk([
@@ -95,7 +108,7 @@ STAP08 = stap_kop('08', 'f3', 'FASE 3 · SAMENWERKEN', 'Live en het maandritme',
  ['Doorklik, conversie en frequentie per advertentie', 'Wekelijks', 'Onder de norm, of frequentie loopt op: de advertentie slijt', 'Campagne en content'],
  ['Opvolgtijd en oordelen per aanvraag', 'Wekelijks', 'Aanvragen zonder oordeel, of opvolging trager dan afgesproken', 'Aanspreekpunt'],
  ['Ongeldige kliks en klikfraude', 'Wekelijks', 'Opvallende pieken; na de proefperiode de afweging ClickCease', 'Campagne'],
- ['De doelregel', 'Maandelijks', 'Elke maand in de update; twee maanden eronder: we zeggen het, met de oorzaak en de opties', 'Aanspreekpunt'],
+ ['De doelregel', 'Maandelijks', 'Elke maand in de maandupdate, met diagnose en plan', 'Aanspreekpunt'],
 ]) + """
 <p style="margin-top:14px">Contentrondes, draaidagen en varianten gaan net als in het fundament eerst door de merkcheck. Snel mag, off-brand niet.</p>
 
@@ -124,9 +137,8 @@ STAP08 = stap_kop('08', 'f3', 'FASE 3 · SAMENWERKEN', 'Live en het maandritme',
  '<b>Continu monitoren is wat “cijfers leidend” waarmaakt.</b> Zonder dagelijkse check op meting en uitgaven ontdek je een fout pas in de maandupdate, en dan heeft de klant een maand betaald voor lucht.',
  '<b>Starter heeft maar één draaidag per jaar,</b> en die zat in het fundament. Advertenties slijten; bij Starter komt nieuw beeld pas het jaar erna, tenzij hij een extra draaidag los afneemt.',
 ], '')) + open_(ul([
- '<b>Dit is het grootste gat in de reis.</b> Het fundament is opengewerkt in 76 taken; de twaalf maanden daarna nog niet. Nodig: een stappenlijst voor maand 2 tot en met 12, het live-bericht, de vorm van de maandelijkse update, en het moment waarop wij ingrijpen bij achterstand.',
+ '<b>Het jaar staat; de uitwerking nog niet.</b> Nodig: de stappenlijst voor maand 2 tot en met 12 in ClickUp, zoals de 76 taken van het fundament, het live-bericht, en het diagnoseformulier als sjabloon.',
  '<b>De drempels voor de monitoring zijn een voorstel.</b> Ze bepalen wat er in de dagmail van 7.00 uur rood staat. Vastzetten na de eerste maanden met echte cijfers.',
- '<b>Na welke termijn zonder beweging</b> melden wij het uit onszelf? “Een afgesproken termijn” is nog geen getal.',
  '<b>Drie maanden alleen de motor is een aanname.</b> Hoe snel de kosten tot rust komen, hangt af van het volume. Toetsen aan de laatste vijf campagnes en er een norm van maken.',
  '<b>Normen per branche</b> voor doorklik en conversie ontbreken. Zonder eigen normen is “onder de norm” een mening.',
  '<b>Wat een vertrekkende klant meeneemt.</b> Advertentieaccounts, e-mail en licenties staan al op zijn naam: die neemt hij gewoon mee. Het dashboard mag hij houden voor € 25 per maand. Open: de landingspagina’s. Volgens het besluit van 23 september staan die op onze omgeving, op een subdomein van zijn site. Wat gebeurt daarmee als hij stopt?',

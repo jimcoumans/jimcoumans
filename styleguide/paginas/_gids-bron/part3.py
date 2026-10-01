@@ -107,7 +107,7 @@ OPEN = """
 """ + grid(2, [
  kaart('Verkoop', ul(['De partnerlijst: wie we waarvoor introduceren', 'Sjablonen: antwoorden op één A4, scanrapport', 'Wie het intakegesprek voert naast Jim Coumans', 'De oranje drempels (€ 1.000, € 30, 1 op de 10) toetsen aan eigen accounts', 'Branchegemiddelden voor conversie', 'Prijs voor social-mediatemplates en contentsessie: zonder prijs is het een afwijzing met een vriendelijk randje', 'Toestemming voor de mailreeks juridisch laten nakijken'], ''), 'FASE 1'),
  kaart('Starten', ul(['Verwerkersovereenkomst, algemene voorwaarden, btw op alle documenten (bewust later)', 'Moneybird inrichten en koppelen aan het portaal', 'Handleiding klikroute per platform', 'ClickUp-template met de 76 taken', 'Indicaties voor “wat we vaak tegenkomen”', 'Per vraag in het onboardingformulier: wanneer is een antwoord bruikbaar'], ''), 'FASE 2'),
- kaart('Samenwerken', ul(['Een stappenlijst voor maand 2 tot en met 12, zoals de 76 taken van het fundament', 'Het live-bericht en de vorm van de maandupdate', 'Wanneer we ingrijpen, en na welke termijn zonder beweging we het zelf melden', 'Normen per branche voor doorklik en conversie', 'Drie maanden “alleen de motor” toetsen aan de laatste vijf campagnes'], ''), 'FASE 3'),
+ kaart('Samenwerken', ul(['Een stappenlijst voor maand 2 tot en met 12, zoals de 76 taken van het fundament', 'Het live-bericht', 'Het diagnoseformulier als sjabloon', 'Normen per branche voor doorklik en conversie', 'Drie maanden “alleen de motor” toetsen aan de laatste vijf campagnes'], ''), 'FASE 3'),
  kaart('Rondom', ul(['<b>Bestaande klanten.</b> Nieuwe klanten gaan direct op het nieuwe model, bestaande klanten per 1 januari 2027. Nog op te schrijven: wat vervalt en wat een project wordt. Per klant een migratieplan, met het gesprek vóór 1 december. Bestaande klanten met een retainer boven Champion mogen daarboven blijven. Voorstel: splits hun factuur in een performancedeel en een regel voor doorlopend projectwerk (zoals een magazine), zodat zichtbaar is wat welk deel kost.', '<b>Het drukwerk</b> gebruikt nog de vijf ARENA-letters (Attention, Retention, Experience, Numbers, Authority) als model, terwijl de methode nu middelpunt, motor en versnellers is. Ook ontbreken het dashboard en ClickCease.', '<b>De oude pakketpagina en de ARENA-methode</b> zeggen elk iets anders over het maandoverleg (30 of 45 minuten, of helemaal niet). De Performance Review in stap 08 is leidend.', '<b>De eigen website</b> (homepage, werkwijze, dienstpagina’s) wacht tot de propositie vastligt.'], ''), 'BUITEN DE REIS', 'o'),
 ]) + """
 </div></section>
@@ -171,6 +171,10 @@ BESLUITEN = """
  ['1 okt 2026', 'De Performance Review duurt een uur.'],
  ['1 okt 2026', 'Elke ochtend om 7.00 uur een interne dagmail uit het dashboard met de performance van al onze campagnes.'],
  ['1 okt 2026', 'Animatie zit niet in het fundament maar in de contentrondes. Graphics in het fundament komen uit de sjablonen.'],
+ ['1 okt 2026', 'Na ongeveer honderd dagen, aan het eind van maand 3, voor elk pakket de 100-dagenreview.'],
+ ['1 okt 2026', 'Vanaf maand 4 geen vaste volgorde van versnellers: we optimaliseren op resultaat en kiezen met het diagnoseformulier (bottleneck, oorzaak door uitsluiting, plan).'],
+ ['1 okt 2026', 'Elke maand een maandupdate in het dashboard: de vier ketengetallen automatisch, en drie korte antwoorden. Geen aparte escalatieregels: we hebben elke maand contact.'],
+ ['1 okt 2026', 'In maand 11 het jaargesprek, gevoerd door de marketingmanager: nieuw doel en het pakket voor jaar 2.'],
  ['1 okt 2026', 'Pakket omhoog per direct, omlaag per de 1e van de volgende maand. De Performance Review is het moment.'],
 ]) + """
 </div></section>
