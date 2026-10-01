@@ -63,13 +63,13 @@ WIE = """
  kaart('Performance eerst', 'We worden afgerekend op aanvragen en wat een aanvraag kost. Elke euro is meetbaar, en de klant ziet dezelfde cijfers als wij.', 'KORTE TERMIJN', 'b'),
  kaart('Altijd on-brand', 'Elke uiting die naar buiten gaat, klopt met het merk van de klant: kleur, typografie, toon, beeld. Een advertentie die vandaag klikt maar het merk beschadigt, is op termijn duurder dan hij oplevert. Consistent herkend worden is ook performance.', 'LANGE TERMIJN', 'l'),
  kaart('Data beats opinion', 'We monitoren continu en beslissen op wat de cijfers laten zien, niet op wat iemand mooi vindt, ook wij niet. Het merk bepaalt de grenzen; binnen die grenzen kiest de data.', 'ALTIJD', 'g'),
-]) + """
+]) + key('HOE WE HET ZEGGEN', 'Ons succes is jullie succes. Niet meer en niet minder.', '<p>Onze winst is niet een zo hoog mogelijke retainer. Onze winst is dat we de doelen keer op keer halen, dat het advertentiebudget ons niet beperkt, dat de klant tevreden is over de resultaten, en dat we over tien jaar nog steeds zijn marketingpartner zijn. Vraagt een klant zich over drie of zes maanden af wat marketing zijn bedrijf oplevert, dan hebben we een groter probleem dan een lagere factuur. Daarom zetten we liever een deel van de retainer om in advertentiebudget dan dat we uren steken in werk dat weinig oplevert.</p>') + """
 <h3>Waarom deze opzet</h3>
 <p>De propositie is zo gebouwd omdat de oude niet klopte. Elke keuze hieronder lost een probleem op dat we zelf hadden.</p>
 """ + tbl(['Wat niet werkte', 'Wat we nu doen'], [
  ['Klanten vertrokken na een jaar, en het volgende bureau scoorde op ons fundament', 'Het fundament is een eigen, betaald product. De klant blijft omdat we meetbaar beter worden, niet omdat hij vastzit.'],
  ['Acht dingen tegelijk, nergens hard op sturen', 'Eén motor (adverteren) en versnellers pas als de cijfers er zijn'],
- ['Hoge retainers werden personeel', 'Drie retainers met een harde grens aan wat erin zit'],
+ ['Hoge retainers werden personeel', 'Vaste pakketten met een harde grens aan wat erin zit'],
  ['Elke onboarding werd opnieuw bedacht: 58 tot 96 uur', 'Een vast fundament van 52,5 uur, 27 onderdelen, 76 taken met standaarden'],
  ['De prijs ontstond na de diagnose, en was dus niet te controleren', 'De prijslijst ligt er vóór het gesprek. De quickscan wijst alleen aan welke regels gelden.'],
  ['Het bedrijf draaide niet zonder de twee eigenaren', 'Vaste stappen, templates en checklists. Tot aan de quickscan draait de verkoop zonder mens; daarna doen vaste medewerkers het meeste werk.'],
@@ -142,6 +142,7 @@ MODEL = """
  kaart('€ 1.000 aan adverteren', 'Nul uur maaktijd uit dit bedrag. Het hele bedrag gaat naar bereik bij mensen die je zelf kiest en die je nog niet kennen. Het sturen zit in de retainer, en dat werk is voor honderd klanten dezelfde handgreep.', 'BEREIK', 'g'),
 ]) + """
 <p style="margin-top:18px"><b>De oefening die het gesprek laat kantelen.</b> Laat de klant zijn eerste vijftig volgers tellen: bestaande klanten, oud-medewerkers en sollicitanten, concurrenten en leveranciers, vrienden en familie, en mensen die klant kunnen worden. Wat in die laatste groep overblijft, is zijn markt op dat kanaal. Hij rekent het zelf uit, dus het is zijn conclusie en niet onze claim.</p>
+<p><b>Stress aan twee kanten.</b> Een feed vullen zorgt bij ons voor druk, omdat er elke week iets moet, en bij de klant, die moet afstemmen en goedkeuren. Het voelt geforceerd, voor wie het maakt en voor wie het ziet. Veel moeite, weinig resultaat. We plaatsen niet niks meer: wat organisch verschijnt, komt voort uit de campagnes.</p>
 <p><b>Drie krachten maken het erger:</b> de platformen verdienen aan advertenties en niet aan gratis bereik, het algoritme kiest voor de kijker en niet voor het bedrijf, en het werk schaalt niet. Viraal gaan kan, maar het is niet te herhalen en niet in te plannen, dus je kunt er geen omzetdoel op bouwen.</p>
 """ + key('HET ONDERSCHEID DAT IEDEREEN BIJ ONS MOET KENNEN', 'Wij stoppen met posten, niet met social media.', '<p>Vraagt een klant of we “iets met social doen”, dan is het antwoord ja: we adverteren op Instagram en Facebook, bij mensen die hem nog niet volgen. Dat zit in elk pakket. Wat we niet meer doen, is zijn kanalen bijhouden: geen posts meer bedenken om de feed te vullen. Wel plaatsen we het beeld uit zijn lopende campagnes ook op zijn eigen kanalen, zolang de campagne loopt. Zo blijft zijn profiel actueel en klopt het met wat mensen in de advertentie zagen. Voor het gesprek met de klant is er de one-pager “We stoppen met posten”. Wil hij zelf blijven posten, dan kunnen we social-mediatemplates of een contentsessie leveren als eigen project.</p>') + """
 </div></section>
