@@ -187,7 +187,7 @@ GELD = """
 <h3>Het fundament: € 4.500 eenmalig</h3>
 """ + grid(2, [
  kaart('Deel 1 · De basis', ul(['Doelgroep, boodschap en concurrentiebeeld', 'Technische audit en meetopzet', 'Advertentieaccounts op zijn naam', 'MailerLite met zijn contacten', 'Zijn marketingdashboard', 'De nulmeting'], ''), 'ONGEVEER 23 UUR · 44%', 'b'),
- kaart('Deel 2 · Je eerste campagne', ul(['Zoekwoorden, campagnestructuur, advertenties', 'Een landingspagina met formulier en bedankpagina', 'Een volledige draaidag bij de klant', 'Montage in drie formaten, plus stills', 'Livegang met zijn team, testaanvraag, eerste week dagelijks'], ''), 'ONGEVEER 29,5 UUR · 56%', 'l'),
+ kaart('Deel 2 · Je eerste campagne', ul(['Zoekwoorden, campagnestructuur, advertenties', 'Een landingspagina met formulier en bedankpagina', 'Een dagdeel draaien bij de klant', 'Montage in drie formaten, plus stills', 'Livegang met zijn team, testaanvraag, eerste week dagelijks'], ''), 'ONGEVEER 29,5 UUR · 56%', 'l'),
 ]) + """
 <p style="margin-top:18px">Eén prijs, niet los verkrijgbaar. Deel 1 zonder deel 2 is een stopcontact zonder apparaat: meting en accounts leveren zelf nul aanvragen op. Deel 2 zonder deel 1 levert aanvragen op die je niet kunt meten, opvolgen of verbeteren. Naar buiten heet het nooit “set-up”: dat klinkt als accounts aanmaken en verstopt dat meer dan de helft in een echte campagne zit. Een dag filmen alleen kost extern al ongeveer € 1.500.</p>
 

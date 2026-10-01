@@ -41,7 +41,7 @@ MAILTEKST = (
     '<p>Daarna het fundament:</p>'
     '<ul><li><b>Week 1:</b> we meten alles na en vertellen je wat we vonden, en we werken je doelgroep en boodschap uit.</li>'
     '<li><b>Week 2:</b> we zetten de systemen neer: advertentieaccounts, e-mail, meting en je dashboard.</li>'
-    '<li><b>Week 3:</b> de draaidag bij jou, op een van de dagdelen die je opgaf, en we bouwen de campagne en de landingspagina.</li>'
+    '<li><b>Week 3:</b> we bouwen de campagne en de landingspagina. In week 3 of 4 de draaidag bij jou, op een van de dagdelen die je opgaf.</li>'
     '<li><b>Week 4:</b> je ziet alles voordat het live gaat, met één ronde feedback. Daarna gaat het aan, en kijken we de eerste week dagelijks mee.</li></ul>'
     '<p>Vandaag krijg je van Moneybird de factuur voor het fundament, en een verzoek om een machtiging voor de maandelijkse incasso vanaf %(maand2)s.</p>'
     '<p>Tot morgen, dan bel ik je even.</p>'
@@ -114,7 +114,7 @@ UPLOAD = ['meegestuurd naar support@', 'volgt later', 'heb ik niet']
 
 def onboardingformulier():
     out = [kader('<p>Wat je doel is, wat je verkoopt en waarom klanten voor je kiezen, weten we al. Hier vragen we alleen nog wat we nodig hebben om te gaan maken: je beeld, de woorden van je klanten en je e-mailadressen.</p>'
-                 '<p>Weet je iets niet, vul dan in dat je het niet weet: dat is een bruikbaar antwoord. Vragen met “optioneel” mag je leeg laten. Loop je vast, bel dan even: 045 792 0009.</p>'
+                 '<p>Weet je iets niet, vul dan in dat je het niet weet: dat is een bruikbaar antwoord. Vragen met “optioneel” mag je leeg laten. Loop je vast, mail dan naar support@jamesrobinson.nl.</p>'
                  '<p><b>Bestanden</b> (je logo, je klantenbestand, je adressen) stuur je naar support@jamesrobinson.nl. Kruis bij de vraag aan wat je hebt gestuurd.</p>',
                  'Zo vul je het in', 'blauw')]
     out.append(velden(['Bedrijf', 'Ingevuld door', 'Datum']))

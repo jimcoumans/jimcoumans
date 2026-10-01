@@ -95,7 +95,7 @@ def fundament():
     out.append(checklist([
         ('<b>Het onboardingformulier</b>, binnen drie werkdagen. Het meeste denkwerk dat we van de klant vragen, en het scheelt ons de helft van de tijd.', 'dag 1 – 3'),
         ('<b>Beheerderstoegang</b>, in de toegangensessie. Specifiek: zelf een script in de head van de site kunnen plaatsen. Kan dat alleen via de leverancier, dan nu, niet in week twee.', 'dag 1 – 3'),
-        ('<b>Snel akkoord</b> op de boodschap in week 1 en op de campagne in week 3, binnen twee werkdagen, door de persoon die beslist.', 'week 1 en 3'),
+        ('<b>Snel akkoord</b> op de boodschap in week 1 en op de campagne in week 4, binnen twee werkdagen, door de persoon die beslist.', 'week 1 en 4'),
         ('<b>Dagdelen voor de draaidag</b>: alle dagdelen in week 3 en 4 waarop we kunnen filmen, in het formulier. Zonder eigen beeld beginnen we met stock, en dat werkt aantoonbaar slechter.', 'week 3 of 4'),
     ]))
 

@@ -48,9 +48,10 @@ def lijnveld(label, breed='22mm'):
             '<span class="klein">%s</span><i style="display:block;border-bottom:1px solid var(--ln);height:15pt"></i></div>') % (breed, label)
 
 def punt(nr, naam, waarmee, g, o, r, wie):
+    label = 'Gebruik:' if g == 'Ter informatie' or wie.startswith('Onderbouwt') else 'Bij rood:' if wie.startswith('Afspraak') else 'Lost op:'
     kop = ('<div style="display:flex;justify-content:space-between;gap:10pt;align-items:baseline">'
            '<div class="q">%s <span class="hulp" style="font-weight:400;margin-left:4pt">%s</span></div>'
-           '<div class="klein" style="text-align:right;white-space:nowrap">Lost op: <b style="color:var(--tx)">%s</b></div></div>') % (naam, waarmee, wie)
+           '<div class="klein" style="text-align:right;white-space:nowrap">%s <b style="color:var(--tx)">%s</b></div></div>') % (naam, waarmee, label, wie)
     tweelijn = ('<div style="display:grid;grid-template-columns:1fr 1fr;gap:14pt">%s%s</div>' % (lijnveld('Wat we zagen'), lijnveld('Notitie', '14mm')))
     if g == 'Ter informatie':
         inhoud = '<div class="hulp" style="margin-top:3pt"><b>Ter informatie</b>, zonder kleur. Noteer wat je zag.</div>' + lijnveld('Wat we zagen') + lijnveld('')
@@ -79,12 +80,14 @@ def body_021():
         'Per punt: wat je zag (de meting, bijvoorbeeld “6,1 seconden”), de kleur, en een notitie. Wat tussen groen en rood valt, is oranje. Bestaat een punt uit meer metingen, dan telt de slechtste.',
         '“Niet van toepassing” mag, met een reden. Er is geen totaalcijfer: het advies kiest drie punten.',
         'Eerst alles invullen, dan pas de drie bevindingen. Een advies op een halve scan kiest de verkeerde drie.',
+        'Wijkt de scan af van de vragenlijst (de klant schreef dat er op Google wordt geadverteerd en er is niets te vinden), dan is dat een vraag aan tafel. Geen betrapping.',
         '<b>Doe nooit zelf een aanvraag op de site.</b> Dat vervuilt de cijfers van de klant en voelt als een truc als het uitkomt.',
     ]), 'Zo vul je hem in', 'blauw'))
     o.append(kader('<p>Kan er geen meetcode in de site (punt 8), of mag er in de branche van de klant nauwelijks geadverteerd worden, dan gaat de afspraak niet door. Afzeggen met de rode mail “niet meten” (01.3), uiterlijk een werkdag van tevoren. Zonder meting sturen we blind, en dan beginnen we niet.</p>', 'De stopknop', 'rood'))
 
     for q in QS:
         if q[0] == 'grp':
+            if q[1].startswith('Met AI'): o.append(NIEUWE_PAGINA)
             o.append(h3(q[1]))
             if q[1].startswith('Met AI'):
                 o.append(p('Nog niet met de hand. Vul in wat het portaal teruggeeft, of laat leeg. Bij deze punten komt naast de kleur een lijst van alles wat fout is; die gaat naar de werklijst, niet op het scanrapport.', 'klein'))
@@ -97,26 +100,26 @@ def body_021():
     o.append(NIEUWE_PAGINA)
     o.append(h2('Van bevinding naar geld'))
     o.append(p('Een bevinding zonder gevolg is een constatering. Het gevolg reken je uit met de getallen uit de vragenlijst, nooit met een branchecijfer dat we niet kunnen onderbouwen. Eén aanvechtbaar cijfer maakt het hele rapport aanvechtbaar.'))
-    o.append(drie(
-        kader('<p>“Je krijgt ongeveer twintig aanvragen per maand, maar geen enkele is aan een bron te koppelen. Adverteer je straks € 1.500 per maand, dan weet je van al dat geld niet wat het opleverde, en kan Google niet leren welke klik een klant werd.”</p>', 'Geen bedankpagina', 'grijs'),
-        kader('<p>“Wie jou googelt, ziet eerst ' + vv('[concurrent]') + '. Dat zijn mensen die al voor jou kwamen.”</p>', 'Een concurrent op de naam', 'grijs'),
-        kader('<p>“Je belangrijkste pagina doet er zes seconden over, Google vindt 2,5 goed. Google rekent de pagina mee in wat je per klik betaalt, dus je betaalt meer voor dezelfde bezoeker.”</p>', 'Een trage mobiele site', 'grijs')))
+    o.append(tabel(['Bevinding', 'Zo zeg je het gevolg'], [
+        ['Geen bedankpagina', '“Je krijgt ongeveer twintig aanvragen per maand, maar geen enkele is aan een bron te koppelen. Adverteer je straks € 1.500 per maand, dan weet je van al dat geld niet wat het opleverde, en kan Google niet leren welke klik een klant werd.”'],
+        ['Een concurrent op de naam', '“Wie jou googelt, ziet eerst ' + vv('[concurrent]') + '. Dat zijn mensen die al voor jou kwamen.”'],
+        ['Een trage mobiele site', '“Je belangrijkste pagina doet er zes seconden over, Google vindt 2,5 goed. Google rekent de pagina mee in wat je per klik betaalt, dus je betaalt meer voor dezelfde bezoeker.”'],
+    ]))
     o.append(h3('Welke drie het worden'))
     o.append(ul([
         'Het raakt wat de klant bij “waar loop je tegenaan” invulde, of het doel van de klant.',
         'Het gevolg is uit te drukken in de eigen getallen van de klant.',
         'Het grootste probleem gaat altijd mee, ook als wij het niet oplossen. Slechte reviews zijn niet ons werk, maar als dat is wat de klant klanten kost, zeggen we het.',
-        'Wijkt de scan af van de vragenlijst (de klant schreef dat er op Google wordt geadverteerd en er is niets te vinden), dan is dat een vraag aan tafel. Geen betrapping.',
     ]))
     o.append(h3('De getallen uit de vragenlijst'))
     rij2 = lambda *ls: '<div style="display:flex;gap:14pt">%s</div>' % ''.join('<div style="flex:1">%s</div>' % lijnveld(l, '34mm') for l in ls)
     o.append(rij2('Aanvragen per maand', 'Wordt klant (%)'))
     o.append(rij2('Gemiddelde opdracht', 'Maximaal per aanvraag'))
-    o.append(rij2('Waar de klant tegenaan loopt', 'Wanneer de klant wil beginnen'))
+    o.append(rij2('Obstakel (vraag 14)', 'Beginnen (vraag 15)'))
     o.append(h3('De drie bevindingen'))
+    o.append(p('Per bevinding: het punt, wat we zagen, en het gevolg in de getallen van de klant. Het grootste probleem zit erbij.', 'klein'))
     for n in (1, 2, 3):
-        o.append(vraag(n, 'Punt ______ · wat we zagen, en het gevolg in de getallen van de klant', '', 3,
-                       ['raakt het obstakel of doel', 'gevolg in eigen getallen', 'het grootste probleem']))
+        o.append(vraag(n, 'Punt ______', '', 3))
 
     o.append(h2('De actielijst: wie lost het op'))
     o.append(p('Alle oranje en rode punten, gegroepeerd op wie het oplost. Staat op de klantkaart zodra de scan compleet is.'))

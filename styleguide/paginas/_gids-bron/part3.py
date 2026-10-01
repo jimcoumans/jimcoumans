@@ -62,7 +62,7 @@ SAMEN = """
  ['04 · Voorstel', 'Rekensom, concept, offerte-concept', '—', 'Nakijken, vrijgeven, het gesprek', 'Beslissen; maand of jaar per licentie'],
  ['05 · Tekenen', 'Moneybird, machtiging, factuur', '—', '—', 'Tekenen, machtigen'],
  ['06 · Onboarding', 'Kick-offmail, datums', '—', 'Vast aanspreekpunt: bellen, toegangensessie', 'Formulier, toegangen, betaalgegevens'],
- ['07 · Fundament', '—', 'Vijf rollen, 76 taken', 'Klantcontact: akkoorden, draaidag, livegang', 'Akkoord week 1 en 3, draaidag'],
+ ['07 · Fundament', '—', 'Vijf rollen, 76 taken', 'Klantcontact: akkoorden, draaidag, livegang', 'Akkoord week 1 en 4, dagdelen draaidag'],
  ['08 · Maandritme', 'Meldingen, weekmail, dashboard', 'Wekelijks bijsturen, maandupdate', 'Performance Review, ingrijpen', 'Opvolgen, oordeel per aanvraag'],
 ]) + """
 <h3>Wat we wanneer vragen</h3>
