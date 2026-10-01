@@ -2,188 +2,170 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@600;700&display=swap">
 <style>
-/* Layout: één A4-vel. Kop met de stelling, de herkenning, de vergelijking van € 1.000, wat er verandert in drie kolommen, waarom het in je belang is, en de afspraak. Designsysteem v3.0. */
+/* Layout: designsysteem v3.0. Eén vel: stelling, één grafiek (investering tegenover opbrengst), drie kaarten met wat er verandert, drie winsten, contact. */
 :root{
-  --page:#f5f5f7; --sheet:#fff; --tx:#1d1d1f; --tx2:#5f5f64; --ln:#e5e5e9;
-  --blue:#007aff; --blue-tx:#0857c3; --b100:#e0efff; --b50:#f4f9ff;
-  --red-tx:#c02a22; --red100:#fdecea; --green-tx:#1d7d3f; --green100:#e6f7eb;
-  --orange-tx:#8a5208; --orange100:#fef2e0; --ink:#1c1c1e; --ink-tx:#f5f5f7; --ink-tx2:#a1a1a6;
-  --fd:"Inter Tight","Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
-  --ft:"Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --bg:#ffffff; --bg-alt:#f5f5f7; --bg-sunk:#ebebf0; --chip:#ffffff;
+  --tx:#1d1d1f; --tx2:#6e6e73; --tx3:#86868b; --ln:#d2d2d7; --ln-soft:#e5e5e9;
+  --blue:#007aff; --blue-link:#0066cc; --blue-100:#e0efff; --blue-tint:#e2ebf3;
+  --lime:#c4f000; --lime-text:#5a7000; --lime-100:#f2fccc;
+  --red:#ff3b30; --red-tx:#c02a22; --red-100:#fdecea;
+  --black:#1c1c1e;
+  --f-disp:"Inter Tight","Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --f-text:"Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --page:#000; --sheet:#1c1c1e; --tx:#f5f5f7; --tx2:#a8a8ad; --ln:#2a2a2d;
-  --blue:#2997ff; --blue-tx:#2997ff; --b100:rgba(0,122,255,.2); --b50:rgba(0,122,255,.08);
-  --red-tx:#ff6b61; --red100:rgba(255,59,48,.14); --green-tx:#41c96a; --green100:rgba(52,199,89,.14);
-  --orange-tx:#f0a040; --orange100:rgba(246,160,39,.15); --ink:#2c2c2e;
+  --bg:#000; --bg-alt:#111113; --bg-sunk:#1c1c1e; --chip:#1c1c1e;
+  --tx:#f5f5f7; --tx2:#a1a1a6; --tx3:#86868b; --ln:#38383c; --ln-soft:#2a2a2d;
+  --blue:#2997ff; --blue-link:#2997ff; --blue-100:rgba(0,122,255,.16); --blue-tint:rgba(0,122,255,.12);
+  --lime-text:#d9ff33; --lime-100:rgba(196,240,0,.16);
+  --red:#ff6b61; --red-tx:#ff6b61; --red-100:rgba(255,59,48,.14);
   color-scheme:dark;
 }}
 :root[data-theme="dark"]{
-  --page:#000; --sheet:#1c1c1e; --tx:#f5f5f7; --tx2:#a8a8ad; --ln:#2a2a2d;
-  --blue:#2997ff; --blue-tx:#2997ff; --b100:rgba(0,122,255,.2); --b50:rgba(0,122,255,.08);
-  --red-tx:#ff6b61; --red100:rgba(255,59,48,.14); --green-tx:#41c96a; --green100:rgba(52,199,89,.14);
-  --orange-tx:#f0a040; --orange100:rgba(246,160,39,.15); --ink:#2c2c2e;
+  --bg:#000; --bg-alt:#111113; --bg-sunk:#1c1c1e; --chip:#1c1c1e;
+  --tx:#f5f5f7; --tx2:#a1a1a6; --tx3:#86868b; --ln:#38383c; --ln-soft:#2a2a2d;
+  --blue:#2997ff; --blue-link:#2997ff; --blue-100:rgba(0,122,255,.16); --blue-tint:rgba(0,122,255,.12);
+  --lime-text:#d9ff33; --lime-100:rgba(196,240,0,.16);
+  --red:#ff6b61; --red-tx:#ff6b61; --red-100:rgba(255,59,48,.14);
   color-scheme:dark;
 }
 *,*::before,*::after{box-sizing:border-box}
-body{margin:0;background:var(--page);color:var(--tx);font-family:var(--ft);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;padding:24px 16px}
-.vel{max-width:860px;margin:0 auto;background:var(--sheet);border-radius:20px;overflow:hidden}
-h1,h2,h3{font-family:var(--fd);margin:0;text-wrap:balance}
+body{margin:0;background:var(--bg-alt);color:var(--tx);font-family:var(--f-text);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;padding:24px 16px}
+h1,h2,h3{font-family:var(--f-disp);text-wrap:balance;margin:0}
 p{margin:0}
-b{font-weight:600}
-.kop{background:var(--ink);color:var(--ink-tx);padding:36px 44px 32px}
-.eyebrow{font-size:14px;font-weight:600;color:var(--blue)}
-.kop .eyebrow{color:#2997ff}
-.kop h1{font-size:clamp(30px,5vw,44px);line-height:1.05;letter-spacing:-.02em;margin-top:10px}
-.kop h1 span{color:#2997ff}
-.kop p{color:var(--ink-tx2);font-size:17px;margin-top:14px;max-width:62ch}
-.kop p b{color:var(--ink-tx)}
-.in{padding:30px 44px 34px;display:grid;gap:28px}
-h2{font-size:21px;letter-spacing:-.01em;margin-bottom:12px}
-.twee{display:grid;grid-template-columns:1fr 1fr;gap:28px}
-.twee>*{min-width:0}
-ul{margin:0;padding-left:18px} li{margin-bottom:5px} li:last-child{margin-bottom:0}
-.zacht{color:var(--tx2)}
-.oefening{background:var(--b50);border-radius:14px;padding:18px 20px}
-.oefening h3{font-size:16px;margin-bottom:6px;color:var(--blue-tx)}
-.vs{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.vs>div{border-radius:14px;padding:18px 20px;min-width:0}
-.vs .a{background:var(--red100)} .vs .b{background:var(--green100)}
-.vs .bedrag{font-family:var(--fd);font-size:26px;font-weight:700;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
-.vs .a .bedrag{color:var(--red-tx)} .vs .b .bedrag{color:var(--green-tx)}
-.vs .wat{font-weight:600;margin:2px 0 8px}
-.drie{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.drie>div{border:1px solid var(--ln);border-radius:14px;padding:16px 18px;min-width:0}
-.label{display:inline-block;font-size:13px;font-weight:600;border-radius:980px;padding:3px 10px;margin-bottom:10px}
-.l-stop{background:var(--red100);color:var(--red-tx)}
-.l-plaats{background:var(--b100);color:var(--blue-tx)}
-.l-blijft{background:var(--orange100);color:var(--orange-tx)}
-.belang{display:grid;grid-template-columns:1fr 1fr;gap:12px 28px;counter-reset:n}
-.belang>div{display:grid;grid-template-columns:28px 1fr;gap:0 10px;min-width:0;align-content:start}
-.belang>div::before{counter-increment:n;content:counter(n);grid-row:span 2;width:28px;height:28px;border-radius:50%;background:var(--blue);color:#fff;font-weight:600;font-size:14px;display:grid;place-items:center}
-.belang h3{font-size:16px;margin:3px 0 3px}
-.afspraak{border-top:1px solid var(--ln);padding-top:22px;display:flex;flex-wrap:wrap;gap:16px 32px;align-items:flex-end;justify-content:space-between}
-.afspraak p{max-width:52ch}
-.contact{font-size:14px;color:var(--tx2);text-align:right}
-.contact b{color:var(--tx)}
-.voet{padding:14px 44px;font-size:12px;color:var(--tx2);border-top:1px solid var(--ln)}
-@media (max-width:700px){
-  .kop{padding:28px 22px 24px} .in{padding:24px 22px 28px} .voet{padding:14px 22px}
-  .twee,.vs,.drie,.belang{grid-template-columns:1fr}
-  .contact{text-align:left}
+.vel{max-width:880px;margin:0 auto;background:var(--bg);border-radius:18px;padding:48px 48px 0;display:grid;gap:36px}
+.eyebrow{display:block;font-size:14px;font-weight:600;color:var(--blue-link);margin-bottom:8px}
+h1{font-size:52px;font-weight:700;line-height:1.05;letter-spacing:-.024em}
+h1 span{color:var(--blue)}
+.lead{font-size:21px;line-height:1.45;color:var(--tx2);max-width:640px;margin-top:16px}
+h2{font-size:24px;font-weight:600;line-height:1.2;letter-spacing:-.01em}
+
+.grafiek{background:var(--bg-alt);border-radius:18px;padding:24px 24px 16px;position:relative}
+.grafiek .kop{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 16px;align-items:baseline;margin-bottom:8px}
+.grafiek .bron{font-size:14px;color:var(--tx3)}
+.grafiek svg{display:block;width:100%;height:auto}
+.as{font-size:13px;fill:var(--tx2)}
+.zone{fill:var(--red-100)}
+.zone-l{font-size:13px;font-weight:600;fill:var(--red-tx)}
+.raster{stroke:var(--ln);stroke-width:1}
+.pt{cursor:default}
+.pt circle.m{stroke:var(--bg-alt);stroke-width:2}
+.pt .hit{fill:transparent}
+.pt text{font-size:15px;font-weight:600;fill:var(--tx)}
+.pt text.sub{font-size:13px;font-weight:400;fill:var(--tx2)}
+.tip{position:absolute;pointer-events:none;background:var(--black);color:#f5f5f7;font-size:14px;line-height:1.4;border-radius:10px;padding:8px 12px;max-width:240px;opacity:0;transition:opacity .15s}
+.tip.on{opacity:1}
+
+.drie{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.card{border-radius:18px;padding:22px;min-width:0}
+.card .badge{display:inline-flex;font-size:12px;font-weight:500;line-height:1;padding:6px 12px;border-radius:980px;margin-bottom:12px}
+.card p{font-size:17px;font-weight:600;font-family:var(--f-disp);line-height:1.3;letter-spacing:-.005em}
+.c-stop{background:var(--red-100)} .c-stop .badge{background:var(--bg);color:var(--red-tx)}
+.c-plaats{background:var(--blue-tint)} .c-plaats .badge{background:var(--bg);color:var(--blue-link)}
+.c-blijft{background:var(--lime-100)} .c-blijft .badge{background:var(--bg);color:var(--lime-text)}
+
+.winst{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;border-top:1px solid var(--ln-soft);padding-top:28px}
+.winst div{min-width:0}
+.winst b{display:block;font-family:var(--f-disp);font-size:19px;font-weight:600;letter-spacing:-.01em;line-height:1.25;margin-bottom:4px}
+.winst span{font-size:15px;color:var(--tx2)}
+
+.voet{margin:0 -48px;background:var(--black);color:#f5f5f7;padding:22px 48px;border-radius:0 0 18px 18px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 24px;align-items:center}
+.voet .merk{font-family:var(--f-disp);font-weight:600}
+.voet .merk small{display:block;font-family:var(--f-text);font-weight:400;font-size:13px;color:#a1a1a6}
+.voet .ct{font-size:15px;text-align:right}
+.voet .ct span{color:#a1a1a6}
+
+@media (max-width:720px){
+  .vel{padding:32px 20px 0;gap:28px}
+  h1{font-size:38px} .lead{font-size:19px}
+  .drie,.winst{grid-template-columns:1fr}
+  .voet{margin:0 -20px;padding:20px}
+  .voet .ct{text-align:left}
+  .grafiek{padding:18px 14px 10px}
 }
-@page{size:A4;margin:8mm}
+@page{size:A4;margin:0}
 @media print{
-  body{background:#fff;padding:0;font-size:10.8px;line-height:1.4}
-  .vel{max-width:none;border-radius:0}
-  .kop{padding:22px 26px 20px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .kop h1{font-size:28px} .kop p{font-size:12.5px;margin-top:8px}
-  .kop{padding:18px 24px 16px}
-  .in{padding:12px 24px 10px;gap:9px} h2{font-size:15px;margin-bottom:6px} .belang h3,.oefening h3{font-size:13px} li{margin-bottom:2px}
-  .vs>div,.drie>div,.oefening{padding:10px 14px} .twee{gap:20px} .belang{gap:8px 20px} .afspraak{padding-top:12px} .label{margin-bottom:6px}
-  .vs>div,.drie>div,.oefening,.label,.belang>div::before{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .vs .bedrag{font-size:19px} .voet{padding:8px 24px}
+  body{background:var(--bg);padding:0;font-size:12px}
+  .vel{max-width:none;border-radius:0;padding:14mm 14mm 0;gap:20px}
+  h1{font-size:40px} .lead{font-size:16px;margin-top:10px}
+  .grafiek{padding:16px 18px 8px} .grafiek svg{max-height:290px}
+  .card{padding:16px} .card p{font-size:14px}
+  .winst{padding-top:18px} .winst b{font-size:15px} .winst span{font-size:12px}
+  .voet{margin:0 -14mm;padding:14px 14mm;border-radius:0}
+  .tip{display:none}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 </style>
 
 <article class="vel">
-  <header class="kop">
-    <div class="eyebrow">James Robinson · Hoe we werken</div>
+  <header>
+    <span class="eyebrow">James Robinson · Onze werkwijze</span>
     <h1>We stoppen met posten.<br><span>Niet met social media.</span></h1>
-    <p>We vullen je feed niet meer. Geen twee posts per week meer bedenken om het ritme vast te houden. De tijd en het geld die daarin gingen, steken we in wat je <b>aantoonbaar klanten oplevert</b>. Dat klinkt als minder. Het is meer.</p>
+    <p class="lead">Je feed vullen kost het meeste en levert het minste op. Die tijd en dat geld zetten we in waar je nieuwe klanten zitten.</p>
   </header>
 
-  <div class="in">
-    <section class="twee">
-      <div>
-        <h2>Herken je dit?</h2>
-        <ul>
-          <li>Elke week opnieuw: wat posten we deze keer?</li>
-          <li>Afstemmen, aanpassen, goedkeuren, voor één bericht.</li>
-          <li>Likes en hartjes, maar geen idee wat het oplevert.</li>
-          <li>Het gevoel dat het nooit goed genoeg is, en nooit af.</li>
-        </ul>
-        <p class="zacht" style="margin-top:10px">Dat ligt niet aan jou en niet aan ons. Het ligt aan wat een feed is.</p>
-      </div>
-      <div>
-        <h2>Wat je feed wel en niet doet</h2>
-        <p>Je posts komen vooral terecht bij mensen die je al kennen, en de platformen laten ze maar aan een klein deel van hen zien: Instagram en Facebook verdienen aan advertenties, niet aan gratis bereik. In de cijfers van onze klanten zien we steeds hetzelfde: <b>de eigen feed levert van alle kanalen het minste bezoek aan de website op.</b></p>
-      </div>
-    </section>
+  <section class="grafiek" aria-labelledby="g-titel">
+    <div class="kop"><h2 id="g-titel">Investering tegenover opbrengst</h2><span class="bron">Zo zien we het in de cijfers van onze klanten</span></div>
+    <svg viewBox="0 0 760 360" role="img" aria-label="Je feed vullen kost veel tijd en levert het minste bezoek op. Adverteren, SEO en e-mail leveren meer op per euro.">
+      <rect class="zone" x="390" y="200" width="350" height="120" rx="10"/>
+      <text class="zone-l" x="728" y="222" text-anchor="end">Veel moeite, weinig resultaat</text>
+      <line class="raster" x1="40" y1="320" x2="740" y2="320"/>
+      <line class="raster" x1="40" y1="20" x2="40" y2="320"/>
+      <text class="as" x="740" y="344" text-anchor="end">Investering in tijd en geld →</text>
+      <text class="as" x="40" y="344">laag</text>
+      <text class="as" transform="translate(24 320) rotate(-90)">Opbrengst: bezoek, aanvragen, klanten →</text>
 
-    <section class="oefening">
-      <h3>Probeer dit eens: tel je eerste vijftig volgers</h3>
-      <p>Bestaande klanten, (oud-)medewerkers, familie en vrienden, collega-ondernemers, leveranciers, concurrenten. Hoeveel blijven er over die nog klant van je kunnen worden? Dat is je markt op dat kanaal.</p>
-    </section>
+      <g class="pt" tabindex="0" data-tip="Adverteren: elke euro gaat naar bereik bij mensen die je nog niet kennen, en je ziet precies wat het oplevert.">
+        <circle class="hit" cx="520" cy="70" r="26"/><circle class="m" cx="520" cy="70" r="11" fill="var(--blue)"/>
+        <text x="540" y="66">Adverteren</text><text class="sub" x="540" y="84">de motor</text>
+      </g>
+      <g class="pt" tabindex="0" data-tip="SEO: verkeer dat je niet hoeft te kopen, op de woorden waarvan we weten dat ze klanten opleveren.">
+        <circle class="hit" cx="350" cy="125" r="26"/><circle class="m" cx="350" cy="125" r="9" fill="var(--blue)"/>
+        <text x="368" y="121">SEO</text><text class="sub" x="368" y="139">groeit mee</text>
+      </g>
+      <g class="pt" tabindex="0" data-tip="E-mail: weinig kosten, en klanten komen terug zonder dat je opnieuw voor ze betaalt.">
+        <circle class="hit" cx="160" cy="150" r="26"/><circle class="m" cx="160" cy="150" r="9" fill="var(--blue)"/>
+        <text x="178" y="146">E-mail</text><text class="sub" x="178" y="164">klein, rendabel</text>
+      </g>
+      <g class="pt" tabindex="0" data-tip="Je feed vullen: elke week tijd en afstemming, vooral gezien door wie je al kent. Het minste bezoek aan je website van alle kanalen.">
+        <circle class="hit" cx="620" cy="285" r="26"/><circle class="m" cx="620" cy="285" r="11" fill="var(--red)"/>
+        <text x="600" y="281" text-anchor="end">Je feed vullen</text><text class="sub" x="600" y="299" text-anchor="end">twee posts per week</text>
+      </g>
+    </svg>
+    <div class="tip" id="tip" role="tooltip"></div>
+  </section>
 
-    <section>
-      <h2>Wat € 1.000 per maand je oplevert</h2>
-      <div class="vs">
-        <div class="a">
-          <div class="bedrag">€ 1.000</div>
-          <div class="wat">aan je feed vullen</div>
-          <ul>
-            <li>Ongeveer tien uur maakwerk. Het hele bedrag gaat op aan arbeid.</li>
-            <li>Bereikt vooral mensen die je al volgen.</li>
-            <li>Elke maand opnieuw, het werk stapelt niet op.</li>
-            <li>Wat het oplevert, is nauwelijks te meten.</li>
-          </ul>
-        </div>
-        <div class="b">
-          <div class="bedrag">€ 1.000</div>
-          <div class="wat">aan adverteren</div>
-          <ul>
-            <li>Het hele bedrag gaat naar bereik.</li>
-            <li>Bij mensen die jij kiest en die je nog niet kennen.</li>
-            <li>Op het moment dat ze zoeken of scrollen.</li>
-            <li>Per euro zichtbaar: bezoekers, aanvragen, klanten.</li>
-          </ul>
-        </div>
-      </div>
-    </section>
+  <section class="drie" aria-label="Wat er verandert">
+    <div class="card c-stop"><span class="badge">Stopt</span><p>Twee posts per week om de feed te vullen</p></div>
+    <div class="card c-plaats"><span class="badge">Komt ervoor in de plaats</span><p>Adverteren bij mensen die je nog niet kennen, met SEO en e-mail</p></div>
+    <div class="card c-blijft"><span class="badge">Blijft</span><p>Het beeld uit je campagnes delen we ook op je eigen kanalen</p></div>
+  </section>
 
-    <section>
-      <h2>Wat er verandert</h2>
-      <div class="drie">
-        <div>
-          <span class="label l-stop">Stopt</span>
-          <ul>
-            <li>Twee posts per week bedenken om de feed te vullen</li>
-            <li>De contentkalender en het afstemmen per bericht</li>
-          </ul>
-        </div>
-        <div>
-          <span class="label l-plaats">Komt ervoor in de plaats</span>
-          <ul>
-            <li>Adverteren op Google, Instagram en Facebook, en op LinkedIn of TikTok als je klanten daar zitten</li>
-            <li>Samen met je website, SEO en e-mail</li>
-            <li>Foto en video, gemaakt om te presteren</li>
-          </ul>
-        </div>
-        <div>
-          <span class="label l-blijft">Blijft mogelijk</span>
-          <ul>
-            <li>Het beeld uit je lopende campagnes plaatsen we ook op je eigen kanalen, zolang de campagne loopt</li>
-            <li>Wil je zelf meer posten? Dan leveren we templates of een contentsessie, als los project</li>
-          </ul>
-        </div>
-      </div>
-    </section>
+  <section class="winst" aria-label="Wat je ervoor terugkrijgt">
+    <div><b>Meer nieuwe klanten</b><span>Elke euro gaat naar bereik, niet naar onderhoud.</span></div>
+    <div><b>Je ziet wat het oplevert</b><span>Per kanaal, tot op de aanvraag.</span></div>
+    <div><b>Geen poststress meer</b><span>Niemand hoeft nog te bedenken wat er online moet.</span></div>
+  </section>
 
-    <section>
-      <h2>Waarom dit in jouw belang is</h2>
-      <div class="belang">
-        <div><h3>Elke euro werkt voor nieuwe klanten</h3><p class="zacht">Niet voor het bijhouden van een kanaal, maar voor bereik bij mensen die nog bij je moeten aankloppen.</p></div>
-        <div><h3>Je ziet wat het oplevert</h3><p class="zacht">Per kanaal, tot op de aanvraag en wat die kostte. Geen likes, maar klanten.</p></div>
-        <div><h3>Je profiel blijft verzorgd</h3><p class="zacht">Wie je advertentie ziet, kijkt vaak even op je profiel. Daar staat dan hetzelfde beeld, in jouw huisstijl.</p></div>
-        <div><h3>Geen wekelijkse stress meer</h3><p class="zacht">Niemand hoeft nog te bedenken wat er deze week online moet. Die energie gaat naar je klanten.</p></div>
-      </div>
-    </section>
-
-    <section class="afspraak">
-      <p><b>Cijfers zijn leidend.</b> In elke Performance Review laten we je zien wat je marketing heeft opgeleverd, kanaal voor kanaal. Werkt iets niet, dan zeggen we het zelf, met de reden erbij.</p>
-      <div class="contact"><b>support@jamesrobinson.nl</b><br>Dringend? Bel 045 792 0009</div>
-    </section>
-  </div>
-  <footer class="voet">James Robinson · Marketing &amp; Branding · www.jamesrobinson.nl</footer>
+  <footer class="voet">
+    <div class="merk">James Robinson<small>Marketing &amp; Branding</small></div>
+    <div class="ct">support@jamesrobinson.nl<br><span>Dringend? 045 792 0009</span></div>
+  </footer>
 </article>
+
+<script>
+(function(){
+  var tip=document.getElementById('tip'), box=tip.parentNode;
+  function show(g,x,y){tip.textContent=g.getAttribute('data-tip');tip.classList.add('on');
+    var b=box.getBoundingClientRect(), w=tip.offsetWidth;
+    var l=Math.min(Math.max(8,x-b.left-w/2),b.width-w-8);
+    tip.style.left=l+'px'; tip.style.top=(y-b.top-tip.offsetHeight-14)+'px';}
+  function hide(){tip.classList.remove('on')}
+  document.querySelectorAll('.pt').forEach(function(g){
+    g.addEventListener('mousemove',function(e){show(g,e.clientX,e.clientY)});
+    g.addEventListener('mouseleave',hide);
+    g.addEventListener('focus',function(){var r=g.querySelector('.m').getBoundingClientRect();show(g,r.left+r.width/2,r.top)});
+    g.addEventListener('blur',hide);
+  });
+})();
+</script>
