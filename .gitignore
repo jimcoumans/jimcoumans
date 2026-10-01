@@ -9,3 +9,7 @@ build/
 next-env.d.ts
 .DS_Store
 .vercel
+documenten/_bron/html/
+documenten/_bron/__pycache__/
+documenten/_bron/docs/__pycache__/
+documenten/_bron/jobs-*.json
