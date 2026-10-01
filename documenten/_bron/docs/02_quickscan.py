@@ -75,7 +75,6 @@ def body_021():
     o.append(rij('Datum scan', 'Gedaan door'))
     o.append(rij('Intakegesprek op', 'Tijd besteed'))
     o.append(kader(ul([
-        'Klaar en vrijgegeven uiterlijk één werkdag vóór het intakegesprek. Een half uur; de eerste tien keer een uur.',
         'Nu doe je punt 1 tot en met 16 met de hand: veertien met een kleur, twee ter informatie (13 en 14). Punt 17 tot en met 24 komen erbij zodra het portaal ze met AI kan doen.',
         'Per punt: wat je zag (de meting, bijvoorbeeld “6,1 seconden”), de kleur, en een notitie. Wat tussen groen en rood valt, is oranje. Bestaat een punt uit meer metingen, dan telt de slechtste.',
         '“Niet van toepassing” mag, met een reden. Er is geen totaalcijfer: het advies kiest drie punten.',
@@ -85,14 +84,17 @@ def body_021():
     ]), 'Zo vul je hem in', 'blauw'))
     o.append(kader('<p>Kan er geen meetcode in de site (punt 8), of mag er in de branche van de klant nauwelijks geadverteerd worden, dan gaat de afspraak niet door. Afzeggen met de rode mail “niet meten” (01.3), uiterlijk een werkdag van tevoren. Zonder meting sturen we blind, en dan beginnen we niet.</p>', 'De stopknop', 'rood'))
 
+    kop = ''
     for q in QS:
         if q[0] == 'grp':
-            if q[1].startswith('Met AI'): o.append(NIEUWE_PAGINA)
-            o.append(h3(q[1]))
+            kop = h3(q[1])
             if q[1].startswith('Met AI'):
-                o.append(p('Nog niet met de hand. Vul in wat het portaal teruggeeft, of laat leeg. Bij deze punten komt naast de kleur een lijst van alles wat fout is; die gaat naar de werklijst, niet op het scanrapport.', 'klein'))
+                kop += p('Nog niet met de hand. Vul in wat het portaal teruggeeft, of laat leeg. Bij deze punten komt naast de kleur een lijst van alles wat fout is; die gaat naar de werklijst, niet op het scanrapport.', 'klein')
             continue
-        o.append(punt(*q))
+        if kop:
+            o.append('<div style="break-inside:avoid">%s%s</div>' % (kop, punt(*q))); kop = ''
+        else:
+            o.append(punt(*q))
 
     o.append(p('<b>Waar een grens op rust.</b> Een deel van de normen is officieel (Google, W3C, de wet), een deel komt uit onderzoek of grote branchestudies, en een deel is onze eigen grens omdat er geen bron is: punt 3, 4, 6, 9 tot en met 12, 15 en 17 tot en met 20 deels, en 23 en 24 helemaal. Die eigen grenzen stellen we bij na de eerste twintig tot dertig scans.', 'klein'))
 
@@ -215,7 +217,7 @@ def body_022():
 
 
 DOCS = [
-    dict(code='02.1', titel='Quickscan invulformulier', fase=FASE, voor='Intern', wanneer='Zodra de afspraak geboekt is', wie='Vaste medewerker',
+    dict(code='02.1', titel='Quickscan invulformulier', fase=FASE, voor='Intern', wanneer='Zodra de afspraak geboekt is; klaar één werkdag vóór het intakegesprek', wie='Vaste medewerker; een half uur, de eerste tien keer een uur',
          lead='De 24 punten met hun normen, om per punt de meting, de kleur en een notitie in te vullen. Daarna de drie bevindingen met hun gevolg in geld, en wie wat oplost.',
          body=body_021()),
     dict(code='02.2', titel='Scanrapport', fase=FASE, voor='Klant', wanneer='Bij het intakegesprek', wie='James Robinson',
