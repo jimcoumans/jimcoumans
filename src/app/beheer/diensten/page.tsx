@@ -8,6 +8,7 @@ import {
   marginPercent,
 } from '@/lib/services'
 import { AppShell } from '@/components/AppShell'
+import { Paneel } from '@/components/Paneel'
 import { ActionForm, Field } from '@/components/ActionForm'
 import { nieuweDienst, wijzigDienst, wisselDienstActief } from '../service-actions'
 import { formatCents } from '@/lib/money'
@@ -25,14 +26,103 @@ export default async function DienstenPage() {
 
   return (
     <AppShell user={user} actief="diensten">
-        <h1 className="mb-1 text-[28px] sm:text-[32px]">Diensten</h1>
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <h1 className="mb-1 text-[28px] sm:text-[32px]">Diensten</h1>
+          <Paneel
+            knop="+ Dienst toevoegen"
+            titel="Dienst toevoegen"
+          >
+            <ActionForm action={nieuweDienst} submitLabel="Dienst aanmaken">
+              <Field label="Naam" name="naam" required placeholder="Social media post" />
+              <Field label="Verkooptarief" name="tarief" required placeholder="100,00" />
+
+              <div>
+                <label htmlFor="eenheid" className="text-jr-text mb-1.5 block text-[13px] font-medium">
+                  Eenheid
+                </label>
+                <select
+                  id="eenheid"
+                  name="eenheid"
+                  defaultValue="piece"
+                  className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
+                >
+                  {Object.entries(unitLabels).map(([value, label]) => (
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <Field
+                label="Kostprijs"
+                name="kostprijs"
+                placeholder="35,00"
+                hint="Inkoop of interne kosten. Alleen voor de marge; klanten zien dit nooit."
+              />
+
+              <div>
+                <label htmlFor="productgroep" className="text-jr-text mb-1.5 block text-[13px] font-medium">
+                  Productgroep <span className="text-gray-400">(optioneel)</span>
+                </label>
+                <select
+                  id="productgroep"
+                  name="productgroep"
+                  defaultValue=""
+                  className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
+                >
+                  <option value="">Geen</option>
+                  {PRODUCTGROEPEN.map((p) => (
+                    <option key={p} value={p}>
+                      {p}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label htmlFor="afdeling" className="text-jr-text mb-1.5 block text-[13px] font-medium">
+                  Afdeling <span className="text-gray-400">(optioneel)</span>
+                </label>
+                <select
+                  id="afdeling"
+                  name="afdeling"
+                  defaultValue=""
+                  className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
+                >
+                  <option value="">Geen</option>
+                  {AFDELINGEN.map((a) => (
+                    <option key={a} value={a}>
+                      {a}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <Field label="Code" name="code" placeholder="SOC-POST" />
+              <Field
+                label="Omschrijving"
+                name="omschrijving"
+                placeholder="Wat de klant krijgt"
+              />
+              <Field
+                label="Verwachte tijd in minuten"
+                name="minuten"
+                type="number"
+                placeholder="45"
+                hint="Voor capaciteitsplanning later."
+              />
+              <Field label="Interne notities" name="notities" />
+            </ActionForm>
+          </Paneel>
+        </div>
         <p className="mb-6 text-sm text-gray-600">
           {actief.length} actieve {actief.length === 1 ? 'dienst' : 'diensten'}. Het tarief
           hier is het tarief van nu; bestaande boekingen houden het tarief van hun eigen
           moment.
         </p>
 
-        <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
+        <div>
           <div className="space-y-8">
             {actief.length === 0 ? (
               <div className="rounded-xl bg-white p-8 text-center shadow-sm">
@@ -63,91 +153,6 @@ export default async function DienstenPage() {
             )}
           </div>
 
-          <aside className="rounded-xl bg-white p-6 shadow-sm lg:sticky lg:top-4 lg:self-start">
-            <h2 className="mb-3 text-base">Dienst toevoegen</h2>
-            <ActionForm action={nieuweDienst} submitLabel="Dienst aanmaken">
-              <Field label="Naam" name="naam" required placeholder="Social media post" />
-              <Field label="Verkooptarief" name="tarief" required placeholder="100,00" />
-
-              <div>
-                <label htmlFor="eenheid" className="mb-1 block text-xs text-gray-600">
-                  Eenheid
-                </label>
-                <select
-                  id="eenheid"
-                  name="eenheid"
-                  defaultValue="piece"
-                  className="focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
-                >
-                  {Object.entries(unitLabels).map(([value, label]) => (
-                    <option key={value} value={value}>
-                      {label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <Field
-                label="Kostprijs"
-                name="kostprijs"
-                placeholder="35,00"
-                hint="Inkoop of interne kosten. Alleen voor de marge; klanten zien dit nooit."
-              />
-
-              <div>
-                <label htmlFor="productgroep" className="mb-1 block text-xs text-gray-600">
-                  Productgroep <span className="text-gray-400">(optioneel)</span>
-                </label>
-                <select
-                  id="productgroep"
-                  name="productgroep"
-                  defaultValue=""
-                  className="focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
-                >
-                  <option value="">Geen</option>
-                  {PRODUCTGROEPEN.map((p) => (
-                    <option key={p} value={p}>
-                      {p}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label htmlFor="afdeling" className="mb-1 block text-xs text-gray-600">
-                  Afdeling <span className="text-gray-400">(optioneel)</span>
-                </label>
-                <select
-                  id="afdeling"
-                  name="afdeling"
-                  defaultValue=""
-                  className="focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
-                >
-                  <option value="">Geen</option>
-                  {AFDELINGEN.map((a) => (
-                    <option key={a} value={a}>
-                      {a}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <Field label="Code" name="code" placeholder="SOC-POST" />
-              <Field
-                label="Omschrijving"
-                name="omschrijving"
-                placeholder="Wat de klant krijgt"
-              />
-              <Field
-                label="Verwachte tijd in minuten"
-                name="minuten"
-                type="number"
-                placeholder="45"
-                hint="Voor capaciteitsplanning later."
-              />
-              <Field label="Interne notities" name="notities" />
-            </ActionForm>
-          </aside>
         </div>
     </AppShell>
   )

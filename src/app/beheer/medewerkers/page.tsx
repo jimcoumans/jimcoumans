@@ -6,6 +6,7 @@ import { getPersoneelskosten } from '@/lib/kosten'
 import { getMonthlyRecurringCents } from '@/lib/billing'
 import { Avatar } from '@/components/Avatar'
 import { AppShell } from '@/components/AppShell'
+import { Paneel } from '@/components/Paneel'
 import { ActionForm, Field, Select, Uitklap } from '@/components/ActionForm'
 import { nieuweMedewerker, wijzigMedewerker, wisselMedewerkerToegang } from '../service-actions'
 import { formatCents } from '@/lib/money'
@@ -51,7 +52,7 @@ export default async function MedewerkersPage() {
 
   return (
     <AppShell user={user} actief="medewerkers" breed>
-      <div className="mb-5 flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
+      <div className="mb-8 flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
         <div>
           <h1 className="text-[28px] sm:text-[32px]">Team</h1>
           <p className="text-sm text-gray-600">
@@ -60,7 +61,7 @@ export default async function MedewerkersPage() {
           </p>
         </div>
 
-        <dl className="flex flex-wrap items-end gap-x-7 gap-y-2">
+        <dl className="order-last mt-2 grid w-full gap-3 [grid-template-columns:repeat(auto-fit,minmax(170px,1fr))] [&>div]:rounded-xl [&>div]:bg-white [&>div]:px-5 [&>div]:py-4 [&>div]:shadow-sm">
           <div>
             <dt className="text-xs text-gray-600">In dienst</dt>
             <dd className="tabular text-jr-blue text-xl font-bold leading-tight">
@@ -78,6 +79,44 @@ export default async function MedewerkersPage() {
             </dd>
           </div>
         </dl>
+            <Paneel
+              knop="+ Collega toevoegen"
+              titel="Collega toevoegen"
+            uitleg="Meer dan een naam en een adres heb je hier niet nodig. De rest vul je op zijn profiel in."
+            >
+          <ActionForm action={nieuweMedewerker} submitLabel="Toevoegen">
+            <Field
+              label="E-mailadres"
+              name="email"
+              type="email"
+              required
+              placeholder="naam@jamesrobinson.nl"
+            />
+            <Field label="Naam" name="naam" placeholder="Voor- en achternaam" />
+
+            <div>
+              <label htmlFor="rol" className="text-jr-text mb-1.5 block text-[13px] font-medium">
+                Rol
+              </label>
+              <select
+                id="rol"
+                name="rol"
+                defaultValue="staff"
+                className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
+              >
+                <option value="staff">Medewerker</option>
+                <option value="admin" disabled={user.role !== 'admin'}>
+                  Beheerder{user.role !== 'admin' ? ' (alleen door beheerder)' : ''}
+                </option>
+              </select>
+              <p className="mt-1 text-xs text-gray-500">
+                Medewerkers en beheerders zien alle klanten. Het verschil is dat alleen een
+                beheerder nieuwe beheerders kan toevoegen, en dat alleen hij de uurkostprijs
+                ziet.
+              </p>
+            </div>
+          </ActionForm>
+            </Paneel>
       </div>
 
       {kosten && (
@@ -152,7 +191,7 @@ export default async function MedewerkersPage() {
         </section>
       )}
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
+      <div>
         <div className="space-y-6">
           <Tabel
             team={inDienst}
@@ -178,45 +217,6 @@ export default async function MedewerkersPage() {
           )}
         </div>
 
-        <aside className="rounded-xl bg-white p-6 shadow-sm">
-          <h2 className="mb-1 text-base">Collega toevoegen</h2>
-          <p className="mb-3 text-xs text-gray-500">
-            Meer dan een naam en een adres heb je hier niet nodig. De rest vul je op zijn
-            profiel in.
-          </p>
-          <ActionForm action={nieuweMedewerker} submitLabel="Toevoegen">
-            <Field
-              label="E-mailadres"
-              name="email"
-              type="email"
-              required
-              placeholder="naam@jamesrobinson.nl"
-            />
-            <Field label="Naam" name="naam" placeholder="Voor- en achternaam" />
-
-            <div>
-              <label htmlFor="rol" className="mb-1 block text-xs text-gray-600">
-                Rol
-              </label>
-              <select
-                id="rol"
-                name="rol"
-                defaultValue="staff"
-                className="focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
-              >
-                <option value="staff">Medewerker</option>
-                <option value="admin" disabled={user.role !== 'admin'}>
-                  Beheerder{user.role !== 'admin' ? ' (alleen door beheerder)' : ''}
-                </option>
-              </select>
-              <p className="mt-1 text-xs text-gray-500">
-                Medewerkers en beheerders zien alle klanten. Het verschil is dat alleen een
-                beheerder nieuwe beheerders kan toevoegen, en dat alleen hij de uurkostprijs
-                ziet.
-              </p>
-            </div>
-          </ActionForm>
-        </aside>
       </div>
     </AppShell>
   )

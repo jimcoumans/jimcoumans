@@ -453,7 +453,7 @@ async function WalletBeheer({
             <div>
               <label
                 htmlFor={`soort-${wallet.id}`}
-                className="mb-1 block text-xs text-gray-600"
+                className="text-jr-text mb-1.5 block text-[13px] font-medium"
               >
                 Soort
               </label>
@@ -461,7 +461,7 @@ async function WalletBeheer({
                 id={`soort-${wallet.id}`}
                 name="soort"
                 defaultValue="spend"
-                className="focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
+                className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
               >
                 <option value="spend">Afschrijven (dienst afgenomen)</option>
                 <option value="topup">Bijschrijven (budget erbij)</option>
@@ -483,7 +483,7 @@ async function WalletBeheer({
             <div>
               <label
                 htmlFor={`cat-${wallet.id}`}
-                className="mb-1 block text-xs text-gray-600"
+                className="text-jr-text mb-1.5 block text-[13px] font-medium"
               >
                 Productgroep <span className="text-gray-400">(optioneel)</span>
               </label>
@@ -491,7 +491,7 @@ async function WalletBeheer({
                 id={`cat-${wallet.id}`}
                 name="categorie"
                 defaultValue=""
-                className="focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
+                className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
               >
                 <option value="">Geen</option>
                 {PRODUCTGROEPEN.map((p) => (
@@ -722,14 +722,14 @@ function Facturen({
             />
 
             <div>
-              <label htmlFor="factuur-wallet" className="mb-1 block text-xs text-gray-600">
+              <label htmlFor="factuur-wallet" className="text-jr-text mb-1.5 block text-[13px] font-medium">
                 Budget bijschrijven op
               </label>
               <select
                 id="factuur-wallet"
                 name="walletId"
                 defaultValue={wallets[0]!.wallet.id}
-                className="focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
+                className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
               >
                 {wallets.map(({ wallet }) => (
                   <option key={wallet.id} value={wallet.id}>

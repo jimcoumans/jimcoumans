@@ -184,8 +184,8 @@ export default async function MedewerkerPage({
             />
 
             <div>
-              <p className="mb-1 text-xs text-gray-600">
-                Verjaardag<span className="text-gray-400"> (optioneel)</span>
+              <p className="text-jr-text mb-1.5 block text-[13px] font-medium">
+                Verjaardag<span className="font-normal text-gray-500"> (optioneel)</span>
               </p>
               <div className="grid grid-cols-[80px_1fr_100px] gap-2">
                 <input
@@ -196,13 +196,13 @@ export default async function MedewerkerPage({
                   placeholder="Dag"
                   defaultValue={lid.birthDay ?? ''}
                   aria-label="Dag"
-                  className="focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
+                  className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
                 />
                 <select
                   name="geboortemaand"
                   defaultValue={lid.birthMonth ?? ''}
                   aria-label="Maand"
-                  className="focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
+                  className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
                 >
                   <option value="">Maand</option>
                   {MAANDNAMEN.map((naam, i) => (
@@ -219,7 +219,7 @@ export default async function MedewerkerPage({
                   placeholder="Jaar"
                   defaultValue={lid.birthYear ?? ''}
                   aria-label="Jaar"
-                  className="focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
+                  className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
                 />
               </div>
               <p className="mt-1 text-xs text-gray-500">

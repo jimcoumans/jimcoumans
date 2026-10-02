@@ -55,7 +55,7 @@ export function BookServiceForm({
       <input type="hidden" name="slug" value={slug} />
 
       <div className="sm:col-span-2">
-        <label htmlFor={`dienst-${walletId}`} className="mb-1 block text-xs text-gray-600">
+        <label htmlFor={`dienst-${walletId}`} className="text-jr-text mb-1.5 block text-[13px] font-medium">
           Dienst
         </label>
         <select
@@ -63,7 +63,7 @@ export function BookServiceForm({
           name="serviceId"
           value={serviceId}
           onChange={(e) => setServiceId(e.target.value)}
-          className="focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
+          className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
         >
           {services.map((s) => (
             <option key={s.id} value={s.id}>
@@ -75,7 +75,7 @@ export function BookServiceForm({
       </div>
 
       <div>
-        <label htmlFor={`aantal-${walletId}`} className="mb-1 block text-xs text-gray-600">
+        <label htmlFor={`aantal-${walletId}`} className="text-jr-text mb-1.5 block text-[13px] font-medium">
           Aantal {dienst && <span className="text-gray-400">({unitShort[dienst.unit]})</span>}
         </label>
         <input
@@ -85,12 +85,12 @@ export function BookServiceForm({
           onChange={(e) => setAantal(e.target.value)}
           inputMode="decimal"
           placeholder="1"
-          className="focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
+          className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
         />
       </div>
 
       <div>
-        <label htmlFor={`tarief-${walletId}`} className="mb-1 block text-xs text-gray-600">
+        <label htmlFor={`tarief-${walletId}`} className="text-jr-text mb-1.5 block text-[13px] font-medium">
           Afwijkend tarief <span className="text-gray-400">(optioneel)</span>
         </label>
         <input
@@ -99,14 +99,14 @@ export function BookServiceForm({
           value={tarief}
           onChange={(e) => setTarief(e.target.value)}
           placeholder={dienst ? (dienst.unitPriceCents / 100).toFixed(2).replace('.', ',') : ''}
-          className="focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
+          className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
         />
       </div>
 
       <div>
         <label
           htmlFor={`geleverd-${walletId}`}
-          className="mb-1 block text-xs text-gray-600"
+          className="text-jr-text mb-1.5 block text-[13px] font-medium"
         >
           Geleverd door <span className="text-gray-400">(optioneel)</span>
         </label>
@@ -114,7 +114,7 @@ export function BookServiceForm({
           id={`geleverd-${walletId}`}
           name="geleverdDoor"
           defaultValue=""
-          className="focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
+          className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
         >
           <option value="">Niet ingevuld</option>
           {staff.map((s) => (

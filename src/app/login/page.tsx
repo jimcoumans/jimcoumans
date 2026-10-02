@@ -172,7 +172,7 @@ export default async function LoginPage({
                     required
                     autoComplete="email"
                     placeholder="naam@bedrijf.nl"
-                    className="focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
+                    className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
                   />
                   <button
                     type="submit"

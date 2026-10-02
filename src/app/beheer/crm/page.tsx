@@ -8,6 +8,7 @@ import {
   SOORT_STIJLEN,
 } from '@/lib/crm-personen'
 import { AppShell } from '@/components/AppShell'
+import { PaginaKop } from '@/components/PaginaKop'
 import { Avatar } from '@/components/Avatar'
 import { MAANDNAMEN } from '@/lib/dates'
 import { leeftijd } from '@/lib/leeftijd'
@@ -69,53 +70,23 @@ export default async function CrmPage({
 
   return (
     <AppShell user={user} actief="crm" breed>
-      <div className="mb-5 flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
-        <div>
-          <h1 className="text-[28px] sm:text-[32px]">CRM</h1>
-          <p className="text-sm text-gray-600">
-            Iedereen die we kennen: klanten, partners en collega&rsquo;s. Op achternaam.
-          </p>
-        </div>
-
-        <dl className="flex flex-wrap items-end gap-x-7 gap-y-2">
-          <div>
-            <dt className="text-xs text-gray-600">Mensen</dt>
-            <dd className="tabular text-jr-blue text-xl font-bold leading-tight">
-              {mensen.length}
-              {soort !== '' && (
-                <span className="ml-1 text-xs font-normal text-gray-500">
-                  van {alle.length}
-                </span>
-              )}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-xs text-gray-600">Verjaardag bekend</dt>
-            <dd className="tabular text-xl font-bold leading-tight">
-              {metVerjaardag.length}
-              <span className="ml-1 text-xs font-normal text-gray-500">
-                van {mensen.length}
-              </span>
-            </dd>
-          </div>
-          {zonderGegevens.length > 0 && (
-            <div>
-              <dt className="text-xs text-gray-600">Zonder mail of nummer</dt>
-              <dd className="tabular text-jr-orange text-xl font-bold leading-tight">
-                {zonderGegevens.length}
-              </dd>
-            </div>
-          )}
-        </dl>
-      </div>
+      <PaginaKop
+        titel="CRM"
+        uitleg="Iedereen die we kennen: klanten, partners en collega’s. Op achternaam. Toevoegen en wijzigen doe je waar iemand thuishoort: op de klantkaart, bij de partner of in het teamprofiel."
+        cijfers={[
+          { label: 'Mensen', waarde: mensen.length, hint: soort !== '' ? `van ${alle.length}` : undefined },
+          { label: 'Verjaardag bekend', waarde: metVerjaardag.length, hint: `van ${mensen.length}` },
+          { label: 'Zonder mail of nummer', waarde: zonderGegevens.length, toon: zonderGegevens.length > 0 ? 'let-op' : 'goed' },
+        ]}
+      />
 
       {/* De labels zijn zelf het filter. Een keuzelijst zou hier een klik
           extra kosten en de aantallen verbergen. */}
-      <div className="mb-4 flex flex-wrap items-center gap-1.5">
+      <div className="mb-4 flex flex-wrap items-center gap-2">
         <a
           href={link('')}
-          className={`rounded-full px-3 py-1 text-xs ${
-            soort === '' ? 'bg-jr-blue text-white' : 'bg-white text-gray-600 hover:bg-gray-100'
+          className={`rounded-full px-3.5 py-1.5 text-sm ${
+            soort === '' ? 'bg-jr-text text-white' : 'bg-white text-gray-700 shadow-sm hover:bg-gray-100'
           }`}
         >
           Alles ({alle.length})
@@ -124,8 +95,8 @@ export default async function CrmPage({
           <a
             key={s}
             href={link(s)}
-            className={`rounded-full px-3 py-1 text-xs ${
-              soort === s ? 'bg-jr-blue text-white' : `${SOORT_STIJLEN[s]} hover:opacity-80`
+            className={`rounded-full px-3.5 py-1.5 text-sm ${
+              soort === s ? 'bg-jr-text text-white' : `${SOORT_STIJLEN[s]} hover:opacity-80`
             }`}
           >
             {SOORT_LABELS[s]} ({telling[s]})
@@ -142,11 +113,11 @@ export default async function CrmPage({
           name="q"
           defaultValue={zoek}
           placeholder="Zoek op naam, e-mail, functie, klant of partner"
-          className="focus:border-jr-blue w-full max-w-sm rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
+          className="min-h-11 w-full max-w-md rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
         />
         <button
           type="submit"
-          className="bg-jr-btn hover:bg-jr-btnhover rounded-lg px-4 py-2 text-sm text-white"
+          className="bg-jr-btn hover:bg-jr-btnhover min-h-11 rounded-full px-5 py-2 text-sm font-medium text-white"
         >
           Zoeken
         </button>
@@ -173,17 +144,17 @@ export default async function CrmPage({
           <table className="w-full min-w-[880px] text-sm">
             <thead>
               <tr className="border-b border-gray-200 text-left text-xs text-gray-600">
-                <th className="px-4 py-2.5 font-normal">Naam</th>
-                <th className="px-4 py-2.5 font-normal">Waar</th>
-                <th className="px-4 py-2.5 font-normal">Functie</th>
-                <th className="px-4 py-2.5 font-normal">Bereikbaar</th>
-                <th className="px-4 py-2.5 font-normal">Verjaardag</th>
+                <th className="px-5 py-3 font-normal">Naam</th>
+                <th className="px-5 py-3 font-normal">Waar</th>
+                <th className="px-5 py-3 font-normal">Functie</th>
+                <th className="px-5 py-3 font-normal">Bereikbaar</th>
+                <th className="px-5 py-3 font-normal">Verjaardag</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
               {mensen.map((m) => (
                 <tr key={`${m.soort}-${m.id}`} className="align-top">
-                  <td className="px-4 py-3">
+                  <td className="px-5 py-3.5">
                     <div className="flex items-start gap-2.5">
                       <Avatar naam={m.naam} imageId={m.avatarImageId} maat={32} />
                       <div className="min-w-0">
@@ -211,17 +182,17 @@ export default async function CrmPage({
                     </div>
                   </td>
 
-                  <td className="px-4 py-3">
+                  <td className="px-5 py-3.5">
                     <a href={m.href} className="hover:text-jr-blue">
                       {m.bijNaam}
                     </a>
                   </td>
 
-                  <td className="px-4 py-3">
+                  <td className="px-5 py-3.5">
                     {m.functie ?? <span className="text-gray-400">&mdash;</span>}
                   </td>
 
-                  <td className="px-4 py-3 text-xs">
+                  <td className="px-5 py-3.5 text-xs">
                     {m.email && (
                       <a href={`mailto:${m.email}`} className="hover:text-jr-blue block">
                         {m.email}
@@ -240,7 +211,7 @@ export default async function CrmPage({
                     )}
                   </td>
 
-                  <td className="px-4 py-3 text-xs">
+                  <td className="px-5 py-3.5 text-xs">
                     {m.birthDay !== null && m.birthMonth !== null ? (
                       <>
                         {m.birthDay} {MAANDNAMEN[m.birthMonth - 1]}

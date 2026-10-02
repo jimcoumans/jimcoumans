@@ -31,7 +31,7 @@ export function AfbeeldingKiezer({
       <Avatar naam={naam} imageId={imageId} maat={64} rond={rond} />
 
       <div className="min-w-0 flex-1">
-        <p className="mb-1 text-xs text-gray-600">{label}</p>
+        <p className="text-jr-text mb-1.5 block text-[13px] font-medium">{label}</p>
 
         <ActionForm
           action={uploadAfbeelding}

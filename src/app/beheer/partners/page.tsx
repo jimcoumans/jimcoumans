@@ -4,6 +4,7 @@ import { listPartners, listOrganizationsPerPartner, partnerTypeLabels } from '@/
 import { listContactenPerPartner } from '@/lib/crm-personen'
 import { getPartnerFigures } from '@/lib/quotes'
 import { AppShell } from '@/components/AppShell'
+import { Paneel } from '@/components/Paneel'
 import { ActionForm, Field, Select, Uitklap } from '@/components/ActionForm'
 import {
   nieuwePartner,
@@ -164,7 +165,42 @@ export default async function PartnersPage() {
 
   return (
     <AppShell user={user} actief="partners">
-        <h1 className="mb-1 text-[28px] sm:text-[32px]">Partners</h1>
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <h1 className="mb-1 text-[28px] sm:text-[32px]">Partners</h1>
+          <Paneel
+            knop="+ Partner toevoegen"
+            titel="Partner toevoegen"
+          >
+            <ActionForm action={nieuwePartner} submitLabel="Partner aanmaken">
+              <Field label="Naam" name="naam" required placeholder="Studio Lens" />
+              <Select
+                label="Soort"
+                name="type"
+                defaultValue="photographer"
+                options={Object.entries(partnerTypeLabels).map(([value, label]) => ({ value, label }))}
+              />
+              <Field label="Contactpersoon" name="contactpersoon" placeholder="Tom Lens" />
+              <Field label="E-mailadres" name="email" type="email" placeholder="tom@studiolens.nl" />
+              <Field label="Telefoon" name="telefoon" placeholder="06 12 34 56 78" />
+              <Field label="Website" name="website" placeholder="studiolens.nl" />
+              <Field label="Uurtarief" name="uurtarief" placeholder="95,00" />
+              <Field label="Dagtarief" name="dagtarief" placeholder="650,00" />
+              <Field
+                label="Betaaltermijn in dagen"
+                name="betaaltermijn"
+                type="number"
+                placeholder="30"
+              />
+              <Field
+                label="Tariefafspraken"
+                name="afspraken"
+                placeholder="Reiskosten binnen Limburg inbegrepen"
+                hint="Staffels, voorwaarden, wat er wel en niet bij zit."
+              />
+              <Field label="Interne notities" name="notities" />
+            </ActionForm>
+          </Paneel>
+        </div>
         <p className="mb-6 text-sm text-gray-600">
           De externen met wie we werken, wat we met ze hebben afgesproken en bij welke
           klanten ze horen.
@@ -237,7 +273,7 @@ export default async function PartnersPage() {
           </section>
         )}
 
-        <div className="grid gap-8 lg:grid-cols-[1fr_330px]">
+        <div>
           <div>
             {actief.length === 0 ? (
               <div className="rounded-xl bg-white p-8 text-center shadow-sm">
@@ -418,37 +454,6 @@ export default async function PartnersPage() {
             )}
           </div>
 
-          <aside className="rounded-xl bg-white p-6 shadow-sm lg:sticky lg:top-4 lg:self-start">
-            <h2 className="mb-3 text-base">Partner toevoegen</h2>
-            <ActionForm action={nieuwePartner} submitLabel="Partner aanmaken">
-              <Field label="Naam" name="naam" required placeholder="Studio Lens" />
-              <Select
-                label="Soort"
-                name="type"
-                defaultValue="photographer"
-                options={Object.entries(partnerTypeLabels).map(([value, label]) => ({ value, label }))}
-              />
-              <Field label="Contactpersoon" name="contactpersoon" placeholder="Tom Lens" />
-              <Field label="E-mailadres" name="email" type="email" placeholder="tom@studiolens.nl" />
-              <Field label="Telefoon" name="telefoon" placeholder="06 12 34 56 78" />
-              <Field label="Website" name="website" placeholder="studiolens.nl" />
-              <Field label="Uurtarief" name="uurtarief" placeholder="95,00" />
-              <Field label="Dagtarief" name="dagtarief" placeholder="650,00" />
-              <Field
-                label="Betaaltermijn in dagen"
-                name="betaaltermijn"
-                type="number"
-                placeholder="30"
-              />
-              <Field
-                label="Tariefafspraken"
-                name="afspraken"
-                placeholder="Reiskosten binnen Limburg inbegrepen"
-                hint="Staffels, voorwaarden, wat er wel en niet bij zit."
-              />
-              <Field label="Interne notities" name="notities" />
-            </ActionForm>
-          </aside>
         </div>
     </AppShell>
   )

@@ -2,6 +2,8 @@ import { redirect } from 'next/navigation'
 import { getSessionUser } from '@/lib/auth'
 import { listCampagnes, listKlantenVoorCampagne, STATUS_LABELS, STATUS_STIJL } from '@/lib/campagnes'
 import { AppShell } from '@/components/AppShell'
+import { Paneel } from '@/components/Paneel'
+import { PaginaKop, LeegVlak } from '@/components/PaginaKop'
 import { ActionForm, Field, Select } from '@/components/ActionForm'
 import { nieuweCampagne } from '../campagne-actions'
 import { formatDate } from '@/lib/dates'
@@ -25,20 +27,47 @@ export default async function CampagnesPage({ searchParams }: { searchParams: Pr
   const { klant } = await searchParams
   const [alle, klanten] = await Promise.all([listCampagnes(), listKlantenVoorCampagne()])
 
+  const nieuw = (stijl: 'primair' | 'rustig', metStart = true) => (
+    <Paneel
+      knop="+ Nieuwe campagne"
+      titel="Nieuwe campagne"
+      uitleg="De marketingmanager, de vaste contactpersoon en de specialisten komen van de klantkaart."
+      stijl={stijl}
+      startOpen={metStart && !!klant}
+    >
+      <ActionForm action={nieuweCampagne} submitLabel="Maak de briefing" className="grid gap-4">
+        <Select
+          label="Klant"
+          name="organizationId"
+          defaultValue={klant ?? ''}
+          options={[{ value: '', label: 'Kies de klant' }, ...klanten.map((k) => ({ value: k.id, label: k.name }))]}
+        />
+        <Field label="Campagnenaam" name="title" required placeholder="Kerst bij Thiessen" />
+      </ActionForm>
+    </Paneel>
+  )
+
   return (
     <AppShell user={user} actief="campagnes">
-      <h1 className="mb-1 text-[28px] sm:text-[32px]">Campagnes</h1>
-      <p className="mb-6 text-sm text-gray-600">
-        Elke campagne begint met een briefing. Die gaat als voorstel naar de klant; na akkoord staat de
-        tijdlijn als taken in ClickUp.
-      </p>
+      <PaginaKop
+        titel="Campagnes"
+        uitleg="Elke campagne begint met een briefing. Die gaat als voorstel naar de klant; na akkoord staat de tijdlijn als taken in ClickUp."
+        acties={nieuw('primair')}
+        cijfers={GROEPEN.map(({ status }) => ({
+          label: STATUS_LABELS[status],
+          waarde: alle.filter((r) => r.campagne.status === status).length,
+          toon: status === 'voorstel' && alle.some((r) => r.campagne.status === 'voorstel') ? ('let-op' as const) : ('normaal' as const),
+        }))}
+      />
 
-      <div className="grid gap-8 lg:grid-cols-[1fr_330px]">
+      <div>
         <div className="space-y-8">
           {alle.length === 0 && (
-            <p className="rounded-xl bg-white p-8 text-center text-sm text-gray-600 shadow-sm">
-              Nog geen campagnes. Begin er een met het formulier hiernaast.
-            </p>
+            <LeegVlak
+              titel="Nog geen campagnes"
+              tekst="Een campagne begint met een briefing: doel, aanbod, doelgroep, kanalen en een hypothese. Kies de klant en geef hem een naam."
+              actie={nieuw('primair', false)}
+            />
           )}
           {GROEPEN.map(({ status, uitleg }) => {
             const rijen = alle.filter((r) => r.campagne.status === status)
@@ -72,23 +101,6 @@ export default async function CampagnesPage({ searchParams }: { searchParams: Pr
           })}
         </div>
 
-        <aside>
-          <section className="rounded-xl bg-white p-6 shadow-sm">
-            <h2 className="mb-3 text-base">Nieuwe campagne</h2>
-            <ActionForm action={nieuweCampagne} submitLabel="Maak de briefing">
-              <Select
-                label="Klant"
-                name="organizationId"
-                defaultValue={klant ?? ''}
-                options={[{ value: '', label: 'Kies de klant' }, ...klanten.map((k) => ({ value: k.id, label: k.name }))]}
-              />
-              <Field label="Campagnenaam" name="title" required placeholder="Kerst bij Thiessen" />
-              <p className="text-xs text-gray-500">
-                De marketingmanager en de vaste contactpersoon komen van de klantkaart.
-              </p>
-            </ActionForm>
-          </section>
-        </aside>
       </div>
     </AppShell>
   )

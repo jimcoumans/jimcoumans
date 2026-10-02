@@ -294,14 +294,14 @@ export function NewSubscriptionForm({
       />
 
       <div>
-        <label htmlFor="abo-wallet" className="mb-1 block text-xs text-gray-600">
+        <label htmlFor="abo-wallet" className="text-jr-text mb-1.5 block text-[13px] font-medium">
           Budget bijschrijven op
         </label>
         <select
           id="abo-wallet"
           name="walletId"
           defaultValue={wallets[0]!.id}
-          className="focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
+          className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
         >
           {wallets.map((w) => (
             <option key={w.id} value={w.id}>

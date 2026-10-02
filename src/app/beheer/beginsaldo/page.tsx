@@ -71,14 +71,14 @@ export default async function BeginsaldoPage() {
           className=""
         >
           <div className="mb-4 max-w-lg">
-            <label htmlFor="omschrijving" className="mb-1 block text-xs text-gray-600">
+            <label htmlFor="omschrijving" className="text-jr-text mb-1.5 block text-[13px] font-medium">
               Omschrijving op de boeking
             </label>
             <input
               id="omschrijving"
               name="omschrijving"
               defaultValue="Beginsaldo overgenomen uit ClickUp"
-              className="focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
+              className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
             />
             <p className="mt-1 text-xs text-gray-500">
               De klant ziet deze regel in zijn portaal staan.

@@ -1,6 +1,6 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useActionState, useEffect, useRef } from 'react'
 import type { ActionResult } from '@/app/beheer/actions'
 
 /**
@@ -34,9 +34,16 @@ export function ActionForm({
   )
 
   const gelukt = state?.ok === true
+  const formulier = useRef<HTMLFormElement>(null)
+
+  // Laat een omringend paneel weten dat het gelukt is, zodat het kan sluiten.
+  useEffect(() => {
+    if (state?.ok) formulier.current?.dispatchEvent(new CustomEvent('actionform:gelukt', { bubbles: true }))
+  }, [state])
 
   return (
     <form
+      ref={formulier}
       action={formAction}
       className={className}
       // Na een gelukte actie het formulier leegmaken, zodat je niet per

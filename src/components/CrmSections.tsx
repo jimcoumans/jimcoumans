@@ -1,4 +1,4 @@
-import { ActionForm, Field, Select, Check, Uitklap } from './ActionForm'
+import { ActionForm, Field, Select, Check, TextArea, Uitklap } from './ActionForm'
 import {
   nieuweContactpersoon, wijzigContactpersoon, maakVasteContactpersoon, verwijderContactpersoon,
   nieuwAccount, wijzigAccount, verwijderAccount,
@@ -48,13 +48,13 @@ function Verjaardag({
   jaar: number | null
 }) {
   const veld =
-    'focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none'
+    'min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400'
   return (
     <div>
-      <p className="mb-1 text-xs text-gray-600">
-        Verjaardag<span className="text-gray-400"> (optioneel)</span>
+      <p className="text-jr-text mb-1.5 block text-[13px] font-medium">
+        Verjaardag<span className="font-normal text-gray-500"> (optioneel)</span>
       </p>
-      <div className="grid grid-cols-[72px_1fr_88px] gap-2">
+      <div className="grid max-w-md grid-cols-[90px_1fr_110px] gap-2">
         <input
           name="geboortedag"
           type="number"
@@ -108,7 +108,7 @@ function Kinderen({
   kinderen: ContactChild[]
 }) {
   const veld =
-    'focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none'
+    'min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400'
 
   return (
     <div className="mt-3 border-t border-gray-200 pt-3">
@@ -196,17 +196,11 @@ function Kinderen({
 function Persoonlijk({ c }: { c: Contact }) {
   return (
     <>
-      <div className="sm:col-span-2">
-        <p className="mt-2 mb-1 border-t border-gray-200 pt-3 text-xs font-bold text-gray-600">
-          Persoonlijk
-        </p>
-        <p className="mb-2 text-xs text-gray-500">
-          Alles hieronder is optioneel en dient één doel: dat je iemand kent in plaats van
-          alleen kunt bereiken. Een half ingevuld profiel is beter dan een leeg profiel.
-        </p>
-      </div>
+      <PaneelKop uitleg="Optioneel, met één doel: dat je iemand kent in plaats van alleen kunt bereiken.">Persoonlijk</PaneelKop>
 
-      <Verjaardag dag={c.birthDay} maand={c.birthMonth} jaar={c.birthYear} />
+      <div className="sm:col-span-2">
+        <Verjaardag dag={c.birthDay} maand={c.birthMonth} jaar={c.birthYear} />
+      </div>
       <Select label="Geslacht" name="aanhef" defaultValue={c.aanhef ?? ''} options={GESLACHT_OPTIES} />
 
       <Select
@@ -254,6 +248,8 @@ function Persoonlijk({ c }: { c: Contact }) {
 
 
 import type { Contact, Account, Partner, Organization } from '@/db/schema'
+import { Paneel, PaneelKop } from '@/components/Paneel'
+import { LeegVlak } from '@/components/PaginaKop'
 
 /* De CRM-blokken op de klantpagina: contactpersonen, partners, accounts en
    de bedrijfsgegevens. */
@@ -270,183 +266,198 @@ export function Contactpersonen({
   /** Per contactpersoon zijn kinderen; leeg als er geen zijn. */
   kinderenPer: Map<string, ContactChild[]>
 }) {
+  const toevoegen = (stijl: 'primair' | 'rustig') => (
+    <Paneel
+      knop="+ Contactpersoon"
+      titel="Contactpersoon toevoegen"
+      uitleg="Wie je belt en wie de facturen krijgt. Los van wie er kan inloggen."
+      stijl={stijl}
+    >
+      <ActionForm action={nieuweContactpersoon} submitLabel="Toevoegen" className="grid gap-4 sm:grid-cols-2">
+        <input type="hidden" name="organizationId" value={organizationId} />
+        <input type="hidden" name="slug" value={slug} />
+        <PaneelKop>Wie</PaneelKop>
+        <NaamVelden />
+        <Field label="Functie" name="functie" placeholder="Eigenaar" />
+        <Select
+          label="Geslacht"
+          name="aanhef"
+          options={GESLACHT_OPTIES}
+          hint="Bepaalt hoe een brief begint. Weet je het niet, kies dan niets."
+        />
+        <PaneelKop>Bereikbaar</PaneelKop>
+        <Field label="E-mailadres" name="email" type="email" placeholder="marieke@voncken.nl" />
+        <Field label="Mobiel" name="mobiel" placeholder="06 12 34 56 78" />
+        <Field label="Telefoon" name="telefoon" placeholder="043 601 22 38" />
+        <Field label="LinkedIn" name="linkedin" placeholder="linkedin.com/in/..." />
+        <PaneelKop>Verder</PaneelKop>
+        <div className="sm:col-span-2">
+          <Verjaardag dag={null} maand={null} jaar={null} />
+        </div>
+        <div className="sm:col-span-2">
+          <TextArea label="Notities" name="notities" rows={2} />
+        </div>
+        <Check label="Dit is de vaste contactpersoon" name="vast" hint="De vorige vaste contactpersoon verliest die rol." />
+        <Check label="Ontvangt de facturen" name="facturen" />
+      </ActionForm>
+    </Paneel>
+  )
+
   return (
     <section>
-      <h2 className="mb-1 text-lg">Contactpersonen</h2>
-      <p className="mb-3 text-sm text-gray-600">
-        Wie je belt en wie de facturen krijgt. Los van wie er kan inloggen.
-      </p>
+      <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h2 className="text-[19px]">Contactpersonen</h2>
+          <p className="mt-0.5 text-sm text-gray-600">Wie je belt en wie de facturen krijgt. Los van wie er kan inloggen.</p>
+        </div>
+        {contacts.length > 0 && toevoegen('rustig')}
+      </div>
 
       {contacts.length === 0 ? (
-        <p className="rounded-xl bg-white p-6 text-sm text-gray-600 shadow-sm">
-          Nog geen contactpersonen vastgelegd.
-        </p>
+        <LeegVlak
+          titel="Nog geen contactpersonen"
+          tekst="Leg vast wie je belt, wie beslist en wie de facturen krijgt. De vaste contactpersoon komt ook in elke campagnebriefing."
+          actie={toevoegen('primair')}
+        />
       ) : (
-        <ul className="divide-y divide-gray-200 overflow-hidden rounded-xl bg-white shadow-sm">
-          {contacts.map((c) => (
-            <li key={c.id} className="px-4 py-3.5 sm:px-6">
-              <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
-                <div className="flex min-w-0 flex-1 gap-3">
-                  <Avatar naam={c.name} imageId={c.avatarImageId} maat={40} />
+        <ul className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
+          {contacts.map((c) => {
+            const nummer = c.mobile ?? c.phone
+            return (
+              <li key={c.id} className="flex flex-col rounded-xl bg-white p-5 shadow-sm">
+                <div className="flex items-start gap-4">
+                  <Avatar naam={c.name} imageId={c.avatarImageId} maat={52} />
                   <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-sm">{c.name}</span>
-                    {c.isPrimary && (
-                      <span className="bg-jr-blue/10 text-jr-deepblue rounded-full px-2 py-0.5 text-xs">
-                        Vaste contactpersoon
-                      </span>
-                    )}
-                    {c.receivesInvoices && (
-                      <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600">
-                        Facturen
-                      </span>
+                    <p className="truncate text-[17px] font-medium">{c.name}</p>
+                    <p className="truncate text-sm text-gray-600">
+                      {[c.jobTitle, c.department].filter(Boolean).join(' · ') || 'Functie onbekend'}
+                    </p>
+                    {(c.isPrimary || c.receivesInvoices) && (
+                      <div className="mt-1.5 flex flex-wrap gap-1.5">
+                        {c.isPrimary && (
+                          <span className="bg-jr-lightblue text-jr-deepblue rounded-full px-2 py-0.5 text-xs">Vaste contactpersoon</span>
+                        )}
+                        {c.receivesInvoices && (
+                          <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600">Ontvangt facturen</span>
+                        )}
+                      </div>
                     )}
                   </div>
+                </div>
 
-                  <p className="mt-0.5 text-xs text-gray-600">
-                    {c.jobTitle && <>{c.jobTitle} &middot; </>}
-                    {c.email ? (
-                      <a href={`mailto:${c.email}`} className="hover:text-jr-blue">
-                        {c.email}
-                      </a>
-                    ) : (
-                      'geen e-mailadres'
-                    )}
-                    {c.mobile && <> &middot; {c.mobile}</>}
-                    {c.phone && !c.mobile && <> &middot; {c.phone}</>}
-                  </p>
+                <div className="mt-4 space-y-1.5 text-sm">
+                  {c.email ? (
+                    <a href={`mailto:${c.email}`} className="text-jr-link flex items-center gap-2 truncate hover:underline">
+                      <Pictogram soort="mail" />
+                      {c.email}
+                    </a>
+                  ) : (
+                    <p className="flex items-center gap-2 text-gray-400">
+                      <Pictogram soort="mail" />
+                      geen e-mailadres
+                    </p>
+                  )}
+                  {nummer ? (
+                    <a href={`tel:${nummer.replace(/\s/g, '')}`} className="text-jr-link flex items-center gap-2 hover:underline">
+                      <Pictogram soort="telefoon" />
+                      {nummer}
+                    </a>
+                  ) : (
+                    <p className="flex items-center gap-2 text-gray-400">
+                      <Pictogram soort="telefoon" />
+                      geen nummer
+                    </p>
+                  )}
+                </div>
+                {c.notes && <p className="mt-3 line-clamp-2 text-xs text-gray-600">{c.notes}</p>}
 
-                  {c.notes && <p className="mt-1 text-xs text-gray-500">{c.notes}</p>}
-
-                  <Uitklap label="Wijzigen">
-                    <ActionForm
-                      action={wijzigContactpersoon}
-                      submitLabel="Opslaan"
-                      resetOnSuccess={false}
-                      className="grid gap-3 sm:grid-cols-2"
-                    >
+                <div className="mt-auto flex flex-wrap items-center gap-1 border-t border-gray-200 pt-3 mt-4">
+                  <Paneel knop="Wijzigen" titel={c.name} uitleg="Alles hieronder is optioneel behalve de naam." stijl="klein" sluitNaOpslaan={false}>
+                    <ActionForm action={wijzigContactpersoon} submitLabel="Opslaan" resetOnSuccess={false} className="grid gap-4 sm:grid-cols-2">
                       <input type="hidden" name="contactId" value={c.id} />
                       <input type="hidden" name="slug" value={slug} />
-                      {/* Voornaam, tussenvoegsel en achternaam horen bij
-                          elkaar, dus staan ze naast elkaar. Het tussenvoegsel
-                          krijgt weinig ruimte: er past "van der" in en meer
-                          hoeft niet. */}
-                      <div className="grid gap-3 sm:grid-cols-[1fr_5rem_1fr]">
-                        <Field label="Voornaam" name="voornaam" defaultValue={c.firstName ?? ''} />
-                        <Field
-                          label="Tussenvoegsel"
-                          name="tussenvoegsel"
-                          defaultValue={c.infix ?? ''}
-                          placeholder="van der"
-                        />
-                        <Field label="Achternaam" name="achternaam" defaultValue={c.lastName ?? ''} />
-                      </div>
+                      <PaneelKop>Wie</PaneelKop>
+                      <NaamVelden c={c} />
                       <Field label="Functie" name="functie" defaultValue={c.jobTitle ?? ''} />
-                      <Field
-                        label="Afdeling"
-                        name="afdeling"
-                        defaultValue={c.department ?? ''}
-                        placeholder="Directie"
-                      />
+                      <Field label="Afdeling" name="afdeling" defaultValue={c.department ?? ''} placeholder="Directie" />
+                      <PaneelKop>Bereikbaar</PaneelKop>
                       <Field label="E-mailadres" name="email" type="email" defaultValue={c.email ?? ''} />
                       <Field label="Mobiel" name="mobiel" defaultValue={c.mobile ?? ''} />
                       <Field label="Telefoon" name="telefoon" defaultValue={c.phone ?? ''} />
                       <Field label="LinkedIn" name="linkedin" defaultValue={c.linkedinUrl ?? ''} />
                       <div className="sm:col-span-2">
-                        <Field label="Notities" name="notities" defaultValue={c.notes ?? ''} />
+                        <TextArea label="Notities" name="notities" rows={2} defaultValue={c.notes ?? ''} />
                       </div>
                       <Check label="Dit is de vaste contactpersoon" name="vast" defaultChecked={c.isPrimary} />
                       <Check label="Ontvangt de facturen" name="facturen" defaultChecked={c.receivesInvoices} />
-
                       <Persoonlijk c={c} />
                     </ActionForm>
 
-                    <Kinderen
-                      contactId={c.id}
-                      slug={slug}
-                      kinderen={kinderenPer.get(c.id) ?? []}
-                    />
-
-                    <div className="mt-3 border-t border-gray-200 pt-3">
-                      <AfbeeldingKiezer
-                        soort="contact"
-                        doelId={c.id}
-                        naam={c.name}
-                        imageId={c.avatarImageId}
-                        slug={slug}
-                      />
+                    <div className="mt-8 border-t border-gray-200 pt-6">
+                      <Kinderen contactId={c.id} slug={slug} kinderen={kinderenPer.get(c.id) ?? []} />
                     </div>
-                  </Uitklap>
-                  </div>
-                </div>
-
-                <div className="flex shrink-0 gap-3">
+                    <div className="mt-6 border-t border-gray-200 pt-6">
+                      <AfbeeldingKiezer soort="contact" doelId={c.id} naam={c.name} imageId={c.avatarImageId} slug={slug} />
+                    </div>
+                  </Paneel>
                   {!c.isPrimary && (
                     <ActionForm
                       action={maakVasteContactpersoon}
                       submitLabel="Maak vast"
-                      submitClassName="text-gray-600 hover:bg-gray-100 !px-2 !py-1 !text-xs"
+                      submitClassName="text-gray-600 hover:bg-gray-100 !px-2 !py-1 !text-xs !min-h-0"
                       resetOnSuccess={false}
+                      meldGelukt={false}
                       className=""
                     >
                       <input type="hidden" name="contactId" value={c.id} />
                       <input type="hidden" name="slug" value={slug} />
                     </ActionForm>
                   )}
+                  <span className="flex-1" />
                   <ActionForm
                     action={verwijderContactpersoon}
                     submitLabel="Verwijderen"
-                    submitClassName="text-gray-600 hover:bg-gray-100 !px-2 !py-1 !text-xs"
+                    submitClassName="text-gray-500 hover:bg-[#FDECEA] hover:text-[#C02A22] !px-2 !py-1 !text-xs !min-h-0"
                     resetOnSuccess={false}
+                    meldGelukt={false}
                     className=""
                   >
                     <input type="hidden" name="contactId" value={c.id} />
                     <input type="hidden" name="slug" value={slug} />
                   </ActionForm>
                 </div>
-              </div>
-            </li>
-          ))}
+              </li>
+            )
+          })}
         </ul>
       )}
-
-      <details className="mt-3">
-        <summary className="text-jr-blue cursor-pointer text-sm">Contactpersoon toevoegen</summary>
-        <div className="mt-3 rounded-xl bg-white p-6 shadow-sm">
-          <ActionForm
-            action={nieuweContactpersoon}
-            submitLabel="Toevoegen"
-            className="grid gap-3 sm:grid-cols-2"
-          >
-            <input type="hidden" name="organizationId" value={organizationId} />
-            <input type="hidden" name="slug" value={slug} />
-            <div className="grid gap-3 sm:grid-cols-[1fr_5rem_1fr]">
-              <Field label="Voornaam" name="voornaam" placeholder="Marieke" />
-              <Field label="Tussenvoegsel" name="tussenvoegsel" placeholder="van der" />
-              <Field label="Achternaam" name="achternaam" placeholder="Voncken" />
-            </div>
-            <Select
-              label="Geslacht"
-              name="aanhef"
-              options={GESLACHT_OPTIES}
-              hint="Bepaalt ook hoe een brief begint. Weet je het niet, kies dan niets."
-            />
-            <Field label="Functie" name="functie" placeholder="Eigenaar" />
-            <Verjaardag dag={null} maand={null} jaar={null} />
-            <Field label="E-mailadres" name="email" type="email" placeholder="marieke@voncken.nl" />
-            <Field label="Mobiel" name="mobiel" placeholder="06 12 34 56 78" />
-            <Field label="Telefoon" name="telefoon" placeholder="043 601 22 38" />
-            <Field label="LinkedIn" name="linkedin" placeholder="linkedin.com/in/..." />
-            <div className="sm:col-span-2">
-              <Field label="Notities" name="notities" />
-            </div>
-            <Check label="Dit is de vaste contactpersoon" name="vast"
-              hint="De vorige vaste contactpersoon verliest die rol." />
-            <Check label="Ontvangt de facturen" name="facturen" />
-          </ActionForm>
-        </div>
-      </details>
     </section>
+  )
+}
+
+/** Voornaam, tussenvoegsel en achternaam naast elkaar, over de volle breedte. */
+function NaamVelden({ c }: { c?: Contact }) {
+  return (
+    <div className="grid items-end gap-3 sm:col-span-2 sm:grid-cols-[1fr_130px_1fr]">
+      <Field label="Voornaam" name="voornaam" defaultValue={c?.firstName ?? ''} placeholder="Marieke" />
+      <Field label="Tussenvoegsel" name="tussenvoegsel" defaultValue={c?.infix ?? ''} placeholder="van der" />
+      <Field label="Achternaam" name="achternaam" defaultValue={c?.lastName ?? ''} placeholder="Voncken" />
+    </div>
+  )
+}
+
+function Pictogram({ soort }: { soort: 'mail' | 'telefoon' }) {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-gray-400" fill="none" stroke="currentColor" strokeWidth="1.7">
+      {soort === 'mail' ? (
+        <>
+          <rect x="3" y="5" width="18" height="14" rx="2" />
+          <path d="m3.5 6.5 8.5 6 8.5-6" />
+        </>
+      ) : (
+        <path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z" strokeLinejoin="round" />
+      )}
+    </svg>
   )
 }
 
