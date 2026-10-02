@@ -169,15 +169,19 @@ def handtekening(a='Naam en datum', b='Handtekening'): return '<div class="handt
 NIEUWE_PAGINA = '<div class="nieuwe-pagina"></div>'
 
 def pagina(doc):
-    """doc: dict met code, titel, fase, voor ('Klant' of 'Intern'), wanneer, wie, lead, body; optioneel concept=True."""
+    """doc: dict met code, titel, fase, voor ('Klant' of 'Intern'), wanneer, wie, lead, body; optioneel concept=True en meta=[(label, waarde), ...] in plaats van voor/wanneer/wie/versie."""
     voor = doc['voor']
     cls = 'voor-klant' if voor.lower().startswith('klant') else 'voor-intern'
+    if doc.get('meta'): cls = 'eigen-meta'
+    versie = VERSIE.replace('Versie ', '') + (' · concept' if doc.get('concept') else '')
+    velden = doc.get('meta') or [('Voor', voor), ('Wanneer', doc['wanneer']), ('Wie', doc['wie']), ('Versie', versie)]
+    meta = '<div class="meta" style="grid-template-columns:repeat(%d,1fr)">%s</div>' % (len(velden), ''.join('<div><span>%s</span><b>%s</b></div>' % v for v in velden))
     return """<!doctype html><html lang="nl"><head><meta charset="utf-8"><title>%(code)s %(titel)s</title><style>%(css)s</style></head>
 <body class="%(cls)s">
 <div class="kop"><div class="merk">James Robinson<small>Marketing &amp; Branding</small></div><div class="code">%(code)s</div></div>
 <div class="eyebrow">%(fase)s</div>
 <h1>%(titel)s</h1>
 <p class="lead">%(lead)s</p>
-<div class="meta"><div><span>Voor</span><b>%(voor)s</b></div><div><span>Wanneer</span><b>%(wanneer)s</b></div><div><span>Wie</span><b>%(wie)s</b></div><div><span>Versie</span><b>%(versie)s</b></div></div>
+%(meta)s
 %(body)s
-</body></html>""" % dict(doc, css=CSS, cls=cls, versie=VERSIE.replace('Versie ', '') + (' · concept' if doc.get('concept') else ''))
+</body></html>""" % dict(doc, css=CSS, cls=cls, meta=meta)

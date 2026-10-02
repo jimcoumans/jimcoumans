@@ -182,6 +182,7 @@ BESLUITEN = """
  ['2 okt 2026', 'Kiest de klant het dashboard per jaar, dan krijgt de klant daarvoor één losse jaarfactuur.'],
  ['2 okt 2026', 'Tot de leveranciers ze bevestigen, rekenen we met onze eigen inschatting van de Webmix-bedragen en de staffels van MailerLite en Leadinfo.'],
  ['2 okt 2026', 'Elke klant krijgt een klantprofiel aan het eind van de onboarding, elke campagne een campagnebriefing met akkoord van de klant. Wat niet in de briefing staat, doen we niet.'],
+ ['2 okt 2026', 'De campagnebriefing gaat eerst als voorstel naar de klant en pas na akkoord naar het team. De klant ziet dezelfde versie als wij. Samenvatting en taken maakt het portaal met AI; klantgegevens komen uit het systeem.'],
 ]) + """
 </div></section>
 <footer class="voet"><div class="wrap">James Robinson — Marketing &amp; Branding · De James Robinson-gids · versie 30 september 2026</div></footer>
