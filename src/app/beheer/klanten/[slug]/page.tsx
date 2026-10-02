@@ -38,16 +38,36 @@ import { PRODUCTGROEPEN } from '@/lib/services'
  */
 export const maxDuration = 26
 
+/* De klantkaart in tabbladen: zo zie je eerst het overzicht en zoek je de
+   rest op waar het hoort, in plaats van door één lange pagina te scrollen. */
+const TABS = [
+  { key: 'overzicht', label: 'Overzicht' },
+  { key: 'budget', label: 'Budget en facturen' },
+  { key: 'campagnes', label: 'Campagnes' },
+  { key: 'contacten', label: 'Contacten' },
+  { key: 'profiel', label: 'Bedrijfsprofiel' },
+] as const
+type Tab = (typeof TABS)[number]['key']
+
+/** Groen als er budget is, rood als het negatief is, zwart op nul. */
+function saldoKleur(cents: number): string {
+  return cents > 0 ? 'text-[#1D7D3F]' : cents < 0 ? 'text-[#C02A22]' : 'text-jr-text'
+}
+
 export default async function KlantPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>
+  searchParams: Promise<{ tab?: string }>
 }) {
   const user = await getSessionUser()
   if (!user) redirect('/login')
   if (user.role !== 'staff' && user.role !== 'admin') redirect('/')
 
   const { slug } = await params
+  const { tab: tabParam } = await searchParams
+  const tab: Tab = TABS.some((t) => t.key === tabParam) ? (tabParam as Tab) : 'overzicht'
   const klant = await getOrganizationBySlug(slug)
   if (!klant) notFound()
 
@@ -74,59 +94,89 @@ export default async function KlantPage({
   ])
   const vandaag = new Date().toISOString().slice(0, 10)
 
+  // Het budget in één oogopslag: wat er elke maand bijkomt, wat er nu staat
+  // en wanneer de volgende bijschrijving is.
+  const actief = abonnementen.filter((a) => a.subscription.status === 'active')
+  const perMaand = actief.reduce((som, a) => som + a.subscription.amountExclVatCents, 0)
+  const saldo = klant.wallets.reduce((som, w) => som + (w.balance?.balanceCents ?? 0), 0)
+  const volgende = actief
+    .map((a) => a.nextBillingOn)
+    .filter((d): d is Date => d !== null)
+    .sort((a, b) => a.getTime() - b.getTime())[0]
+
   return (
     <AppShell user={user} actief="klanten">
         <a href="/beheer/klanten" className="text-jr-blue text-sm hover:underline">
           &larr; Alle klanten
         </a>
 
-        <div className="mt-2 mb-1 flex flex-wrap items-center gap-3">
-          <h1 className="text-[28px] sm:text-[32px]">{klant.organization.name}</h1>
-          <span
-            className={`rounded-full px-2.5 py-0.5 text-xs ${organizationStatusStyles[klant.organization.status]}`}
-          >
-            {organizationStatusLabels[klant.organization.status]}
-          </span>
-        </div>
-        <p className="mb-8 text-sm text-gray-600">
-          {[
-            `${klant.wallets.length} ${klant.wallets.length === 1 ? 'wallet' : 'wallets'}`,
-            klant.organization.industry,
-            contacten.find((c) => c.isPrimary)?.name,
-            klant.organization.phone,
-          ]
-            .filter(Boolean)
-            .join(' · ')}
-          {klant.organization.website && (
-            <>
-              {' · '}
-              <a
-                href={
-                  klant.organization.website.startsWith('http')
-                    ? klant.organization.website
-                    : `https://${klant.organization.website}`
-                }
-                className="hover:text-jr-blue"
-                rel="noreferrer noopener"
+        <div className="mt-2 mb-6 flex flex-wrap items-start justify-between gap-x-8 gap-y-4">
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-3">
+              <h1 className="text-[28px] sm:text-[32px]">{klant.organization.name}</h1>
+              <span
+                className={`rounded-full px-2.5 py-0.5 text-xs ${organizationStatusStyles[klant.organization.status]}`}
               >
-                {klant.organization.website.replace(/^https?:\/\//, '')}
-              </a>
-            </>
-          )}
-        </p>
+                {organizationStatusLabels[klant.organization.status]}
+              </span>
+            </div>
+          <p className="mt-1 text-sm text-gray-600">
+            {[
+              `${klant.wallets.length} ${klant.wallets.length === 1 ? 'wallet' : 'wallets'}`,
+              klant.organization.industry,
+              contacten.find((c) => c.isPrimary)?.name,
+              klant.organization.phone,
+            ]
+              .filter(Boolean)
+              .join(' · ')}
+            {klant.organization.website && (
+              <>
+                {' · '}
+                <a
+                  href={
+                    klant.organization.website.startsWith('http')
+                      ? klant.organization.website
+                      : `https://${klant.organization.website}`
+                  }
+                  className="hover:text-jr-blue"
+                  rel="noreferrer noopener"
+                >
+                  {klant.organization.website.replace(/^https?:\/\//, '')}
+                </a>
+              </>
+            )}
+          </p>
+          </div>
+          {/* Het actuele budget, rechtsboven: groen, rood of zwart. */}
+          <div className="text-right">
+            <p className="text-xs text-gray-600">Actueel budget</p>
+            <p className={`font-display tabular text-[32px] leading-tight font-bold tracking-tight ${saldoKleur(saldo)}`}>
+              {formatCents(saldo)}
+            </p>
+            <p className="text-xs text-gray-600">
+              {actief.length > 0 ? `${formatCents(perMaand)} per maand erbij` : 'geen lopend abonnement'}
+            </p>
+          </div>
+        </div>
 
-        {(() => {
-          // Het budget in één oogopslag: wat er elke maand bijkomt, wat er nu
-          // staat en wanneer de volgende bijschrijving is.
-          const actief = abonnementen.filter((a) => a.subscription.status === 'active')
-          const perMaand = actief.reduce((som, a) => som + a.subscription.amountExclVatCents, 0)
-          const saldo = klant.wallets.reduce((som, w) => som + (w.balance?.balanceCents ?? 0), 0)
-          const volgende = actief
-            .map((a) => a.nextBillingOn)
-            .filter((d): d is Date => d !== null)
-            .sort((a, b) => a.getTime() - b.getTime())[0]
-          return (
-            <section className="mb-10 grid gap-4 sm:grid-cols-3">
+        <nav aria-label="Onderdelen van de klant" className="mb-8 flex gap-1 overflow-x-auto rounded-full bg-gray-150 p-1 sm:inline-flex">
+          {TABS.map((t) => (
+            <a
+              key={t.key}
+              href={t.key === 'overzicht' ? `/beheer/klanten/${slug}` : `/beheer/klanten/${slug}?tab=${t.key}`}
+              aria-current={tab === t.key ? 'page' : undefined}
+              className={`rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap ${
+                tab === t.key ? 'text-jr-text bg-white shadow-sm' : 'text-gray-600 hover:text-jr-text'
+              }`}
+            >
+              {t.label}
+            </a>
+          ))}
+        </nav>
+
+        {tab === 'overzicht' && (
+          <div className="space-y-8">
+            <section className="grid gap-4 sm:grid-cols-3">
               <div className="rounded-xl bg-white p-6 shadow-sm">
                 <p className="text-xs text-gray-600">Budget per maand</p>
                 <p className="font-display tabular mt-1 text-2xl font-semibold tracking-tight">
@@ -137,146 +187,156 @@ export default async function KlantPage({
                 </p>
               </div>
               <div className="rounded-xl bg-white p-6 shadow-sm">
-                <p className="text-xs text-gray-600">Saldo nu</p>
-                <p className={`font-display tabular mt-1 text-2xl font-semibold tracking-tight ${saldo < 0 ? 'text-jr-red' : 'text-jr-blue'}`}>
-                  {formatCents(saldo)}
-                </p>
-                <p className="mt-1 text-xs text-gray-600">
-                  over {klant.wallets.length} {klant.wallets.length === 1 ? 'wallet' : 'wallets'}
-                </p>
-              </div>
-              <div className="rounded-xl bg-white p-6 shadow-sm">
                 <p className="text-xs text-gray-600">Volgende bijschrijving</p>
                 <p className="font-display tabular mt-1 text-2xl font-semibold tracking-tight">
                   {volgende ? formatDate(volgende) : '-'}
                 </p>
                 <p className="mt-1 text-xs text-gray-600">via de dagelijkse abonnementsrun</p>
               </div>
+              <div className="rounded-xl bg-white p-6 shadow-sm">
+                <p className="text-xs text-gray-600">Vaste contactpersoon</p>
+                <p className="font-display mt-1 truncate text-2xl font-semibold tracking-tight">
+                  {contacten.find((c) => c.isPrimary)?.name ?? '-'}
+                </p>
+                <p className="mt-1 text-xs text-gray-600">
+                  {contacten.length} {contacten.length === 1 ? 'contactpersoon' : 'contactpersonen'}
+                </p>
+              </div>
             </section>
-          )
-        })()}
-
-        <div className="space-y-10">
-          <Tijdlijn
-            organizationId={klant.organization.id}
-            slug={slug}
-            items={tijdlijn}
-            contacten={contacten}
-            laatsteContactOp={laatsteContactOp}
-          />
-
-          <Contactpersonen
-            contacts={contacten}
-            organizationId={klant.organization.id}
-            slug={slug}
-            kinderenPer={kinderenPer}
-          />
-
-          <Partners
-            links={partnerLinks}
-            alle={allePartners}
-            organizationId={klant.organization.id}
-            slug={slug}
-          />
-
-          <KlantCampagnes organizationId={klant.organization.id} slug={slug} />
-
-          {klant.wallets.map(({ wallet, balance }) => (
-            <WalletBeheer
-              key={wallet.id}
-              slug={slug}
-              organizationId={klant.organization.id}
-              wallet={wallet}
-              balance={balance}
-              vandaag={vandaag}
-              diensten={diensten}
-              team={team}
-            />
-          ))}
-
-          <section className="grid gap-6 lg:grid-cols-2">
-            <div className="rounded-xl bg-white p-6 shadow-sm">
-              <h2 className="mb-3 text-base">Wallet toevoegen</h2>
-              <ActionForm action={nieuweWallet} submitLabel="Wallet aanmaken">
-                <input type="hidden" name="organizationId" value={klant.organization.id} />
-                <input type="hidden" name="slug" value={slug} />
-                <Field label="Naam" name="naam" required placeholder="Strippenkaart 2026" />
-                <Field
-                  label="Signaalgrens"
-                  name="drempel"
-                  placeholder="250,00"
-                  hint="Onder dit saldo krijgt de klant een melding dat het budget opraakt."
-                />
-              </ActionForm>
-            </div>
-
-            <Gebruikers klant={klant} slug={slug} />
-          </section>
-
-          <section>
-            <h2 className="mb-1 text-lg">Abonnementen</h2>
-            <p className="mb-3 text-sm text-gray-600">
-              Zolang een abonnement loopt, wordt op de facturatiedag elke maand
-              automatisch een factuur gemaakt en het budget bijgeschreven.
-            </p>
-
-            {abonnementen.length > 0 && (
-              <ul className="mb-4 space-y-3">
-                {abonnementen.map((item) => (
-                  <SubscriptionCard key={item.subscription.id} item={item} slug={slug} />
-                ))}
-              </ul>
-            )}
-
-            <div className="rounded-xl bg-white p-6 shadow-sm">
-              <h3 className="mb-3 text-sm">
-                {abonnementen.length === 0
-                  ? 'Eerste abonnement aanmaken'
-                  : 'Abonnement toevoegen'}
-              </h3>
-              <NewSubscriptionForm
-                action={nieuwAbonnement}
+            <div className="grid items-start gap-8 xl:grid-cols-[minmax(0,1fr)_minmax(0,440px)]">
+              <div className="min-w-0">
+              <Tijdlijn
                 organizationId={klant.organization.id}
                 slug={slug}
-                wallets={klant.wallets.map(({ wallet }) => ({
-                  id: wallet.id,
-                  name: wallet.name,
-                }))}
+                items={tijdlijn}
+                contacten={contacten}
+                laatsteContactOp={laatsteContactOp}
+              />
+              </div>
+              <div className="min-w-0">
+                <KlantCampagnes organizationId={klant.organization.id} slug={slug} />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {tab === 'budget' && (
+          <div className="space-y-10">
+            {klant.wallets.map(({ wallet, balance }) => (
+              <WalletBeheer
+                key={wallet.id}
+                slug={slug}
+                organizationId={klant.organization.id}
+                wallet={wallet}
+                balance={balance}
                 vandaag={vandaag}
+                diensten={diensten}
+                team={team}
+              />
+            ))}
+            <section>
+              <h2 className="mb-1 text-lg">Abonnementen</h2>
+              <p className="mb-3 text-sm text-gray-600">
+                Zolang een abonnement loopt, wordt op de facturatiedag elke maand
+                automatisch een factuur gemaakt en het budget bijgeschreven.
+              </p>
+
+              {abonnementen.length > 0 && (
+                <ul className="mb-4 space-y-3">
+                  {abonnementen.map((item) => (
+                    <SubscriptionCard key={item.subscription.id} item={item} slug={slug} />
+                  ))}
+                </ul>
+              )}
+
+              <div className="rounded-xl bg-white p-6 shadow-sm">
+                <h3 className="mb-3 text-sm">
+                  {abonnementen.length === 0
+                    ? 'Eerste abonnement aanmaken'
+                    : 'Abonnement toevoegen'}
+                </h3>
+                <NewSubscriptionForm
+                  action={nieuwAbonnement}
+                  organizationId={klant.organization.id}
+                  slug={slug}
+                  wallets={klant.wallets.map(({ wallet }) => ({
+                    id: wallet.id,
+                    name: wallet.name,
+                  }))}
+                  vandaag={vandaag}
+                />
+              </div>
+            </section>
+            <Facturen
+              facturen={facturen}
+              klant={klant}
+              slug={slug}
+              vandaag={vandaag}
+            />
+            <section className="grid gap-6 lg:grid-cols-2">
+              <div className="rounded-xl bg-white p-6 shadow-sm">
+                <h2 className="mb-3 text-base">Wallet toevoegen</h2>
+                <ActionForm action={nieuweWallet} submitLabel="Wallet aanmaken">
+                  <input type="hidden" name="organizationId" value={klant.organization.id} />
+                  <input type="hidden" name="slug" value={slug} />
+                  <Field label="Naam" name="naam" required placeholder="Strippenkaart 2026" />
+                  <Field
+                    label="Signaalgrens"
+                    name="drempel"
+                    placeholder="250,00"
+                    hint="Onder dit saldo krijgt de klant een melding dat het budget opraakt."
+                  />
+                </ActionForm>
+              </div>
+            </section>
+          </div>
+        )}
+
+        {tab === 'campagnes' && <KlantCampagnes organizationId={klant.organization.id} slug={slug} />}
+
+        {tab === 'contacten' && (
+          <div className="space-y-10">
+            <Contactpersonen
+              contacts={contacten}
+              organizationId={klant.organization.id}
+              slug={slug}
+              kinderenPer={kinderenPer}
+            />
+            <Partners
+              links={partnerLinks}
+              alle={allePartners}
+              organizationId={klant.organization.id}
+              slug={slug}
+            />
+            <Accounts
+              accounts={accounts}
+              organizationId={klant.organization.id}
+              slug={slug}
+            />
+            <Gebruikers klant={klant} slug={slug} />
+          </div>
+        )}
+
+        {tab === 'profiel' && (
+          <div className="space-y-10">
+            <Bedrijfsgegevens org={klant.organization} slug={slug} />
+
+            <Doelen organizationId={klant.organization.id} slug={slug} doelen={doelen} />
+
+            <div className="grid gap-6 xl:grid-cols-2">
+              <Vestigingen
+                organizationId={klant.organization.id}
+                slug={slug}
+                vestigingen={vestigingen}
+              />
+              <Concurrenten
+                organizationId={klant.organization.id}
+                slug={slug}
+                concurrenten={concurrenten}
               />
             </div>
-          </section>
-
-          <Facturen
-            facturen={facturen}
-            klant={klant}
-            slug={slug}
-            vandaag={vandaag}
-          />
-
-          <Accounts
-            accounts={accounts}
-            organizationId={klant.organization.id}
-            slug={slug}
-          />
-
-          <Bedrijfsgegevens org={klant.organization} slug={slug} />
-
-          <Doelen organizationId={klant.organization.id} slug={slug} doelen={doelen} />
-
-          <div className="grid gap-6 xl:grid-cols-2">
-            <Vestigingen
-              organizationId={klant.organization.id}
-              slug={slug}
-              vestigingen={vestigingen}
-            />
-            <Concurrenten
-              organizationId={klant.organization.id}
-              slug={slug}
-              concurrenten={concurrenten}
-            />
           </div>
-        </div>
+        )}
     </AppShell>
   )
 }

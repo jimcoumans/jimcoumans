@@ -206,8 +206,12 @@ export default async function BeheerPage({
                             ? `${formatCents(maandbudget.get(k.organization.id) ?? 0)} per maand`
                             : 'geen abonnement'}
                         </p>
-                        <p className={`text-sm ${k.totalBalanceCents < 0 ? 'text-jr-red' : ''}`}>
-                          saldo {formatCents(k.totalBalanceCents)}
+                        <p
+                          className={`text-[15px] font-semibold ${
+                            k.totalBalanceCents > 0 ? 'text-[#1D7D3F]' : k.totalBalanceCents < 0 ? 'text-[#C02A22]' : 'text-jr-text'
+                          }`}
+                        >
+                          {formatCents(k.totalBalanceCents)}
                         </p>
                       </div>
                     </a>
