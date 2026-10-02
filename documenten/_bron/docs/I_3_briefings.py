@@ -9,6 +9,12 @@ def bron(t):
     kleur = {'systeem': 'blauw', 'suggestie': 'groen', 'keuze': 'oranje'}.get(t, 'blauw')
     return ' <span class="chip c-%s" style="font-weight:500">%s</span>' % (kleur, t)
 
+LEEG_VELD = '<span style="color:var(--tx3)">-</span>'
+
+def streep(rijen):
+    """Lege cellen in ingevulde tabellen krijgen een streepje; totaalregels niet."""
+    return [r if isinstance(r, tuple) else [c if str(c).strip() else LEEG_VELD for c in r] for r in rijen]
+
 LIJNEN = '<div class="regels"><div class="regel"></div><div class="regel"></div></div>'
 TH = 'style="width:30%;vertical-align:top;color:var(--tx);font-weight:600;font-size:8.8pt;padding:6pt 6pt"'
 
@@ -20,7 +26,7 @@ def velden_tabel(rijen, waarden=None, leeg_sjabloon=True):
         if waarden is None:
             inhoud = ('<div class="klein">%s</div>' % hint if hint else '') + LIJNEN
         else:
-            inhoud = waarden.get(veld, '')
+            inhoud = waarden.get(veld) or LEEG_VELD
         out.append('<tr><th %s>%s%s</th><td>%s</td></tr>' % (TH, veld, bron(b) if b and waarden is None else '', inhoud))
     out.append('</tbody></table>')
     return ''.join(out)
@@ -28,7 +34,7 @@ def velden_tabel(rijen, waarden=None, leeg_sjabloon=True):
 def opmerking(tekst=None):
     if tekst is None:
         return '<div class="vak" style="min-height:40pt;margin:2pt 0 10pt"><div class="klein" style="font-weight:500">Opmerkingen</div></div>'
-    inhoud = ul(tekst) if isinstance(tekst, list) else (tekst or '')
+    inhoud = (ul(tekst) if tekst else LEEG_VELD) if isinstance(tekst, list) else (tekst or LEEG_VELD)
     return '<div class="vak" style="margin:2pt 0 10pt"><div class="klein" style="font-weight:500">Opmerkingen</div>%s</div>' % inhoud
 
 # ---------------------------------------------------------------- I.3 Klantprofiel
@@ -96,7 +102,7 @@ def kanalen_tabel(regels):
         rijen = [['', '', '', VINK % 'bestaat' + VINK % 'nog te maken'] for _ in range(6)]
         return tabel(['Kanaal, middel of content', 'Aantal', 'Toelichting', 'Status'], rijen) + p('Kies uit: Meta Ads targeting, Meta Ads retargeting, Google Ads, Microsoft Ads, LinkedIn, TikTok, mailing, landingspagina, content (beeldenbank, draaidag, materiaal van de klant, sjablonen). Wat nog gemaakt moet worden, komt in de tijdlijn.', 'klein')
     st = lambda x: chip('nog te maken', 'oranje') if x == 'maken' else chip('bestaat', 'groen')
-    return tabel(['Kanaal, middel of content', 'Aantal', 'Toelichting', 'Status'], [[a, b, c, st(d)] for a, b, c, d in regels])
+    return tabel(['Kanaal, middel of content', 'Aantal', 'Toelichting', 'Status'], streep([[a, b, c, st(d)] for a, b, c, d in regels]))
 
 CB = [
  ('1 · De basis', [
@@ -152,12 +158,12 @@ def campagnebriefing(w=None):
         out.append(velden_tabel(rijen, w))
         if 'doel' in titel:
             out.append(h3('KPI’s'))
-            out.append(tabel(['Product of onderdeel', 'Datum', 'Doel (aantal)', 'Prijs', 'Omzet'], g('kpi') or [['', '', '', '', ''] for _ in range(4)] + [('tot', ['Totaal', '', '', '', ''])], rechts=(2, 3, 4)))
+            out.append(tabel(['Product of onderdeel', 'Datum', 'Doel (aantal)', 'Prijs', 'Omzet'], streep(g('kpi')) if g('kpi') else [['', '', '', '', ''] for _ in range(4)] + [('tot', ['Totaal', '', '', '', ''])], rechts=(2, 3, 4)))
             out.append(opmerking(g('kpi_opmerking')))
         if 'planning' in titel:
             out.append(opmerking(g('planning_opmerking')))
             out.append(h3('Tijdlijn' + (bron('suggestie') if leeg else '')))
-            out.append(tabel(['Deadline', 'Wat', 'Verantwoordelijke'], g('tijdlijn') or [['', '', ''] for _ in range(7)]))
+            out.append(tabel(['Deadline', 'Wat', 'Verantwoordelijke'], streep(g('tijdlijn')) if g('tijdlijn') else [['', '', ''] for _ in range(7)]))
             if leeg: out.append(p('Datums kies je in een kalender. Met “doe suggestie” maakt het portaal de tijdlijn uit de start- en einddatum en wat er opgeleverd moet worden; elke regel blijft aan te passen. Vaste omschrijvingen: briefing akkoord, landingspagina klaar, content klaar, merkcheck, live, contentronde, mailing, beslismoment, einde campagne, evaluatie. Na akkoord wordt de tijdlijn een taak met subtaken in ClickUp.', 'klein'))
         if 'Doelgroep' in titel:
             out.append(opmerking(g('doelgroep_opmerking')))
