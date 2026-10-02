@@ -380,6 +380,10 @@ export function describeDbError(error: unknown): string | null {
       return 'Deze contactpersoon staat al bij de campagne.'
     case 'campaign_audiences_campaign_id_audience_id_pk':
       return 'Deze doelgroep staat al bij de campagne.'
+    case 'campaign_ads_share_valid':
+      return 'Het deel uit advertenties ligt tussen 1 en 100%. Laat het leeg als alles uit advertenties moet komen.'
+    case 'campaign_specialists_campaign_id_user_id_pk':
+      return 'Deze specialist staat al bij de campagne.'
     case 'campaign_versions_idx':
       return 'Deze versie is al vastgelegd. Ververs de pagina en probeer het opnieuw.'
     default:

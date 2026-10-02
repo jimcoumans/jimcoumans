@@ -2461,3 +2461,36 @@ BEGIN
   END IF;
 END $jr_0026_campagnebriefings$;
 
+-- ---------------------------------------------------------------------------
+-- 0027_campagne_specialisten_en_bandbreedte
+-- ---------------------------------------------------------------------------
+
+DO $jr_0027_campagne_specialisten_en_bandbreedte$
+BEGIN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = 'aeacee0fa88ff391041709cf818f939b68492474910a6ccbfbb7d5f0dc6c86e0') THEN
+    RAISE NOTICE 'Overgeslagen: 0027_campagne_specialisten_en_bandbreedte stond er al.';
+  ELSE
+    CREATE TABLE "campaign_specialists" (
+    	"campaign_id" uuid NOT NULL,
+    	"user_id" uuid NOT NULL,
+    	CONSTRAINT "campaign_specialists_campaign_id_user_id_pk" PRIMARY KEY("campaign_id","user_id")
+    );
+
+
+    ALTER TABLE "campaigns" ADD COLUMN "ads_share_bp" integer;
+
+    ALTER TABLE "campaign_specialists" ADD CONSTRAINT "campaign_specialists_campaign_id_campaigns_id_fk" FOREIGN KEY ("campaign_id") REFERENCES "public"."campaigns"("id") ON DELETE cascade ON UPDATE no action;
+
+    ALTER TABLE "campaign_specialists" ADD CONSTRAINT "campaign_specialists_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
+
+    ALTER TABLE "campaigns" ADD CONSTRAINT "campaign_ads_share_valid" CHECK ("campaigns"."ads_share_bp" IS NULL OR "campaigns"."ads_share_bp" BETWEEN 1 AND 10000);
+
+
+    ALTER TABLE "campaign_specialists" ENABLE ROW LEVEL SECURITY;
+
+    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+    VALUES ('aeacee0fa88ff391041709cf818f939b68492474910a6ccbfbb7d5f0dc6c86e0', 1790945570930);
+    RAISE NOTICE 'Toegepast: 0027_campagne_specialisten_en_bandbreedte.';
+  END IF;
+END $jr_0027_campagne_specialisten_en_bandbreedte$;
+

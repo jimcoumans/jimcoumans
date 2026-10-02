@@ -44,22 +44,46 @@ export function budgetTekst(v: CampagneVolledig): string {
     return LEEG
   }
   const h = v.hypothese.hypothese
-  const deel = h.budgetVanOmzetBp !== null ? ` (${formatBp(h.budgetVanOmzetBp)}% van de omzet)` : ''
+  const omzet = omzetBereik(h)
+  const deel = omzet ? ` (${omzet} van de omzet)` : ''
   let tekst: string
-  if (h.stand === 'berekend') {
+  if (h.stand === 'berekend' && h.ondergrensCents !== null && h.aandeelAdsBp !== null) {
+    tekst = `Berekend uit het doel: ${euro(h.ondergrensCents)} tot ${euro(h.budgetCents)}${deel}. De ondergrens als ${formatBp(h.aandeelAdsBp)}% uit advertenties komt, de bovengrens als alles uit advertenties komt; zie de hypothese.`
+  } else if (h.stand === 'berekend') {
     tekst = `Berekend uit het doel: advies ${euro(h.budgetCents)}${deel}. Dat is de bovengrens, als alles via advertenties komt; zie de hypothese.`
   } else {
     const vanDoel = h.doelEenheden > 0 ? ` (${Math.round((h.resultaatEenheden / h.doelEenheden) * 100)}% van het doel)` : ''
     tekst = `Vast budget: ${euro(h.budgetCents)}${deel}. Daarmee verwachten we ${formatAantal(h.resultaatEenheden)}${vanDoel} uit advertenties; zie de hypothese.`
+    if (h.aandeelAdsBp !== null && h.doelEenheden > 0) {
+      const dekt = h.resultaatEenheden / h.doelEenheden >= h.aandeelAdsBp / 10_000
+      tekst += dekt
+        ? ` Dat dekt het deel dat we uit advertenties verwachten (${formatBp(h.aandeelAdsBp)}%).`
+        : ` Dat is minder dan het deel dat we uit advertenties verwachten (${formatBp(h.aandeelAdsBp)}%).`
+    }
   }
   if (c.startOn && c.endOn) {
     const maanden = verdeelPerMaand(h.budgetCents, c.startOn, c.endOn)
     if (maanden.length > 1) {
       const delen = maanden.map((m) => `${maandNaam.format(m.maand)} ${euro(m.cents)}`)
-      tekst += ` Per maand: ${delen.slice(0, -1).join(', ')} en ${delen[delen.length - 1]}.`
+      tekst += ` Per maand${h.ondergrensCents !== null ? ' bij de bovengrens' : ''}: ${delen.slice(0, -1).join(', ')} en ${delen[delen.length - 1]}.`
     }
   }
   return tekst
+}
+
+/** Het budget als bedrag, of als bandbreedte als we een deel uit advertenties verwachten. */
+export function budgetBereik(h: Hypothese): string {
+  return h.ondergrensCents !== null ? `${euro(h.ondergrensCents)} – ${euro(h.budgetCents)}` : euro(h.budgetCents)
+}
+
+/** Het budget als deel van de omzet, met dezelfde bandbreedte. */
+export function omzetBereik(h: Hypothese): string | null {
+  if (h.omzetCents <= 0 || h.budgetVanOmzetBp === null) return null
+  if (h.ondergrensCents === null) return `${formatBp(h.budgetVanOmzetBp)}%`
+  const onder = Math.round((h.ondergrensCents / h.omzetCents) * 1000) / 10
+  const boven = Math.round((h.budgetCents / h.omzetCents) * 1000) / 10
+  const fmt = (n: number) => n.toLocaleString('nl-NL', { maximumFractionDigits: 1 })
+  return `${fmt(onder)} – ${fmt(boven)}%`
 }
 
 function Chip({ children, kleur = 'grijs' }: { children: React.ReactNode; kleur?: 'grijs' | 'blauw' | 'oranje' | 'groen' }) {
@@ -174,8 +198,19 @@ export function CampagneBriefing({ v }: { v: CampagneVolledig }) {
         <dl>
           <Rij label="Campagnenaam">{c.title}</Rij>
           <Rij label="Klant">{v.organisatie.name}</Rij>
-          <Rij label="Type">{c.kind === 'retainer' ? 'Retainer' : c.kind === 'project' ? 'Project' : null}</Rij>
           <Rij label="Marketingmanager">{v.marketingmanager?.name ?? v.marketingmanager?.email}</Rij>
+          <Rij label="Specialisten">
+            {v.specialisten.length > 0 && (
+              <ul className="space-y-0.5">
+                {v.specialisten.map((p) => (
+                  <li key={p.id}>
+                    {p.name ?? p.email}
+                    {p.functie && <span className="text-gray-600">, {p.functie}</span>}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Rij>
           <Rij label="Contactpersonen">{v.contactpersonen.map((p) => p.name).join(', ')}</Rij>
         </dl>
       </Sectie>
@@ -389,7 +424,9 @@ export function HypotheseWeergave({ v, compact = false }: { v: CampagneVolledig;
   return (
     <div className="space-y-4">
       <p className="text-sm text-gray-700">
-        {h.stand === 'berekend'
+        {h.stand === 'berekend' && h.aandeelAdsBp !== null
+          ? `We rekenen vanuit de advertenties. De bovengrens is wat nodig is als het hele doel uit advertenties komt; de ondergrens als ${formatBp(h.aandeelAdsBp)}% eruit komt en de rest via mailings, vaste klanten en direct verkeer.`
+          : h.stand === 'berekend'
           ? 'We rekenen vanuit de advertenties: alsof het hele doel daaruit komt. Mailings, vaste klanten en direct verkeer maken de campagne alleen goedkoper. Het advies is dus een bovengrens.'
           : 'Met een vast budget rekenen we vooruit: wat levert dit budget op, als de aannames kloppen.'}
       </p>
@@ -398,19 +435,17 @@ export function HypotheseWeergave({ v, compact = false }: { v: CampagneVolledig;
 
       <div className="grid gap-3 sm:grid-cols-3">
         <Kengetal
-          label={h.stand === 'berekend' ? 'Advies advertentiebudget' : 'Vast advertentiebudget'}
-          waarde={euro(h.budgetCents)}
+          label={h.stand === 'vast' ? 'Vast advertentiebudget' : h.ondergrensCents !== null ? 'Bandbreedte advertentiebudget' : 'Advies advertentiebudget'}
+          waarde={budgetBereik(h)}
           toelichting={
             h.stand === 'berekend' && h.nodigCents !== null
-              ? `${euro(h.nodigCents)} nodig, plus ${formatBp(c.bufferBp)}% buffer`
+              ? h.ondergrensCents !== null && h.aandeelAdsBp !== null
+                ? `bij ${formatBp(h.aandeelAdsBp)}% tot alles uit advertenties, met ${formatBp(c.bufferBp)}% buffer`
+                : `${euro(h.nodigCents)} nodig, plus ${formatBp(c.bufferBp)}% buffer`
               : undefined
           }
         />
-        <Kengetal
-          label="Deel van de omzet"
-          waarde={h.budgetVanOmzetBp !== null ? `${formatBp(h.budgetVanOmzetBp)}%` : LEEG}
-          toelichting={h.omzetCents > 0 ? `van ${euro(h.omzetCents)}` : undefined}
-        />
+        <Kengetal label="Deel van de omzet" waarde={omzetBereik(h) ?? LEEG} toelichting={h.omzetCents > 0 ? `van ${euro(h.omzetCents)}` : undefined} />
         <Kengetal
           label="Minimale conversie"
           waarde={`${formatBp(h.minimaleConversieBp)}%`}
@@ -430,10 +465,11 @@ export function HypotheseWeergave({ v, compact = false }: { v: CampagneVolledig;
                 </tr>
               </thead>
               <tbody>
-                <Aanname label="Eenheden per conversie" waarde={formatHonderdsten(c.unitsPerConversionHundredths)} bron={c.sourceUnits} />
-                <Aanname label="Conversieratio" waarde={c.conversionRateBp ? `${formatBp(c.conversionRateBp)}%` : LEEG} bron={c.sourceConversion} />
-                <Aanname label="Doorklikratio" waarde={c.clickThroughRateBp ? `${formatBp(c.clickThroughRateBp)}%` : LEEG} bron={c.sourceClickThrough} />
                 <Aanname label="Kosten per 1.000 impressies" waarde={c.cpmCents ? euroPrecies(c.cpmCents) : LEEG} bron={c.sourceCpm} />
+                <Aanname label="Doorklikratio" waarde={c.clickThroughRateBp ? `${formatBp(c.clickThroughRateBp)}%` : LEEG} bron={c.sourceClickThrough} />
+                <Aanname label="Conversieratio" waarde={c.conversionRateBp ? `${formatBp(c.conversionRateBp)}%` : LEEG} bron={c.sourceConversion} />
+                <Aanname label="Eenheden per conversie" waarde={formatHonderdsten(c.unitsPerConversionHundredths)} bron={c.sourceUnits} />
+                <Aanname label="Deel uit advertenties" waarde={c.adsShareBp ? `${formatBp(c.adsShareBp)}%` : '100%'} bron={c.adsShareBp ? 'verwachting; de rest via mailings, vaste klanten en direct' : 'alles uit advertenties'} />
                 {h.stand === 'berekend' && <Aanname label="Buffer" waarde={`${formatBp(c.bufferBp)}%`} bron="vaste regel" />}
                 <Aanname label="Omzet" waarde={h.omzetCents > 0 ? euro(h.omzetCents) : LEEG} bron="uit de KPI’s" />
               </tbody>
@@ -462,7 +498,7 @@ export function HypotheseWeergave({ v, compact = false }: { v: CampagneVolledig;
 
 function Keten({ h }: { h: Hypothese }) {
   const stappen = [
-    { label: 'Budget', waarde: euro(h.budgetCents) },
+    { label: h.ondergrensCents !== null ? 'Budget, bovengrens' : 'Budget', waarde: euro(h.budgetCents) },
     { label: 'Impressies', waarde: formatAantal(h.impressies) },
     { label: 'Bezoekers', waarde: formatAantal(h.bezoekers), sub: `${euroPrecies(h.perKlikCents)} per klik` },
     { label: 'Conversies', waarde: formatAantal(h.conversies), sub: `${euro(h.perConversieCents)} per conversie` },

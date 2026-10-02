@@ -13,11 +13,16 @@ import {
   maakCampagne,
   wijzigCampagne,
   zetContactpersonen,
-  zetDoelgroepen,
+  zetSpecialisten,
   voegDoelgroepToe,
+  koppelDoelgroepen,
+  ontkoppelDoelgroep,
   verwijderDoelgroep,
   voegKpiToe,
   verwijderKpi,
+  wijzigKpiRegel,
+  wijzigKanaalRegel,
+  wijzigDoelgroepRegel,
   voegKanaalToe,
   wisselKanaalStatus,
   verwijderKanaal,
@@ -97,13 +102,20 @@ export async function wijzigBasis(formData: FormData): Promise<ActionResult> {
   await requireStaff()
   const id = tekst(formData, 'campaignId')
   return veilig(id, async () => {
-    const kind = tekst(formData, 'kind')
+    const mm = ofNull(formData, 'marketingManagerId')
     await wijzigCampagne(id, {
       title: tekst(formData, 'title'),
-      kind: kind === 'retainer' || kind === 'project' ? kind : null,
-      marketingManagerId: ofNull(formData, 'marketingManagerId'),
+      marketingManagerId: mm,
     })
     await zetContactpersonen(id, formData.getAll('contactIds').map(String).filter(Boolean))
+    // De marketingmanager is geen specialist naast zichzelf.
+    await zetSpecialisten(
+      id,
+      formData
+        .getAll('specialistIds')
+        .map(String)
+        .filter((u) => u && u !== mm),
+    )
   })
 }
 
@@ -153,7 +165,6 @@ export async function wijzigDoelgroep(formData: FormData): Promise<ActionResult>
       audienceNotes: ofNull(formData, 'audienceNotes'),
       proposalFields: await voorstelVelden(id, formData, ['regio']),
     })
-    await zetDoelgroepen(id, formData.getAll('audienceIds').map(String).filter(Boolean))
   })
 }
 
@@ -208,12 +219,14 @@ export async function wijzigAannames(formData: FormData): Promise<ActionResult> 
     const cpm = cpmRuw === '' ? null : parseAmountToCents(cpmRuw)
     if (cpmRuw !== '' && (!cpm || cpm <= 0)) throw new CampagneError('Kosten per 1.000 impressies: vul een bedrag in, bijvoorbeeld 8.')
     const buffer = percentage('buffer', 'Buffer') ?? 0
+    const aandeel = percentage('adsShare', 'Deel uit advertenties')
     await wijzigCampagne(id, {
       unitsPerConversionHundredths: eenheden,
       conversionRateBp: percentage('conversion', 'Conversieratio'),
       clickThroughRateBp: percentage('ctr', 'Doorklikratio'),
       cpmCents: cpm,
       bufferBp: buffer,
+      adsShareBp: aandeel,
       sourceUnits: ofNull(formData, 'sourceUnits'),
       sourceConversion: ofNull(formData, 'sourceConversion'),
       sourceClickThrough: ofNull(formData, 'sourceClickThrough'),
@@ -243,16 +256,23 @@ export async function doeSuggestieSamenvatting(formData: FormData): Promise<Acti
 
 /* ------------------------------ Regels ---------------------------------- */
 
+function kpiUit(formData: FormData) {
+  const aantal = Number.parseInt(tekst(formData, 'targetQuantity'), 10)
+  const prijsRuw = tekst(formData, 'price')
+  const prijs = prijsRuw === '' ? null : parseAmountToCents(prijsRuw)
+  if (prijsRuw !== '' && prijs === null) throw new CampagneError('Vul de prijs in als bedrag, bijvoorbeeld 110.')
+  return { label: tekst(formData, 'label'), on: datum(formData, 'on'), targetQuantity: aantal, priceCents: prijs }
+}
+
 export async function nieuweKpi(formData: FormData): Promise<ActionResult> {
   await requireStaff()
   const id = tekst(formData, 'campaignId')
-  return veilig(id, async () => {
-    const aantal = Number.parseInt(tekst(formData, 'targetQuantity'), 10)
-    const prijsRuw = tekst(formData, 'price')
-    const prijs = prijsRuw === '' ? null : parseAmountToCents(prijsRuw)
-    if (prijsRuw !== '' && prijs === null) throw new CampagneError('Vul de prijs in als bedrag, bijvoorbeeld 110.')
-    await voegKpiToe(id, { label: tekst(formData, 'label'), on: datum(formData, 'on'), targetQuantity: aantal, priceCents: prijs })
-  })
+  return veilig(id, () => voegKpiToe(id, kpiUit(formData)))
+}
+
+export async function wijzigKpi(formData: FormData): Promise<ActionResult> {
+  await requireStaff()
+  return veilig(tekst(formData, 'campaignId'), () => wijzigKpiRegel(tekst(formData, 'id'), kpiUit(formData)))
 }
 
 export async function wisKpi(formData: FormData): Promise<ActionResult> {
@@ -260,17 +280,24 @@ export async function wisKpi(formData: FormData): Promise<ActionResult> {
   return veilig(tekst(formData, 'campaignId'), () => verwijderKpi(tekst(formData, 'id')))
 }
 
+function kanaalUit(formData: FormData) {
+  return {
+    kind: tekst(formData, 'kind'),
+    quantity: ofNull(formData, 'quantity'),
+    note: ofNull(formData, 'note'),
+    status: (tekst(formData, 'status') === 'bestaat' ? 'bestaat' : 'maken') as 'bestaat' | 'maken',
+  }
+}
+
 export async function nieuwKanaal(formData: FormData): Promise<ActionResult> {
   await requireStaff()
   const id = tekst(formData, 'campaignId')
-  return veilig(id, async () => {
-    await voegKanaalToe(id, {
-      kind: tekst(formData, 'kind'),
-      quantity: ofNull(formData, 'quantity'),
-      note: ofNull(formData, 'note'),
-      status: tekst(formData, 'status') === 'bestaat' ? 'bestaat' : 'maken',
-    })
-  })
+  return veilig(id, () => voegKanaalToe(id, kanaalUit(formData)))
+}
+
+export async function wijzigKanaal(formData: FormData): Promise<ActionResult> {
+  await requireStaff()
+  return veilig(tekst(formData, 'campaignId'), () => wijzigKanaalRegel(tekst(formData, 'id'), kanaalUit(formData)))
 }
 
 export async function wisselKanaal(formData: FormData): Promise<ActionResult> {
@@ -332,6 +359,41 @@ export async function nieuweDoelgroep(formData: FormData): Promise<ActionResult>
   await requireStaff()
   return veilig(tekst(formData, 'campaignId') || null, async () => {
     await voegDoelgroepToe(tekst(formData, 'organizationId'), tekst(formData, 'name'), ofNull(formData, 'description'))
+    const slug = tekst(formData, 'slug')
+    if (slug) revalidatePath(`/beheer/klanten/${slug}`)
+  })
+}
+
+/** Met de hand een doelgroep toevoegen: hij komt bij de klant en meteen in deze campagne. */
+export async function doelgroepInCampagne(formData: FormData): Promise<ActionResult> {
+  await requireStaff()
+  const id = tekst(formData, 'campaignId')
+  return veilig(id, async () => {
+    const v = await getCampagne(id)
+    if (!v) throw new CampagneError('Deze campagne bestaat niet meer.')
+    const d = await voegDoelgroepToe(v.organisatie.id, tekst(formData, 'name'), ofNull(formData, 'description'))
+    if (d) await koppelDoelgroepen(id, [d.id])
+    revalidatePath(`/beheer/klanten/${v.organisatie.slug}`)
+  })
+}
+
+/** Bestaande doelgroepen van de klant aan deze campagne hangen. */
+export async function kiesDoelgroepen(formData: FormData): Promise<ActionResult> {
+  await requireStaff()
+  const id = tekst(formData, 'campaignId')
+  return veilig(id, () => koppelDoelgroepen(id, formData.getAll('audienceIds').map(String)))
+}
+
+export async function haalDoelgroepWeg(formData: FormData): Promise<ActionResult> {
+  await requireStaff()
+  const id = tekst(formData, 'campaignId')
+  return veilig(id, () => ontkoppelDoelgroep(id, tekst(formData, 'id')))
+}
+
+export async function bewerkDoelgroep(formData: FormData): Promise<ActionResult> {
+  await requireStaff()
+  return veilig(tekst(formData, 'campaignId') || null, async () => {
+    await wijzigDoelgroepRegel(tekst(formData, 'id'), tekst(formData, 'name'), ofNull(formData, 'description'))
     const slug = tekst(formData, 'slug')
     if (slug) revalidatePath(`/beheer/klanten/${slug}`)
   })

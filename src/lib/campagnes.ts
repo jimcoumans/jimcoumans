@@ -6,6 +6,7 @@ import {
   campaignChannels,
   campaignTimeline,
   campaignContacts,
+  campaignSpecialists,
   campaignAudiences,
   campaignVersions,
   organizationAudiences,
@@ -93,6 +94,8 @@ export const KANAAL_SOORTEN = [
 
 /* ------------------------------ Lezen ------------------------------------ */
 
+export type Specialist = { id: string; name: string | null; email: string; functie: string | null }
+
 export type CampagneVolledig = {
   campagne: Campaign
   organisatie: Organization
@@ -101,6 +104,8 @@ export type CampagneVolledig = {
   kanalen: CampaignChannel[]
   tijdlijn: (CampaignTimelineItem & { assigneeName: string | null })[]
   contactpersonen: Contact[]
+  /** Wie er naast de marketingmanager aan werkt, met de functie erbij. */
+  specialisten: Specialist[]
   doelgroepen: OrganizationAudience[]
   hypothese: HypotheseUitkomst
   doelEenheden: number
@@ -118,7 +123,7 @@ export async function getCampagne(id: string): Promise<CampagneVolledig | null> 
   if (!rij) return null
   const c = rij.campagne
 
-  const [mm, kpis, kanalen, tijdlijn, contactRijen, doelgroepRijen, versies] = await Promise.all([
+  const [mm, kpis, kanalen, tijdlijn, contactRijen, doelgroepRijen, versies, specialisten] = await Promise.all([
     c.marketingManagerId
       ? db.select({ id: users.id, name: users.name, email: users.email }).from(users).where(eq(users.id, c.marketingManagerId)).limit(1)
       : Promise.resolve([]),
@@ -147,6 +152,7 @@ export async function getCampagne(id: string): Promise<CampagneVolledig | null> 
       .from(campaignVersions)
       .where(eq(campaignVersions.campaignId, id))
       .orderBy(desc(campaignVersions.createdAt)),
+    listSpecialisten(id, c.organizationId),
   ])
 
   const doelEenheden = kpis.reduce((a, k) => a + k.targetQuantity, 0)
@@ -160,6 +166,7 @@ export async function getCampagne(id: string): Promise<CampagneVolledig | null> 
     kanalen,
     tijdlijn: tijdlijn.map((t) => ({ ...t.item, assigneeName: t.assigneeName })),
     contactpersonen: contactRijen.map((r) => r.contact),
+    specialisten,
     doelgroepen: doelgroepRijen.map((r) => r.doelgroep),
     hypothese: hypotheseVoor(c, doelEenheden, omzetCents),
     doelEenheden,
@@ -179,6 +186,7 @@ export function hypotheseVoor(c: Campaign, doelEenheden: number, omzetCents: num
     bufferBp: c.bufferBp,
     stand: c.budgetMode,
     vastBudgetCents: c.fixedBudgetCents,
+    aandeelAdsBp: c.adsShareBp,
     start: c.startOn,
     einde: c.endOn,
   })
@@ -208,10 +216,37 @@ export async function listDoelgroepen(organizationId: string): Promise<Organizat
     .orderBy(asc(organizationAudiences.name))
 }
 
+/**
+ * De specialisten op een campagne. De functie komt uit het teamprofiel; staat
+ * die er niet, dan de rol die de collega bij deze klant heeft.
+ */
+async function listSpecialisten(campaignId: string, organizationId: string): Promise<Specialist[]> {
+  const rijen = await db
+    .select({ id: users.id, name: users.name, email: users.email, jobTitle: users.jobTitle, rol: organizationOwners.role })
+    .from(campaignSpecialists)
+    .innerJoin(users, eq(users.id, campaignSpecialists.userId))
+    .leftJoin(
+      organizationOwners,
+      and(eq(organizationOwners.userId, users.id), eq(organizationOwners.organizationId, organizationId)),
+    )
+    .where(eq(campaignSpecialists.campaignId, campaignId))
+    .orderBy(asc(users.name))
+  return rijen.map((r) => ({ id: r.id, name: r.name, email: r.email, functie: r.jobTitle?.trim() || r.rol?.trim() || null }))
+}
+
+export async function zetSpecialisten(id: string, userIds: string[]): Promise<void> {
+  await db.transaction(async (tx) => {
+    await tx.delete(campaignSpecialists).where(eq(campaignSpecialists.campaignId, id))
+    const uniek = [...new Set(userIds)]
+    if (uniek.length > 0) await tx.insert(campaignSpecialists).values(uniek.map((userId) => ({ campaignId: id, userId })))
+    await tx.update(campaigns).set({ updatedAt: new Date() }).where(eq(campaigns.id, id))
+  })
+}
+
 /** Collega's die een tijdlijnregel of een campagne kunnen trekken. */
 export async function listTeam() {
   return db
-    .select({ id: users.id, name: users.name, email: users.email, isMarketingManager: users.isMarketingManager })
+    .select({ id: users.id, name: users.name, email: users.email, jobTitle: users.jobTitle, isMarketingManager: users.isMarketingManager })
     .from(users)
     .where(inArray(users.role, ['staff', 'admin']))
     .orderBy(asc(users.name))
@@ -257,6 +292,13 @@ export async function maakCampagne(input: {
       .limit(1)
     if (vaste[0]) await tx.insert(campaignContacts).values({ campaignId: nieuw.id, contactId: vaste[0].id })
 
+    // De andere collega's die aan deze klant hangen, staan er meteen bij als specialist.
+    const anderen = await tx
+      .select({ userId: organizationOwners.userId })
+      .from(organizationOwners)
+      .where(and(eq(organizationOwners.organizationId, input.organizationId), eq(organizationOwners.isPrimary, false)))
+    if (anderen.length > 0) await tx.insert(campaignSpecialists).values(anderen.map((a) => ({ campaignId: nieuw.id, userId: a.userId })))
+
     return nieuw
   })
 }
@@ -286,10 +328,34 @@ export async function zetDoelgroepen(id: string, audienceIds: string[]): Promise
   })
 }
 
+/** Doelgroepen aan een campagne hangen, zonder de bestaande los te laten. */
+export async function koppelDoelgroepen(campaignId: string, audienceIds: string[]): Promise<void> {
+  const uniek = [...new Set(audienceIds)].filter(Boolean)
+  if (uniek.length === 0) throw new CampagneError('Vink minstens één doelgroep aan.')
+  await db
+    .insert(campaignAudiences)
+    .values(uniek.map((audienceId) => ({ campaignId, audienceId })))
+    .onConflictDoNothing()
+  await raak(campaignId)
+}
+
+/** Een doelgroep van de campagne halen. Bij de klant blijft hij bestaan. */
+export async function ontkoppelDoelgroep(campaignId: string, audienceId: string): Promise<void> {
+  await db
+    .delete(campaignAudiences)
+    .where(and(eq(campaignAudiences.campaignId, campaignId), eq(campaignAudiences.audienceId, audienceId)))
+  await raak(campaignId)
+}
+
 export async function voegDoelgroepToe(organizationId: string, name: string, description: string | null) {
   if (name.trim() === '') throw new CampagneError('Geef de doelgroep een naam.')
   const [d] = await db.insert(organizationAudiences).values({ organizationId, name: name.trim(), description }).returning()
   return d
+}
+
+export async function wijzigDoelgroepRegel(id: string, name: string, description: string | null) {
+  if (name.trim() === '') throw new CampagneError('Geef de doelgroep een naam.')
+  await db.update(organizationAudiences).set({ name: name.trim(), description }).where(eq(organizationAudiences.id, id))
 }
 
 export async function verwijderDoelgroep(id: string) {
@@ -304,6 +370,13 @@ export async function voegKpiToe(campaignId: string, kpi: { label: string; on: D
   await raak(campaignId)
 }
 
+export async function wijzigKpiRegel(id: string, kpi: { label: string; on: Date | null; targetQuantity: number; priceCents: number | null }) {
+  if (kpi.label.trim() === '') throw new CampagneError('Geef het product of onderdeel een naam.')
+  if (!Number.isInteger(kpi.targetQuantity) || kpi.targetQuantity <= 0) throw new CampagneError('Het doel is een heel aantal groter dan nul.')
+  const [k] = await db.update(campaignKpis).set({ ...kpi, label: kpi.label.trim() }).where(eq(campaignKpis.id, id)).returning()
+  if (k) await raak(k.campaignId)
+}
+
 export async function verwijderKpi(id: string) {
   const [k] = await db.delete(campaignKpis).where(eq(campaignKpis.id, id)).returning()
   if (k) await raak(k.campaignId)
@@ -314,6 +387,12 @@ export async function voegKanaalToe(campaignId: string, k: { kind: string; quant
   const [telling] = await db.select({ n: sql<number>`count(*)::int` }).from(campaignChannels).where(eq(campaignChannels.campaignId, campaignId))
   await db.insert(campaignChannels).values({ campaignId, position: telling?.n ?? 0, ...k, kind: k.kind.trim() })
   await raak(campaignId)
+}
+
+export async function wijzigKanaalRegel(id: string, k: { kind: string; quantity: string | null; note: string | null; status: 'bestaat' | 'maken' }) {
+  if (k.kind.trim() === '') throw new CampagneError('Kies een kanaal, middel of soort content.')
+  const [r] = await db.update(campaignChannels).set({ ...k, kind: k.kind.trim() }).where(eq(campaignChannels.id, id)).returning()
+  if (r) await raak(r.campaignId)
 }
 
 export async function wisselKanaalStatus(id: string) {
@@ -518,6 +597,7 @@ function momentopname(v: CampagneVolledig) {
       kanalen: v.kanalen,
       tijdlijn: v.tijdlijn,
       contactpersonen: v.contactpersonen.map((c) => ({ id: c.id, name: c.name })),
+      specialisten: v.specialisten,
       doelgroepen: v.doelgroepen,
       hypothese: v.hypothese,
     }),

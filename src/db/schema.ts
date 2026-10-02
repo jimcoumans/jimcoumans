@@ -3048,6 +3048,13 @@ export const campaigns = pgTable(
     clickThroughRateBp: integer('click_through_rate_bp'),
     cpmCents: integer('cpm_cents'),
     bufferBp: integer('buffer_bp').notNull().default(2000),
+    /**
+     * Welk deel van het doel we uit advertenties verwachten, in basispunten
+     * (60% = 6000). Leeg betekent: we rekenen alleen de bovengrens, alsof
+     * alles uit advertenties komt. Ingevuld geeft het de ondergrens van de
+     * bandbreedte.
+     */
+    adsShareBp: integer('ads_share_bp'),
     sourceUnits: text('source_units'),
     sourceConversion: text('source_conversion'),
     sourceClickThrough: text('source_click_through'),
@@ -3078,6 +3085,7 @@ export const campaigns = pgTable(
           AND (${t.clickThroughRateBp} IS NULL OR ${t.clickThroughRateBp} BETWEEN 1 AND 10000)
           AND ${t.bufferBp} BETWEEN 0 AND 10000`,
     ),
+    check('campaign_ads_share_valid', sql`${t.adsShareBp} IS NULL OR ${t.adsShareBp} BETWEEN 1 AND 10000`),
     check('campaign_fixed_budget', sql`${t.fixedBudgetCents} IS NULL OR ${t.fixedBudgetCents} > 0`),
     check('campaign_period', sql`${t.startOn} IS NULL OR ${t.endOn} IS NULL OR ${t.endOn} >= ${t.startOn}`),
   ],
@@ -3094,6 +3102,23 @@ export const campaignContacts = pgTable(
       .references(() => contacts.id, { onDelete: 'cascade' }),
   },
   (t) => [primaryKey({ columns: [t.campaignId, t.contactId] })],
+)
+
+/**
+ * De specialisten die aan een campagne werken, naast de marketingmanager.
+ * Per campagne, want niet elke specialist van een klant zit op elke campagne.
+ */
+export const campaignSpecialists = pgTable(
+  'campaign_specialists',
+  {
+    campaignId: uuid('campaign_id')
+      .notNull()
+      .references(() => campaigns.id, { onDelete: 'cascade' }),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+  },
+  (t) => [primaryKey({ columns: [t.campaignId, t.userId] })],
 )
 
 export const campaignAudiences = pgTable(

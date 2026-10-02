@@ -57,6 +57,20 @@ test('berekend: kosten per klik en minimale conversie bij het advies', () => {
   assert.equal(h.minimaleConversieBp, 210) // 2,1%
 })
 
+test('bandbreedte: met 60% uit advertenties loopt het advies van 1.500 tot 2.400 euro', () => {
+  const h = reken({ aandeelAdsBp: 6000 })
+  assert.equal(h.budgetCents, 240_000)
+  // 2.016 nodig x 60% = 1.209,60; plus 20% buffer = 1.451,52; afgerond 1.500.
+  assert.equal(h.ondergrensCents, 150_000)
+  assert.equal(h.aandeelAdsBp, 6000)
+})
+
+test('bandbreedte: zonder aandeel, of bij 100%, alleen de bovengrens', () => {
+  assert.equal(reken().ondergrensCents, null)
+  assert.equal(reken({ aandeelAdsBp: 10_000 }).ondergrensCents, null)
+  assert.equal(reken({ stand: 'vast', vastBudgetCents: 150_000, aandeelAdsBp: 6000 }).ondergrensCents, null)
+})
+
 test('zwakste schakel: 40% lagere conversie kost bij berekend meer budget', () => {
   const h = reken()
   assert.equal(h.zwaksteSchakel.conversieBp, 150)

@@ -27,6 +27,8 @@ export type HypotheseInvoer = {
   bufferBp: number
   stand: 'berekend' | 'vast'
   vastBudgetCents: number | null
+  /** Welk deel van het doel we uit advertenties verwachten. Leeg: alles. */
+  aandeelAdsBp?: number | null
   start: Date | null
   einde: Date | null
 }
@@ -40,8 +42,15 @@ export type Hypothese = {
   impressies: number
   /** Alleen bij berekend: wat er minimaal nodig is, zonder buffer. */
   nodigCents: number | null
-  /** Het advies (berekend, met buffer, afgerond op 100 euro) of het vaste budget. */
+  /** Het advies (berekend, met buffer, afgerond op 100 euro) of het vaste budget. Bij berekend de bovengrens. */
   budgetCents: number
+  /**
+   * Alleen bij berekend en een ingevuld aandeel: de ondergrens van de
+   * bandbreedte, als maar dat deel van het doel uit advertenties komt. Met
+   * dezelfde buffer en afronding als de bovengrens.
+   */
+  ondergrensCents: number | null
+  aandeelAdsBp: number | null
   /** Wat we verwachten te halen. Bij berekend is dat het doel. */
   resultaatEenheden: number
   perKlikCents: number
@@ -102,6 +111,12 @@ export function berekenHypothese(i: HypotheseInvoer): HypotheseUitkomst {
     resultaat = conversies * perConversie
   }
 
+  const aandeel = i.aandeelAdsBp && i.aandeelAdsBp < 10_000 ? i.aandeelAdsBp : null
+  const ondergrensCents =
+    i.stand === 'berekend' && aandeel !== null && nodigCents !== null
+      ? Math.max(10_000, Math.round((nodigCents * (aandeel / 10_000) * (1 + i.bufferBp / 10_000)) / 10_000) * 10_000)
+      : null
+
   const bezoekersBijBudget = (budgetCents / cpm) * 1000 * ctr
   const minimaleConversie = bezoekersBijBudget > 0 ? doelConversies / bezoekersBijBudget : 0
 
@@ -122,6 +137,8 @@ export function berekenHypothese(i: HypotheseInvoer): HypotheseUitkomst {
       impressies,
       nodigCents,
       budgetCents,
+      ondergrensCents,
+      aandeelAdsBp: aandeel,
       resultaatEenheden: resultaat,
       perKlikCents: cpm / 1000 / ctr,
       perConversieCents: budgetCents / conversies,

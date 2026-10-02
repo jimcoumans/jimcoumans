@@ -190,6 +190,13 @@
       "when": 1790928914426,
       "tag": "0026_campagnebriefings",
       "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "7",
+      "when": 1790945570930,
+      "tag": "0027_campagne_specialisten_en_bandbreedte",
+      "breakpoints": true
     }
   ]
 }
