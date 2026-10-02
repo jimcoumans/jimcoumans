@@ -148,6 +148,12 @@ def campagnebriefing(w=None):
             out.append(h3('KPI’s'))
             out.append(tabel(['Product of onderdeel', 'Datum', 'Doel (aantal)', 'Prijs', 'Omzet'], g('kpi') or [['', '', '', '', ''] for _ in range(4)] + [('tot', ['Totaal', '', '', '', ''])], rechts=(2, 3, 4)))
             out.append(opmerking(g('kpi_opmerking')))
+            out.append(h3('Hypothese' + (bron('suggestie') if leeg else '')))
+            if leeg: out.append(p('Terugrekenen van het doel naar wat er nodig is, met aannames per schakel. Zo zie je vóór de start waar de campagne kan vastlopen, en na twee weken live of de aannames kloppen.', 'klein'))
+            out.append(tabel(['Schakel', 'Aanname', 'Nodig'], g('hypothese') or [
+                ['Doel', '', ''], ['Conversies', 'Aantal per conversie (bijvoorbeeld personen per reservering)', ''], ['Waarvan via advertenties', 'Aandeel advertenties; de rest via mailings, bestaande klanten, direct', ''],
+                ['Bezoekers landingspagina', 'Conversieratio', ''], ['Impressies', 'Doorklikratio', ''], ('tot', ['Wat het mag kosten', 'Advertentiebudget', 'Per klik, per 1.000 impressies, per conversie'])], rechts=(2,)))
+            out.append(opmerking(g('hypothese_opmerking')))
         if 'planning' in titel:
             out.append(opmerking(g('planning_opmerking')))
             out.append(h3('Tijdlijn' + (bron('suggestie') if leeg else '')))
@@ -191,6 +197,8 @@ def specificatie():
         ['Plafond, advertentiebudget', 'Invoer of suggestie', 'Tekst, met vinkje “voorstel”'],
         ['KPI’s', 'Invoer', 'Regels: product of onderdeel, datum (kalender), doel (aantal), prijs, omzet (berekend), plus totaal'],
         ['Opmerkingen bij de KPI’s', 'Invoer', 'Opsomming'],
+        ['Hypothese', 'Suggestie, aan te passen', 'Uit het doel en het budget, met aannames per schakel (aantal per conversie, aandeel advertenties, conversieratio, doorklikratio) uit onze eigen normen per branche. Berekent bezoekers, impressies en wat een klik, 1.000 impressies en een conversie mogen kosten. Tijdens de campagne staat de hypothese in het dashboard naast de echte cijfers.'],
+        ['Opmerkingen bij de hypothese', 'Invoer of suggestie', 'Opsomming: de grootste bedreiging en wat we eraan doen'],
         ('grp', 'De planning'),
         ['Start, einde', 'Invoer', 'Datum (kalender)'],
         ['Opmerkingen bij de planning', 'Invoer', 'Opsomming, bijvoorbeeld een stopcriterium of beslismoment'],
@@ -233,6 +241,20 @@ THI = {
    'Op 25 november beslist Thiessen per moment of het doorgaat.',
    voorstel() + ' Doorgaan bij minimaal 30 couverts voor de brunch en 40 per diner.',
    'Tussenstand om op te sturen: op 1 november 15, 20 en 40 couverts; op 15 november 30, 40 en 55.',
+ ],
+ 'hypothese': [
+   ['Doel', '', '190 couverts'],
+   ['Reserveringen', 'Gemiddeld 3 personen per reservering', '63'],
+   ['Waarvan via advertenties', '60%; de rest via mailings, bestaande gasten en direct', '38'],
+   ['Bezoekers landingspagina', 'Conversieratio 4% (bezoek naar reservering)', '950'],
+   ['Impressies', 'Doorklikratio 1%', '95.000'],
+   ('tot', ['Wat het mag kosten', '€ 1.500 advertentiebudget', 'max. € 1,58 per klik · € 15,80 per 1.000 impressies · € 39 per reservering']),
+ ],
+ 'hypothese_opmerking': [
+   'De aannames zijn benchmarks, geen beloftes. Na twee weken live (21 oktober) leggen we ze naast de echte cijfers.',
+   '<b>De grootste bedreiging is de conversie op de landingspagina.</b> Reserveren via Odoo, geen keuze in de ruimte en € 110 per persoon. Zakt de conversie naar 2%, dan zijn er 1.900 bezoekers en 190.000 impressies nodig, en mag een klik maximaal € 0,79 kosten. Dat is krap. Daarom testen we de landingspagina en het reserveren vóór de start.',
+   'Gemiddeld per week: ongeveer 9.500 impressies, 95 bezoekers en bijna 4 reserveringen uit advertenties.',
+   'Na de eerste tien reserveringen checken we de groepsgrootte in Odoo. Zijn het er gemiddeld 2, dan zijn er 95 reserveringen nodig in plaats van 63.',
  ],
  'Start': '7 oktober 2026',
  'Einde': '17 december 2026',
@@ -286,7 +308,7 @@ THI = {
  ]),
 }
 
-THI_SAMENVATTING = ('Thiessen Wijnkoopers wil drie kerstmomenten vullen: twee kerstdiners en een kerstbrunch. Het doel is 190 couverts en € 17.900 omzet, '
+THI_SAMENVATTING = ('Thiessen Wijnkoopers wil drie kerstmomenten vullen: twee kerstdiners en een kerstbrunch. Het doel is 190 couverts (ongeveer 63 reserveringen) en € 17.900 omzet, '
                     'met Meta Ads, een eigen landingspagina en drie mailings, van 7 oktober tot 17 december 2026.')
 
 DOCS = [
