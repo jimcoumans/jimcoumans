@@ -67,6 +67,7 @@ STAP08 = stap_kop('08', 'f3', 'FASE 3 · SAMENWERKEN', 'Live en het maandritme',
 
 <h3>Briefings: het klantprofiel en de campagnebriefing</h3>
 <p>Aan het eind van de onboarding maakt de marketingmanager het <b>klantprofiel</b>: wie de klant is, de doelen, het merk, de systemen en de afspraken, samengesteld uit de vragenlijst van het intakegesprek, het onboardingformulier en het voorstel. Wie aan de klant werkt, leest dat eerst. Elke nieuwe campagne begint met een <b>campagnebriefing</b>: het doel in harde getallen, wat telt als resultaat, het plafond en het budget, de planning met beslismomenten, aanbod, doelgroep, kanalen en content, meting, en de afspraken met de klant. De klant geeft akkoord. Wat niet in de briefing staat, doen we niet.</p>
+<p><b>Waar het naartoe gaat.</b> Nu zijn het documenten (I.3 en I.4). Uiteindelijk vult de marketingmanager ze in het portaal in, op de klantkaart: per klant het profiel en alle campagnebriefings gebundeld, met de historie van eerdere campagnes, en gekoppeld aan de cijfers uit het marketingdashboard. Dan staat bij elke campagne naast wat we wilden ook wat het opleverde.</p>
 
 <h3>Het ritme</h3>
 <p>Voor ieder pakket hetzelfde. Het verschil zit in de hoeveelheid.</p>
