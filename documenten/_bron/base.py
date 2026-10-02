@@ -92,7 +92,7 @@ tr.tot td{font-weight:600;border-top:1px solid var(--tx);border-bottom:none}
 .blok .bh{display:flex;justify-content:space-between;align-items:baseline;gap:8pt;margin-bottom:4pt}
 .blok .bh b{font-family:var(--fd);font-size:11pt}
 .blok .bh span{font-size:8pt;font-weight:600;color:var(--blue-link);background:var(--blue-100);border-radius:980px;padding:2pt 8pt;white-space:nowrap}
-.chip{display:inline-block;font-size:7.5pt;font-weight:600;border-radius:980px;padding:1pt 7pt}
+.chip{white-space:nowrap;display:inline-block;font-size:7.5pt;font-weight:600;border-radius:980px;padding:1pt 7pt}
 .meta .chip,.vak .chip,.vak span.chip{display:inline-block;margin-bottom:0}
 .c-groen{background:var(--green-100);color:var(--green-tx)} .c-oranje{background:var(--orange-100);color:var(--orange-tx)} .c-rood{background:var(--red-100);color:var(--red-tx)} .c-blauw{background:var(--blue-100);color:var(--blue-link)}
 .twee{display:grid;grid-template-columns:1fr 1fr;gap:10pt}
