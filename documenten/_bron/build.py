@@ -9,6 +9,7 @@ import base
 def map_voor(code):
     if code.startswith('V'): return '4 Verkoopondersteuning'
     if code.startswith('I'): return '5 Intern'
+    if code.startswith('K'): return '6 Klanten'
     if code.startswith('00'): return ''
     n = int(code[:2])
     return '1 Verkopen' if n <= 4 else '2 Starten' if n <= 7 else '3 Samenwerken'
@@ -23,12 +24,13 @@ def laad():
 
 def overzicht(docs):
     rijen, huidig = [], None
+    docs = [d for d in docs if not d['code'].startswith('K')]
     for d in sorted(docs, key=lambda d: (map_voor(d['code']), d['code'])):
         m = map_voor(d['code'])
         if m != huidig:
             rijen.append(('grp', m[2:])); huidig = m
         rijen.append(['<b>%s</b>' % d['code'], d['titel'] + (' ' + base.chip('concept', 'oranje') if d.get('concept') else ''), d['voor'], d['wanneer'], d['wie']])
-    body = base.kader('<p>Elk document heeft een code. De eerste twee cijfers zijn de stap in de klantreis (01 tot en met 08), V is verkoopondersteuning, I is intern. Documenten met het label concept bevatten tekst die nog niet in de gids stond: lees die eerst na voordat je ze gebruikt.</p><p>De gids is leidend. Verandert er iets, dan eerst in de gids, daarna hier.</p>', 'Zo lees je dit overzicht', 'blauw') + base.tabel(['Code', 'Document', 'Voor', 'Wanneer', 'Wie'], rijen)
+    body = base.kader('<p>Elk document heeft een code. De eerste twee cijfers zijn de stap in de klantreis (01 tot en met 08), V is verkoopondersteuning, I is intern. Ingevulde briefings per klant staan in de map Klanten. Documenten met het label concept bevatten tekst die nog niet in de gids stond: lees die eerst na voordat je ze gebruikt.</p><p>De gids is leidend. Verandert er iets, dan eerst in de gids, daarna hier.</p>', 'Zo lees je dit overzicht', 'blauw') + base.tabel(['Code', 'Document', 'Voor', 'Wanneer', 'Wie'], rijen)
     return dict(code='00', titel='Overzicht documenten', fase='James Robinson · Alle documenten', voor='Intern', wanneer='Altijd', wie='Iedereen',
                 lead='Alle formulieren, draaiboeken, mailteksten en klantdocumenten op een rij, in de volgorde van de klantreis. %d documenten.' % len(docs), body=body)
 

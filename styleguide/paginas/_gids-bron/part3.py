@@ -181,6 +181,7 @@ BESLUITEN = """
  ['2 okt 2026', 'Sub en het lichte fundament krijgen een eigen regel op de offerte.'],
  ['2 okt 2026', 'Kiest de klant het dashboard per jaar, dan krijgt de klant daarvoor één losse jaarfactuur.'],
  ['2 okt 2026', 'Tot de leveranciers ze bevestigen, rekenen we met onze eigen inschatting van de Webmix-bedragen en de staffels van MailerLite en Leadinfo.'],
+ ['2 okt 2026', 'Elke klant krijgt een klantprofiel aan het eind van de onboarding, elke campagne een campagnebriefing met akkoord van de klant. Wat niet in de briefing staat, doen we niet.'],
 ]) + """
 </div></section>
 <footer class="voet"><div class="wrap">James Robinson — Marketing &amp; Branding · De James Robinson-gids · versie 30 september 2026</div></footer>

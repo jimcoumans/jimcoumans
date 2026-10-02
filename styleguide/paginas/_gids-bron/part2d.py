@@ -65,6 +65,9 @@ STAP08 = stap_kop('08', 'f3', 'FASE 3 · SAMENWERKEN', 'Live en het maandritme',
 ]) + """
 <p style="margin-top:14px"><b>Opschalen en het pakket.</b> Groeit het advertentiebudget, dan groeit het pakket mee: meer campagnes, meer doelgroepen, meer bijsturen. In maand 11 het jaargesprek, gevoerd door de marketingmanager: de rekensom opnieuw met echte cijfers in plaats van aannames, het doel voor jaar 2, en de vraag of het pakket nog past: zijn er campagnes bij gekomen, of is het budget gegroeid? Dan schuift het pakket mee, omhoog per direct en omlaag per de 1e van de volgende maand.</p>
 
+<h3>Briefings: het klantprofiel en de campagnebriefing</h3>
+<p>Aan het eind van de onboarding maakt de marketingmanager het <b>klantprofiel</b>: wie de klant is, de doelen, het merk, de systemen en de afspraken, samengesteld uit de vragenlijst van het intakegesprek, het onboardingformulier en het voorstel. Wie aan de klant werkt, leest dat eerst. Elke nieuwe campagne begint met een <b>campagnebriefing</b>: het doel in harde getallen, wat telt als resultaat, het plafond en het budget, de planning met beslismomenten, aanbod, doelgroep, kanalen en content, meting, en de afspraken met de klant. De klant geeft akkoord. Wat niet in de briefing staat, doen we niet.</p>
+
 <h3>Het ritme</h3>
 <p>Voor ieder pakket hetzelfde. Het verschil zit in de hoeveelheid.</p>
 """ + tbl(['Wanneer', 'Wat', 'Starter', 'Playmaker', 'Captain', 'Champion'], [
