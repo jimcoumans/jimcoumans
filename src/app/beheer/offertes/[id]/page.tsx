@@ -71,7 +71,7 @@ export default async function OffertePage({
       <div className="mb-6 flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
         <div className="min-w-0">
           <p className="tabular text-xs text-gray-500">{quote.number}</p>
-          <h1 className="text-jr-blue text-2xl">{quote.title}</h1>
+          <h1 className="text-[28px] sm:text-[32px]">{quote.title}</h1>
           <p className="mt-1 text-sm text-gray-600">
             <a
               href={`/beheer/klanten/${offerte.organizationSlug}`}
@@ -262,7 +262,7 @@ export default async function OffertePage({
           </section>
 
           {lines.length > 0 && (
-            <section className="rounded-xl bg-white p-5 shadow-sm">
+            <section className="rounded-xl bg-white p-6 shadow-sm">
               <h2 className="mb-1 text-base">Wat blijft er hangen</h2>
               <p className="mb-3 text-xs text-gray-500">
                 Alleen voor ons. Deze bedragen staan niet op de offerte voor de klant.
@@ -307,7 +307,7 @@ export default async function OffertePage({
 
         <aside className="space-y-5 lg:sticky lg:top-4 lg:self-start">
           {bewerkbaar && (
-            <section className="rounded-xl bg-white p-5 shadow-sm">
+            <section className="rounded-xl bg-white p-6 shadow-sm">
               <h2 className="mb-3 text-base">Offerte wijzigen</h2>
               <ActionForm action={wijzigOfferte} submitLabel="Opslaan" resetOnSuccess={false}>
                 <input type="hidden" name="quoteId" value={quote.id} />
@@ -343,7 +343,7 @@ export default async function OffertePage({
             </section>
           )}
 
-          <section className="rounded-xl bg-white p-5 shadow-sm">
+          <section className="rounded-xl bg-white p-6 shadow-sm">
             <h2 className="mb-3 text-base">Status</h2>
             {overgangen.length === 0 ? (
               <p className="text-xs text-gray-600">
@@ -395,7 +395,7 @@ export default async function OffertePage({
           </section>
 
           {bewerkbaar ? (
-            <section className="rounded-xl bg-white p-5 shadow-sm">
+            <section className="rounded-xl bg-white p-6 shadow-sm">
               <h2 className="mb-3 text-base">Regel toevoegen</h2>
               <QuoteLineForm
                 quoteId={quote.id}
@@ -415,7 +415,7 @@ export default async function OffertePage({
               />
             </section>
           ) : (
-            <section className="rounded-xl bg-white p-5 shadow-sm">
+            <section className="rounded-xl bg-white p-6 shadow-sm">
               <h2 className="mb-1 text-base">Vastgelegd</h2>
               <p className="text-xs text-gray-600">
                 {quote.status === 'accepted'

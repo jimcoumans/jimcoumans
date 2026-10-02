@@ -65,7 +65,7 @@ export function Tijdlijn({
         </p>
       </div>
 
-      <div className="mb-4 rounded-xl bg-white p-5 shadow-sm">
+      <div className="mb-4 rounded-xl bg-white p-6 shadow-sm">
         <Uitklap label="Moment vastleggen" className="">
           <ActionForm action={nieuweNotitie} submitLabel="Vastleggen" className="grid gap-3 sm:grid-cols-2">
             <input type="hidden" name="organizationId" value={organizationId} />

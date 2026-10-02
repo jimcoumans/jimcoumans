@@ -412,7 +412,7 @@ export function Contactpersonen({
 
       <details className="mt-3">
         <summary className="text-jr-blue cursor-pointer text-sm">Contactpersoon toevoegen</summary>
-        <div className="mt-3 rounded-xl bg-white p-5 shadow-sm">
+        <div className="mt-3 rounded-xl bg-white p-6 shadow-sm">
           <ActionForm
             action={nieuweContactpersoon}
             submitLabel="Toevoegen"
@@ -557,7 +557,7 @@ export function Partners({
 
       <details className="mt-3">
         <summary className="text-jr-blue cursor-pointer text-sm">Partner koppelen</summary>
-        <div className="mt-3 rounded-xl bg-white p-5 shadow-sm">
+        <div className="mt-3 rounded-xl bg-white p-6 shadow-sm">
           {beschikbaar.length === 0 ? (
             <p className="text-sm text-gray-600">
               {alle.length === 0 ? (
@@ -758,7 +758,7 @@ export function Accounts({
 
       <details className="mt-3">
         <summary className="text-jr-blue cursor-pointer text-sm">Account toevoegen</summary>
-        <div className="mt-3 rounded-xl bg-white p-5 shadow-sm">
+        <div className="mt-3 rounded-xl bg-white p-6 shadow-sm">
           <ActionForm action={nieuwAccount} submitLabel="Toevoegen" className="grid gap-3 sm:grid-cols-2">
             <input type="hidden" name="organizationId" value={organizationId} />
             <input type="hidden" name="slug" value={slug} />
@@ -808,7 +808,7 @@ export function Bedrijfsgegevens({
   return (
     <section>
       <h2 className="mb-1 text-lg">Bedrijfsgegevens</h2>
-      <div className="mb-4 rounded-xl bg-white p-5 shadow-sm">
+      <div className="mb-4 rounded-xl bg-white p-6 shadow-sm">
         <AfbeeldingKiezer
           soort="klant"
           doelId={org.id}
@@ -825,7 +825,7 @@ export function Bedrijfsgegevens({
           .join(' · ') || 'Nog niets ingevuld.'}
       </p>
 
-      <details className="rounded-xl bg-white p-5 shadow-sm">
+      <details className="rounded-xl bg-white p-6 shadow-sm">
         <summary className="text-jr-blue cursor-pointer text-sm">Gegevens aanpassen</summary>
         <div className="mt-4">
           <ActionForm

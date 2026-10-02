@@ -48,7 +48,7 @@ export function SubscriptionCard({
   const kortingPercentage = discountPercentage(abo.amountExclVatCents, abo.discountCents)
 
   return (
-    <li className="rounded-xl bg-white p-5 shadow-sm">
+    <li className="rounded-xl bg-white p-6 shadow-sm">
       <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">

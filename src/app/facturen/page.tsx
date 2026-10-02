@@ -32,7 +32,7 @@ export default async function FacturenPage() {
 
   return (
     <AppShell user={user} actief="facturen">
-        <h1 className="text-jr-blue mb-1 text-2xl">Facturen</h1>
+        <h1 className="mb-1 text-[28px] sm:text-[32px]">Facturen</h1>
         <p className="mb-6 text-sm text-gray-600">
           Deze facturen vormen samen het budget in je wallet. Bedragen zijn exclusief
           btw, net als in je wallet.

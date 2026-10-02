@@ -320,7 +320,7 @@ export function AppShell({
 
       <div className="min-w-0 flex-1">
         <main
-          className={`mx-auto px-4 py-7 sm:px-8 ${breed ? 'max-w-[1800px]' : 'max-w-5xl'}`}
+          className={`mx-auto px-4 py-8 sm:px-8 xl:px-12 ${breed ? 'max-w-[1800px]' : 'max-w-[1440px]'}`}
         >
           {children}
         </main>

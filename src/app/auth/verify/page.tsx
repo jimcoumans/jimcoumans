@@ -52,7 +52,7 @@ export default async function VerifyPage({
         </div>
 
         <div className="rounded-xl bg-white p-8 text-center shadow-sm">
-          <h1 className="text-jr-blue mb-2 text-2xl">Welkom terug</h1>
+          <h1 className="mb-2 text-[28px] sm:text-[32px]">Welkom terug</h1>
           <p className="mb-6 text-sm text-gray-600">
             Nog een klik en je bent binnen.
           </p>

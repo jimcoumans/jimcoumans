@@ -142,7 +142,7 @@ export default async function DashboardPage() {
 
   return (
     <AppShell user={user} actief="dashboard">
-      <h1 className="text-jr-blue mb-1 text-2xl">Dashboard</h1>
+      <h1 className="mb-1 text-[28px] sm:text-[32px]">Dashboard</h1>
       <p className="mb-5 text-sm text-gray-600">
         {cockpit.bedrijven} {cockpit.bedrijven === 1 ? 'bedrijf' : 'bedrijven'} in het
         systeem &middot; {cockpit.mensenInCrm} mensen in het CRM
@@ -441,7 +441,7 @@ function Tegel({
   waarschuwing?: boolean
 }) {
   return (
-    <div className="rounded-xl bg-white p-5 shadow-sm">
+    <div className="rounded-xl bg-white p-6 shadow-sm">
       <p className="text-xs text-gray-600">{label}</p>
       <p
         className={`tabular mt-1 text-2xl font-bold ${

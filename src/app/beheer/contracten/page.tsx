@@ -52,7 +52,7 @@ export default async function ContractenPage() {
   return (
     <AppShell user={user} actief="contracten" breed>
       <div className="mb-5">
-        <h1 className="text-jr-blue text-2xl">Contracten</h1>
+        <h1 className="text-[28px] sm:text-[32px]">Contracten</h1>
         <p className="text-sm text-gray-600">
           Vul de gegevens in, dan rolt het contract eruit. Het salaris komt uit het
           salarishuis.
@@ -121,7 +121,7 @@ export default async function ContractenPage() {
       )}
 
       <div className="grid gap-5 lg:grid-cols-[1fr_360px]">
-        <section className="rounded-xl bg-white p-5 shadow-sm">
+        <section className="rounded-xl bg-white p-6 shadow-sm">
           <h2 className="mb-3 text-base">Opgestelde contracten</h2>
           {recent.length === 0 ? (
             <p className="text-sm text-gray-600">
@@ -177,7 +177,7 @@ export default async function ContractenPage() {
           )}
         </section>
 
-        <aside className="rounded-xl bg-white p-5 shadow-sm">
+        <aside className="rounded-xl bg-white p-6 shadow-sm">
           <h2 className="mb-3 text-base">Contract opstellen</h2>
           <ActionForm action={nieuwContract} submitLabel="Contract opstellen">
             <Select

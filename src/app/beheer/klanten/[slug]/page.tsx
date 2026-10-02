@@ -81,7 +81,7 @@ export default async function KlantPage({
         </a>
 
         <div className="mt-2 mb-1 flex flex-wrap items-center gap-3">
-          <h1 className="text-jr-blue text-2xl">{klant.organization.name}</h1>
+          <h1 className="text-[28px] sm:text-[32px]">{klant.organization.name}</h1>
           <span
             className={`rounded-full px-2.5 py-0.5 text-xs ${organizationStatusStyles[klant.organization.status]}`}
           >
@@ -154,7 +154,7 @@ export default async function KlantPage({
           ))}
 
           <section className="grid gap-6 lg:grid-cols-2">
-            <div className="rounded-xl bg-white p-5 shadow-sm">
+            <div className="rounded-xl bg-white p-6 shadow-sm">
               <h2 className="mb-3 text-base">Wallet toevoegen</h2>
               <ActionForm action={nieuweWallet} submitLabel="Wallet aanmaken">
                 <input type="hidden" name="organizationId" value={klant.organization.id} />
@@ -187,7 +187,7 @@ export default async function KlantPage({
               </ul>
             )}
 
-            <div className="rounded-xl bg-white p-5 shadow-sm">
+            <div className="rounded-xl bg-white p-6 shadow-sm">
               <h3 className="mb-3 text-sm">
                 {abonnementen.length === 0
                   ? 'Eerste abonnement aanmaken'
@@ -268,7 +268,7 @@ async function WalletBeheer({
 
   return (
     <section>
-      <div className="rounded-xl bg-white p-5 shadow-sm sm:p-6">
+      <div className="rounded-xl bg-white p-6 shadow-sm sm:p-6">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <h2 className="text-base">{wallet.name}</h2>
@@ -483,7 +483,7 @@ function Gebruikers({
   slug: string
 }) {
   return (
-    <div className="rounded-xl bg-white p-5 shadow-sm">
+    <div className="rounded-xl bg-white p-6 shadow-sm">
       <h2 className="mb-3 text-base">Wie mag inloggen</h2>
 
       {klant.users.length === 0 ? (
@@ -558,7 +558,7 @@ function Facturen({
     <section>
       <h2 className="mb-3 text-lg">Facturen</h2>
 
-      <div className="mb-4 rounded-xl bg-white p-5 shadow-sm">
+      <div className="mb-4 rounded-xl bg-white p-6 shadow-sm">
         <h3 className="mb-1 text-sm">Factuur toevoegen</h3>
         <p className="mb-3 text-xs text-gray-600">
           Het bedrag exclusief btw wordt direct als budget bijgeschreven op de gekozen

@@ -28,7 +28,7 @@ const NEP_GEBRUIKER = {
 export default function PingShellPagina() {
   return (
     <AppShell user={NEP_GEBRUIKER} actief="dashboard">
-      <h1 className="text-jr-blue text-2xl">Ping met navigatie</h1>
+      <h1 className="text-[28px] sm:text-[32px]">Ping met navigatie</h1>
       <p className="text-sm text-gray-600">
         Deze pagina haalt niets op, maar gebruikt wel de clientcomponent.
       </p>

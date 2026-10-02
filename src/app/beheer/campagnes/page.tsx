@@ -27,7 +27,7 @@ export default async function CampagnesPage({ searchParams }: { searchParams: Pr
 
   return (
     <AppShell user={user} actief="campagnes">
-      <h1 className="text-jr-blue mb-1 text-2xl">Campagnes</h1>
+      <h1 className="mb-1 text-[28px] sm:text-[32px]">Campagnes</h1>
       <p className="mb-6 text-sm text-gray-600">
         Elke campagne begint met een briefing. Die gaat als voorstel naar de klant; na akkoord staat de
         tijdlijn als taken in ClickUp.
@@ -73,7 +73,7 @@ export default async function CampagnesPage({ searchParams }: { searchParams: Pr
         </div>
 
         <aside>
-          <section className="rounded-xl bg-white p-5 shadow-sm">
+          <section className="rounded-xl bg-white p-6 shadow-sm">
             <h2 className="mb-3 text-base">Nieuwe campagne</h2>
             <ActionForm action={nieuweCampagne} submitLabel="Maak de briefing">
               <Select

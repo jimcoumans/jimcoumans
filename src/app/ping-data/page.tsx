@@ -193,7 +193,7 @@ export default async function PingDataPagina() {
 
   return (
     <AppShell user={NEP_GEBRUIKER} actief="dashboard" breed>
-      <h1 className="text-jr-blue mb-1 text-2xl">Meting: pagina met queries</h1>
+      <h1 className="mb-1 text-[28px] sm:text-[32px]">Meting: pagina met queries</h1>
       <p className="mb-5 text-sm text-gray-600">
         Elke stap heeft een eigen tijdslimiet van {STAP_MS / 1000} seconden, dus deze pagina
         kan niet omvallen. Samen {totaal} ms

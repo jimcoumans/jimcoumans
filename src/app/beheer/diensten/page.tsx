@@ -25,7 +25,7 @@ export default async function DienstenPage() {
 
   return (
     <AppShell user={user} actief="diensten">
-        <h1 className="text-jr-blue mb-1 text-2xl">Diensten</h1>
+        <h1 className="mb-1 text-[28px] sm:text-[32px]">Diensten</h1>
         <p className="mb-6 text-sm text-gray-600">
           {actief.length} actieve {actief.length === 1 ? 'dienst' : 'diensten'}. Het tarief
           hier is het tarief van nu; bestaande boekingen houden het tarief van hun eigen
@@ -63,7 +63,7 @@ export default async function DienstenPage() {
             )}
           </div>
 
-          <aside className="rounded-xl bg-white p-5 shadow-sm lg:sticky lg:top-4 lg:self-start">
+          <aside className="rounded-xl bg-white p-6 shadow-sm lg:sticky lg:top-4 lg:self-start">
             <h2 className="mb-3 text-base">Dienst toevoegen</h2>
             <ActionForm action={nieuweDienst} submitLabel="Dienst aanmaken">
               <Field label="Naam" name="naam" required placeholder="Social media post" />
@@ -162,7 +162,7 @@ function DienstKaart({
   const margePct = marginPercent(dienst)
 
   return (
-    <li className={`rounded-xl bg-white p-5 shadow-sm ${dienst.active ? '' : 'opacity-60'}`}>
+    <li className={`rounded-xl bg-white p-6 shadow-sm ${dienst.active ? '' : 'opacity-60'}`}>
       <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">

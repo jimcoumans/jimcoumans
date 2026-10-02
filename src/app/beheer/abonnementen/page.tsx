@@ -48,14 +48,14 @@ export default async function AbonnementenPage() {
 
   return (
     <AppShell user={user} actief="abonnementen">
-        <h1 className="text-jr-blue mb-1 text-2xl">Abonnementen</h1>
+        <h1 className="mb-1 text-[28px] sm:text-[32px]">Abonnementen</h1>
         <p className="mb-6 text-sm text-gray-600">
           Zolang een abonnement loopt, wordt op de facturatiedag van elke maand een
           factuur aangemaakt en het bedrag als budget bijgeschreven.
         </p>
 
         <section className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="rounded-xl bg-white p-5 shadow-sm">
+          <div className="rounded-xl bg-white p-6 shadow-sm">
             <p className="text-xs text-gray-600">Omzet per maand</p>
             <p className="tabular mt-1 text-3xl font-bold">{formatCents(mrr)}</p>
             <p className="mt-1 text-xs text-gray-500">
@@ -63,12 +63,12 @@ export default async function AbonnementenPage() {
               {budget.kortingCents > 0 && ', na korting'}
             </p>
           </div>
-          <div className="rounded-xl bg-white p-5 shadow-sm">
+          <div className="rounded-xl bg-white p-6 shadow-sm">
             <p className="text-xs text-gray-600">Per jaar</p>
             <p className="tabular mt-1 text-2xl font-bold">{formatCents(mrr * 12)}</p>
             <p className="mt-1 text-xs text-gray-500">bij ongewijzigde abonnementen</p>
           </div>
-          <div className="rounded-xl bg-white p-5 shadow-sm">
+          <div className="rounded-xl bg-white p-6 shadow-sm">
             <p className="text-xs text-gray-600">Budget dat we weggeven</p>
             <p className="tabular mt-1 text-2xl font-bold">
               {formatCents(budget.budgetCents)}
@@ -85,7 +85,7 @@ export default async function AbonnementenPage() {
               )}
             </p>
           </div>
-          <div className="rounded-xl bg-white p-5 shadow-sm">
+          <div className="rounded-xl bg-white p-6 shadow-sm">
             <p className="text-xs text-gray-600">Gepauzeerd of gestopt</p>
             <p className="tabular mt-1 text-2xl font-bold">
               {gepauzeerd.length + gestopt.length}
@@ -150,7 +150,7 @@ export default async function AbonnementenPage() {
           </section>
         )}
 
-        <section className="mb-8 rounded-xl bg-white p-5 shadow-sm">
+        <section className="mb-8 rounded-xl bg-white p-6 shadow-sm">
           <h2 className="mb-1 text-base">De maandelijkse run</h2>
           <p className="mb-3 text-sm text-gray-600">
             De run draait elke ochtend automatisch en kijkt zelf welke maanden nog

@@ -164,14 +164,14 @@ export default async function PartnersPage() {
 
   return (
     <AppShell user={user} actief="partners">
-        <h1 className="text-jr-blue mb-1 text-2xl">Partners</h1>
+        <h1 className="mb-1 text-[28px] sm:text-[32px]">Partners</h1>
         <p className="mb-6 text-sm text-gray-600">
           De externen met wie we werken, wat we met ze hebben afgesproken en bij welke
           klanten ze horen.
         </p>
 
         {metWerk.length > 0 && (
-          <section className="mb-8 rounded-xl bg-white p-5 shadow-sm">
+          <section className="mb-8 rounded-xl bg-white p-6 shadow-sm">
             <h2 className="mb-1 text-base">Wat partners opleveren</h2>
             <p className="mb-4 text-xs text-gray-500">
               Uit de offerteregels. Omzet en inkoop tellen alleen mee zodra de klant
@@ -250,7 +250,7 @@ export default async function PartnersPage() {
                 {actief.map((p) => {
                   const klanten = perPartner.get(p.id) ?? []
                   return (
-                    <li key={p.id} className="rounded-xl bg-white p-5 shadow-sm">
+                    <li key={p.id} className="rounded-xl bg-white p-6 shadow-sm">
                       <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
                         <div className="min-w-0 flex-1">
                           <div className="flex flex-wrap items-center gap-2">
@@ -418,7 +418,7 @@ export default async function PartnersPage() {
             )}
           </div>
 
-          <aside className="rounded-xl bg-white p-5 shadow-sm lg:sticky lg:top-4 lg:self-start">
+          <aside className="rounded-xl bg-white p-6 shadow-sm lg:sticky lg:top-4 lg:self-start">
             <h2 className="mb-3 text-base">Partner toevoegen</h2>
             <ActionForm action={nieuwePartner} submitLabel="Partner aanmaken">
               <Field label="Naam" name="naam" required placeholder="Studio Lens" />

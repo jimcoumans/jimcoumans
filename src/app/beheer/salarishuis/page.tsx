@@ -34,7 +34,7 @@ export default async function SalarishuisPage() {
   return (
     <AppShell user={user} actief="salarishuis" breed>
       <div className="mb-5">
-        <h1 className="text-jr-blue text-2xl">Salarishuis</h1>
+        <h1 className="text-[28px] sm:text-[32px]">Salarishuis</h1>
         <p className="text-sm text-gray-600">
           Schalen en tredes, en wat daaruit volgt. Alle bedragen zijn bruto per maand bij
           een fulltime dienstverband.
@@ -67,7 +67,7 @@ export default async function SalarishuisPage() {
                 : null
 
             return (
-              <section key={huis.id} className="rounded-xl bg-white p-5 shadow-sm">
+              <section key={huis.id} className="rounded-xl bg-white p-6 shadow-sm">
                 <div className="mb-4 flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
                   <div>
                     <h2 className="text-base">

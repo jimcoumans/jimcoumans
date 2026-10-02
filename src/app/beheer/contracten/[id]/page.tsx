@@ -71,7 +71,7 @@ export default async function ContractPagina({
 
         <div className="mb-5 flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
           <div>
-            <h1 className="text-jr-blue text-2xl">{contract.employeeName}</h1>
+            <h1 className="text-[28px] sm:text-[32px]">{contract.employeeName}</h1>
             <p className="text-sm text-gray-600">
               {contract.jobTitle} &middot; {formatDate(contract.startedOn)}
               {contract.endsOn ? ` t/m ${formatDate(contract.endsOn)}` : ' (onbepaalde tijd)'}{' '}
@@ -138,7 +138,7 @@ export default async function ContractPagina({
         )}
 
         {contract.soort === 'proforma' && (
-          <section className="mb-5 rounded-xl bg-white p-5 shadow-sm">
+          <section className="mb-5 rounded-xl bg-white p-6 shadow-sm">
             <h2 className="mb-1 text-base">Definitief maken</h2>
             <p className="mb-3 text-xs text-gray-600">
               Hiermee komt het contract in het personeelsdossier te staan: een regel in de

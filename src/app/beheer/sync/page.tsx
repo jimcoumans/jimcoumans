@@ -15,7 +15,7 @@ export default async function SyncPage() {
 
   return (
     <AppShell user={user} actief="sync">
-        <h1 className="text-jr-blue mb-1 text-2xl">ClickUp-sync</h1>
+        <h1 className="mb-1 text-[28px] sm:text-[32px]">ClickUp-sync</h1>
         <p className="mb-6 text-sm text-gray-600">
           Haalt factureerbare taken uit ClickUp en boekt ze af op de wallet van de klant.
         </p>

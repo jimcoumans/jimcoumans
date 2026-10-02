@@ -101,7 +101,7 @@ export default async function VacaturePagina({
 
       <div className="mb-5 flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
         <div>
-          <h1 className="text-jr-blue text-2xl">{vacature.title}</h1>
+          <h1 className="text-[28px] sm:text-[32px]">{vacature.title}</h1>
           <p className="flex flex-wrap items-center gap-1.5 text-sm text-gray-600">
             <span className="rounded-full bg-gray-100 px-1.5 py-0.5 text-xs">
               {VACATURE_SOORT_LABELS[vacature.kind]}
@@ -140,7 +140,7 @@ export default async function VacaturePagina({
       </div>
 
       {(vacature.reason || vacature.description || bereik || vacature.salaryScaleName) && (
-        <section className="mb-5 rounded-xl bg-white p-5 shadow-sm">
+        <section className="mb-5 rounded-xl bg-white p-6 shadow-sm">
           {vacature.salaryScaleName && (
             <p className="mb-2 text-sm">
               <span className="text-gray-600">Schaal </span>

@@ -44,7 +44,7 @@ export default async function PortfolioPage() {
     <AppShell user={user} actief="portfolio" breed>
       <div className="mb-5 flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
         <div>
-          <h1 className="text-jr-blue text-2xl">Portfolio</h1>
+          <h1 className="text-[28px] sm:text-[32px]">Portfolio</h1>
           <p className="text-sm text-gray-600">
             De waarde van een klant is wat zijn lopende abonnementen per maand opleveren.
           </p>

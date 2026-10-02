@@ -53,7 +53,7 @@ export default async function MedewerkersPage() {
     <AppShell user={user} actief="medewerkers" breed>
       <div className="mb-5 flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
         <div>
-          <h1 className="text-jr-blue text-2xl">Team</h1>
+          <h1 className="text-[28px] sm:text-[32px]">Team</h1>
           <p className="text-sm text-gray-600">
             Klik op een naam voor het volledige profiel: contactgegevens, contract, verjaardag
             en notities.
@@ -81,7 +81,7 @@ export default async function MedewerkersPage() {
       </div>
 
       {kosten && (
-        <section className="mb-6 rounded-xl bg-white p-5 shadow-sm">
+        <section className="mb-6 rounded-xl bg-white p-6 shadow-sm">
           <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
             <h2 className="text-base">Wat het team kost</h2>
             <p className="text-xs text-gray-500">
@@ -178,7 +178,7 @@ export default async function MedewerkersPage() {
           )}
         </div>
 
-        <aside className="rounded-xl bg-white p-5 shadow-sm">
+        <aside className="rounded-xl bg-white p-6 shadow-sm">
           <h2 className="mb-1 text-base">Collega toevoegen</h2>
           <p className="mb-3 text-xs text-gray-500">
             Meer dan een naam en een adres heb je hier niet nodig. De rest vul je op zijn

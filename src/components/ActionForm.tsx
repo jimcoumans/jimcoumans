@@ -48,14 +48,14 @@ export function ActionForm({
       {state?.ok === false && (
         <p
           role="alert"
-          className="border-jr-red bg-jr-red/5 rounded border-l-4 p-2.5 text-sm"
+          className="rounded-lg bg-[#FDECEA] px-4 py-3 text-sm text-[#C02A22]"
         >
           {state.error}
         </p>
       )}
 
       {gelukt && meldGelukt && (
-        <p className="border-jr-green bg-jr-green/5 rounded border-l-4 p-2.5 text-sm">
+        <p className="rounded-lg bg-[#E6F7EB] px-4 py-3 text-sm text-[#1D7D3F]">
           Opgeslagen.
         </p>
       )}
@@ -63,7 +63,7 @@ export function ActionForm({
       <button
         type="submit"
         disabled={bezig}
-        className={`rounded-lg px-4 py-2 text-sm transition-colors disabled:opacity-50 ${submitClassName}`}
+        className={`min-h-10 rounded-lg px-5 py-2 text-sm font-medium disabled:opacity-40 ${submitClassName}`}
       >
         {bezig ? 'Bezig…' : submitLabel}
       </button>
@@ -86,17 +86,17 @@ export function Check({
   const id = `check-${name}-${label.replace(/\W+/g, '')}`
   return (
     <div>
-      <label htmlFor={id} className="flex items-start gap-2.5 text-sm">
+      <label htmlFor={id} className="flex items-start gap-2.5 text-[15px]">
         <input
           id={id}
           name={name}
           type="checkbox"
           defaultChecked={defaultChecked}
-          className="accent-jr-blue mt-0.5 h-4 w-4 shrink-0"
+          className="accent-jr-blue mt-0.5 h-[18px] w-[18px] shrink-0"
         />
         <span>{label}</span>
       </label>
-      {hint && <p className="mt-1 ml-6.5 text-xs text-gray-500">{hint}</p>}
+      {hint && <p className="mt-1 ml-7 text-xs text-gray-600">{hint}</p>}
     </div>
   )
 }
@@ -118,14 +118,14 @@ export function Select({
   const id = `select-${name}-${label.replace(/\W+/g, '')}`
   return (
     <div>
-      <label htmlFor={id} className="mb-1 block text-xs text-gray-600">
+      <label htmlFor={id} className="mb-1.5 block text-[13px] font-medium text-jr-text">
         {label}
       </label>
       <select
         id={id}
         name={name}
         defaultValue={defaultValue}
-        className="focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
+        className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
       >
         {options.map((o) => (
           <option key={o.value} value={o.value}>
@@ -133,7 +133,7 @@ export function Select({
           </option>
         ))}
       </select>
-      {hint && <p className="mt-1 text-xs text-gray-500">{hint}</p>}
+      {hint && <p className="mt-1.5 text-xs text-gray-600">{hint}</p>}
     </div>
   )
 }
@@ -159,9 +159,9 @@ export function Field({
   const id = `veld-${name}-${label.replace(/\W+/g, '')}`
   return (
     <div>
-      <label htmlFor={id} className="mb-1 block text-xs text-gray-600">
+      <label htmlFor={id} className="mb-1.5 block text-[13px] font-medium text-jr-text">
         {label}
-        {!required && <span className="text-gray-400"> (optioneel)</span>}
+        {!required && <span className="font-normal text-gray-500"> (optioneel)</span>}
       </label>
       <input
         id={id}
@@ -170,9 +170,9 @@ export function Field({
         required={required}
         placeholder={placeholder}
         defaultValue={defaultValue}
-        className="focus:border-jr-blue focus:ring-jr-blue/20 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:ring-2"
+        className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
       />
-      {hint && <p className="mt-1 text-xs text-gray-500">{hint}</p>}
+      {hint && <p className="mt-1.5 text-xs text-gray-600">{hint}</p>}
     </div>
   )
 }
@@ -196,9 +196,9 @@ export function TextArea({
   const id = `tekst-${name}-${label.replace(/\W+/g, '')}`
   return (
     <div>
-      <label htmlFor={id} className="mb-1 block text-xs text-gray-600">
+      <label htmlFor={id} className="mb-1.5 block text-[13px] font-medium text-jr-text">
         {label}
-        <span className="text-gray-400"> (optioneel)</span>
+        <span className="font-normal text-gray-500"> (optioneel)</span>
       </label>
       <textarea
         id={id}
@@ -206,9 +206,9 @@ export function TextArea({
         rows={rows}
         placeholder={placeholder}
         defaultValue={defaultValue}
-        className="focus:border-jr-blue focus:ring-jr-blue/20 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:ring-2"
+        className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
       />
-      {hint && <p className="mt-1 text-xs text-gray-500">{hint}</p>}
+      {hint && <p className="mt-1.5 text-xs text-gray-600">{hint}</p>}
     </div>
   )
 }
@@ -231,8 +231,8 @@ export function Uitklap({
 }) {
   return (
     <details className={className}>
-      <summary className="text-jr-blue cursor-pointer text-xs select-none">{label}</summary>
-      <div className="mt-2.5 rounded-lg border border-gray-200 p-4">{children}</div>
+      <summary className="text-jr-link cursor-pointer text-sm font-medium select-none hover:underline">{label}</summary>
+      <div className="mt-3 rounded-xl border border-gray-200 bg-gray-50 p-5">{children}</div>
     </details>
   )
 }

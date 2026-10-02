@@ -57,7 +57,7 @@ export default async function ActiviteitPage({
 
   return (
     <AppShell user={user} actief="activiteit">
-        <h1 className="text-jr-blue mb-1 text-2xl">Activiteit</h1>
+        <h1 className="mb-1 text-[28px] sm:text-[32px]">Activiteit</h1>
         <p className="mb-6 text-sm text-gray-600">
           Alle mutaties op je wallet, van nieuw naar oud. Bij elke regel staat het
           saldo dat je daarna over had.

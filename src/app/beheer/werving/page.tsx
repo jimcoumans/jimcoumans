@@ -59,7 +59,7 @@ export default async function WervingPage() {
     <AppShell user={user} actief="werving" breed>
       <div className="mb-5 flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
         <div>
-          <h1 className="text-jr-blue text-2xl">Werving</h1>
+          <h1 className="text-[28px] sm:text-[32px]">Werving</h1>
           <p className="text-sm text-gray-600">
             Vacatures, stages en kandidaten. Wie wacht er op ons.
           </p>
@@ -146,7 +146,7 @@ export default async function WervingPage() {
 
           {/* Zonder vervolgstap. */}
           {achterstand.zonderVervolg.length > 0 && (
-            <section className="rounded-xl bg-white p-5 shadow-sm">
+            <section className="rounded-xl bg-white p-6 shadow-sm">
               <h2 className="mb-1 text-base">
                 {achterstand.zonderVervolg.length} zonder afgesproken vervolgstap
               </h2>
@@ -164,7 +164,7 @@ export default async function WervingPage() {
 
           {/* Wat er binnenkort gewist wordt. */}
           {achterstand.bijnaTeWissen.length > 0 && (
-            <section className="rounded-xl bg-white p-5 shadow-sm">
+            <section className="rounded-xl bg-white p-6 shadow-sm">
               <h2 className="mb-1 text-base">Bewaartermijn loopt af</h2>
               <p className="mb-3 text-xs text-gray-600">
                 Deze gegevens worden binnenkort automatisch gewist. Wil je iemand houden
@@ -200,7 +200,7 @@ export default async function WervingPage() {
           )}
 
           {/* De vacatures. */}
-          <section className="rounded-xl bg-white p-5 shadow-sm">
+          <section className="rounded-xl bg-white p-6 shadow-sm">
             <h2 className="mb-3 text-base">Vacatures</h2>
             {vacatures.length === 0 ? (
               <p className="text-sm text-gray-600">
@@ -269,7 +269,7 @@ export default async function WervingPage() {
 
           {/* Waarom het niet doorgaat. */}
           {(redenen.afgewezen.length > 0 || redenen.afgehaakt.length > 0) && (
-            <section className="rounded-xl bg-white p-5 shadow-sm">
+            <section className="rounded-xl bg-white p-6 shadow-sm">
               <h2 className="mb-1 text-base">Waarom het niet doorgaat</h2>
               <p className="mb-3 text-xs text-gray-600">
                 Apart geteld, want het zijn twee verschillende problemen: wie wij afwijzen
@@ -284,7 +284,7 @@ export default async function WervingPage() {
         </div>
 
         <aside className="space-y-5">
-          <section className="rounded-xl bg-white p-5 shadow-sm">
+          <section className="rounded-xl bg-white p-6 shadow-sm">
             <h2 className="mb-3 text-base">Kandidaat toevoegen</h2>
             <p className="mb-3 text-xs text-gray-500">
               Voor iemand die je zelf benadert of op het oog hebt. Sollicitaties via de
@@ -358,7 +358,7 @@ export default async function WervingPage() {
             </ActionForm>
           </section>
 
-          <section className="rounded-xl bg-white p-5 shadow-sm">
+          <section className="rounded-xl bg-white p-6 shadow-sm">
             <h2 className="mb-3 text-base">Vacature aanmaken</h2>
             <ActionForm action={nieuweVacature} submitLabel="Vacature aanmaken">
               <Field label="Titel" name="titel" required placeholder="Marketing Manager" />

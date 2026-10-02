@@ -70,7 +70,7 @@ export default async function PijplijnPage({
     <AppShell user={user} actief="pijplijn" breed>
       <div className="mb-5 flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
         <div>
-          <h1 className="text-jr-blue text-2xl">Pijplijn</h1>
+          <h1 className="text-[28px] sm:text-[32px]">Pijplijn</h1>
           <p className="text-sm text-gray-600">
             {bord.aantalOpen} open {bord.aantalOpen === 1 ? 'deal' : 'deals'}
             {scorekaart.scoringskansPercent !== null &&
@@ -213,7 +213,7 @@ export default async function PijplijnPage({
             werken. */}
         <div>
           {scorekaart.verliesredenen.length > 0 ? (
-            <section className="rounded-xl bg-white p-5 shadow-sm">
+            <section className="rounded-xl bg-white p-6 shadow-sm">
               <h2 className="mb-1 text-base">Waarom we verliezen</h2>
               <p className="mb-3 text-xs text-gray-500">
                 {scorekaart.verloren} verloren tegenover {scorekaart.gewonnen} gewonnen. Een
@@ -234,7 +234,7 @@ export default async function PijplijnPage({
               </ul>
             </section>
           ) : (
-            <section className="rounded-xl bg-white p-5 shadow-sm">
+            <section className="rounded-xl bg-white p-6 shadow-sm">
               <h2 className="mb-1 text-base">Waarom we verliezen</h2>
               <p className="text-sm text-gray-600">
                 Nog geen verloren deals vastgelegd. Zodra je er een op verloren zet met een
@@ -245,7 +245,7 @@ export default async function PijplijnPage({
           )}
         </div>
 
-        <aside className="rounded-xl bg-white p-5 shadow-sm">
+        <aside className="rounded-xl bg-white p-6 shadow-sm">
           <h2 className="mb-3 text-base">Deal toevoegen</h2>
           <p className="mb-3 text-xs text-gray-500">
             Alleen het bedrijf en een naam zijn verplicht. Spreek meteen een vervolgstap af;

@@ -92,7 +92,7 @@ export default async function LoginPage({
         <div className="rounded-xl bg-white p-8 shadow-sm">
           {params.verstuurd ? (
             <>
-              <h1 className="text-jr-blue mb-3 text-2xl">Check je mail</h1>
+              <h1 className="mb-3 text-[28px] sm:text-[32px]">Check je mail</h1>
               <p className="text-sm">
                 Als dit e-mailadres bij ons bekend is, staat er een inloglink in je
                 inbox. De link is 15 minuten geldig.
@@ -107,7 +107,7 @@ export default async function LoginPage({
             </>
           ) : (
             <>
-              <h1 className="text-jr-blue mb-2 text-2xl">Inloggen</h1>
+              <h1 className="mb-2 text-[28px] sm:text-[32px]">Inloggen</h1>
               <p className="mb-6 text-sm text-gray-600">
                 Met je wachtwoord, of laat een inloglink sturen als je er geen hebt.
               </p>

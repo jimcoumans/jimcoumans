@@ -57,7 +57,7 @@ export default async function FinancieelPage({
 
   return (
     <AppShell user={user} actief="financieel">
-        <h1 className="text-jr-blue mb-1 text-2xl">Financieel overzicht</h1>
+        <h1 className="mb-1 text-[28px] sm:text-[32px]">Financieel overzicht</h1>
         <p className="mb-6 text-sm text-gray-600">
           Omzet is wat er aan diensten is geleverd. Teruggedraaide boekingen zitten er
           niet in.
@@ -253,7 +253,7 @@ function StatTegel({
   waarschuwing?: boolean
 }) {
   return (
-    <div className="rounded-xl bg-white p-5 shadow-sm">
+    <div className="rounded-xl bg-white p-6 shadow-sm">
       <p className="text-xs text-gray-600">{label}</p>
       <p
         className={`tabular mt-1 font-bold ${groot ? 'text-3xl' : 'text-2xl'} ${
@@ -312,7 +312,7 @@ function MaandTrend({
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-xl bg-white p-5 shadow-sm">
+      <div className="overflow-x-auto rounded-xl bg-white p-6 shadow-sm">
         {/* De kolom moet h-full krijgen en het balkenvak flex-1 met min-h-0.
             Zonder die twee heeft het balkenvak hoogte auto, en dan wordt een
             hoogte in procenten nul: de balken renderen dan onzichtbaar. */}

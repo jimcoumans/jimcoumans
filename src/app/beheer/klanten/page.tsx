@@ -66,7 +66,7 @@ export default async function BeheerPage({
 
   return (
     <AppShell user={user} actief="klanten">
-        <h1 className="text-jr-blue mb-1 text-2xl">Klanten</h1>
+        <h1 className="mb-1 text-[28px] sm:text-[32px]">Klanten</h1>
         <p className="mb-4 text-sm text-gray-600">
           {klanten.length} {klanten.length === 1 ? 'klant' : 'klanten'}
           {filtert && ` van ${alle.length}`} &middot; totaal openstaand budget{' '}
@@ -212,7 +212,7 @@ export default async function BeheerPage({
             )}
           </div>
 
-          <aside className="rounded-xl bg-white p-5 shadow-sm">
+          <aside className="rounded-xl bg-white p-6 shadow-sm">
             <h2 className="mb-3 text-base">Klant toevoegen</h2>
             <p className="mb-3 text-xs text-gray-500">
               Alleen de naam is verplicht. Wat je nu al weet kun je meteen kwijt; de rest

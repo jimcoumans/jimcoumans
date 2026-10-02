@@ -19,7 +19,7 @@ export default async function ConcurrentenPage() {
 
   return (
     <AppShell user={user} actief="klanten" breed>
-      <h1 className="text-jr-blue mb-1 text-2xl">Concurrenten</h1>
+      <h1 className="mb-1 text-[28px] sm:text-[32px]">Concurrenten</h1>
       <p className="mb-5 max-w-3xl text-sm text-gray-600">
         Verzameld vanuit de klantprofielen. Wie bovenaan staat kom je het vaakst tegen — dat
         is de partij waar je je verhaal tegen moet afzetten.

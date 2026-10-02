@@ -41,7 +41,7 @@ export async function KlantCampagnes({ organizationId, slug }: { organizationId:
         </ul>
       )}
 
-      <div className="mt-6 rounded-xl bg-white p-5 shadow-sm">
+      <div className="mt-6 rounded-xl bg-white p-6 shadow-sm">
         <h3 className="mb-1 text-base">Vaste doelgroepen</h3>
         <p className="mb-3 text-xs text-gray-600">Eén keer vastleggen, in elke campagnebriefing aan te vinken.</p>
         {doelgroepen.length === 0 ? (

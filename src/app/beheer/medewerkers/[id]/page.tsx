@@ -84,7 +84,7 @@ export default async function MedewerkerPage({
         </a>
         <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
           <Avatar naam={lid.name ?? lid.email} imageId={lid.avatarImageId} maat={44} />
-          <h1 className="text-jr-blue text-2xl">{lid.name ?? lid.email}</h1>
+          <h1 className="text-[28px] sm:text-[32px]">{lid.name ?? lid.email}</h1>
           {lid.role === 'admin' && (
             <span className="bg-jr-lightblue text-jr-deepblue rounded-full px-2 py-0.5 text-xs">
               Beheerder
@@ -119,7 +119,7 @@ export default async function MedewerkerPage({
         {/* ---------------------------------------------------------------
             Wie is dit
             --------------------------------------------------------------- */}
-        <section className="rounded-xl bg-white p-5 shadow-sm">
+        <section className="rounded-xl bg-white p-6 shadow-sm">
           <h2 className="mb-1 text-base">Gegevens</h2>
           <p className="mb-4 text-xs text-gray-500">
             Het e-mailadres blijft {lid.email}. Daarmee logt hij in en daaraan hangen zijn
@@ -278,7 +278,7 @@ export default async function MedewerkerPage({
             Wat draagt hij
             --------------------------------------------------------------- */}
         <div className="space-y-6">
-          <section className="rounded-xl bg-white p-5 shadow-sm">
+          <section className="rounded-xl bg-white p-6 shadow-sm">
             <h2 className="mb-3 text-base">In één oogopslag</h2>
 
             <dl className="flex flex-wrap gap-x-8 gap-y-3">
@@ -370,7 +370,7 @@ export default async function MedewerkerPage({
           </section>
 
           {(isZelf || isBeheerder) && (
-            <section className="rounded-xl bg-white p-5 shadow-sm">
+            <section className="rounded-xl bg-white p-6 shadow-sm">
               <h2 className="mb-1 text-base">Inloggen</h2>
               <p className="mb-3 text-xs text-gray-500">
                 {heeftEenWachtwoord
@@ -429,7 +429,7 @@ export default async function MedewerkerPage({
           )}
 
           {isBeheerder && (
-            <section className="rounded-xl bg-white p-5 shadow-sm">
+            <section className="rounded-xl bg-white p-6 shadow-sm">
               <h2 className="mb-1 text-base">Uurkostprijs</h2>
               <p className="mb-3 text-xs text-gray-500">
                 Wat een uur van deze collega ons kost. Alleen beheerders zien dit veld — het

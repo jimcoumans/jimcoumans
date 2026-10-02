@@ -71,7 +71,7 @@ export default async function CrmPage({
     <AppShell user={user} actief="crm" breed>
       <div className="mb-5 flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
         <div>
-          <h1 className="text-jr-blue text-2xl">CRM</h1>
+          <h1 className="text-[28px] sm:text-[32px]">CRM</h1>
           <p className="text-sm text-gray-600">
             Iedereen die we kennen: klanten, partners en collega&rsquo;s. Op achternaam.
           </p>

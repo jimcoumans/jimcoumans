@@ -57,21 +57,21 @@ export default async function OffertesPage({
 
   return (
     <AppShell user={user} actief="offertes">
-      <h1 className="text-jr-blue mb-1 text-2xl">Offertes</h1>
+      <h1 className="mb-1 text-[28px] sm:text-[32px]">Offertes</h1>
       <p className="mb-6 text-sm text-gray-600">
         Voorstellen op basis van eigen diensten en werk dat via een partner loopt. De
         marge per regel zie jij; de klant ziet alleen wat hij betaalt.
       </p>
 
       <section className="mb-8 grid gap-4 sm:grid-cols-3">
-        <div className="rounded-xl bg-white p-5 shadow-sm">
+        <div className="rounded-xl bg-white p-6 shadow-sm">
           <p className="text-xs text-gray-600">Open bij klanten</p>
           <p className="tabular mt-1 text-3xl font-bold">{formatCents(cijfers.openValueCents)}</p>
           <p className="mt-1 text-xs text-gray-500">
             {cijfers.openCount} {cijfers.openCount === 1 ? 'offerte' : 'offertes'} onderweg
           </p>
         </div>
-        <div className="rounded-xl bg-white p-5 shadow-sm">
+        <div className="rounded-xl bg-white p-6 shadow-sm">
           <p className="text-xs text-gray-600">Akkoord gekregen</p>
           <p className="tabular mt-1 text-2xl font-bold">
             {formatCents(cijfers.acceptedValueCents)}
@@ -80,7 +80,7 @@ export default async function OffertesPage({
             waarvan {formatCents(cijfers.acceptedMarginCents)} marge
           </p>
         </div>
-        <div className="rounded-xl bg-white p-5 shadow-sm">
+        <div className="rounded-xl bg-white p-6 shadow-sm">
           <p className="text-xs text-gray-600">Scoringspercentage</p>
           <p className="tabular mt-1 text-2xl font-bold">
             {cijfers.winRatePercent === null ? '—' : `${cijfers.winRatePercent}%`}
@@ -178,7 +178,7 @@ export default async function OffertesPage({
           )}
         </div>
 
-        <aside className="rounded-xl bg-white p-5 shadow-sm lg:sticky lg:top-4 lg:self-start">
+        <aside className="rounded-xl bg-white p-6 shadow-sm lg:sticky lg:top-4 lg:self-start">
           <h2 className="mb-1 text-base">Nieuwe offerte</h2>
           <p className="mb-3 text-xs text-gray-500">
             Je maakt hem hier aan en voegt daarna de regels toe.

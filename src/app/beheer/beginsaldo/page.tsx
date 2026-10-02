@@ -25,7 +25,7 @@ export default async function BeginsaldoPage() {
   return (
     <AppShell user={user} actief="klanten" breed>
       <div className="mb-5">
-        <h1 className="text-jr-blue text-2xl">Beginsaldo&rsquo;s</h1>
+        <h1 className="text-[28px] sm:text-[32px]">Beginsaldo&rsquo;s</h1>
         <p className="mt-1 max-w-3xl text-sm text-gray-600">
           Een saldo is altijd de som van de boekingen; er bestaat geen los veld met
           &ldquo;het saldo&rdquo;. Een nieuwe klant staat daarom op nul, ook als hij al

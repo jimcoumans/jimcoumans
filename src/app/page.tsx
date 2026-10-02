@@ -30,7 +30,7 @@ export default async function HomePage() {
     <AppShell user={user} actief="wallet">
         {wallets.length === 0 ? (
           <div className="rounded-xl bg-white p-8 shadow-sm">
-            <h1 className="text-jr-blue mb-2 text-2xl">Nog geen wallet</h1>
+            <h1 className="mb-2 text-[28px] sm:text-[32px]">Nog geen wallet</h1>
             <p className="text-sm text-gray-600">
               Er is nog geen wallet ingericht voor {user.organization?.name}. Je vaste
               contactpersoon zet dit voor je klaar.
