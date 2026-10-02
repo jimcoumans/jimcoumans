@@ -185,6 +185,7 @@ BESLUITEN = """
  ['2 okt 2026', 'De campagnebriefing gaat eerst als voorstel naar de klant en pas na akkoord naar het team. De klant ziet dezelfde versie als wij. Klantgegevens komen uit het systeem; samenvatting en suggesties maakt het portaal.'],
  ['2 okt 2026', 'Geen aparte takenlijst in de briefing: de tijdlijn is de takenlijst. Bij akkoord komt hij als taak met subtaken in ClickUp. Een nieuwe landingspagina staat als middel in de briefing en in de tijdlijn.'],
  ['2 okt 2026', 'Elke campagnebriefing heeft een hypothese: het hele doel teruggerekend via advertenties naar conversies, bezoekers, impressies en het budget dat nodig is. Mailings en netwerk maken het goedkoper, niet mogelijk. Het budgetadvies volgt uit de hypothese. Na twee weken live leggen we hem naast de echte cijfers.'],
+ ['2 okt 2026', 'In de hypothese zo min mogelijk eigen aannames: bij elke aanname de bron, en een plafond alleen als het onderbouwd is (rekensom of marge van de klant). Het budgetadvies staat ook als percentage van de omzet en is de bovengrens; andere kanalen maken het goedkoper.'],
 ]) + """
 </div></section>
 <footer class="voet"><div class="wrap">James Robinson — Marketing &amp; Branding · De James Robinson-gids · versie 30 september 2026</div></footer>
