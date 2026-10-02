@@ -2,7 +2,7 @@ import type { Organization, OrganizationProfile } from '@/db/schema'
 import type { ProfielVeld } from '@/lib/klantprofiel'
 import { wijzigKlantprofiel } from '@/app/beheer/klantreis-actions'
 import { ActionForm, TextArea } from '@/components/ActionForm'
-import { formatDate, formatDateLong } from '@/lib/dates'
+import { formatDateLong } from '@/lib/dates'
 
 /* -------------------------------------------------------------------------
    Het klantprofiel (I.3) op de klantkaart, in de zeven onderdelen van het
@@ -62,7 +62,7 @@ const ONDERDELEN: { nr: number; titel: string; velden: Veld[] }[] = [
     nr: 7,
     titel: 'Afspraken',
     velden: [
-      { naam: 'clientCommitments', label: 'Jouw kant', hint: 'De vijf afspraken (04.4): opvolging, oordeel per aanvraag, één beslisser, de termijnen.' },
+      { naam: 'clientCommitments', label: 'Jouw kant', hint: 'De vijf afspraken: opvolging, oordeel per aanvraag, één beslisser, de termijnen.' },
       { naam: 'sensitivities', label: 'Gevoeligheden', hint: 'Wat eerder misging, waar de klant scherp op is.' },
     ],
   },
@@ -79,37 +79,24 @@ function Nummer({ nr, titel }: { nr: number; titel: string }) {
   )
 }
 
-function Gegeven({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div>
-      <dt className="text-xs text-gray-600">{label}</dt>
-      <dd className="text-[15px]">{children || <span className="text-gray-400">-</span>}</dd>
-    </div>
-  )
-}
-
 export function Klantprofiel({
   organisatie,
   profiel,
-  marketingmanager,
-  pakketten,
-  vestigingen,
+  basis,
   rechts,
 }: {
   organisatie: Organization
   profiel: (OrganizationProfile & { bijgewerktDoor: string | null }) | null
-  marketingmanager: string | null
-  pakketten: { naam: string; start: Date | null }[]
-  vestigingen: string[]
+  /** De bedrijfskaart: naam, logo, gegevens. */
+  basis: React.ReactNode
   /** Wat al op de klantkaart staat, per onderdeel: rechts naast de tekst. */
   rechts: Partial<Record<number, React.ReactNode>>
 }) {
   return (
     <div className="space-y-10">
       <p className="max-w-3xl text-sm text-gray-600">
-        Wie aan deze klant werkt, leest dit eerst. Gevuld aan het eind van de onboarding uit het intakegesprek, het
-        onboardingformulier en het voorstel. Een campagnebriefing haalt de basis, de contactpersonen en de vaste
-        doelgroepen hier vandaan.
+        Wie aan deze klant werkt, leest dit eerst. Gevuld aan het eind van de onboarding; een campagnebriefing haalt
+        hier de basis, de contactpersonen en de vaste doelgroepen vandaan.
         {profiel && (
           <span className="block text-xs text-gray-500">
             Laatst bijgewerkt op {formatDateLong(profiel.updatedAt)}
@@ -121,18 +108,7 @@ export function Klantprofiel({
       <section>
         <Nummer nr={1} titel="De basis" />
         <div className="grid items-start gap-6 xl:grid-cols-2">
-          <dl className="grid gap-x-6 gap-y-4 rounded-xl bg-white p-6 shadow-sm sm:grid-cols-2">
-            <Gegeven label="Klantnaam">{organisatie.name}</Gegeven>
-            <Gegeven label="Website">{organisatie.website}</Gegeven>
-            <Gegeven label="Branche">{organisatie.industry}</Gegeven>
-            <Gegeven label="Vestiging(en)">{vestigingen.length > 0 ? vestigingen.join(', ') : organisatie.city}</Gegeven>
-            <Gegeven label="Marketingmanager">{marketingmanager}</Gegeven>
-            <Gegeven label="Pakket en start">
-              {pakketten.length > 0
-                ? pakketten.map((p) => `${p.naam}${p.start ? `, sinds ${formatDate(p.start)}` : ''}`).join('; ')
-                : null}
-            </Gegeven>
-          </dl>
+          {basis}
           {rechts[1]}
         </div>
       </section>
@@ -157,12 +133,8 @@ export function Klantprofiel({
         </section>
       ))}
 
-      {rechts[8] && (
-        <section>
-          <Nummer nr={8} titel="Campagnes" />
-          {rechts[8]}
-        </section>
-      )}
+      {/* Campagnes hebben hun eigen kop; een tweede nummer erboven is dubbel. */}
+      {rechts[8] && <section>{rechts[8]}</section>}
     </div>
   )
 }

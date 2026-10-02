@@ -18,6 +18,9 @@ const KNOP = {
   rustig: 'border border-gray-300 bg-white text-jr-text hover:bg-gray-50 rounded-full px-5 py-2.5 text-sm font-medium',
   link: 'text-jr-link hover:underline text-sm font-medium',
   klein: 'text-jr-link rounded-lg px-2 py-1 text-xs font-medium hover:bg-gray-100',
+  /** Als regel in een Menu. */
+  menu: 'block w-full rounded-lg px-3 py-2 text-left text-sm text-jr-text hover:bg-gray-100',
+  menuGevaar: 'block w-full rounded-lg px-3 py-2 text-left text-sm text-[#C02A22] hover:bg-[#FDECEA]',
 }
 
 export function Paneel({

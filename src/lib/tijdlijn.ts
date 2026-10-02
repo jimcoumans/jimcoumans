@@ -1,3 +1,4 @@
+import { factuurTitel } from './weergave'
 import { and, desc, eq, gte, sql } from 'drizzle-orm'
 import { db } from '@/db'
 import {
@@ -128,7 +129,7 @@ export async function getTijdlijn(
       bron: 'quote',
       kind: null,
       wanneer: toDate(q.issuedOn),
-      titel: `Offerte ${q.number}: ${q.title}`,
+      titel: `Offerte: ${q.title}`,
       toelichting: quoteStatusLabels[q.status],
       wie: null,
       metWie: null,
@@ -143,11 +144,13 @@ export async function getTijdlijn(
       bron: 'invoice',
       kind: null,
       wanneer: toDate(f.issuedOn),
-      titel: `Factuur ${f.number}`,
+      titel: factuurTitel(f),
       toelichting: null,
       wie: null,
       metWie: null,
-      bedragCents: f.amountExclVatCents + f.vatCents,
+      // Excl. btw, net als het budget: anders staat hier € 3.025 en in de
+      // wallet € 2.500 voor dezelfde factuur.
+      bedragCents: f.amountExclVatCents,
       href: null,
     })
   }

@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import { ActionForm, Field } from './ActionForm'
-import { formatCents } from '@/lib/money'
-import { parseQuantityToHundredths, lineTotalCents, unitShort } from '@/lib/quantity'
+import { formatCents, formatEuro } from '@/lib/money'
+import { parseQuantityToHundredths, lineTotalCents, unitShort, aantalMetEenheid } from '@/lib/quantity'
 import type { ActionResult } from '@/app/beheer/actions'
 import type { Service } from '@/db/schema'
 
@@ -65,18 +65,23 @@ export function BookServiceForm({
           onChange={(e) => setServiceId(e.target.value)}
           className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
         >
-          {services.map((s) => (
-            <option key={s.id} value={s.id}>
-              {s.name} — {formatCents(s.unitPriceCents)} / {unitShort[s.unit]}
-              {s.category ? ` · ${s.category}` : ''}
-            </option>
+          {/* Gegroepeerd per productgroep, zoals in de catalogus, in plaats
+              van de groep achter elke naam te plakken. */}
+          {groepeer(services).map(([groep, lijst]) => (
+            <optgroup key={groep} label={groep}>
+              {lijst.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.name}, {formatEuro(s.unitPriceCents)} per {unitShort[s.unit]}
+                </option>
+              ))}
+            </optgroup>
           ))}
         </select>
       </div>
 
       <div>
         <label htmlFor={`aantal-${walletId}`} className="text-jr-text mb-1.5 block text-[13px] font-medium">
-          Aantal {dienst && <span className="text-gray-400">({unitShort[dienst.unit]})</span>}
+          Aantal
         </label>
         <input
           id={`aantal-${walletId}`}
@@ -158,6 +163,16 @@ export function BookServiceForm({
   )
 }
 
+function groepeer(services: Service[]): [string, Service[]][] {
+  const groepen = new Map<string, Service[]>()
+  for (const s of services) {
+    const groep = s.category ?? 'Overig'
+    if (!groepen.has(groep)) groepen.set(groep, [])
+    groepen.get(groep)!.push(s)
+  }
+  return [...groepen.entries()]
+}
+
 function berekenVoorbeeld(
   dienst: Service | undefined,
   aantalRaw: string,
@@ -180,7 +195,7 @@ function berekenVoorbeeld(
     return {
       totaal: lineTotalCents(aantal, tarief),
       tarief,
-      aantalTekst: `${(aantal / 100).toLocaleString('nl-NL')} ${unitShort[dienst.unit]}`,
+      aantalTekst: aantalMetEenheid(aantal, dienst.unit),
     }
   } catch {
     return null

@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { parseAmountToCents, formatCents, formatSignedCents, eurosToCents } from '../money'
+import { parseAmountToCents, formatCents, formatSignedCents, eurosToCents, formatEuro } from '../money'
 
 test('parseAmountToCents leest Nederlandse notatie', () => {
   assert.equal(parseAmountToCents('122,50'), 12250)
@@ -60,4 +60,17 @@ test('heen en weer omzetten verliest geen centen', () => {
     const text = formatCents(cents)
     assert.equal(parseAmountToCents(text), cents, `mislukt bij ${cents} (${text})`)
   }
+})
+
+test('formatEuro laat ,00 weg bij ronde bedragen', () => {
+  assert.equal(formatEuro(250000).replace(/\u00a0/g, ' '), '€ 2.500')
+  assert.equal(formatEuro(1874875).replace(/\u00a0/g, ' '), '€ 18.748,75')
+  assert.equal(formatEuro(0).replace(/\u00a0/g, ' '), '€ 0')
+})
+
+test('factuurTitel toont de omschrijving of de maand, niet het nummer', async () => {
+  const { factuurTitel } = await import('../weergave')
+  assert.equal(factuurTitel({ number: 'ABO-2026-10', description: 'Marketing abonnement oktober 2026', period: '2026-10' }), 'Marketing abonnement oktober 2026')
+  assert.equal(factuurTitel({ number: 'ABO-2026-10', description: null, period: '2026-10' }), 'Factuur oktober 2026')
+  assert.equal(factuurTitel({ number: '2026-0112', description: '  ', period: null }), 'Factuur 2026-0112')
 })

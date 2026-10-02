@@ -19,6 +19,22 @@ export function formatCents(cents: number): string {
   return nlEuro.format(cents / 100)
 }
 
+const nlEuroRond = new Intl.NumberFormat('nl-NL', {
+  style: 'currency',
+  currency: 'EUR',
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0,
+})
+
+/**
+ * Voor overzichten en tegels: ronde bedragen zonder ",00" (€ 2.500), de
+ * rest gewoon op de cent (€ 18.748,75). In een afschrift of op een factuur
+ * blijft het formatCents, daar hoort elk bedrag dezelfde vorm te hebben.
+ */
+export function formatEuro(cents: number): string {
+  return cents % 100 === 0 ? nlEuroRond.format(cents / 100) : formatCents(cents)
+}
+
 /** Zelfde als formatCents, maar altijd met expliciet + of - ervoor. */
 export function formatSignedCents(cents: number): string {
   const sign = cents > 0 ? '+ ' : cents < 0 ? '- ' : ''

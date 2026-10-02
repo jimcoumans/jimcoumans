@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useRef } from 'react'
 import type { ActionResult } from '@/app/beheer/actions'
+import { Paneel } from './Paneel'
 
 /**
  * Formulier rond een server action, dat de foutmelding van die action
@@ -55,14 +56,14 @@ export function ActionForm({
       {state?.ok === false && (
         <p
           role="alert"
-          className="rounded-lg bg-[#FDECEA] px-4 py-3 text-sm text-[#C02A22]"
+          className="col-span-full rounded-lg bg-[#FDECEA] px-4 py-3 text-sm text-[#C02A22]"
         >
           {state.error}
         </p>
       )}
 
       {gelukt && meldGelukt && (
-        <p className="rounded-lg bg-[#E6F7EB] px-4 py-3 text-sm text-[#1D7D3F]">
+        <p className="col-span-full rounded-lg bg-[#E6F7EB] px-4 py-3 text-sm text-[#1D7D3F]">
           Opgeslagen.
         </p>
       )}
@@ -70,7 +71,9 @@ export function ActionForm({
       <button
         type="submit"
         disabled={bezig}
-        className={`min-h-10 rounded-lg px-5 py-2 text-sm font-medium disabled:opacity-40 ${submitClassName}`}
+        // In een raster van twee kolommen een eigen regel en niet uitgerekt
+        // over de cel: een knop zo breed als een veld leest als een veld.
+        className={`col-span-full min-h-10 justify-self-start rounded-lg px-5 py-2 text-sm font-medium disabled:opacity-40 ${submitClassName}`}
       >
         {bezig ? 'Bezig…' : submitLabel}
       </button>
@@ -221,7 +224,7 @@ export function TextArea({
 }
 
 /**
- * Een wijzigformulier dat dichtgeklapt staat.
+ * Een formulier dat pas verschijnt als je erom vraagt, in een paneel van rechts.
  *
  * De lijst blijft leesbaar — je kijkt meestal, je wijzigt zelden — en het
  * formulier zit er wel bij in plaats van op een aparte pagina. Zonder deze
@@ -231,15 +234,34 @@ export function Uitklap({
   label,
   children,
   className = 'mt-2',
+  titel,
+  uitleg,
+  inline = false,
 }: {
   label: string
   children: React.ReactNode
   className?: string
+  /** De kop van het paneel; standaard het label. */
+  titel?: string
+  uitleg?: string
+  /** Echt uitklappen op de plek zelf, voor "meer velden" binnen een formulier. */
+  inline?: boolean
 }) {
+  if (inline) {
+    return (
+      <details className={className}>
+        <summary className="text-jr-link cursor-pointer text-sm font-medium select-none hover:underline">{label}</summary>
+        <div className="mt-3 rounded-xl border border-gray-200 bg-gray-50 p-5">{children}</div>
+      </details>
+    )
+  }
+  // Toevoegen en wijzigen gebeurt overal in een paneel van rechts: de lijst
+  // blijft rustig en het formulier heeft de ruimte.
   return (
-    <details className={className}>
-      <summary className="text-jr-link cursor-pointer text-sm font-medium select-none hover:underline">{label}</summary>
-      <div className="mt-3 rounded-xl border border-gray-200 bg-gray-50 p-5">{children}</div>
-    </details>
+    <div className={className}>
+      <Paneel knop={label} stijl="link" titel={titel ?? label} uitleg={uitleg}>
+        {children}
+      </Paneel>
+    </div>
   )
 }

@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import { getSessionUser } from '@/lib/auth'
+import { FilterBalk } from '@/components/FilterBalk'
 import { AppShell } from '@/components/AppShell'
 import { Paneel } from '@/components/Paneel'
 import { ActionForm, Field, Select, Uitklap } from '@/components/ActionForm'
@@ -160,13 +161,13 @@ export default async function PijplijnPage({
       </div>
 
       {/* Filters in de URL, zodat je een selectie kunt bewaren of doorsturen. */}
-      <form method="get" className="mb-5 flex flex-wrap items-end gap-2">
+      <FilterBalk className="mb-5 flex flex-wrap items-center gap-2">
         {eigenaren.length > 0 && (
           <select
             name="eigenaar"
             defaultValue={filter.eigenaar ?? ''}
             aria-label="Alle eigenaren"
-            className="min-h-11 rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
+            className="min-h-11 rounded-full border border-gray-300 bg-white py-2.5 pr-9 pl-4 text-[15px] outline-none hover:border-gray-400"
           >
             <option value="">Alle eigenaren</option>
             {eigenaren.map((e) => (
@@ -180,20 +181,14 @@ export default async function PijplijnPage({
           name="status"
           defaultValue={filter.status}
           aria-label="Status"
-          className="min-h-11 rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
+          className="min-h-11 rounded-full border border-gray-300 bg-white py-2.5 pr-9 pl-4 text-[15px] outline-none hover:border-gray-400"
         >
           <option value="open">Alleen open</option>
           <option value="won">Gewonnen</option>
           <option value="lost">Verloren</option>
           <option value="alles">Alles</option>
         </select>
-        <button
-          type="submit"
-          className="bg-jr-btn hover:bg-jr-btnhover rounded-lg px-4 py-2 text-sm text-white"
-        >
-          Filteren
-        </button>
-      </form>
+      </FilterBalk>
 
       {/* DE ACHTERSTAND. Bovenaan, niet in een filter dat je moet aanzetten. */}
       {bord.achterstand.length > 0 && (

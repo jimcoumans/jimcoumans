@@ -148,7 +148,7 @@ export default async function ContractenPage() {
               </p>
             )}
 
-            <Uitklap label="Meer velden">
+            <Uitklap label="Meer velden" inline>
               <div className="space-y-3 pt-1">
                 <Field
                   label="Bruto per maand"

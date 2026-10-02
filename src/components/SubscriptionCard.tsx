@@ -4,9 +4,11 @@ import {
   zetAbonnementStatus,
   factureerNu,
 } from '@/app/beheer/subscription-actions'
-import { formatCents } from '@/lib/money'
+import { formatEuro } from '@/lib/money'
+import { Menu } from './Menu'
+import { Paneel } from './Paneel'
 import { formatDate } from '@/lib/dates'
-import { vatCents, invoiceCents, discountPercentage } from '@/lib/billing-periods'
+import { invoiceCents, discountPercentage } from '@/lib/billing-periods'
 import type { SubscriptionOverzicht } from '@/lib/billing'
 
 const statusLabels = {
@@ -44,18 +46,19 @@ export function SubscriptionCard({
   // Het budget is wat de klant krijgt; het factuurbedrag is wat hij betaalt.
   // Zonder korting is dat hetzelfde getal en tonen we er maar één.
   const teFactureren = invoiceCents(abo.amountExclVatCents, abo.discountCents)
-  const btw = vatCents(teFactureren, abo.vatRatePercent)
   const kortingPercentage = discountPercentage(abo.amountExclVatCents, abo.discountCents)
+
+  const actieKnop = '!min-h-0 w-full !rounded-lg !px-3 !py-2 text-left !font-normal'
 
   return (
     <li className="rounded-xl bg-white p-6 shadow-sm">
-      <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
+      <div className="flex items-start justify-between gap-4">
+        {/* Op een telefoon het bedrag onder de tekst, niet ernaast. */}
+        <div className="flex min-w-0 flex-1 flex-col gap-3 sm:flex-row sm:gap-4">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="text-base">{abo.name}</h3>
-            <span
-              className={`rounded-full px-2 py-0.5 text-xs ${statusStyles[abo.status]}`}
-            >
+            <h3 className="text-[17px]">{abo.name}</h3>
+            <span className={`rounded-full px-2 py-0.5 text-xs ${statusStyles[abo.status]}`}>
               {statusLabels[abo.status]}
             </span>
           </div>
@@ -63,186 +66,121 @@ export function SubscriptionCard({
           {toonKlant && (
             <a
               href={`/beheer/klanten/${item.organizationSlug}`}
-              className="hover:text-jr-blue mt-0.5 block text-sm text-gray-700"
+              className="hover:text-jr-link mt-0.5 block text-sm text-gray-700"
             >
               {item.organizationName}
             </a>
           )}
 
-          {abo.description && (
-            <p className="mt-1 text-sm text-gray-600">{abo.description}</p>
-          )}
+          {abo.description && <p className="mt-1 text-sm text-gray-600">{abo.description}</p>}
 
-          <p className="mt-1.5 text-xs text-gray-600">
-            budget naar {item.walletName} &middot; de {abo.billingDay}e van de maand
-            &middot; sinds {formatDate(abo.startedOn)}
-            {abo.endsOn && <> &middot; tot {formatDate(abo.endsOn)}</>}
+          <p className="mt-2 text-[13px] text-gray-600">
+            Factuur op de {abo.billingDay}e van de maand, sinds {formatDate(abo.startedOn)}
+            {abo.endsOn && <>, tot {formatDate(abo.endsOn)}</>}
+            {/* De wallet noemen we alleen als die anders heet dan het
+                abonnement; anders staat er twee keer hetzelfde. */}
+            {item.walletName !== abo.name && <> &middot; budget naar {item.walletName}</>}
           </p>
-
-          <p className="mt-1 text-xs text-gray-600">
-            {item.billedPeriods === 0 ? (
-              'nog niet gefactureerd'
-            ) : (
-              <>
-                {item.billedPeriods}{' '}
-                {item.billedPeriods === 1 ? 'maand' : 'maanden'} gefactureerd &middot;{' '}
-                {formatCents(item.billedCents)} totaal bijgeschreven
-              </>
-            )}
+          <p className="mt-0.5 text-[13px] text-gray-600">
+            {item.billedPeriods === 0
+              ? 'Nog niet gefactureerd'
+              : `${item.billedPeriods} ${item.billedPeriods === 1 ? 'maand' : 'maanden'} gefactureerd, ${formatEuro(item.billedCents)} bijgeschreven`}
           </p>
 
           {abo.notes && <p className="mt-1.5 text-xs text-gray-500">{abo.notes}</p>}
         </div>
 
-        <div className="shrink-0 text-right">
-          <p className="tabular text-lg">{formatCents(abo.amountExclVatCents)}</p>
-          <p className="text-xs text-gray-600">budget per maand, excl. btw</p>
-
-          {abo.discountCents > 0 ? (
-            <>
-              <p className="text-jr-orange text-xs">
-                &minus; {formatCents(abo.discountCents)} korting
-                {kortingPercentage !== null && ` (${kortingPercentage}%)`}
-              </p>
-              <p className="tabular mt-0.5 text-sm font-bold">
-                {formatCents(teFactureren)}
-              </p>
-              <p className="text-xs text-gray-600">
-                op de factuur &middot; incl. {formatCents(teFactureren + btw)}
-              </p>
-            </>
-          ) : (
-            <p className="text-xs text-gray-500">
-              incl. {formatCents(teFactureren + btw)}
+        <div className="shrink-0 sm:text-right">
+          <p className="tabular font-display text-[22px] leading-tight font-semibold tracking-tight">
+            {formatEuro(abo.amountExclVatCents)}
+          </p>
+          <p className="text-xs text-gray-600">per maand, excl. btw</p>
+          {abo.discountCents > 0 && (
+            <p className="mt-0.5 text-xs text-[#94590A]">
+              {formatEuro(abo.discountCents)} korting
+              {kortingPercentage !== null && ` (${kortingPercentage}%)`}, factuur {formatEuro(teFactureren)}
             </p>
           )}
-
-          {item.nextBillingOn ? (
-            <p className="text-jr-blue mt-1.5 text-xs">
-              volgende factuur {formatDate(item.nextBillingOn)}
-            </p>
-          ) : (
-            <p className="mt-1.5 text-xs text-gray-500">geen volgende factuur</p>
-          )}
+          <p className="mt-1.5 text-xs text-gray-600">
+            {item.nextBillingOn ? `Volgende factuur ${formatDate(item.nextBillingOn)}` : 'Geen volgende factuur'}
+          </p>
         </div>
-      </div>
+        </div>
 
-      <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-gray-200 pt-3">
-        {abo.status !== 'active' && (
-          <ActionForm
-            action={zetAbonnementStatus}
-            submitLabel="Aanzetten"
-            submitClassName="bg-jr-btn hover:bg-jr-btnhover text-white !text-xs"
-            resetOnSuccess={false}
-            className=""
+        <Menu>
+          <Paneel
+            knop="Aanpassen"
+            stijl="menu"
+            titel={`${abo.name} aanpassen`}
+            uitleg="Een nieuw bedrag geldt vanaf de volgende factuur. Wat al gefactureerd en bijgeschreven is, verandert niet."
           >
-            <input type="hidden" name="id" value={abo.id} />
-            <input type="hidden" name="slug" value={slug} />
-            <input type="hidden" name="status" value="active" />
-          </ActionForm>
-        )}
+            <ActionForm action={wijzigAbonnement} submitLabel="Opslaan" resetOnSuccess={false} className="grid gap-4 sm:grid-cols-2">
+              <input type="hidden" name="id" value={abo.id} />
+              <input type="hidden" name="slug" value={slug} />
 
-        {abo.status === 'active' && (
-          <>
-            <ActionForm
-              action={zetAbonnementStatus}
-              submitLabel="Pauzeren"
-              submitClassName="text-gray-600 hover:bg-gray-100 !text-xs"
-              resetOnSuccess={false}
-              className=""
-            >
+              <Field label="Naam" name="naam" required defaultValue={abo.name} />
+              <Field
+                label="Maandbudget excl. btw"
+                name="bedrag"
+                required
+                defaultValue={bedragVeld(abo.amountExclVatCents)}
+                hint="Wat de klant aan diensten krijgt; dit komt in de wallet."
+              />
+              <Field
+                label="Korting"
+                name="korting"
+                defaultValue={abo.discountCents > 0 ? bedragVeld(abo.discountCents) : ''}
+                placeholder="0,00"
+                hint="Gaat van de factuur af, niet van het budget."
+              />
+              <Field
+                label="Facturatiedag"
+                name="facturatiedag"
+                type="number"
+                required
+                defaultValue={String(abo.billingDay)}
+                hint="1 tot 28"
+              />
+              <Field label="Einddatum" name="einddatum" type="date" defaultValue={datumVeld(abo.endsOn)} hint="Leeg voor doorlopend." />
+              <div className="sm:col-span-2">
+                <Field label="Omschrijving" name="omschrijving" defaultValue={abo.description ?? ''} />
+              </div>
+              <div className="sm:col-span-2">
+                <Field label="Interne notities" name="notities" defaultValue={abo.notes ?? ''} />
+              </div>
+            </ActionForm>
+          </Paneel>
+
+          {abo.status === 'active' && (
+            <ActionForm action={factureerNu} submitLabel="Nu factureren" submitClassName={`${actieKnop} text-jr-text hover:bg-gray-100`} resetOnSuccess={false} meldGelukt={false} className="">
+              <input type="hidden" name="subscriptionId" value={abo.id} />
+              <input type="hidden" name="slug" value={slug} />
+            </ActionForm>
+          )}
+
+          {abo.status === 'active' ? (
+            <ActionForm action={zetAbonnementStatus} submitLabel="Pauzeren" submitClassName={`${actieKnop} text-jr-text hover:bg-gray-100`} resetOnSuccess={false} meldGelukt={false} className="">
               <input type="hidden" name="id" value={abo.id} />
               <input type="hidden" name="slug" value={slug} />
               <input type="hidden" name="status" value="paused" />
             </ActionForm>
-
-            <ActionForm
-              action={factureerNu}
-              submitLabel="Nu factureren"
-              submitClassName="text-gray-600 hover:bg-gray-100 !text-xs"
-              resetOnSuccess={false}
-              className=""
-            >
-              <input type="hidden" name="subscriptionId" value={abo.id} />
+          ) : (
+            <ActionForm action={zetAbonnementStatus} submitLabel="Weer aanzetten" submitClassName={`${actieKnop} text-jr-text hover:bg-gray-100`} resetOnSuccess={false} meldGelukt={false} className="">
+              <input type="hidden" name="id" value={abo.id} />
               <input type="hidden" name="slug" value={slug} />
+              <input type="hidden" name="status" value="active" />
             </ActionForm>
-          </>
-        )}
+          )}
 
-        {abo.status !== 'ended' && (
-          <ActionForm
-            action={zetAbonnementStatus}
-            submitLabel="Stopzetten"
-            submitClassName="text-gray-600 hover:bg-gray-100 !text-xs"
-            resetOnSuccess={false}
-            className=""
-          >
-            <input type="hidden" name="id" value={abo.id} />
-            <input type="hidden" name="slug" value={slug} />
-            <input type="hidden" name="status" value="ended" />
-          </ActionForm>
-        )}
+          {abo.status !== 'ended' && (
+            <ActionForm action={zetAbonnementStatus} submitLabel="Stopzetten" submitClassName={`${actieKnop} text-[#C02A22] hover:bg-[#FDECEA]`} resetOnSuccess={false} meldGelukt={false} className="">
+              <input type="hidden" name="id" value={abo.id} />
+              <input type="hidden" name="slug" value={slug} />
+              <input type="hidden" name="status" value="ended" />
+            </ActionForm>
+          )}
+        </Menu>
       </div>
-
-      <details className="mt-2">
-        <summary className="text-jr-blue cursor-pointer text-xs">Aanpassen</summary>
-        <div className="mt-3 rounded-lg bg-gray-50 p-3">
-          <p className="mb-3 text-xs text-gray-600">
-            Een nieuw bedrag geldt vanaf de volgende factuur. Facturen die al
-            verstuurd zijn en het budget dat al is bijgeschreven veranderen niet.
-          </p>
-          <ActionForm
-            action={wijzigAbonnement}
-            submitLabel="Opslaan"
-            resetOnSuccess={false}
-            className="grid gap-3 sm:grid-cols-2"
-          >
-            <input type="hidden" name="id" value={abo.id} />
-            <input type="hidden" name="slug" value={slug} />
-
-            <Field label="Naam" name="naam" required defaultValue={abo.name} />
-            <Field
-              label="Maandbudget excl. btw"
-              name="bedrag"
-              required
-              defaultValue={bedragVeld(abo.amountExclVatCents)}
-              hint="Wat de klant aan diensten krijgt; dit wordt in zijn wallet bijgeschreven."
-            />
-            <Field
-              label="Korting"
-              name="korting"
-              defaultValue={abo.discountCents > 0 ? bedragVeld(abo.discountCents) : ''}
-              placeholder="0,00"
-              hint="Gaat van de factuur af, niet van het budget. Leeg laten als er geen korting is."
-            />
-            <Field
-              label="Facturatiedag"
-              name="facturatiedag"
-              type="number"
-              required
-              defaultValue={String(abo.billingDay)}
-              hint="1 tot 28"
-            />
-            <Field
-              label="Einddatum"
-              name="einddatum"
-              type="date"
-              defaultValue={datumVeld(abo.endsOn)}
-              hint="Leeg laten voor doorlopend."
-            />
-            <div className="sm:col-span-2">
-              <Field
-                label="Omschrijving"
-                name="omschrijving"
-                defaultValue={abo.description ?? ''}
-              />
-            </div>
-            <div className="sm:col-span-2">
-              <Field label="Interne notities" name="notities" defaultValue={abo.notes ?? ''} />
-            </div>
-          </ActionForm>
-        </div>
-      </details>
     </li>
   )
 }

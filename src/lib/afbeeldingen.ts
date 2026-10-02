@@ -153,6 +153,9 @@ export function afbeeldingUrl(id: string | null): string | null {
  */
 export function initialen(naam: string): string {
   const woorden = naam
+    // "(demo)", "(oud)" en losse tekens als & of - zijn geen naam.
+    .replace(/\([^)]*\)/g, ' ')
+    .replace(/[^\p{L}\p{N}'\s]/gu, ' ')
     .trim()
     .split(/\s+/)
     // Tussenvoegsels leveren een nietszeggende V of D op.
