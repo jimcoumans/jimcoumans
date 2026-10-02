@@ -14,6 +14,7 @@ import { Avatar } from '@/components/Avatar'
 import { ActionForm, Field, Select } from '@/components/ActionForm'
 import { nieuweKlant } from '../actions'
 import { formatCents } from '@/lib/money'
+import { getMaandbudgetPerKlant } from '@/lib/billing'
 import { metGeheugen } from '@/lib/cache'
 
 /**
@@ -61,6 +62,7 @@ export default async function BeheerPage({
   const crm = await metGeheugen('klanten:crmtellingen', () =>
     getCrmCounts(alle.map((k) => k.organization.id)),
   )
+  const maandbudget = await metGeheugen('klanten:maandbudget', getMaandbudgetPerKlant)
   const totaal = klanten.reduce((acc, k) => acc + k.totalBalanceCents, 0)
   const negatief = klanten.filter((k) => k.totalBalanceCents < 0)
 
@@ -198,13 +200,16 @@ export default async function BeheerPage({
                           )}
                         </p>
                       </div>
-                      <p
-                        className={`tabular shrink-0 text-sm ${
-                          k.totalBalanceCents < 0 ? 'text-jr-red' : ''
-                        }`}
-                      >
-                        {formatCents(k.totalBalanceCents)}
-                      </p>
+                      <div className="tabular shrink-0 text-right">
+                        <p className="text-xs text-gray-600">
+                          {maandbudget.has(k.organization.id)
+                            ? `${formatCents(maandbudget.get(k.organization.id) ?? 0)} per maand`
+                            : 'geen abonnement'}
+                        </p>
+                        <p className={`text-sm ${k.totalBalanceCents < 0 ? 'text-jr-red' : ''}`}>
+                          saldo {formatCents(k.totalBalanceCents)}
+                        </p>
+                      </div>
                     </a>
                   </li>
                 ))}

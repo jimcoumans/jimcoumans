@@ -115,6 +115,47 @@ export default async function KlantPage({
           )}
         </p>
 
+        {(() => {
+          // Het budget in één oogopslag: wat er elke maand bijkomt, wat er nu
+          // staat en wanneer de volgende bijschrijving is.
+          const actief = abonnementen.filter((a) => a.subscription.status === 'active')
+          const perMaand = actief.reduce((som, a) => som + a.subscription.amountExclVatCents, 0)
+          const saldo = klant.wallets.reduce((som, w) => som + (w.balance?.balanceCents ?? 0), 0)
+          const volgende = actief
+            .map((a) => a.nextBillingOn)
+            .filter((d): d is Date => d !== null)
+            .sort((a, b) => a.getTime() - b.getTime())[0]
+          return (
+            <section className="mb-10 grid gap-4 sm:grid-cols-3">
+              <div className="rounded-xl bg-white p-6 shadow-sm">
+                <p className="text-xs text-gray-600">Budget per maand</p>
+                <p className="font-display tabular mt-1 text-2xl font-semibold tracking-tight">
+                  {actief.length > 0 ? formatCents(perMaand) : 'Geen abonnement'}
+                </p>
+                <p className="mt-1 text-xs text-gray-600">
+                  {actief.length} {actief.length === 1 ? 'actief abonnement' : 'actieve abonnementen'}
+                </p>
+              </div>
+              <div className="rounded-xl bg-white p-6 shadow-sm">
+                <p className="text-xs text-gray-600">Saldo nu</p>
+                <p className={`font-display tabular mt-1 text-2xl font-semibold tracking-tight ${saldo < 0 ? 'text-jr-red' : 'text-jr-blue'}`}>
+                  {formatCents(saldo)}
+                </p>
+                <p className="mt-1 text-xs text-gray-600">
+                  over {klant.wallets.length} {klant.wallets.length === 1 ? 'wallet' : 'wallets'}
+                </p>
+              </div>
+              <div className="rounded-xl bg-white p-6 shadow-sm">
+                <p className="text-xs text-gray-600">Volgende bijschrijving</p>
+                <p className="font-display tabular mt-1 text-2xl font-semibold tracking-tight">
+                  {volgende ? formatDate(volgende) : '-'}
+                </p>
+                <p className="mt-1 text-xs text-gray-600">via de dagelijkse abonnementsrun</p>
+              </div>
+            </section>
+          )
+        })()}
+
         <div className="space-y-10">
           <Tijdlijn
             organizationId={klant.organization.id}

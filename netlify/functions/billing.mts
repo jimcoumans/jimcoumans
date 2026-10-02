@@ -1,40 +1,37 @@
 /* -------------------------------------------------------------------------
    De dagelijkse abonnementsrun op Netlify.
 
-   Vercel heeft cron in vercel.json; Netlify doet het met een geplande
-   functie. Allebei roepen ze hetzelfde endpoint aan, zodat er één plek is
-   waar het factureren gebeurt en niet twee die uit elkaar kunnen lopen.
+   De run draait hier zelf, rechtstreeks op de database. Eerder riep deze
+   functie /api/cron/billing aan via het publieke adres van de site, maar dat
+   adres zit achter de Netlify-login: een mens komt erdoor, een geplande
+   functie niet. De run kreeg dan elke ochtend een weigering en er werd niets
+   gefactureerd, zonder dat iemand het merkte. Rechtstreeks heeft geen
+   website, geen geheim en geen login nodig.
+
+   Het endpoint /api/cron/billing blijft bestaan voor handmatig gebruik.
 
    De run is expres elke dag en niet alleen op de tweede: hij kijkt zelf
    welke periodes nog openstaan, dus een gemiste dag wordt ingehaald in
    plaats van dat een maand wordt overgeslagen.
    ------------------------------------------------------------------------- */
 
+import { runBilling, vatSamenBilling } from '../../src/lib/billing'
+
 export default async function handler(): Promise<Response> {
-  const geheim = process.env.CRON_SECRET
-  const basis = process.env.URL ?? process.env.DEPLOY_PRIME_URL
-
-  if (!geheim || geheim.length < 16) {
-    // Zonder geheim gaat de deur op slot, niet open.
-    console.error('[billing] CRON_SECRET ontbreekt of is te kort; run overgeslagen.')
-    return new Response('CRON_SECRET ontbreekt', { status: 500 })
+  try {
+    const rapport = await runBilling({ apply: true })
+    const samenvatting = vatSamenBilling(rapport)
+    console.log(`[billing] ${samenvatting}`)
+    for (const r of rapport.regels.filter((r) => r.soort === 'fout')) {
+      console.error(`[billing] fout bij ${r.organizationName} (${r.period}): ${r.toelichting}`)
+    }
+    // Een mislukte run moet in het Netlify-log als mislukt te zien zijn,
+    // anders staat er morgen nog steeds niets gefactureerd en weet niemand het.
+    return new Response(samenvatting, { status: rapport.fouten === 0 ? 200 : 500 })
+  } catch (error) {
+    console.error('[billing] run mislukt:', error)
+    return new Response('Run mislukt', { status: 500 })
   }
-  if (!basis) {
-    console.error('[billing] geen site-URL bekend; run overgeslagen.')
-    return new Response('Geen site-URL', { status: 500 })
-  }
-
-  const antwoord = await fetch(`${basis}/api/cron/billing`, {
-    method: 'POST',
-    headers: { authorization: `Bearer ${geheim}` },
-  })
-
-  const tekst = await antwoord.text()
-  console.log(`[billing] ${antwoord.status}: ${tekst}`)
-
-  // Een mislukte run moet in het Netlify-log als mislukt te zien zijn,
-  // anders staat er morgen nog steeds niets gefactureerd en weet niemand het.
-  return new Response(tekst, { status: antwoord.ok ? 200 : 500 })
 }
 
 /**

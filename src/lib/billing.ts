@@ -417,6 +417,19 @@ export async function getMonthlyRecurringCents(): Promise<number> {
   return Number(row?.totaal ?? 0)
 }
 
+/** Het maandbudget per klant: de som van de actieve abonnementen. Zonder actief abonnement staat de klant er niet in. */
+export async function getMaandbudgetPerKlant(): Promise<Map<string, number>> {
+  const rijen = await db
+    .select({
+      organizationId: subscriptions.organizationId,
+      budget: sql<string>`COALESCE(SUM(${subscriptions.amountExclVatCents}), 0)`,
+    })
+    .from(subscriptions)
+    .where(eq(subscriptions.status, 'active'))
+    .groupBy(subscriptions.organizationId)
+  return new Map(rijen.map((r) => [r.organizationId, Number(r.budget)]))
+}
+
 /** Wat er per maand aan budget wordt bijgeschreven, en hoeveel korting daar in zit. */
 export async function getMonthlyBudgetCents(): Promise<{
   budgetCents: number
