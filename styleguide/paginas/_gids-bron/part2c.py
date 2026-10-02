@@ -25,7 +25,9 @@ STAP05 = stap_kop('05', 'f2', 'FASE 2 · STARTEN', 'Tekenen en betalen',
 """ + tbl(['Regel', 'Bedrag excl. btw', 'Wanneer', 'Toelichting'], [
  ['Fundament: basis en eerste campagne', '€ 4.500', 'Eenmalig', 'Altijd. Omschrijving verwijst naar het voorstel, pagina 4.'],
  ['Retainer Starter, Playmaker, Captain of Champion', '€ 1.000 / 1.500 / 2.000 / 2.500', 'Per maand', 'Het pakket uit de rekensom. Vanaf maand 2, vooraf: factuur op de 1e, incasso op de 4e.'],
- ['Marketingdashboard', '€ 25 p/m of € 250 p/j', 'Keuze van de klant', 'Twee opties op de offerte; hij vinkt er één aan bij het tekenen.'],
+ ['Licht fundament (alleen bij Sub)', '€ 1.500', 'Eenmalig', 'Alleen als de klant om Sub vraagt: accounts, meting, sjablonen, één campagne. Stapt de klant over naar Starter, dan telt het mee en betaalt de klant het verschil, € 3.000.'],
+ ['Retainer Sub', '€ 500', 'Per maand', 'Alleen op verzoek. Vanaf maand 2, vooraf, net als de andere retainers.'],
+ ['Marketingdashboard', '€ 25 p/m of € 250 p/j', 'Keuze van de klant', 'Twee opties op de offerte; de klant vinkt er één aan bij het tekenen. Per maand gaat het mee op de factuur van de retainer; per jaar krijgt de klant er één losse jaarfactuur voor.'],
  ['Afsprakenplanner opzetten', '€ 250', 'Eenmalig', 'Alleen als hij afspraken laat inplannen.'],
  ['Tekstregel, zonder bedrag', '—', '—', '“Rechtstreeks aan leveranciers, niet via ons: advertentiebudget (minimaal € [..] per maand), MailerLite, Cookiescript [, hosting, afsprakenplanner]. Herstelposten aan de website: eigen offerte van Webmix.”'],
 ]) + let('<p><b>Zet het advertentiebudget nooit als bedrag op de offerte.</b> Dan lijkt het of dat geld via ons loopt, en dat is precies wat we beloven niet te doen. Het staat op pagina 5 van het voorstel met een bedrag, en op de offerte als tekstregel.</p>') + """
@@ -34,12 +36,20 @@ STAP05 = stap_kop('05', 'f2', 'FASE 2 · STARTEN', 'Tekenen en betalen',
 <h3>Licenties: wij regelen het, hij betaalt het</h3>
 """ + tbl(['Licentie', 'Bedrag', 'Wanneer', 'Aan wie, maand of jaar'], [
  ['Marketingdashboard', '€ 25 p/m of € 250 p/j', 'Altijd', 'James Robinson. Keuze op de offerte.'],
- ['MailerLite', 'vanaf € 9,90 p/m', 'Altijd', 'MailerLite. Maand of jaar, bij MailerLite.'],
+ ['MailerLite', '€ 9,90 – 73 p/m, staffel hieronder', 'Altijd', 'MailerLite. Maand of jaar, bij MailerLite.'],
  ['Cookiescript', '€ 150 p/j', 'Altijd', 'Webmix. Per jaar.'],
  ['ClickCease', 'vanaf $ 99 p/m', 'Optioneel, de klant beslist', 'ClickCease. Maand of jaar.'],
- ['Leadinfo', 'staffel', 'Optioneel, alleen B2B', 'Leadinfo, volgens hun staffel.'],
+ ['Leadinfo', '€ 69 – 179 p/m, staffel hieronder', 'Optioneel, alleen B2B', 'Leadinfo. Per maand.'],
  ['Calendly', '€ 15 p/m per gebruiker', 'Optioneel', 'Calendly. Maand of jaar.'],
-]) + grid(4, [
+]) + """
+<h4 style="margin-top:22px">De staffels, per maand bij jaarbetaling</h4>
+""" + tbl(['MailerLite: adressen', 'Per maand', 'Leadinfo: herkende bedrijven per maand', 'Per maand'], [
+ ['tot 500', '€ 9,90', 'tot 100', '€ 69'],
+ ['tot 1.000', '€ 15', 'tot 250', '€ 119'],
+ ['tot 2.500', '€ 27', 'tot 500', '€ 179'],
+ ['tot 5.000', '€ 43', 'meer', 'op aanvraag'],
+ ['tot 10.000', '€ 73', '', ''],
+], right=(1, 3)) + grid(4, [
  kaart('Op zijn naam', 'Elk account staat op zijn naam en e-mailadres. Stopt hij, dan neemt hij alles mee zonder dat er iets overgezet hoeft te worden.'),
  kaart('Hij betaalt zelf', 'Zijn betaalgegevens vult hij zelf in, in de toegangensessie. Wij bewaren nooit een creditcard of IBAN van een ander.'),
  kaart('Wij richten in', 'Aanmaken, instellen, koppelen aan het dashboard. Dat zit in het fundament.'),
@@ -68,7 +78,7 @@ STAP05 = stap_kop('05', 'f2', 'FASE 2 · STARTEN', 'Tekenen en betalen',
  '<b>Algemene voorwaarden</b> die deze propositie dragen: geen resultaatbelofte, maandelijks opzegbaar, niets gratis erbij, wat de klant bij vertrek meeneemt. Juridisch laten toetsen. Bewust later opgepakt.',
  '<b>Btw:</b> “exclusief btw” op tarieven, voorstel en offerte.',
  '<b>Moneybird inrichten en koppelen:</b> geeft Moneybird het portaal een seintje bij een handtekening, en wordt een getekende offerte in één keer een periodieke factuur? Kan het niet, dan doet iemand die ene klik met de hand.',
- '<b>Vertrekregeling:</b> wat neemt een klant mee, ook van het dashboard en de landingspagina op onze omgeving?',
+ '<b>Vertrekregeling:</b> wat neemt een klant mee, ook van het dashboard?',
 ], '')) + stap_eind()
 
 # ---------------------------------------------------------------- STAP 06
@@ -107,20 +117,20 @@ OBF = [
 
 STAP06 = stap_kop('06', 'f2', 'FASE 2 · STARTEN', 'De onboarding',
  'Van de handtekening tot dag 1 van het fundament, in drie werkdagen. Het gevaarlijkste moment van de reis: hij heeft betaald en ziet nog niets. Dus ziet hij binnen een uur iets, en hoeft hij nergens naar te zoeken.',
- [('WANNEER', 'Dag 0 tot en met dag 3 na de handtekening'), ('WIE', 'Het vaste aanspreekpunt, met het portaal'), ('HOE LANG', 'Twintig minuten formulier, 45 minuten toegangensessie, tien minuten bellen'), ('KLAAR ALS', 'Formulier binnen, alle toegangen er, en de datums van het fundament zijn gemaild vanaf support@')],
- 'stap-06') + klant('Binnen een uur een welkomstbericht van zijn vaste aanspreekpunt, met wat er de komende vier weken gebeurt en drie dingen die we nodig hebben, elk met een datum. De volgende dag een telefoontje. Toegangen regelen we samen, met hem aan het toetsenbord en ons ernaast.') + """
+ [('WANNEER', 'Dag 0 tot en met dag 3 na de handtekening'), ('WIE', 'De marketingmanager, het vaste aanspreekpunt, met het portaal'), ('HOE LANG', 'Twintig minuten formulier, 45 minuten toegangensessie, tien minuten bellen'), ('KLAAR ALS', 'Formulier binnen, alle toegangen er, en de datums van het fundament zijn gemaild vanaf support@')],
+ 'stap-06') + klant('Binnen een uur een welkomstbericht van de marketingmanager, het vaste aanspreekpunt, met wat er de komende vier weken gebeurt en drie dingen die we nodig hebben, elk met een datum. De volgende dag een telefoontje. Toegangen regelen we samen, met hem aan het toetsenbord en ons ernaast.') + """
 <p><b>Het principe: wij halen het op, hij hoeft niet te zoeken.</b> Toegangen zijn de belangrijkste oorzaak van uitloop, en een lijst per mail is de manier om die uitloop te organiseren. Daarom doen we het samen, in één sessie. Wat bij een derde ligt, halen wij zelf op.</p>
 <h3>Drie werkdagen</h3>
 """ + tl([
- ('Dag 0, binnen een uur', 'De kick-offmail', 'Automatisch vanuit het portaal zodra Moneybird de handtekening meldt, vanaf support@, ondertekend door het vaste aanspreekpunt. Tegelijk uit Moneybird: de factuur voor het fundament en het machtigingsverzoek.'),
+ ('Dag 0, binnen een uur', 'De kick-offmail', 'Automatisch vanuit het portaal zodra Moneybird de handtekening meldt, vanaf support@, ondertekend door de marketingmanager. Tegelijk uit Moneybird: de factuur voor het fundament en het machtigingsverzoek.'),
  ('Dag 0', 'Intern klaarzetten', 'De klantkaart op “klant”. Het fundament als project in ClickUp, met datums vanaf de geplande dag 1. In Front de klant koppelen aan zijn marketingmanager, zodat elke mail van hem automatisch daar landt.'),
- ('Dag 1', 'Tien minuten bellen', 'Het aanspreekpunt belt. Geen inhoud, wel een stem: “Ik ben je aanspreekpunt, dit is de planning.” Staat de toegangensessie nog niet in de agenda, dan plannen we hem nu.'),
+ ('Dag 1', 'Tien minuten bellen', 'De marketingmanager belt. Geen inhoud, wel een stem: “Ik ben je marketingmanager en je vaste aanspreekpunt, dit is de planning.” Staat de toegangensessie nog niet in de agenda, dan plannen we hem nu.'),
  ('Dag 1 – 3', 'Het onboardingformulier', 'Hij vult het zelf in: twintig minuten, tussentijds op te slaan. Uiterlijk de avond voor de toegangensessie, zodat wij het al gelezen hebben.'),
  ('Dag 2 – 3', 'De toegangensessie', '45 minuten online, met scherm delen. De toegangenlijst samen door; bij elke licentie vult hij zelf zijn betaalgegevens in. Wat niet meteen lukt, krijgt een eigenaar en een datum.'),
  ('Dag 3', 'Dag 1 van het fundament', 'Zodra alles binnen is, start de klok. Het portaal mailt de datums vanaf support@: de preview en de live-datum, en de draaidag zodra die met de videograaf is afgestemd.'),
 ]) + """
 <h3>De kick-offmail</h3>
-""" + mail('DAG 0 · AUTOMATISCH, BINNEN EEN UUR · DATUMS UIT HET PORTAAL', 'Welkom. Dit gebeurt er de komende vier weken', '<p>Hoi [voornaam],</p><p>Welkom bij James Robinson. Ik ben [naam], je vaste aanspreekpunt.</p><p>Mail ons altijd via support@jamesrobinson.nl. Dan leest iedereen mee die aan je campagne werkt, en krijg je binnen één werkdag antwoord. Is er iets dringends, bel dan naar kantoor: 045 792 0009.</p><p>Drie dingen hebben we van je nodig. Daar hangt de live-datum aan:</p><ol><li>Het onboardingformulier invullen, uiterlijk <span class="vv">[datum]</span>. Ongeveer twintig minuten; je kunt tussendoor opslaan. [link]</li><li>Het toegangendocument doorlopen. Per onderdeel staat hoe je ons toegang geeft. Heb je iets nog niet, vink het aan: dan regelen wij het. Wat blijft hangen, doen we samen in de toegangensessie, uiterlijk op <span class="vv">[datum]</span>. [link]</li><li>In het formulier: alle dagdelen in week 3 en 4 (<span class="vv">[datums]</span>) waarop we bij je kunnen filmen. Hoe meer je aanvinkt, hoe sneller we de draaidag met onze videograaf vastzetten.</li></ol><p>Daarna het fundament:</p><ul><li><b>Week 1:</b> we meten alles na en vertellen je wat we vonden, en we werken je doelgroep en boodschap uit.</li><li><b>Week 2:</b> we zetten de systemen neer: advertentieaccounts, e-mail, meting en je dashboard.</li><li><b>Week 3:</b> we bouwen de campagne en de landingspagina. In week 3 of 4 de draaidag bij jou, op een van de dagdelen die je opgaf.</li><li><b>Week 4:</b> je ziet alles voordat het live gaat, met één ronde feedback. Daarna gaat het aan, en kijken we de eerste week dagelijks mee.</li></ul><p>Vandaag krijg je van Moneybird de factuur voor het fundament, en een verzoek om een machtiging voor de maandelijkse incasso vanaf <span class="vv">[maand 2]</span>.</p><p>Tot morgen, dan bel ik je even.</p><p>Groet, [naam]</p>') + """
+""" + mail('DAG 0 · AUTOMATISCH, BINNEN EEN UUR · DATUMS UIT HET PORTAAL', 'Welkom. Dit gebeurt er de komende vier weken', '<p>Hoi [voornaam],</p><p>Welkom bij James Robinson. Ik ben [naam], je marketingmanager en je vaste aanspreekpunt.</p><p>Mail ons altijd via support@jamesrobinson.nl. Dan leest iedereen mee die aan je campagne werkt, en krijg je binnen één werkdag antwoord. Is er iets dringends, bel dan naar kantoor: 045 792 0009.</p><p>Drie dingen hebben we van je nodig. Daar hangt de live-datum aan:</p><ol><li>Het onboardingformulier invullen, uiterlijk <span class="vv">[datum]</span>. Ongeveer twintig minuten; je kunt tussendoor opslaan. [link]</li><li>Het toegangendocument doorlopen. Per onderdeel staat hoe je ons toegang geeft. Heb je iets nog niet, vink het aan: dan regelen wij het. Wat blijft hangen, doen we samen in de toegangensessie, uiterlijk op <span class="vv">[datum]</span>. [link]</li><li>In het formulier: alle dagdelen in week 3 en 4 (<span class="vv">[datums]</span>) waarop we bij je kunnen filmen. Hoe meer je aanvinkt, hoe sneller we de draaidag met onze videograaf vastzetten.</li></ol><p>Daarna het fundament:</p><ul><li><b>Week 1:</b> we meten alles na en vertellen je wat we vonden, en we werken je doelgroep en boodschap uit.</li><li><b>Week 2:</b> we zetten de systemen neer: advertentieaccounts, e-mail, meting en je dashboard.</li><li><b>Week 3:</b> we bouwen de campagne en de landingspagina. In week 3 of 4 de draaidag bij jou, op een van de dagdelen die je opgaf.</li><li><b>Week 4:</b> je ziet alles voordat het live gaat, met één ronde feedback. Daarna gaat het aan, en kijken we de eerste week dagelijks mee.</li></ul><p>Vandaag krijg je van Moneybird de factuur voor het fundament, en een verzoek om een machtiging voor de maandelijkse incasso vanaf <span class="vv">[maand 2]</span>.</p><p>Tot morgen, dan bel ik je even.</p><p>Groet, [naam]</p>') + """
 <h3>Het onboardingformulier: zeven blokken, 23 vragen</h3>
 <p>Alleen wat we nodig hebben om te maken. Wat het advies en de prijs bepaalt, is vóór het voorstel gevraagd; wat we zelf kunnen opzoeken, vragen we niet; toegangen doen we samen. Het formulier leeft in het portaal, op de klantkaart, en de link staat in de kick-offmail. Het openingsscherm zegt: “Wat je doel is, wat je verkoopt en waarom klanten voor je kiezen, weten we al. Hier vragen we alleen nog wat we nodig hebben om te gaan maken: je beeld, de woorden van je klanten en je e-mailadressen. Weet je iets niet, vul dan in dat je het niet weet: dat is een bruikbaar antwoord. Loop je vast, mail dan naar support@jamesrobinson.nl.”</p>
 """ + tbl(['#', 'Vraag', 'Waarvoor we het gebruiken'], OBF) + """
@@ -132,7 +142,7 @@ STAP06 = stap_kop('06', 'f2', 'FASE 2 · STARTEN', 'De onboarding',
  ['Google Analytics en Tag Manager', 'Wij als beheerder, of een nieuw account op zijn naam', 'Hij, in de sessie', ''],
  ['Search Console en Bedrijfsprofiel', 'Wij als beheerder', 'Hij, in de sessie', ''],
  ['De website', 'Een beheerdersaccount, of de meetcode laten plaatsen door zijn webbouwer. De enige eis: een script in de head.', 'Hij of zijn webbouwer', 'Kan het alleen via de webbouwer, dan mailen wij die zelf, met hem in cc'],
- ['Het domein (DNS)', 'Records voor de landingspagina op zijn subdomein, e-mailauthenticatie en MailerLite. Wij leveren de records.', 'Webbouwer of hosting', 'Idem'],
+ ['Het domein (DNS)', 'Records voor e-mailauthenticatie en MailerLite. Wij leveren de records.', 'Webbouwer of hosting', 'Idem'],
  ['MailerLite', 'Een nieuw account op zijn naam en e-mailadres', 'Hij, in de sessie', 'Betaalgegevens vult hij zelf in'],
  ['Microsoft Ads, LinkedIn, TikTok', 'Alleen als het kanaal in het plan staat. Account op zijn naam, wij als beheerder.', 'Hij, in de sessie', 'Eigen betaalmethode'],
  ['ClickCease, Leadinfo, Calendly', 'Alleen als hij ervoor kiest. Account op zijn naam.', 'Hij, in de sessie', 'Idem'],
@@ -317,7 +327,7 @@ STAP07 = stap_kop('07', 'f2', 'FASE 2 · STARTEN', 'Het fundament',
  'Het ClickUp-template met de 76 taken.',
  'De zes AI-instructies. Begin met A2, de propositie-instructie: die komt drie keer terug.',
  'Het marketingdashboard bouwen, te beginnen met v0. Open: bouwen of samenstellen (advies: samenstellen tot twintig klanten), en wie de eigenaar is, ook buiten kantooruren.',
- 'De Webmix-bedragen vastzetten, en de MailerLite- en Leadinfo-staffels invullen.',
+ 'De Webmix-bedragen en de staffels van MailerLite en Leadinfo checken bij de eerste klanten; nu staan er onze inschattingen.',
 ], '')) + stap_eind()
 
 P2C = DEEL2B + STAP05 + STAP06 + STAP07

@@ -61,9 +61,9 @@ SAMEN = """
  ['03 · Intakegesprek', '—', '—', 'Het gesprek, de klantkaart, de mail', 'Doel, marge, capaciteit, opvolging'],
  ['04 · Voorstel', 'Rekensom, concept, offerte-concept', '—', 'Nakijken, vrijgeven, het gesprek', 'Beslissen; maand of jaar per licentie'],
  ['05 · Tekenen', 'Moneybird, machtiging, factuur', '—', '—', 'Tekenen, machtigen'],
- ['06 · Onboarding', 'Kick-offmail, datums', '—', 'Vast aanspreekpunt: bellen, toegangensessie', 'Formulier, toegangen, betaalgegevens'],
+ ['06 · Onboarding', 'Kick-offmail, datums', '—', 'Marketingmanager: bellen, toegangensessie', 'Formulier, toegangen, betaalgegevens'],
  ['07 · Fundament', '—', 'Vijf rollen, 76 taken', 'Klantcontact: akkoorden, draaidag, livegang', 'Akkoord week 1 en 4, dagdelen draaidag'],
- ['08 · Maandritme', 'Meldingen, weekmail, dashboard', 'Wekelijks bijsturen, maandupdate', 'Performance Review, ingrijpen', 'Opvolgen, oordeel per aanvraag'],
+ ['08 · Maandritme', 'Meldingen, weekmail, dagmail, dashboard', 'Marketingmanager: bijsturen, maandupdate, diagnose, Performance Review', 'Second opinion bij twijfel', 'Opvolgen, oordeel per aanvraag'],
 ]) + """
 <h3>Wat we wanneer vragen</h3>
 <p>Elke vraag één keer, op het eerste moment dat het antwoord iets verandert. Wat we eerder weten, staat op de klantkaart en komt later terug als “klopt dit nog?”.</p>
@@ -91,12 +91,12 @@ OPEN = """
  ['Marketingdashboard bouwen', 'Gespecificeerd; v0 eerst. Open: bouwen of samenstellen, eigenaar ook buiten kantooruren', 'Stap 07 en 08, “wij koppelen niet”, jouw kant', 'Nog toe te wijzen'],
  ['Webmix-bedragen', '€ 750 / 500 / 250 zijn schattingen', 'Tarieven, quickscan-A4, voorstel', 'Met Webmix'],
  ['Staffels MailerLite en Leadinfo', 'Ontbreken; nu staat er “vanaf”', 'Voorstel pagina 5, rekensom', 'Nog toe te wijzen'],
+ ['Gegevens die nog ontbreken', 'De bereikbaarheid van kantoor (dagen en tijden), ons beheeradres voor uitnodigingen in advertentieaccounts, en ons Meta Business-ID', 'Kick-offmail, toegangendocument, zo bereik je ons', 'Jim Coumans'],
  ['Formuliertool, video, portaal', 'Formuliertool nog kiezen, video nog opnemen, klantkaart nog bouwen', 'Stap 01 en 02 draaien niet zonder', 'Nog toe te wijzen'],
  ['AI-instructies', 'Zes voor het fundament plus het quickscan-advies en het voorstelconcept', 'Uren fundament, tijd per quickscan', 'Backlog'],
 ]) + """
 <h3>Voorstellen die op een besluit wachten</h3>
 """ + tbl(['Punt', 'Voorstel', 'Raakt'], [
- ['Wat een vertrekkende klant meeneemt', 'Accounts en licenties staan al op zijn naam; het dashboard houdt hij voor € 25 p/m. Open: de landingspagina’s op onze omgeving', 'Voorwaarden, opzeggen'],
  ['Extra kanalen bij de start', 'Standaard Google Ads en Meta. Minimum per kanaal voorlopig € 500 per campagne per maand, LinkedIn € 1.000: toetsen aan eigen accounts. Uitzoeken of Microsoft Ads, LinkedIn of TikTok in het fundament extra uren kosten', 'Fundament, tarieven, rekensom'],
  ['Drempels voor de monitoring', 'Zoals in stap 08; ze bepalen wat rood staat in de dagmail van 7.00 uur', 'Stap 08, dashboard'],
  ['Legend', 'Later een pakket boven Champion, voor meer dan vier campagnes tegelijk of events. Uitwerken als de eerste Champion er is.', 'Tarieven, drukwerk, website'],
@@ -176,6 +176,11 @@ BESLUITEN = """
  ['1 okt 2026', 'Elke maand een maandupdate in het dashboard: de vier ketengetallen automatisch, en drie korte antwoorden. Geen aparte escalatieregels: we hebben elke maand contact.'],
  ['1 okt 2026', 'In maand 11 het jaargesprek, gevoerd door de marketingmanager: nieuw doel en het pakket voor jaar 2.'],
  ['1 okt 2026', 'Pakket omhoog per direct, omlaag per de 1e van de volgende maand. De Performance Review is het moment.'],
+ ['2 okt 2026', 'Landingspagina’s bouwen we op de website van de klant, niet op onze omgeving. Vervangt het besluit van 23 september.'],
+ ['2 okt 2026', 'De marketingmanager is het vaste aanspreekpunt en leidt de Performance Review.'],
+ ['2 okt 2026', 'Sub en het lichte fundament krijgen een eigen regel op de offerte.'],
+ ['2 okt 2026', 'Kiest de klant het dashboard per jaar, dan krijgt de klant daarvoor één losse jaarfactuur.'],
+ ['2 okt 2026', 'Tot de leveranciers ze bevestigen, rekenen we met onze eigen inschatting van de Webmix-bedragen en de staffels van MailerLite en Leadinfo.'],
 ]) + """
 </div></section>
 <footer class="voet"><div class="wrap">James Robinson — Marketing &amp; Branding · De James Robinson-gids · versie 30 september 2026</div></footer>

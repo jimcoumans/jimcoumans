@@ -71,7 +71,7 @@ def taken():
 
 
 def fundament():
-    out = [velden(['Klant en bedrijf', 'Dag 1 (alle toegangen binnen)', 'Live-datum (dag 19)', 'Vaste aanspreekpunt'])]
+    out = [velden(['Klant en bedrijf', 'Dag 1 (alle toegangen binnen)', 'Live-datum (dag 19)', 'Marketingmanager'])]
     out.append(kader('<p>Vier weken, gerekend vanaf volledige toegang. Elke dag die wij wachten op toegang of op een akkoord, schuift alles op. '
                      'Een rol is een soort werk, geen functie: bij een kleine klant doet één persoon er drie. Techniek heeft 27 taken, campagne en content elk 16, strategie 11 en klantcontact 6.</p>',
                      'Zo werkt het', 'blauw'))
@@ -261,7 +261,7 @@ def merkcheck():
     ]))
     out.append(h3('Meting'))
     out.append(checklist([
-        ('De link gaat naar de juiste landingspagina, op het subdomein van de klant.', 'meting'),
+        ('De link gaat naar de juiste landingspagina, op de website van de klant.', 'meting'),
         ('De herkomst gaat mee: kanaal, campagne, advertentie en de click id.', 'meting'),
         ('Een testaanvraag komt binnen in het dashboard, en de conversie vuurt op de bedankpagina.', 'meting'),
         ('De cookiemelding werkt; de meting werkt met en zonder toestemming.', 'meting'),

@@ -136,8 +136,8 @@
 "nr": "20",
 "titel": "Landingspagina",
 "mis": "Je bouwt hem in de website van de klant omdat hij daarom vraagt. Dan ben je afhankelijk van zijn systeem, zijn plugins en zijn bouwer, en is elke tekstwijziging een aanvraag.",
-"klaar": "De pagina staat op het subdomein, haalt de snelheidsdrempel uit de audit en zegt hetzelfde als de advertentie.",
-"nodig": "De boodschap, het beeld van de draaidag en het subdomein van de klant."
+"klaar": "De pagina staat op de website van de klant, haalt de snelheidsdrempel uit de audit en zegt hetzelfde als de advertentie.",
+"nodig": "De boodschap, het beeld van de draaidag en toegang tot de website van de klant."
 },
 {
 "nr": "21",

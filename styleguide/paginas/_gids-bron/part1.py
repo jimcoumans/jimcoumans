@@ -169,9 +169,9 @@ PLAN = """
  kaart('Eigen project of partner', ul(['Webdevelopment', 'Design en branding', 'Social-mediatemplates en contentsessies', 'Content boven de afgesproken draaidagen', 'Koppelingen met systemen van de klant'], ''), 'PER VRAAG', 'o'),
  kaart('Doen we niet', ul(['Losse campagnes zonder samenwerking', 'E-commerce als propositie', 'Werving als propositie', 'Social feeds vullen en beheren', 'Bedrijfsvideo’s', 'Branded content, tenzij de advertenties erom vragen', 'Leads opvolgen', 'Uren verantwoorden', 'Marge op werk van een ander'], ''), 'NOOIT', 'r'),
 ]) + """
-<p style="margin-top:18px"><b>Twee vaste keuzes in de uitvoering.</b> Landingspagina’s bouwen we op onze eigen omgeving, op een subdomein van de klant; in zijn website komen alleen de meetcode en de cookiebanner. En we koppelen niet met zijn CRM of andere systemen: aanvragen landen in het marketingdashboard, dat naast zijn eigen systeem staat.</p>
+<p style="margin-top:18px"><b>Twee vaste keuzes in de uitvoering.</b> Landingspagina’s bouwen we op de website van de klant zelf; daar komen ook de meetcode en de cookiebanner. En we koppelen niet met zijn CRM of andere systemen: aanvragen landen in het marketingdashboard, dat naast zijn eigen systeem staat.</p>
 """ + raakt(ul([
- '<b>De landingspagina bij ons</b> maakt het werk voor iedereen gelijk (vier uur is vier uur, welk CMS hij ook heeft), maar je legt bij elke klant uit waarom zijn belangrijkste advertentiepagina op een subdomein staat. Die pagina bouwt geen autoriteit op voor zijn hoofddomein; voor een advertentiepagina maakt dat niet uit.',
+ '<b>De landingspagina op de website van de klant</b> blijft van de klant, ook als die stopt, en bouwt mee aan het eigen domein. Het werk verschilt wel per website: vier uur in een WordPress-site die we kennen is iets anders dan in een systeem dat we niet kennen. Daarom is beheerderstoegang tot de site een vast onderdeel van de toegangensessie.',
  '<b>Geen koppelingen</b> houdt het een product in plaats van eindeloos maatwerk, maar dan moet het marketingdashboard er wel zijn vóór de eerste klant. Zonder dashboard kunnen we “wij koppelen niet” niet waarmaken.',
  '<b>Het doel vanaf maand 4</b> moet in het voorstel staan. Wie het jaardoel vanaf dag één belooft, staat in maand drie achter op een schema dat nooit klopte.',
 ], '')) + """
@@ -199,21 +199,21 @@ GELD = """
  ['Retainer Captain', 'James Robinson', 'Per maand vooraf, vanaf maand 2', '€ 2.000'],
  ['Retainer Champion', 'James Robinson', 'Per maand vooraf, vanaf maand 2', '€ 2.500'],
  ['Retainer Sub', 'James Robinson', 'Alleen op verzoek, zie hieronder', '€ 500'],
- ['Marketingdashboard', 'James Robinson', 'Altijd. Blijft van hem als hij stopt', '€ 25 p/m of € 250 p/j <span class="chip o">VOORLOPIG</span>'],
+ ['Marketingdashboard', 'James Robinson', 'Altijd. Blijft van hem als hij stopt', '€ 25 p/m of € 250 p/j'],
  ['Advertentiebudget', 'De advertentieplatformen, rechtstreeks', 'Per maand, via zijn eigen accounts', 'minimaal € 1.000 / 2.500 / 5.000 / 7.500'],
- ['E-mailplatform (MailerLite)', 'MailerLite', 'Altijd, vanaf dag één', 'vanaf € 9,90 p/m, volgt de lijstgrootte'],
+ ['E-mailplatform (MailerLite)', 'MailerLite', 'Altijd, vanaf dag één', '€ 9,90 – 73 p/m, naar lijstgrootte'],
  ['Cookiescript', 'Webmix', 'Altijd: zonder toestemming mag je niet meten', '€ 150 p/j'],
  ['Klikfraudebescherming (ClickCease)', 'ClickCease', 'Optioneel: de klant beslist', 'vanaf $ 99 p/m'],
  ['Hosting en onderhoud', 'Webmix', 'Alleen als hij overzet; migratie is gratis', '€ 85 p/m'],
- ['Bezoekersherkenning (Leadinfo)', 'Leadinfo', 'Optioneel, alleen zinvol bij B2B', 'staffel'],
+ ['Bezoekersherkenning (Leadinfo)', 'Leadinfo', 'Optioneel, alleen zinvol bij B2B', '€ 69 – 179 p/m'],
  ['Afsprakenplanner (Calendly)', 'Calendly', 'Optioneel, per gebruiker', '€ 15 p/m'],
 ], right=(3,)) + """
 
 <h3>Eenmalig, alleen als de quickscan het vindt</h3>
 """ + tbl(['Post', 'Wanneer', 'Aan wie', 'Bedrag'], [
- ['Snelheid in de site zelf', 'Laadtijd haalt de norm niet, en dat ligt niet aan de server', 'Webmix', '€ 750 <span class="chip o">SCHATTING</span>'],
- ['Redirects en dode links', 'Links lopen dood of verwijzen door naar een omleiding', 'Webmix', '€ 500 <span class="chip o">SCHATTING</span>'],
- ['E-mailauthenticatie', 'SPF, DKIM of DMARC ontbreekt', 'Webmix', '€ 250 <span class="chip o">SCHATTING</span>'],
+ ['Snelheid in de site zelf', 'Laadtijd haalt de norm niet, en dat ligt niet aan de server', 'Webmix', '€ 750'],
+ ['Redirects en dode links', 'Links lopen dood of verwijzen door naar een omleiding', 'Webmix', '€ 500'],
+ ['E-mailauthenticatie', 'SPF, DKIM of DMARC ontbreekt', 'Webmix', '€ 250'],
  ['Afsprakenplanner opzetten', 'Alleen als hij afspraken laat inplannen', 'James Robinson', '€ 250'],
  ['Huisstijl ontwikkelen', 'Alleen als er geen bruikbaar merk ligt', 'James Robinson', 'apart traject'],
 ], right=(3,)) + """
@@ -272,7 +272,7 @@ GELD = """
  '<b>Uren per pakket narekenen.</b> Jim Kikken en Stan rekenen na wat een campagne en een contentronde kosten, en of Captain en Champion daarmee uitkomen.',
  '<b>Dashboard € 25 / € 250 is voorlopig.</b> Het dashboard komt er zeker.',
  '<b>De drie Webmix-bedragen zijn schattingen.</b> Vastzetten met Webmix, anders staat er een bedrag in het voorstel dat we niet kunnen waarmaken.',
- '<b>MailerLite- en Leadinfo-staffel ontbreken.</b> Zonder staffel staat er “vanaf”, en dat beloven we juist niet te doen.',
+ '<b>De staffels van MailerLite en Leadinfo, en de Webmix-bedragen, zijn onze eigen inschatting.</b> Ze staan als gewone bedragen in tarieven en voorstel. Bij de eerste klanten checken bij de leverancier en zo nodig bijstellen.',
  '<b>Indicaties voor “wat we vaak tegenkomen”</b> worden nog overlegd.',
  '<b>Btw:</b> “exclusief btw” moet op tarieven, voorstel en offerte staan.',
 ], '')) + """

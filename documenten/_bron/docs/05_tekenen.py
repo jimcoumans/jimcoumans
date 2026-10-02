@@ -21,7 +21,9 @@ def offerte():
     out.append(tabel(['Regel', 'Bedrag excl. btw', 'Wanneer', 'Toelichting', 'Klopt'], [
         ['<b>Fundament: basis en eerste campagne</b>', '€ 4.500', 'Eenmalig', 'Altijd. De omschrijving verwijst naar het voorstel, pagina 4.', VAK],
         ['<b>Retainer</b> Starter, Playmaker, Captain of Champion', '€ 1.000 / 1.500 / 2.000 / 2.500', 'Per maand', 'Het pakket uit de rekensom. Vanaf maand 2, vooraf: factuur op de 1e, incasso op de 4e.', VAK],
-        ['<b>Marketingdashboard</b>', '€ 25 p/m of € 250 p/j', 'Keuze van de klant', 'Twee opties op de offerte; de klant vinkt er één aan bij het tekenen.', VAK],
+        ['<b>Licht fundament</b> (alleen bij Sub)', '€ 1.500', 'Eenmalig', 'Alleen als de klant om Sub vraagt: accounts, meting, sjablonen, één campagne. Bij de overstap naar Starter telt het mee: de klant betaalt het verschil, € 3.000.', VAK],
+        ['<b>Retainer Sub</b>', '€ 500', 'Per maand', 'Alleen op verzoek. Vanaf maand 2, vooraf, net als de andere retainers.', VAK],
+        ['<b>Marketingdashboard</b>', '€ 25 p/m of € 250 p/j', 'Keuze van de klant', 'Twee opties op de offerte; de klant vinkt er één aan bij het tekenen. Per maand gaat het mee op de factuur van de retainer; per jaar krijgt de klant er één losse jaarfactuur voor.', VAK],
         ['<b>Afsprakenplanner opzetten</b>', '€ 250', 'Eenmalig', 'Alleen als de klant afspraken laat inplannen.', VAK],
         ['<b>Tekstregel, zonder bedrag</b>', 'geen', 'geen', '“Rechtstreeks aan leveranciers, niet via ons: advertentiebudget (minimaal € %s per maand), MailerLite, Cookiescript [, hosting, afsprakenplanner]. Herstelposten aan de website: eigen offerte van Webmix.”' % vv('[..]'), VAK],
     ]))
@@ -86,17 +88,21 @@ def licenties():
     out.append(p('Deze drie heb je altijd nodig. Bij elke licentie kies je per maand of per jaar, als de leverancier dat aanbiedt. Je keuze uit het voorstelgesprek staat op je klantkaart; kruis hem hier aan.', 'klein'))
     out.append(tabel(['Licentie', 'Wat het doet', 'Bedrag excl. btw', 'Je betaalt aan', 'Jouw keuze'], [
         ['<b>Marketingdashboard</b>', 'Eén plek waar je ziet wat je marketing doet, en waar je per aanvraag met één klik zegt of hij iets waard was.', '€ 25 p/m of € 250 p/j', 'James Robinson, via de offerte', MAJA],
-        ['<b>MailerLite</b>', 'Je e-mailprogramma. Vanaf dag één actief, want we verzamelen meteen adressen.', 'vanaf € 9,90 p/m; de prijs volgt het aantal adressen.<br>Jouw bedrag: € %s' % lijn(16), 'MailerLite', MAJA],
+        ['<b>MailerLite</b>', 'Je e-mailprogramma. Vanaf dag één actief, want we verzamelen meteen adressen.', '€ 9,90 tot € 73 p/m, naar het aantal adressen (staffel hieronder).<br>Jouw bedrag: € %s' % lijn(16), 'MailerLite', MAJA],
         ['<b>Cookiescript</b>', 'De cookiemelding op je site, zodat de meting werkt met en zonder toestemming.', '€ 150 p/j', 'Webmix', '<span class="opt">jaar</span>'],
     ]))
 
     out.append(h2('Alleen als je ervoor kiest'))
     out.append(tabel(['Licentie', 'Wanneer zinvol', 'Bedrag excl. btw', 'Je betaalt aan', 'Jouw keuze'], [
         ['<b>ClickCease</b>', 'Blokkeert herhaalde klikkers en bots voordat ze opnieuw geld kosten. Een optie: jij beslist.', 'vanaf $ 99 p/m', 'ClickCease', '<span class="opt">nee</span><br>' + MAJA],
-        ['<b>Leadinfo</b>', 'Alleen als je aan bedrijven verkoopt en er zelf iets mee doet. Je ziet welke bedrijven langskwamen zonder contact op te nemen. Wij volgen geen leads op. De set-up regelen wij kosteloos.', 'volgens hun staffel: aantal herkenningen.<br>Jouw bedrag: € %s' % lijn(16), 'Leadinfo', '<span class="opt">nee</span><br><span class="opt">ja</span>'],
+        ['<b>Leadinfo</b>', 'Alleen als je aan bedrijven verkoopt en er zelf iets mee doet. Je ziet welke bedrijven langskwamen zonder contact op te nemen. Wij volgen geen leads op. De set-up regelen wij kosteloos.', '€ 69 tot € 179 p/m, naar het aantal herkende bedrijven (staffel hieronder).<br>Jouw bedrag: € %s' % lijn(16), 'Leadinfo', '<span class="opt">nee</span><br><span class="opt">ja</span>'],
         ['<b>Afsprakenplanner</b> (Calendly)', 'Alleen als je klanten zelf een afspraak laten inplannen. Opzetten en koppelen aan je agenda en de landingspagina: € 250 eenmalig, op de offerte.', '€ 15 p/m per gebruiker.<br>Gebruikers: %s' % lijn(10), 'Calendly', '<span class="opt">nee</span><br>' + MAJA],
     ]))
 
+    out.append(h3('De staffels, per maand bij jaarbetaling'))
+    out.append(tabel(['MailerLite: adressen', 'Per maand', 'Leadinfo: herkende bedrijven per maand', 'Per maand'], [
+        ['tot 500', '€ 9,90', 'tot 100', '€ 69'], ['tot 1.000', '€ 15', 'tot 250', '€ 119'], ['tot 2.500', '€ 27', 'tot 500', '€ 179'], ['tot 5.000', '€ 43', 'meer', 'op aanvraag'], ['tot 10.000', '€ 73', '', ''],
+    ], rechts=(1, 3)))
     out.append(h3('ClickCease: een optie, jij beslist'))
     out.append(p('Een deel van de kliks op je advertenties komt van bots, klikfarms en concurrenten. Google filtert zelf ongeldige kliks en betaalt die terug. ClickCease blokkeert daarnaast herhaalde klikkers en bots voordat ze opnieuw geld kosten.'))
     out.append(p('Dat het werkt, staat vast. De vraag is of het zich bij jou terugverdient. Vanaf $ 99 per maand is bij € 1.000 advertentiebudget bijna een tiende, bij € 2.500 ongeveer een vijfentwintigste, en bij € 7.500 ruim een procent.'))

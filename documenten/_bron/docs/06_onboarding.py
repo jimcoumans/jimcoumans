@@ -32,7 +32,7 @@ def vraag_met(nr, tekst, hulp='', extra='', n=0, opts=None):
 # ---------------------------------------------------------------- 06.1 Kick-offmail
 MAILTEKST = (
     '<p>Hoi %(voornaam)s,</p>'
-    '<p>Welkom bij James Robinson. Ik ben %(naam)s, je vaste aanspreekpunt.</p>'
+    '<p>Welkom bij James Robinson. Ik ben %(naam)s, je marketingmanager en je vaste aanspreekpunt.</p>'
     '<p>Mail ons altijd via support@jamesrobinson.nl. Dan leest iedereen mee die aan je campagne werkt, en krijg je binnen één werkdag antwoord. Is er iets dringends, bel dan naar kantoor: 045 792 0009.</p>'
     '<p>Drie dingen hebben we van je nodig. Daar hangt de live-datum aan:</p>'
     '<ol><li>Het onboardingformulier invullen, uiterlijk %(datum)s. Ongeveer twintig minuten; je kunt tussendoor opslaan. %(link)s</li>'
@@ -50,7 +50,7 @@ MAILTEKST = (
 
 
 def kickoff():
-    out = [velden(['Klant en bedrijf', 'Getekend op (dag 0)', 'Vaste aanspreekpunt', 'Geplande dag 1 van het fundament'])]
+    out = [velden(['Klant en bedrijf', 'Getekend op (dag 0)', 'Marketingmanager', 'Geplande dag 1 van het fundament'])]
     out.append(kader('<p><b>Wij halen het op, de klant hoeft niet te zoeken.</b> Het gevaarlijkste moment van de reis: de klant heeft betaald en ziet nog niets. Dus ziet de klant binnen een uur iets, en is er na drie werkdagen alles wat we nodig hebben. '
                      'Toegangen zijn de belangrijkste oorzaak van uitloop; daarom doen we ze samen, in één sessie. Wat bij een derde ligt, halen wij zelf op.</p>', 'Het principe', 'blauw'))
 
@@ -59,13 +59,13 @@ def kickoff():
     out.append(tabel(['Wanneer', 'Wat', 'Hoe', 'Datum', 'Klaar'], [
         ['<b>Dag 0</b>, binnen een uur', '<b>De kick-offmail</b>', 'Automatisch vanuit het portaal, vanaf support@. Tegelijk de factuur voor het fundament en het machtigingsverzoek.', lijn(17), VAK],
         ['<b>Dag 0</b>', '<b>Intern klaarzetten</b>', 'De klantkaart op “klant”. Het fundament als project in ClickUp, met datums vanaf de geplande dag 1. In Front de klant koppelen aan de marketingmanager, zodat elke mail van de klant automatisch daar landt.', lijn(17), VAK],
-        ['<b>Dag 1</b>', '<b>Tien minuten bellen</b>', 'Het aanspreekpunt belt. Geen inhoud, wel een stem. Staat de toegangensessie nog niet in de agenda, dan plan je hem nu.', lijn(17), VAK],
+        ['<b>Dag 1</b>', '<b>Tien minuten bellen</b>', 'De marketingmanager belt. Geen inhoud, wel een stem. Staat de toegangensessie nog niet in de agenda, dan plan je hem nu.', lijn(17), VAK],
         ['<b>Dag 1 – 3</b>', '<b>Het onboardingformulier</b>', 'De klant vult het zelf in: twintig minuten. Uiterlijk de avond voor de toegangensessie, zodat wij het al gelezen hebben.', lijn(17), VAK],
         ['<b>Dag 2 – 3</b>', '<b>De toegangensessie</b>', '45 minuten online, met scherm delen. Het toegangendocument samen door; bij elke licentie vult de klant zelf de betaalgegevens in. Wat niet meteen lukt, krijgt een eigenaar en een datum.', lijn(17), VAK],
         ['<b>Dag 3</b>', '<b>Dag 1 van het fundament</b>', 'Zodra alles binnen is, start de klok. Het portaal mailt de datums vanaf support@: de preview en de live-datum, en de draaidag zodra die met de videograaf is afgestemd.', lijn(17), VAK],
     ]))
     out.append(p('<b>Het telefoontje op dag 1, in één zin:</b>'))
-    out.append(zin('“Ik ben je aanspreekpunt, dit is de planning.”'))
+    out.append(zin('“Ik ben je marketingmanager en je vaste aanspreekpunt, dit is de planning.”'))
 
     out.append(h2('Als het uitloopt'))
     out.append(tabel(['Situatie', 'Wat we doen'], [
@@ -78,7 +78,7 @@ def kickoff():
                      'Loopt maand 1 uit, dan betaalt de klant al retainer voordat de campagne live is. Dat is een reden om de drie werkdagen streng te bewaken. De factuur schuift niet mee.</p>', 'Waarom het streng moet', 'rood'))
     out.append(NIEUWE_PAGINA)
     out.append(h2('De kick-offmail'))
-    out.append(p('Gaat automatisch vanuit het portaal zodra Moneybird de handtekening meldt, vanaf support@, ondertekend door het vaste aanspreekpunt. De gemarkeerde plekken vult het portaal in.', 'klein'))
+    out.append(p('Gaat automatisch vanuit het portaal zodra Moneybird de handtekening meldt, vanaf support@, ondertekend door de marketingmanager. De gemarkeerde plekken vult het portaal in.', 'klein'))
     out.append(mail('Dag 0 · automatisch, binnen een uur · datums uit het portaal', 'Welkom. Dit gebeurt er de komende vier weken', MAILTEKST))
     out.append(h3('Voordat hij de deur uitgaat'))
     out.append(checklist([
@@ -86,7 +86,7 @@ def kickoff():
         ('De datums van week 3 en 4 kloppen met de geplande dag 1.', 'datums'),
         ('De maand van de eerste incasso is maand 2. De retainer start altijd in maand 2.', 'datums'),
         ('Beide links werken: het onboardingformulier (06.2) en het toegangendocument (06.3).', 'links'),
-        ('Verstuurd vanaf support@, met naam en handtekening van het vaste aanspreekpunt.', 'afzender'),
+        ('Verstuurd vanaf support@, met naam en handtekening van de marketingmanager.', 'afzender'),
         ('Tegelijk uit Moneybird: de factuur voor het fundament en het machtigingsverzoek.', 'Moneybird'),
     ]))
 
@@ -232,7 +232,7 @@ def toegangendocument():
         ['gedaan', 'loopt via mijn webbouwer', NOG_NIET]))
     out.append(onderdeel('Het domein (DNS)', 'je webbouwer of hosting',
         'De instellingen achter je domeinnaam.',
-        'Voor de landingspagina op een subdomein van jou, voor e-mailauthenticatie zodat je mail niet in de spam belandt, en voor MailerLite.',
+        'Voor e-mailauthenticatie zodat je mail niet in de spam belandt, en voor MailerLite.',
         route(['Wij leveren de records. Je hoeft alleen te weten wie je domein beheert.', 'Doe je het zelf: log in bij de partij waar je domein staat, open het <b>DNS-beheer</b> en voeg de records toe die wij sturen.', 'Doet je webbouwer of hosting het: vul ze bovenaan in. Wij mailen ze zelf, met jou in cc.']),
         ['ik beheer het zelf', 'loopt via mijn webbouwer of hosting', 'weet ik niet']))
     out.append(onderdeel('Cookiescript', 'wij, met Webmix',
@@ -271,7 +271,7 @@ def toegangendocument():
 
 DOCS = [
     dict(code='06.1', titel='Kick-offmail', fase=FASE, voor='Intern',
-         wanneer='Dag 0, binnen een uur na de handtekening', wie='Het vaste aanspreekpunt, met het portaal',
+         wanneer='Dag 0, binnen een uur na de handtekening', wie='De marketingmanager, met het portaal',
          lead='De mail die de klant binnen een uur na de handtekening krijgt, en de drie werkdagen tot dag 1 van het fundament. De mail gaat automatisch; dit is de tekst, de controle en de planning.',
          body=kickoff()),
     dict(code='06.2', titel='Onboardingformulier', fase=FASE, voor='Klant',

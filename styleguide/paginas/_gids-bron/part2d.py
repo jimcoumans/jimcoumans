@@ -25,7 +25,7 @@ OORZAKEN = [
 
 STAP08 = stap_kop('08', 'f3', 'FASE 3 · SAMENWERKEN', 'Live en het maandritme',
  'De campagne gaat aan: stap 3 en 4 van ons plan. Eerst alleen de motor, vanaf maand 4 de versnellers, in de volgorde die de cijfers aanwijzen. Elke maand een korte update, en een telefoontje van ons als er iets is.',
- [('WANNEER', 'Vanaf dag 19 van het fundament, zolang de samenwerking loopt'), ('WIE', 'Het vaste aanspreekpunt en de campagnerol; eigenaar bij de Performance Review'), ('HOE LANG', 'Maandelijks opzegbaar; retainer vooraf vanaf maand 2'), ('KLAAR ALS', 'Nooit. Elke maand staat er een update in het dashboard, en elk kwartaal is duidelijk of we op de doelregel zitten')],
+ [('WANNEER', 'Vanaf dag 19 van het fundament, zolang de samenwerking loopt'), ('WIE', 'De marketingmanager, met de campagnerol. De marketingmanager leidt ook de Performance Review'), ('HOE LANG', 'Maandelijks opzegbaar; retainer vooraf vanaf maand 2'), ('KLAAR ALS', 'Nooit. Elke maand staat er een update in het dashboard, en elk kwartaal is duidelijk of we op de doelregel zitten')],
  'stap-08') + klant('Aanvragen die binnenkomen in zijn dashboard, met bij elke aanvraag twee knoppen. De eerste aanvraag belt hij niet alleen: wij bellen hem eerder dan het systeem meldt. Elke maand een korte schriftelijke update. Een Performance Review op ons kantoor of online, die over resultaat gaat en een vast stramien volgt. Vragen stelt hij via support@, en hij krijgt binnen één werkdag antwoord.') + """
 <h3>Live: het moment en de twee weken erna</h3>
 """ + tl([
@@ -92,7 +92,7 @@ STAP08 = stap_kop('08', 'f3', 'FASE 3 · SAMENWERKEN', 'Live en het maandritme',
  ('Vragen en opmerkingen', 'Daarna, en kort. De focus blijft op resultaat.'),
 ]) + grid(3, [
  kaart('Vooraf', 'Wij zetten de cijfers klaar uit het dashboard en hebben de diagnose en het plan al gemaakt. De klant heeft in het dashboard aangegeven welke aanvragen klant werden. Zonder dat laatste is stap 4 een gok.', 'VOORBEREIDING', 'b'),
- kaart('Tijdens', 'Wij leiden het gesprek, in de vaste volgorde. Geen presentatie van wat we deden, geen losse wensenlijst. Elke vraag die geen resultaat raakt, gaat naar support@.', 'REGIE', 'g'),
+ kaart('Tijdens', 'De marketingmanager leidt het gesprek, in de vaste volgorde. Geen presentatie van wat we deden, geen losse wensenlijst. Elke vraag die geen resultaat raakt, gaat naar support@.', 'REGIE', 'g'),
  kaart('Na afloop', 'Dezelfde dag een korte mail vanaf support@: de vier cijfers, de diagnose, het plan en wat er besloten is. Zo staat ook de review op één plek.', 'BEVESTIGING', 'l'),
 ]) + """
 
@@ -106,9 +106,9 @@ STAP08 = stap_kop('08', 'f3', 'FASE 3 · SAMENWERKEN', 'Live en het maandritme',
  ['Landingspagina: bereikbaarheid en snelheid', 'Doorlopend', 'Uitval, of trager dan de norm uit de quickscan', 'Techniek'],
  ['Kosten per aanvraag tegen de doelregel', 'Wekelijks', 'Twee weken op rij boven het plafond', 'Campagne'],
  ['Doorklik, conversie en frequentie per advertentie', 'Wekelijks', 'Onder de norm, of frequentie loopt op: de advertentie slijt', 'Campagne en content'],
- ['Opvolgtijd en oordelen per aanvraag', 'Wekelijks', 'Aanvragen zonder oordeel, of opvolging trager dan afgesproken', 'Aanspreekpunt'],
+ ['Opvolgtijd en oordelen per aanvraag', 'Wekelijks', 'Aanvragen zonder oordeel, of opvolging trager dan afgesproken', 'Marketingmanager'],
  ['Ongeldige kliks en klikfraude', 'Wekelijks', 'Opvallende pieken; na de proefperiode de afweging ClickCease', 'Campagne'],
- ['De doelregel', 'Maandelijks', 'Elke maand in de maandupdate, met diagnose en plan', 'Aanspreekpunt'],
+ ['De doelregel', 'Maandelijks', 'Elke maand in de maandupdate, met diagnose en plan', 'Marketingmanager'],
 ]) + """
 <p style="margin-top:14px">Contentrondes, draaidagen en varianten gaan net als in het fundament eerst door de merkcheck. Snel mag, off-brand niet.</p>
 
@@ -141,7 +141,6 @@ STAP08 = stap_kop('08', 'f3', 'FASE 3 · SAMENWERKEN', 'Live en het maandritme',
  '<b>De drempels voor de monitoring zijn een voorstel.</b> Ze bepalen wat er in de dagmail van 7.00 uur rood staat. Vastzetten na de eerste maanden met echte cijfers.',
  '<b>Drie maanden alleen de motor is een aanname.</b> Hoe snel de kosten tot rust komen, hangt af van het volume. Toetsen aan de laatste vijf campagnes en er een norm van maken.',
  '<b>Normen per branche</b> voor doorklik en conversie ontbreken. Zonder eigen normen is “onder de norm” een mening.',
- '<b>Wat een vertrekkende klant meeneemt.</b> Advertentieaccounts, e-mail en licenties staan al op zijn naam: die neemt hij gewoon mee. Het dashboard mag hij houden voor € 25 per maand. Open: de landingspagina’s. Volgens het besluit van 23 september staan die op onze omgeving, op een subdomein van zijn site. Wat gebeurt daarmee als hij stopt?',
-], '')) + stap_eind()
+ ], '')) + stap_eind()
 
 P2D = FASE3 + STAP08

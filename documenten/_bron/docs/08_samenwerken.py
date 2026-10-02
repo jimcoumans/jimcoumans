@@ -170,15 +170,15 @@ def live_bericht():
         '<p>Vragen? Mail ons via support@jamesrobinson.nl, dan heb je binnen één werkdag antwoord. Is er iets dringends, bijvoorbeeld je pagina ligt eruit, bel dan naar kantoor: 045 792 0009.</p>'
         '<p>Groet, %s</p>' % vv('[naam]'))
     o.append(mail('Dag 19 · de dag van livegang · vanaf support@', 'Je campagne staat live', body))
-    o.append(kader('<p>Op de dag dat de campagne aangaat, vanaf support@jamesrobinson.nl, ondertekend door het vaste aanspreekpunt. Drie dingen, in deze volgorde: dit staat er nu, hier komen je aanvragen binnen, dit doen we de komende twee weken. Vul de groene plekken in met wat op de klantkaart en op het blad van de livegang (08.1) staat. Verder niets toevoegen: geen uitleg over de techniek, geen lijst van wat we deden.</p>', 'Zo gebruik je deze mail', 'blauw'))
+    o.append(kader('<p>Op de dag dat de campagne aangaat, vanaf support@jamesrobinson.nl, ondertekend door de marketingmanager. Drie dingen, in deze volgorde: dit staat er nu, hier komen je aanvragen binnen, dit doen we de komende twee weken. Vul de groene plekken in met wat op de klantkaart en op het blad van de livegang (08.1) staat. Verder niets toevoegen: geen uitleg over de techniek, geen lijst van wat we deden.</p>', 'Zo gebruik je deze mail', 'blauw'))
     o.append(h2('Voordat je op verzenden drukt'))
     o.append(checklist([
         ('De campagne staat echt aan, op alle kanalen uit het plan', 'campagne'),
         ('De testaanvraag is bij de tweede test groen op alle zes de punten (08.1)', 'techniek'),
-        ('Naam, tijd en vervanger komen letterlijk van het blad van de livegang', 'aanspreekpunt'),
-        ('De doelregel komt letterlijk uit het voorstel', 'aanspreekpunt'),
-        ('De datums van dag 26 en van de eerste bijstelling staan in ClickUp', 'aanspreekpunt'),
-        ('Verzonden vanaf support@, niet vanaf een persoonlijk adres', 'aanspreekpunt'),
+        ('Naam, tijd en vervanger komen letterlijk van het blad van de livegang', 'marketingmanager'),
+        ('De doelregel komt letterlijk uit het voorstel', 'marketingmanager'),
+        ('De datums van dag 26 en van de eerste bijstelling staan in ClickUp', 'marketingmanager'),
+        ('Verzonden vanaf support@, niet vanaf een persoonlijk adres', 'marketingmanager'),
     ]))
     o.append(velden(['Klant', 'Verzonden op', 'Door']))
     return ''.join(o)
@@ -322,7 +322,7 @@ def performance_review():
     o.append('<div class="veld"><span>Waar</span><div>%s</div></div>' % keuze('op ons kantoor in Hulsberg', 'online'))
     o.append(drie(
         kader('<p>Wij zetten de cijfers klaar uit het dashboard en hebben de diagnose en het plan al gemaakt, met het diagnoseformulier (08.4). De klant heeft in het dashboard aangegeven welke aanvragen klant werden. Zonder dat laatste is blok 4 een gok.</p>', 'Vooraf', 'blauw'),
-        kader('<p>Wij hebben de regie en leiden het gesprek, in de vaste volgorde hieronder. Geen presentatie van wat we deden, geen losse wensenlijst. Elke vraag die geen resultaat raakt, gaat naar support@.</p>', 'Tijdens', 'groen'),
+        kader('<p>De marketingmanager heeft de regie en leidt het gesprek, in de vaste volgorde hieronder. Geen presentatie van wat we deden, geen losse wensenlijst. Elke vraag die geen resultaat raakt, gaat naar support@.</p>', 'Tijdens', 'groen'),
         kader('<p>Dezelfde dag een korte mail vanaf support@: de vier cijfers, de diagnose, het plan en wat er besloten is. Zo staat ook de review op één plek.</p>', 'Na afloop', 'lime')))
     o.append(h3('Vooraf afgevinkt'))
     o.append(checklist([
@@ -499,9 +499,9 @@ def monitoring():
         ['Landingspagina: bereikbaarheid en snelheid', 'Doorlopend', 'Uitval, of trager dan de norm uit de quickscan', 'Techniek'],
         ['Kosten per aanvraag tegen de doelregel', 'Wekelijks', 'Twee weken op rij boven het plafond', 'Campagne'],
         ['Doorklik, conversie en frequentie per advertentie', 'Wekelijks', 'Onder de norm, of frequentie loopt op: de advertentie slijt', 'Campagne en content'],
-        ['Opvolgtijd en oordelen per aanvraag', 'Wekelijks', 'Aanvragen zonder oordeel, of opvolging trager dan afgesproken', 'Aanspreekpunt'],
+        ['Opvolgtijd en oordelen per aanvraag', 'Wekelijks', 'Aanvragen zonder oordeel, of opvolging trager dan afgesproken', 'Marketingmanager'],
         ['Ongeldige kliks en klikfraude', 'Wekelijks', 'Opvallende pieken; na de proefperiode de afweging ClickCease', 'Campagne'],
-        ['De doelregel', 'Maandelijks', 'Elke maand in de maandupdate, met diagnose en plan', 'Aanspreekpunt'],
+        ['De doelregel', 'Maandelijks', 'Elke maand in de maandupdate, met diagnose en plan', 'Marketingmanager'],
     ]))
     o.append(h2('De drempels'))
     o.append(p('De drempels zijn een voorstel. Ze bepalen wat er in de dagmail rood staat, en we zetten ze vast na de eerste maanden met echte cijfers. Normen per branche voor doorklik en conversie hebben we nog niet; tot die tijd is “onder de norm” een mening. Vul hier in wat geldt, met de datum.'))
@@ -568,11 +568,11 @@ def opzeggen():
     o.append(h2('Checklist bij opzegging'))
     o.append(h3('Dezelfde dag'))
     o.append(checklist([
-        ('Opzegging bevestigd per mail vanaf support@, met de laatste dag en wat de klant meeneemt', 'aanspreekpunt'),
-        ('Klantkaart bijgewerkt: opgezegd per de laatste dag, met de reden', 'aanspreekpunt'),
+        ('Opzegging bevestigd per mail vanaf support@, met de laatste dag en wat de klant meeneemt', 'marketingmanager'),
+        ('Klantkaart bijgewerkt: opgezegd per de laatste dag, met de reden', 'marketingmanager'),
         ('Gecontroleerd of er nog budgetten openstaan. Zo ja: afspraak gemaakt over hoe die worden afgerond', 'campagne'),
-        ('Moneybird: na de laatste maand geen factuur en geen incasso meer', 'aanspreekpunt'),
-        ('Gevraagd of de klant het marketingdashboard houdt, voor € 25 per maand', 'aanspreekpunt'),
+        ('Moneybird: na de laatste maand geen factuur en geen incasso meer', 'marketingmanager'),
+        ('Gevraagd of de klant het marketingdashboard houdt, voor € 25 per maand', 'marketingmanager'),
     ]))
     o.append(vraag('', 'Wat er met de campagne gebeurt tot de laatste dag', 'Afgesproken met de klant, met de datum.', 1, ['loopt door tot de laatste dag', 'stopt op: ________']))
     o.append(h3('Wat de klant meeneemt'))
@@ -585,44 +585,43 @@ def opzeggen():
         ['<b>Hosting bij Webmix</b>', 'Loopt rechtstreeks tussen de klant en Webmix', '—', keuze('')],
         ['<b>Marketingdashboard</b>', 'De klant houdt het voor € 25 per maand, of het stopt na de laatste dag', '', keuze('')],
     ], breedtes=['32%', '38%', '18%', '12%'], hoogte=18))
-    o.append(kader('<p>De landingspagina’s staan op onze omgeving, op een subdomein van de site van de klant. Wat daarmee gebeurt als een klant stopt, ligt nog niet vast. Zeg de klant niets toe en leg het voor aan Jim Coumans of Jim Kikken. Noteer hier wat is afgesproken.</p>' + lijnen(2), 'Nog open: de landingspagina’s', 'oranje'))
     o.append(h3('Intern afronden, na de laatste dag'))
     o.append(checklist([
         ('Alle beheertoegangen hierboven opgegeven, en afgevinkt', 'campagne en techniek'),
-        ('Het project in ClickUp afgesloten; openstaande taken vervallen', 'aanspreekpunt'),
-        ('In Front de klant losgekoppeld van de marketingmanager', 'aanspreekpunt'),
-        ('Gesprek over de reden met Jim Coumans of Jim Kikken: wat leren we ervan?', 'aanspreekpunt'),
+        ('Het project in ClickUp afgesloten; openstaande taken vervallen', 'marketingmanager'),
+        ('In Front de klant losgekoppeld van de marketingmanager', 'marketingmanager'),
+        ('Gesprek over de reden met Jim Coumans of Jim Kikken: wat leren we ervan?', 'marketingmanager'),
     ]))
     o.append(velden(['Afgerond door, op']))
     return ''.join(o)
 
 
 DOCS = [
- dict(code='08.1', titel='Livegang', fase=FASE, voor='Intern en klant', wanneer='Week 4 van het fundament, vóór dag 19', wie='Vast aanspreekpunt en techniek, met wie bij de klant belt',
+ dict(code='08.1', titel='Livegang', fase=FASE, voor='Intern en klant', wanneer='Week 4 van het fundament, vóór dag 19', wie='Marketingmanager en techniek, met wie bij de klant belt',
       lead='Een uur met het team van de klant, met wie belt en niet alleen met de directeur. Daarna staat op papier wie belt, binnen hoeveel tijd, en wat er gebeurt als diegene er niet is. En de testaanvraag gaat door de hele keten.',
       body=livegang()),
- dict(code='08.2', titel='Live-bericht', fase=FASE, voor='Intern', wanneer='Dag 19, zodra de campagne aanstaat', wie='Het vaste aanspreekpunt, vanaf support@',
+ dict(code='08.2', titel='Live-bericht', fase=FASE, voor='Intern', wanneer='Dag 19, zodra de campagne aanstaat', wie='De marketingmanager, vanaf support@',
       lead='De mail op de dag van livegang: dit staat er nu, hier komen je aanvragen binnen, dit doen we de komende twee weken.',
       body=live_bericht(), concept=True),
- dict(code='08.3', titel='Maandupdate', fase=FASE, voor='Intern', wanneer='Elke maand, vóór de 5e werkdag', wie='Het vaste aanspreekpunt',
+ dict(code='08.3', titel='Maandupdate', fase=FASE, voor='Intern', wanneer='Elke maand, vóór de 5e werkdag', wie='De marketingmanager',
       lead='Het sjabloon voor de maandupdate in het dashboard: bovenaan de getallen tegen de doelregel en vorige maand, daaronder drie korte antwoorden.',
       body=maandupdate()),
  dict(code='08.4', titel='Diagnoseformulier', fase=FASE, voor='Intern', wanneer='Vóór elke Performance Review en bij een afwijking', wie='De marketingmanager',
       lead='Drie vragen: waar zit de bottleneck, wat is de oorzaak, en wat is ons plan. Een diagnose, geen discussie. Achterin de tien oorzaken en wanneer je iets mag zeggen.',
       body=diagnose()),
- dict(code='08.5', titel='Performance Review', fase=FASE, voor='Intern en klant', wanneer='Per pakket, van elk kwartaal tot maandelijks', wie='Eigenaar en het vaste aanspreekpunt',
+ dict(code='08.5', titel='Performance Review', fase=FASE, voor='Intern en klant', wanneer='Per pakket, van elk kwartaal tot maandelijks', wie='De marketingmanager',
       lead='Een uur over resultaat, op ons kantoor in Hulsberg of online, in een vast stramien. Agenda en verslag in één: vul hem tijdens het gesprek in, en stuur dezelfde dag de bevestigingsmail.',
       body=performance_review(), concept=True),
- dict(code='08.6', titel='100-dagenreview', fase=FASE, voor='Intern en klant', wanneer='Ongeveer honderd dagen na het tekenen', wie='Eigenaar en het vaste aanspreekpunt',
+ dict(code='08.6', titel='100-dagenreview', fase=FASE, voor='Intern en klant', wanneer='Ongeveer honderd dagen na het tekenen', wie='De marketingmanager',
       lead='De eerste Performance Review en het belangrijkste gesprek van het jaar: de leerfase is voorbij en de cijfers zeggen voor het eerst iets.',
       body=honderd_dagen()),
  dict(code='08.7', titel='Jaargesprek', fase=FASE, voor='Intern en klant', wanneer='Maand 11', wie='De marketingmanager',
       lead='De rekensom opnieuw, met echte cijfers in plaats van aannames. Daaruit het doel voor jaar 2, en de vraag of het pakket nog past.',
       body=jaargesprek(), concept=True),
- dict(code='08.8', titel='Monitoring en dagmail', fase=FASE, voor='Intern', wanneer='Elke dag, vanaf de livegang', wie='Jim Coumans, campagne, techniek, content, aanspreekpunt',
+ dict(code='08.8', titel='Monitoring en dagmail', fase=FASE, voor='Intern', wanneer='Elke dag, vanaf de livegang', wie='Jim Coumans, campagne, techniek, content, marketingmanager',
       lead='Wat we doorlopend volgen, hoe vaak, wanneer we in actie komen en wie. De drempels bepalen wat er in de dagmail van 7.00 uur bovenaan in rood staat.',
       body=monitoring()),
- dict(code='08.9', titel='Opzeggen en vertrekken', fase=FASE, voor='Intern', wanneer='Zodra de klant opzegt, of wij', wie='Het vaste aanspreekpunt',
+ dict(code='08.9', titel='Opzeggen en vertrekken', fase=FASE, voor='Intern', wanneer='Zodra de klant opzegt, of wij', wie='De marketingmanager',
       lead='De checklist bij een opzegging. Alles staat al op naam van de klant, dus vertrekken is makkelijk. Dat moeten we willen.',
       body=opzeggen(), concept=True),
 ]

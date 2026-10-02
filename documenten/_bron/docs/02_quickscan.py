@@ -132,9 +132,9 @@ def body_021():
         [chip('Werklijst', 'groen'), '17 tot en met 24', 'Naar de backlog van de retainer. Niet op het scanrapport.', 'Vanaf maand 4'],
     ]))
     o.append(tabel(['Webmix-post', 'Punt', 'Bedrag'], [
-        ['Snelheid in de site zelf', '1', '€ 750 (schatting)'],
-        ['Redirects en dode links', '3', '€ 500 (schatting)'],
-        ['E-mailauthenticatie', '4', '€ 250 (schatting)'],
+        ['Snelheid in de site zelf', '1', '€ 750'],
+        ['Redirects en dode links', '3', '€ 500'],
+        ['E-mailauthenticatie', '4', '€ 250'],
         ['Hosting en onderhoud, alleen als de klant overzet; migratie is gratis', '5', '€ 85 p/m'],
         ['Cookiescript', '7', '€ 150 p/j'],
     ], rechts=(2,)))
