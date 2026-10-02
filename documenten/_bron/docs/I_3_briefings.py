@@ -102,28 +102,28 @@ CB = [
    ('Plafond', 'Wat één resultaat maximaal mag kosten aan advertenties. Aanvinken als het een voorstel is.', ''),
    ('Advertentiebudget', 'Totaal en per maand, verdeeld over de hele looptijd en over targeting en retargeting. Aanvinken als het een voorstel is.', 'suggestie'),
  ]),
- ('3 · De planning', [
-   ('Start', '', ''),
-   ('Einde', '', ''),
- ]),
- ('4 · Aanbod en boodschap', [
+ ('3 · Aanbod en boodschap', [
    ('Wat we verkopen', 'Product, prijs, wat erbij zit.', ''),
    ('Kernboodschap', 'De zin die in elke uiting terugkomt.', 'suggestie'),
    ('Waarom nu', 'De urgentie: datum, beperkt aantal, voordeel.', 'suggestie'),
    ('Wat we niet beloven', 'Beperkingen en voorwaarden die iemand moet weten voordat die boekt.', 'suggestie'),
  ]),
- ('5 · Doelgroep', [
+ ('4 · Doelgroep', [
    ('Doelgroepen', 'Kies uit de vaste doelgroepen van de klant, of voeg er een toe.', 'keuze'),
    ('Regio', '', ''),
    ('Uitsluiten', '', ''),
  ]),
- ('6 · Kanalen en content', [
+ ('5 · Kanalen en content', [
    ('Landingspagina', 'De URL, en of hij al bestaat of nog gemaakt moet worden. Moet hij gemaakt worden, dan komt hij in de tijdlijn.', 'keuze'),
+ ]),
+ ('6 · De planning', [
+   ('Start', '', ''),
+   ('Einde', '', ''),
  ]),
  ('7 · Afspraken met de klant', [
    ('Wat de klant zelf doet', 'Bijvoorbeeld: elke week de stand doorgeven.', ''),
  ]),
- ('8 · Achtergrond en risico’s', [
+ ('8 · Achtergrondinformatie', [
    ('Wat we weten van vorige keer', '', ''),
    ('Risico’s', '', 'suggestie'),
  ]),
@@ -139,23 +139,23 @@ def campagnebriefing(w=None):
                          + bron('systeem') + ' komen uit het klantprofiel, ' + bron('keuze') + ' kies je uit een lijst, en bij ' + bron('suggestie') + ' kun je zelf typen of op “doe suggestie” klikken. Een veld dat niet van toepassing is, blijft leeg staan, zodat elke briefing dezelfde indeling heeft. Verandert er iets na het versturen, dan wordt het een nieuwe versie.</p>', 'Zo werkt de briefing', 'blauw'))
     for titel, rijen in CB:
         out.append(h3(titel))
-        if titel.startswith('6'):
+        if 'Kanalen' in titel:
             out.append(tabel(['Kanaal of middel', 'Aantal', 'Toelichting'], g('kanalen') or [['', '', ''] for _ in range(4)]))
             out.append(tabel(['Content: bron', 'Wat er nodig is', 'Toelichting'], g('content') or [['', '', ''] for _ in range(2)]))
             if leeg: out.append(p('Kanalen en middelen: Meta Ads targeting, Meta Ads retargeting, Google Ads, Microsoft Ads, LinkedIn, TikTok, mailing, landingspagina. Content: beeldenbank (Kive), draaidag, materiaal van de klant, sjablonen. Kiezen, aantal invullen, toelichten.', 'klein'))
         out.append(velden_tabel(rijen, w))
-        if titel.startswith('2'):
+        if 'doel' in titel:
             out.append(h3('KPI’s'))
             out.append(tabel(['Product of onderdeel', 'Datum', 'Doel (aantal)', 'Prijs', 'Omzet'], g('kpi') or [['', '', '', '', ''] for _ in range(4)] + [('tot', ['Totaal', '', '', '', ''])], rechts=(2, 3, 4)))
             out.append(opmerking(g('kpi_opmerking')))
-        if titel.startswith('3'):
+        if 'planning' in titel:
             out.append(opmerking(g('planning_opmerking')))
             out.append(h3('Tijdlijn' + (bron('suggestie') if leeg else '')))
             out.append(tabel(['Deadline', 'Wat', 'Verantwoordelijke'], g('tijdlijn') or [['', '', ''] for _ in range(7)]))
             if leeg: out.append(p('Datums kies je in een kalender. Met “doe suggestie” maakt het portaal de tijdlijn uit de start- en einddatum en wat er opgeleverd moet worden; elke regel blijft aan te passen. Vaste omschrijvingen: briefing akkoord, landingspagina klaar, content klaar, merkcheck, live, contentronde, mailing, beslismoment, einde campagne, evaluatie. Na akkoord wordt de tijdlijn een taak met subtaken in ClickUp.', 'klein'))
-        if titel.startswith('5'):
+        if 'Doelgroep' in titel:
             out.append(opmerking(g('doelgroep_opmerking')))
-        if titel.startswith('7'):
+        if 'Afspraken' in titel:
             out.append(opmerking(g('afspraken_opmerking')))
     return ''.join(out)
 
