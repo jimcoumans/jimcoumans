@@ -55,7 +55,8 @@ export function budgetTekst(v: CampagneVolledig): string {
   if (c.startOn && c.endOn) {
     const maanden = verdeelPerMaand(h.budgetCents, c.startOn, c.endOn)
     if (maanden.length > 1) {
-      tekst += ` ${maanden.map((m) => `${maandNaam.format(m.maand)} ${euro(m.cents)}`).join(', ')}.`
+      const delen = maanden.map((m) => `${maandNaam.format(m.maand)} ${euro(m.cents)}`)
+      tekst += ` Per maand: ${delen.slice(0, -1).join(', ')} en ${delen[delen.length - 1]}.`
     }
   }
   return tekst
