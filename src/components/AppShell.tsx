@@ -117,6 +117,12 @@ const icons = {
       <path d="M3 20h4v-4H3zM10 20h4v-9h-4zM17 20h4V5h-4z" strokeLinejoin="round" />
     </svg>
   ),
+  campagnes: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
+      <path d="M4 10v4h3l7 4V6l-7 4H4z" strokeLinejoin="round" />
+      <path d="M17.5 9.5a3.5 3.5 0 0 1 0 5" strokeLinecap="round" />
+    </svg>
+  ),
   sync: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
       <path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5" />
@@ -130,6 +136,7 @@ const TEAM_NAV: NavItem[] = [
   { href: '/beheer/crm', label: 'CRM', key: 'crm', icon: icons.contacts },
   { href: '/beheer/pijplijn', label: 'Pijplijn', key: 'pijplijn', icon: icons.pijplijn },
   { href: '/beheer/offertes', label: 'Offertes', key: 'offertes', icon: icons.quotes },
+  { href: '/beheer/campagnes', label: 'Campagnes', key: 'campagnes', icon: icons.campagnes },
   { href: '/beheer/abonnementen', label: 'Abonnementen', key: 'abonnementen', icon: icons.subs },
   { href: '/beheer/diensten', label: 'Diensten', key: 'diensten', icon: icons.services },
   { href: '/beheer/partners', label: 'Partners', key: 'partners', icon: icons.partners },

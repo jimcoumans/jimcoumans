@@ -356,6 +356,32 @@ export function describeDbError(error: unknown): string | null {
       return 'Zet deze collega eerst aan als marketing manager; een maanddoel zonder klantportfolio zegt niets.'
     case 'activity_subject_not_empty':
       return 'Geef de notitie een korte titel, anders staat er straks een lege regel op de tijdlijn.'
+
+    /* --- Campagnebriefings --- */
+    case 'campaign_title_not_empty':
+      return 'Geef de campagne een naam.'
+    case 'campaign_units_positive':
+      return 'Eenheden per conversie is een getal groter dan nul, meestal 1.'
+    case 'campaign_rates_valid':
+      return 'Een conversie- of doorklikratio ligt tussen 0 en 100%, en de buffer ook.'
+    case 'campaign_fixed_budget':
+      return 'Vul bij een vast budget een bedrag boven nul in, of kies voor een budget berekend uit het doel.'
+    case 'campaign_period':
+      return 'De einddatum ligt vóór de startdatum. Controleer allebei de datums.'
+    case 'kpi_quantity_positive':
+      return 'Het doel van een KPI is een aantal boven nul.'
+    case 'kpi_price_valid':
+      return 'Een prijs kan niet negatief zijn. Laat hem leeg als er geen prijs bij hoort.'
+    case 'timeline_description_not_empty':
+      return 'Geef de regel in de tijdlijn een omschrijving.'
+    case 'audience_name_not_empty':
+      return 'Geef de doelgroep een naam.'
+    case 'campaign_contacts_campaign_id_contact_id_pk':
+      return 'Deze contactpersoon staat al bij de campagne.'
+    case 'campaign_audiences_campaign_id_audience_id_pk':
+      return 'Deze doelgroep staat al bij de campagne.'
+    case 'campaign_versions_idx':
+      return 'Deze versie is al vastgelegd. Ververs de pagina en probeer het opnieuw.'
     default:
       break
   }

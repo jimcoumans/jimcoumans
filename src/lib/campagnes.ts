@@ -43,6 +43,14 @@ export const STATUS_LABELS: Record<Campaign['status'], string> = {
   afgerond: 'Afgerond',
 }
 
+/** Tailwind-klassen per status, voor de chips. */
+export const STATUS_STIJL: Record<Campaign['status'], string> = {
+  concept: 'bg-gray-200 text-gray-700',
+  voorstel: 'bg-jr-orange/15 text-[#9a5b00]',
+  akkoord: 'bg-jr-green/15 text-[#1d7a36]',
+  afgerond: 'bg-jr-lightblue text-jr-deepblue',
+}
+
 /** Velden die als voorstel aangevinkt kunnen worden, met hoe ze heten. */
 export const VOORSTEL_VELDEN = {
   budget: 'Advertentiebudget',
@@ -396,17 +404,34 @@ export function suggereerTijdlijn(input: {
 export function suggereerSamenvatting(v: CampagneVolledig): string {
   const c = v.campagne
   const doel = c.goalSentence?.trim().replace(/\.$/, '')
-  const kanalen = [...new Set(v.kanalen.map((k) => (k.kind.split(':')[0] ?? k.kind).trim()))]
   const delen = [`${v.organisatie.name}: ${c.title}.`]
   if (doel) delen.push(`${doel}.`)
-  if (v.doelEenheden > 0) {
+  else if (v.doelEenheden > 0) {
     delen.push(
       `Het doel is ${v.doelEenheden.toLocaleString('nl-NL')}${v.omzetCents > 0 ? `, goed voor € ${Math.round(v.omzetCents / 100).toLocaleString('nl-NL')} omzet` : ''}.`,
     )
   }
-  if (kanalen.length > 0) delen.push(`Met ${opsomming(kanalen)}.`)
-  if (c.startOn && c.endOn) delen.push(`Van ${datumLang(c.startOn)} tot ${datumLang(c.endOn)}.`)
+  const middelen = kanaalWoorden(v.kanalen.map((k) => k.kind))
+  const periode = c.startOn && c.endOn ? `van ${datumLang(c.startOn)} tot ${datumLang(c.endOn)}` : null
+  if (middelen.length > 0) delen.push(`Met ${opsomming(middelen)}${periode ? `, ${periode}` : ''}.`)
+  else if (periode) delen.push(`${periode.charAt(0).toUpperCase()}${periode.slice(1)}.`)
   return delen.join(' ')
+}
+
+/** Kanalen zoals je ze in een zin noemt: "Meta Ads, drie mailings en een landingspagina". Content laten we weg. */
+function kanaalWoorden(soorten: string[]): string[] {
+  const woorden: string[] = []
+  const tel = (prefix: string) => soorten.filter((s) => s.toLowerCase().startsWith(prefix)).length
+  for (const s of soorten) {
+    const kop = (s.split(':')[0] ?? s).trim()
+    const laag = kop.toLowerCase()
+    if (laag === 'content' || laag === 'mailing' || laag === 'landingspagina') continue
+    if (!woorden.includes(kop)) woorden.push(kop)
+  }
+  if (tel('mailing') > 0) woorden.push('mailings')
+  if (tel('landingspagina') === 1) woorden.push('een eigen landingspagina')
+  else if (tel('landingspagina') > 1) woorden.push('eigen landingspagina’s')
+  return woorden
 }
 
 function opsomming(woorden: string[]): string {
@@ -466,6 +491,11 @@ export async function zetAkkoord(id: string, userId: string): Promise<void> {
   })
 }
 
+/** Een regel erbij of eraf is ook een wijziging aan de briefing. */
+export async function raakAan(id: string): Promise<void> {
+  await db.update(campaigns).set({ updatedAt: new Date() }).where(eq(campaigns.id, id))
+}
+
 export async function zetStatus(id: string, status: 'concept' | 'afgerond'): Promise<void> {
   await db.update(campaigns).set({ status, updatedAt: new Date() }).where(eq(campaigns.id, id))
 }
@@ -498,4 +528,12 @@ function momentopname(v: CampagneVolledig) {
 export function gewijzigdSindsVersie(v: CampagneVolledig): boolean {
   const laatste = v.versies[0]
   return !!laatste && v.campagne.updatedAt.getTime() > laatste.createdAt.getTime() + 1000
+}
+
+/** Klanten om een campagne voor te maken: alles behalve gearchiveerd. */
+export async function listKlantenVoorCampagne() {
+  return db
+    .select({ id: organizations.id, name: organizations.name, status: organizations.status })
+    .from(organizations)
+    .orderBy(asc(organizations.name))
 }

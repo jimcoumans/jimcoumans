@@ -17,6 +17,7 @@ export function ActionForm({
   submitClassName = 'bg-jr-btn hover:bg-jr-btnhover text-white',
   resetOnSuccess = true,
   className = 'space-y-3',
+  meldGelukt = true,
 }: {
   action: (formData: FormData) => Promise<ActionResult>
   children: React.ReactNode
@@ -24,6 +25,8 @@ export function ActionForm({
   submitClassName?: string
   resetOnSuccess?: boolean
   className?: string
+  /** Uit voor kleine knoppen (verwijderen, wisselen): daar is het resultaat zelf de melding. */
+  meldGelukt?: boolean
 }) {
   const [state, formAction, bezig] = useActionState(
     async (_prev: ActionResult | null, formData: FormData) => action(formData),
@@ -51,7 +54,7 @@ export function ActionForm({
         </p>
       )}
 
-      {gelukt && (
+      {gelukt && meldGelukt && (
         <p className="border-jr-green bg-jr-green/5 rounded border-l-4 p-2.5 text-sm">
           Opgeslagen.
         </p>

@@ -30,6 +30,7 @@ import {
   zetAkkoord,
   zetStatus,
   verwijderCampagne,
+  raakAan,
 } from '@/lib/campagnes'
 import { zetCampagneInClickUp } from '@/lib/clickup/campagne'
 import type { ActionResult } from './actions'
@@ -37,9 +38,10 @@ import type { ActionResult } from './actions'
 /* Acties voor campagnebriefings. Elke actie begint met requireStaff():
    een server action is een publiek endpoint. */
 
-async function veilig(campaignId: string | null, fn: () => Promise<void>): Promise<ActionResult> {
+async function veilig(campaignId: string | null, fn: () => Promise<void>, aanraken = true): Promise<ActionResult> {
   try {
     await fn()
+    if (campaignId && aanraken) await raakAan(campaignId)
     revalidatePath('/beheer/campagnes')
     if (campaignId) revalidatePath(`/beheer/campagnes/${campaignId}`)
     return { ok: true }
@@ -174,6 +176,15 @@ export async function wijzigAfspraken(formData: FormData): Promise<ActionResult>
     await wijzigCampagne(id, {
       clientDoes: ofNull(formData, 'clientDoes'),
       agreementNotes: ofNull(formData, 'agreementNotes'),
+    })
+  })
+}
+
+export async function wijzigAchtergrond(formData: FormData): Promise<ActionResult> {
+  await requireStaff()
+  const id = tekst(formData, 'campaignId')
+  return veilig(id, async () => {
+    await wijzigCampagne(id, {
       backgroundPrevious: ofNull(formData, 'backgroundPrevious'),
       backgroundRisks: ofNull(formData, 'backgroundRisks'),
     })
@@ -342,7 +353,7 @@ export async function verstuurVoorstel(formData: FormData): Promise<ActionResult
   const id = tekst(formData, 'campaignId')
   return veilig(id, async () => {
     await verstuurAlsVoorstel(id, user.id)
-  })
+  }, false)
 }
 
 /**
@@ -353,7 +364,7 @@ export async function verstuurVoorstel(formData: FormData): Promise<ActionResult
 export async function klantAkkoord(formData: FormData): Promise<ActionResult> {
   const user = await requireStaff()
   const id = tekst(formData, 'campaignId')
-  const r = await veilig(id, () => zetAkkoord(id, user.id))
+  const r = await veilig(id, () => zetAkkoord(id, user.id), false)
   if (!r.ok) return r
   try {
     const v = await getCampagne(id)
@@ -368,22 +379,39 @@ export async function klantAkkoord(formData: FormData): Promise<ActionResult> {
   }
 }
 
+/** Opnieuw proberen, als ClickUp bij het akkoord niet lukte. */
+export async function naarClickUp(formData: FormData): Promise<ActionResult> {
+  await requireStaff()
+  const id = tekst(formData, 'campaignId')
+  try {
+    const v = await getCampagne(id)
+    if (!v) return { ok: false, error: 'Deze campagne bestaat niet meer.' }
+    if (v.campagne.status !== 'akkoord') return { ok: false, error: 'Pas na akkoord van de klant naar ClickUp.' }
+    const uit = await zetCampagneInClickUp(v)
+    revalidatePath(`/beheer/campagnes/${id}`)
+    return uit.gedaan ? { ok: true } : { ok: false, error: uit.reden }
+  } catch (error) {
+    console.error('[campagnes] ClickUp:', error)
+    return { ok: false, error: 'ClickUp gaf een fout. Kijk in de serverlogs.' }
+  }
+}
+
 export async function terugNaarConcept(formData: FormData): Promise<ActionResult> {
   await requireStaff()
   const id = tekst(formData, 'campaignId')
-  return veilig(id, () => zetStatus(id, 'concept'))
+  return veilig(id, () => zetStatus(id, 'concept'), false)
 }
 
 export async function rondAf(formData: FormData): Promise<ActionResult> {
   await requireStaff()
   const id = tekst(formData, 'campaignId')
-  return veilig(id, () => zetStatus(id, 'afgerond'))
+  return veilig(id, () => zetStatus(id, 'afgerond'), false)
 }
 
 export async function wisCampagne(formData: FormData): Promise<ActionResult> {
   await requireStaff()
   const id = tekst(formData, 'campaignId')
-  const r = await veilig(id, () => verwijderCampagne(id))
+  const r = await veilig(id, () => verwijderCampagne(id), false)
   if (r.ok) redirect('/beheer/campagnes')
   return r
 }

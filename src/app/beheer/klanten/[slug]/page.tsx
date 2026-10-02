@@ -20,6 +20,7 @@ import { listContacts, listAccounts, listPartnersForOrganization, listActivePart
 import { Contactpersonen, Partners, Accounts, Bedrijfsgegevens } from '@/components/CrmSections'
 import { Vestigingen, Concurrenten, Doelen } from '@/components/Bedrijfsprofiel'
 import { Tijdlijn } from '@/components/Tijdlijn'
+import { KlantCampagnes } from '@/components/KlantCampagnes'
 import { getTijdlijn, laatsteContact } from '@/lib/tijdlijn'
 import { BookServiceForm } from '@/components/BookServiceForm'
 import { formatQuantity, unitShort } from '@/lib/quantity'
@@ -136,6 +137,8 @@ export default async function KlantPage({
             organizationId={klant.organization.id}
             slug={slug}
           />
+
+          <KlantCampagnes organizationId={klant.organization.id} slug={slug} />
 
           {klant.wallets.map(({ wallet, balance }) => (
             <WalletBeheer
