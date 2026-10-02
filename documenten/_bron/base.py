@@ -93,6 +93,7 @@ tr.tot td{font-weight:600;border-top:1px solid var(--tx);border-bottom:none}
 .blok .bh b{font-family:var(--fd);font-size:11pt}
 .blok .bh span{font-size:8pt;font-weight:600;color:var(--blue-link);background:var(--blue-100);border-radius:980px;padding:2pt 8pt;white-space:nowrap}
 .chip{display:inline-block;font-size:7.5pt;font-weight:600;border-radius:980px;padding:1pt 7pt}
+.meta .chip,.vak .chip,.vak span.chip{display:inline-block;margin-bottom:0}
 .c-groen{background:var(--green-100);color:var(--green-tx)} .c-oranje{background:var(--orange-100);color:var(--orange-tx)} .c-rood{background:var(--red-100);color:var(--red-tx)} .c-blauw{background:var(--blue-100);color:var(--blue-link)}
 .twee{display:grid;grid-template-columns:1fr 1fr;gap:10pt}
 .drie{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8pt}
@@ -175,13 +176,14 @@ def pagina(doc):
     if doc.get('meta'): cls = 'eigen-meta'
     versie = VERSIE.replace('Versie ', '') + (' · concept' if doc.get('concept') else '')
     velden = doc.get('meta') or [('Voor', voor), ('Wanneer', doc['wanneer']), ('Wie', doc['wie']), ('Versie', versie)]
+    rechts = '<div class="klein" style="text-align:right">%s</div>' % doc['kop_rechts'] if doc.get('kop_rechts') else '<div class="code">%s</div>' % doc['code']
     meta = '<div class="meta" style="grid-template-columns:repeat(%d,1fr)">%s</div>' % (len(velden), ''.join('<div><span>%s</span><b>%s</b></div>' % v for v in velden))
     return """<!doctype html><html lang="nl"><head><meta charset="utf-8"><title>%(code)s %(titel)s</title><style>%(css)s</style></head>
 <body class="%(cls)s">
-<div class="kop"><div class="merk">James Robinson<small>Marketing &amp; Branding</small></div><div class="code">%(code)s</div></div>
+<div class="kop"><div class="merk">James Robinson<small>Marketing &amp; Branding</small></div>%(rechts)s</div>
 <div class="eyebrow">%(fase)s</div>
 <h1>%(titel)s</h1>
 <p class="lead">%(lead)s</p>
 %(meta)s
 %(body)s
-</body></html>""" % dict(doc, css=CSS, cls=cls, meta=meta)
+</body></html>""" % dict(doc, css=CSS, cls=cls, meta=meta, rechts=rechts)

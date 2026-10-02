@@ -1,0 +1,143 @@
+<title>Kerst bij Thiessen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@600;700&display=swap">
+<style>:root{color-scheme:light}
+
+
+:root{
+  --tx:#1d1d1f; --tx2:#6e6e73; --tx3:#86868b; --ln:#d2d2d7; --ln-soft:#e5e5e9;
+  --bg-alt:#f5f5f7; --blue:#007aff; --blue-link:#0066cc; --blue-100:#e0efff; --blue-tint:#e2ebf3;
+  --lime:#c4f000; --lime-text:#5a7000; --lime-100:#f2fccc;
+  --green-tx:#1d7d3f; --green-100:#e6f7eb; --orange-tx:#94590a; --orange-100:#fef2e0;
+  --red-tx:#c02a22; --red-100:#fdecea; --black:#1c1c1e;
+  --fd:'Inter Tight','Inter','Helvetica Neue',Helvetica,Arial,sans-serif;
+  --ft:'Inter','Helvetica Neue',Helvetica,Arial,sans-serif;
+}
+
+*{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+html,body{margin:0;background:#fff;color:var(--tx);font-family:var(--ft);font-size:9.6pt;line-height:1.45;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:var(--fd);margin:0;text-wrap:balance;color:var(--tx)}
+p{margin:0 0 7pt}
+b,strong{font-weight:600}
+.kop{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--ln-soft);padding-bottom:9pt;margin-bottom:16pt}
+.merk{font-family:var(--fd);font-weight:700;font-size:11pt;letter-spacing:-.01em}
+.merk small{font-family:var(--ft);font-weight:400;color:var(--tx2);font-size:8pt;margin-left:6pt}
+.code{font-size:8pt;font-weight:600;color:var(--blue-link);background:var(--blue-100);border-radius:980px;padding:3pt 9pt}
+.eyebrow{font-size:9pt;font-weight:600;color:var(--blue-link);margin-bottom:4pt}
+h1{font-size:24pt;font-weight:700;line-height:1.08;letter-spacing:-.022em;margin-bottom:8pt}
+.lead{font-size:11.5pt;line-height:1.4;color:var(--tx2);max-width:150mm;margin-bottom:12pt}
+.meta{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--ln-soft);border-radius:8pt;margin-bottom:18pt;overflow:hidden}
+.meta div{padding:7pt 10pt;border-right:1px solid var(--ln-soft)}
+.meta div:last-child{border-right:none}
+.meta span{display:block;font-size:7.5pt;color:var(--tx2);margin-bottom:1pt}
+.meta b{font-size:8.8pt;font-weight:600}
+.voor-klant .meta div:first-child b{color:var(--green-tx)}
+.voor-intern .meta div:first-child b{color:var(--orange-tx)}
+h2{font-size:14pt;font-weight:600;letter-spacing:-.01em;margin:18pt 0 7pt;break-after:avoid}
+h3{font-size:11pt;font-weight:600;margin:13pt 0 5pt;break-after:avoid}
+h2:first-child,h3:first-child{margin-top:0}
+.sub{color:var(--tx2)}
+ul,ol{margin:0 0 8pt;padding-left:15pt} li{margin-bottom:3pt}
+/* tabellen */
+table{width:100%;border-collapse:collapse;margin:4pt 0 10pt;font-size:8.8pt}
+th{font-weight:500;color:var(--tx2);text-align:left;font-size:8pt;padding:5pt 6pt;border-bottom:1px solid var(--ln)}
+td{padding:5pt 6pt;border-bottom:1px solid var(--ln-soft);vertical-align:top}
+tr{break-inside:avoid}
+td.r,th.r{text-align:right;font-variant-numeric:tabular-nums}
+tr.grp td{background:var(--bg-alt);font-weight:600;font-size:8.3pt;color:var(--tx2)}
+tr.tot td{font-weight:600;border-top:1px solid var(--tx);border-bottom:none}
+/* kaders */
+.kader{border-radius:8pt;padding:10pt 12pt;margin:8pt 0 12pt;break-inside:avoid}
+.kader .kl{display:block;font-size:8pt;font-weight:600;margin-bottom:3pt}
+.kader p:last-child,.kader ul:last-child{margin-bottom:0}
+.k-blauw{background:var(--blue-tint)} .k-blauw .kl{color:var(--blue-link)}
+.k-lime{background:var(--lime-100)} .k-lime .kl{color:var(--lime-text)}
+.k-rood{background:var(--red-100)} .k-rood .kl{color:var(--red-tx)}
+.k-oranje{background:var(--orange-100)} .k-oranje .kl{color:var(--orange-tx)}
+.k-groen{background:var(--green-100)} .k-groen .kl{color:var(--green-tx)}
+.k-grijs{background:var(--bg-alt)} .k-grijs .kl{color:var(--tx2)}
+.k-zwart{background:var(--black);color:#f5f5f7} .k-zwart .kl{color:var(--lime)} .k-zwart b{color:#fff}
+.groot{font-family:var(--fd);font-size:13pt;font-weight:700;line-height:1.25;margin-bottom:5pt}
+/* invullen */
+.vraag{display:grid;grid-template-columns:18pt 1fr;gap:0 6pt;padding:8pt 0 9pt;border-bottom:1px solid var(--ln-soft);break-inside:avoid}
+.vraag .nr{font-family:var(--fd);font-weight:700;font-size:10pt;color:var(--blue)}
+.vraag .q{font-weight:600}
+.vraag .q .verplicht{display:inline-block;font-size:7pt;font-weight:600;color:var(--red-tx);background:var(--red-100);border-radius:980px;padding:1pt 6pt;margin-left:5pt;vertical-align:1pt}
+.vraag .hulp{color:var(--tx2);font-size:8.3pt;margin-top:1pt}
+.regels{margin-top:4pt}
+.regel{height:17pt;border-bottom:1px solid var(--ln)}
+.opties{display:flex;flex-wrap:wrap;gap:4pt 14pt;margin-top:5pt}
+.opt{display:inline-flex;align-items:center;gap:5pt;font-size:8.8pt}
+.opt::before{content:'';width:8pt;height:8pt;border:1px solid var(--tx2);border-radius:2pt;flex:none}
+.veld{display:grid;grid-template-columns:42mm 1fr;gap:6pt;align-items:end;padding:5pt 0}
+.veld span{font-size:8.5pt;color:var(--tx2)}
+.veld i{display:block;border-bottom:1px solid var(--ln);height:15pt}
+.vakken{display:grid;gap:6pt;margin:4pt 0 10pt}
+.vak{border:1px solid var(--ln);border-radius:6pt;padding:6pt 8pt;break-inside:avoid}
+.vak span{display:block;font-size:8pt;color:var(--tx2);font-weight:500}
+.check{display:grid;grid-template-columns:12pt 1fr auto;gap:4pt 6pt;padding:4pt 0;border-bottom:1px solid var(--ln-soft);break-inside:avoid;align-items:start}
+.check::before{content:'';width:8pt;height:8pt;border:1px solid var(--tx2);border-radius:2pt;margin-top:2.5pt}
+.check em{font-style:normal;font-size:8pt;color:var(--tx2);white-space:nowrap}
+/* mail en script */
+.mail{border:1px solid var(--ln);border-radius:8pt;margin:8pt 0 14pt;break-inside:avoid;overflow:hidden}
+.mail .mh{background:var(--bg-alt);padding:6pt 10pt;font-size:8.3pt;color:var(--tx2);border-bottom:1px solid var(--ln-soft)}
+.mail .mh b{color:var(--tx)}
+.mail .mb{padding:9pt 11pt}
+.vv{background:var(--lime-100);border-radius:3pt;padding:0 2pt}
+.zin{border-left:3px solid var(--blue);padding:2pt 0 2pt 9pt;margin:5pt 0 8pt;font-style:normal}
+.blok{border:1px solid var(--ln-soft);border-radius:8pt;padding:10pt 12pt;margin:8pt 0 10pt;break-inside:avoid-page}
+.blok .bh{display:flex;justify-content:space-between;align-items:baseline;gap:8pt;margin-bottom:4pt}
+.blok .bh b{font-family:var(--fd);font-size:11pt}
+.blok .bh span{font-size:8pt;font-weight:600;color:var(--blue-link);background:var(--blue-100);border-radius:980px;padding:2pt 8pt;white-space:nowrap}
+.chip{display:inline-block;font-size:7.5pt;font-weight:600;border-radius:980px;padding:1pt 7pt}
+.meta .chip,.vak .chip,.vak span.chip{display:inline-block;margin-bottom:0}
+.c-groen{background:var(--green-100);color:var(--green-tx)} .c-oranje{background:var(--orange-100);color:var(--orange-tx)} .c-rood{background:var(--red-100);color:var(--red-tx)} .c-blauw{background:var(--blue-100);color:var(--blue-link)}
+.twee{display:grid;grid-template-columns:1fr 1fr;gap:10pt}
+.drie{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8pt}
+.twee>*,.drie>*{min-width:0}
+.nieuwe-pagina{break-before:page}
+.klein{font-size:8.3pt;color:var(--tx2)}
+.handtekening{display:grid;grid-template-columns:1fr 1fr;gap:20pt;margin-top:18pt}
+.handtekening div{border-top:1px solid var(--tx);padding-top:4pt;font-size:8.3pt;color:var(--tx2)}
+
+body{background:#ebebf0;font-size:10pt;padding:0 16px}
+.top{max-width:210mm;margin:24px auto 0;padding:22px 24px;background:#1c1c1e;color:#f5f5f7;border-radius:12px}
+.top h1{color:#fff;font-size:26pt;margin:4px 0 6px}.top .eyebrow{color:#c4f000}.top p{color:#a1a1a6;margin:0}
+.idx{max-width:210mm;margin:16px auto;background:#fff;border-radius:12px;padding:18px 24px}
+.idx h2{margin:14px 0 6px;font-size:12pt}.idx h2:first-child{margin-top:0}
+.idx a{display:grid;grid-template-columns:62px 1fr auto;gap:8px;align-items:baseline;padding:6px 0;border-bottom:1px solid var(--ln-soft);color:var(--tx);text-decoration:none}
+.idx a:hover b{color:var(--blue-link)} .idx a span{font-size:8.5pt;color:var(--tx2)} .idx a em{font-style:normal;font-weight:600;color:var(--blue-link);font-size:9pt}
+.doc{max-width:210mm;margin:16px auto;background:#fff;border-radius:12px;padding:14mm 14mm 12mm;scroll-margin-top:12px}
+.terug{float:right;font-size:8.5pt;color:var(--blue-link);text-decoration:none;margin-left:12px}
+.tw{overflow-x:auto;margin:4pt 0 10pt}.tw table{margin:0}
+.nieuwe-pagina{height:0;border-top:1px dashed var(--ln);margin:16pt 0}
+.voet{max-width:210mm;margin:0 auto 32px;font-size:8.5pt;color:var(--tx2);text-align:center}
+@media (max-width:700px){
+ body{padding:0 10px}.doc{padding:18px 16px}.idx,.top{padding:16px}
+ .meta{grid-template-columns:1fr 1fr}.meta div:nth-child(2){border-right:none}.meta div:nth-child(-n+2){border-bottom:1px solid var(--ln-soft)}
+ .twee,.drie,.handtekening{grid-template-columns:1fr}.vakken{grid-template-columns:1fr!important}
+ h1{font-size:20pt}.veld{grid-template-columns:1fr}
+ .idx a{grid-template-columns:54px 1fr}.idx a span{grid-column:2}
+ .doc [style*="grid-template-columns"]{grid-template-columns:1fr!important}
+ .doc .vraag>div,.doc .twee>*,.doc .drie>*,.doc .kader{min-width:0}
+ .doc .opt{white-space:normal}
+ .doc [style*="nowrap"]{white-space:normal!important}
+ .doc [style*="display:flex"]{flex-wrap:wrap}
+ .doc{overflow-wrap:anywhere}
+ .doc [style*="width:"][style*="mm"]{max-width:100%}
+ .doc .tw table{min-width:520px}
+ .doc .tw table.vt{min-width:0}
+ .doc table.vt th,.doc table.vt td{display:block;width:auto!important;border-bottom:none}
+ .doc table.vt tr{display:block;border-bottom:1px solid var(--ln-soft);padding:4px 0}
+ .doc .code{white-space:nowrap}
+}
+</style>
+<section class="doc eigen-meta">
+<div class="kop"><div class="merk">James Robinson<small>Marketing &amp; Branding</small></div><div class="klein" style="text-align:right">Versie 1.0 · 2 oktober 2026</div></div>
+<div class="eyebrow">Campagnebriefing</div>
+<h1>Kerst bij Thiessen</h1>
+<p class="lead">Thiessen Wijnkoopers wil drie kerstmomenten vullen: twee kerstdiners en een kerstbrunch. Het doel is 190 couverts en € 17.900 omzet, met Meta Ads, een eigen landingspagina en drie mailings, van 7 oktober tot 17 december 2026.</p>
+<div class="meta" style="grid-template-columns:repeat(4,1fr)"><div><span>Klant</span><b>Thiessen Wijnkoopers</b></div><div><span>Start</span><b>7 oktober 2026</b></div><div><span>Einde</span><b>17 december 2026</b></div><div><span>Status</span><b><span class="chip c-oranje">voorstel</span></b></div></div>
+<h3>1 · De basis</h3><div class="tw"><table class="vt"><tbody><tr><th style="width:30%;vertical-align:top;color:var(--tx);font-weight:600;font-size:8.8pt;padding:6pt 6pt">Campagnenaam</th><td><b>Kerst bij Thiessen</b></td></tr><tr><th style="width:30%;vertical-align:top;color:var(--tx);font-weight:600;font-size:8.8pt;padding:6pt 6pt">Klant</th><td>Thiessen Wijnkoopers</td></tr><tr><th style="width:30%;vertical-align:top;color:var(--tx);font-weight:600;font-size:8.8pt;padding:6pt 6pt">Type</th><td><span class="vv">[retainer of project]</span></td></tr><tr><th style="width:30%;vertical-align:top;color:var(--tx);font-weight:600;font-size:8.8pt;padding:6pt 6pt">Marketingmanager</th><td><span class="vv">[uit het systeem]</span></td></tr><tr><th style="width:30%;vertical-align:top;color:var(--tx);font-weight:600;font-size:8.8pt;padding:6pt 6pt">Contactpersonen</th><td><span class="vv">[uit de contacten van Thiessen]</span></td></tr></tbody></table></div><h3>2 · Het doel</h3><div class="tw"><table class="vt"><tbody><tr><th style="width:30%;vertical-align:top;color:var(--tx);font-weight:600;font-size:8.8pt;padding:6pt 6pt">Doel in één zin</th><td>Alle drie de kerstmomenten vol: 190 couverts verkopen, goed voor € 17.900 omzet.</td></tr><tr><th style="width:30%;vertical-align:top;color:var(--tx);font-weight:600;font-size:8.8pt;padding:6pt 6pt">Wat telt als resultaat</th><td>Een reservering in Odoo, geteld in couverts.</td></tr><tr><th style="width:30%;vertical-align:top;color:var(--tx);font-weight:600;font-size:8.8pt;padding:6pt 6pt">Plafond</th><td><span class="chip c-oranje">voorstel</span> Gemiddeld maximaal € 8 aan advertenties per couvert; voor de brunch € 5.</td></tr><tr><th style="width:30%;vertical-align:top;color:var(--tx);font-weight:600;font-size:8.8pt;padding:6pt 6pt">Advertentiebudget</th><td><span class="chip c-oranje">voorstel</span> € 1.500 aan Meta, rechtstreeks van Thiessen: oktober € 500, november € 700, december € 300. We verdelen het over de hele looptijd en over targeting en retargeting, zodat er tot de laatste week budget is voor wie al interesse toonde.</td></tr></tbody></table></div><h3>KPI’s</h3><div class="tw"><table><thead><tr><th>Product of onderdeel</th><th>Datum</th><th class="r">Doel (aantal)</th><th class="r">Prijs</th><th class="r">Omzet</th></tr></thead><tbody><tr><td>Kerstbrunch</td><td>25 december 2026</td><td class="r">60</td><td class="r">€ 60</td><td class="r">€ 3.600</td></tr><tr><td>Kerstdiner</td><td>25 december 2026</td><td class="r">80</td><td class="r">€ 110</td><td class="r">€ 8.800</td></tr><tr><td>Kerstdiner</td><td>26 december 2026</td><td class="r">50</td><td class="r">€ 110</td><td class="r">€ 5.500</td></tr><tr class="tot"><td>Totaal</td><td></td><td class="r">190</td><td class="r"></td><td class="r">€ 17.900</td></tr></tbody></table></div><div class="vak" style="margin:2pt 0 10pt"><div class="klein" style="font-weight:500">Opmerkingen</div><ul><li>Op 26 december zijn al 30 couverts verkocht; alles vol is € 21.200 omzet.</li><li>Op 25 november beslist Thiessen per moment of het doorgaat.</li><li><span class="chip c-oranje">voorstel</span> Doorgaan bij minimaal 30 couverts voor de brunch en 40 per diner.</li><li>Tussenstand om op te sturen: op 1 november 15, 20 en 40 couverts; op 15 november 30, 40 en 55.</li></ul></div><h3>3 · De planning</h3><div class="tw"><table class="vt"><tbody><tr><th style="width:30%;vertical-align:top;color:var(--tx);font-weight:600;font-size:8.8pt;padding:6pt 6pt">Start</th><td>7 oktober 2026</td></tr><tr><th style="width:30%;vertical-align:top;color:var(--tx);font-weight:600;font-size:8.8pt;padding:6pt 6pt">Einde</th><td>17 december 2026</td></tr></tbody></table></div><div class="vak" style="margin:2pt 0 10pt"><div class="klein" style="font-weight:500">Opmerkingen</div><ul><li>Per moment stoppen zodra het vol is.</li><li>Vervalt een moment op 25 november, dan passen wij dezelfde dag de advertenties en de landingspagina aan.</li></ul></div><h3>Tijdlijn</h3><div class="tw"><table><thead><tr><th>Deadline</th><th>Wat</th><th>Verantwoordelijke</th></tr></thead><tbody><tr><td>5 oktober 2026</td><td>Briefing akkoord</td><td>Marketingmanager</td></tr><tr><td>6 oktober 2026</td><td>Landingspagina klaar</td><td>Content en techniek</td></tr><tr><td>6 oktober 2026</td><td>Content klaar, merkcheck</td><td>Content</td></tr><tr><td>6 oktober 2026</td><td>Doelgroepen en meting klaar</td><td>Campagne en techniek</td></tr><tr><td>7 oktober 2026</td><td>Live</td><td>Campagne</td></tr><tr><td>elke maandag</td><td>Stand per moment, budget bijsturen</td><td>Campagne</td></tr><tr><td><span class="vv">[datum]</span></td><td>Mailing: oktobernieuwsbrief</td><td>Marketingmanager</td></tr><tr><td>2 november 2026</td><td>Contentronde: nog X plaatsen per moment</td><td>Content</td></tr><tr><td><span class="vv">[datum]</span></td><td>Mailing: novembernieuwsbrief</td><td>Marketingmanager</td></tr><tr><td>10 november 2026</td><td>Mailing: Kerst bij Thiessen</td><td>Marketingmanager</td></tr><tr><td>25 november 2026</td><td>Beslismoment: doorgaan of annuleren, per moment</td><td>Thiessen</td></tr><tr><td>17 december 2026</td><td>Einde campagne</td><td>Campagne</td></tr><tr><td>januari 2027</td><td>Evaluatie in de Performance Review</td><td>Marketingmanager</td></tr></tbody></table></div><h3>4 · Aanbod en boodschap</h3><div class="tw"><table class="vt"><tbody><tr><th style="width:30%;vertical-align:top;color:var(--tx);font-weight:600;font-size:8.8pt;padding:6pt 6pt">Wat we verkopen</th><td>Kerstdiner op 25 en 26 december, € 110 per persoon. Kerstbrunch op 25 december, € 60 per persoon. <span class="vv">[wat zit erbij: gangen, wijn, kinderprijs]</span></td></tr><tr><th style="width:30%;vertical-align:top;color:var(--tx);font-weight:600;font-size:8.8pt;padding:6pt 6pt">Kernboodschap</th><td><span class="chip c-oranje">voorstel</span> “Kerst bij Thiessen. Jij reserveert, wij zorgen voor de rest, tot en met de mooiste plek aan tafel.”</td></tr><tr><th style="width:30%;vertical-align:top;color:var(--tx);font-weight:600;font-size:8.8pt;padding:6pt 6pt">Waarom nu</th><td>Beperkt aantal plaatsen per moment. Reserveren zonder aanbetaling: nu boeken, eind november betalen. Vanaf november noemen we per moment hoeveel plaatsen er nog zijn.</td></tr><tr><th style="width:30%;vertical-align:top;color:var(--tx);font-weight:600;font-size:8.8pt;padding:6pt 6pt">Wat we niet beloven</th><td>Een plek in de kelder of de orangerie: dat bepaalt Thiessen. Dat staat op de landingspagina en in de bevestiging. Dat een moment kan vervallen bij te weinig reserveringen, staat in de voorwaarden en de bevestiging, met een plek bij een ander restaurant in Maastricht. Niet in de advertenties.</td></tr></tbody></table></div><h3>5 · Doelgroep</h3><div class="tw"><table class="vt"><tbody><tr><th style="width:30%;vertical-align:top;color:var(--tx);font-weight:600;font-size:8.8pt;padding:6pt 6pt">Doelgroepen</th><td><ul><li>Bestaande gasten (klantenlijst)</li><li>Nieuwsbriefabonnees</li><li>Websitebezoekers, laatste 180 dagen</li><li>Volgers en interacties op Instagram en Facebook</li><li>Nieuw: 30 tot 65 jaar, uit eten en wijn, plus een lookalike van de gasten</li></ul></td></tr><tr><th style="width:30%;vertical-align:top;color:var(--tx);font-weight:600;font-size:8.8pt;padding:6pt 6pt">Regio</th><td><span class="chip c-oranje">voorstel</span> Maastricht en 25 kilometer eromheen.</td></tr><tr><th style="width:30%;vertical-align:top;color:var(--tx);font-weight:600;font-size:8.8pt;padding:6pt 6pt">Uitsluiten</th><td>Wie al gereserveerd heeft, via de wekelijkse stand uit Odoo.</td></tr></tbody></table></div><div class="vak" style="margin:2pt 0 10pt"><div class="klein" style="font-weight:500">Opmerkingen</div></div><h3>6 · Kanalen en content</h3><div class="tw"><table><thead><tr><th>Kanaal of middel</th><th>Aantal</th><th>Toelichting</th></tr></thead><tbody><tr><td>Meta Ads: targeting</td><td>1 campagne</td><td>Nieuwe gasten in de regio.</td></tr><tr><td>Meta Ads: retargeting</td><td>doorlopend</td><td>Websitebezoekers, volgers en nieuwsbriefabonnees, tot het einde van de campagne.</td></tr><tr><td>Mailing</td><td>3</td><td>Oktobernieuwsbrief, novembernieuwsbrief en een aparte mailing Kerst bij Thiessen.</td></tr><tr><td>Landingspagina</td><td>1, nieuw</td><td>Kerst bij Thiessen op thiessen.nl: de drie momenten, wat erbij zit, reserveren via Odoo, en per moment hoeveel plaatsen er nog zijn.</td></tr></tbody></table></div><div class="tw"><table><thead><tr><th>Content: bron</th><th>Wat er nodig is</th><th>Toelichting</th></tr></thead><tbody><tr><td>Beeldenbank (Kive)</td><td>Per moment drie tot vijf beelden, in 1:1, 4:5 en 9:16</td><td>Twee contentrondes: aankondigen (oktober) en nog X plaatsen (november).</td></tr></tbody></table></div><div class="tw"><table class="vt"><tbody><tr><th style="width:30%;vertical-align:top;color:var(--tx);font-weight:600;font-size:8.8pt;padding:6pt 6pt">Landingspagina</th><td>thiessen.nl/events/kerst-bij/thiessen · <span class="chip c-oranje">nog te maken</span></td></tr></tbody></table></div><h3>7 · Afspraken met de klant</h3><div class="tw"><table class="vt"><tbody><tr><th style="width:30%;vertical-align:top;color:var(--tx);font-weight:600;font-size:8.8pt;padding:6pt 6pt">Wat de klant zelf doet</th><td>Elke maandag de stand per moment uit Odoo naar support@jamesrobinson.nl. Odoo actueel houden. Gasten informeren als een moment vervalt.</td></tr></tbody></table></div><div class="vak" style="margin:2pt 0 10pt"><div class="klein" style="font-weight:500">Opmerkingen</div><ul><li>Reserveren gaat zonder aanbetaling.</li><li>Gasten krijgen vier weken voor kerst een betaallink en betalen uiterlijk een week voor kerst.</li></ul></div><h3>8 · Achtergrond en risico’s</h3><div class="tw"><table class="vt"><tbody><tr><th style="width:30%;vertical-align:top;color:var(--tx);font-weight:600;font-size:8.8pt;padding:6pt 6pt">Wat we weten van vorige keer</th><td>Vorig jaar kwamen er op één dag maar acht gasten. Het personeel moest met kerst werken en had niets te doen; dat gaf veel weerstand. Daarom de afspraak: is er een maand voor kerst te weinig verkocht voor een moment, dan vervalt dat moment.</td></tr><tr><th style="width:30%;vertical-align:top;color:var(--tx);font-weight:600;font-size:8.8pt;padding:6pt 6pt">Risico’s</th><td><ul><li>Zonder aanbetaling valt een deel van de reserveringen af als de betaallink komt.</li><li>Drie momenten, één budget: we sturen per moment, en schuiven budget naar wat achterloopt.</li><li>De brunch levert het minst op per couvert: lager plafond, en eerder stoppen met adverteren als het moet.</li></ul></td></tr></tbody></table></div>
+</section>
+<p class="voet">James Robinson · Marketing &amp; Branding · www.jamesrobinson.nl</p>

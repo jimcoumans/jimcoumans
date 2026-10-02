@@ -40,12 +40,13 @@ def main(alleen=None):
     if alleen: docs = [d for d in docs if any(d['code'].startswith(a) for a in alleen)]
     jobs = []
     for d in docs:
-        naam = '%s %s' % (d['code'], d['titel'])
+        naam = d.get('bestand') or '%s %s' % (d['code'], d['titel'])
         hp = os.path.join(HERE, 'html', d['code'] + '.html')
         open(hp, 'w').write(base.pagina(d))
         map_ = map_voor(d['code'])
+        if d.get('map_sub'): map_ = os.path.join(map_, d['map_sub'])
         os.makedirs(os.path.join(ROOT, map_), exist_ok=True)
-        jobs.append({'html': hp, 'pdf': os.path.join(ROOT, map_, naam + '.pdf'), 'voet': '%s · %s' % (d['code'], d['titel'])})
+        jobs.append({'html': hp, 'pdf': os.path.join(ROOT, map_, naam + '.pdf'), 'versie': d.get('kop_rechts', ''), 'voet': d['titel'] if d.get('kop_rechts') else '%s · %s' % (d['code'], d['titel'])})
     json.dump(jobs, open(os.path.join(HERE, 'jobs-%d.json' % os.getpid()), 'w'))
     subprocess.run(['node', os.path.join(HERE, 'pdf.js'), os.path.join(HERE, 'jobs-%d.json' % os.getpid())], check=True)
     os.remove(os.path.join(HERE, 'jobs-%d.json' % os.getpid()))

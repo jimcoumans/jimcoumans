@@ -45,6 +45,7 @@ body{background:#ebebf0;font-size:10pt;padding:0 16px}
 }
 """
 idx, secties, huidig = [], [], None
+LOS = []
 for d in docs:
     m = build.map_voor(d['code']) or 'Overzicht'
     if m != huidig:
@@ -54,7 +55,10 @@ for d in docs:
     h = base.pagina(d)
     body = re.search(r'<body class="([^"]+)">(.*)</body>', h, re.S)
     inhoud = re.sub(r'<table(\s[^>]*)?>', lambda m: '<div class="tw">' + m.group(0), body.group(2)).replace('</table>', '</table></div>')
-    inhoud = inhoud.replace('<div class="kop">', '<a class="terug" href="#overzicht">Naar het overzicht</a><div class="kop">', 1)
+    if not d.get('kop_rechts'):
+        inhoud = inhoud.replace('<div class="kop">', '<a class="terug" href="#overzicht">Naar het overzicht</a><div class="kop">', 1)
+    else:
+        LOS.append((d, body.group(1), inhoud))
     secties.append('<section class="doc %s" id="d%s">%s</section>' % (body.group(1), anker, inhoud))
 
 html = """<title>Documentenmap</title>
@@ -69,3 +73,16 @@ html = """<title>Documentenmap</title>
 out = os.path.join(os.path.dirname(HERE), 'documentenmap.html')
 open(out, 'w').write(html)
 print(out, len(html), len(docs))
+
+# losse pagina's voor wat naar een klant gaat: zonder overzicht, codes of knoppen
+for d, cls, inhoud in LOS:
+    los = """<title>%s</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@600;700&display=swap">
+<style>:root{color-scheme:light}%s%s</style>
+<section class="doc %s">%s</section>
+<p class="voet">James Robinson · Marketing &amp; Branding · www.jamesrobinson.nl</p>
+""" % (d['titel'], css, scherm, cls, inhoud)
+    pad = os.path.join(os.path.dirname(HERE), '6 Klanten', d.get('map_sub', ''), d.get('bestand', d['titel']) + '.html')
+    open(pad, 'w').write(los)
+    print(pad)

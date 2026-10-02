@@ -6,7 +6,7 @@ from base import *
 
 def voorstel(): return chip('voorstel', 'oranje')
 def bron(t):
-    kleur = {'systeem': 'blauw', 'AI': 'groen', 'keuze': 'oranje'}.get(t, 'blauw')
+    kleur = {'systeem': 'blauw', 'suggestie': 'groen', 'keuze': 'oranje'}.get(t, 'blauw')
     return ' <span class="chip c-%s" style="font-weight:500">%s</span>' % (kleur, t)
 
 LIJNEN = '<div class="regels"><div class="regel"></div><div class="regel"></div></div>'
@@ -26,8 +26,9 @@ def velden_tabel(rijen, waarden=None, leeg_sjabloon=True):
 
 def opmerking(tekst=None):
     if tekst is None:
-        return '<div class="vak" style="min-height:40pt;margin:2pt 0 10pt"><div class="klein" style="font-weight:500">Opmerking</div></div>'
-    return '<div class="vak" style="margin:2pt 0 10pt"><div class="klein" style="font-weight:500">Opmerking</div>%s</div>' % (tekst or '')
+        return '<div class="vak" style="min-height:40pt;margin:2pt 0 10pt"><div class="klein" style="font-weight:500">Opmerkingen</div></div>'
+    inhoud = ul(tekst) if isinstance(tekst, list) else (tekst or '')
+    return '<div class="vak" style="margin:2pt 0 10pt"><div class="klein" style="font-weight:500">Opmerkingen</div>%s</div>' % inhoud
 
 # ---------------------------------------------------------------- I.3 Klantprofiel
 KP = [
@@ -96,10 +97,10 @@ CB = [
    ('Contactpersonen', 'Een of meer, uit de contacten van de klant.', 'keuze'),
  ]),
  ('2 · Het doel', [
-   ('Doel in één zin', 'Wat moet er aan het eind gebeurd zijn.', ''),
+   ('Doel in één zin', 'Wat moet er aan het eind gebeurd zijn.', 'suggestie'),
    ('Wat telt als resultaat', 'De conversie: een aanvraag, een reservering, een aankoop.', ''),
    ('Plafond', 'Wat één resultaat maximaal mag kosten aan advertenties. Aanvinken als het een voorstel is.', ''),
-   ('Advertentiebudget', 'Totaal en per maand, verdeeld over de hele looptijd en over targeting en retargeting. Aanvinken als het een voorstel is.', ''),
+   ('Advertentiebudget', 'Totaal en per maand, verdeeld over de hele looptijd en over targeting en retargeting. Aanvinken als het een voorstel is.', 'suggestie'),
  ]),
  ('3 · De planning', [
    ('Start', '', ''),
@@ -107,9 +108,9 @@ CB = [
  ]),
  ('4 · Aanbod en boodschap', [
    ('Wat we verkopen', 'Product, prijs, wat erbij zit.', ''),
-   ('Kernboodschap', 'De zin die in elke uiting terugkomt.', ''),
-   ('Waarom nu', 'De urgentie: datum, beperkt aantal, voordeel.', ''),
-   ('Wat we niet beloven', 'Beperkingen en voorwaarden die iemand moet weten voor hij boekt.', ''),
+   ('Kernboodschap', 'De zin die in elke uiting terugkomt.', 'suggestie'),
+   ('Waarom nu', 'De urgentie: datum, beperkt aantal, voordeel.', 'suggestie'),
+   ('Wat we niet beloven', 'Beperkingen en voorwaarden die iemand moet weten voordat die boekt.', 'suggestie'),
  ]),
  ('5 · Doelgroep', [
    ('Doelgroepen', 'Kies uit de vaste doelgroepen van de klant, of voeg er een toe.', 'keuze'),
@@ -117,14 +118,14 @@ CB = [
    ('Uitsluiten', '', ''),
  ]),
  ('6 · Kanalen en content', [
-   ('Landingspagina', '', ''),
+   ('Landingspagina', 'De URL, en of hij al bestaat of nog gemaakt moet worden. Moet hij gemaakt worden, dan komt hij in de tijdlijn.', 'keuze'),
  ]),
  ('7 · Afspraken met de klant', [
    ('Wat de klant zelf doet', 'Bijvoorbeeld: elke week de stand doorgeven.', ''),
  ]),
  ('8 · Achtergrond en risico’s', [
    ('Wat we weten van vorige keer', '', ''),
-   ('Risico’s', '', ''),
+   ('Risico’s', '', 'suggestie'),
  ]),
 ]
 
@@ -135,13 +136,13 @@ def campagnebriefing(w=None):
     out = []
     if leeg:
         out.append(kader('<p>Eén briefing per campagne. De marketingmanager werkt hem uit in het portaal, stuurt hem als <b>voorstel</b> naar de klant, en deelt hem pas na <b>akkoord</b> met het team. De klant ziet dezelfde versie als wij. Velden met '
-                         + bron('systeem') + ' komen uit het klantprofiel, ' + bron('keuze') + ' kies je uit een lijst, ' + bron('AI') + ' maakt het portaal. Een veld dat niet van toepassing is, blijft leeg staan, zodat elke briefing dezelfde indeling heeft. Verandert er iets na het versturen, dan wordt het een nieuwe versie.</p>', 'Zo werkt de briefing', 'blauw'))
+                         + bron('systeem') + ' komen uit het klantprofiel, ' + bron('keuze') + ' kies je uit een lijst, en bij ' + bron('suggestie') + ' kun je zelf typen of op “doe suggestie” klikken. Een veld dat niet van toepassing is, blijft leeg staan, zodat elke briefing dezelfde indeling heeft. Verandert er iets na het versturen, dan wordt het een nieuwe versie.</p>', 'Zo werkt de briefing', 'blauw'))
     for titel, rijen in CB:
         out.append(h3(titel))
         if titel.startswith('6'):
             out.append(tabel(['Kanaal of middel', 'Aantal', 'Toelichting'], g('kanalen') or [['', '', ''] for _ in range(4)]))
             out.append(tabel(['Content: bron', 'Wat er nodig is', 'Toelichting'], g('content') or [['', '', ''] for _ in range(2)]))
-            if leeg: out.append(p('Kanalen: Meta Ads targeting, Meta Ads retargeting, Google Ads, Microsoft Ads, LinkedIn, TikTok, mailing. Content: beeldenbank (Kive), draaidag, materiaal van de klant, sjablonen. Kiezen, aantal invullen, toelichten.', 'klein'))
+            if leeg: out.append(p('Kanalen en middelen: Meta Ads targeting, Meta Ads retargeting, Google Ads, Microsoft Ads, LinkedIn, TikTok, mailing, landingspagina. Content: beeldenbank (Kive), draaidag, materiaal van de klant, sjablonen. Kiezen, aantal invullen, toelichten.', 'klein'))
         out.append(velden_tabel(rijen, w))
         if titel.startswith('2'):
             out.append(h3('KPI’s'))
@@ -149,16 +150,13 @@ def campagnebriefing(w=None):
             out.append(opmerking(g('kpi_opmerking')))
         if titel.startswith('3'):
             out.append(opmerking(g('planning_opmerking')))
-            out.append(h3('Tijdlijn'))
+            out.append(h3('Tijdlijn' + (bron('suggestie') if leeg else '')))
             out.append(tabel(['Deadline', 'Wat', 'Verantwoordelijke'], g('tijdlijn') or [['', '', ''] for _ in range(7)]))
-            if leeg: out.append(p('Vaste omschrijvingen: briefing akkoord, content klaar, merkcheck, live, contentronde, mailing, beslismoment, einde campagne, evaluatie.', 'klein'))
+            if leeg: out.append(p('Datums kies je in een kalender. Met “doe suggestie” maakt het portaal de tijdlijn uit de start- en einddatum en wat er opgeleverd moet worden; elke regel blijft aan te passen. Vaste omschrijvingen: briefing akkoord, landingspagina klaar, content klaar, merkcheck, live, contentronde, mailing, beslismoment, einde campagne, evaluatie. Na akkoord wordt de tijdlijn een taak met subtaken in ClickUp.', 'klein'))
         if titel.startswith('5'):
             out.append(opmerking(g('doelgroep_opmerking')))
         if titel.startswith('7'):
             out.append(opmerking(g('afspraken_opmerking')))
-    out.append(h3('Taken' + bron('AI')))
-    out.append(p('Het portaal maakt de taken uit wat hierboven is ingevuld. De marketingmanager voegt taken toe of haalt ze weg.', 'klein'))
-    out.append(tabel(['Taak', 'Verantwoordelijke', 'Deadline'], g('taken') or [['', '', ''] for _ in range(8)]))
     return ''.join(out)
 
 # ---------------------------------------------------------------- I.5 Specificatie portaal
@@ -166,19 +164,21 @@ def specificatie():
     out = [p('Hoe de campagnebriefing (I.4) en het klantprofiel (I.3) straks in het portaal werken. Dit is de opdracht voor wie het portaal bouwt.')]
     out.append(h2('De stappen'))
     out.append(tabel(['Stap', 'Wat er gebeurt', 'Wie'], [
-        ['1 · Starten', 'Op de klantkaart: “Nieuwe campagne”. Klant, marketingmanager, contactpersonen en vaste doelgroepen staan er meteen in, uit het klantprofiel.', 'Marketingmanager'],
-        ['2 · Uitwerken', 'De velden invullen. Bij plafond, budget en elk ander veld kan “voorstel” aangevinkt worden.', 'Marketingmanager'],
-        ['3 · Taken', 'Het portaal maakt de taken uit de ingevulde velden. Taken toevoegen of weghalen kan altijd.', 'Portaal (AI), marketingmanager'],
-        ['4 · Versturen als voorstel', 'Bij het versturen maakt het portaal de samenvatting bovenaan (AI). De briefing gaat als voorstel naar de contactpersonen, versie 1.0 met datum. De klant ziet dezelfde versie als wij.', 'Marketingmanager'],
-        ['5 · Akkoord', 'De klant geeft akkoord. Alles wat “voorstel” was, wordt “akkoord”. Pas dan gaat de briefing naar het team.', 'Klant'],
-        ['6 · Wijzigen', 'Verandert er iets na het versturen, dan wordt het een nieuwe versie (1.1, 2.0) met datum. Oude versies blijven bewaard.', 'Marketingmanager'],
-        ['7 · Afronden', 'Na het einde staat het resultaat naast het doel: de KPI’s uit de briefing naast de cijfers uit het marketingdashboard. De briefing blijft op de klantkaart, als historie.', 'Portaal, marketingmanager'],
+        ['1 · Starten', 'Op de klantkaart: “nieuwe campagne”. Klant, marketingmanager, contactpersonen en vaste doelgroepen staan er meteen in, uit het klantprofiel.', 'Marketingmanager'],
+        ['2 · Uitwerken', 'De velden invullen. Bij velden met een suggestieknop kun je zelf typen of op “doe suggestie” klikken; het portaal vult het veld dan op basis van wat al is ingevuld, en je past het aan. Bij plafond, budget en andere velden kan “voorstel” aangevinkt worden.', 'Marketingmanager'],
+        ['3 · Tijdlijn', 'Datums kies je in een kalender. “Doe suggestie” maakt de tijdlijn uit de start- en einddatum en wat er opgeleverd moet worden (landingspagina, content, mailings, live, beslismomenten, einde, evaluatie). Elke regel blijft aan te passen: datum, omschrijving, verantwoordelijke.', 'Marketingmanager'],
+        ['4 · Versturen als voorstel', 'Bij het versturen schrijft het portaal de samenvatting bovenaan; die is aan te passen. De briefing gaat als voorstel naar de contactpersonen, als digitale link en als pdf om te printen. Versie 1.0 met datum, rechtsboven. Geen interne codes of knoppen in wat de klant ziet. De klant ziet dezelfde versie als wij.', 'Marketingmanager'],
+        ['5 · Akkoord', 'De klant geeft akkoord. Alles wat “voorstel” was, wordt “akkoord”.', 'Klant'],
+        ['6 · Naar ClickUp', 'Bij akkoord maakt het portaal in ClickUp een taak met de campagnenaam, in de lijst van de klant, met een subtaak per regel uit de tijdlijn: omschrijving, verantwoordelijke en deadline. Pas dan begint het team.', 'Portaal'],
+        ['7 · Wijzigen', 'Verandert er iets na het versturen, dan wordt het een nieuwe versie (1.1, 2.0) met datum. Oude versies blijven bewaard. Wijzigt de tijdlijn na akkoord, dan worden de subtaken in ClickUp bijgewerkt.', 'Marketingmanager'],
+        ['8 · Afronden', 'Na het einde staat het resultaat naast het doel: de KPI’s uit de briefing naast de cijfers uit het marketingdashboard. De briefing blijft op de klantkaart, als historie.', 'Portaal, marketingmanager'],
     ]))
-    out.append(h2('Per veld: waar het vandaan komt'))
+    out.append(h2('Per veld'))
     out.append(tabel(['Veld', 'Bron', 'Soort'], [
         ('grp', 'Kop'),
-        ['Samenvatting bovenaan', 'AI, bij het versturen', 'Tekst, één of twee zinnen'],
-        ['Klant, start, einde, status, versie', 'Systeem en invoer', 'Status: voorstel of akkoord. Versie: nummer en datum'],
+        ['Samenvatting bovenaan', 'Suggestie bij het versturen, aan te passen', 'Tekst, één of twee zinnen'],
+        ['Klant, start, einde, status', 'Systeem en invoer', 'Status: voorstel of akkoord'],
+        ['Versie', 'Systeem', 'Nummer en datum, rechtsboven'],
         ('grp', 'De basis'),
         ['Campagnenaam', 'Invoer', 'Tekst'],
         ['Klant', 'Systeem (klantprofiel)', 'Vast'],
@@ -186,27 +186,29 @@ def specificatie():
         ['Marketingmanager', 'Systeem (gekoppeld aan de klant)', 'Vast'],
         ['Contactpersonen', 'Keuze uit de contacten van de klant', 'Een of meer'],
         ('grp', 'Het doel'),
-        ['Doel in één zin, wat telt als resultaat', 'Invoer', 'Tekst'],
-        ['Plafond, advertentiebudget', 'Invoer', 'Tekst, met vinkje “voorstel”'],
-        ['KPI’s', 'Invoer', 'Regels: product of onderdeel, datum, doel (aantal), prijs, omzet (berekend), plus totaal'],
-        ['Opmerking bij de KPI’s', 'Invoer', 'Vrije tekst'],
+        ['Doel in één zin', 'Invoer of suggestie', 'Tekst'],
+        ['Wat telt als resultaat', 'Invoer', 'Tekst'],
+        ['Plafond, advertentiebudget', 'Invoer of suggestie', 'Tekst, met vinkje “voorstel”'],
+        ['KPI’s', 'Invoer', 'Regels: product of onderdeel, datum (kalender), doel (aantal), prijs, omzet (berekend), plus totaal'],
+        ['Opmerkingen bij de KPI’s', 'Invoer', 'Opsomming'],
         ('grp', 'De planning'),
-        ['Start, einde', 'Invoer', 'Datum'],
-        ['Opmerking bij de planning', 'Invoer', 'Vrije tekst, bijvoorbeeld een stopcriterium of beslismoment'],
-        ['Tijdlijn', 'Invoer', 'Regels: deadline, vaste omschrijving (met toelichting), verantwoordelijke'],
+        ['Start, einde', 'Invoer', 'Datum (kalender)'],
+        ['Opmerkingen bij de planning', 'Invoer', 'Opsomming, bijvoorbeeld een stopcriterium of beslismoment'],
+        ['Tijdlijn', 'Invoer of suggestie', 'Regels: deadline (kalender), vaste omschrijving met toelichting, verantwoordelijke'],
         ('grp', 'Aanbod, doelgroep, kanalen'),
-        ['Aanbod en boodschap', 'Invoer', 'Vier tekstvelden'],
+        ['Wat we verkopen', 'Invoer', 'Tekst'],
+        ['Kernboodschap, waarom nu, wat we niet beloven', 'Invoer of suggestie', 'Tekst'],
         ['Doelgroepen', 'Keuze uit de vaste doelgroepen van de klant, of nieuw', 'Een of meer'],
-        ['Regio, uitsluiten, opmerking', 'Invoer', 'Tekst'],
-        ['Kanalen', 'Keuze, met aantal en toelichting', 'Regels'],
+        ['Regio, uitsluiten, opmerkingen', 'Invoer', 'Tekst en opsomming'],
+        ['Kanalen en middelen', 'Keuze, met aantal en toelichting', 'Regels; een nieuwe landingspagina is ook een middel'],
         ['Content', 'Keuze van de bron, met wat er nodig is en toelichting', 'Regels'],
-        ['Landingspagina', 'Invoer', 'URL'],
-        ('grp', 'Afspraken, achtergrond, taken'),
-        ['Wat de klant zelf doet, opmerking', 'Invoer', 'Tekst'],
-        ['Achtergrond en risico’s', 'Invoer', 'Tekst, mag leeg'],
-        ['Taken', 'AI, daarna aan te passen', 'Regels: taak, verantwoordelijke, deadline'],
+        ['Landingspagina', 'Invoer en keuze', 'URL, en: bestaat al of nog te maken. Nog te maken: komt in de tijdlijn'],
+        ('grp', 'Afspraken en achtergrond'),
+        ['Wat de klant zelf doet, opmerkingen', 'Invoer', 'Tekst en opsomming'],
+        ['Achtergrond', 'Invoer', 'Tekst, mag leeg'],
+        ['Risico’s', 'Invoer of suggestie', 'Tekst, mag leeg'],
     ]))
-    out.append(kader('<p>Meting staat niet in de briefing: die is bij elke campagne hetzelfde (conversie getest vóór livegang, UTM-tags op alle links) en hoort in de checklist van de campagne. Betaal- en annuleringsvoorwaarden van de klant zelf horen er alleen in als opmerking.</p>', 'Bewust weggelaten', 'grijs'))
+    out.append(kader('<p>Meting staat niet in de briefing: die is bij elke campagne hetzelfde (conversie getest vóór livegang, UTM-tags op alle links) en hoort in de vaste checklist van de campagne in ClickUp. Een aparte takenlijst staat er ook niet in: de tijdlijn is de takenlijst. Betaal- en annuleringsvoorwaarden van de klant zelf horen er alleen in als opmerking.</p>', 'Bewust weggelaten', 'grijs'))
     return ''.join(out)
 
 # ---------------------------------------------------------------- Kerst bij Thiessen
@@ -226,14 +228,25 @@ THI = {
    ['Kerstdiner', '26 december 2026', '50', '€ 110', '€ 5.500'],
    ('tot', ['Totaal', '', '190', '', '€ 17.900']),
  ],
- 'kpi_opmerking': '<p>Op 26 december zijn al 30 couverts verkocht; alles vol is € 21.200 omzet. Op 25 november beslist Thiessen per moment of het doorgaat. ' + voorstel() + ' Doorgaan bij minimaal 30 couverts voor de brunch en 40 per diner. Tussenstand om op te sturen: op 1 november 15, 20 en 40; op 15 november 30, 40 en 55.</p>',
+ 'kpi_opmerking': [
+   'Op 26 december zijn al 30 couverts verkocht; alles vol is € 21.200 omzet.',
+   'Op 25 november beslist Thiessen per moment of het doorgaat.',
+   voorstel() + ' Doorgaan bij minimaal 30 couverts voor de brunch en 40 per diner.',
+   'Tussenstand om op te sturen: op 1 november 15, 20 en 40 couverts; op 15 november 30, 40 en 55.',
+ ],
  'Start': '7 oktober 2026',
  'Einde': '17 december 2026',
- 'planning_opmerking': '<p>Per moment stoppen zodra het vol is. Vervalt een moment op 25 november, dan passen wij dezelfde dag de advertenties en de landingspagina aan.</p>',
+ 'planning_opmerking': [
+   'Per moment stoppen zodra het vol is.',
+   'Vervalt een moment op 25 november, dan passen wij dezelfde dag de advertenties en de landingspagina aan.',
+ ],
  'tijdlijn': [
-   ['6 oktober 2026', 'Briefing akkoord', 'Marketingmanager'],
+   ['5 oktober 2026', 'Briefing akkoord', 'Marketingmanager'],
+   ['6 oktober 2026', 'Landingspagina klaar', 'Content en techniek'],
    ['6 oktober 2026', 'Content klaar, merkcheck', 'Content'],
+   ['6 oktober 2026', 'Doelgroepen en meting klaar', 'Campagne en techniek'],
    ['7 oktober 2026', 'Live', 'Campagne'],
+   ['elke maandag', 'Stand per moment, budget bijsturen', 'Campagne'],
    [vv('[datum]'), 'Mailing: oktobernieuwsbrief', 'Marketingmanager'],
    ['2 november 2026', 'Contentronde: nog X plaatsen per moment', 'Content'],
    [vv('[datum]'), 'Mailing: novembernieuwsbrief', 'Marketingmanager'],
@@ -254,47 +267,37 @@ THI = {
    ['Meta Ads: targeting', '1 campagne', 'Nieuwe gasten in de regio.'],
    ['Meta Ads: retargeting', 'doorlopend', 'Websitebezoekers, volgers en nieuwsbriefabonnees, tot het einde van de campagne.'],
    ['Mailing', '3', 'Oktobernieuwsbrief, novembernieuwsbrief en een aparte mailing Kerst bij Thiessen.'],
+   ['Landingspagina', '1, nieuw', 'Kerst bij Thiessen op thiessen.nl: de drie momenten, wat erbij zit, reserveren via Odoo, en per moment hoeveel plaatsen er nog zijn.'],
  ],
  'content': [
    ['Beeldenbank (Kive)', 'Per moment drie tot vijf beelden, in 1:1, 4:5 en 9:16', 'Twee contentrondes: aankondigen (oktober) en nog X plaatsen (november).'],
  ],
- 'Landingspagina': 'thiessen.nl/events/kerst-bij/thiessen',
- 'Wat de klant zelf doet': 'Elke maandag de stand per moment uit Odoo naar support@jamesrobinson.nl. Odoo en de landingspagina actueel houden. Gasten informeren als een moment vervalt.',
- 'afspraken_opmerking': '<p>Reserveren gaat zonder aanbetaling. Gasten krijgen vier weken voor kerst een betaallink en betalen uiterlijk een week voor kerst.</p>',
+ 'Landingspagina': 'thiessen.nl/events/kerst-bij/thiessen · ' + chip('nog te maken', 'oranje'),
+ 'Wat de klant zelf doet': 'Elke maandag de stand per moment uit Odoo naar support@jamesrobinson.nl. Odoo actueel houden. Gasten informeren als een moment vervalt.',
+ 'afspraken_opmerking': [
+   'Reserveren gaat zonder aanbetaling.',
+   'Gasten krijgen vier weken voor kerst een betaallink en betalen uiterlijk een week voor kerst.',
+ ],
  'Wat we weten van vorige keer': 'Vorig jaar kwamen er op één dag maar acht gasten. Het personeel moest met kerst werken en had niets te doen; dat gaf veel weerstand. Daarom de afspraak: is er een maand voor kerst te weinig verkocht voor een moment, dan vervalt dat moment.',
  'Risico’s': ul([
    'Zonder aanbetaling valt een deel van de reserveringen af als de betaallink komt.',
    'Drie momenten, één budget: we sturen per moment, en schuiven budget naar wat achterloopt.',
    'De brunch levert het minst op per couvert: lager plafond, en eerder stoppen met adverteren als het moet.',
  ]),
- 'taken': [
-   ['Plafond, budget en de grens per moment voorleggen; akkoord vastleggen', 'Marketingmanager', '6 oktober 2026'],
-   ['Beelden kiezen uit de beeldenbank, per moment', 'Content', '5 oktober 2026'],
-   ['Advertenties in drie formaten, twee boodschappen', 'Content', '5 oktober 2026'],
-   ['Doelgroepen bouwen; klantenlijst en nieuwsbrieflijst uploaden', 'Campagne', '5 oktober 2026'],
-   ['Conversie op de bevestiging van Odoo testen; UTM-tags', 'Techniek', '6 oktober 2026'],
-   ['Merkcheck (07.3)', 'Marketingmanager', '6 oktober 2026'],
-   ['Live', 'Campagne', '7 oktober 2026'],
-   ['Elke maandag: stand per moment, budget bijsturen', 'Campagne', 'wekelijks'],
-   ['Contentronde: nog X plaatsen', 'Content', '2 november 2026'],
-   ['Mailing Kerst bij Thiessen', 'Marketingmanager', '10 november 2026'],
-   ['Na het beslismoment: advertenties en landingspagina aanpassen', 'Campagne', '25 november 2026'],
-   ['Einde campagne', 'Campagne', '17 december 2026'],
-   ['Evaluatie in de Performance Review', 'Marketingmanager', 'januari 2027'],
- ],
 }
 
 THI_SAMENVATTING = ('Thiessen Wijnkoopers wil drie kerstmomenten vullen: twee kerstdiners en een kerstbrunch. Het doel is 190 couverts en € 17.900 omzet, '
-                    'met Meta Ads en drie mailings, van 7 oktober tot 17 december 2026.' + bron('AI'))
+                    'met Meta Ads, een eigen landingspagina en drie mailings, van 7 oktober tot 17 december 2026.')
 
 DOCS = [
  dict(code='I.3', titel='Klantprofiel', fase='Intern · Briefings', voor='Intern', wanneer='Aan het eind van de onboarding, daarna bijhouden', wie='Marketingmanager',
       lead='Alles wat iemand moet weten voordat die aan een klant werkt: wie de klant is, de contactpersonen, de doelen, de vaste doelgroepen, het merk, de systemen en de afspraken.', body=klantprofiel()),
  dict(code='I.4', titel='Campagnebriefing', fase='Intern · Briefings', voor='Intern en klant', wanneer='Vóór elke nieuwe campagne', wie='Marketingmanager, met akkoord van de klant',
-      lead='Eén briefing per campagne: het doel in harde getallen, de planning, aanbod, doelgroep, kanalen en content, de afspraken, en de taken. Eerst als voorstel naar de klant, na akkoord naar het team.', body=campagnebriefing()),
+      lead='Eén briefing per campagne: het doel in harde getallen, de planning met de tijdlijn, aanbod, doelgroep, kanalen en content, en de afspraken. Eerst als voorstel naar de klant, na akkoord naar het team en in ClickUp.', body=campagnebriefing()),
  dict(code='I.5', titel='Briefings in het portaal', fase='Intern · Briefings', voor='Intern', wanneer='Bij het bouwen van het portaal', wie='Jim Coumans, Jim Kikken, de bouwer van het portaal',
-      lead='Welke velden uit het systeem komen, welke je kiest, welke AI maakt, en hoe een briefing van voorstel naar akkoord gaat.', concept=True, body=specificatie()),
+      lead='Welke velden uit het systeem komen, welke je kiest, waar je een suggestie kunt laten doen, hoe een briefing van voorstel naar akkoord gaat, en hoe de tijdlijn in ClickUp komt.', concept=True, body=specificatie()),
  dict(code='K.THI.1', titel='Kerst bij Thiessen', fase='Campagnebriefing', voor='Intern en klant', wanneer='7 oktober – 17 december 2026', wie='Marketingmanager',
-      meta=[('Klant', 'Thiessen Wijnkoopers'), ('Start', '7 oktober 2026'), ('Einde', '17 december 2026'), ('Status', voorstel()), ('Versie', '1.0 · 2 oktober 2026')],
+      kop_rechts='Versie 1.0 · 2 oktober 2026', bestand='Campagnebriefing Kerst bij Thiessen', map_sub='Thiessen',
+      meta=[('Klant', 'Thiessen Wijnkoopers'), ('Start', '7 oktober 2026'), ('Einde', '17 december 2026'), ('Status', voorstel())],
       lead=THI_SAMENVATTING, body=campagnebriefing(THI)),
 ]
