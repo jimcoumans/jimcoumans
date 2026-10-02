@@ -15,6 +15,7 @@ import { ActionForm, Field, Select } from '@/components/ActionForm'
 import { nieuweKlant } from '../actions'
 import { formatCents } from '@/lib/money'
 import { getMaandbudgetPerKlant } from '@/lib/billing'
+import { getHuidigeStappen } from '@/lib/klantreis'
 import { metGeheugen } from '@/lib/cache'
 
 /**
@@ -63,6 +64,8 @@ export default async function BeheerPage({
     getCrmCounts(alle.map((k) => k.organization.id)),
   )
   const maandbudget = await metGeheugen('klanten:maandbudget', getMaandbudgetPerKlant)
+  // Niet onthouden: wie net een mijlpaal afvinkt, wil de nieuwe stap meteen zien.
+  const stappen = await getHuidigeStappen(alle.map((k) => k.organization.id))
   const totaal = klanten.reduce((acc, k) => acc + k.totalBalanceCents, 0)
   const negatief = klanten.filter((k) => k.totalBalanceCents < 0)
 
@@ -168,6 +171,21 @@ export default async function BeheerPage({
                               {GEZONDHEID_LABELS[k.organization.relationHealth]}
                             </span>
                           )}
+                          {(() => {
+                            const stap = stappen.get(k.organization.id)
+                            if (!stap) return null
+                            const kleur =
+                              stap.fase === 'Verkopen'
+                                ? 'bg-jr-lightblue text-jr-deepblue'
+                                : stap.fase === 'Starten'
+                                  ? 'bg-[#F5EAFB] text-[#7E2FB0]'
+                                  : 'bg-[#E6F7EB] text-[#1D7D3F]'
+                            return (
+                              <span className={`rounded-full px-2 py-0.5 text-xs ${kleur}`} title={stap.titel}>
+                                {stap.nr} · {stap.titel}
+                              </span>
+                            )
+                          })()}
                           {k.organization.status !== 'client' && (
                             <span
                               className={`rounded-full px-2 py-0.5 text-xs ${organizationStatusStyles[k.organization.status]}`}

@@ -384,6 +384,8 @@ export function describeDbError(error: unknown): string | null {
       return 'Het deel uit advertenties ligt tussen 1 en 100%. Laat het leeg als alles uit advertenties moet komen.'
     case 'campaign_specialists_campaign_id_user_id_pk':
       return 'Deze specialist staat al bij de campagne.'
+    case 'client_journey_items_org_item_idx':
+      return 'Deze mijlpaal staat al afgevinkt. Ververs de pagina.'
     case 'campaign_versions_idx':
       return 'Deze versie is al vastgelegd. Ververs de pagina en probeer het opnieuw.'
     default:

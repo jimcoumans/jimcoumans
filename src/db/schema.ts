@@ -3263,3 +3263,64 @@ export type CampaignKpi = typeof campaignKpis.$inferSelect
 export type CampaignChannel = typeof campaignChannels.$inferSelect
 export type CampaignTimelineItem = typeof campaignTimeline.$inferSelect
 export type CampaignVersion = typeof campaignVersions.$inferSelect
+
+/* ------------------------------- Klantreis ------------------------------- */
+
+/**
+ * Welke mijlpalen van de klantreis bij een klant zijn afgevinkt.
+ *
+ * De stappen en mijlpalen zelf staan in de code (src/lib/klantreis.ts),
+ * omdat ze bij elke klant hetzelfde zijn en meegroeien met de gids. Hier
+ * staat alleen wat er bij deze klant af is, wanneer en door wie.
+ */
+export const clientJourneyItems = pgTable(
+  'client_journey_items',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    organizationId: uuid('organization_id')
+      .notNull()
+      .references(() => organizations.id, { onDelete: 'cascade' }),
+    itemKey: text('item_key').notNull(),
+    doneAt: timestamp('done_at', { withTimezone: true }).notNull().defaultNow(),
+    doneByUserId: uuid('done_by_user_id').references(() => users.id, { onDelete: 'set null' }),
+  },
+  (t) => [uniqueIndex('client_journey_items_org_item_idx').on(t.organizationId, t.itemKey)],
+)
+
+/**
+ * Het klantprofiel (I.3): wat iemand moet weten voordat die aan een klant
+ * werkt. Alleen de vrije tekst staat hier; wat al elders in het systeem
+ * staat (doelen, concurrenten, accounts, doelgroepen) wordt erbij gehaald.
+ */
+export const organizationProfiles = pgTable('organization_profiles', {
+  organizationId: uuid('organization_id')
+    .primaryKey()
+    .references(() => organizations.id, { onDelete: 'cascade' }),
+  /* 2 Het bedrijf in het kort */
+  sells: text('sells'),
+  whyChosen: text('why_chosen'),
+  pricingAndCompetition: text('pricing_and_competition'),
+  yearRhythm: text('year_rhythm'),
+  /* 3 De doelen */
+  capacity: text('capacity'),
+  /* 4 De klant van de klant */
+  bestCustomer: text('best_customer'),
+  region: text('region'),
+  notWanted: text('not_wanted'),
+  /* 5 Het merk */
+  brandStyle: text('brand_style'),
+  brandTone: text('brand_tone'),
+  brandImagery: text('brand_imagery'),
+  /* 6 Accounts en systemen */
+  websiteSystem: text('website_system'),
+  emailSetup: text('email_setup'),
+  bookingSystem: text('booking_system'),
+  /* 7 Afspraken */
+  clientCommitments: text('client_commitments'),
+  sensitivities: text('sensitivities'),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedByUserId: uuid('updated_by_user_id').references(() => users.id, { onDelete: 'set null' }),
+})
+
+export type ClientJourneyItem = typeof clientJourneyItems.$inferSelect
+export type OrganizationProfile = typeof organizationProfiles.$inferSelect

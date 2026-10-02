@@ -8,8 +8,8 @@ import { formatDate } from '@/lib/dates'
  * staan als historie: wat we deden, wanneer, en met welke versie de klant
  * akkoord gaf.
  */
-export async function KlantCampagnes({ organizationId, slug }: { organizationId: string; slug: string }) {
-  const [campagnes, doelgroepen] = await Promise.all([listCampagnes(organizationId), listDoelgroepen(organizationId)])
+export async function KlantCampagnes({ organizationId, metDoelgroepen = true, slug }: { organizationId: string; slug: string; metDoelgroepen?: boolean }) {
+  const campagnes = await listCampagnes(organizationId)
 
   return (
     <section>
@@ -41,43 +41,55 @@ export async function KlantCampagnes({ organizationId, slug }: { organizationId:
         </ul>
       )}
 
-      <div className="mt-6 rounded-xl bg-white p-6 shadow-sm">
-        <h3 className="mb-1 text-base">Vaste doelgroepen</h3>
-        <p className="mb-3 text-xs text-gray-600">Eén keer vastleggen, in elke campagnebriefing aan te vinken.</p>
-        {doelgroepen.length === 0 ? (
-          <p className="text-sm text-gray-500">Nog geen vaste doelgroepen.</p>
-        ) : (
-          <ul className="divide-y divide-gray-100">
-            {doelgroepen.map((d) => (
-              <li key={d.id} className="flex items-start justify-between gap-3 py-2">
-                <span className="text-sm">
-                  {d.name}
-                  {d.description && <span className="block text-xs text-gray-500">{d.description}</span>}
-                </span>
-                <ActionForm
-                  action={wisDoelgroep}
-                  submitLabel="Weg"
-                  submitClassName="text-gray-500 hover:bg-gray-100 !px-2 !py-1 !text-xs"
-                  resetOnSuccess={false}
-                  meldGelukt={false}
-                  className=""
-                >
-                  <input type="hidden" name="id" value={d.id} />
-                  <input type="hidden" name="slug" value={slug} />
-                </ActionForm>
-              </li>
-            ))}
-          </ul>
-        )}
-        <Uitklap label="Doelgroep toevoegen" className="mt-3">
-          <ActionForm action={nieuweDoelgroep} submitLabel="Toevoegen">
-            <input type="hidden" name="organizationId" value={organizationId} />
-            <input type="hidden" name="slug" value={slug} />
-            <Field label="Naam" name="name" required placeholder="Websitebezoekers, laatste 180 dagen" />
-            <Field label="Omschrijving" name="description" />
-          </ActionForm>
-        </Uitklap>
-      </div>
+      {metDoelgroepen && (
+        <div className="mt-6">
+          <VasteDoelgroepen organizationId={organizationId} slug={slug} />
+        </div>
+      )}
     </section>
+  )
+}
+
+/** De vaste doelgroepen van een klant: één keer vastleggen, in elke briefing te kiezen. */
+export async function VasteDoelgroepen({ organizationId, slug }: { organizationId: string; slug: string }) {
+  const doelgroepen = await listDoelgroepen(organizationId)
+  return (
+    <div className="rounded-xl bg-white p-6 shadow-sm">
+      <h3 className="mb-1 text-base">Vaste doelgroepen</h3>
+      <p className="mb-3 text-xs text-gray-600">Eén keer vastleggen, in elke campagnebriefing aan te vinken.</p>
+      {doelgroepen.length === 0 ? (
+        <p className="text-sm text-gray-500">Nog geen vaste doelgroepen.</p>
+      ) : (
+        <ul className="divide-y divide-gray-100">
+          {doelgroepen.map((d) => (
+            <li key={d.id} className="flex items-start justify-between gap-3 py-2">
+              <span className="text-sm">
+                {d.name}
+                {d.description && <span className="block text-xs text-gray-500">{d.description}</span>}
+              </span>
+              <ActionForm
+                action={wisDoelgroep}
+                submitLabel="Weg"
+                submitClassName="text-gray-500 hover:bg-gray-100 !px-2 !py-1 !text-xs"
+                resetOnSuccess={false}
+                meldGelukt={false}
+                className=""
+              >
+                <input type="hidden" name="id" value={d.id} />
+                <input type="hidden" name="slug" value={slug} />
+              </ActionForm>
+            </li>
+          ))}
+        </ul>
+      )}
+      <Uitklap label="Doelgroep toevoegen" className="mt-3">
+        <ActionForm action={nieuweDoelgroep} submitLabel="Toevoegen">
+          <input type="hidden" name="organizationId" value={organizationId} />
+          <input type="hidden" name="slug" value={slug} />
+          <Field label="Naam" name="name" required placeholder="Websitebezoekers, laatste 180 dagen" />
+          <Field label="Omschrijving" name="description" />
+        </ActionForm>
+      </Uitklap>
+    </div>
   )
 }

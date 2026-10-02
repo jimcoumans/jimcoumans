@@ -197,6 +197,13 @@
       "when": 1790945570930,
       "tag": "0027_campagne_specialisten_en_bandbreedte",
       "breakpoints": true
+    },
+    {
+      "idx": 28,
+      "version": "7",
+      "when": 1790946582694,
+      "tag": "0028_klantreis_en_klantprofiel",
+      "breakpoints": true
     }
   ]
 }

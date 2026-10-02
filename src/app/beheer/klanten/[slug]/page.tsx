@@ -20,7 +20,12 @@ import { listContacts, listAccounts, listPartnersForOrganization, listActivePart
 import { Contactpersonen, Partners, Accounts, Bedrijfsgegevens } from '@/components/CrmSections'
 import { Vestigingen, Concurrenten, Doelen } from '@/components/Bedrijfsprofiel'
 import { Tijdlijn } from '@/components/Tijdlijn'
-import { KlantCampagnes } from '@/components/KlantCampagnes'
+import { KlantCampagnes, VasteDoelgroepen } from '@/components/KlantCampagnes'
+import { KlantreisBalk, KlantreisDetail } from '@/components/Klantreis'
+import { Klantprofiel } from '@/components/Klantprofiel'
+import { getKlantreis } from '@/lib/klantreis'
+import { getProfiel } from '@/lib/klantprofiel'
+import { listOwners } from '@/lib/crm-owners'
 import { getTijdlijn, laatsteContact } from '@/lib/tijdlijn'
 import { BookServiceForm } from '@/components/BookServiceForm'
 import { formatQuantity, unitShort } from '@/lib/quantity'
@@ -42,10 +47,11 @@ export const maxDuration = 26
    rest op waar het hoort, in plaats van door één lange pagina te scrollen. */
 const TABS = [
   { key: 'overzicht', label: 'Overzicht' },
+  { key: 'klantreis', label: 'Klantreis' },
+  { key: 'profiel', label: 'Klantprofiel' },
   { key: 'budget', label: 'Budget en facturen' },
   { key: 'campagnes', label: 'Campagnes' },
   { key: 'contacten', label: 'Contacten' },
-  { key: 'profiel', label: 'Bedrijfsprofiel' },
 ] as const
 type Tab = (typeof TABS)[number]['key']
 
@@ -91,6 +97,11 @@ export default async function KlantPage({
     listDoelen(klant.organization.id),
     getTijdlijn(klant.organization.id, { limiet: 40 }),
     laatsteContact(klant.organization.id),
+  ])
+  const [klantreis, profiel, eigenaren] = await Promise.all([
+    getKlantreis(klant.organization.id),
+    getProfiel(klant.organization.id),
+    listOwners(klant.organization.id),
   ])
   const vandaag = new Date().toISOString().slice(0, 10)
 
@@ -176,6 +187,7 @@ export default async function KlantPage({
 
         {tab === 'overzicht' && (
           <div className="space-y-8">
+            <KlantreisBalk stand={klantreis} slug={slug} />
             <section className="grid gap-4 sm:grid-cols-3">
               <div className="rounded-xl bg-white p-6 shadow-sm">
                 <p className="text-xs text-gray-600">Budget per maand</p>
@@ -214,7 +226,7 @@ export default async function KlantPage({
               />
               </div>
               <div className="min-w-0">
-                <KlantCampagnes organizationId={klant.organization.id} slug={slug} />
+                <KlantCampagnes organizationId={klant.organization.id} slug={slug} metDoelgroepen={false} />
               </div>
             </div>
           </div>
@@ -292,6 +304,8 @@ export default async function KlantPage({
           </div>
         )}
 
+        {tab === 'klantreis' && <KlantreisDetail stand={klantreis} organizationId={klant.organization.id} slug={slug} />}
+
         {tab === 'campagnes' && <KlantCampagnes organizationId={klant.organization.id} slug={slug} />}
 
         {tab === 'contacten' && (
@@ -308,34 +322,41 @@ export default async function KlantPage({
               organizationId={klant.organization.id}
               slug={slug}
             />
-            <Accounts
-              accounts={accounts}
-              organizationId={klant.organization.id}
-              slug={slug}
-            />
             <Gebruikers klant={klant} slug={slug} />
           </div>
         )}
 
         {tab === 'profiel' && (
-          <div className="space-y-10">
-            <Bedrijfsgegevens org={klant.organization} slug={slug} />
-
-            <Doelen organizationId={klant.organization.id} slug={slug} doelen={doelen} />
-
-            <div className="grid gap-6 xl:grid-cols-2">
-              <Vestigingen
+          <Klantprofiel
+            organisatie={klant.organization}
+            profiel={profiel}
+            marketingmanager={eigenaren.find((e) => e.isPrimary)?.name ?? null}
+            pakketten={actief.map((a) => ({ naam: a.subscription.name, start: a.subscription.startedOn }))}
+            vestigingen={vestigingen.map((v) => v.name)}
+            rechts={{
+              1: (
+                <div className="space-y-6">
+                  <Bedrijfsgegevens org={klant.organization} slug={slug} />
+                  <Vestigingen
                 organizationId={klant.organization.id}
                 slug={slug}
                 vestigingen={vestigingen}
               />
-              <Concurrenten
+                </div>
+              ),
+              2: <Concurrenten
                 organizationId={klant.organization.id}
                 slug={slug}
                 concurrenten={concurrenten}
-              />
-            </div>
-          </div>
+              />,
+              3: <Doelen organizationId={klant.organization.id} slug={slug} doelen={doelen} />,
+              4: <VasteDoelgroepen organizationId={klant.organization.id} slug={slug} />,
+              6: (
+                <Accounts accounts={accounts} organizationId={klant.organization.id} slug={slug} />
+              ),
+              8: <KlantCampagnes organizationId={klant.organization.id} slug={slug} metDoelgroepen={false} />,
+            }}
+          />
         )}
     </AppShell>
   )
