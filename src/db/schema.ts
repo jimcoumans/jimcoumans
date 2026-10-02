@@ -11,6 +11,7 @@ import {
   check,
   boolean,
   primaryKey,
+  jsonb,
 } from 'drizzle-orm/pg-core'
 import { relations, sql } from 'drizzle-orm'
 
@@ -2943,6 +2944,255 @@ export const generatedContracts = pgTable(
   ],
 )
 
+/* -------------------------------------------------------------------------
+   Campagnebriefings.
+
+   Eén briefing per campagne: het doel in harde getallen, de hypothese die
+   daaruit volgt, aanbod, doelgroep, kanalen, planning en afspraken. Hij gaat
+   eerst als voorstel naar de klant en pas na akkoord naar het team.
+
+   Elke briefing gebruikt dezelfde velden. Wat bij één campagne bijzonder is
+   (couverts per reservering, een stopcriterium), staat in een opmerking en
+   niet in een eigen kolom. Zo blijft elke briefing hetzelfde formulier.
+
+   Percentages staan in basispunten (2,5% = 250) en "eenheden per conversie"
+   in honderdsten (3 = 300): gehele getallen, net als de bedragen in centen.
+   ------------------------------------------------------------------------- */
+
+export const campaignStatusEnum = pgEnum('campaign_status', [
+  'concept', // nog in de maak, alleen intern
+  'voorstel', // naar de klant, wacht op akkoord
+  'akkoord', // de klant is akkoord, het team werkt eraan
+  'afgerond', // voorbij, blijft als historie op de klantkaart
+])
+
+export const campaignKindEnum = pgEnum('campaign_kind', ['retainer', 'project'])
+
+/** Berekend uit het doel (de hypothese geeft het advies) of een vast bedrag. */
+export const budgetModeEnum = pgEnum('budget_mode', ['berekend', 'vast'])
+
+export const channelStatusEnum = pgEnum('channel_status', ['bestaat', 'maken'])
+
+/** De vaste doelgroepen van een klant, om in elke briefing uit te kiezen. */
+export const organizationAudiences = pgTable(
+  'organization_audiences',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    organizationId: uuid('organization_id')
+      .notNull()
+      .references(() => organizations.id, { onDelete: 'cascade' }),
+    name: text('name').notNull(),
+    /** Wie het zijn, en waar ze vandaan komen (klantenlijst, websitebezoekers, interesses). */
+    description: text('description'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('organization_audiences_org_idx').on(t.organizationId),
+    check('audience_name_not_empty', sql`length(trim(${t.name})) > 0`),
+  ],
+)
+
+export const campaigns = pgTable(
+  'campaigns',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    organizationId: uuid('organization_id')
+      .notNull()
+      .references(() => organizations.id, { onDelete: 'cascade' }),
+    title: text('title').notNull(),
+    status: campaignStatusEnum('status').notNull().default('concept'),
+    kind: campaignKindEnum('kind'),
+    marketingManagerId: uuid('marketing_manager_id').references(() => users.id, {
+      onDelete: 'set null',
+    }),
+
+    /** De samenvatting bovenaan. Gemaakt bij het versturen, aan te passen. */
+    summary: text('summary'),
+
+    /* --- Het doel --- */
+    goalSentence: text('goal_sentence'),
+    resultDefinition: text('result_definition'),
+    budgetMode: budgetModeEnum('budget_mode').notNull().default('berekend'),
+    /** Alleen bij een vast budget. */
+    fixedBudgetCents: integer('fixed_budget_cents'),
+    /** Verdeling per maand en over targeting en retargeting. */
+    budgetNote: text('budget_note'),
+    /** Opmerkingen bij de KPI's, één per regel. */
+    kpiNotes: text('kpi_notes'),
+
+    /* --- Aanbod en boodschap --- */
+    offerWhat: text('offer_what'),
+    offerMessage: text('offer_message'),
+    offerWhyNow: text('offer_why_now'),
+    offerNotPromised: text('offer_not_promised'),
+
+    /* --- Doelgroep --- */
+    region: text('region'),
+    exclusions: text('exclusions'),
+    audienceNotes: text('audience_notes'),
+
+    /* --- Planning --- */
+    startOn: timestamp('start_on', { withTimezone: true }),
+    endOn: timestamp('end_on', { withTimezone: true }),
+    planningNotes: text('planning_notes'),
+
+    /* --- Afspraken en achtergrond --- */
+    clientDoes: text('client_does'),
+    agreementNotes: text('agreement_notes'),
+    backgroundPrevious: text('background_previous'),
+    backgroundRisks: text('background_risks'),
+
+    /* --- Aannames van de hypothese --- */
+    unitsPerConversionHundredths: integer('units_per_conversion_hundredths').notNull().default(100),
+    conversionRateBp: integer('conversion_rate_bp'),
+    clickThroughRateBp: integer('click_through_rate_bp'),
+    cpmCents: integer('cpm_cents'),
+    bufferBp: integer('buffer_bp').notNull().default(2000),
+    sourceUnits: text('source_units'),
+    sourceConversion: text('source_conversion'),
+    sourceClickThrough: text('source_click_through'),
+    sourceCpm: text('source_cpm'),
+    assumptionNotes: text('assumption_notes'),
+
+    /** Velden die als voorstel zijn aangevinkt, bijv. ['budget', 'kernboodschap']. */
+    proposalFields: text('proposal_fields').array().notNull().default(sql`ARRAY[]::text[]`),
+
+    /** Het versienummer van de laatst verstuurde of goedgekeurde versie. 0 = nog nooit verstuurd. */
+    version: integer('version').notNull().default(0),
+    clickupTaskId: text('clickup_task_id'),
+
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+    createdByUserId: uuid('created_by_user_id').references(() => users.id, {
+      onDelete: 'set null',
+    }),
+  },
+  (t) => [
+    index('campaigns_org_idx').on(t.organizationId),
+    index('campaigns_status_idx').on(t.status),
+    check('campaign_title_not_empty', sql`length(trim(${t.title})) > 0`),
+    check('campaign_units_positive', sql`${t.unitsPerConversionHundredths} > 0`),
+    check(
+      'campaign_rates_valid',
+      sql`(${t.conversionRateBp} IS NULL OR ${t.conversionRateBp} BETWEEN 1 AND 10000)
+          AND (${t.clickThroughRateBp} IS NULL OR ${t.clickThroughRateBp} BETWEEN 1 AND 10000)
+          AND ${t.bufferBp} BETWEEN 0 AND 10000`,
+    ),
+    check('campaign_fixed_budget', sql`${t.fixedBudgetCents} IS NULL OR ${t.fixedBudgetCents} > 0`),
+    check('campaign_period', sql`${t.startOn} IS NULL OR ${t.endOn} IS NULL OR ${t.endOn} >= ${t.startOn}`),
+  ],
+)
+
+export const campaignContacts = pgTable(
+  'campaign_contacts',
+  {
+    campaignId: uuid('campaign_id')
+      .notNull()
+      .references(() => campaigns.id, { onDelete: 'cascade' }),
+    contactId: uuid('contact_id')
+      .notNull()
+      .references(() => contacts.id, { onDelete: 'cascade' }),
+  },
+  (t) => [primaryKey({ columns: [t.campaignId, t.contactId] })],
+)
+
+export const campaignAudiences = pgTable(
+  'campaign_audiences',
+  {
+    campaignId: uuid('campaign_id')
+      .notNull()
+      .references(() => campaigns.id, { onDelete: 'cascade' }),
+    audienceId: uuid('audience_id')
+      .notNull()
+      .references(() => organizationAudiences.id, { onDelete: 'cascade' }),
+  },
+  (t) => [primaryKey({ columns: [t.campaignId, t.audienceId] })],
+)
+
+/** De KPI's: wat er verkocht moet worden, per product of onderdeel. */
+export const campaignKpis = pgTable(
+  'campaign_kpis',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    campaignId: uuid('campaign_id')
+      .notNull()
+      .references(() => campaigns.id, { onDelete: 'cascade' }),
+    position: integer('position').notNull().default(0),
+    label: text('label').notNull(),
+    on: timestamp('date_on', { withTimezone: true }),
+    targetQuantity: integer('target_quantity').notNull(),
+    priceCents: integer('price_cents'),
+  },
+  (t) => [
+    index('campaign_kpis_campaign_idx').on(t.campaignId),
+    check('kpi_quantity_positive', sql`${t.targetQuantity} > 0`),
+    check('kpi_price_valid', sql`${t.priceCents} IS NULL OR ${t.priceCents} >= 0`),
+  ],
+)
+
+/** Kanalen, middelen en content: één regel per stuk, met of het er al is. */
+export const campaignChannels = pgTable(
+  'campaign_channels',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    campaignId: uuid('campaign_id')
+      .notNull()
+      .references(() => campaigns.id, { onDelete: 'cascade' }),
+    position: integer('position').notNull().default(0),
+    kind: text('kind').notNull(),
+    quantity: text('quantity'),
+    note: text('note'),
+    status: channelStatusEnum('status').notNull().default('maken'),
+  },
+  (t) => [index('campaign_channels_campaign_idx').on(t.campaignId)],
+)
+
+/** De tijdlijn is de takenlijst. Bij akkoord wordt elke regel een subtaak in ClickUp. */
+export const campaignTimeline = pgTable(
+  'campaign_timeline',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    campaignId: uuid('campaign_id')
+      .notNull()
+      .references(() => campaigns.id, { onDelete: 'cascade' }),
+    dueOn: timestamp('due_on', { withTimezone: true }),
+    description: text('description').notNull(),
+    assigneeUserId: uuid('assignee_user_id').references(() => users.id, { onDelete: 'set null' }),
+    /** Voor wie geen collega is, bijvoorbeeld "Klant" of "Campagne". */
+    assigneeLabel: text('assignee_label'),
+    clickupTaskId: text('clickup_task_id'),
+  },
+  (t) => [
+    index('campaign_timeline_campaign_idx').on(t.campaignId),
+    check('timeline_description_not_empty', sql`length(trim(${t.description})) > 0`),
+  ],
+)
+
+/**
+ * Elke verstuurde of goedgekeurde versie, bevroren.
+ *
+ * Wat de klant als voorstel kreeg en waar hij akkoord op gaf, moet later nog
+ * precies terug te lezen zijn, ook als de briefing daarna verandert. Daarom
+ * een momentopname en geen verwijzing.
+ */
+export const campaignVersions = pgTable(
+  'campaign_versions',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    campaignId: uuid('campaign_id')
+      .notNull()
+      .references(() => campaigns.id, { onDelete: 'cascade' }),
+    version: integer('version').notNull(),
+    status: campaignStatusEnum('status').notNull(),
+    snapshot: jsonb('snapshot').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    createdByUserId: uuid('created_by_user_id').references(() => users.id, {
+      onDelete: 'set null',
+    }),
+  },
+  (t) => [uniqueIndex('campaign_versions_idx').on(t.campaignId, t.version, t.status)],
+)
+
 export type Organization = typeof organizations.$inferSelect
 export type User = typeof users.$inferSelect
 export type Wallet = typeof wallets.$inferSelect
@@ -2982,3 +3232,9 @@ export type JobProfile = typeof jobProfiles.$inferSelect
 export type ContractTemplate = typeof contractTemplates.$inferSelect
 export type ContractTemplateArticle = typeof contractTemplateArticles.$inferSelect
 export type GeneratedContract = typeof generatedContracts.$inferSelect
+export type OrganizationAudience = typeof organizationAudiences.$inferSelect
+export type Campaign = typeof campaigns.$inferSelect
+export type CampaignKpi = typeof campaignKpis.$inferSelect
+export type CampaignChannel = typeof campaignChannels.$inferSelect
+export type CampaignTimelineItem = typeof campaignTimeline.$inferSelect
+export type CampaignVersion = typeof campaignVersions.$inferSelect

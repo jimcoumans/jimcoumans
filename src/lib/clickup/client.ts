@@ -63,6 +63,37 @@ export class ClickUpClient {
     return response.json() as Promise<T>
   }
 
+  private async post<T>(path: string, body: unknown): Promise<T> {
+    const response = await fetch(`${BASE}${path}`, {
+      method: 'POST',
+      headers: { Authorization: this.token, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      cache: 'no-store',
+    })
+    if (response.status === 429) {
+      throw new ClickUpError('ClickUp rate limit geraakt. Probeer het later opnieuw.', 429)
+    }
+    if (!response.ok) {
+      const tekst = await response.text().catch(() => '')
+      throw new ClickUpError(`ClickUp gaf ${response.status} op ${path}: ${tekst.slice(0, 200)}`, response.status)
+    }
+    return response.json() as Promise<T>
+  }
+
+  /** Een taak aanmaken, of een subtaak als er een parent is. */
+  async createTask(
+    listId: string,
+    taak: { name: string; description?: string; due_date?: number; assignees?: number[]; parent?: string },
+  ): Promise<ClickUpTask> {
+    return this.post<ClickUpTask>(`/list/${listId}/task`, { ...taak, due_date_time: false })
+  }
+
+  /** De leden van de workspace, om collega's op e-mailadres te vinden. */
+  async teamMembers(): Promise<{ id: number; email: string }[]> {
+    const data = await this.get<{ teams: { members: { user: { id: number; email: string } }[] }[] }>('/team')
+    return data.teams.flatMap((t) => t.members.map((m) => ({ id: m.user.id, email: m.user.email.toLowerCase() })))
+  }
+
   /**
    * Alle taken uit een lijst, inclusief afgeronde. ClickUp levert honderd
    * taken per pagina, dus we lopen door tot de laatste pagina.
