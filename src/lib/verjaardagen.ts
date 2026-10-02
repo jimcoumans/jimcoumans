@@ -2,6 +2,7 @@ import { and, asc, eq, isNotNull, sql } from 'drizzle-orm'
 import { db } from '@/db'
 import { contacts, organizations, partners, users, contactChildren } from '@/db/schema'
 import { teamJubileaInMaand, teamVerjaardagenInMaand } from './team'
+import { leeftijdOpVerjaardag } from './leeftijd'
 
 /* -------------------------------------------------------------------------
    Verjaardagen en jubilea.
@@ -82,7 +83,7 @@ export async function verjaardagenInMaand(
     organizationSlug: r.organizationSlug,
     dag: r.contact.birthDay!,
     maand: r.contact.birthMonth!,
-    wordt: r.contact.birthYear === null ? null : peiljaar - r.contact.birthYear,
+    wordt: leeftijdOpVerjaardag(r.contact.birthYear, peiljaar),
   }))
 }
 
@@ -290,7 +291,7 @@ export async function komendeVerjaardagen(
       dag: v.dag,
       maand: v.maand,
       overDagen,
-      wordt: v.jaar === null ? null : jaarVanVieren - v.jaar,
+      wordt: leeftijdOpVerjaardag(v.jaar, jaarVanVieren),
     }
   })
 

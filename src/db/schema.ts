@@ -245,6 +245,94 @@ export const dossierKindEnum = pgEnum('dossier_kind', [
   'overig',
 ])
 
+/* ------------------------------- Werving ---------------------------------
+   Wat een vacature is, en waar een kandidaat staat.
+
+   Er staat met opzet GEEN geboortedatum, leeftijd, foto of nationaliteit bij
+   een kandidaat. Die heb je niet nodig om iemand aan te nemen, en zodra ze
+   er staan worden ze gebruikt - bewust of niet. Bij de indiensttreding vul
+   je ze in het personeelsdossier in.
+   ------------------------------------------------------------------------- */
+
+export const vacancyKindEnum = pgEnum('vacancy_kind', [
+  'dienstverband',
+  'stage',
+  'freelance',
+])
+
+export const vacancyStatusEnum = pgEnum('vacancy_status', [
+  'concept', // wordt nog geschreven
+  'open', // staat uit, kandidaten welkom
+  'gepauzeerd', // even niet, maar niet ingetrokken
+  'vervuld', // iemand aangenomen
+  'ingetrokken', // gaat niet door
+])
+
+/**
+ * Waar een kandidaat staat.
+ *
+ * Drie eindstations en die zijn niet hetzelfde: afgewezen is onze keuze,
+ * afgehaakt is die van de kandidaat. Gooi je dat op een hoop, dan kun je
+ * niet meer zien of je te streng selecteert of dat mensen afhaken - en dat
+ * vraagt om twee totaal verschillende maatregelen.
+ */
+export const candidateStatusEnum = pgEnum('candidate_status', [
+  'nieuw',
+  'in_gesprek',
+  'tweede_gesprek',
+  'aanbod',
+  'aangenomen',
+  'afgewezen',
+  'afgehaakt',
+])
+
+/** Waar een kandidaat vandaan komt. Dit is het getal dat werving stuurt. */
+export const candidateSourceEnum = pgEnum('candidate_source', [
+  'website', // sollicitatieformulier op jamesrobinson.nl
+  'linkedin',
+  'indeed',
+  'school', // via een opleiding of stagecoordinator
+  'doorverwijzing', // iemand uit het team of het netwerk bracht hem aan
+  'zelf_benaderd',
+  'open_sollicitatie',
+  'anders',
+])
+
+/* -------------------------------- Contracten -----------------------------
+   Bepalingen die van de functie afhangen, en bepalingen die van de looptijd
+   afhangen. Allebei staan ze als voorwaarde bij het artikel, zodat de tekst
+   zelf geen keuzes hoeft te maken.
+   ------------------------------------------------------------------------- */
+
+/**
+ * Wanneer een artikel in het contract komt.
+ *
+ * Een vaste lijst en geen vrije uitdrukking. Een taal waarin je zelf
+ * voorwaarden kunt schrijven is krachtiger, maar dan staat er in de database
+ * code die niemand nakijkt en die een juridisch document bepaalt. Deze
+ * voorwaarden worden in de code uitgerekend en zijn daar getest.
+ */
+export const artikelVoorwaardeEnum = pgEnum('artikel_voorwaarde', [
+  'altijd',
+  'bepaalde_tijd',
+  'onbepaalde_tijd',
+  'proeftijd', // alleen als er een geldige proeftijd is
+  'relatiebeding', // hangt aan het functieprofiel
+  'op_toeslag', // geen pensioenregeling, wel compensatie
+  'pensioenregeling',
+  'vrijetijdsbudget',
+  'extra_afspraken', // het functieprofiel heeft eigen bepalingen
+])
+
+/** Een concept dat je opstuurt, of het stuk dat getekend wordt. */
+export const contractSoortEnum = pgEnum('contract_soort', ['proforma', 'definitief'])
+
+export const candidateDocumentKindEnum = pgEnum('candidate_document_kind', [
+  'cv',
+  'motivatie',
+  'overig',
+])
+
 export const assetKindEnum = pgEnum('asset_kind', [
   'laptop',
   'telefoon',
@@ -2193,6 +2281,668 @@ export const deals = pgTable(
   ],
 )
 
+/* ------------------------------- Salarishuis -----------------------------
+   Het salarishuis: schalen, tredes en wat daaruit volgt.
+
+   Waarom dit een tabel is en geen constante in de code: het huis wordt
+   geindexeerd. Doe je dat door de getallen te overschrijven, dan verandert
+   met terugwerkende kracht wat er vorig jaar is afgesproken en klopt geen
+   enkel contract uit het verleden meer. Elke indexering is daarom een NIEUW
+   huis met een eigen ingangsdatum, en het oude blijft staan.
+
+   Een contract bewaart bovendien het BEDRAG en niet alleen de verwijzing
+   naar schaal en trede. Dezelfde reden: het bedrag van toen is een feit,
+   de verwijzing is een berekening die morgen anders uitpakt.
+   ------------------------------------------------------------------------- */
+
+/**
+ * Een versie van het salarishuis, geldig vanaf een datum.
+ *
+ * Alle bedragen zijn fulltime en in centen. Wat iemand in deeltijd krijgt is
+ * een berekening, geen opgeslagen getal.
+ */
+export const salaryHouses = pgTable(
+  'salary_houses',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    /** Vanaf wanneer dit huis geldt. Het laatste huis op of voor een datum wint. */
+    effectiveFrom: timestamp('effective_from', { withTimezone: true }).notNull(),
+
+    /** De grondslag: schaal 1 trede 1, fulltime, in centen. */
+    baseCents: integer('base_cents').notNull(),
+    /**
+     * Verhoging per trede in basispunten. 150 is 1,50%.
+     *
+     * Basispunten en geen kommagetal, want de tredes stapelen: trede 20 is
+     * de grondslag maal 1,015 tot de macht 19. Een afrondingsfoutje in het
+     * percentage groeit daarin mee.
+     */
+    stepIncreaseBp: integer('step_increase_bp').notNull(),
+    /** OP-toeslag in basispunten, bij geen pensioenregeling. 1000 is 10%. */
+    pensionAllowanceBp: integer('pension_allowance_bp').notNull().default(1000),
+    /** Vakantietoeslag in basispunten. 800 is 8%, het wettelijk minimum. */
+    holidayAllowanceBp: integer('holiday_allowance_bp').notNull().default(800),
+
+    /** Wat hier fulltime is, in kwartieren. 4000 is 40 uur per week. */
+    fulltimeHoursWeekQuarters: integer('fulltime_hours_week_quarters').notNull().default(4000),
+    /** Vakantie-uren per kalenderjaar bij fulltime. 200 uur is 25 dagen. */
+    holidayHoursFulltime: integer('holiday_hours_fulltime').notNull().default(200),
+
+    /**
+     * Het wettelijk minimumuurloon in centen op dit moment.
+     *
+     * Staat hier om een contract tegen te kunnen toetsen. De onderste trede
+     * zit daar dicht bij: de bodem gaat elk halfjaar omhoog en het huis niet
+     * automatisch mee. Zonder deze toets merk je dat pas als het te laat is.
+     */
+    minimumHourlyCents: integer('minimum_hourly_cents'),
+
+    note: text('note'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    createdByUserId: uuid('created_by_user_id').references(() => users.id, {
+      onDelete: 'set null',
+    }),
+  },
+  (t) => [
+    // Twee huizen op dezelfde dag: dan is niet te zeggen welke geldt.
+    uniqueIndex('salary_houses_date_idx').on(t.effectiveFrom),
+    check('salary_house_base_positive', sql`${t.baseCents} > 0`),
+    check(
+      'salary_house_step_valid',
+      sql`${t.stepIncreaseBp} >= 0 AND ${t.stepIncreaseBp} <= 10000`,
+    ),
+    check(
+      'salary_house_pension_valid',
+      sql`${t.pensionAllowanceBp} >= 0 AND ${t.pensionAllowanceBp} <= 10000`,
+    ),
+    check(
+      'salary_house_holiday_valid',
+      sql`${t.holidayAllowanceBp} >= 0 AND ${t.holidayAllowanceBp} <= 10000`,
+    ),
+    check(
+      'salary_house_fulltime_valid',
+      sql`${t.fulltimeHoursWeekQuarters} > 0 AND ${t.fulltimeHoursWeekQuarters} <= 8000`,
+    ),
+    check(
+      'salary_house_holiday_hours_valid',
+      sql`${t.holidayHoursFulltime} >= 0 AND ${t.holidayHoursFulltime} <= 2000`,
+    ),
+    check(
+      'salary_house_minimum_valid',
+      sql`${t.minimumHourlyCents} IS NULL OR ${t.minimumHourlyCents} > 0`,
+    ),
+  ],
+)
+
+/**
+ * Een schaal binnen een huis: Junior, Medior, Senior.
+ *
+ * LET OP, en dit is de val waar dit hele bestand om draait: de opslag is
+ * TEN OPZICHTE VAN DE VORIGE SCHAAL, niet ten opzichte van de grondslag.
+ * Senior staat op 125%, maar dat is 125% van Medior en niet van de
+ * grondslag. Lees je het als het laatste, dan zit elk seniorcontract er
+ * bijna vijfhonderd euro per maand naast en ziet niemand dat aan de
+ * formule. De volgorde bepaalt dus de uitkomst; vandaar dat sortOrder
+ * verplicht en uniek is.
+ */
+export const salaryScales = pgTable(
+  'salary_scales',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    houseId: uuid('house_id')
+      .notNull()
+      .references(() => salaryHouses.id, { onDelete: 'cascade' }),
+
+    /** Functiegroep: Junior, Medior, Senior. */
+    name: text('name').notNull(),
+    /** 1 is de onderste schaal. Bepaalt op welke schaal de opslag stapelt. */
+    sortOrder: integer('sort_order').notNull(),
+    /**
+     * Opslag ten opzichte van de VORIGE schaal, in basispunten.
+     * 10000 is gelijk aan de vorige, 11500 is 15% erbovenop.
+     */
+    multiplierBp: integer('multiplier_bp').notNull(),
+    /** Hoeveel tredes deze schaal heeft. */
+    steps: integer('steps').notNull(),
+  },
+  (t) => [
+    uniqueIndex('salary_scales_order_idx').on(t.houseId, t.sortOrder),
+    uniqueIndex('salary_scales_name_idx').on(t.houseId, t.name),
+    check('salary_scale_name_not_empty', sql`length(trim(${t.name})) > 0`),
+    check('salary_scale_order_positive', sql`${t.sortOrder} > 0`),
+    check(
+      'salary_scale_multiplier_valid',
+      sql`${t.multiplierBp} > 0 AND ${t.multiplierBp} <= 100000`,
+    ),
+    check('salary_scale_steps_valid', sql`${t.steps} > 0 AND ${t.steps} <= 100`),
+  ],
+)
+
+/* -------------------------------- Werving --------------------------------
+   Vacatures en kandidaten.
+
+   Het mechanisme is hetzelfde als bij de salespijplijn: niet het bord met
+   fases maar de VOLGENDE ACTIE. Met een verschil dat zwaarder weegt. Een
+   deal die blijft liggen kost geld; een kandidaat die blijft liggen zit
+   drie weken op een antwoord te wachten en vertelt dat door. Voor een
+   bureau dat zijn eigen marketing als visitekaartje ziet is stilte het
+   duurste wat er is.
+
+   Daarom staat er bij een kandidaat naast de volgende actie ook wanneer hij
+   gesolliciteerd heeft. Daarmee is te zien hoe lang iemand al wacht, en dat
+   is het enige getal dat er in de eerste week toe doet.
+   ------------------------------------------------------------------------- */
+
+export const vacancies = pgTable(
+  'vacancies',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    title: text('title').notNull(),
+    kind: vacancyKindEnum('kind').notNull().default('dienstverband'),
+    status: vacancyStatusEnum('status').notNull().default('concept'),
+
+    /** Hoeveel mensen we hiervoor zoeken. Twee marketing managers is een vacature. */
+    positions: integer('positions').notNull().default(1),
+    /** Wie hem trekt. Zonder eigenaar blijft een vacature liggen. */
+    ownerUserId: uuid('owner_user_id').references(() => users.id, { onDelete: 'set null' }),
+
+    /* --- Wat we bieden ---
+       Schaal en tredes uit het salarishuis, als tekst en getal en niet als
+       verwijzing. Het huis wordt geindexeerd en krijgt dan een nieuwe versie;
+       wat er in de vacature stond blijft dan staan zoals het er stond. */
+    salaryScaleName: text('salary_scale_name'),
+    salaryStepMin: integer('salary_step_min'),
+    salaryStepMax: integer('salary_step_max'),
+    /** Uren per week in kwartieren. 3200 is 32 uur. */
+    hoursPerWeekQuarters: integer('hours_week_quarters'),
+
+    /** Waarom deze vacature er is: een capaciteitsgat of groei. */
+    reason: text('reason'),
+    description: text('description'),
+
+    openedOn: timestamp('opened_on', { withTimezone: true }),
+    /** Wanneer hij dicht ging, ongeacht of dat vervuld of ingetrokken was. */
+    closedOn: timestamp('closed_on', { withTimezone: true }),
+
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('vacancies_status_idx').on(t.status),
+    index('vacancies_owner_idx').on(t.ownerUserId),
+    check('vacancy_title_not_empty', sql`length(trim(${t.title})) > 0`),
+    check('vacancy_positions_valid', sql`${t.positions} > 0 AND ${t.positions} <= 100`),
+    check(
+      'vacancy_hours_valid',
+      sql`${t.hoursPerWeekQuarters} IS NULL OR (${t.hoursPerWeekQuarters} > 0 AND ${t.hoursPerWeekQuarters} <= 8000)`,
+    ),
+    // Een tredebereik dat achterstevoren staat betekent iets anders dan
+    // bedoeld en valt op het scherm niet op.
+    check(
+      'vacancy_steps_ordered',
+      sql`${t.salaryStepMin} IS NULL OR ${t.salaryStepMax} IS NULL OR ${t.salaryStepMax} >= ${t.salaryStepMin}`,
+    ),
+    check(
+      'vacancy_steps_positive',
+      sql`(${t.salaryStepMin} IS NULL OR ${t.salaryStepMin} > 0) AND (${t.salaryStepMax} IS NULL OR ${t.salaryStepMax} > 0)`,
+    ),
+    check(
+      'vacancy_closed_after_opened',
+      sql`${t.closedOn} IS NULL OR ${t.openedOn} IS NULL OR ${t.closedOn} >= ${t.openedOn}`,
+    ),
+  ],
+)
+
+/**
+ * Een kandidaat.
+ *
+ * De bewaartermijn is geen administratief veldje maar het hart van dit
+ * onderdeel. Sollicitatiegegevens mogen vier weken na afloop van de
+ * procedure bewaard worden, of een jaar als de kandidaat daar expliciet
+ * toestemming voor geeft. Die termijn staat daarom als datum in de tabel en
+ * niet als regel in iemands hoofd, en er is een taak die er ook echt naar
+ * kijkt.
+ *
+ * Gespreksnotities zijn een vrij tekstveld, en dat is een bewuste afweging.
+ * Je hebt ze nodig, en laat je het veld weg dan komen ze in een Word-bestand
+ * te staan waar helemaal geen termijn op zit. De bescherming zit hier dus in
+ * de korte bewaartermijn die echt draait, niet in een ontbrekend veld.
+ */
+export const candidates = pgTable(
+  'candidates',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    /** Leeg bij een open sollicitatie: die hoort nergens specifiek bij. */
+    vacancyId: uuid('vacancy_id').references(() => vacancies.id, { onDelete: 'set null' }),
+
+    /** Samengesteld uit de delen hieronder, net als bij contactpersonen. */
+    name: text('name').notNull(),
+    firstName: text('first_name'),
+    infix: text('infix'),
+    lastName: text('last_name'),
+    email: text('email'),
+    phone: text('phone'),
+    linkedinUrl: text('linkedin_url'),
+    /**
+     * Waar het cv vandaan kwam bij een sollicitatie via de website.
+     *
+     * Elementor zet het bestand op de WordPress-server en stuurt ons een
+     * link. Wij halen het bestand op en slaan het hier op, maar de link
+     * blijft staan: daarmee is te zien welk bestand op jamesrobinson.nl nog
+     * opgeruimd moet worden, en als het ophalen mislukte kun je er alsnog
+     * bij. Hij verdwijnt mee als de kandidaat wordt gewist.
+     */
+    cvSourceUrl: text('cv_source_url'),
+
+    source: candidateSourceEnum('source').notNull().default('website'),
+    /** Wie hem heeft aangebracht. Doorverwijzing uit het team is goud waard. */
+    referredByUserId: uuid('referred_by_user_id').references(() => users.id, {
+      onDelete: 'set null',
+    }),
+    /** School en opleiding, bij een stage. */
+    school: text('school'),
+    study: text('study'),
+
+    status: candidateStatusEnum('status').notNull().default('nieuw'),
+    /** Wanneer hij solliciteerde. Hiermee zie je hoe lang iemand wacht. */
+    appliedOn: timestamp('applied_on', { withTimezone: true }).notNull().defaultNow(),
+    /** Wanneer wij voor het eerst geantwoord hebben. Leeg is stilte. */
+    respondedOn: timestamp('responded_on', { withTimezone: true }),
+
+    /** De volgende stap, en wanneer. Samen of geen van beide. */
+    nextAction: text('next_action'),
+    nextActionOn: timestamp('next_action_on', { withTimezone: true }),
+
+    notes: text('notes'),
+
+    /* --- Afloop --- */
+    /** Wanneer de procedure eindigde. Vanaf hier loopt de bewaartermijn. */
+    closedOn: timestamp('closed_on', { withTimezone: true }),
+    /** Waarom afgewezen of waarom afgehaakt. Hier leer je van. */
+    closedReason: text('closed_reason'),
+    /** Bij aangenomen: de medewerker die hij geworden is. */
+    hiredUserId: uuid('hired_user_id').references(() => users.id, { onDelete: 'set null' }),
+
+    /* --- Bewaartermijn --- */
+    /**
+     * Tot wanneer we deze gegevens mogen bewaren. Leeg zolang de procedure
+     * loopt; dan is er een lopend belang en telt de termijn niet.
+     */
+    retentionUntil: timestamp('retention_until', { withTimezone: true }),
+    /** Wanneer de kandidaat toestemming gaf om hem langer te bewaren. */
+    retentionConsentOn: timestamp('retention_consent_on', { withTimezone: true }),
+
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('candidates_vacancy_idx').on(t.vacancyId, t.status),
+    index('candidates_status_idx').on(t.status),
+    // Waarop de opruimtaak zoekt. Zonder index loopt die elke nacht over alles.
+    index('candidates_retention_idx').on(t.retentionUntil),
+    check('candidate_name_not_empty', sql`length(trim(${t.name})) > 0`),
+    // Een volgende actie zonder datum is een voornemen, een datum zonder
+    // actie is een herinnering aan niets. Allebei of geen van beide.
+    check(
+      'candidate_next_action_complete',
+      sql`(length(trim(COALESCE(${t.nextAction}, ''))) > 0) = (${t.nextActionOn} IS NOT NULL)`,
+    ),
+    // De drie eindstations hebben een einddatum, de rest niet. Zonder deze
+    // regel loopt de bewaartermijn nooit af voor wie vergeten is af te sluiten.
+    check(
+      'candidate_closed_matches_status',
+      sql`(${t.status} IN ('aangenomen', 'afgewezen', 'afgehaakt')) = (${t.closedOn} IS NOT NULL)`,
+    ),
+    // Bewaartermijn en einddatum horen bij elkaar: zolang de procedure loopt
+    // is er een belang, daarna telt de klok.
+    check(
+      'candidate_retention_matches_closed',
+      sql`(${t.closedOn} IS NULL) = (${t.retentionUntil} IS NULL)`,
+    ),
+    check(
+      'candidate_retention_after_closed',
+      sql`${t.retentionUntil} IS NULL OR ${t.retentionUntil} >= ${t.closedOn}`,
+    ),
+    // Alleen wie is aangenomen kan een medewerker zijn geworden.
+    check(
+      'candidate_hired_only_when_hired',
+      sql`${t.hiredUserId} IS NULL OR ${t.status} = 'aangenomen'`,
+    ),
+    check(
+      'candidate_responded_after_applied',
+      sql`${t.respondedOn} IS NULL OR ${t.respondedOn} >= ${t.appliedOn}`,
+    ),
+  ],
+)
+
+/**
+ * Bestanden bij een kandidaat: het cv, een motivatiebrief.
+ *
+ * Los van de kandidaat en met ON DELETE CASCADE, en dat is hier geen
+ * detail: als de bewaartermijn afloopt en de kandidaat wordt gewist, gaat
+ * het cv vanzelf mee. Zou het bestand ergens anders staan, dan is er een
+ * tweede opruiming nodig die iemand vergeet.
+ *
+ * Opgeslagen in de database en niet op een schijf, net als bij de logo's.
+ * Een serverless functie heeft geen schijf die blijft bestaan, en een extra
+ * dienst voor dertig cv's per jaar is meer onderhoud dan het oplevert.
+ */
+export const candidateDocuments = pgTable(
+  'candidate_documents',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    candidateId: uuid('candidate_id')
+      .notNull()
+      .references(() => candidates.id, { onDelete: 'cascade' }),
+
+    kind: candidateDocumentKindEnum('kind').notNull().default('cv'),
+    /** application/pdf, of een Word-bestand. */
+    contentType: text('content_type').notNull(),
+    bytes: integer('bytes').notNull(),
+    /** Het bestand zelf, als base64. Zelfde aanpak als bij afbeeldingen. */
+    data: text('data').notNull(),
+    /** Oorspronkelijke bestandsnaam, puur om te tonen. */
+    filename: text('filename'),
+
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('candidate_documents_candidate_idx').on(t.candidateId),
+    // Vijf megabyte is ruim voor een cv en krap genoeg om te voorkomen dat
+    // iemand zijn portfolio van tweehonderd megabyte in de database zet.
+    check('candidate_document_size_reasonable', sql`${t.bytes} > 0 AND ${t.bytes} <= 5242880`),
+    /* Geen SVG en geen HTML: daar kan script in zitten dat daarna in de
+       browser van een collega draait. Geen zip: dan weet je niet wat erin
+       zit. Alleen de formaten waarin een cv daadwerkelijk wordt gestuurd. */
+    check(
+      'candidate_document_type_allowed',
+      sql`${t.contentType} IN (
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      )`,
+    ),
+  ],
+)
+
+/* -------------------------------- Contracten -----------------------------
+   Een contract wordt opgebouwd uit drie dingen: een sjabloon met artikelen,
+   een functieprofiel met wat per functie verschilt, en de gegevens van deze
+   ene persoon.
+
+   Wat er NIET gebeurt: het sjabloon wordt niet opgezocht als je een oud
+   contract opent. Het contract bewaart zijn eigen uitgeschreven tekst. Een
+   arbeidsovereenkomst is een afspraak tussen twee partijen; die verandert
+   niet omdat iemand later een zin in een sjabloon heeft bijgewerkt.
+   ------------------------------------------------------------------------- */
+
+/**
+ * De gegevens van de werkgever zoals ze in een contract komen.
+ *
+ * Eén rij. Staat in de database en niet in de code omdat er een verhuizing
+ * aan zit te komen: het bezoekadres wordt per 1 oktober 2026 een ander, en
+ * dat wil je aanpassen zonder een nieuwe versie uit te rollen.
+ *
+ * Het vestigingsadres en de werkplek staan apart. In het contract van
+ * Voncken stonden twee verschillende adressen in dezelfde overeenkomst - de
+ * kop zei Klimmenerweg, artikel 4 zei Aalbekerweg. Als het twee velden zijn
+ * kan dat niet meer per ongeluk.
+ */
+export const employerSettings = pgTable(
+  'employer_settings',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    legalName: text('legal_name').notNull(),
+    /** Statutaire vestiging: wat er in de kop van het contract staat. */
+    registeredAddress: text('registered_address').notNull(),
+    registeredPostalCode: text('registered_postal_code').notNull(),
+    registeredCity: text('registered_city').notNull(),
+    /** Waar het werk gedaan wordt. Mag hetzelfde zijn, maar is een eigen veld. */
+    workAddress: text('work_address').notNull(),
+    workPostalCode: text('work_postal_code').notNull(),
+    workCity: text('work_city').notNull(),
+    /** Wie tekent, zoals het onder het contract komt te staan. */
+    signatories: text('signatories').notNull(),
+    kvkNumber: text('kvk_number'),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    check('employer_name_not_empty', sql`length(trim(${t.legalName})) > 0`),
+    check('employer_signatories_not_empty', sql`length(trim(${t.signatories})) > 0`),
+  ],
+)
+
+/**
+ * Wat er per functie verschilt in een contract.
+ *
+ * Dit bestaat vanwege een concreet probleem in het bestaande contract. De
+ * motivering onder het relatiebeding is daar geschreven voor een marketing
+ * manager met een eigen portefeuille opdrachtgevers. Bij een tijdelijk
+ * contract is een relatiebeding zonder zo'n motivering nietig - en die
+ * motivering klopt niet voor een junior ontwerper of een stagiair. Zonder
+ * dit profiel zou die alinea worden hergebruikt en valt het beding om
+ * precies op het moment dat je het nodig hebt.
+ */
+export const jobProfiles = pgTable(
+  'job_profiles',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    title: text('title').notNull(),
+    active: boolean('active').notNull().default(true),
+
+    /** De schaal uit het salarishuis die hier normaal bij hoort. */
+    defaultScaleName: text('default_scale_name'),
+    defaultHoursWeekQuarters: integer('default_hours_week_quarters'),
+
+    /** Krijgt deze functie een relatiebeding? */
+    hasRelationClause: boolean('has_relation_clause').notNull().default(false),
+    /**
+     * De schriftelijke motivering van het zwaarwegend bedrijfsbelang.
+     *
+     * Verplicht zodra er een relatiebeding is: zonder motivering is het
+     * beding bij een tijdelijk contract nietig. De database dwingt dat af.
+     */
+    relationClauseMotivation: text('relation_clause_motivation'),
+    /** Hoeveel maanden het relatiebeding na afloop doorloopt. */
+    relationClauseMonths: integer('relation_clause_months').notNull().default(12),
+
+    /** Bepalingen die alleen voor deze functie gelden. */
+    extraClauses: text('extra_clauses'),
+
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex('job_profiles_title_idx').on(t.title),
+    check('job_profile_title_not_empty', sql`length(trim(${t.title})) > 0`),
+    // Een relatiebeding zonder motivering is bij een tijdelijk contract
+    // nietig. Dan is het er dus niet, en dan moet het er ook niet staan.
+    check(
+      'job_profile_relation_needs_motivation',
+      sql`${t.hasRelationClause} = false OR length(trim(COALESCE(${t.relationClauseMotivation}, ''))) > 0`,
+    ),
+    check(
+      'job_profile_relation_months_valid',
+      sql`${t.relationClauseMonths} >= 0 AND ${t.relationClauseMonths} <= 60`,
+    ),
+  ],
+)
+
+/** Een sjabloon, met een ingangsdatum zodat je het kunt bijwerken. */
+export const contractTemplates = pgTable(
+  'contract_templates',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    name: text('name').notNull(),
+    /** Welke soort overeenkomst dit is; sluit aan op contract_type. */
+    kind: contractTypeEnum('kind').notNull(),
+    effectiveFrom: timestamp('effective_from', { withTimezone: true }).notNull(),
+    active: boolean('active').notNull().default(true),
+    /** De begeleidende tekst boven het contract, met plaatshouders. */
+    intro: text('intro'),
+    notes: text('notes'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('contract_templates_kind_idx').on(t.kind, t.effectiveFrom),
+    check('contract_template_name_not_empty', sql`length(trim(${t.name})) > 0`),
+  ],
+)
+
+/**
+ * Eén artikel uit een sjabloon.
+ *
+ * Artikelen als rijen en niet als één lap tekst met opmaak erin. Zo kun je
+ * een artikel laten vervallen zonder de nummering met de hand bij te werken,
+ * en staat de voorwaarde bij het artikel in plaats van in de tekst.
+ */
+export const contractTemplateArticles = pgTable(
+  'contract_template_articles',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    templateId: uuid('template_id')
+      .notNull()
+      .references(() => contractTemplates.id, { onDelete: 'cascade' }),
+    sortOrder: integer('sort_order').notNull(),
+    title: text('title').notNull(),
+    /** De leden, gescheiden door een lege regel. Met {{plaatshouders}}. */
+    body: text('body').notNull(),
+    voorwaarde: artikelVoorwaardeEnum('voorwaarde').notNull().default('altijd'),
+  },
+  (t) => [
+    uniqueIndex('contract_template_articles_order_idx').on(t.templateId, t.sortOrder),
+    check('contract_article_title_not_empty', sql`length(trim(${t.title})) > 0`),
+    check('contract_article_body_not_empty', sql`length(trim(${t.body})) > 0`),
+  ],
+)
+
+/**
+ * Een uitgeschreven contract voor één persoon.
+ *
+ * De tekst staat hier voluit. Het sjabloon wordt niet opnieuw opgezocht als
+ * je dit later opent: een arbeidsovereenkomst is een afspraak, en die
+ * verandert niet omdat iemand een zin in een sjabloon heeft bijgewerkt.
+ *
+ * De geboortedatum staat hier wel en bij een kandidaat niet. Dat is geen
+ * inconsistentie: voor een arbeidsovereenkomst heb je hem nodig, voor het
+ * beoordelen van een sollicitatie niet.
+ */
+export const generatedContracts = pgTable(
+  'generated_contracts',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    soort: contractSoortEnum('soort').notNull().default('proforma'),
+
+    templateId: uuid('template_id').references(() => contractTemplates.id, {
+      onDelete: 'set null',
+    }),
+    jobProfileId: uuid('job_profile_id').references(() => jobProfiles.id, {
+      onDelete: 'set null',
+    }),
+    /** Een concept voor een kandidaat, of een contract voor een collega. */
+    candidateId: uuid('candidate_id').references(() => candidates.id, {
+      onDelete: 'cascade',
+    }),
+    userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }),
+
+    /* --- De persoon, zoals hij in het contract staat --- */
+    employeeName: text('employee_name').notNull(),
+    employeeAanhef: aanhefEnum('employee_aanhef'),
+    employeeAddress: text('employee_address'),
+    employeePostalCode: text('employee_postal_code'),
+    employeeCity: text('employee_city'),
+    employeeBirthDate: timestamp('employee_birth_date', { withTimezone: true }),
+
+    /* --- De afspraak --- */
+    jobTitle: text('job_title').notNull(),
+    contractType: contractTypeEnum('contract_type').notNull(),
+    startedOn: timestamp('started_on', { withTimezone: true }).notNull(),
+    /** Leeg bij onbepaalde tijd. */
+    endsOn: timestamp('ends_on', { withTimezone: true }),
+    durationMonths: integer('duration_months'),
+    /** Nul betekent geen proeftijd. Bij zes maanden of korter mag het niet. */
+    probationMonths: integer('probation_months').notNull().default(0),
+    hoursWeekQuarters: integer('hours_week_quarters').notNull(),
+
+    /* --- Het geld --- */
+    salaryScaleName: text('salary_scale_name'),
+    salaryStep: integer('salary_step'),
+    grossMonthlyCents: integer('gross_monthly_cents').notNull(),
+    opAllowanceCents: integer('op_allowance_cents').notNull().default(0),
+    holidayAllowanceBp: integer('holiday_allowance_bp').notNull().default(800),
+    holidayHoursPerYear: integer('holiday_hours_per_year'),
+
+    /**
+     * Uiterlijk wanneer er aangezegd moet worden.
+     *
+     * Bij een tijdelijk contract van zes maanden of langer moet je uiterlijk
+     * een maand voor het einde schriftelijk laten weten of je verlengt.
+     * Vergeet je dat, dan ben je een maandsalaris verschuldigd. Daarom staat
+     * die datum hier als veld en niet als opmerking.
+     */
+    aanzeggenVoor: timestamp('aanzeggen_voor', { withTimezone: true }),
+    /** Of er al is aangezegd, en wanneer. */
+    aangezegdOp: timestamp('aangezegd_op', { withTimezone: true }),
+
+    /* --- Het document --- */
+    /** De uitgeschreven artikelen. */
+    body: text('body').notNull(),
+    /** De begeleidende tekst met de hoofdpunten voor de medewerker. */
+    summary: text('summary'),
+    /**
+     * Waarschuwingen bij het opstellen, een per regel.
+     *
+     * Bijvoorbeeld dat de proeftijd is teruggebracht omdat hij bij deze
+     * looptijd niet mag, of dat er uiterlijk op een bepaalde datum moet
+     * worden aangezegd. Deze staan hier en niet alleen in beeld tijdens het
+     * opstellen: wie het contract een maand later opent moet ze ook zien.
+     */
+    remarks: text('remarks'),
+    signedOn: timestamp('signed_on', { withTimezone: true }),
+
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    createdByUserId: uuid('created_by_user_id').references(() => users.id, {
+      onDelete: 'set null',
+    }),
+  },
+  (t) => [
+    index('generated_contracts_candidate_idx').on(t.candidateId),
+    index('generated_contracts_user_idx').on(t.userId),
+    // Waarop de aanzegbewaking zoekt.
+    index('generated_contracts_aanzeggen_idx').on(t.aanzeggenVoor),
+    // Een contract hangt altijd aan iemand. Anders zweeft er een document
+    // met een adres en een geboortedatum in het systeem waar geen
+    // bewaartermijn aan hangt.
+    check(
+      'contract_belongs_to_someone',
+      sql`${t.candidateId} IS NOT NULL OR ${t.userId} IS NOT NULL`,
+    ),
+    check(
+      'contract_permanent_has_no_end',
+      sql`${t.contractType} <> 'onbepaalde_tijd' OR ${t.endsOn} IS NULL`,
+    ),
+    check(
+      'contract_ends_after_start',
+      sql`${t.endsOn} IS NULL OR ${t.endsOn} > ${t.startedOn}`,
+    ),
+    // De proeftijd is wettelijk hoogstens twee maanden. Of hij in dit geval
+    // wel mag hangt af van de looptijd; dat wordt in de code uitgerekend.
+    check(
+      'contract_probation_valid',
+      sql`${t.probationMonths} >= 0 AND ${t.probationMonths} <= 2`,
+    ),
+    // Een proeftijd bij een contract van zes maanden of korter is nietig.
+    // Dan hoort hij er niet te staan, ook niet als iemand hem invult.
+    check(
+      'contract_no_probation_when_short',
+      sql`${t.probationMonths} = 0 OR ${t.contractType} = 'onbepaalde_tijd' OR ${t.durationMonths} IS NULL OR ${t.durationMonths} > 6`,
+    ),
+    check('contract_hours_valid', sql`${t.hoursWeekQuarters} > 0 AND ${t.hoursWeekQuarters} <= 8000`),
+    check('contract_salary_positive', sql`${t.grossMonthlyCents} > 0`),
+    check('contract_body_not_empty', sql`length(trim(${t.body})) > 0`),
+  ],
+)
+
 export type Organization = typeof organizations.$inferSelect
 export type User = typeof users.$inferSelect
 export type Wallet = typeof wallets.$inferSelect
@@ -2222,3 +2972,13 @@ export type Competitor = typeof competitors.$inferSelect
 export type OrganizationGoal = typeof organizationGoals.$inferSelect
 export type PipelineStage = typeof pipelineStages.$inferSelect
 export type Deal = typeof deals.$inferSelect
+export type SalaryHouse = typeof salaryHouses.$inferSelect
+export type SalaryScale = typeof salaryScales.$inferSelect
+export type Vacancy = typeof vacancies.$inferSelect
+export type Candidate = typeof candidates.$inferSelect
+export type CandidateDocument = typeof candidateDocuments.$inferSelect
+export type EmployerSettings = typeof employerSettings.$inferSelect
+export type JobProfile = typeof jobProfiles.$inferSelect
+export type ContractTemplate = typeof contractTemplates.$inferSelect
+export type ContractTemplateArticle = typeof contractTemplateArticles.$inferSelect
+export type GeneratedContract = typeof generatedContracts.$inferSelect

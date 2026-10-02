@@ -195,6 +195,105 @@ export function describeDbError(error: unknown): string | null {
       return 'Het aantal contracturen moet boven nul liggen en onder de twintig uur per dag.'
     case 'salary_positive':
       return 'Een salaris moet boven nul liggen.'
+
+    /* Het salarishuis. De meldingen leggen niet alleen uit wat er fout is
+       maar ook waarom de grens er staat: hier worden contracten uit
+       gerekend, en een getal dat er net naast zit valt pas op als het op
+       papier staat. */
+    case 'salary_house_base_positive':
+      return 'De grondslag van het salarishuis moet boven nul liggen. Dat is schaal 1 trede 1 bij een fulltime dienstverband.'
+    case 'salary_house_step_valid':
+      return 'De verhoging per trede moet tussen 0 en 100 procent liggen. Let op dat het per trede is en niet per jaar: de tredes stapelen op elkaar.'
+    case 'salary_house_pension_valid':
+      return 'De OP-toeslag moet tussen 0 en 100 procent liggen.'
+    case 'salary_house_holiday_valid':
+      return 'De vakantietoeslag moet tussen 0 en 100 procent liggen. Wettelijk is het minimaal 8.'
+    case 'salary_house_fulltime_valid':
+      return 'Een fulltime werkweek moet boven nul liggen en onder de tachtig uur.'
+    case 'salary_house_holiday_hours_valid':
+      return 'De vakantie-uren bij fulltime moeten tussen 0 en 2000 uur per jaar liggen. Vijfentwintig dagen is 200 uur.'
+    case 'salary_house_minimum_valid':
+      return 'Het wettelijk minimumuurloon moet boven nul liggen. Laat het leeg als je er niet tegen wilt toetsen.'
+    case 'salary_houses_date_idx':
+      return 'Er staat al een salarishuis met deze ingangsdatum. Pas dat aan in plaats van er een tweede naast te zetten; anders is niet te zeggen welke geldt.'
+    case 'salary_scale_name_not_empty':
+      return 'Geef de schaal een naam, bijvoorbeeld Junior of Medior.'
+    case 'salary_scale_order_positive':
+      return 'De volgorde van een schaal begint bij 1. Die volgorde bepaalt de bedragen: elke schaal is een opslag op de vorige.'
+    case 'salary_scale_multiplier_valid':
+      return 'De opslag van een schaal moet boven nul liggen. Honderd procent betekent gelijk aan de schaal eronder.'
+    case 'salary_scale_steps_valid':
+      return 'Een schaal heeft tussen de 1 en 100 tredes.'
+    case 'salary_scales_order_idx':
+      return 'Er staat al een schaal op deze plek in dit salarishuis. Twee schalen op dezelfde plek maakt de bedragen onvoorspelbaar, want elke schaal rekent door op de vorige.'
+    case 'salary_scales_name_idx':
+      return 'Er bestaat al een schaal met deze naam in dit salarishuis.'
+
+    /* Werving. De meldingen over de bewaartermijn leggen de reden erbij:
+       dit zijn de regels die anders stilletjes worden overtreden. */
+    case 'vacancy_title_not_empty':
+      return 'Geef de vacature een titel, bijvoorbeeld Marketing Manager.'
+    case 'vacancy_positions_valid':
+      return 'Een vacature is voor minstens een plek en hoogstens honderd.'
+    case 'vacancy_hours_valid':
+      return 'De uren per week moeten boven nul liggen en onder de tachtig.'
+    case 'vacancy_steps_ordered':
+      return 'De hoogste trede moet boven de laagste liggen. Andersom betekent het iets anders dan bedoeld en dat valt op het scherm niet op.'
+    case 'vacancy_steps_positive':
+      return 'Een trede begint bij 1.'
+    case 'vacancy_closed_after_opened':
+      return 'Een vacature kan niet dicht zijn voordat hij open ging.'
+    case 'candidate_name_not_empty':
+      return 'Geef de kandidaat een naam.'
+    case 'candidate_next_action_complete':
+      return 'Een vervolgstap heeft een omschrijving en een datum. Vul ze allebei in, of laat ze allebei leeg.'
+    case 'candidate_closed_matches_status':
+      return 'Een afgeronde kandidaat heeft een einddatum, en een lopende niet. Zet de status op aangenomen, afgewezen of afgehaakt.'
+    case 'candidate_retention_matches_closed':
+      return 'Een afgeronde kandidaat heeft een bewaartermijn. Zonder die termijn blijven sollicitatiegegevens staan tot iemand er toevallig over struikelt.'
+    case 'candidate_retention_after_closed':
+      return 'De bewaartermijn loopt vanaf het einde van de procedure en kan daar niet voor liggen.'
+    case 'candidate_hired_only_when_hired':
+      return 'Alleen een aangenomen kandidaat kan aan een medewerker gekoppeld worden.'
+    case 'candidate_responded_after_applied':
+      return 'Er kan niet geantwoord zijn voordat er gesolliciteerd is. Controleer de sollicitatiedatum.'
+    case 'candidate_document_size_reasonable':
+      return 'Een bestand bij een kandidaat mag hoogstens vijf megabyte zijn.'
+    case 'candidate_document_type_allowed':
+      return 'Alleen PDF en Word. Geen SVG of HTML: daar kan script in zitten dat daarna in de browser van een collega draait.'
+
+    /* Contracten. Deze meldingen leggen de wettelijke reden erbij, want dat
+       is precies wat je moet weten als het formulier je tegenhoudt. */
+    case 'employer_name_not_empty':
+      return 'Vul de naam van de werkgever in zoals die in het contract komt.'
+    case 'employer_signatories_not_empty':
+      return 'Vul in wie namens de werkgever tekent.'
+    case 'job_profile_title_not_empty':
+      return 'Geef het functieprofiel een naam.'
+    case 'job_profiles_title_idx':
+      return 'Er bestaat al een functieprofiel met deze naam.'
+    case 'job_profile_relation_needs_motivation':
+      return 'Een relatiebeding heeft een schriftelijke motivering van het zwaarwegend bedrijfsbelang nodig. Zonder die motivering is het beding bij een tijdelijk contract nietig, en dan staat er iets in het contract wat niets voorstelt.'
+    case 'job_profile_relation_months_valid':
+      return 'Een relatiebeding loopt tussen de 0 en 60 maanden door.'
+    case 'contract_template_name_not_empty':
+      return 'Geef het sjabloon een naam.'
+    case 'contract_article_title_not_empty':
+      return 'Geef het artikel een kop.'
+    case 'contract_article_body_not_empty':
+      return 'Een artikel zonder tekst heeft geen zin.'
+    case 'contract_template_articles_order_idx':
+      return 'Er staat al een artikel op deze plek in dit sjabloon.'
+    case 'contract_belongs_to_someone':
+      return 'Een contract hoort bij een kandidaat of bij een collega. Kies er een.'
+    case 'contract_probation_valid':
+      return 'Een proeftijd is wettelijk hoogstens twee maanden.'
+    case 'contract_no_probation_when_short':
+      return 'Bij een contract van zes maanden of korter is een proeftijd niet toegestaan. Een proeftijd die er toch in staat is nietig; dan denk je er een te hebben terwijl je er geen hebt.'
+    case 'contract_salary_positive':
+      return 'Het brutosalaris moet boven nul liggen.'
+    case 'contract_body_not_empty':
+      return 'Er is geen contracttekst opgesteld.'
     case 'salary_holiday_allowance_valid':
       return 'Het vakantiegeld moet tussen 0 en 100 procent liggen. Wettelijk is het minimaal 8.'
     case 'salary_hours_valid':

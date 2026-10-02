@@ -106,8 +106,13 @@ for (const entry of entries) {
    * Een eigen dollarteken-label per migratie. Migratie 0007 gebruikt zelf al
    * `$$` voor een blok; met hetzelfde label eromheen zou Postgres het eerste
    * binnenste `$$` aanzien voor het einde van het buitenste blok.
+   *
+   * Alles wat geen letter, cijfer of onderstreping is gaat eruit. Een label
+   * tussen dollartekens moet een geldige naam zijn, en een migratie met een
+   * koppelteken in de naam leverde anders een syntaxfout op halverwege het
+   * bestand - precies op de plek waar niemand hem zoekt.
    */
-  const label = `$jr_${entry.tag}$`
+  const label = `$jr_${entry.tag.replace(/[^a-zA-Z0-9_]/g, '_')}$`
 
   // De migratie en zijn boekhoudregel staan bewust IN hetzelfde blok. Een
   // migratie die slaagt maar niet wordt opgeschreven, draait de volgende keer

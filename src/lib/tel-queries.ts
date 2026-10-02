@@ -97,6 +97,68 @@ async function main() {
     await (await import('./kosten')).getPersoneelskosten()
   })
 
+  await meet('OFFERTES', async () => {
+    await quotes.listQuotes()
+    await quotes.getQuoteFigures()
+    await admin.listOrganizations()
+    await crm.listPartners()
+  })
+  await meet('ABONNEMENTEN', async () => {
+    await billing.listSubscriptions()
+    await billing.getMonthlyRecurringCents()
+    await billing.getMonthlyBudgetCents()
+    await billing.getKlantAandelen()
+  })
+  await meet('FINANCIEEL', async () => {
+    await reports.getOverallFigures()
+    await reports.getFiguresByOrganization()
+    await reports.getOutstandingInvoices()
+  })
+  await meet('KLANTPAGINA (een klant)', async () => {
+    const alle = await admin.listOrganizations()
+    const eerste = alle[0]
+    if (!eerste) return
+    const id = eerste.organization.id
+    await crm.listContacts(id)
+    await crm.listAccounts(id)
+    await crm.listPartnersForOrganization(id)
+    await (await import('./tijdlijn')).getTijdlijn(id, { limiet: 40 })
+  })
+
+  const pijplijn = await import('./pijplijn')
+  await meet('PIJPLIJN', async () => {
+    await pijplijn.getBord({ status: 'open' })
+    await pijplijn.getScorekaart({})
+    await pijplijn.listDealEigenaren()
+    await pijplijn.listBedrijfsnamen()
+    await team.listTeam()
+  })
+
+  const werving = await import('./werving')
+  await meet('WERVING', async () => {
+    await werving.getCijfers()
+    await werving.listVacatures()
+    await werving.getAchterstand()
+    await werving.getAfvalredenen()
+    await team.listTeam()
+    await (await import('./salarishuis')).getHuis()
+  })
+
+  const contracten = await import('./contracten')
+  await meet('CONTRACTEN', async () => {
+    await contracten.komendeAanzeggingen()
+    await contracten.listFunctieprofielen()
+    await contracten.listKandidatenMetAanbod()
+    await contracten.getWerkgever()
+    await team.listTeam()
+    await (await import('./salarishuis')).getHuis()
+  })
+
+  const salarishuis = await import('./salarishuis')
+  await meet('SALARISHUIS', async () => {
+    await salarishuis.listHuizen()
+  })
+
   console.log('')
   await client.end()
 }

@@ -93,6 +93,30 @@ const icons = {
       <rect x="16" y="4" width="5" height="7" rx="1.5" />
     </svg>
   ),
+  /* Een trechter: breed erin, smal eruit. Precies wat een pijplijn doet. */
+  pijplijn: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
+      <path d="M3 5h18l-7 8v6l-4 2v-8z" />
+    </svg>
+  ),
+  werving: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
+      <circle cx="9" cy="8" r="3.2" />
+      <path d="M3.5 20c0-3 2.5-5 5.5-5s5.5 2 5.5 5" strokeLinecap="round" />
+      <path d="M18 8v6M15 11h6" strokeLinecap="round" />
+    </svg>
+  ),
+  contracten: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
+      <path d="M6 3h8l4 4v14H6z" strokeLinejoin="round" />
+      <path d="M14 3v4h4M9 12h6M9 16h4" strokeLinecap="round" />
+    </svg>
+  ),
+  salarishuis: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
+      <path d="M3 20h4v-4H3zM10 20h4v-9h-4zM17 20h4V5h-4z" strokeLinejoin="round" />
+    </svg>
+  ),
   sync: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
       <path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5" />
@@ -104,6 +128,7 @@ const TEAM_NAV: NavItem[] = [
   { href: '/beheer', label: 'Dashboard', key: 'dashboard', icon: icons.dashboard },
   { href: '/beheer/klanten', label: 'Klanten', key: 'klanten', icon: icons.clients },
   { href: '/beheer/crm', label: 'CRM', key: 'crm', icon: icons.contacts },
+  { href: '/beheer/pijplijn', label: 'Pijplijn', key: 'pijplijn', icon: icons.pijplijn },
   { href: '/beheer/offertes', label: 'Offertes', key: 'offertes', icon: icons.quotes },
   { href: '/beheer/abonnementen', label: 'Abonnementen', key: 'abonnementen', icon: icons.subs },
   { href: '/beheer/diensten', label: 'Diensten', key: 'diensten', icon: icons.services },
@@ -111,6 +136,20 @@ const TEAM_NAV: NavItem[] = [
   { href: '/beheer/portfolio', label: 'Portfolio', key: 'portfolio', icon: icons.portfolio },
   { href: '/beheer/financieel', label: 'Financieel', key: 'financieel', icon: icons.finance },
   { href: '/beheer/medewerkers', label: 'Team', key: 'medewerkers', icon: icons.team },
+  { href: '/beheer/werving', label: 'Werving', key: 'werving', icon: icons.werving },
+]
+
+/**
+ * Wat alleen beheerders zien.
+ *
+ * Het salarishuis staat hier en niet in TEAM_NAV omdat er salarissen in
+ * staan. De pagina controleert dat zelf ook nog een keer - een link
+ * weglaten is geen beveiliging, iemand die het adres kent komt er anders
+ * gewoon op.
+ */
+const ADMIN_NAV: NavItem[] = [
+  { href: '/beheer/contracten', label: 'Contracten', key: 'contracten', icon: icons.contracten },
+  { href: '/beheer/salarishuis', label: 'Salarishuis', key: 'salarishuis', icon: icons.salarishuis },
 ]
 
 const CLIENT_NAV: NavItem[] = [
@@ -140,7 +179,11 @@ export function AppShell({
 }) {
   const [open, setOpen] = useState(false)
   const isTeam = user.role === 'staff' || user.role === 'admin'
-  const items = isTeam ? TEAM_NAV : CLIENT_NAV
+  const items = isTeam
+    ? user.role === 'admin'
+      ? [...TEAM_NAV, ...ADMIN_NAV]
+      : TEAM_NAV
+    : CLIENT_NAV
 
   return (
     <div className="min-h-screen lg:flex">

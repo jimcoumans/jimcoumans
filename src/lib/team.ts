@@ -3,6 +3,7 @@ import { db } from '@/db'
 import { users, organizationOwners, organizations, subscriptions } from '@/db/schema'
 import type { User } from '@/db/schema'
 import type { Aanhef } from './namen'
+import { leeftijdOpVerjaardag } from './leeftijd'
 
 /* -------------------------------------------------------------------------
    Het team.
@@ -221,7 +222,7 @@ export async function teamVerjaardagenInMaand(
     jobTitle: lid.jobTitle,
     dag: lid.birthDay!,
     maand: lid.birthMonth!,
-    wordt: lid.birthYear === null ? null : peiljaar - lid.birthYear,
+    wordt: leeftijdOpVerjaardag(lid.birthYear, peiljaar),
   }))
 }
 
