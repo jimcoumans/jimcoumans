@@ -123,6 +123,18 @@ const icons = {
       <path d="M17.5 9.5a3.5 3.5 0 0 1 0 5" strokeLinecap="round" />
     </svg>
   ),
+  assets: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
+      <rect x="3" y="4" width="18" height="16" rx="2.5" />
+      <circle cx="9" cy="10" r="1.8" />
+      <path d="m21 16-5-5-8 8" strokeLinejoin="round" />
+    </svg>
+  ),
+  chevron: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="m9 6 6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  ),
   sync: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
       <path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5" />
@@ -130,34 +142,71 @@ const icons = {
   ),
 }
 
-const TEAM_NAV: NavItem[] = [
-  { href: '/beheer', label: 'Dashboard', key: 'dashboard', icon: icons.dashboard },
-  { href: '/beheer/klanten', label: 'Klanten', key: 'klanten', icon: icons.clients },
-  { href: '/beheer/crm', label: 'CRM', key: 'crm', icon: icons.contacts },
-  { href: '/beheer/pijplijn', label: 'Pijplijn', key: 'pijplijn', icon: icons.pijplijn },
-  { href: '/beheer/offertes', label: 'Offertes', key: 'offertes', icon: icons.quotes },
-  { href: '/beheer/campagnes', label: 'Campagnes', key: 'campagnes', icon: icons.campagnes },
-  { href: '/beheer/abonnementen', label: 'Abonnementen', key: 'abonnementen', icon: icons.subs },
-  { href: '/beheer/diensten', label: 'Diensten', key: 'diensten', icon: icons.services },
-  { href: '/beheer/partners', label: 'Partners', key: 'partners', icon: icons.partners },
-  { href: '/beheer/portfolio', label: 'Portfolio', key: 'portfolio', icon: icons.portfolio },
-  { href: '/beheer/financieel', label: 'Financieel', key: 'financieel', icon: icons.finance },
-  { href: '/beheer/medewerkers', label: 'Team', key: 'medewerkers', icon: icons.team },
-  { href: '/beheer/werving', label: 'Werving', key: 'werving', icon: icons.werving },
+/**
+ * Het teammenu in groepen. Achttien losse items scan je niet meer; een
+ * handvol kopjes wel. De groep waar je zit staat open, de rest dicht.
+ */
+type NavGroep = { label: string; key: string; icon: React.ReactNode; items: NavItem[]; alleenAdmin?: boolean }
+
+const DASHBOARD: NavItem = { href: '/beheer', label: 'Dashboard', key: 'dashboard', icon: icons.dashboard }
+
+const TEAM_GROEPEN: NavGroep[] = [
+  {
+    label: 'Klanten',
+    key: 'g-klanten',
+    icon: icons.clients,
+    items: [
+      { href: '/beheer/klanten', label: 'Alle klanten', key: 'klanten', icon: icons.clients },
+      { href: '/beheer/campagnes', label: 'Campagnes', key: 'campagnes', icon: icons.campagnes },
+      { href: '/beheer/abonnementen', label: 'Abonnementen', key: 'abonnementen', icon: icons.subs },
+    ],
+  },
+  {
+    label: 'Assets',
+    key: 'g-assets',
+    icon: icons.assets,
+    items: [
+      { href: '/beheer/assets', label: 'Merkkluizen', key: 'assets', icon: icons.assets },
+      { href: '/beheer/assets/beeldbank', label: 'Beeldbank', key: 'beeldbank', icon: icons.assets },
+    ],
+  },
+  {
+    label: 'Verkoop',
+    key: 'g-verkoop',
+    icon: icons.pijplijn,
+    items: [
+      { href: '/beheer/crm', label: 'CRM', key: 'crm', icon: icons.contacts },
+      { href: '/beheer/pijplijn', label: 'Pijplijn', key: 'pijplijn', icon: icons.pijplijn },
+      { href: '/beheer/offertes', label: 'Offertes', key: 'offertes', icon: icons.quotes },
+    ],
+  },
+  {
+    label: 'Bureau',
+    key: 'g-bureau',
+    icon: icons.finance,
+    items: [
+      { href: '/beheer/diensten', label: 'Diensten', key: 'diensten', icon: icons.services },
+      { href: '/beheer/partners', label: 'Partners', key: 'partners', icon: icons.partners },
+      { href: '/beheer/portfolio', label: 'Portfolio', key: 'portfolio', icon: icons.portfolio },
+      { href: '/beheer/financieel', label: 'Financieel', key: 'financieel', icon: icons.finance },
+    ],
+  },
+  {
+    label: 'Team',
+    key: 'g-team',
+    icon: icons.team,
+    items: [
+      { href: '/beheer/medewerkers', label: 'Medewerkers', key: 'medewerkers', icon: icons.team },
+      { href: '/beheer/werving', label: 'Werving', key: 'werving', icon: icons.werving },
+      /* Contracten en salarishuis alleen voor beheerders: daar staan salarissen.
+         De pagina's controleren dat zelf ook nog; een link weglaten is geen beveiliging. */
+      { href: '/beheer/contracten', label: 'Contracten', key: 'contracten', icon: icons.contracten },
+      { href: '/beheer/salarishuis', label: 'Salarishuis', key: 'salarishuis', icon: icons.salarishuis },
+    ],
+  },
 ]
 
-/**
- * Wat alleen beheerders zien.
- *
- * Het salarishuis staat hier en niet in TEAM_NAV omdat er salarissen in
- * staan. De pagina controleert dat zelf ook nog een keer - een link
- * weglaten is geen beveiliging, iemand die het adres kent komt er anders
- * gewoon op.
- */
-const ADMIN_NAV: NavItem[] = [
-  { href: '/beheer/contracten', label: 'Contracten', key: 'contracten', icon: icons.contracten },
-  { href: '/beheer/salarishuis', label: 'Salarishuis', key: 'salarishuis', icon: icons.salarishuis },
-]
+const ALLEEN_ADMIN = new Set(['contracten', 'salarishuis'])
 
 const CLIENT_NAV: NavItem[] = [
   { href: '/', label: 'Mijn wallet', key: 'wallet', icon: icons.wallet },
@@ -186,11 +235,32 @@ export function AppShell({
 }) {
   const [open, setOpen] = useState(false)
   const isTeam = user.role === 'staff' || user.role === 'admin'
-  const items = isTeam
-    ? user.role === 'admin'
-      ? [...TEAM_NAV, ...ADMIN_NAV]
-      : TEAM_NAV
-    : CLIENT_NAV
+  const groepen = TEAM_GROEPEN.map((g) => ({
+    ...g,
+    items: g.items.filter((i) => user.role === 'admin' || !ALLEEN_ADMIN.has(i.key)),
+  }))
+  const actieveGroep = groepen.find((g) => g.items.some((i) => i.key === actief))?.key
+  const [openGroepen, setOpenGroepen] = useState<Set<string>>(() => new Set(actieveGroep ? [actieveGroep] : []))
+  const wissel = (key: string) =>
+    setOpenGroepen((oud) => {
+      const nieuw = new Set(oud)
+      if (nieuw.has(key)) nieuw.delete(key)
+      else nieuw.add(key)
+      return nieuw
+    })
+  const link = (item: NavItem, sub = false) => (
+    <a
+      href={item.href}
+      onClick={() => setOpen(false)}
+      aria-current={actief === item.key ? 'page' : undefined}
+      className={`flex items-center gap-3 rounded-lg text-sm transition-colors ${sub ? 'py-2 pr-3 pl-[42px]' : 'px-3 py-2.5'} ${
+        actief === item.key ? 'bg-jr-blue text-white' : 'text-gray-300 hover:bg-white/10 hover:text-white'
+      }`}
+    >
+      {!sub && <span className="h-[18px] w-[18px] shrink-0">{item.icon}</span>}
+      {item.label}
+    </a>
+  )
 
   return (
     <div className="min-h-screen lg:flex">
@@ -258,23 +328,39 @@ export function AppShell({
         </div>
 
         <ul className="flex-1 space-y-0.5 overflow-y-auto px-3">
-          {items.map((item) => (
-            <li key={item.key}>
-              <a
-                href={item.href}
-                onClick={() => setOpen(false)}
-                aria-current={actief === item.key ? 'page' : undefined}
-                className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${
-                  actief === item.key
-                    ? 'bg-jr-blue text-white'
-                    : 'text-gray-300 hover:bg-white/10 hover:text-white'
-                }`}
-              >
-                <span className="h-[18px] w-[18px] shrink-0">{item.icon}</span>
-                {item.label}
-              </a>
-            </li>
-          ))}
+          {!isTeam &&
+            CLIENT_NAV.map((item) => <li key={item.key}>{link(item)}</li>)}
+          {isTeam && <li>{link(DASHBOARD)}</li>}
+          {isTeam &&
+            groepen.map((g) => {
+              const isOpen = openGroepen.has(g.key)
+              const bevatActief = g.key === actieveGroep
+              return (
+                <li key={g.key}>
+                  <button
+                    type="button"
+                    onClick={() => wissel(g.key)}
+                    aria-expanded={isOpen}
+                    className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors hover:bg-white/10 hover:text-white ${
+                      bevatActief && !isOpen ? 'text-white' : 'text-gray-300'
+                    }`}
+                  >
+                    <span className="h-[18px] w-[18px] shrink-0">{g.icon}</span>
+                    <span className="flex-1 text-left">{g.label}</span>
+                    <span className={`h-3.5 w-3.5 shrink-0 text-gray-500 transition-transform ${isOpen ? 'rotate-90' : ''}`}>
+                      {icons.chevron}
+                    </span>
+                  </button>
+                  {isOpen && (
+                    <ul className="mt-0.5 mb-1 space-y-0.5">
+                      {g.items.map((item) => (
+                        <li key={item.key}>{link(item, true)}</li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              )
+            })}
         </ul>
 
         {isTeam && (

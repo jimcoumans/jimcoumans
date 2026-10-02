@@ -26,6 +26,7 @@ import { Klantprofiel } from '@/components/Klantprofiel'
 import { getKlantreis } from '@/lib/klantreis'
 import { getProfiel } from '@/lib/klantprofiel'
 import { listOwners } from '@/lib/crm-owners'
+import { merkTelling } from '@/lib/merkkluis'
 import { getTijdlijn, laatsteContact } from '@/lib/tijdlijn'
 import { BookServiceForm } from '@/components/BookServiceForm'
 import { formatQuantity, unitShort } from '@/lib/quantity'
@@ -98,10 +99,11 @@ export default async function KlantPage({
     getTijdlijn(klant.organization.id, { limiet: 40 }),
     laatsteContact(klant.organization.id),
   ])
-  const [klantreis, profiel, eigenaren] = await Promise.all([
+  const [klantreis, profiel, eigenaren, merk] = await Promise.all([
     getKlantreis(klant.organization.id),
     getProfiel(klant.organization.id),
     listOwners(klant.organization.id),
+    merkTelling(klant.organization.id),
   ])
   const vandaag = new Date().toISOString().slice(0, 10)
 
@@ -351,6 +353,17 @@ export default async function KlantPage({
               />,
               3: <Doelen organizationId={klant.organization.id} slug={slug} doelen={doelen} />,
               4: <VasteDoelgroepen organizationId={klant.organization.id} slug={slug} />,
+              5: (
+                <a href={`/beheer/assets/${slug}`} className="block rounded-xl bg-white p-6 shadow-sm hover:shadow-md">
+                  <p className="text-xs text-gray-600">Merkkluis</p>
+                  <p className="font-display mt-1 text-xl font-semibold tracking-tight">
+                    {merk.logos} {merk.logos === 1 ? 'logo' : 'logo’s'} · {merk.beelden} {merk.beelden === 1 ? 'beeld' : 'beelden'}
+                  </p>
+                  <p className="text-jr-link mt-2 text-sm font-medium">
+                    Logo’s, kleuren, lettertypen, toon en beelden in de merkkluis &rarr;
+                  </p>
+                </a>
+              ),
               6: (
                 <Accounts accounts={accounts} organizationId={klant.organization.id} slug={slug} />
               ),

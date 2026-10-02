@@ -100,6 +100,7 @@ export const KLANTREIS: Stap[] = [
     mijlpalen: [
       { key: '07.gestart', label: 'Fundament gestart (dag 1)', document: '07.1' },
       { key: '07.draaidag', label: 'Draaidag geweest', document: '07.2' },
+      { key: '07.merkkluis', label: 'Merkkluis gevuld (logo’s, kleuren, lettertypen, toon, beelden)' },
       { key: '07.merkcheck', label: 'Merkcheck akkoord', document: '07.3' },
       { key: '07.live', label: 'Campagne live (dag 19)', document: '08.1' },
       { key: '07.testaanvraag', label: 'Testaanvraag in het dashboard' },

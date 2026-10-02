@@ -386,6 +386,21 @@ export function describeDbError(error: unknown): string | null {
       return 'Deze specialist staat al bij de campagne.'
     case 'client_journey_items_org_item_idx':
       return 'Deze mijlpaal staat al afgevinkt. Ververs de pagina.'
+    /* --- Merkkluis --- */
+    case 'brand_file_title_not_empty':
+      return 'Geef het bestand een naam.'
+    case 'brand_file_focus_valid':
+      return 'Het focuspunt ligt buiten het beeld. Klik opnieuw in de foto.'
+    case 'brand_file_bytes_positive':
+      return 'Dit bestand is leeg.'
+    case 'brand_files_storage_idx':
+      return 'Dit bestand staat al in de opslag. Probeer het opnieuw.'
+    case 'brand_color_hex_valid':
+      return 'Vul een kleurcode in zoals #C4F000.'
+    case 'brand_color_name_not_empty':
+      return 'Geef de kleur een naam.'
+    case 'brand_font_name_not_empty':
+      return 'Vul de naam van het lettertype in.'
     case 'campaign_versions_idx':
       return 'Deze versie is al vastgelegd. Ververs de pagina en probeer het opnieuw.'
     default:

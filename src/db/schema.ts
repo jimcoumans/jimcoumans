@@ -3324,3 +3324,138 @@ export const organizationProfiles = pgTable('organization_profiles', {
 
 export type ClientJourneyItem = typeof clientJourneyItems.$inferSelect
 export type OrganizationProfile = typeof organizationProfiles.$inferSelect
+
+/* ------------------------------- Merkkluis -------------------------------
+
+   Alles wat je nodig hebt om voor een klant iets te maken dat klopt: logo's,
+   kleuren, lettertypen, toon, beelden en grafische elementen. Gestructureerd,
+   zodat een sjabloon er later mee kan rekenen in plaats van dat iemand een
+   pdf met richtlijnen moet lezen.
+
+   De bestanden zelf staan niet in de database maar in de bestandsopslag
+   (src/lib/bestandsopslag.ts); hier staan de gegevens erover.
+   ------------------------------------------------------------------------- */
+
+export const brandFileKindEnum = pgEnum('brand_file_kind', ['logo', 'beeld', 'element', 'lettertype'])
+export const logoVariantEnum = pgEnum('logo_variant', ['primair', 'beeldmerk', 'woordmerk', 'anders'])
+export const logoBackgroundEnum = pgEnum('logo_background', ['licht', 'donker', 'beide'])
+export const logoColorwayEnum = pgEnum('logo_colorway', ['kleur', 'zwart', 'wit'])
+export const imageSourceEnum = pgEnum('image_source', ['eigen', 'klant', 'stock', 'ai'])
+export const peopleConsentEnum = pgEnum('people_consent', ['geen', 'toestemming', 'onbekend'])
+export const brandColorRoleEnum = pgEnum('brand_color_role', ['primair', 'secundair', 'accent', 'achtergrond', 'tekst'])
+export const brandFontRoleEnum = pgEnum('brand_font_role', ['koppen', 'tekst', 'accent'])
+export const fontLicenceEnum = pgEnum('font_licence', ['open', 'web', 'desktop', 'onbekend'])
+export const voiceAddressEnum = pgEnum('voice_address', ['je', 'u', 'wisselend'])
+
+export const brandFiles = pgTable(
+  'brand_files',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    organizationId: uuid('organization_id')
+      .notNull()
+      .references(() => organizations.id, { onDelete: 'cascade' }),
+    kind: brandFileKindEnum('kind').notNull(),
+    title: text('title').notNull(),
+    /** Sleutel in de bestandsopslag; de miniatuur heeft dezelfde sleutel met .klein erachter. */
+    storageKey: text('storage_key').notNull(),
+    hasThumbnail: boolean('has_thumbnail').notNull().default(false),
+    contentType: text('content_type').notNull(),
+    bytes: integer('bytes').notNull(),
+    width: integer('width'),
+    height: integer('height'),
+    filename: text('filename'),
+    tags: text('tags').array().notNull().default(sql`ARRAY[]::text[]`),
+    notes: text('notes'),
+
+    /* --- Alleen bij logo's --- */
+    logoVariant: logoVariantEnum('logo_variant'),
+    logoBackground: logoBackgroundEnum('logo_background'),
+    logoColorway: logoColorwayEnum('logo_colorway'),
+
+    /* --- Alleen bij beelden ---
+       Het focuspunt in procenten van links en boven: zo snijdt een sjabloon
+       één foto goed bij naar 1:1, 4:5 en 9:16. */
+    focusX: integer('focus_x').notNull().default(50),
+    focusY: integer('focus_y').notNull().default(50),
+    source: imageSourceEnum('source'),
+    /** Waarvoor het beeld gebruikt mag worden: organisch, advertenties, print. */
+    usage: text('usage').array().notNull().default(sql`ARRAY[]::text[]`),
+    usableUntil: timestamp('usable_until', { withTimezone: true }),
+    peopleConsent: peopleConsentEnum('people_consent'),
+    /** Is het beeld door AI gemaakt of wezenlijk bewerkt? Dan moet het gelabeld (AI-verordening, art. 50). */
+    aiAltered: boolean('ai_altered').notNull().default(false),
+
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    createdByUserId: uuid('created_by_user_id').references(() => users.id, { onDelete: 'set null' }),
+  },
+  (t) => [
+    index('brand_files_org_idx').on(t.organizationId, t.kind),
+    uniqueIndex('brand_files_storage_idx').on(t.storageKey),
+    check('brand_file_title_not_empty', sql`length(trim(${t.title})) > 0`),
+    check('brand_file_focus_valid', sql`${t.focusX} BETWEEN 0 AND 100 AND ${t.focusY} BETWEEN 0 AND 100`),
+    check('brand_file_bytes_positive', sql`${t.bytes} > 0`),
+  ],
+)
+
+export const brandColors = pgTable(
+  'brand_colors',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    organizationId: uuid('organization_id')
+      .notNull()
+      .references(() => organizations.id, { onDelete: 'cascade' }),
+    name: text('name').notNull(),
+    hex: text('hex').notNull(),
+    role: brandColorRoleEnum('role').notNull(),
+    position: integer('position').notNull().default(0),
+    notes: text('notes'),
+  },
+  (t) => [
+    index('brand_colors_org_idx').on(t.organizationId),
+    check('brand_color_hex_valid', sql`${t.hex} ~ '^#[0-9A-F]{6}$'`),
+    check('brand_color_name_not_empty', sql`length(trim(${t.name})) > 0`),
+  ],
+)
+
+export const brandFonts = pgTable(
+  'brand_fonts',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    organizationId: uuid('organization_id')
+      .notNull()
+      .references(() => organizations.id, { onDelete: 'cascade' }),
+    name: text('name').notNull(),
+    role: brandFontRoleEnum('role').notNull(),
+    weights: text('weights'),
+    licence: fontLicenceEnum('licence').notNull().default('onbekend'),
+    fallback: text('fallback'),
+    /** Het fontbestand in de merkkluis, als we het hebben. */
+    fileId: uuid('file_id').references(() => brandFiles.id, { onDelete: 'set null' }),
+    notes: text('notes'),
+  },
+  (t) => [
+    index('brand_fonts_org_idx').on(t.organizationId),
+    check('brand_font_name_not_empty', sql`length(trim(${t.name})) > 0`),
+  ],
+)
+
+/** De tone of voice: één per klant, in velden die je aan een schrijver (of AI) kunt geven. */
+export const brandVoices = pgTable('brand_voices', {
+  organizationId: uuid('organization_id')
+    .primaryKey()
+    .references(() => organizations.id, { onDelete: 'cascade' }),
+  address: voiceAddressEnum('address'),
+  character: text('character'),
+  wordsYes: text('words_yes'),
+  wordsNo: text('words_no'),
+  goodExamples: text('good_examples'),
+  badExamples: text('bad_examples'),
+  ctas: text('ctas'),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedByUserId: uuid('updated_by_user_id').references(() => users.id, { onDelete: 'set null' }),
+})
+
+export type BrandFile = typeof brandFiles.$inferSelect
+export type BrandColor = typeof brandColors.$inferSelect
+export type BrandFont = typeof brandFonts.$inferSelect
+export type BrandVoice = typeof brandVoices.$inferSelect
