@@ -233,17 +233,6 @@ export default async function CampagnePage({ params }: { params: Promise<{ id: s
 
           {/* ---------------------------- 1 De basis ---------------------------- */}
           <Kaart nummer={1} titel="De basis">
-            <dl className="mb-4 grid gap-x-6 gap-y-2 rounded-lg bg-gray-100 p-3 text-sm sm:grid-cols-2">
-              <Gegeven label="Klant" waarde={org.name} />
-              <Gegeven label="Branche" waarde={org.industry} />
-              <Gegeven
-                label="Adres"
-                waarde={[org.addressLine, [org.postalCode, org.city].filter(Boolean).join(' ')].filter(Boolean).join(', ')}
-              />
-              <Gegeven label="Website" waarde={org.website} />
-              <Gegeven label="Telefoon" waarde={org.phone} />
-              <Gegeven label="E-mail" waarde={org.email} />
-            </dl>
             <ActionForm action={wijzigBasis} submitLabel="Opslaan" resetOnSuccess={false}>
               {verborgen}
               <Field label="Campagnenaam" name="title" required defaultValue={c.title} />
@@ -809,15 +798,6 @@ function Kerngetal({ label, waarde, blauw = false }: { label: string; waarde: st
       <dd className={`font-display tabular mt-0.5 text-2xl font-semibold tracking-tight ${blauw ? 'text-jr-blue' : ''}`}>
         {waarde ?? <span className="text-gray-400">{LEEG}</span>}
       </dd>
-    </div>
-  )
-}
-
-function Gegeven({ label, waarde }: { label: string; waarde: string | null | undefined }) {
-  return (
-    <div className="flex justify-between gap-3 sm:block">
-      <dt className="text-xs text-gray-600">{label}</dt>
-      <dd>{waarde || <span className="text-gray-500">{LEEG}</span>}</dd>
     </div>
   )
 }
