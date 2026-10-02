@@ -148,12 +148,6 @@ def campagnebriefing(w=None):
             out.append(h3('KPI’s'))
             out.append(tabel(['Product of onderdeel', 'Datum', 'Doel (aantal)', 'Prijs', 'Omzet'], g('kpi') or [['', '', '', '', ''] for _ in range(4)] + [('tot', ['Totaal', '', '', '', ''])], rechts=(2, 3, 4)))
             out.append(opmerking(g('kpi_opmerking')))
-            out.append(h3('Hypothese' + (bron('suggestie') if leeg else '')))
-            if leeg: out.append(p('Terugrekenen van het doel naar wat er nodig is, met aannames per schakel. Zo zie je vóór de start waar de campagne kan vastlopen, en na twee weken live of de aannames kloppen.', 'klein'))
-            out.append(tabel(['Schakel', 'Aanname', 'Nodig'], g('hypothese') or [
-                ['Doel', '', ''], ['Conversies', 'Aantal per conversie (bijvoorbeeld personen per reservering)', ''], ['Waarvan via advertenties', 'Aandeel advertenties; de rest via mailings, bestaande klanten, direct', ''],
-                ['Bezoekers landingspagina', 'Conversieratio', ''], ['Impressies', 'Doorklikratio', ''], ('tot', ['Wat het mag kosten', 'Advertentiebudget', 'Per klik, per 1.000 impressies, per conversie'])], rechts=(2,)))
-            out.append(opmerking(g('hypothese_opmerking')))
         if 'planning' in titel:
             out.append(opmerking(g('planning_opmerking')))
             out.append(h3('Tijdlijn' + (bron('suggestie') if leeg else '')))
@@ -163,7 +157,67 @@ def campagnebriefing(w=None):
             out.append(opmerking(g('doelgroep_opmerking')))
         if 'Afspraken' in titel:
             out.append(opmerking(g('afspraken_opmerking')))
+    out.append(h3('9 · Hypothese'))
+    out.append(hypothese_blok(None if leeg else w.get('hyp')))
     return ''.join(out)
+
+# ---------------------------------------------------------------- hypothese: berekend uit de briefing
+def nl(x, dec=0):
+    t = ('{:,.%df}' % dec).format(x).replace(',', 'X').replace('.', ',').replace('X', '.')
+    return t
+
+def bereken(doel, eenheid, per_conversie, aandeel_ads, conversieratio, doorklik, budget, plafond, conv_naam='reserveringen', scenario_cr=None, weken=None):
+    conv = round(doel / per_conversie)
+    ads = round(conv * aandeel_ads)
+    bez = ads / conversieratio
+    imp = bez / doorklik
+    h = dict(doel=doel, eenheid=eenheid, per_conversie=per_conversie, aandeel_ads=aandeel_ads, cr=conversieratio, ctr=doorklik, budget=budget, plafond=plafond, conv_naam=conv_naam,
+             conv=conv, ads=ads, overig=conv - ads, bez=bez, imp=imp, per_klik=budget / bez, cpm=budget / imp * 1000, per_conv_ads=budget / ads, per_eenheid=budget / doel)
+    h['weken'] = weken
+    if scenario_cr:
+        b2 = ads / scenario_cr
+        h['scen'] = dict(cr=scenario_cr, bez=b2, imp=b2 / doorklik, per_klik=budget / b2, cpm=budget / (b2 / doorklik) * 1000)
+    return h
+
+def hypothese_blok(h):
+    if h is None:
+        return (p('Het portaal maakt de hypothese uit wat in de briefing staat: het doel, het advertentiebudget en het plafond, met de normen per branche voor het aantal per conversie, het aandeel uit advertenties, de conversieratio en de doorklikratio. De aannames zijn aan te passen; de rest rekent mee.', 'klein')
+                + vakken(['Impressies', 'Bezoekers', 'Conversies uit advertenties', 'Conversies totaal', 'Doel'], 1, 26)
+                + vakken(['Per 1.000 impressies', 'Per klik', 'Per conversie uit advertenties', 'Per eenheid van het doel'], 4, 34)
+                + vakken(['De zwakste schakel'], 1, 40))
+    breedte = [100, 80, 62, 48, 36]
+    rijen = [
+        ('Impressies', nl(h['imp']), '#e0efff', '#0857c3'),
+        ('Bezoekers landingspagina', nl(h['bez']), '#cce4ff', '#0857c3'),
+        ('%s uit advertenties' % h['conv_naam'].capitalize(), nl(h['ads']), '#99c9ff', '#003967'),
+        ('%s totaal' % h['conv_naam'].capitalize(), nl(h['conv']), '#007aff', '#ffffff'),
+        (h['eenheid'].capitalize(), nl(h['doel']), '#c4f000', '#1d1d1f'),
+    ]
+    stappen = ['%s%% klikt door' % nl(h['ctr'] * 100, 0 if h['ctr'] * 100 == int(h['ctr'] * 100) else 1),
+               '%s%% %s' % (nl(h['cr'] * 100, 0 if h['cr'] * 100 == int(h['cr'] * 100) else 1), 'reserveert' if h['conv_naam'] == 'reserveringen' else 'converteert'),
+               '+ %s via mailings, vaste gasten en direct (%s%%)' % (nl(h['overig']), nl((1 - h['aandeel_ads']) * 100)),
+               '× %s %s per %s' % (nl(h['per_conversie']), 'personen' if h['eenheid'] == 'couverts' else h['eenheid'], h['conv_naam'][:-2] if h['conv_naam'].endswith('en') else h['conv_naam'])]
+    t = ['<div style="margin:6pt 0 12pt">']
+    for k, (lab, waarde, bg, fg) in enumerate(rijen):
+        t.append('<div style="width:%d%%;margin:0 auto;background:%s;color:%s;border-radius:6pt;padding:6pt 10pt;display:flex;justify-content:space-between;align-items:baseline;break-inside:avoid">'
+                 '<span style="font-size:8.8pt;font-weight:500">%s</span><b style="font-family:var(--fd);font-size:13pt;color:%s">%s</b></div>' % (breedte[k], bg, fg, lab, fg, waarde))
+        if k < len(stappen):
+            t.append('<div style="text-align:center;font-size:8pt;color:var(--tx2);padding:2pt 0">↓ %s</div>' % stappen[k])
+    t.append('</div>')
+    tempo = (' Per week is dat ongeveer %s impressies, %s bezoekers en %s %s uit advertenties.' % (nl(h['imp'] / h['weken']), nl(h['bez'] / h['weken']), nl(h['ads'] / h['weken'], 1), h['conv_naam'])) if h.get('weken') else ''
+    t.append(p('De aannames komen uit onze normen per branche en zijn aan te passen. Na twee weken live leggen we ze naast de echte cijfers.' + tempo, 'klein'))
+    tegel = lambda bedrag, wat, ok='': '<div class="vak" style="text-align:center;padding:8pt 6pt"><b style="display:block;font-family:var(--fd);font-size:14pt;color:var(--tx)">€ %s</b><div class="klein">%s</div>%s</div>' % (bedrag, wat, ok)
+    binnen = h['per_eenheid'] <= h['plafond']
+    ok = '<div style="font-size:8pt;font-weight:600;color:%s;margin-top:2pt">%s</div>' % (('var(--green-tx)', 'binnen het plafond van € %s' % nl(h['plafond'])) if binnen else ('var(--red-tx)', 'boven het plafond van € %s' % nl(h['plafond'])))
+    t.append(h3('Wat het mag kosten, bij € %s advertentiebudget' % nl(h['budget'])))
+    t.append('<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6pt;margin-bottom:10pt">%s%s%s%s</div>' % (
+        tegel(nl(h['cpm'], 2), 'per 1.000 impressies'), tegel(nl(h['per_klik'], 2), 'per klik'),
+        tegel(nl(h['per_conv_ads']), 'per %s uit advertenties' % h['conv_naam'][:-2]), tegel(nl(h['per_eenheid'], 2), 'per %s, gemiddeld over alles' % h['eenheid'][:-1], ok)))
+    if h.get('scen'):
+        sc = h['scen']
+        t.append(kader('<p>De conversie op de landingspagina. Valt die van %s%% naar %s%%, dan zijn er %s bezoekers en %s impressies nodig, en mag een klik nog maar € %s kosten (€ %s per 1.000 impressies). Daarom testen we de landingspagina en het reserveren vóór de start.</p>' % (
+            nl(h['cr'] * 100), nl(sc['cr'] * 100), nl(sc['bez']), nl(sc['imp']), nl(sc['per_klik'], 2), nl(sc['cpm'], 2)), 'De zwakste schakel', 'rood'))
+    return ''.join(t)
 
 # ---------------------------------------------------------------- I.5 Specificatie portaal
 def specificatie():
@@ -197,8 +251,8 @@ def specificatie():
         ['Plafond, advertentiebudget', 'Invoer of suggestie', 'Tekst, met vinkje “voorstel”'],
         ['KPI’s', 'Invoer', 'Regels: product of onderdeel, datum (kalender), doel (aantal), prijs, omzet (berekend), plus totaal'],
         ['Opmerkingen bij de KPI’s', 'Invoer', 'Opsomming'],
-        ['Hypothese', 'Suggestie, aan te passen', 'Uit het doel en het budget, met aannames per schakel (aantal per conversie, aandeel advertenties, conversieratio, doorklikratio) uit onze eigen normen per branche. Berekent bezoekers, impressies en wat een klik, 1.000 impressies en een conversie mogen kosten. Tijdens de campagne staat de hypothese in het dashboard naast de echte cijfers.'],
-        ['Opmerkingen bij de hypothese', 'Invoer of suggestie', 'Opsomming: de grootste bedreiging en wat we eraan doen'],
+        ['Hypothese (onderaan)', 'Berekend door het portaal uit de ingevulde cijfers; de aannames zijn aan te passen', 'Uit het doel, het budget en het plafond, met aannames per schakel (aantal per conversie, aandeel advertenties, conversieratio, doorklikratio) uit onze eigen normen per branche. Berekent bezoekers, impressies en wat een klik, 1.000 impressies en een conversie mogen kosten. Tijdens de campagne staat de hypothese in het dashboard naast de echte cijfers.'],
+        ['De zwakste schakel', 'Berekend', 'Welke schakel het eerst knelt als een aanname tegenvalt, met de getallen erbij'],
         ('grp', 'De planning'),
         ['Start, einde', 'Invoer', 'Datum (kalender)'],
         ['Opmerkingen bij de planning', 'Invoer', 'Opsomming, bijvoorbeeld een stopcriterium of beslismoment'],
@@ -228,7 +282,7 @@ THI = {
  'Contactpersonen': vv('[uit de contacten van Thiessen]'),
  'Doel in één zin': 'Alle drie de kerstmomenten vol: 190 couverts verkopen, goed voor € 17.900 omzet.',
  'Wat telt als resultaat': 'Een reservering in Odoo, geteld in couverts.',
- 'Plafond': voorstel() + ' Gemiddeld maximaal € 8 aan advertenties per couvert; voor de brunch € 5.',
+ 'Plafond': voorstel() + ' Gemiddeld maximaal € 8 aan advertenties per verkocht couvert, gerekend over alle couverts.',
  'Advertentiebudget': voorstel() + ' € 1.500 aan Meta, rechtstreeks van Thiessen: oktober € 500, november € 700, december € 300. We verdelen het over de hele looptijd en over targeting en retargeting, zodat er tot de laatste week budget is voor wie al interesse toonde.',
  'kpi': [
    ['Kerstbrunch', '25 december 2026', '60', '€ 60', '€ 3.600'],
@@ -241,20 +295,6 @@ THI = {
    'Op 25 november beslist Thiessen per moment of het doorgaat.',
    voorstel() + ' Doorgaan bij minimaal 30 couverts voor de brunch en 40 per diner.',
    'Tussenstand om op te sturen: op 1 november 15, 20 en 40 couverts; op 15 november 30, 40 en 55.',
- ],
- 'hypothese': [
-   ['Doel', '', '190 couverts'],
-   ['Reserveringen', 'Gemiddeld 3 personen per reservering', '63'],
-   ['Waarvan via advertenties', '60%; de rest via mailings, bestaande gasten en direct', '38'],
-   ['Bezoekers landingspagina', 'Conversieratio 4% (bezoek naar reservering)', '950'],
-   ['Impressies', 'Doorklikratio 1%', '95.000'],
-   ('tot', ['Wat het mag kosten', '€ 1.500 advertentiebudget', 'max. € 1,58 per klik · € 15,80 per 1.000 impressies · € 39 per reservering']),
- ],
- 'hypothese_opmerking': [
-   'De aannames zijn benchmarks, geen beloftes. Na twee weken live (21 oktober) leggen we ze naast de echte cijfers.',
-   '<b>De grootste bedreiging is de conversie op de landingspagina.</b> Reserveren via Odoo, geen keuze in de ruimte en € 110 per persoon. Zakt de conversie naar 2%, dan zijn er 1.900 bezoekers en 190.000 impressies nodig, en mag een klik maximaal € 0,79 kosten. Dat is krap. Daarom testen we de landingspagina en het reserveren vóór de start.',
-   'Gemiddeld per week: ongeveer 9.500 impressies, 95 bezoekers en bijna 4 reserveringen uit advertenties.',
-   'Na de eerste tien reserveringen checken we de groepsgrootte in Odoo. Zijn het er gemiddeld 2, dan zijn er 95 reserveringen nodig in plaats van 63.',
  ],
  'Start': '7 oktober 2026',
  'Einde': '17 december 2026',
@@ -304,9 +344,11 @@ THI = {
  'Risico’s': ul([
    'Zonder aanbetaling valt een deel van de reserveringen af als de betaallink komt.',
    'Drie momenten, één budget: we sturen per moment, en schuiven budget naar wat achterloopt.',
-   'De brunch levert het minst op per couvert: lager plafond, en eerder stoppen met adverteren als het moet.',
+   'De brunch levert het minst op per couvert: als het moet, stoppen we daar eerder met adverteren dan bij de diners.',
  ]),
 }
+
+THI['hyp'] = bereken(doel=190, eenheid='couverts', per_conversie=3, aandeel_ads=0.6, conversieratio=0.04, doorklik=0.01, budget=1500, plafond=8, scenario_cr=0.02, weken=10)
 
 THI_SAMENVATTING = ('Thiessen Wijnkoopers wil drie kerstmomenten vullen: twee kerstdiners en een kerstbrunch. Het doel is 190 couverts (ongeveer 63 reserveringen) en € 17.900 omzet, '
                     'met Meta Ads, een eigen landingspagina en drie mailings, van 7 oktober tot 17 december 2026.')
