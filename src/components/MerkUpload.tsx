@@ -42,6 +42,8 @@ export function MerkUpload({
   meerdere = false,
   label,
   metLogoKeuze = false,
+  vasteVariant,
+  rustig = false,
 }: {
   organizationId: string
   slug: string
@@ -50,12 +52,16 @@ export function MerkUpload({
   meerdere?: boolean
   label: string
   metLogoKeuze?: boolean
+  /** Voor een vast logovak: de soort ligt vast, alleen achtergrond en kleur kies je nog. */
+  vasteVariant?: string
+  /** Een rustige knop in plaats van de blauwe. */
+  rustig?: boolean
 }) {
   const router = useRouter()
   const invoer = useRef<HTMLInputElement>(null)
   const [bezig, setBezig] = useState<string | null>(null)
   const [fouten, setFouten] = useState<string[]>([])
-  const [variant, setVariant] = useState('primair')
+  const [variant, setVariant] = useState(vasteVariant ?? 'primair')
   const [achtergrond, setAchtergrond] = useState('licht')
   const [kleurvorm, setKleurvorm] = useState('kleur')
 
@@ -72,7 +78,7 @@ export function MerkUpload({
         form.set('slug', slug)
         form.set('kind', kind)
         form.set('bestand', data, bestand.name)
-        if (metLogoKeuze) {
+        if (metLogoKeuze || vasteVariant) {
           form.set('logoVariant', variant)
           form.set('logoBackground', achtergrond)
           form.set('logoColorway', kleurvorm)
@@ -96,12 +102,15 @@ export function MerkUpload({
       <div className="flex flex-wrap items-center gap-2">
         {metLogoKeuze && (
           <>
-            <select aria-label="Soort logo" value={variant} onChange={(e) => setVariant(e.target.value)} className={keuze}>
-              <option value="primair">Hoofdlogo</option>
-              <option value="beeldmerk">Beeldmerk</option>
-              <option value="woordmerk">Woordmerk</option>
-              <option value="anders">Anders</option>
-            </select>
+            {!vasteVariant && (
+              <select aria-label="Soort logo" value={variant} onChange={(e) => setVariant(e.target.value)} className={keuze}>
+                <option value="primair">Primair logo</option>
+                <option value="secundair">Secundair logo</option>
+                <option value="beeldmerk">Beeldmerk</option>
+                <option value="woordmerk">Woordmerk</option>
+                <option value="anders">Anders</option>
+              </select>
+            )}
             <select aria-label="Achtergrond" value={achtergrond} onChange={(e) => setAchtergrond(e.target.value)} className={keuze}>
               <option value="licht">Voor lichte achtergrond</option>
               <option value="donker">Voor donkere achtergrond</option>
@@ -115,7 +124,7 @@ export function MerkUpload({
           </>
         )}
         <label
-          className={`bg-jr-btn hover:bg-jr-btnhover inline-flex min-h-10 cursor-pointer items-center rounded-full px-5 py-2 text-sm font-medium text-white ${
+          className={`${rustig ? 'text-jr-link border border-gray-300 bg-white hover:bg-gray-50' : 'bg-jr-btn hover:bg-jr-btnhover text-white'} inline-flex min-h-10 cursor-pointer items-center rounded-full px-5 py-2 text-sm font-medium ${
             bezig ? 'pointer-events-none opacity-50' : ''
           }`}
         >

@@ -50,7 +50,7 @@ export async function POST(request: Request) {
       filename: bestand.name || null,
       data: Buffer.from(await bestand.arrayBuffer()),
       userId: user.id,
-      logoVariant: uitLijst<NonNullable<BrandFile['logoVariant']>>(form.get('logoVariant'), ['primair', 'beeldmerk', 'woordmerk', 'anders']),
+      logoVariant: uitLijst<NonNullable<BrandFile['logoVariant']>>(form.get('logoVariant'), ['primair', 'secundair', 'beeldmerk', 'woordmerk', 'anders']),
       logoBackground: uitLijst<NonNullable<BrandFile['logoBackground']>>(form.get('logoBackground'), ['licht', 'donker', 'beide']),
       logoColorway: uitLijst<NonNullable<BrandFile['logoColorway']>>(form.get('logoColorway'), ['kleur', 'zwart', 'wit']),
     })

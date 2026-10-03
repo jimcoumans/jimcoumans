@@ -3337,7 +3337,7 @@ export type OrganizationProfile = typeof organizationProfiles.$inferSelect
    ------------------------------------------------------------------------- */
 
 export const brandFileKindEnum = pgEnum('brand_file_kind', ['logo', 'beeld', 'element', 'lettertype'])
-export const logoVariantEnum = pgEnum('logo_variant', ['primair', 'beeldmerk', 'woordmerk', 'anders'])
+export const logoVariantEnum = pgEnum('logo_variant', ['primair', 'secundair', 'beeldmerk', 'woordmerk', 'anders'])
 export const logoBackgroundEnum = pgEnum('logo_background', ['licht', 'donker', 'beide'])
 export const logoColorwayEnum = pgEnum('logo_colorway', ['kleur', 'zwart', 'wit'])
 export const imageSourceEnum = pgEnum('image_source', ['eigen', 'klant', 'stock', 'ai'])
@@ -3455,6 +3455,94 @@ export const brandVoices = pgTable('brand_voices', {
   updatedByUserId: uuid('updated_by_user_id').references(() => users.id, { onDelete: 'set null' }),
 })
 
+/* -------------------------------------------------------------------------
+   De stylesheet: vaste velden die elk merk minimaal moet hebben. Geen lijst
+   waar je eindeloos aan toevoegt, maar de negen tekststijlen en de drie
+   toestanden van een knop die een ontwerper, een developer en een sjabloon
+   allemaal nodig hebben.
+   ------------------------------------------------------------------------- */
+
+export const textStyleRoleEnum = pgEnum('text_style_role', ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'body', 'label', 'micro'])
+
+const hexCheck = (kolom: unknown) => sql`${kolom} IS NULL OR ${kolom} ~ '^#[0-9A-F]{6}$'`
+
+export const brandTextStyles = pgTable(
+  'brand_text_styles',
+  {
+    organizationId: uuid('organization_id')
+      .notNull()
+      .references(() => organizations.id, { onDelete: 'cascade' }),
+    role: textStyleRoleEnum('role').notNull(),
+    fontFamily: text('font_family').notNull(),
+    /** 100 tot en met 900, zoals in CSS. */
+    weight: integer('weight').notNull().default(400),
+    italic: boolean('italic').notNull().default(false),
+    sizePx: integer('size_px').notNull(),
+    /** Regelhoogte in procenten van de lettergrootte: 120 is 1,2. */
+    lineHeightPct: integer('line_height_pct').notNull().default(120),
+    /** Letterafstand in tienden van een procent van de lettergrootte: -20 is -2%. */
+    trackingTenths: integer('tracking_tenths').notNull().default(0),
+    uppercase: boolean('uppercase').notNull().default(false),
+    colorHex: text('color_hex'),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.organizationId, t.role] }),
+    check('brand_text_style_weight_valid', sql`${t.weight} BETWEEN 100 AND 900`),
+    check('brand_text_style_size_valid', sql`${t.sizePx} BETWEEN 6 AND 400`),
+    check('brand_text_style_line_height_valid', sql`${t.lineHeightPct} BETWEEN 50 AND 300`),
+    check('brand_text_style_tracking_valid', sql`${t.trackingTenths} BETWEEN -500 AND 500`),
+    check('brand_text_style_family_not_empty', sql`length(trim(${t.fontFamily})) > 0`),
+    check('brand_text_style_color_valid', hexCheck(t.colorHex)),
+  ],
+)
+
+/** Eén per klant: de knop in drie toestanden, en welke logo's het merk niet heeft. */
+export const brandStylesheets = pgTable(
+  'brand_stylesheets',
+  {
+    organizationId: uuid('organization_id')
+      .primaryKey()
+      .references(() => organizations.id, { onDelete: 'cascade' }),
+    /** Logovarianten die dit merk bewust niet heeft, zodat ze niet als "ontbreekt" tellen. */
+    logosNotApplicable: text('logos_not_applicable').array().notNull().default(sql`ARRAY[]::text[]`),
+
+    buttonFontFamily: text('button_font_family'),
+    buttonWeight: integer('button_weight'),
+    buttonSizePx: integer('button_size_px'),
+    buttonUppercase: boolean('button_uppercase').notNull().default(false),
+    buttonRadiusPx: integer('button_radius_px'),
+    buttonNormalBg: text('button_normal_bg'),
+    buttonNormalText: text('button_normal_text'),
+    buttonNormalBorder: text('button_normal_border'),
+    buttonHoverBg: text('button_hover_bg'),
+    buttonHoverText: text('button_hover_text'),
+    buttonHoverBorder: text('button_hover_border'),
+    buttonActiveBg: text('button_active_bg'),
+    buttonActiveText: text('button_active_text'),
+    buttonActiveBorder: text('button_active_border'),
+
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedByUserId: uuid('updated_by_user_id').references(() => users.id, { onDelete: 'set null' }),
+  },
+  (t) => [
+    check('brand_button_weight_valid', sql`${t.buttonWeight} IS NULL OR ${t.buttonWeight} BETWEEN 100 AND 900`),
+    check('brand_button_size_valid', sql`${t.buttonSizePx} IS NULL OR ${t.buttonSizePx} BETWEEN 6 AND 200`),
+    check('brand_button_radius_valid', sql`${t.buttonRadiusPx} IS NULL OR ${t.buttonRadiusPx} BETWEEN 0 AND 999`),
+    check('brand_button_normal_bg_valid', hexCheck(t.buttonNormalBg)),
+    check('brand_button_normal_text_valid', hexCheck(t.buttonNormalText)),
+    check('brand_button_normal_border_valid', hexCheck(t.buttonNormalBorder)),
+    check('brand_button_hover_bg_valid', hexCheck(t.buttonHoverBg)),
+    check('brand_button_hover_text_valid', hexCheck(t.buttonHoverText)),
+    check('brand_button_hover_border_valid', hexCheck(t.buttonHoverBorder)),
+    check('brand_button_active_bg_valid', hexCheck(t.buttonActiveBg)),
+    check('brand_button_active_text_valid', hexCheck(t.buttonActiveText)),
+    check('brand_button_active_border_valid', hexCheck(t.buttonActiveBorder)),
+  ],
+)
+
+export type BrandTextStyle = typeof brandTextStyles.$inferSelect
+export type BrandStylesheet = typeof brandStylesheets.$inferSelect
 export type BrandFile = typeof brandFiles.$inferSelect
 export type BrandColor = typeof brandColors.$inferSelect
 export type BrandFont = typeof brandFonts.$inferSelect

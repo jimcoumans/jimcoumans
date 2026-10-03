@@ -401,6 +401,34 @@ export function describeDbError(error: unknown): string | null {
       return 'Geef de kleur een naam.'
     case 'brand_font_name_not_empty':
       return 'Vul de naam van het lettertype in.'
+    /* --- Stylesheet --- */
+    case 'brand_text_style_weight_valid':
+    case 'brand_button_weight_valid':
+      return 'Kies een gewicht tussen Thin (100) en Black (900).'
+    case 'brand_text_style_size_valid':
+    case 'brand_button_size_valid':
+      return 'Die lettergrootte kan niet. Kies iets tussen 6 en 400 pixels.'
+    case 'brand_text_style_line_height_valid':
+      return 'Regelhoogte moet tussen 0,5 en 3 keer de lettergrootte liggen.'
+    case 'brand_text_style_tracking_valid':
+      return 'Letterafstand moet tussen -50% en 50% liggen.'
+    case 'brand_text_style_family_not_empty':
+      return 'Vul het lettertype in.'
+    case 'brand_text_style_color_valid':
+    case 'brand_button_normal_bg_valid':
+    case 'brand_button_normal_text_valid':
+    case 'brand_button_normal_border_valid':
+    case 'brand_button_hover_bg_valid':
+    case 'brand_button_hover_text_valid':
+    case 'brand_button_hover_border_valid':
+    case 'brand_button_active_bg_valid':
+    case 'brand_button_active_text_valid':
+    case 'brand_button_active_border_valid':
+      return 'Vul een kleurcode in zoals #8B1E2D.'
+    case 'brand_button_radius_valid':
+      return 'Afronding moet tussen 0 en 999 pixels liggen.'
+    case 'brand_text_styles_organization_id_role_pk':
+      return 'Deze tekststijl bestaat al. Ververs de pagina.'
     case 'campaign_versions_idx':
       return 'Deze versie is al vastgelegd. Ververs de pagina en probeer het opnieuw.'
     default:

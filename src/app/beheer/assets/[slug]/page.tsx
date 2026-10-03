@@ -16,8 +16,16 @@ import {
   bewerkFont,
   wisFont,
   bewaarStem,
+  logoNietVanToepassing,
+  wisTekststijlActie,
 } from '../../merk-actions'
 import { formatDateInput } from '@/lib/dates'
+import { Paneel } from '@/components/Paneel'
+import { MerkFonts } from '@/components/stylesheet/MerkFonts'
+import { TekststijlBewerker } from '@/components/stylesheet/TekststijlBewerker'
+import { KnopBewerker } from '@/components/stylesheet/KnopBewerker'
+import { LOGO_SLOTS, TEKSTROLLEN, TOESTANDEN, knopCss, tekstCss, tekstOmschrijving, type Tekststijl } from '@/lib/stylesheet'
+import type { BrandTextStyle } from '@/db/schema'
 
 export const maxDuration = 26
 
@@ -30,12 +38,28 @@ const ONDERDELEN = [
   { id: 'logos', label: 'Logo’s' },
   { id: 'kleuren', label: 'Kleuren' },
   { id: 'typografie', label: 'Typografie' },
+  { id: 'knoppen', label: 'Knoppen' },
   { id: 'toon', label: 'Tone of voice' },
   { id: 'beelden', label: 'Beelden' },
   { id: 'elementen', label: 'Elementen' },
 ]
 
-const LOGO_LABEL: Record<string, string> = { primair: 'Hoofdlogo', beeldmerk: 'Beeldmerk', woordmerk: 'Woordmerk', anders: 'Anders' }
+const LOGO_LABEL: Record<string, string> = { primair: 'Primair logo', secundair: 'Secundair logo', beeldmerk: 'Beeldmerk', woordmerk: 'Woordmerk', anders: 'Anders' }
+
+/** Alleen de velden van de stijl, zonder sleutels en datum. */
+const alsStijl = (r: BrandTextStyle): Tekststijl => ({
+  fontFamily: r.fontFamily,
+  weight: r.weight,
+  italic: r.italic,
+  sizePx: r.sizePx,
+  lineHeightPct: r.lineHeightPct,
+  trackingTenths: r.trackingTenths,
+  uppercase: r.uppercase,
+  colorHex: r.colorHex,
+})
+
+const logoAchtergrond = (b: BrandFile) =>
+  b.logoBackground === 'donker' ? 'bg-jr-black' : b.logoBackground === 'beide' ? 'bg-[linear-gradient(90deg,#fff_50%,#1C1C1E_50%)]' : 'bg-white'
 const ACHTERGROND_LABEL: Record<string, string> = { licht: 'licht', donker: 'donker', beide: 'licht en donker' }
 const ROL_LABEL: Record<BrandColor['role'], string> = {
   primair: 'Primair',
@@ -86,8 +110,21 @@ export default async function MerkkluisPage({
     </>
   )
 
+  const stijlPer = new Map(m.tekststijlen.map((t) => [t.role, alsStijl(t)]))
+  const labelStijl = stijlPer.get('label') ?? null
+  const merkkleuren = m.kleuren.map((k) => ({ name: k.name, hex: k.hex }))
+  const fontNamen = [...new Set([...m.fonts.map((f) => f.name), ...m.tekststijlen.map((t) => t.fontFamily)])]
+  const koppenFont = m.fonts.find((f) => f.role === 'koppen')?.name ?? m.tekststijlen.find((t) => t.role === 'h1')?.fontFamily ?? ''
+  const tekstFont = m.fonts.find((f) => f.role === 'tekst')?.name ?? m.tekststijlen.find((t) => t.role === 'body')?.fontFamily ?? koppenFont
+  const teLaden = [
+    ...m.tekststijlen.map(alsStijl),
+    ...(m.knop?.fontFamily ? [{ fontFamily: m.knop.fontFamily, weight: m.knop.weight ?? 600, italic: false }] : []),
+    ...m.fonts.map((f) => ({ fontFamily: f.name, weight: 400, italic: false })),
+  ]
+
   return (
     <AppShell user={user} actief="assets">
+      <MerkFonts stijlen={teLaden} bestanden={m.fontbestanden} />
       <a href="/beheer/assets" className="text-jr-link text-sm hover:underline">
         &larr; Alle merkkluizen
       </a>
@@ -95,9 +132,22 @@ export default async function MerkkluisPage({
         <div>
           <p className="text-xs text-gray-600">Merkkluis</p>
           <h1 className="text-[28px] sm:text-[32px]">{org.name}</h1>
-          <a href={`/beheer/klanten/${slug}?tab=profiel`} className="text-jr-link text-sm hover:underline">
-            Naar het klantprofiel
-          </a>
+          <div className="mt-3 flex flex-wrap items-center gap-3">
+            <a
+              href={`/beheer/assets/${slug}/stylesheet`}
+              target="_blank"
+              rel="noopener"
+              className="bg-jr-btn hover:bg-jr-btnhover inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium text-white"
+            >
+              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <path d="M12 4v11m0 0-4-4m4 4 4-4M5 19h14" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              Stylesheet als pdf
+            </a>
+            <a href={`/beheer/klanten/${slug}?tab=profiel`} className="text-jr-link text-sm hover:underline">
+              Naar het klantprofiel
+            </a>
+          </div>
         </div>
         <Volledigheid m={m} />
       </div>
@@ -112,28 +162,109 @@ export default async function MerkkluisPage({
 
       <div className="space-y-14">
         {/* ------------------------------ Logo's ------------------------------ */}
-        <Onderdeel id="logos" titel="Logo’s" uitleg="Elke variant apart, met de achtergrond waarvoor hij bedoeld is. Een sjabloon kiest zelf de variant die past. SVG waar het kan, anders PNG met transparantie.">
+        <Onderdeel id="logos" titel="Logo’s" uitleg="Vier vaste vakken die elk merk minimaal invult. Heeft een merk iets bewust niet, zeg dat dan: dan telt het niet als ontbrekend. SVG waar het kan, anders PNG met transparantie.">
           {inBewerking?.kind === 'logo' && <Bewerker key={bewerkSleutel(inBewerking)} b={inBewerking} slug={slug} />}
-          {m.logos.length > 0 && (
-            <ul className="mb-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-              {m.logos.map((l) => (
-                <Tegel key={l.id} b={l} slug={slug}>
+          <ul className="mb-8 grid gap-4 md:grid-cols-2 2xl:grid-cols-4">
+            {LOGO_SLOTS.map((slot) => {
+              const bestanden = m.logos.filter((l) => l.logoVariant === slot.variant)
+              const hoofd = bestanden.find((l) => l.logoBackground !== 'donker') ?? bestanden[0]
+              const nvt = !hoofd && m.logosNvt.includes(slot.variant)
+              return (
+                <li key={slot.variant} className="flex flex-col rounded-xl bg-white shadow-sm">
+                  <div className="flex items-start justify-between gap-3 px-5 pt-4">
+                    <div className="min-w-0">
+                      <p className="text-[15px] font-medium">{slot.label}</p>
+                      <p className="text-xs text-gray-600">{slot.uitleg}</p>
+                    </div>
+                    {hoofd ? (
+                      <span className="shrink-0 rounded-full bg-[#E6F7EB] px-2 py-0.5 text-xs text-[#1D7D3F]">Klaar</span>
+                    ) : nvt ? (
+                      <span className="shrink-0 rounded-full bg-gray-150 px-2 py-0.5 text-xs text-gray-600">Niet van toepassing</span>
+                    ) : (
+                      <span className="shrink-0 rounded-full bg-[#FEF2E0] px-2 py-0.5 text-xs text-[#94590A]">Ontbreekt</span>
+                    )}
+                  </div>
                   <div
-                    className={`flex aspect-[4/3] items-center justify-center rounded-t-xl p-6 ${
-                      l.logoBackground === 'donker' ? 'bg-jr-black' : l.logoBackground === 'beide' ? 'bg-[linear-gradient(90deg,#fff_50%,#1C1C1E_50%)]' : 'bg-white'
+                    className={`m-4 flex h-44 items-center justify-center rounded-lg p-6 ${
+                      hoofd ? logoAchtergrond(hoofd) : 'border border-dashed border-gray-300 bg-gray-50'
                     }`}
                   >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={bron(l, false)} alt={l.title} className="max-h-full max-w-full object-contain" />
+                    {hoofd ? (
+                      <a href={`/beheer/assets/${slug}?bewerk=${hoofd.id}#logos`} className="flex h-full w-full items-center justify-center" title="Wijzig">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={bron(hoofd, false)} alt={hoofd.title} className="max-h-full max-w-full object-contain" />
+                      </a>
+                    ) : (
+                      <p className="text-center text-sm text-gray-400">{nvt ? `Dit merk heeft geen ${slot.label.toLowerCase()}` : 'Nog leeg'}</p>
+                    )}
                   </div>
-                  <p className="px-4 pt-2.5 text-xs text-gray-600">
-                    {LOGO_LABEL[l.logoVariant ?? 'anders']} · {ACHTERGROND_LABEL[l.logoBackground ?? 'licht']} · {l.logoColorway}
-                  </p>
-                </Tegel>
-              ))}
+                  {bestanden.length > 1 && (
+                    <div className="-mt-1 mb-3 flex flex-wrap gap-2 px-4">
+                      {bestanden
+                        .filter((b) => b.id !== hoofd?.id)
+                        .map((b) => (
+                          <a
+                            key={b.id}
+                            href={`/beheer/assets/${slug}?bewerk=${b.id}#logos`}
+                            title={`${b.title} · ${ACHTERGROND_LABEL[b.logoBackground ?? 'licht']}`}
+                            className={`flex h-10 w-14 items-center justify-center rounded-md border border-gray-200 p-1.5 ${logoAchtergrond(b)}`}
+                          >
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={bron(b, false)} alt={b.title} className="max-h-full max-w-full object-contain" />
+                          </a>
+                        ))}
+                    </div>
+                  )}
+                  <div className="mt-auto flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-gray-150 px-5 py-3">
+                    {!nvt && (
+                      <MerkUpload
+                        organizationId={org.id}
+                        slug={slug}
+                        kind="logo"
+                        accept="image/svg+xml,image/png,image/webp,image/jpeg"
+                        label={hoofd ? '+ Andere versie' : 'Uploaden'}
+                        vasteVariant={slot.variant}
+                        metLogoKeuze={!!hoofd}
+                        rustig={!!hoofd}
+                      />
+                    )}
+                    {!hoofd && (
+                      <ActionForm
+                        action={logoNietVanToepassing}
+                        submitLabel={nvt ? 'Toch toevoegen' : 'Heeft dit merk niet'}
+                        submitClassName="!min-h-0 !px-2 !py-1 text-gray-600 hover:bg-gray-100 !text-xs"
+                        resetOnSuccess={false}
+                        meldGelukt={false}
+                        className=""
+                      >
+                        {verborgen}
+                        <input type="hidden" name="variant" value={slot.variant} />
+                        <input type="hidden" name="nvt" value={nvt ? '0' : '1'} />
+                      </ActionForm>
+                    )}
+                  </div>
+                </li>
+              )
+            })}
+          </ul>
+
+          <h3 className="mb-1 text-[17px]">Overige varianten</h3>
+          <p className="mb-4 text-sm text-gray-600">Bijvoorbeeld een versie met slogan, een jubileumlogo of een sub-merk.</p>
+          {m.logos.filter((l) => !l.logoVariant || l.logoVariant === 'anders').length > 0 && (
+            <ul className="mb-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+              {m.logos
+                .filter((l) => !l.logoVariant || l.logoVariant === 'anders')
+                .map((l) => (
+                  <Tegel key={l.id} b={l} slug={slug}>
+                    <div className={`flex aspect-[4/3] items-center justify-center rounded-t-xl p-6 ${logoAchtergrond(l)}`}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={bron(l, false)} alt={l.title} className="max-h-full max-w-full object-contain" />
+                    </div>
+                  </Tegel>
+                ))}
             </ul>
           )}
-          <MerkUpload organizationId={org.id} slug={slug} kind="logo" accept="image/svg+xml,image/png,image/webp,image/jpeg" label="Logo toevoegen" metLogoKeuze />
+          <MerkUpload organizationId={org.id} slug={slug} kind="logo" accept="image/svg+xml,image/png,image/webp,image/jpeg" label="Andere variant toevoegen" vasteVariant="anders" metLogoKeuze rustig />
         </Onderdeel>
 
         {/* ------------------------------ Kleuren ----------------------------- */}
@@ -177,7 +308,73 @@ export default async function MerkkluisPage({
         </Onderdeel>
 
         {/* ------------------------------ Typografie -------------------------- */}
-        <Onderdeel id="typografie" titel="Typografie" uitleg="Per rol het lettertype, de gewichten, een reservefont en de licentie. Zet het fontbestand erbij als we het hebben.">
+        <Onderdeel id="typografie" titel="Typografie" uitleg="Negen vaste tekststijlen, elk op ware grootte. Zo ziet een ontwerper, een developer en een sjabloon precies hetzelfde.">
+          <ul className="mb-10 divide-y divide-gray-150 rounded-xl bg-white shadow-sm">
+            {TEKSTROLLEN.map((t) => {
+              const st = stijlPer.get(t.rol)
+              const start: Tekststijl = {
+                fontFamily: t.rol.startsWith('h') ? koppenFont : tekstFont,
+                weight: t.start.weight,
+                italic: false,
+                sizePx: t.start.sizePx,
+                lineHeightPct: t.start.lineHeightPct,
+                trackingTenths: 0,
+                uppercase: false,
+                colorHex: null,
+              }
+              return (
+                <li key={t.rol} className="grid items-start gap-x-6 gap-y-2 px-6 py-5 md:grid-cols-[88px_minmax(0,1fr)_auto]">
+                  <div>
+                    <p className="text-sm font-semibold">{t.label}</p>
+                    <p className="text-xs text-gray-500">{st ? `${st.sizePx} px` : 'Nog leeg'}</p>
+                  </div>
+                  <div className="min-w-0">
+                    {st ? (
+                      <>
+                        <p style={tekstCss(st)} className="break-words">
+                          {t.voorbeeld}
+                        </p>
+                        <p className="tabular mt-2 text-xs text-gray-500">{tekstOmschrijving(st)}</p>
+                      </>
+                    ) : (
+                      <p className="text-[15px] text-gray-400">Nog niet ingesteld</p>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Paneel
+                      knop={st ? 'Wijzig' : 'Instellen'}
+                      stijl={st ? 'klein' : 'rustig'}
+                      titel={`${t.label} instellen`}
+                      uitleg="Het voorbeeld verandert mee terwijl je typt. Klik in het voorbeeld om je eigen tekst te proberen."
+                      breed
+                    >
+                      <TekststijlBewerker
+                        organizationId={org.id}
+                        slug={slug}
+                        rol={t.rol}
+                        voorbeeld={t.voorbeeld}
+                        huidig={st ?? null}
+                        start={start}
+                        fontNamen={fontNamen}
+                        merkkleuren={merkkleuren}
+                      />
+                      {st && (
+                        <div className="mt-8 border-t border-gray-200 pt-4">
+                          <ActionForm action={wisTekststijlActie} submitLabel={`${t.label} leegmaken`} submitClassName="text-[#C02A22] hover:bg-[#FDECEA] !px-3 !text-xs" resetOnSuccess={false} meldGelukt={false} className="">
+                            {verborgen}
+                            <input type="hidden" name="rol" value={t.rol} />
+                          </ActionForm>
+                        </div>
+                      )}
+                    </Paneel>
+                  </div>
+                </li>
+              )
+            })}
+          </ul>
+
+          <h3 className="mb-1 text-[17px]">Lettertypen en licenties</h3>
+          <p className="mb-4 max-w-3xl text-sm text-gray-600">Welke fonts het merk gebruikt, met de licentie en het bestand. Staat het bestand erbij, dan ziet iedereen het echte font, ook als het betaald is.</p>
           {m.fonts.length > 0 && (
             <ul className="mb-5 divide-y divide-gray-200 rounded-xl bg-white shadow-sm">
               {m.fonts.map((f) => {
@@ -235,6 +432,47 @@ export default async function MerkkluisPage({
               ))}
             </p>
           )}
+        </Onderdeel>
+
+        {/* ------------------------------ Knoppen ----------------------------- */}
+        <Onderdeel id="knoppen" titel="Knoppen" uitleg="De hoofdknop in drie toestanden: zoals hij staat, met de muis erboven en op het moment van klikken. Tekst op de knop moet een contrast van minstens 4,5 halen.">
+          <div className="rounded-xl bg-white p-6 shadow-sm lg:p-8">
+            {m.knop ? (
+              <div className="grid gap-8 sm:grid-cols-3">
+                {TOESTANDEN.map(({ toestand, label }) => {
+                  const k = m.knop!.kleuren[toestand]
+                  return (
+                    <div key={toestand}>
+                      <span style={knopCss(m.knop!, toestand, labelStijl)}>Reserveer</span>
+                      <p className="mt-4 text-sm font-medium">{label}</p>
+                      <p className="tabular text-xs text-gray-600">
+                        {k.bg ?? 'geen achtergrond'} · tekst {k.tekst ?? 'niet ingevuld'}
+                        {k.rand && ` · rand ${k.rand}`}
+                      </p>
+                      {k.bg && k.tekst && (
+                        <p className="text-xs">
+                          <ContrastLabel kleur={k.bg} tekst={k.tekst} naam="contrast" />
+                        </p>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            ) : (
+              <p className="text-[15px] text-gray-500">Nog geen knop ingesteld.</p>
+            )}
+            <div className="mt-6 border-t border-gray-150 pt-4">
+              <Paneel
+                knop={m.knop ? 'Knop wijzigen' : 'Knop instellen'}
+                stijl={m.knop ? 'link' : 'primair'}
+                titel="Knop instellen"
+                uitleg="Kies per toestand de kleuren; het voorbeeld bovenaan kun je aanwijzen en indrukken."
+                breed
+              >
+                <KnopBewerker organizationId={org.id} slug={slug} huidig={m.knop} label={labelStijl} fontNamen={fontNamen} merkkleuren={merkkleuren} />
+              </Paneel>
+            </div>
+          </div>
         </Onderdeel>
 
         {/* ------------------------------ Tone of voice ----------------------- */}

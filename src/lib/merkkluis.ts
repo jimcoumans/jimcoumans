@@ -1,9 +1,10 @@
 import { and, asc, count, desc, eq, sql } from 'drizzle-orm'
 import { randomUUID } from 'node:crypto'
 import { db } from '@/db'
-import { brandColors, brandFiles, brandFonts, brandVoices, organizations } from '@/db/schema'
-import type { BrandColor, BrandFile, BrandFont, BrandVoice, Organization } from '@/db/schema'
+import { brandColors, brandFiles, brandFonts, brandStylesheets, brandTextStyles, brandVoices, organizations } from '@/db/schema'
+import type { BrandColor, BrandFile, BrandFont, BrandStylesheet, BrandTextStyle, BrandVoice, Organization } from '@/db/schema'
 import { bewaar, wis } from './bestandsopslag'
+import { LOGO_SLOTS, TEKSTROLLEN, knopCompleet, type Knop, type LogoSlot, type TekstRol, type Tekststijl } from './stylesheet'
 
 /* -------------------------------------------------------------------------
    De merkkluis: per klant de logo's, kleuren, lettertypen, toon, beelden en
@@ -254,6 +255,71 @@ export async function zetStem(organizationId: string, stem: StemInvoer, userId: 
   await db.insert(brandVoices).values({ organizationId, ...waarden }).onConflictDoUpdate({ target: brandVoices.organizationId, set: waarden })
 }
 
+/* ------------------------------ Stylesheet ------------------------------- */
+
+export async function zetTekststijl(organizationId: string, rol: TekstRol, stijl: Tekststijl) {
+  const waarden = { ...stijl, updatedAt: new Date() }
+  await db
+    .insert(brandTextStyles)
+    .values({ organizationId, role: rol, ...waarden })
+    .onConflictDoUpdate({ target: [brandTextStyles.organizationId, brandTextStyles.role], set: waarden })
+}
+
+export async function wisTekststijl(organizationId: string, rol: TekstRol) {
+  await db.delete(brandTextStyles).where(and(eq(brandTextStyles.organizationId, organizationId), eq(brandTextStyles.role, rol)))
+}
+
+/** De rij in de database als knop, of null als er nog niets is ingevuld. */
+export function knopUit(r: BrandStylesheet | null): Knop | null {
+  if (!r) return null
+  const k: Knop = {
+    fontFamily: r.buttonFontFamily,
+    weight: r.buttonWeight,
+    sizePx: r.buttonSizePx,
+    uppercase: r.buttonUppercase,
+    radiusPx: r.buttonRadiusPx,
+    kleuren: {
+      normal: { bg: r.buttonNormalBg, tekst: r.buttonNormalText, rand: r.buttonNormalBorder },
+      hover: { bg: r.buttonHoverBg, tekst: r.buttonHoverText, rand: r.buttonHoverBorder },
+      active: { bg: r.buttonActiveBg, tekst: r.buttonActiveText, rand: r.buttonActiveBorder },
+    },
+  }
+  const ietsIngevuld = Object.values(k.kleuren).some((c) => c.bg || c.tekst || c.rand) || k.radiusPx !== null
+  return ietsIngevuld ? k : null
+}
+
+export async function zetKnop(organizationId: string, k: Knop, userId: string) {
+  const waarden = {
+    buttonFontFamily: k.fontFamily,
+    buttonWeight: k.weight,
+    buttonSizePx: k.sizePx,
+    buttonUppercase: k.uppercase,
+    buttonRadiusPx: k.radiusPx,
+    buttonNormalBg: k.kleuren.normal.bg,
+    buttonNormalText: k.kleuren.normal.tekst,
+    buttonNormalBorder: k.kleuren.normal.rand,
+    buttonHoverBg: k.kleuren.hover.bg,
+    buttonHoverText: k.kleuren.hover.tekst,
+    buttonHoverBorder: k.kleuren.hover.rand,
+    buttonActiveBg: k.kleuren.active.bg,
+    buttonActiveText: k.kleuren.active.tekst,
+    buttonActiveBorder: k.kleuren.active.rand,
+    updatedAt: new Date(),
+    updatedByUserId: userId,
+  }
+  await db.insert(brandStylesheets).values({ organizationId, ...waarden }).onConflictDoUpdate({ target: brandStylesheets.organizationId, set: waarden })
+}
+
+/** Een logovariant die dit merk bewust niet heeft, of toch wel. */
+export async function zetLogoNietVanToepassing(organizationId: string, variant: LogoSlot, nvt: boolean, userId: string) {
+  const [rij] = await db.select({ lijst: brandStylesheets.logosNotApplicable }).from(brandStylesheets).where(eq(brandStylesheets.organizationId, organizationId))
+  const huidig = new Set(rij?.lijst ?? [])
+  if (nvt) huidig.add(variant)
+  else huidig.delete(variant)
+  const waarden = { logosNotApplicable: [...huidig], updatedAt: new Date(), updatedByUserId: userId }
+  await db.insert(brandStylesheets).values({ organizationId, ...waarden }).onConflictDoUpdate({ target: brandStylesheets.organizationId, set: waarden })
+}
+
 /* ------------------------------ Lezen ------------------------------------ */
 
 export type Merkkluis = {
@@ -265,18 +331,27 @@ export type Merkkluis = {
   kleuren: BrandColor[]
   fonts: BrandFont[]
   stem: BrandVoice | null
+  tekststijlen: BrandTextStyle[]
+  knop: Knop | null
+  logosNvt: LogoSlot[]
+  bijgewerkt: Date | null
   volledigheid: Volledigheid
 }
 
 export async function getMerkkluis(slug: string): Promise<Merkkluis | null> {
   const [organisatie] = await db.select().from(organizations).where(eq(organizations.slug, slug)).limit(1)
   if (!organisatie) return null
-  const [bestanden, kleuren, fonts, [stem]] = await Promise.all([
+  const [bestanden, kleuren, fonts, [stem], tekststijlen, [sheet]] = await Promise.all([
     db.select().from(brandFiles).where(eq(brandFiles.organizationId, organisatie.id)).orderBy(desc(brandFiles.createdAt)),
     db.select().from(brandColors).where(eq(brandColors.organizationId, organisatie.id)).orderBy(asc(brandColors.position)),
     db.select().from(brandFonts).where(eq(brandFonts.organizationId, organisatie.id)).orderBy(asc(brandFonts.role), asc(brandFonts.name)),
     db.select().from(brandVoices).where(eq(brandVoices.organizationId, organisatie.id)).limit(1),
+    db.select().from(brandTextStyles).where(eq(brandTextStyles.organizationId, organisatie.id)),
+    db.select().from(brandStylesheets).where(eq(brandStylesheets.organizationId, organisatie.id)).limit(1),
   ])
+  const knop = knopUit(sheet ?? null)
+  const logosNvt = (sheet?.logosNotApplicable ?? []) as LogoSlot[]
+  const laatste = [sheet?.updatedAt, stem?.updatedAt, ...tekststijlen.map((t) => t.updatedAt)].filter((d): d is Date => !!d)
   const logos = bestanden.filter((b) => b.kind === 'logo')
   const beelden = bestanden.filter((b) => b.kind === 'beeld')
   return {
@@ -288,7 +363,11 @@ export async function getMerkkluis(slug: string): Promise<Merkkluis | null> {
     kleuren,
     fonts,
     stem: stem ?? null,
-    volledigheid: berekenVolledigheid({ logos, beelden, kleuren, fonts, stem: stem ?? null }),
+    tekststijlen,
+    knop,
+    logosNvt,
+    bijgewerkt: laatste.length ? new Date(Math.max(...laatste.map((d) => d.getTime()))) : null,
+    volledigheid: berekenVolledigheid({ logos, beelden, kleuren, stem: stem ?? null, tekststijlen, knop, logosNvt }),
   }
 }
 
@@ -307,17 +386,21 @@ export function berekenVolledigheid(m: {
   logos: Pick<BrandFile, 'logoVariant' | 'logoBackground'>[]
   beelden: Pick<BrandFile, 'usage'>[]
   kleuren: Pick<BrandColor, 'role'>[]
-  fonts: Pick<BrandFont, 'role'>[]
   stem: Pick<BrandVoice, 'address' | 'goodExamples'> | null
+  tekststijlen: Pick<BrandTextStyle, 'role'>[]
+  knop: Knop | null
+  logosNvt: string[]
 }): Volledigheid {
+  const rollen = new Set(m.tekststijlen.map((t) => t.role))
   const punten = [
     {
-      label: 'Hoofdlogo voor een lichte achtergrond',
-      klaar: m.logos.some((l) => l.logoVariant === 'primair' && (l.logoBackground === 'licht' || l.logoBackground === 'beide')),
+      label: 'Logo’s: primair, secundair, beeldmerk en woordmerk',
+      klaar: LOGO_SLOTS.every(({ variant }) => m.logosNvt.includes(variant) || m.logos.some((l) => l.logoVariant === variant)),
     },
     { label: 'Logo voor een donkere achtergrond', klaar: m.logos.some((l) => l.logoBackground === 'donker' || l.logoBackground === 'beide') },
     { label: 'Minstens twee kleuren, waarvan een primair', klaar: m.kleuren.length >= 2 && m.kleuren.some((k) => k.role === 'primair') },
-    { label: 'Lettertype voor koppen en voor tekst', klaar: m.fonts.some((f) => f.role === 'koppen') && m.fonts.some((f) => f.role === 'tekst') },
+    { label: 'Tekststijlen: H1 tot en met H6, body, label en micro', klaar: TEKSTROLLEN.every(({ rol }) => rollen.has(rol)) },
+    { label: 'Knop: normaal, hover en actief', klaar: knopCompleet(m.knop) },
     { label: 'Tone of voice: aanspreekvorm en voorbeeldzinnen', klaar: !!m.stem?.address && !!m.stem.goodExamples?.trim() },
     { label: `Minstens ${MIN_BEELDEN} beelden met gebruiksrechten`, klaar: m.beelden.filter((b) => b.usage.length > 0).length >= MIN_BEELDEN },
   ]
@@ -326,12 +409,13 @@ export function berekenVolledigheid(m: {
 
 /** Alle klanten met hoe ver hun merkkluis is, voor het overzicht. */
 export async function listMerkkluizen() {
-  const [orgs, bestanden, kleuren, fonts, stemmen] = await Promise.all([
+  const [orgs, bestanden, kleuren, stemmen, stijlen, sheets] = await Promise.all([
     db.select({ id: organizations.id, name: organizations.name, slug: organizations.slug, status: organizations.status }).from(organizations).orderBy(asc(organizations.name)),
     db.select({ org: brandFiles.organizationId, kind: brandFiles.kind, logoVariant: brandFiles.logoVariant, logoBackground: brandFiles.logoBackground, usage: brandFiles.usage }).from(brandFiles),
     db.select({ org: brandColors.organizationId, role: brandColors.role }).from(brandColors),
-    db.select({ org: brandFonts.organizationId, role: brandFonts.role }).from(brandFonts),
     db.select({ org: brandVoices.organizationId, address: brandVoices.address, goodExamples: brandVoices.goodExamples }).from(brandVoices),
+    db.select({ org: brandTextStyles.organizationId, role: brandTextStyles.role }).from(brandTextStyles),
+    db.select().from(brandStylesheets),
   ])
   return orgs.map((o) => {
     const eigen = bestanden.filter((b) => b.org === o.id)
@@ -341,8 +425,10 @@ export async function listMerkkluizen() {
       logos,
       beelden,
       kleuren: kleuren.filter((k) => k.org === o.id),
-      fonts: fonts.filter((f) => f.org === o.id),
       stem: stemmen.find((s) => s.org === o.id) ?? null,
+      tekststijlen: stijlen.filter((t) => t.org === o.id),
+      knop: knopUit(sheets.find((s) => s.organizationId === o.id) ?? null),
+      logosNvt: sheets.find((s) => s.organizationId === o.id)?.logosNotApplicable ?? [],
     })
     return { ...o, logos: logos.length, beelden: beelden.length, kleuren: kleuren.filter((k) => k.org === o.id).length, volledigheid: v }
   })
