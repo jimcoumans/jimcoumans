@@ -173,6 +173,9 @@ export default async function WervingPage() {
         uitleg="Vacatures, stages en kandidaten. Bovenaan wie er op ons wacht."
         acties={
           <>
+            <a href="/beheer/werving/kandidaten" className="text-jr-text rounded-full border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium hover:bg-gray-50">
+              Alle kandidaten
+            </a>
             {vacaturePaneel('rustig')}
             <Paneel knop="+ Kandidaat toevoegen" titel="Kandidaat toevoegen" uitleg="Voor iemand die je zelf benadert of op het oog hebt. Sollicitaties via de website komen vanzelf binnen.">
               {kandidaatFormulier}

@@ -15,6 +15,7 @@ import { drizzle } from 'drizzle-orm/postgres-js'
 import { migrate } from 'drizzle-orm/postgres-js/migrator'
 import postgres from 'postgres'
 import { readConnectionString, connectionOptionsFor } from './connection-options'
+import { splitsBestaandeNamen } from './namen-splitsen'
 
 async function main() {
   /*
@@ -32,6 +33,15 @@ async function main() {
   try {
     await migrate(drizzle(client), { migrationsFolder: './drizzle' })
     console.log('Migraties uitgevoerd.')
+
+    // Gegevens bijwerken die geen schemawijziging zijn. Mislukt dit, dan is
+    // dat geen reden om niet te bouwen: het is netheid, geen fundament.
+    try {
+      const gesplitst = await splitsBestaandeNamen(client)
+      if (gesplitst > 0) console.log(`${gesplitst} namen in voornaam, tussenvoegsel en achternaam gesplitst.`)
+    } catch (err) {
+      console.warn('Namen splitsen overgeslagen:', err)
+    }
   } finally {
     await client.end()
   }

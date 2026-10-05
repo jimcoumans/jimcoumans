@@ -12,7 +12,7 @@ import { Paneel } from './Paneel'
  * en bij geld is stil falen het slechtste wat je kunt doen.
  */
 /** Labels van acties die je niet terugdraait; die vragen eerst om bevestiging. */
-const ONOMKEERBAAR = /verwijder|^weg$|weghalen|stopzetten|ontkoppel|blokkeren|leegmaken/i
+const ONOMKEERBAAR = /verwijder|^weg$|weghalen|wissen|stopzetten|ontkoppel|blokkeren|leegmaken/i
 
 export function ActionForm({
   action,
