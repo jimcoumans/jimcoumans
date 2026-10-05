@@ -126,6 +126,7 @@ export function Tijdlijn({
             return (
               <li key={`${item.bron}-${item.id}`} className="flex items-start gap-3 py-3.5 pr-3 pl-5">
                 <Icoon item={item} />
+                <div className="flex min-w-0 flex-1 flex-col gap-1 sm:flex-row sm:gap-3">
                 <div className="min-w-0 flex-1">
                   <p className="text-[15px]">
                     {item.href ? (
@@ -150,10 +151,11 @@ export function Tijdlijn({
                 </div>
 
                 {item.bedragCents !== null && (
-                  <span className={`tabular shrink-0 pt-px text-[15px] ${geld && item.bedragCents > 0 ? 'text-[#1D7D3F]' : ''}`}>
+                  <span className={`tabular shrink-0 text-[15px] sm:pt-px ${geld && item.bedragCents > 0 ? 'text-[#1D7D3F]' : ''}`}>
                     {geld ? formatSignedCents(item.bedragCents) : formatCents(item.bedragCents)}
                   </span>
                 )}
+                </div>
                 <div className="w-8 shrink-0">
                   {/* Alleen wat met de hand is vastgelegd kun je weghalen. */}
                   {item.bron === 'activity' && (

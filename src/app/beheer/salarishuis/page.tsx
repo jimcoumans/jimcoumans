@@ -88,7 +88,7 @@ export default async function SalarishuisPage() {
                       waarde={`${(huis.stepIncreaseBp / 100).toFixed(2).replace('.', ',')}%`}
                     />
                     <Kerncijfer
-                      label="OP-toeslag"
+                      label="Pensioentoeslag"
                       waarde={`${huis.pensionAllowanceBp / 100}%`}
                     />
                     <Kerncijfer
@@ -153,7 +153,7 @@ export default async function SalarishuisPage() {
                         {rijen.map((r) => (
                           <React.Fragment key={r.schaal}>
                             <th className="px-3 py-1 text-right font-normal">Per maand</th>
-                            <th className="px-3 py-1 text-right font-normal">Incl. OP</th>
+                            <th className="px-3 py-1 text-right font-normal">Met pensioentoeslag</th>
                           </React.Fragment>
                         ))}
                       </tr>

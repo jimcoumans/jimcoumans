@@ -1,6 +1,6 @@
 'use client'
 
-import { useActionState, useEffect, useRef } from 'react'
+import { useActionState, useEffect, useRef, useState } from 'react'
 import type { ActionResult } from '@/app/beheer/actions'
 import { Paneel } from './Paneel'
 
@@ -11,6 +11,9 @@ import { Paneel } from './Paneel'
  * Zonder dit zou een mislukte boeking er stil uitzien alsof hij gelukt is,
  * en bij geld is stil falen het slechtste wat je kunt doen.
  */
+/** Labels van acties die je niet terugdraait; die vragen eerst om bevestiging. */
+const ONOMKEERBAAR = /verwijder|^weg$|weghalen|stopzetten|ontkoppel|blokkeren|leegmaken/i
+
 export function ActionForm({
   action,
   children,
@@ -19,6 +22,8 @@ export function ActionForm({
   resetOnSuccess = true,
   className = 'space-y-3',
   meldGelukt = true,
+  bevestig,
+  knopInRij = false,
 }: {
   action: (formData: FormData) => Promise<ActionResult>
   children: React.ReactNode
@@ -28,7 +33,23 @@ export function ActionForm({
   className?: string
   /** Uit voor kleine knoppen (verwijderen, wisselen): daar is het resultaat zelf de melding. */
   meldGelukt?: boolean
+  /**
+   * Vraag eerst om bevestiging. Standaard aan voor alles wat je niet
+   * terugdraait (verwijderen, stopzetten, ontkoppelen, blokkeren); met
+   * false zet je het uit.
+   */
+  bevestig?: boolean
+  /** De knop als laatste kolom op dezelfde regel, in een raster dat daar een kolom voor heeft. */
+  knopInRij?: boolean
 }) {
+  const vragen = bevestig ?? ONOMKEERBAAR.test(submitLabel)
+  const [zeker, setZeker] = useState(false)
+  useEffect(() => {
+    if (!zeker) return
+    const t = setTimeout(() => setZeker(false), 4000)
+    return () => clearTimeout(t)
+  }, [zeker])
+
   const [state, formAction, bezig] = useActionState(
     async (_prev: ActionResult | null, formData: FormData) => action(formData),
     null,
@@ -46,6 +67,14 @@ export function ActionForm({
     <form
       ref={formulier}
       action={formAction}
+      onSubmit={(e) => {
+        // Eerste klik: vragen. Tweede klik binnen vier seconden: uitvoeren.
+        if (!vragen) return
+        if (!zeker) {
+          e.preventDefault()
+          setZeker(true)
+        } else setZeker(false)
+      }}
       className={className}
       // Na een gelukte actie het formulier leegmaken, zodat je niet per
       // ongeluk dezelfde boeking twee keer verstuurt.
@@ -73,10 +102,15 @@ export function ActionForm({
         disabled={bezig}
         // In een raster van twee kolommen een eigen regel en niet uitgerekt
         // over de cel: een knop zo breed als een veld leest als een veld.
-        className={`col-span-full min-h-10 justify-self-start rounded-lg px-5 py-2 text-sm font-medium disabled:opacity-40 ${submitClassName}`}
+        className={`${knopInRij ? '' : 'col-span-full justify-self-start'} min-h-10 rounded-lg px-5 py-2 text-sm font-medium disabled:opacity-40 ${submitClassName} ${zeker ? '!bg-[#C02A22] !text-white' : ''}`}
       >
-        {bezig ? 'Bezig…' : submitLabel}
+        {bezig ? 'Bezig…' : zeker ? 'Zeker weten? Klik nog eens' : submitLabel}
       </button>
+      {zeker && (
+        <span role="status" className="sr-only">
+          Klik nog eens om te bevestigen
+        </span>
+      )}
     </form>
   )
 }

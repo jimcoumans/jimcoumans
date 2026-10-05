@@ -605,7 +605,7 @@ export default async function CampagnePage({ params }: { params: Promise<{ id: s
               {v.tijdlijn.map((t) => (
                 <li
                   key={`${t.id}-${t.dueOn?.getTime() ?? 0}-${t.description}-${t.assigneeUserId ?? t.assigneeLabel ?? ''}`}
-                  className="py-2"
+                  className="flex items-center gap-1 py-2"
                 >
                   <ActionForm
                     action={wijzigTijdlijnRegel}
@@ -613,7 +613,8 @@ export default async function CampagnePage({ params }: { params: Promise<{ id: s
                     submitClassName={KNOP_KLEIN}
                     resetOnSuccess={false}
                     meldGelukt={false}
-                    className="grid items-end gap-2 sm:grid-cols-[150px_1fr_170px_auto]"
+                    knopInRij
+                    className="grid min-w-0 flex-1 items-center gap-2 sm:grid-cols-[150px_1fr_170px_auto]"
                   >
                     {verborgen}
                     <input type="hidden" name="id" value={t.id} />
@@ -647,9 +648,7 @@ export default async function CampagnePage({ params }: { params: Promise<{ id: s
                       )}
                     </select>
                   </ActionForm>
-                  <div className="mt-1 flex justify-end">
-                    <KleineKnop action={wisTijdlijn} campaignId={c.id} id={t.id} label="Verwijder regel" />
-                  </div>
+                  <KleineKnop action={wisTijdlijn} campaignId={c.id} id={t.id} label="Weg" />
                 </li>
               ))}
             </ul>
@@ -824,7 +823,7 @@ export default async function CampagnePage({ params }: { params: Promise<{ id: s
             <ActionForm
               action={wisCampagne}
               submitLabel="Verwijder deze campagne"
-              submitClassName="text-jr-red hover:bg-jr-red/5 border border-gray-200 w-full"
+              submitClassName="text-[#C02A22] hover:bg-[#FDECEA] border border-gray-300 bg-white !rounded-full"
               resetOnSuccess={false}
               meldGelukt={false}
               className="space-y-2"

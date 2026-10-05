@@ -162,7 +162,7 @@ export default async function KlantPage({
           </p>
           </div>
           {/* Het actuele budget, rechtsboven: groen, rood of zwart. */}
-          <div className="text-right">
+          <div className="sm:text-right">
             <p className="text-xs text-gray-600">Actueel budget</p>
             <p className={`font-display tabular text-[32px] leading-tight font-bold tracking-tight ${saldoKleur(saldo)}`}>
               {formatCents(saldo)}
@@ -514,19 +514,22 @@ async function WalletBeheer({
             ].filter(Boolean)
 
             return (
-              <li key={entry.id} className="flex items-start gap-3 py-3.5 pr-3 pl-6">
+              <li key={entry.id} className="flex items-start gap-3 py-3.5 pr-3 pl-5 sm:pl-6">
+                {/* Op een telefoon het bedrag onder de omschrijving, niet ernaast. */}
+                <div className="flex min-w-0 flex-1 flex-col gap-1 sm:flex-row sm:gap-3">
                 <div className="min-w-0 flex-1">
                   <p className={`text-[15px] ${teruggedraaid ? 'text-gray-500 line-through' : ''}`}>{entry.description}</p>
                   <p className="mt-0.5 text-[13px] text-gray-600">{regel.join(' · ')}</p>
                   {entry.detail && !vanFactuur && <p className="mt-0.5 text-[13px] text-gray-500">{entry.detail}</p>}
                 </div>
                 <p
-                  className={`tabular shrink-0 pt-px text-[15px] ${
+                  className={`tabular shrink-0 text-[15px] sm:pt-px ${
                     teruggedraaid ? 'text-gray-500 line-through' : entry.amountCents > 0 ? 'text-[#1D7D3F]' : ''
                   }`}
                 >
                   {formatSignedCents(entry.amountCents)}
                 </p>
+                </div>
                 <div className="w-8 shrink-0">
                   {corrigeerbaar && (
                     <Menu>
@@ -696,7 +699,8 @@ function Facturen({
             const kanWeg = f.status === 'draft' && f.toppedUpCents === 0
 
             return (
-              <li key={f.id} className="flex items-start gap-3 py-3.5 pr-3 pl-6">
+              <li key={f.id} className="flex items-start gap-3 py-3.5 pr-3 pl-5 sm:pl-6">
+                <div className="flex min-w-0 flex-1 flex-col gap-1 sm:flex-row sm:gap-3">
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="text-[15px]">{factuurTitel(f)}</span>
@@ -718,9 +722,10 @@ function Facturen({
                   )}
                 </div>
 
-                <div className="shrink-0 text-right">
+                <div className="shrink-0 sm:text-right">
                   <p className="tabular text-[15px]">{formatCents(f.amountExclVatCents)}</p>
                   <p className="text-xs text-gray-500">incl. btw {formatCents(f.amountExclVatCents + f.vatCents)}</p>
+                </div>
                 </div>
 
                 <div className="w-8 shrink-0">

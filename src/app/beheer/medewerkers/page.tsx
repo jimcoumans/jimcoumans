@@ -7,9 +7,10 @@ import { getMonthlyRecurringCents } from '@/lib/billing'
 import { Avatar } from '@/components/Avatar'
 import { AppShell } from '@/components/AppShell'
 import { Paneel } from '@/components/Paneel'
-import { ActionForm, Field, Select, Uitklap } from '@/components/ActionForm'
+import { ActionForm, Field, Select } from '@/components/ActionForm'
+import { Menu } from '@/components/Menu'
 import { nieuweMedewerker, wijzigMedewerker, wisselMedewerkerToegang } from '../service-actions'
-import { formatCents } from '@/lib/money'
+import { formatEuro } from '@/lib/money'
 import { formatDate } from '@/lib/dates'
 
 /**
@@ -75,7 +76,7 @@ export default async function MedewerkersPage() {
           <div>
             <dt className="text-xs text-gray-600">Samen in portfolio</dt>
             <dd className="tabular text-xl font-bold leading-tight">
-              {formatCents(samenPortfolio)}
+              {formatEuro(samenPortfolio)}
             </dd>
           </div>
         </dl>
@@ -133,25 +134,25 @@ export default async function MedewerkersPage() {
             <div>
               <dt className="text-xs text-gray-600">Per maand</dt>
               <dd className="tabular text-jr-blue text-2xl font-bold leading-tight">
-                {formatCents(kosten.totaalCents)}
+                {formatEuro(kosten.totaalCents)}
               </dd>
             </div>
             <div>
               <dt className="text-xs text-gray-600">Per jaar</dt>
               <dd className="tabular text-2xl font-bold leading-tight">
-                {formatCents(kosten.totaalCents * 12)}
+                {formatEuro(kosten.totaalCents * 12)}
               </dd>
             </div>
             <div>
               <dt className="text-xs text-gray-600">Loondienst</dt>
               <dd className="tabular text-2xl font-bold leading-tight">
-                {formatCents(kosten.loondienstCents)}
+                {formatEuro(kosten.loondienstCents)}
               </dd>
             </div>
             <div>
               <dt className="text-xs text-gray-600">Management fee</dt>
               <dd className="tabular text-2xl font-bold leading-tight">
-                {formatCents(kosten.managementFeeCents)}
+                {formatEuro(kosten.managementFeeCents)}
               </dd>
             </div>
             {mrr !== null && mrr > 0 && (
@@ -182,7 +183,7 @@ export default async function MedewerkersPage() {
             <ul className="mt-3 flex flex-wrap gap-x-6 gap-y-1 border-t border-gray-200 pt-3">
               {kosten.perAfdeling.map((a) => (
                 <li key={a.afdeling} className="text-xs text-gray-600">
-                  {a.afdeling}: <span className="tabular">{formatCents(a.cents)}</span> (
+                  {a.afdeling}: <span className="tabular">{formatEuro(a.cents)}</span> (
                   {a.mensen})
                 </li>
               ))}
@@ -250,167 +251,100 @@ function Tabel({
     )
   }
 
+  // Als een lijst, niet als tabel: wie, wat en hoe bereikbaar links, wat
+  // iemand oplevert rechts. Lege kolommen met streepjes vallen zo weg.
   return (
-    <div className="overflow-x-auto rounded-xl bg-white shadow-sm">
-      <table className="w-full min-w-[820px] text-sm">
-        <thead>
-          <tr className="border-b border-gray-200 text-left text-xs text-gray-600">
-            <th className="px-4 py-2.5 font-normal">Naam</th>
-            <th className="px-4 py-2.5 font-normal">Functie</th>
-            <th className="px-4 py-2.5 font-normal">Bereikbaar</th>
-            <th className="px-4 py-2.5 text-right font-normal">Contract</th>
-            <th className="px-4 py-2.5 text-right font-normal">Portfolio p/m</th>
-            <th className="px-4 py-2.5 text-right font-normal">Geleverde omzet</th>
-            <th className="px-4 py-2.5 font-normal">Laatst actief</th>
-            <th className="px-4 py-2.5" />
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-200">
-          {team.map((lid) => {
-            const c = perUser.get(lid.id)
-            const bereik = lid.mobile ?? lid.phone
-            return (
-              <tr key={lid.id} className="align-top">
-                <td className="px-4 py-3">
-                  <div className="flex items-center gap-2.5">
-                    <Avatar
-                      naam={lid.name ?? lid.email}
-                      imageId={lid.avatarImageId}
-                      maat={32}
-                    />
-                    <a
-                      href={`/beheer/medewerkers/${lid.id}`}
-                      className="hover:text-jr-blue font-medium"
-                    >
-                      {lid.name ?? lid.email}
-                    </a>
-                  </div>
-                  <div className="mt-0.5 flex flex-wrap items-center gap-1.5">
-                    {lid.role === 'admin' && (
-                      <span className="bg-jr-lightblue text-jr-deepblue rounded-full px-1.5 py-0.5 text-xs">
-                        Beheerder
-                      </span>
-                    )}
-                    {lid.isMarketingManager && (
-                      <span className="bg-jr-lightblue text-jr-deepblue rounded-full px-1.5 py-0.5 text-xs">
-                        Manager
-                      </span>
-                    )}
-                    {lid.id === huidigeId && <span className="text-xs text-gray-500">(jij)</span>}
-                    {lid.disabledAt && (
-                      <span className="bg-jr-red/10 text-jr-red rounded-full px-1.5 py-0.5 text-xs">
-                        Geblokkeerd
-                      </span>
-                    )}
-                  </div>
-                </td>
-
-                <td className="px-4 py-3">
-                  <p>{lid.jobTitle ?? <span className="text-gray-400">—</span>}</p>
-                  {lid.department && (
-                    <p className="text-xs text-gray-600">{lid.department}</p>
-                  )}
-                </td>
-
-                <td className="px-4 py-3">
-                  <a href={`mailto:${lid.email}`} className="hover:text-jr-blue text-xs">
-                    {lid.email}
+    <ul className="divide-y divide-gray-150 rounded-xl bg-white shadow-sm">
+      {team.map((lid) => {
+        const c = perUser.get(lid.id)
+        const bereik = lid.mobile ?? lid.phone
+        const uren = formatContractUren(lid.contractHoursPerWeekQuarters)
+        return (
+          <li key={lid.id} className={`flex items-center gap-4 py-3.5 pr-3 pl-5 ${lid.disabledAt ? 'opacity-60' : ''}`}>
+            <Avatar naam={lid.name ?? lid.email} imageId={lid.avatarImageId} maat={44} />
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-[15px]">
+                <a href={`/beheer/medewerkers/${lid.id}`} className="hover:text-jr-link font-medium">
+                  {lid.name ?? lid.email}
+                </a>
+                {lid.id === huidigeId && <span className="ml-1.5 text-xs text-gray-500">jij</span>}
+                {lid.role === 'admin' && <span className="text-jr-link ml-2 text-xs">Beheerder</span>}
+                {lid.isMarketingManager && <span className="text-jr-link ml-2 text-xs">Marketingmanager</span>}
+                {lid.disabledAt && <span className="ml-2 text-xs text-[#C02A22]">Geblokkeerd</span>}
+              </p>
+              <p className="truncate text-[13px] text-gray-600">
+                {[lid.jobTitle ?? 'Functie nog niet ingevuld', lid.department, uren].filter(Boolean).join(' · ')}
+              </p>
+              <p className="truncate text-[13px]">
+                <a href={`mailto:${lid.email}`} className="text-jr-link hover:underline">
+                  {lid.email}
+                </a>
+                {bereik && (
+                  <a href={`tel:${bereik.replace(/\s/g, '')}`} className="ml-2 text-gray-600 hover:underline">
+                    {bereik}
                   </a>
-                  {bereik && (
-                    <p className="text-xs text-gray-600">
-                      <a href={`tel:${bereik.replace(/\s/g, '')}`} className="hover:text-jr-blue">
-                        {bereik}
-                      </a>
-                    </p>
-                  )}
-                </td>
+                )}
+              </p>
+            </div>
 
-                <td className="tabular px-4 py-3 text-right">
-                  {formatContractUren(lid.contractHoursPerWeekQuarters) ?? (
-                    <span className="text-gray-400">—</span>
-                  )}
-                </td>
+            <div className="hidden shrink-0 text-right text-[13px] sm:block">
+              {lid.klanten > 0 && (
+                <p>
+                  <span className="tabular text-[15px]">{formatEuro(lid.portfolioCents)}</span>{' '}
+                  <span className="text-gray-500">
+                    per maand, {lid.klanten} {lid.klanten === 1 ? 'klant' : 'klanten'}
+                  </span>
+                </p>
+              )}
+              {c && c.revenueCents !== 0 && (
+                <p className="text-gray-600">
+                  {formatEuro(c.revenueCents)} geleverd in {c.bookingCount} {c.bookingCount === 1 ? 'boeking' : 'boekingen'}
+                </p>
+              )}
+              <p className="text-gray-500">{lid.lastLoginAt ? `Laatst ingelogd ${formatDate(lid.lastLoginAt)}` : 'Nog nooit ingelogd'}</p>
+            </div>
 
-                <td className="tabular px-4 py-3 text-right">
-                  {lid.klanten === 0 ? (
-                    <span className="text-gray-400">—</span>
-                  ) : (
-                    <>
-                      {formatCents(lid.portfolioCents)}
-                      <span className="block text-xs text-gray-600">
-                        {lid.klanten} {lid.klanten === 1 ? 'klant' : 'klanten'}
-                      </span>
-                    </>
-                  )}
-                </td>
-
-                <td className="tabular px-4 py-3 text-right">
-                  {c && c.revenueCents !== 0 ? (
-                    <>
-                      {formatCents(c.revenueCents)}
-                      <span className="block text-xs text-gray-600">
-                        {c.bookingCount} {c.bookingCount === 1 ? 'boeking' : 'boekingen'}
-                      </span>
-                    </>
-                  ) : (
-                    <span className="text-gray-400">—</span>
-                  )}
-                </td>
-
-                <td className="px-4 py-3 text-xs text-gray-600">
-                  {lid.lastLoginAt ? formatDate(lid.lastLoginAt) : 'nog niet ingelogd'}
-                </td>
-
-                <td className="px-4 py-3 text-right">
-                  <Uitklap label="Rol" className="">
-                    <ActionForm
-                      action={wijzigMedewerker}
-                      submitLabel="Opslaan"
-                      resetOnSuccess={false}
-                    >
-                      <input type="hidden" name="userId" value={lid.id} />
-                      <input type="hidden" name="naam" value={lid.name ?? ''} />
-                      <Select
-                        label="Rol"
-                        name="rol"
-                        defaultValue={lid.role}
-                        options={[
-                          { value: 'staff', label: 'Medewerker' },
-                          { value: 'admin', label: 'Beheerder' },
-                        ]}
-                        hint={
-                          magAdminMaken
-                            ? 'Alleen een beheerder kan abonnementen en medewerkers beheren.'
-                            : 'Alleen een beheerder kan iemand tot beheerder maken.'
-                        }
-                      />
-                    </ActionForm>
-
-                    {lid.id !== huidigeId && (
-                      <div className="mt-3 border-t border-gray-200 pt-3">
-                        <ActionForm
-                          action={wisselMedewerkerToegang}
-                          submitLabel={lid.disabledAt ? 'Toegang teruggeven' : 'Blokkeren'}
-                          submitClassName="text-gray-600 hover:bg-gray-100 !px-2 !py-1 !text-xs"
-                          resetOnSuccess={false}
-                          className=""
-                        >
-                          <input type="hidden" name="userId" value={lid.id} />
-                          <input
-                            type="hidden"
-                            name="blokkeren"
-                            value={lid.disabledAt ? '0' : '1'}
-                          />
-                        </ActionForm>
-                      </div>
-                    )}
-                  </Uitklap>
-                </td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
-    </div>
+            <Menu>
+              <Paneel knop="Rol wijzigen" stijl="menu" titel={`Rol van ${lid.name ?? lid.email}`}>
+                <ActionForm action={wijzigMedewerker} submitLabel="Opslaan" resetOnSuccess={false}>
+                  <input type="hidden" name="userId" value={lid.id} />
+                  <input type="hidden" name="naam" value={lid.name ?? ''} />
+                  <Select
+                    label="Rol"
+                    name="rol"
+                    defaultValue={lid.role}
+                    options={[
+                      { value: 'staff', label: 'Medewerker' },
+                      { value: 'admin', label: 'Beheerder' },
+                    ]}
+                    hint={
+                      magAdminMaken
+                        ? 'Alleen een beheerder kan abonnementen en medewerkers beheren.'
+                        : 'Alleen een beheerder kan iemand tot beheerder maken.'
+                    }
+                  />
+                </ActionForm>
+              </Paneel>
+              <a href={`/beheer/medewerkers/${lid.id}`} className="block w-full rounded-lg px-3 py-2 text-left text-sm text-jr-text hover:bg-gray-100">
+                Profiel openen
+              </a>
+              {lid.id !== huidigeId && (
+                <ActionForm
+                  action={wisselMedewerkerToegang}
+                  submitLabel={lid.disabledAt ? 'Toegang teruggeven' : 'Blokkeren'}
+                  submitClassName={`!min-h-0 w-full !rounded-lg !px-3 !py-2 text-left !font-normal ${lid.disabledAt ? 'text-jr-text hover:bg-gray-100' : 'text-[#C02A22] hover:bg-[#FDECEA]'}`}
+                  resetOnSuccess={false}
+                  meldGelukt={false}
+                  className=""
+                >
+                  <input type="hidden" name="userId" value={lid.id} />
+                  <input type="hidden" name="blokkeren" value={lid.disabledAt ? '0' : '1'} />
+                </ActionForm>
+              )}
+            </Menu>
+          </li>
+        )
+      })}
+    </ul>
   )
 }

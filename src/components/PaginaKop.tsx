@@ -42,7 +42,7 @@ export function PaginaKop({
       {cijfers && cijfers.length > 0 && (
         <dl
           className="mt-6 grid gap-3"
-          style={{ gridTemplateColumns: `repeat(auto-fit, minmax(${cijfers.length > 4 ? 150 : 190}px, 1fr))` }}
+          style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))' }}
         >
           {cijfers.map((c) => (
             <div key={c.label} className="rounded-xl bg-white px-5 py-4 shadow-sm">

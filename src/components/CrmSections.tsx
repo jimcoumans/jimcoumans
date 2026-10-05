@@ -531,6 +531,7 @@ export function Partners({
           {links.map((l) => (
             <li key={l.id} className="flex items-start gap-4 py-3.5 pr-3 pl-6">
               <Avatar naam={l.partner.name} imageId={null} maat={40} rond={false} />
+              <div className="flex min-w-0 flex-1 flex-col gap-1 sm:flex-row sm:gap-3">
               <div className="min-w-0 flex-1">
                 <p className="text-[15px]">
                   {l.role} <span className="text-gray-600">bij {l.partner.name}</span>
@@ -541,7 +542,7 @@ export function Partners({
                 {l.notes && <p className="mt-0.5 text-[13px] text-gray-500">{l.notes}</p>}
               </div>
 
-              <div className="shrink-0 text-right">
+              <div className="shrink-0 sm:text-right">
                 {l.effectiveHourlyRateCents !== null ? (
                   <>
                     <p className="tabular text-[15px]">{formatEuro(l.effectiveHourlyRateCents)}</p>
@@ -550,6 +551,7 @@ export function Partners({
                 ) : (
                   <p className="text-xs text-gray-500">Geen tarief</p>
                 )}
+              </div>
               </div>
 
               <Menu>

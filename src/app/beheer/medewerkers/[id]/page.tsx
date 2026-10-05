@@ -5,7 +5,7 @@ import { getFiguresByEmployee } from '@/lib/reports'
 import { AppShell } from '@/components/AppShell'
 import { ActionForm, Field, Select, TextArea } from '@/components/ActionForm'
 import { bewerkMedewerkerprofiel, bewerkUurkostprijs } from '../../medewerker-actions'
-import { formatCents } from '@/lib/money'
+import { formatEuro } from '@/lib/money'
 import { formatDate, formatDateInput, MAANDNAMEN } from '@/lib/dates'
 import { AANHEF_LABELS } from '@/lib/namen'
 import {
@@ -115,7 +115,7 @@ export default async function MedewerkerPage({
         </p>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)]">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
         {/* ---------------------------------------------------------------
             Wie is dit
             --------------------------------------------------------------- */}
@@ -133,7 +133,7 @@ export default async function MedewerkerPage({
           >
             <input type="hidden" name="userId" value={lid.id} />
 
-            <div className="grid gap-3 sm:grid-cols-[1fr_auto_1fr]">
+            <div className="grid items-end gap-3 sm:grid-cols-[1fr_120px_1fr]">
               <Field label="Voornaam" name="voornaam" defaultValue={lid.firstName ?? ''} />
               <Field
                 label="Tussenvoegsel"
@@ -285,14 +285,14 @@ export default async function MedewerkerPage({
               <div>
                 <dt className="text-xs text-gray-600">Portfolio per maand</dt>
                 <dd className="tabular text-jr-blue text-xl font-bold leading-tight">
-                  {formatCents(portfolioCents)}
+                  {formatEuro(portfolioCents)}
                 </dd>
               </div>
               {doelCents !== null && (
                 <div>
                   <dt className="text-xs text-gray-600">Maanddoel</dt>
                   <dd className="tabular text-xl font-bold leading-tight">
-                    {formatCents(doelCents)}
+                    {formatEuro(doelCents)}
                     {bezetting !== null && (
                       <span
                         className={`ml-1 text-xs font-normal ${
@@ -312,7 +312,7 @@ export default async function MedewerkerPage({
               <div>
                 <dt className="text-xs text-gray-600">Geleverde omzet</dt>
                 <dd className="tabular text-xl font-bold leading-tight">
-                  {formatCents(eigen?.revenueCents ?? 0)}
+                  {formatEuro(eigen?.revenueCents ?? 0)}
                 </dd>
               </div>
               <div>
@@ -361,7 +361,7 @@ export default async function MedewerkerPage({
                       </p>
                     </div>
                     <span className="tabular text-sm">
-                      {k.maandCents > 0 ? `${formatCents(k.maandCents)} p/m` : 'geen abonnement'}
+                      {k.maandCents > 0 ? `${formatEuro(k.maandCents)} per maand` : 'geen abonnement'}
                     </span>
                   </li>
                 ))}
