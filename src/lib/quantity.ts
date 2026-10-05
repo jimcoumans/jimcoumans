@@ -90,9 +90,18 @@ export const unitLabels = {
   project: 'per project',
 } as const
 
+/** Voluit, zonder afkortingen: "€ 185 per stuk" leest beter dan "€ 185 / st". */
 export const unitShort = {
-  piece: 'st',
+  piece: 'stuk',
   hour: 'uur',
-  month: 'mnd',
+  month: 'maand',
   project: 'project',
 } as const
+
+const MEERVOUD = { piece: 'stuks', hour: 'uur', month: 'maanden', project: 'projecten' } as const
+
+/** 200 honderdsten stuk -> "2 stuks"; 100 -> "1 stuk"; 150 uur -> "1,5 uur". */
+export function aantalMetEenheid(hundredths: number, unit: keyof typeof unitShort): string {
+  const enkel = hundredths === 100
+  return `${(hundredths / 100).toLocaleString('nl-NL')} ${enkel ? unitShort[unit] : MEERVOUD[unit]}`
+}

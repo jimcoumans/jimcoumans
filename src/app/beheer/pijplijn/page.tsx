@@ -1,6 +1,8 @@
 import { redirect } from 'next/navigation'
 import { getSessionUser } from '@/lib/auth'
+import { FilterBalk } from '@/components/FilterBalk'
 import { AppShell } from '@/components/AppShell'
+import { Paneel } from '@/components/Paneel'
 import { ActionForm, Field, Select, Uitklap } from '@/components/ActionForm'
 import { listTeam } from '@/lib/team'
 import {
@@ -68,7 +70,7 @@ export default async function PijplijnPage({
 
   return (
     <AppShell user={user} actief="pijplijn" breed>
-      <div className="mb-5 flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
+      <div className="mb-8 flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
         <div>
           <h1 className="text-[28px] sm:text-[32px]">Pijplijn</h1>
           <p className="text-sm text-gray-600">
@@ -78,7 +80,7 @@ export default async function PijplijnPage({
           </p>
         </div>
 
-        <dl className="flex flex-wrap items-end gap-x-7 gap-y-2">
+        <dl className="order-last mt-2 grid w-full gap-3 [grid-template-columns:repeat(auto-fit,minmax(170px,1fr))] [&>div]:rounded-xl [&>div]:bg-white [&>div]:px-5 [&>div]:py-4 [&>div]:shadow-sm">
           <Cijfer label="In de pijplijn" bedragen={bord.totaal} />
           <Cijfer
             label="Gewogen"
@@ -87,16 +89,85 @@ export default async function PijplijnPage({
           />
           <Cijfer label="Gewonnen" bedragen={scorekaart.gewonnenBedragen} />
         </dl>
+            <Paneel
+              knop="+ Deal toevoegen"
+              titel="Deal toevoegen"
+            uitleg="Alleen het bedrijf en een naam zijn verplicht. Spreek meteen een vervolgstap af; dan hoeft hij nooit in de achterstand te staan."
+            >
+          <ActionForm action={nieuweDeal} submitLabel="Deal aanmaken">
+            {/* Kiezen uit de lijst, of de naam van een nieuw bedrijf typen. Een
+                deal bestaat vaak eerder dan het bedrijf: je krijgt een naam op
+                een borrel en wilt die kwijt voordat je hem vergeet. Het nieuwe
+                bedrijf krijgt status lead, want klant is het nog niet. */}
+            <Select
+              label="Bedrijf"
+              name="organizationId"
+              defaultValue=""
+              options={[
+                { value: '', label: 'Nieuw bedrijf — naam hieronder invullen' },
+                ...bedrijven.map((b) => ({
+                  value: b.id,
+                  label: `${b.naam} · ${BEDRIJF_STATUS_LABELS[b.status]}`,
+                })),
+              ]}
+            />
+            <Field
+              label="Nieuw bedrijf"
+              name="nieuwBedrijf"
+              placeholder="Brouwer Horeca Groep"
+              hint="Alleen invullen als het bedrijf er nog niet bij staat. Het wordt aangemaakt als lead; de rest van de gegevens vul je later in."
+            />
+            <Field label="Waar gaat het over" name="titel" required placeholder="Marketing partnership" />
+            <Select
+              label="Soort"
+              name="soort"
+              defaultValue="retainer"
+              options={[
+                { value: 'retainer', label: 'Retainer (bedrag per maand)' },
+                { value: 'project', label: 'Project (bedrag eenmalig)' },
+              ]}
+            />
+            <Field
+              label="Bedrag"
+              name="bedrag"
+              placeholder="1600"
+              hint="Bij een retainer per maand, bij een project het totaal. Leeg laten mag."
+            />
+            <Select
+              label="Eigenaar"
+              name="eigenaar"
+              options={[
+                { value: '', label: 'Nog niet toegewezen' },
+                ...team.map((t) => ({ value: t.id, label: t.name ?? t.email })),
+              ]}
+            />
+            <Select
+              label="Waar komt het vandaan"
+              name="bron"
+              options={[
+                { value: '', label: 'Onbekend' },
+                ...Object.entries(BRON_LABELS).map(([value, label]) => ({ value, label })),
+              ]}
+            />
+            <Field label="Verwacht rond" name="sluitdatum" type="date" />
+
+            <div className="border-t border-gray-200 pt-3">
+              <p className="mb-2 text-xs font-bold text-gray-600">Volgende stap</p>
+              <Field label="Wat ga je doen" name="actie" placeholder="Bellen voor een afspraak" />
+              <Field label="Wanneer" name="actiedatum" type="date" />
+            </div>
+          </ActionForm>
+            </Paneel>
       </div>
 
       {/* Filters in de URL, zodat je een selectie kunt bewaren of doorsturen. */}
-      <form method="get" className="mb-5 flex flex-wrap items-end gap-2">
+      <FilterBalk className="mb-5 flex flex-wrap items-center gap-2">
         {eigenaren.length > 0 && (
           <select
             name="eigenaar"
             defaultValue={filter.eigenaar ?? ''}
             aria-label="Alle eigenaren"
-            className="focus:border-jr-blue rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
+            className="min-h-11 rounded-full border border-gray-300 bg-white py-2.5 pr-9 pl-4 text-[15px] outline-none hover:border-gray-400"
           >
             <option value="">Alle eigenaren</option>
             {eigenaren.map((e) => (
@@ -110,20 +181,14 @@ export default async function PijplijnPage({
           name="status"
           defaultValue={filter.status}
           aria-label="Status"
-          className="focus:border-jr-blue rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
+          className="min-h-11 rounded-full border border-gray-300 bg-white py-2.5 pr-9 pl-4 text-[15px] outline-none hover:border-gray-400"
         >
           <option value="open">Alleen open</option>
           <option value="won">Gewonnen</option>
           <option value="lost">Verloren</option>
           <option value="alles">Alles</option>
         </select>
-        <button
-          type="submit"
-          className="bg-jr-btn hover:bg-jr-btnhover rounded-lg px-4 py-2 text-sm text-white"
-        >
-          Filteren
-        </button>
-      </form>
+      </FilterBalk>
 
       {/* DE ACHTERSTAND. Bovenaan, niet in een filter dat je moet aanzetten. */}
       {bord.achterstand.length > 0 && (
@@ -207,7 +272,7 @@ export default async function PijplijnPage({
         </div>
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
+      <div>
         {/* Waarom we deals verliezen. Dit is waar de scorekaart pas nuttig
             wordt: een percentage is een getal, een reden is iets om aan te
             werken. */}
@@ -245,76 +310,6 @@ export default async function PijplijnPage({
           )}
         </div>
 
-        <aside className="rounded-xl bg-white p-6 shadow-sm">
-          <h2 className="mb-3 text-base">Deal toevoegen</h2>
-          <p className="mb-3 text-xs text-gray-500">
-            Alleen het bedrijf en een naam zijn verplicht. Spreek meteen een vervolgstap af;
-            dan hoeft hij nooit in de achterstand te staan.
-          </p>
-          <ActionForm action={nieuweDeal} submitLabel="Deal aanmaken">
-            {/* Kiezen uit de lijst, of de naam van een nieuw bedrijf typen. Een
-                deal bestaat vaak eerder dan het bedrijf: je krijgt een naam op
-                een borrel en wilt die kwijt voordat je hem vergeet. Het nieuwe
-                bedrijf krijgt status lead, want klant is het nog niet. */}
-            <Select
-              label="Bedrijf"
-              name="organizationId"
-              defaultValue=""
-              options={[
-                { value: '', label: 'Nieuw bedrijf — naam hieronder invullen' },
-                ...bedrijven.map((b) => ({
-                  value: b.id,
-                  label: `${b.naam} · ${BEDRIJF_STATUS_LABELS[b.status]}`,
-                })),
-              ]}
-            />
-            <Field
-              label="Nieuw bedrijf"
-              name="nieuwBedrijf"
-              placeholder="Brouwer Horeca Groep"
-              hint="Alleen invullen als het bedrijf er nog niet bij staat. Het wordt aangemaakt als lead; de rest van de gegevens vul je later in."
-            />
-            <Field label="Waar gaat het over" name="titel" required placeholder="Marketing partnership" />
-            <Select
-              label="Soort"
-              name="soort"
-              defaultValue="retainer"
-              options={[
-                { value: 'retainer', label: 'Retainer (bedrag per maand)' },
-                { value: 'project', label: 'Project (bedrag eenmalig)' },
-              ]}
-            />
-            <Field
-              label="Bedrag"
-              name="bedrag"
-              placeholder="1600"
-              hint="Bij een retainer per maand, bij een project het totaal. Leeg laten mag."
-            />
-            <Select
-              label="Eigenaar"
-              name="eigenaar"
-              options={[
-                { value: '', label: 'Nog niet toegewezen' },
-                ...team.map((t) => ({ value: t.id, label: t.name ?? t.email })),
-              ]}
-            />
-            <Select
-              label="Waar komt het vandaan"
-              name="bron"
-              options={[
-                { value: '', label: 'Onbekend' },
-                ...Object.entries(BRON_LABELS).map(([value, label]) => ({ value, label })),
-              ]}
-            />
-            <Field label="Verwacht rond" name="sluitdatum" type="date" />
-
-            <div className="border-t border-gray-200 pt-3">
-              <p className="mb-2 text-xs font-bold text-gray-600">Volgende stap</p>
-              <Field label="Wat ga je doen" name="actie" placeholder="Bellen voor een afspraak" />
-              <Field label="Wanneer" name="actiedatum" type="date" />
-            </div>
-          </ActionForm>
-        </aside>
       </div>
     </AppShell>
   )

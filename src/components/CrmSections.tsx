@@ -1,4 +1,4 @@
-import { ActionForm, Field, Select, Check, Uitklap } from './ActionForm'
+import { ActionForm, Field, Select, Check, TextArea } from './ActionForm'
 import {
   nieuweContactpersoon, wijzigContactpersoon, maakVasteContactpersoon, verwijderContactpersoon,
   nieuwAccount, wijzigAccount, verwijderAccount,
@@ -12,7 +12,7 @@ import {
 } from '@/lib/crm'
 import type { PartnerLink } from '@/lib/crm'
 import type { ContactChild } from '@/db/schema'
-import { formatCents } from '@/lib/money'
+import { formatCents, formatEuro } from '@/lib/money'
 import { formatDate } from '@/lib/dates'
 import { Avatar } from './Avatar'
 import { AfbeeldingKiezer } from './AfbeeldingKiezer'
@@ -48,13 +48,13 @@ function Verjaardag({
   jaar: number | null
 }) {
   const veld =
-    'focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none'
+    'min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400'
   return (
     <div>
-      <p className="mb-1 text-xs text-gray-600">
-        Verjaardag<span className="text-gray-400"> (optioneel)</span>
+      <p className="text-jr-text mb-1.5 block text-[13px] font-medium">
+        Verjaardag<span className="font-normal text-gray-500"> (optioneel)</span>
       </p>
-      <div className="grid grid-cols-[72px_1fr_88px] gap-2">
+      <div className="grid max-w-md grid-cols-[90px_1fr_110px] gap-2">
         <input
           name="geboortedag"
           type="number"
@@ -108,7 +108,7 @@ function Kinderen({
   kinderen: ContactChild[]
 }) {
   const veld =
-    'focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none'
+    'min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400'
 
   return (
     <div className="mt-3 border-t border-gray-200 pt-3">
@@ -196,17 +196,11 @@ function Kinderen({
 function Persoonlijk({ c }: { c: Contact }) {
   return (
     <>
-      <div className="sm:col-span-2">
-        <p className="mt-2 mb-1 border-t border-gray-200 pt-3 text-xs font-bold text-gray-600">
-          Persoonlijk
-        </p>
-        <p className="mb-2 text-xs text-gray-500">
-          Alles hieronder is optioneel en dient één doel: dat je iemand kent in plaats van
-          alleen kunt bereiken. Een half ingevuld profiel is beter dan een leeg profiel.
-        </p>
-      </div>
+      <PaneelKop uitleg="Optioneel, met één doel: dat je iemand kent in plaats van alleen kunt bereiken.">Persoonlijk</PaneelKop>
 
-      <Verjaardag dag={c.birthDay} maand={c.birthMonth} jaar={c.birthYear} />
+      <div className="sm:col-span-2">
+        <Verjaardag dag={c.birthDay} maand={c.birthMonth} jaar={c.birthYear} />
+      </div>
       <Select label="Geslacht" name="aanhef" defaultValue={c.aanhef ?? ''} options={GESLACHT_OPTIES} />
 
       <Select
@@ -254,6 +248,12 @@ function Persoonlijk({ c }: { c: Contact }) {
 
 
 import type { Contact, Account, Partner, Organization } from '@/db/schema'
+import { Paneel, PaneelKop } from '@/components/Paneel'
+import { Menu } from '@/components/Menu'
+
+const MENU_KNOP = '!min-h-0 w-full !rounded-lg !px-3 !py-2 text-left !font-normal text-jr-text hover:bg-gray-100'
+const MENU_KNOP_GEVAAR = '!min-h-0 w-full !rounded-lg !px-3 !py-2 text-left !font-normal text-[#C02A22] hover:bg-[#FDECEA]'
+import { LeegVlak } from '@/components/PaginaKop'
 
 /* De CRM-blokken op de klantpagina: contactpersonen, partners, accounts en
    de bedrijfsgegevens. */
@@ -270,123 +270,119 @@ export function Contactpersonen({
   /** Per contactpersoon zijn kinderen; leeg als er geen zijn. */
   kinderenPer: Map<string, ContactChild[]>
 }) {
+  const toevoegen = (stijl: 'primair' | 'rustig') => (
+    <Paneel
+      knop="+ Contactpersoon"
+      titel="Contactpersoon toevoegen"
+      uitleg="Wie je belt en wie de facturen krijgt. Los van wie er kan inloggen."
+      stijl={stijl}
+    >
+      <ActionForm action={nieuweContactpersoon} submitLabel="Toevoegen" className="grid gap-4 sm:grid-cols-2">
+        <input type="hidden" name="organizationId" value={organizationId} />
+        <input type="hidden" name="slug" value={slug} />
+        <PaneelKop>Wie</PaneelKop>
+        <NaamVelden />
+        <Field label="Functie" name="functie" placeholder="Eigenaar" />
+        <Select
+          label="Geslacht"
+          name="aanhef"
+          options={GESLACHT_OPTIES}
+          hint="Bepaalt hoe een brief begint. Weet je het niet, kies dan niets."
+        />
+        <PaneelKop>Bereikbaar</PaneelKop>
+        <Field label="E-mailadres" name="email" type="email" placeholder="marieke@voncken.nl" />
+        <Field label="Mobiel" name="mobiel" placeholder="06 12 34 56 78" />
+        <Field label="Telefoon" name="telefoon" placeholder="043 601 22 38" />
+        <Field label="LinkedIn" name="linkedin" placeholder="linkedin.com/in/..." />
+        <PaneelKop>Verder</PaneelKop>
+        <div className="sm:col-span-2">
+          <Verjaardag dag={null} maand={null} jaar={null} />
+        </div>
+        <div className="sm:col-span-2">
+          <TextArea label="Notities" name="notities" rows={2} />
+        </div>
+        <Check label="Dit is de vaste contactpersoon" name="vast" hint="De vorige vaste contactpersoon verliest die rol." />
+        <Check label="Ontvangt de facturen" name="facturen" />
+      </ActionForm>
+    </Paneel>
+  )
+
   return (
     <section>
-      <h2 className="mb-1 text-lg">Contactpersonen</h2>
-      <p className="mb-3 text-sm text-gray-600">
-        Wie je belt en wie de facturen krijgt. Los van wie er kan inloggen.
-      </p>
+      <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h2 className="text-[19px]">Contactpersonen</h2>
+          <p className="mt-0.5 text-sm text-gray-600">Wie je belt en wie de facturen krijgt. Los van wie er kan inloggen.</p>
+        </div>
+        {contacts.length > 0 && toevoegen('rustig')}
+      </div>
 
       {contacts.length === 0 ? (
-        <p className="rounded-xl bg-white p-6 text-sm text-gray-600 shadow-sm">
-          Nog geen contactpersonen vastgelegd.
-        </p>
+        <LeegVlak
+          titel="Nog geen contactpersonen"
+          tekst="Leg vast wie je belt, wie beslist en wie de facturen krijgt. De vaste contactpersoon komt ook in elke campagnebriefing."
+          actie={toevoegen('primair')}
+        />
       ) : (
-        <ul className="divide-y divide-gray-200 overflow-hidden rounded-xl bg-white shadow-sm">
-          {contacts.map((c) => (
-            <li key={c.id} className="px-4 py-3.5 sm:px-6">
-              <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
-                <div className="flex min-w-0 flex-1 gap-3">
-                  <Avatar naam={c.name} imageId={c.avatarImageId} maat={40} />
+        <ul className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
+          {contacts.map((c) => {
+            const nummer = c.mobile ?? c.phone
+            return (
+              <li key={c.id} className="flex flex-col rounded-xl bg-white p-5 shadow-sm">
+                <div className="flex items-start gap-4">
+                  <Avatar naam={c.name} imageId={c.avatarImageId} maat={52} />
                   <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-sm">{c.name}</span>
-                    {c.isPrimary && (
-                      <span className="bg-jr-blue/10 text-jr-deepblue rounded-full px-2 py-0.5 text-xs">
-                        Vaste contactpersoon
-                      </span>
-                    )}
-                    {c.receivesInvoices && (
-                      <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600">
-                        Facturen
-                      </span>
+                    <p className="truncate text-[17px] font-medium">{c.name}</p>
+                    <p className="truncate text-sm text-gray-600">
+                      {[c.jobTitle, c.department].filter(Boolean).join(' · ') || 'Functie onbekend'}
+                    </p>
+                    {(c.isPrimary || c.receivesInvoices) && (
+                      <div className="mt-1.5 flex flex-wrap gap-1.5">
+                        {c.isPrimary && (
+                          <span className="bg-jr-lightblue text-jr-deepblue rounded-full px-2 py-0.5 text-xs">Vaste contactpersoon</span>
+                        )}
+                        {c.receivesInvoices && (
+                          <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600">Ontvangt facturen</span>
+                        )}
+                      </div>
                     )}
                   </div>
-
-                  <p className="mt-0.5 text-xs text-gray-600">
-                    {c.jobTitle && <>{c.jobTitle} &middot; </>}
-                    {c.email ? (
-                      <a href={`mailto:${c.email}`} className="hover:text-jr-blue">
-                        {c.email}
-                      </a>
-                    ) : (
-                      'geen e-mailadres'
-                    )}
-                    {c.mobile && <> &middot; {c.mobile}</>}
-                    {c.phone && !c.mobile && <> &middot; {c.phone}</>}
-                  </p>
-
-                  {c.notes && <p className="mt-1 text-xs text-gray-500">{c.notes}</p>}
-
-                  <Uitklap label="Wijzigen">
-                    <ActionForm
-                      action={wijzigContactpersoon}
-                      submitLabel="Opslaan"
-                      resetOnSuccess={false}
-                      className="grid gap-3 sm:grid-cols-2"
-                    >
+                  <Menu>
+                  <Paneel knop="Wijzigen" titel={c.name} uitleg="Alles hieronder is optioneel behalve de naam." stijl="menu" sluitNaOpslaan={false}>
+                    <ActionForm action={wijzigContactpersoon} submitLabel="Opslaan" resetOnSuccess={false} className="grid gap-4 sm:grid-cols-2">
                       <input type="hidden" name="contactId" value={c.id} />
                       <input type="hidden" name="slug" value={slug} />
-                      {/* Voornaam, tussenvoegsel en achternaam horen bij
-                          elkaar, dus staan ze naast elkaar. Het tussenvoegsel
-                          krijgt weinig ruimte: er past "van der" in en meer
-                          hoeft niet. */}
-                      <div className="grid gap-3 sm:grid-cols-[1fr_5rem_1fr]">
-                        <Field label="Voornaam" name="voornaam" defaultValue={c.firstName ?? ''} />
-                        <Field
-                          label="Tussenvoegsel"
-                          name="tussenvoegsel"
-                          defaultValue={c.infix ?? ''}
-                          placeholder="van der"
-                        />
-                        <Field label="Achternaam" name="achternaam" defaultValue={c.lastName ?? ''} />
-                      </div>
+                      <PaneelKop>Wie</PaneelKop>
+                      <NaamVelden c={c} />
                       <Field label="Functie" name="functie" defaultValue={c.jobTitle ?? ''} />
-                      <Field
-                        label="Afdeling"
-                        name="afdeling"
-                        defaultValue={c.department ?? ''}
-                        placeholder="Directie"
-                      />
+                      <Field label="Afdeling" name="afdeling" defaultValue={c.department ?? ''} placeholder="Directie" />
+                      <PaneelKop>Bereikbaar</PaneelKop>
                       <Field label="E-mailadres" name="email" type="email" defaultValue={c.email ?? ''} />
                       <Field label="Mobiel" name="mobiel" defaultValue={c.mobile ?? ''} />
                       <Field label="Telefoon" name="telefoon" defaultValue={c.phone ?? ''} />
                       <Field label="LinkedIn" name="linkedin" defaultValue={c.linkedinUrl ?? ''} />
                       <div className="sm:col-span-2">
-                        <Field label="Notities" name="notities" defaultValue={c.notes ?? ''} />
+                        <TextArea label="Notities" name="notities" rows={2} defaultValue={c.notes ?? ''} />
                       </div>
                       <Check label="Dit is de vaste contactpersoon" name="vast" defaultChecked={c.isPrimary} />
                       <Check label="Ontvangt de facturen" name="facturen" defaultChecked={c.receivesInvoices} />
-
                       <Persoonlijk c={c} />
                     </ActionForm>
 
-                    <Kinderen
-                      contactId={c.id}
-                      slug={slug}
-                      kinderen={kinderenPer.get(c.id) ?? []}
-                    />
-
-                    <div className="mt-3 border-t border-gray-200 pt-3">
-                      <AfbeeldingKiezer
-                        soort="contact"
-                        doelId={c.id}
-                        naam={c.name}
-                        imageId={c.avatarImageId}
-                        slug={slug}
-                      />
+                    <div className="mt-8 border-t border-gray-200 pt-6">
+                      <Kinderen contactId={c.id} slug={slug} kinderen={kinderenPer.get(c.id) ?? []} />
                     </div>
-                  </Uitklap>
-                  </div>
-                </div>
-
-                <div className="flex shrink-0 gap-3">
+                    <div className="mt-6 border-t border-gray-200 pt-6">
+                      <AfbeeldingKiezer soort="contact" doelId={c.id} naam={c.name} imageId={c.avatarImageId} slug={slug} />
+                    </div>
+                  </Paneel>
                   {!c.isPrimary && (
                     <ActionForm
                       action={maakVasteContactpersoon}
-                      submitLabel="Maak vast"
-                      submitClassName="text-gray-600 hover:bg-gray-100 !px-2 !py-1 !text-xs"
+                      submitLabel="Maak vaste contactpersoon"
+                      submitClassName={MENU_KNOP}
                       resetOnSuccess={false}
+                      meldGelukt={false}
                       className=""
                     >
                       <input type="hidden" name="contactId" value={c.id} />
@@ -396,57 +392,75 @@ export function Contactpersonen({
                   <ActionForm
                     action={verwijderContactpersoon}
                     submitLabel="Verwijderen"
-                    submitClassName="text-gray-600 hover:bg-gray-100 !px-2 !py-1 !text-xs"
+                    submitClassName={MENU_KNOP_GEVAAR}
                     resetOnSuccess={false}
+                    meldGelukt={false}
                     className=""
                   >
                     <input type="hidden" name="contactId" value={c.id} />
                     <input type="hidden" name="slug" value={slug} />
                   </ActionForm>
+                </Menu>
                 </div>
-              </div>
-            </li>
-          ))}
+
+                <div className="mt-4 space-y-1.5 text-sm">
+                  {c.email ? (
+                    <a href={`mailto:${c.email}`} className="text-jr-link flex items-center gap-2 truncate hover:underline">
+                      <Pictogram soort="mail" />
+                      {c.email}
+                    </a>
+                  ) : (
+                    <p className="flex items-center gap-2 text-gray-400">
+                      <Pictogram soort="mail" />
+                      geen e-mailadres
+                    </p>
+                  )}
+                  {nummer ? (
+                    <a href={`tel:${nummer.replace(/\s/g, '')}`} className="text-jr-link flex items-center gap-2 hover:underline">
+                      <Pictogram soort="telefoon" />
+                      {nummer}
+                    </a>
+                  ) : (
+                    <p className="flex items-center gap-2 text-gray-400">
+                      <Pictogram soort="telefoon" />
+                      geen nummer
+                    </p>
+                  )}
+                </div>
+                {c.notes && <p className="mt-3 line-clamp-2 text-xs text-gray-600">{c.notes}</p>}
+
+              </li>
+            )
+          })}
         </ul>
       )}
-
-      <details className="mt-3">
-        <summary className="text-jr-blue cursor-pointer text-sm">Contactpersoon toevoegen</summary>
-        <div className="mt-3 rounded-xl bg-white p-6 shadow-sm">
-          <ActionForm
-            action={nieuweContactpersoon}
-            submitLabel="Toevoegen"
-            className="grid gap-3 sm:grid-cols-2"
-          >
-            <input type="hidden" name="organizationId" value={organizationId} />
-            <input type="hidden" name="slug" value={slug} />
-            <div className="grid gap-3 sm:grid-cols-[1fr_5rem_1fr]">
-              <Field label="Voornaam" name="voornaam" placeholder="Marieke" />
-              <Field label="Tussenvoegsel" name="tussenvoegsel" placeholder="van der" />
-              <Field label="Achternaam" name="achternaam" placeholder="Voncken" />
-            </div>
-            <Select
-              label="Geslacht"
-              name="aanhef"
-              options={GESLACHT_OPTIES}
-              hint="Bepaalt ook hoe een brief begint. Weet je het niet, kies dan niets."
-            />
-            <Field label="Functie" name="functie" placeholder="Eigenaar" />
-            <Verjaardag dag={null} maand={null} jaar={null} />
-            <Field label="E-mailadres" name="email" type="email" placeholder="marieke@voncken.nl" />
-            <Field label="Mobiel" name="mobiel" placeholder="06 12 34 56 78" />
-            <Field label="Telefoon" name="telefoon" placeholder="043 601 22 38" />
-            <Field label="LinkedIn" name="linkedin" placeholder="linkedin.com/in/..." />
-            <div className="sm:col-span-2">
-              <Field label="Notities" name="notities" />
-            </div>
-            <Check label="Dit is de vaste contactpersoon" name="vast"
-              hint="De vorige vaste contactpersoon verliest die rol." />
-            <Check label="Ontvangt de facturen" name="facturen" />
-          </ActionForm>
-        </div>
-      </details>
     </section>
+  )
+}
+
+/** Voornaam, tussenvoegsel en achternaam naast elkaar, over de volle breedte. */
+function NaamVelden({ c }: { c?: Contact }) {
+  return (
+    <div className="grid items-end gap-3 sm:col-span-2 sm:grid-cols-[1fr_130px_1fr]">
+      <Field label="Voornaam" name="voornaam" defaultValue={c?.firstName ?? ''} placeholder="Marieke" />
+      <Field label="Tussenvoegsel" name="tussenvoegsel" defaultValue={c?.infix ?? ''} placeholder="van der" />
+      <Field label="Achternaam" name="achternaam" defaultValue={c?.lastName ?? ''} placeholder="Voncken" />
+    </div>
+  )
+}
+
+function Pictogram({ soort }: { soort: 'mail' | 'telefoon' }) {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-gray-400" fill="none" stroke="currentColor" strokeWidth="1.7">
+      {soort === 'mail' ? (
+        <>
+          <rect x="3" y="5" width="18" height="14" rx="2" />
+          <path d="m3.5 6.5 8.5 6 8.5-6" />
+        </>
+      ) : (
+        <path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z" strokeLinejoin="round" />
+      )}
+    </svg>
   )
 }
 
@@ -466,104 +480,18 @@ export function Partners({
 
   return (
     <section>
-      <h2 className="mb-1 text-lg">Partners</h2>
-      <p className="mb-3 text-sm text-gray-600">
-        De externen die voor deze klant werken, met het tarief dat hier geldt.
-      </p>
-
-      {links.length === 0 ? (
-        <p className="rounded-xl bg-white p-6 text-sm text-gray-600 shadow-sm">
-          Nog geen partners gekoppeld.
-        </p>
-      ) : (
-        <ul className="divide-y divide-gray-200 overflow-hidden rounded-xl bg-white shadow-sm">
-          {links.map((l) => (
-            <li key={l.id} className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2 px-4 py-3.5 sm:px-6">
-              <div className="min-w-0 flex-1">
-                <p className="text-sm">
-                  {l.role}
-                  <span className="text-gray-600"> &middot; {l.partner.name}</span>
-                </p>
-                <p className="mt-0.5 text-xs text-gray-600">
-                  {partnerTypeLabels[l.partner.type]}
-                  {l.partner.contactName && <> &middot; {l.partner.contactName}</>}
-                  {l.partner.email && <> &middot; {l.partner.email}</>}
-                  {l.since && <> &middot; sinds {formatDate(l.since)}</>}
-                </p>
-                {l.notes && <p className="mt-1 text-xs text-gray-500">{l.notes}</p>}
-
-                <Uitklap label="Afspraak wijzigen">
-                  <ActionForm
-                    action={wijzigKoppeling}
-                    submitLabel="Opslaan"
-                    resetOnSuccess={false}
-                    className="grid gap-3 sm:grid-cols-2"
-                  >
-                    <input type="hidden" name="linkId" value={l.id} />
-                    <input type="hidden" name="slug" value={slug} />
-                    <Field label="Rol" name="rol" required defaultValue={l.role} />
-                    <Field
-                      label="Afwijkend uurtarief"
-                      name="tarief"
-                      defaultValue={
-                        l.customHourlyRateCents === null
-                          ? ''
-                          : (l.customHourlyRateCents / 100).toFixed(2).replace('.', ',')
-                      }
-                      hint={
-                        l.partner.hourlyRateCents === null
-                          ? 'Deze partner heeft geen standaardtarief.'
-                          : `Leeg laten betekent het standaardtarief van ${formatCents(l.partner.hourlyRateCents)}.`
-                      }
-                    />
-                    <div className="sm:col-span-2">
-                      <Field label="Notities" name="notities" defaultValue={l.notes ?? ''} />
-                    </div>
-                  </ActionForm>
-                </Uitklap>
-              </div>
-
-              <div className="shrink-0 text-right">
-                {l.effectiveHourlyRateCents !== null ? (
-                  <>
-                    <p className="tabular text-sm">{formatCents(l.effectiveHourlyRateCents)}</p>
-                    <p className="text-xs text-gray-500">
-                      per uur
-                      {l.customHourlyRateCents !== null && (
-                        <span className="text-jr-orange"> &middot; klantafspraak</span>
-                      )}
-                    </p>
-                  </>
-                ) : (
-                  <p className="text-xs text-gray-500">geen tarief</p>
-                )}
-                <div className="mt-1">
-                  <ActionForm
-                    action={ontkoppelPartner}
-                    submitLabel="Ontkoppelen"
-                    submitClassName="text-gray-600 hover:bg-gray-100 !px-2 !py-1 !text-xs"
-                    resetOnSuccess={false}
-                    className=""
-                  >
-                    <input type="hidden" name="linkId" value={l.id} />
-                    <input type="hidden" name="slug" value={slug} />
-                  </ActionForm>
-                </div>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      <details className="mt-3">
-        <summary className="text-jr-blue cursor-pointer text-sm">Partner koppelen</summary>
-        <div className="mt-3 rounded-xl bg-white p-6 shadow-sm">
+      <div className="mb-4 flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
+        <div>
+          <h2 className="text-[22px]">Partners</h2>
+          <p className="mt-0.5 text-sm text-gray-600">De externen die voor deze klant werken, met het tarief dat hier geldt.</p>
+        </div>
+        <Paneel knop="+ Partner" stijl="rustig" titel="Partner koppelen">
           {beschikbaar.length === 0 ? (
             <p className="text-sm text-gray-600">
               {alle.length === 0 ? (
                 <>
                   Er zijn nog geen partners.{' '}
-                  <a href="/beheer/partners" className="text-jr-blue hover:underline">
+                  <a href="/beheer/partners" className="text-jr-link hover:underline">
                     Voeg er eerst een toe
                   </a>
                   .
@@ -573,31 +501,94 @@ export function Partners({
               )}
             </p>
           ) : (
-            <ActionForm action={koppelPartner} submitLabel="Koppelen" className="grid gap-3 sm:grid-cols-2">
+            <ActionForm action={koppelPartner} submitLabel="Koppelen" className="grid gap-4 sm:grid-cols-2">
               <input type="hidden" name="organizationId" value={organizationId} />
               <input type="hidden" name="slug" value={slug} />
-              <Select
-                label="Partner"
-                name="partnerId"
-                options={beschikbaar.map((p) => ({
-                  value: p.id,
-                  label: `${p.name} — ${partnerTypeLabels[p.type]}${
-                    p.hourlyRateCents ? ` · ${formatCents(p.hourlyRateCents)}/uur` : ''
-                  }`,
-                }))}
-              />
+              <div className="sm:col-span-2">
+                <Select
+                  label="Partner"
+                  name="partnerId"
+                  options={beschikbaar.map((p) => ({
+                    value: p.id,
+                    label: `${p.name}, ${partnerTypeLabels[p.type].toLowerCase()}${p.hourlyRateCents ? `, ${formatEuro(p.hourlyRateCents)} per uur` : ''}`,
+                  }))}
+                />
+              </div>
               <Field label="Rol bij deze klant" name="rol" required placeholder="Huisfotograaf" />
-              <Field
-                label="Afwijkend uurtarief"
-                name="tarief"
-                placeholder="80,00"
-                hint="Leeg laten neemt het standaardtarief van de partner."
-              />
-              <Field label="Notities" name="notities" />
+              <Field label="Afwijkend uurtarief" name="tarief" placeholder="80,00" hint="Leeg laten neemt het standaardtarief." />
+              <div className="sm:col-span-2">
+                <Field label="Notities" name="notities" />
+              </div>
             </ActionForm>
           )}
-        </div>
-      </details>
+        </Paneel>
+      </div>
+
+      {links.length === 0 ? (
+        <p className="rounded-xl bg-white px-6 py-5 text-sm text-gray-600 shadow-sm">Nog geen partners gekoppeld.</p>
+      ) : (
+        <ul className="divide-y divide-gray-150 rounded-xl bg-white shadow-sm">
+          {links.map((l) => (
+            <li key={l.id} className="flex items-start gap-4 py-3.5 pr-3 pl-6">
+              <Avatar naam={l.partner.name} imageId={null} maat={40} rond={false} />
+              <div className="flex min-w-0 flex-1 flex-col gap-1 sm:flex-row sm:gap-3">
+              <div className="min-w-0 flex-1">
+                <p className="text-[15px]">
+                  {l.role} <span className="text-gray-600">bij {l.partner.name}</span>
+                </p>
+                <p className="mt-0.5 text-[13px] text-gray-600">
+                  {[l.partner.contactName, l.since && `sinds ${formatDate(l.since)}`].filter(Boolean).join(' · ') || partnerTypeLabels[l.partner.type]}
+                </p>
+                {l.notes && <p className="mt-0.5 text-[13px] text-gray-500">{l.notes}</p>}
+              </div>
+
+              <div className="shrink-0 sm:text-right">
+                {l.effectiveHourlyRateCents !== null ? (
+                  <>
+                    <p className="tabular text-[15px]">{formatEuro(l.effectiveHourlyRateCents)}</p>
+                    <p className="text-xs text-gray-500">{l.customHourlyRateCents !== null ? 'per uur, eigen afspraak' : 'per uur'}</p>
+                  </>
+                ) : (
+                  <p className="text-xs text-gray-500">Geen tarief</p>
+                )}
+              </div>
+              </div>
+
+              <Menu>
+                <Paneel knop="Afspraak wijzigen" stijl="menu" titel={`${l.role} bij ${l.partner.name}`}>
+                  <ActionForm action={wijzigKoppeling} submitLabel="Opslaan" resetOnSuccess={false} className="grid gap-4 sm:grid-cols-2">
+                    <input type="hidden" name="linkId" value={l.id} />
+                    <input type="hidden" name="slug" value={slug} />
+                    <Field label="Rol" name="rol" required defaultValue={l.role} />
+                    <Field
+                      label="Afwijkend uurtarief"
+                      name="tarief"
+                      defaultValue={l.customHourlyRateCents === null ? '' : (l.customHourlyRateCents / 100).toFixed(2).replace('.', ',')}
+                      hint={
+                        l.partner.hourlyRateCents === null
+                          ? 'Deze partner heeft geen standaardtarief.'
+                          : `Leeg laten is het standaardtarief van ${formatEuro(l.partner.hourlyRateCents)}.`
+                      }
+                    />
+                    <div className="sm:col-span-2">
+                      <Field label="Notities" name="notities" defaultValue={l.notes ?? ''} />
+                    </div>
+                  </ActionForm>
+                </Paneel>
+                {l.partner.email && (
+                  <a href={`mailto:${l.partner.email}`} className="block w-full rounded-lg px-3 py-2 text-left text-sm text-jr-text hover:bg-gray-100">
+                    Mailen
+                  </a>
+                )}
+                <ActionForm action={ontkoppelPartner} submitLabel="Ontkoppelen" submitClassName={MENU_KNOP_GEVAAR} resetOnSuccess={false} meldGelukt={false} className="">
+                  <input type="hidden" name="linkId" value={l.id} />
+                  <input type="hidden" name="slug" value={slug} />
+                </ActionForm>
+              </Menu>
+            </li>
+          ))}
+        </ul>
+      )}
     </section>
   )
 }
@@ -615,15 +606,50 @@ export function Accounts({
 
   return (
     <section>
-      <h2 className="mb-1 text-lg">Accounts en toegangen</h2>
-      <p className="mb-3 text-sm text-gray-600">
-        Welke systemen deze klant heeft en wie erbij kan. <strong className="font-normal">
-        Wachtwoorden staan hier bewust niet in</strong> — die horen in de wachtwoordmanager;
-        hier leg je alleen vast waar ze te vinden zijn.
-      </p>
+      <div className="mb-4 flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
+        <div>
+          <h2 className="text-[19px]">Accounts en toegangen</h2>
+          <p className="mt-0.5 max-w-xl text-sm text-gray-600">
+            Welke systemen er zijn en wie erbij kan. Wachtwoorden staan hier niet; alleen waar je ze vindt.
+          </p>
+        </div>
+        <Paneel knop="+ Account" stijl="rustig" titel="Account toevoegen" uitleg="Leg vast waar het wachtwoord staat, nooit het wachtwoord zelf.">
+          <ActionForm action={nieuwAccount} submitLabel="Toevoegen" className="grid gap-4 sm:grid-cols-2">
+            <input type="hidden" name="organizationId" value={organizationId} />
+            <input type="hidden" name="slug" value={slug} />
+            <Field label="Naam" name="naam" required placeholder="WordPress admin" />
+            <Select
+              label="Systeem"
+              name="systeem"
+              defaultValue=""
+              options={[{ value: '', label: 'Kies of laat leeg' }, ...COMMON_SYSTEMS.map((s) => ({ value: s, label: s }))]}
+            />
+            <Field label="Adres" name="url" placeholder="https://klant.nl/wp-admin" />
+            <Field label="Inloggen met" name="inlognaam" placeholder="marketing@klant.nl" />
+            <Select
+              label="Eigenaar van het account"
+              name="eigenaar"
+              defaultValue="client"
+              options={Object.entries(accountOwnerLabels).map(([value, label]) => ({ value, label }))}
+              hint="Wie het account kan intrekken als de samenwerking stopt."
+            />
+            <Field
+              label="Waar staat het wachtwoord"
+              name="kluis"
+              placeholder="1Password → Klanten → ..."
+              hint="Een verwijzing, geen wachtwoord."
+            />
+            <div className="sm:col-span-2">
+              <Field label="Notities" name="notities" />
+            </div>
+            <Check label="Er zit tweestapsverificatie op" name="mfa" />
+            <Field label="Wie geeft de 2FA-code" name="mfaNotities" placeholder="Telefoon van Marieke" />
+          </ActionForm>
+        </Paneel>
+      </div>
 
       {zonderKluis > 0 && (
-        <p className="border-jr-orange bg-jr-orange/5 mb-3 rounded border-l-4 p-3 text-sm">
+        <p className="mb-3 rounded-xl bg-[#FFF4E0] px-4 py-3 text-sm text-[#94590A]">
           {zonderKluis === 1
             ? 'Bij 1 account staat niet waar het wachtwoord te vinden is.'
             : `Bij ${zonderKluis} accounts staat niet waar het wachtwoord te vinden is.`}
@@ -631,74 +657,44 @@ export function Accounts({
       )}
 
       {accounts.length === 0 ? (
-        <p className="rounded-xl bg-white p-6 text-sm text-gray-600 shadow-sm">
-          Nog geen accounts vastgelegd.
-        </p>
+        <p className="rounded-xl bg-white px-6 py-5 text-sm text-gray-600 shadow-sm">Nog geen accounts vastgelegd.</p>
       ) : (
-        <ul className="divide-y divide-gray-200 overflow-hidden rounded-xl bg-white shadow-sm">
+        <ul className="divide-y divide-gray-150 rounded-xl bg-white shadow-sm">
           {accounts.map((a) => (
-            <li
-              key={a.id}
-              className={`flex flex-wrap items-start justify-between gap-x-4 gap-y-2 px-4 py-3.5 sm:px-6 ${
-                a.active ? '' : 'opacity-60'
-              }`}
-            >
+            <li key={a.id} className={`flex items-start gap-3 py-3.5 pr-3 pl-5 ${a.active ? '' : 'opacity-60'}`}>
               <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-sm">{a.name}</span>
-                  {a.system && (
-                    <span className="bg-jr-lightblue text-jr-deepblue rounded px-1.5 py-0.5 text-xs">
-                      {a.system}
-                    </span>
-                  )}
-                  <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600">
-                    {accountOwnerLabels[a.owner]}
-                  </span>
-                  {a.hasMfa && (
-                    <span className="bg-jr-green/10 text-jr-green rounded-full px-2 py-0.5 text-xs">
-                      2FA
-                    </span>
-                  )}
-                  {!a.active && (
-                    <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-500">
-                      niet meer in gebruik
-                    </span>
-                  )}
-                </div>
-
-                <p className="mt-0.5 text-xs text-gray-600">
-                  {a.loginHint && <>inloggen met {a.loginHint}</>}
-                  {a.url && (
-                    <>
-                      {a.loginHint && ' · '}
-                      <a href={a.url} className="hover:text-jr-blue" rel="noreferrer noopener">
-                        {a.url.replace(/^https?:\/\//, '')}
-                      </a>
-                    </>
-                  )}
+                <p className="text-[15px]">
+                  {a.name}
+                  {!a.active && <span className="text-gray-500"> (niet meer in gebruik)</span>}
                 </p>
-
-                <p className="mt-1 text-xs">
+                <p className="mt-0.5 text-[13px] text-gray-600">
+                  {[
+                    a.system && a.system !== a.name ? a.system : null,
+                    { client: 'van de klant', agency: 'van James Robinson', shared: 'gedeeld' }[a.owner],
+                    a.hasMfa ? 'tweestaps aan' : null,
+                  ]
+                    .filter(Boolean)
+                    .join(' · ')}
+                </p>
+                {a.loginHint && <p className="mt-0.5 truncate text-[13px] text-gray-600">Inloggen met {a.loginHint}</p>}
+                <p className="mt-0.5 text-[13px]">
                   {a.vaultReference ? (
-                    <span className="text-gray-500">
-                      wachtwoord: {a.vaultReference}
-                    </span>
+                    <span className="text-gray-500">Wachtwoord in {a.vaultReference}</span>
                   ) : (
-                    <span className="text-jr-orange">
-                      niet vastgelegd waar het wachtwoord staat
-                    </span>
+                    <span className="text-[#94590A]">Niet vastgelegd waar het wachtwoord staat</span>
                   )}
                 </p>
+                {a.mfaNotes && <p className="mt-0.5 text-[13px] text-gray-500">Tweestaps: {a.mfaNotes}</p>}
+                {a.notes && <p className="mt-0.5 text-[13px] text-gray-500">{a.notes}</p>}
+              </div>
 
-                {a.mfaNotes && <p className="mt-1 text-xs text-gray-500">2FA: {a.mfaNotes}</p>}
-                {a.notes && <p className="mt-1 text-xs text-gray-500">{a.notes}</p>}
-
-                <Uitklap label="Wijzigen">
+              <Menu>
+                <Paneel knop="Wijzigen" stijl="menu" titel={a.name}>
                   <ActionForm
                     action={wijzigAccount}
                     submitLabel="Opslaan"
                     resetOnSuccess={false}
-                    className="grid gap-3 sm:grid-cols-2"
+                    className="grid gap-4 sm:grid-cols-2"
                   >
                     <input type="hidden" name="accountId" value={a.id} />
                     <input type="hidden" name="slug" value={slug} />
@@ -736,62 +732,21 @@ export function Accounts({
                       hint="Blijft staan in het register, maar telt niet meer mee als openstaand."
                     />
                   </ActionForm>
-                </Uitklap>
-              </div>
-
-              <div className="shrink-0">
-                <ActionForm
-                  action={verwijderAccount}
-                  submitLabel="Verwijderen"
-                  submitClassName="text-gray-600 hover:bg-gray-100 !px-2 !py-1 !text-xs"
-                  resetOnSuccess={false}
-                  className=""
-                >
+                </Paneel>
+                {a.url && (
+                  <a href={a.url} target="_blank" rel="noreferrer noopener" className="block w-full rounded-lg px-3 py-2 text-left text-sm text-jr-text hover:bg-gray-100">
+                    Openen
+                  </a>
+                )}
+                <ActionForm action={verwijderAccount} submitLabel="Verwijderen" submitClassName={MENU_KNOP_GEVAAR} resetOnSuccess={false} meldGelukt={false} className="">
                   <input type="hidden" name="accountId" value={a.id} />
                   <input type="hidden" name="slug" value={slug} />
                 </ActionForm>
-              </div>
+              </Menu>
             </li>
           ))}
         </ul>
       )}
-
-      <details className="mt-3">
-        <summary className="text-jr-blue cursor-pointer text-sm">Account toevoegen</summary>
-        <div className="mt-3 rounded-xl bg-white p-6 shadow-sm">
-          <ActionForm action={nieuwAccount} submitLabel="Toevoegen" className="grid gap-3 sm:grid-cols-2">
-            <input type="hidden" name="organizationId" value={organizationId} />
-            <input type="hidden" name="slug" value={slug} />
-            <Field label="Naam" name="naam" required placeholder="WordPress admin" />
-            <Select
-              label="Systeem"
-              name="systeem"
-              defaultValue=""
-              options={[{ value: '', label: 'Kies of laat leeg' }, ...COMMON_SYSTEMS.map((s) => ({ value: s, label: s }))]}
-            />
-            <Field label="Adres" name="url" placeholder="https://klant.nl/wp-admin" />
-            <Field label="Inloggen met" name="inlognaam" placeholder="marketing@klant.nl" />
-            <Select
-              label="Eigenaar van het account"
-              name="eigenaar"
-              defaultValue="client"
-              options={Object.entries(accountOwnerLabels).map(([value, label]) => ({ value, label }))}
-              hint="Wie het account kan intrekken als de samenwerking stopt."
-            />
-            <Field
-              label="Waar staat het wachtwoord"
-              name="kluis"
-              placeholder="1Password → Klanten → ..."
-              hint="Een verwijzing, geen wachtwoord."
-            />
-            <div className="sm:col-span-2">
-              <Field label="Notities" name="notities" />
-            </div>
-            <Check label="Er zit tweestapsverificatie op" name="mfa" />
-            <Field label="Wie geeft de 2FA-code" name="mfaNotities" placeholder="Telefoon van Marieke" />
-          </ActionForm>
-        </div>
-      </details>
     </section>
   )
 }
@@ -799,40 +754,42 @@ export function Accounts({
 export function Bedrijfsgegevens({
   org,
   slug,
+  extra = [],
 }: {
   org: Organization
   slug: string
+  /** Wat elders vandaan komt maar hier hoort: marketingmanager, pakket. */
+  extra?: { label: string; waarde: React.ReactNode }[]
 }) {
   const datumVeld = (d: Date | null) => (d ? d.toISOString().slice(0, 10) : '')
+  const adres = [org.addressLine, [org.postalCode, org.city].filter(Boolean).join(' ')].filter(Boolean).join(', ')
+  const website = org.website?.replace(/^https?:\/\//, '').replace(/\/$/, '')
+
+  // Zoals een contactkaart: alleen wat ingevuld is. Wat ontbreekt staat op
+  // één regel eronder, zodat je ziet wat je nog kunt aanvullen.
+  const gegevens: { label: string; waarde: React.ReactNode }[] = [
+    ...extra,
+    { label: 'Website', waarde: website && <a href={`https://${website}`} target="_blank" rel="noreferrer noopener" className="text-jr-link hover:underline">{website}</a> },
+    { label: 'Telefoon', waarde: org.phone && <a href={`tel:${org.phone}`} className="text-jr-link hover:underline">{org.phone}</a> },
+    { label: 'E-mail', waarde: org.email && <a href={`mailto:${org.email}`} className="text-jr-link hover:underline">{org.email}</a> },
+    { label: 'Adres', waarde: adres || null },
+    { label: 'KvK', waarde: org.kvkNumber },
+    { label: 'Klantnummer', waarde: org.customerNumber },
+    { label: 'Klant sinds', waarde: org.clientSince && formatDate(org.clientSince) },
+  ]
+  const gevuld = gegevens.filter((g) => g.waarde)
+  const leeg = gegevens.filter((g) => !g.waarde).map((g) => g.label.toLowerCase())
 
   return (
-    <section>
-      <h2 className="mb-1 text-lg">Bedrijfsgegevens</h2>
-      <div className="mb-4 rounded-xl bg-white p-6 shadow-sm">
-        <AfbeeldingKiezer
-          soort="klant"
-          doelId={org.id}
-          naam={org.name}
-          imageId={org.logoImageId}
-          slug={slug}
-          label="Logo"
-          rond={false}
-        />
-      </div>
-      <p className="mb-3 text-sm text-gray-600">
-        {[org.industry, org.city, org.kvkNumber && `KvK ${org.kvkNumber}`]
-          .filter(Boolean)
-          .join(' · ') || 'Nog niets ingevuld.'}
-      </p>
-
-      <details className="rounded-xl bg-white p-6 shadow-sm">
-        <summary className="text-jr-blue cursor-pointer text-sm">Gegevens aanpassen</summary>
-        <div className="mt-4">
+    <section className="rounded-xl bg-white p-6 shadow-sm">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <AfbeeldingKiezer soort="klant" doelId={org.id} naam={org.name} imageId={org.logoImageId} slug={slug} label="Logo" rond={false} />
+        <Paneel knop="Wijzigen" stijl="rustig" titel="Bedrijfsgegevens" breed>
           <ActionForm
             action={bedrijfsgegevens}
             submitLabel="Opslaan"
             resetOnSuccess={false}
-            className="grid gap-3 sm:grid-cols-2"
+            className="grid gap-4 sm:grid-cols-2"
           >
             <input type="hidden" name="organizationId" value={org.id} />
             <input type="hidden" name="slug" value={slug} />
@@ -883,16 +840,7 @@ export function Bedrijfsgegevens({
               ]}
             />
 
-            <div className="sm:col-span-2">
-              <p className="mt-2 mb-1 border-t border-gray-200 pt-3 text-xs font-bold text-gray-600">
-                Boekhouding
-              </p>
-              <p className="mb-2 text-xs text-gray-500">
-                Dezelfde velden als in Moneybird, zodat die kant op te synchroniseren is. Het
-                klantnummer is het belangrijkste: daar hangt de koppeling met ClickUp aan, en
-                de database laat er geen twee dezelfde toe.
-              </p>
-            </div>
+            <PaneelKop uitleg="Dezelfde velden als in Moneybird. Het klantnummer koppelt deze klant aan ClickUp en is uniek.">Boekhouding</PaneelKop>
 
             <Field
               label="Klantnummer"
@@ -939,11 +887,7 @@ export function Bedrijfsgegevens({
               defaultValue={org.invoiceAttn ?? ''}
             />
 
-            <div className="sm:col-span-2">
-              <p className="mt-2 mb-1 border-t border-gray-200 pt-3 text-xs font-bold text-gray-600">
-                Het bedrijf
-              </p>
-            </div>
+            <PaneelKop>Het bedrijf</PaneelKop>
 
             <Field
               label="Opgericht op"
@@ -987,22 +931,14 @@ export function Bedrijfsgegevens({
               />
             </div>
 
-            <div className="sm:col-span-2">
-              <p className="mt-2 mb-1 border-t border-gray-200 pt-3 text-xs font-bold text-gray-600">
-                Online
-              </p>
-            </div>
+            <PaneelKop>Online</PaneelKop>
             <Field label="LinkedIn" name="linkedin" defaultValue={org.linkedinUrl ?? ''} />
             <Field label="Facebook" name="facebook" defaultValue={org.facebookUrl ?? ''} />
             <Field label="Instagram" name="instagram" defaultValue={org.instagramUrl ?? ''} />
             <Field label="YouTube" name="youtube" defaultValue={org.youtubeUrl ?? ''} />
             <Field label="TikTok" name="tiktok" defaultValue={org.tiktokUrl ?? ''} />
 
-            <div className="sm:col-span-2">
-              <p className="mt-2 mb-1 border-t border-gray-200 pt-3 text-xs font-bold text-gray-600">
-                Wat je moet weten
-              </p>
-            </div>
+            <PaneelKop>Wat je moet weten</PaneelKop>
             <div className="sm:col-span-2">
               <Field
                 label="Vorige bureaus"
@@ -1023,8 +959,18 @@ export function Bedrijfsgegevens({
               <Field label="Notities" name="notities" defaultValue={org.notes ?? ''} />
             </div>
           </ActionForm>
-        </div>
-      </details>
+        </Paneel>
+      </div>
+
+      <dl className="mt-6 grid gap-x-6 gap-y-4 sm:grid-cols-2">
+        {gevuld.map((g) => (
+          <div key={g.label} className="min-w-0">
+            <dt className="text-xs text-gray-600">{g.label}</dt>
+            <dd className="mt-0.5 text-[15px] break-words">{g.waarde}</dd>
+          </div>
+        ))}
+      </dl>
+      {leeg.length > 0 && <p className="mt-5 border-t border-gray-150 pt-4 text-[13px] text-gray-500">Nog niet ingevuld: {leeg.join(', ')}.</p>}
     </section>
   )
 }

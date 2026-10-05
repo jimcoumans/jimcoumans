@@ -10,7 +10,8 @@ import {
   type Periode,
 } from '@/lib/reports'
 import { AppShell } from '@/components/AppShell'
-import { formatCents } from '@/lib/money'
+import { formatCents, formatEuro } from '@/lib/money'
+import { factuurTitel } from '@/lib/weergave'
 import { formatQuantity } from '@/lib/quantity'
 import { formatDate, formatMonth } from '@/lib/dates'
 import { CATEGORY_COLORS } from '@/lib/chart-colors'
@@ -84,7 +85,7 @@ export default async function FinancieelPage({
         <section className="mb-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <StatTegel
             label="Per maand terugkerend"
-            waarde={formatCents(mrr)}
+            waarde={formatEuro(mrr)}
             toelichting="uit lopende abonnementen, stand van nu"
             groot
           />
@@ -133,13 +134,13 @@ export default async function FinancieelPage({
                 >
                   <div className="min-w-0">
                     <a
-                      href={`/beheer/klanten/${r.organizationSlug}`}
+                      href={`/beheer/klanten/${r.organizationSlug}?tab=budget`}
                       className="hover:text-jr-blue text-sm"
                     >
                       {r.organizationName}
                     </a>
                     <p className="text-xs text-gray-600">
-                      {r.invoice.number} &middot; {formatDate(r.invoice.issuedOn)}
+                      {factuurTitel(r.invoice)} &middot; {formatDate(r.invoice.issuedOn)}
                       {r.invoice.status === 'overdue' && (
                         <span className="text-jr-red"> &middot; te laat</span>
                       )}

@@ -47,31 +47,54 @@ test('contrast volgens WCAG: zwart op wit is 21, JR-blauw op wit net onder de 4,
   assert.ok(contrast('#0857C3', '#FFFFFF') >= 4.5)
 })
 
-test('een lege kluis is 0 van 6, een gevulde 6 van 6', () => {
-  const leeg = berekenVolledigheid({ logos: [], beelden: [], kleuren: [], fonts: [], stem: null })
+const LEEG = { logos: [], beelden: [], kleuren: [], stem: null, tekststijlen: [], knop: null, logosNvt: [] }
+const KNOP = {
+  fontFamily: null,
+  weight: null,
+  sizePx: null,
+  uppercase: false,
+  radiusPx: 8,
+  kleuren: {
+    normal: { bg: '#8B1E2D', tekst: '#FFFFFF', rand: null },
+    hover: { bg: '#6E1824', tekst: '#FFFFFF', rand: null },
+    active: { bg: '#521219', tekst: '#FFFFFF', rand: null },
+  },
+}
+
+test('een lege kluis is 0 van 7, een gevulde 7 van 7', () => {
+  const leeg = berekenVolledigheid(LEEG)
   assert.equal(leeg.klaar, 0)
-  assert.equal(leeg.totaal, 6)
+  assert.equal(leeg.totaal, 7)
   const vol = berekenVolledigheid({
     logos: [
       { logoVariant: 'primair', logoBackground: 'licht' },
       { logoVariant: 'primair', logoBackground: 'donker' },
+      { logoVariant: 'secundair', logoBackground: 'licht' },
+      { logoVariant: 'beeldmerk', logoBackground: 'licht' },
     ],
+    // Geen los woordmerk: bewust niet van toepassing.
+    logosNvt: ['woordmerk'],
     beelden: Array.from({ length: MIN_BEELDEN }, () => ({ usage: ['organisch'] })),
     kleuren: [{ role: 'primair' }, { role: 'tekst' }],
-    fonts: [{ role: 'koppen' }, { role: 'tekst' }],
     stem: { address: 'je', goodExamples: 'Jij reserveert, wij zorgen voor de rest.' },
+    tekststijlen: (['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'body', 'label', 'micro'] as const).map((role) => ({ role })),
+    knop: KNOP,
   })
-  assert.equal(vol.klaar, 6)
+  assert.equal(vol.klaar, 7)
+})
+
+test('logo’s: een ontbrekende variant zonder "heeft het merk niet" telt als open', () => {
+  const v = berekenVolledigheid({ ...LEEG, logos: [{ logoVariant: 'primair', logoBackground: 'licht' }] })
+  assert.equal(v.punten[0]?.klaar, false)
+})
+
+test('knop zonder hover-kleur is niet compleet', () => {
+  const half = { ...KNOP, kleuren: { ...KNOP.kleuren, hover: { bg: null, tekst: null, rand: null } } }
+  assert.equal(berekenVolledigheid({ ...LEEG, knop: half }).punten.find((p) => p.label.startsWith('Knop'))?.klaar, false)
 })
 
 test('beelden zonder gebruiksrechten tellen niet mee', () => {
-  const v = berekenVolledigheid({
-    logos: [],
-    beelden: Array.from({ length: 20 }, () => ({ usage: [] })),
-    kleuren: [],
-    fonts: [],
-    stem: null,
-  })
+  const v = berekenVolledigheid({ ...LEEG, beelden: Array.from({ length: 20 }, () => ({ usage: [] })) })
   assert.equal(v.punten.find((p) => p.label.includes('beelden'))?.klaar, false)
 })
 

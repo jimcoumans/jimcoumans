@@ -14,7 +14,12 @@ import {
   wijzigFont,
   verwijderFont,
   zetStem,
+  zetTekststijl,
+  wisTekststijl,
+  zetKnop,
+  zetLogoNietVanToepassing,
 } from '@/lib/merkkluis'
+import { GEWICHTEN, LOGO_SLOTS, TEKSTROLLEN, TOESTANDEN, hexUit, tekststijlUit, type Knop, type LogoSlot, type TekstRol } from '@/lib/stylesheet'
 import type { BrandColor, BrandFile, BrandFont, BrandVoice } from '@/db/schema'
 import type { ActionResult } from './actions'
 
@@ -59,7 +64,7 @@ export async function bewerkBestand(formData: FormData): Promise<ActionResult> {
       notes: ofNull(formData, 'notes'),
     }
     if (soort === 'logo') {
-      patch.logoVariant = uit(formData, 'logoVariant', ['primair', 'beeldmerk', 'woordmerk', 'anders'] as const, 'primair')
+      patch.logoVariant = uit(formData, 'logoVariant', ['primair', 'secundair', 'beeldmerk', 'woordmerk', 'anders'] as const, 'primair')
       patch.logoBackground = uit(formData, 'logoBackground', ['licht', 'donker', 'beide'] as const, 'licht')
       patch.logoColorway = uit(formData, 'logoColorway', ['kleur', 'zwart', 'wit'] as const, 'kleur')
     }
@@ -160,5 +165,76 @@ export async function bewaarStem(formData: FormData): Promise<ActionResult> {
       },
       user.id,
     ),
+  )
+}
+
+/* ------------------------------ Stylesheet ------------------------------- */
+
+const ROLLEN_TEKST = TEKSTROLLEN.map((t) => t.rol)
+
+export async function bewaarTekststijl(formData: FormData): Promise<ActionResult> {
+  await requireStaff()
+  const rol = uit<TekstRol>(formData, 'rol', ROLLEN_TEKST, 'body')
+  const velden = Object.fromEntries([...formData.entries()].map(([k, v]) => [k, String(v)]))
+  const r = tekststijlUit(velden)
+  if (!r.ok) return { ok: false, error: r.fout }
+  return veilig(tekst(formData, 'slug'), () => zetTekststijl(tekst(formData, 'organizationId'), rol, r.stijl))
+}
+
+export async function wisTekststijlActie(formData: FormData): Promise<ActionResult> {
+  await requireStaff()
+  const rol = uit<TekstRol>(formData, 'rol', ROLLEN_TEKST, 'body')
+  return veilig(tekst(formData, 'slug'), () => wisTekststijl(tekst(formData, 'organizationId'), rol))
+}
+
+export async function bewaarKnop(formData: FormData): Promise<ActionResult> {
+  const user = await requireStaff()
+  const fouten: string[] = []
+  const kleur = (naam: string, label: string) => {
+    const invoer = tekst(formData, naam)
+    if (!invoer) return null
+    const hex = hexUit(invoer)
+    if (!hex) fouten.push(`${label}: “${invoer}” is geen kleurcode.`)
+    return hex
+  }
+  const geheel = (naam: string, min: number, max: number, label: string) => {
+    const invoer = tekst(formData, naam).replace(/px/i, '').trim()
+    if (!invoer) return null
+    const n = Math.round(Number(invoer.replace(',', '.')))
+    if (!Number.isFinite(n) || n < min || n > max) {
+      fouten.push(`${label} moet tussen ${min} en ${max} liggen.`)
+      return null
+    }
+    return n
+  }
+  const gewicht = Number(tekst(formData, 'weight'))
+  const knop: Knop = {
+    fontFamily: ofNull(formData, 'fontFamily'),
+    weight: GEWICHTEN.some((g) => g.waarde === gewicht) ? gewicht : null,
+    sizePx: geheel('sizePx', 6, 200, 'Lettergrootte'),
+    uppercase: formData.get('uppercase') === 'on',
+    radiusPx: geheel('radiusPx', 0, 999, 'Afronding'),
+    kleuren: {
+      normal: { bg: null, tekst: null, rand: null },
+      hover: { bg: null, tekst: null, rand: null },
+      active: { bg: null, tekst: null, rand: null },
+    },
+  }
+  for (const { toestand, label } of TOESTANDEN) {
+    knop.kleuren[toestand] = {
+      bg: kleur(`${toestand}Bg`, `${label}, achtergrond`),
+      tekst: kleur(`${toestand}Text`, `${label}, tekst`),
+      rand: kleur(`${toestand}Border`, `${label}, rand`),
+    }
+  }
+  if (fouten.length) return { ok: false, error: fouten.join(' ') }
+  return veilig(tekst(formData, 'slug'), () => zetKnop(tekst(formData, 'organizationId'), knop, user.id))
+}
+
+export async function logoNietVanToepassing(formData: FormData): Promise<ActionResult> {
+  const user = await requireStaff()
+  const variant = uit<LogoSlot>(formData, 'variant', LOGO_SLOTS.map((l) => l.variant), 'primair')
+  return veilig(tekst(formData, 'slug'), () =>
+    zetLogoNietVanToepassing(tekst(formData, 'organizationId'), variant, tekst(formData, 'nvt') === '1', user.id),
   )
 }

@@ -9,6 +9,7 @@ import {
   quoteStatusStyles,
 } from '@/lib/quotes'
 import { AppShell } from '@/components/AppShell'
+import { Paneel } from '@/components/Paneel'
 import { ActionForm, Field, Select } from '@/components/ActionForm'
 import { nieuweOfferte } from '../quote-actions'
 import { formatCents } from '@/lib/money'
@@ -57,7 +58,48 @@ export default async function OffertesPage({
 
   return (
     <AppShell user={user} actief="offertes">
-      <h1 className="mb-1 text-[28px] sm:text-[32px]">Offertes</h1>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <h1 className="mb-1 text-[28px] sm:text-[32px]">Offertes</h1>
+        <Paneel
+          knop="+ Nieuwe offerte"
+          titel="Nieuwe offerte"
+        uitleg="Je maakt hem hier aan en voegt daarna de regels toe."
+        >
+          {klanten.length === 0 ? (
+            <p className="text-sm text-gray-600">
+              Maak eerst een klant aan; een offerte hoort altijd bij een bedrijf.
+            </p>
+          ) : (
+            <ActionForm action={nieuweOfferte} submitLabel="Offerte aanmaken">
+              <Select
+                label="Klant"
+                name="organizationId"
+                options={klanten.map((k) => ({
+                  value: k.organization.id,
+                  label: k.organization.name,
+                }))}
+              />
+              <Field
+                label="Titel"
+                name="titel"
+                required
+                placeholder="Training contentmarketing"
+              />
+              <Field
+                label="Geldig tot"
+                name="geldigTot"
+                type="date"
+                hint="Leeg laten mag; dan staat er geen einddatum op."
+              />
+              <Field
+                label="Inleiding"
+                name="intro"
+                placeholder="Naar aanleiding van ons gesprek…"
+              />
+            </ActionForm>
+          )}
+        </Paneel>
+      </div>
       <p className="mb-6 text-sm text-gray-600">
         Voorstellen op basis van eigen diensten en werk dat via een partner loopt. De
         marge per regel zie jij; de klant ziet alleen wat hij betaalt.
@@ -105,14 +147,14 @@ export default async function OffertesPage({
         </p>
       )}
 
-      <div className="grid gap-8 lg:grid-cols-[1fr_330px]">
+      <div>
         <div>
           {alle.length === 0 ? (
             <div className="rounded-xl bg-white p-8 text-center shadow-sm">
               <p className="text-sm text-gray-600">
                 {partnerId
                   ? 'Nog geen offertes met werk van deze partner.'
-                  : 'Nog geen offertes. Maak er een aan met het formulier hiernaast.'}
+                  : 'Nog geen offertes. Maak er een aan met “+ Nieuwe offerte” rechtsboven.'}
               </p>
             </div>
           ) : (
@@ -178,45 +220,6 @@ export default async function OffertesPage({
           )}
         </div>
 
-        <aside className="rounded-xl bg-white p-6 shadow-sm lg:sticky lg:top-4 lg:self-start">
-          <h2 className="mb-1 text-base">Nieuwe offerte</h2>
-          <p className="mb-3 text-xs text-gray-500">
-            Je maakt hem hier aan en voegt daarna de regels toe.
-          </p>
-          {klanten.length === 0 ? (
-            <p className="text-sm text-gray-600">
-              Maak eerst een klant aan; een offerte hoort altijd bij een bedrijf.
-            </p>
-          ) : (
-            <ActionForm action={nieuweOfferte} submitLabel="Offerte aanmaken">
-              <Select
-                label="Klant"
-                name="organizationId"
-                options={klanten.map((k) => ({
-                  value: k.organization.id,
-                  label: k.organization.name,
-                }))}
-              />
-              <Field
-                label="Titel"
-                name="titel"
-                required
-                placeholder="Training contentmarketing"
-              />
-              <Field
-                label="Geldig tot"
-                name="geldigTot"
-                type="date"
-                hint="Leeg laten mag; dan staat er geen einddatum op."
-              />
-              <Field
-                label="Inleiding"
-                name="intro"
-                placeholder="Naar aanleiding van ons gesprek…"
-              />
-            </ActionForm>
-          )}
-        </aside>
       </div>
     </AppShell>
   )

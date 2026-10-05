@@ -13,29 +13,42 @@ const FASE_KLEUR: Record<string, string> = {
   Samenwerken: 'text-[#1D7D3F]',
 }
 
-/** Acht bolletjes: klaar, nu of nog niet. Klik gaat naar het tabblad. */
+/** Stap "03" heet voor mensen gewoon stap 3. */
+export const stapNummer = (nr: string) => String(Number(nr))
+
+/** Acht streepjes in drie fasen: klaar, nu of nog niet. Klik gaat naar het tabblad. */
 export function KlantreisBalk({ stand, slug }: { stand: KlantreisStand; slug: string }) {
+  const fasen = ['Verkopen', 'Starten', 'Samenwerken'] as const
   return (
     <a href={`/beheer/klanten/${slug}?tab=klantreis`} className="block rounded-xl bg-white p-6 shadow-sm hover:shadow-md">
       <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
-        <p className="text-xs text-gray-600">Klantreis</p>
-        <p className="text-sm">
-          Stap {stand.huidig.nr} · <span className="font-medium">{stand.huidig.titel}</span>
+        <p className="text-[17px] font-medium">{stand.huidig.titel}</p>
+        <p className="text-sm text-gray-600">
+          Stap {stapNummer(stand.huidig.nr)} van {stand.stappen.length}
         </p>
       </div>
-      <ol className="grid grid-cols-8 gap-1.5">
-        {stand.stappen.map((s) => {
-          const nu = s.nr === stand.huidig.nr
+      <div className="flex gap-3">
+        {fasen.map((fase) => {
+          const stappen = stand.stappen.filter((s) => s.fase === fase)
           return (
-            <li key={s.nr} title={`${s.nr} ${s.titel}`}>
-              <div
-                className={`h-2 rounded-full ${s.klaar ? 'bg-[#34C759]' : nu ? 'bg-jr-blue' : 'bg-gray-200'}`}
-              />
-              <p className={`mt-1.5 text-center text-[11px] ${nu ? 'text-jr-text font-semibold' : 'text-gray-500'}`}>{s.nr}</p>
-            </li>
+            <div key={fase} style={{ flexGrow: stappen.length, flexBasis: 0 }} className="min-w-0">
+              <ol className="flex gap-1">
+                {stappen.map((s) => {
+                  const nu = s.nr === stand.huidig.nr
+                  return (
+                    <li key={s.nr} title={s.titel} className="flex-1">
+                      <div className={`h-1.5 rounded-full ${s.klaar ? 'bg-[#34C759]' : nu ? 'bg-jr-blue' : 'bg-gray-200'}`} />
+                    </li>
+                  )
+                })}
+              </ol>
+              <p className={`mt-2 truncate text-xs ${stappen.some((s) => s.nr === stand.huidig.nr) ? 'text-jr-text font-medium' : 'text-gray-500'}`}>
+                {fase}
+              </p>
+            </div>
           )
         })}
-      </ol>
+      </div>
     </a>
   )
 }
@@ -55,13 +68,12 @@ export function KlantreisDetail({
     <div className="space-y-8">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <p className="text-sm text-gray-600">
-          {stand.gedaan} van de {stand.totaal} mijlpalen af. De stap waar de klant staat, rekent het portaal zelf uit: de eerste
-          stap met iets open.
+          {stand.gedaan} van de {stand.totaal} mijlpalen af. De klant staat bij de eerste stap waar nog iets open is.
         </p>
         {stand.huidig.nr !== '08' && (
           <ActionForm
             action={rondStapAf}
-            submitLabel="Bestaande klant: alles tot en met 07 af"
+            submitLabel="Bestaande klant? Vink stap 1 tot en met 7 af"
             submitClassName="border border-gray-300 text-gray-700 hover:bg-gray-50"
             resetOnSuccess={false}
             meldGelukt={false}
@@ -93,12 +105,12 @@ export function KlantreisDetail({
                           s.klaar ? 'bg-[#E6F7EB] text-[#1D7D3F]' : nu ? 'bg-jr-blue text-white' : 'bg-gray-100 text-gray-600'
                         }`}
                       >
-                        {s.nr}
+                        {s.klaar ? '✓' : stapNummer(s.nr)}
                       </span>
                       <span className="text-xs text-gray-600">{s.klaar ? 'Klaar' : nu ? 'Nu' : ''}</span>
                     </div>
                     <h3 className="text-[17px]">{s.titel}</h3>
-                    <p className="mt-1 mb-3 text-xs text-gray-600">Klaar als: {s.klaarAls}</p>
+                    <p className="mt-1 mb-3 text-[13px] text-gray-600">{s.klaarAls}</p>
                     <div className="-mx-2 space-y-0.5">
                       {s.mijlpalen.map((m) => (
                         <MijlpaalVink
@@ -109,12 +121,7 @@ export function KlantreisDetail({
                           sleutel={m.key}
                           gedaan={m.gedaanOp !== null}
                           label={m.label}
-                          onder={[
-                            m.document,
-                            m.gedaanOp ? `${formatDate(m.gedaanOp)}${m.door ? `, ${m.door}` : ''}` : null,
-                          ]
-                            .filter(Boolean)
-                            .join(' · ')}
+                          onder={m.gedaanOp ? `${formatDate(m.gedaanOp)}${m.door ? `, ${m.door}` : ''}` : ''}
                         />
                       ))}
                     </div>

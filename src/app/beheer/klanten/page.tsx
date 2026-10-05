@@ -2,7 +2,6 @@ import { redirect } from 'next/navigation'
 import { getSessionUser } from '@/lib/auth'
 import { listOrganizations } from '@/lib/admin'
 import {
-  getCrmCounts,
   getFilterKeuzes,
   filterKlantIds,
   organizationStatusLabels,
@@ -10,10 +9,13 @@ import {
 } from '@/lib/crm'
 import { GEZONDHEID_LABELS, GEZONDHEID_STIJLEN, REGIOS } from '@/lib/bedrijf-labels'
 import { AppShell } from '@/components/AppShell'
+import { Paneel, PaneelKop } from '@/components/Paneel'
+import { PaginaKop } from '@/components/PaginaKop'
 import { Avatar } from '@/components/Avatar'
 import { ActionForm, Field, Select } from '@/components/ActionForm'
 import { nieuweKlant } from '../actions'
-import { formatCents } from '@/lib/money'
+import { formatCents, formatEuro } from '@/lib/money'
+import { FilterBalk, Zoekveld } from '@/components/FilterBalk'
 import { getMaandbudgetPerKlant } from '@/lib/billing'
 import { getHuidigeStappen } from '@/lib/klantreis'
 import { metGeheugen } from '@/lib/cache'
@@ -60,9 +62,6 @@ export default async function BeheerPage({
   // null betekent: geen filter ingevuld, dus alles.
   const klanten = treffers === null ? alle : alle.filter((k) => treffers.includes(k.organization.id))
 
-  const crm = await metGeheugen('klanten:crmtellingen', () =>
-    getCrmCounts(alle.map((k) => k.organization.id)),
-  )
   const maandbudget = await metGeheugen('klanten:maandbudget', getMaandbudgetPerKlant)
   // Niet onthouden: wie net een mijlpaal afvinkt, wil de nieuwe stap meteen zien.
   const stappen = await getHuidigeStappen(alle.map((k) => k.organization.id))
@@ -71,23 +70,64 @@ export default async function BeheerPage({
 
   return (
     <AppShell user={user} actief="klanten">
-        <h1 className="mb-1 text-[28px] sm:text-[32px]">Klanten</h1>
-        <p className="mb-4 text-sm text-gray-600">
-          {klanten.length} {klanten.length === 1 ? 'klant' : 'klanten'}
-          {filtert && ` van ${alle.length}`} &middot; totaal openstaand budget{' '}
-          <span className="tabular">{formatCents(totaal)}</span>
-        </p>
+        <PaginaKop
+          titel="Klanten"
+          uitleg={
+            <>
+              {klanten.length} {klanten.length === 1 ? 'klant' : 'klanten'}
+              {filtert && ` van ${alle.length}`} &middot; totaal openstaand budget{' '}
+              <span className="tabular">{formatCents(totaal)}</span>
+            </>
+          }
+          acties={
+            <Paneel
+              knop="+ Klant toevoegen"
+              titel="Klant toevoegen"
+              uitleg="Alleen de naam is verplicht. Wat je nu al weet kun je meteen kwijt; de rest vul je aan op de klantpagina."
+            >
+              <ActionForm action={nieuweKlant} submitLabel="Klant aanmaken" className="grid gap-4 sm:grid-cols-2">
+                <PaneelKop>Het bedrijf</PaneelKop>
+                <div className="sm:col-span-2">
+                  <Field label="Klantnaam" name="naam" required placeholder="Hotel Voncken" />
+                </div>
+                <Select
+                  label="Status"
+                  name="status"
+                  defaultValue="client"
+                  options={Object.entries(organizationStatusLabels).map(([value, label]) => ({ value, label }))}
+                />
+                <Field label="Klantnummer" name="klantnummer" placeholder="672" />
+                <Field label="Branche" name="branche" placeholder="Horeca" />
+                <Select label="Regio" name="regio" options={[{ value: '', label: 'Niet ingevuld' }, ...REGIOS.map((r) => ({ value: r, label: r }))]} />
+                <Field label="Plaats" name="plaats" placeholder="Valkenburg" />
+                <Field label="Website" name="website" placeholder="klant.nl" />
+                <Field label="KvK-nummer" name="kvk" />
+                {keuzes.managers.length > 0 && (
+                  <Select
+                    label="Marketingmanager"
+                    name="manager"
+                    options={[{ value: '', label: 'Nog niet toegewezen' }, ...keuzes.managers.map((m) => ({ value: m.id, label: m.naam }))]}
+                    hint="Wordt meteen eerste aanspreekpartner."
+                  />
+                )}
+                <PaneelKop>Eerste contactpersoon</PaneelKop>
+                <div className="grid items-end gap-3 sm:col-span-2 sm:grid-cols-[1fr_130px_1fr]">
+                  <Field label="Voornaam" name="contactVoornaam" placeholder="Marieke" />
+                  <Field label="Tussenvoegsel" name="contactTussenvoegsel" placeholder="van der" />
+                  <Field label="Achternaam" name="contactAchternaam" placeholder="Voncken" />
+                </div>
+                <Field label="Functie" name="contactFunctie" placeholder="Eigenaar" />
+                <Field label="E-mailadres" name="contactEmail" type="email" />
+                <Field label="Mobiel" name="contactMobiel" />
+                <PaneelKop>Wallet</PaneelKop>
+                <Field label="Naam eerste wallet" name="walletNaam" placeholder="Marketing abonnement" hint="Leeg laten geeft: Marketing abonnement" />
+              </ActionForm>
+            </Paneel>
+          }
+        />
 
-        {/* Een gewoon formulier met GET: de filters staan in de URL, dus je
-            kunt een selectie bewaren of naar een collega sturen. */}
-        <form method="get" className="mb-6 flex flex-wrap items-end gap-2">
-          <input
-            type="search"
-            name="zoek"
-            defaultValue={filter.zoek}
-            placeholder="Naam, plaats, KvK of kernactiviteit"
-            className="focus:border-jr-blue w-full max-w-xs rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
-          />
+        <FilterBalk wisHref={filtert ? '/beheer/klanten' : null}>
+          <Zoekveld waarde={filter.zoek} placeholder="Zoek op naam, plaats of KvK" />
           <FilterKeuze naam="status" waarde={filter.status} leeg="Alle statussen"
             opties={Object.entries(organizationStatusLabels).map(([v, l]) => ({ value: v, label: l }))} />
           <FilterKeuze naam="branche" waarde={filter.branche} leeg="Alle branches"
@@ -98,19 +138,7 @@ export default async function BeheerPage({
             opties={Object.entries(GEZONDHEID_LABELS).map(([v, l]) => ({ value: v, label: l }))} />
           <FilterKeuze naam="manager" waarde={filter.manager} leeg="Alle managers"
             opties={keuzes.managers.map((m) => ({ value: m.id, label: m.naam }))} />
-
-          <button
-            type="submit"
-            className="bg-jr-btn hover:bg-jr-btnhover rounded-lg px-4 py-2 text-sm text-white"
-          >
-            Filteren
-          </button>
-          {filtert && (
-            <a href="/beheer/klanten" className="rounded-lg px-3 py-2 text-sm text-gray-600 hover:bg-gray-100">
-              Wissen
-            </a>
-          )}
-        </form>
+        </FilterBalk>
 
         {/* Staat alles op nul, dan is er nog nooit geboekt. Dat is bij het
             invullen van een vers systeem de normale situatie, en dan is een
@@ -135,13 +163,12 @@ export default async function BeheerPage({
           </p>
         )}
 
-        <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
+        <div>
           <div>
             {klanten.length === 0 ? (
               <div className="rounded-xl bg-white p-8 text-center shadow-sm">
                 <p className="text-sm text-gray-600">
-                  Er zijn nog geen klanten. Voeg de eerste toe, of haal ze op met de
-                  ClickUp-sync.
+                  {filtert ? 'Geen klanten die hierbij passen.' : 'Er zijn nog geen klanten. Voeg de eerste toe, of haal ze op met de ClickUp-sync.'}
                 </p>
               </div>
             ) : (
@@ -150,7 +177,7 @@ export default async function BeheerPage({
                   <li key={k.organization.id}>
                     <a
                       href={`/beheer/klanten/${k.organization.slug}`}
-                      className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-3 transition-colors hover:bg-gray-50 sm:px-6"
+                      className="flex items-center gap-4 px-4 py-3.5 transition-colors hover:bg-gray-50 sm:px-6"
                     >
                       {/* Het logo vierkant en niet rond: een bedrijfslogo
                           heeft zelden een rond formaat en wordt anders aan
@@ -182,7 +209,7 @@ export default async function BeheerPage({
                                   : 'bg-[#E6F7EB] text-[#1D7D3F]'
                             return (
                               <span className={`rounded-full px-2 py-0.5 text-xs ${kleur}`} title={stap.titel}>
-                                {stap.nr} · {stap.titel}
+                                {stap.titel}
                               </span>
                             )
                           })()}
@@ -194,26 +221,12 @@ export default async function BeheerPage({
                             </span>
                           )}
                         </div>
-                        <p className="mt-0.5 text-xs text-gray-600">
-                          {[
-                            k.organization.industry,
-                            `${k.walletCount} ${k.walletCount === 1 ? 'wallet' : 'wallets'}`,
-                            (() => {
-                              const c = crm.get(k.organization.id)
-                              if (!c) return null
-                              const delen = []
-                              if (c.contacts > 0) delen.push(`${c.contacts} contact${c.contacts === 1 ? '' : 'en'}`)
-                              if (c.partners > 0) delen.push(`${c.partners} partner${c.partners === 1 ? '' : 's'}`)
-                              if (c.accounts > 0) delen.push(`${c.accounts} account${c.accounts === 1 ? '' : 's'}`)
-                              return delen.join(' · ') || null
-                            })(),
-                          ]
-                            .filter(Boolean)
-                            .join(' · ')}
+                        <p className="mt-0.5 text-[13px] text-gray-600">
+                          {[k.organization.industry, k.organization.city].filter(Boolean).join(' · ')}
                           {k.clientUserCount === 0 && (
-                            <span className="text-jr-orange">
-                              {' '}
-                              &middot; nog niemand kan inloggen
+                            <span className="text-[#94590A]">
+                              {(k.organization.industry || k.organization.city) && ' · '}
+                              Kan nog niet inloggen
                             </span>
                           )}
                         </p>
@@ -221,8 +234,8 @@ export default async function BeheerPage({
                       <div className="tabular shrink-0 text-right">
                         <p className="text-xs text-gray-600">
                           {maandbudget.has(k.organization.id)
-                            ? `${formatCents(maandbudget.get(k.organization.id) ?? 0)} per maand`
-                            : 'geen abonnement'}
+                            ? `${formatEuro(maandbudget.get(k.organization.id) ?? 0)} per maand`
+                            : 'Geen abonnement'}
                         </p>
                         <p
                           className={`text-[15px] font-semibold ${
@@ -239,71 +252,6 @@ export default async function BeheerPage({
             )}
           </div>
 
-          <aside className="rounded-xl bg-white p-6 shadow-sm">
-            <h2 className="mb-3 text-base">Klant toevoegen</h2>
-            <p className="mb-3 text-xs text-gray-500">
-              Alleen de naam is verplicht. Wat je nu al weet kun je meteen kwijt; de rest
-              vul je aan op de klantpagina.
-            </p>
-            <ActionForm action={nieuweKlant} submitLabel="Klant aanmaken">
-              <Field label="Klantnaam" name="naam" required placeholder="Hotel Voncken" />
-              <Select
-                label="Status"
-                name="status"
-                defaultValue="client"
-                options={Object.entries(organizationStatusLabels).map(([value, label]) => ({
-                  value,
-                  label,
-                }))}
-              />
-              <Field label="Klantnummer" name="klantnummer" placeholder="672" />
-              <Field label="Branche" name="branche" placeholder="Horeca" />
-              <Select
-                label="Regio"
-                name="regio"
-                options={[
-                  { value: '', label: 'Niet ingevuld' },
-                  ...REGIOS.map((r) => ({ value: r, label: r })),
-                ]}
-              />
-              <Field label="Plaats" name="plaats" placeholder="Valkenburg" />
-              <Field label="Website" name="website" placeholder="klant.nl" />
-              <Field label="KvK-nummer" name="kvk" />
-
-              {keuzes.managers.length > 0 && (
-                <Select
-                  label="Marketing manager"
-                  name="manager"
-                  options={[
-                    { value: '', label: 'Nog niet toegewezen' },
-                    ...keuzes.managers.map((m) => ({ value: m.id, label: m.naam })),
-                  ]}
-                  hint="Wordt meteen eerste aanspreekpartner, dan staat hij niet in de restkolom."
-                />
-              )}
-
-              <div className="border-t border-gray-200 pt-3">
-                <p className="mb-2 text-xs font-bold text-gray-600">Eerste contactpersoon</p>
-                <div className="space-y-3">
-                  <div className="grid gap-2 sm:grid-cols-[1fr_4rem_1fr]">
-                    <Field label="Voornaam" name="contactVoornaam" />
-                    <Field label="Tussen" name="contactTussenvoegsel" />
-                    <Field label="Achternaam" name="contactAchternaam" />
-                  </div>
-                  <Field label="Functie" name="contactFunctie" placeholder="Eigenaar" />
-                  <Field label="E-mailadres" name="contactEmail" type="email" />
-                  <Field label="Mobiel" name="contactMobiel" />
-                </div>
-              </div>
-
-              <Field
-                label="Naam eerste wallet"
-                name="walletNaam"
-                placeholder="Marketing abonnement"
-                hint="Leeg laten geeft: Marketing abonnement"
-              />
-            </ActionForm>
-          </aside>
         </div>
     </AppShell>
   )
@@ -329,7 +277,7 @@ function FilterKeuze({
       name={naam}
       defaultValue={waarde}
       aria-label={leeg}
-      className="focus:border-jr-blue rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
+      className="min-h-11 rounded-full border border-gray-300 bg-white py-2.5 pr-9 pl-4 text-[15px] outline-none hover:border-gray-400"
     >
       <option value="">{leeg}</option>
       {opties.map((o) => (

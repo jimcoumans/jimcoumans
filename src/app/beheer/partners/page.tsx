@@ -4,6 +4,7 @@ import { listPartners, listOrganizationsPerPartner, partnerTypeLabels } from '@/
 import { listContactenPerPartner } from '@/lib/crm-personen'
 import { getPartnerFigures } from '@/lib/quotes'
 import { AppShell } from '@/components/AppShell'
+import { Paneel } from '@/components/Paneel'
 import { ActionForm, Field, Select, Uitklap } from '@/components/ActionForm'
 import {
   nieuwePartner,
@@ -13,7 +14,12 @@ import {
   nieuwPartnerContact,
   verwijderPartnerContact,
 } from '../crm-actions'
-import { formatCents } from '@/lib/money'
+import { formatCents, formatEuro } from '@/lib/money'
+import { Menu } from '@/components/Menu'
+import { Avatar } from '@/components/Avatar'
+
+const MENU_KNOP = '!min-h-0 w-full !rounded-lg !px-3 !py-2 text-left !font-normal text-jr-text hover:bg-gray-100'
+const MENU_KNOP_GEVAAR = '!min-h-0 w-full !rounded-lg !px-3 !py-2 text-left !font-normal text-[#C02A22] hover:bg-[#FDECEA]'
 import type { Contact, Partner } from '@/db/schema'
 
 /**
@@ -164,7 +170,42 @@ export default async function PartnersPage() {
 
   return (
     <AppShell user={user} actief="partners">
-        <h1 className="mb-1 text-[28px] sm:text-[32px]">Partners</h1>
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <h1 className="mb-1 text-[28px] sm:text-[32px]">Partners</h1>
+          <Paneel
+            knop="+ Partner toevoegen"
+            titel="Partner toevoegen"
+          >
+            <ActionForm action={nieuwePartner} submitLabel="Partner aanmaken">
+              <Field label="Naam" name="naam" required placeholder="Studio Lens" />
+              <Select
+                label="Soort"
+                name="type"
+                defaultValue="photographer"
+                options={Object.entries(partnerTypeLabels).map(([value, label]) => ({ value, label }))}
+              />
+              <Field label="Contactpersoon" name="contactpersoon" placeholder="Tom Lens" />
+              <Field label="E-mailadres" name="email" type="email" placeholder="tom@studiolens.nl" />
+              <Field label="Telefoon" name="telefoon" placeholder="06 12 34 56 78" />
+              <Field label="Website" name="website" placeholder="studiolens.nl" />
+              <Field label="Uurtarief" name="uurtarief" placeholder="95,00" />
+              <Field label="Dagtarief" name="dagtarief" placeholder="650,00" />
+              <Field
+                label="Betaaltermijn in dagen"
+                name="betaaltermijn"
+                type="number"
+                placeholder="30"
+              />
+              <Field
+                label="Tariefafspraken"
+                name="afspraken"
+                placeholder="Reiskosten binnen Limburg inbegrepen"
+                hint="Staffels, voorwaarden, wat er wel en niet bij zit."
+              />
+              <Field label="Interne notities" name="notities" />
+            </ActionForm>
+          </Paneel>
+        </div>
         <p className="mb-6 text-sm text-gray-600">
           De externen met wie we werken, wat we met ze hebben afgesproken en bij welke
           klanten ze horen.
@@ -237,7 +278,7 @@ export default async function PartnersPage() {
           </section>
         )}
 
-        <div className="grid gap-8 lg:grid-cols-[1fr_330px]">
+        <div>
           <div>
             {actief.length === 0 ? (
               <div className="rounded-xl bg-white p-8 text-center shadow-sm">
@@ -246,52 +287,37 @@ export default async function PartnersPage() {
                 </p>
               </div>
             ) : (
-              <ul className="space-y-3">
+              <ul className="divide-y divide-gray-150 rounded-xl bg-white shadow-sm">
                 {actief.map((p) => {
                   const klanten = perPartner.get(p.id) ?? []
                   return (
-                    <li key={p.id} className="rounded-xl bg-white p-6 shadow-sm">
-                      <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
-                        <div className="min-w-0 flex-1">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <h2 className="text-base">{p.name}</h2>
-                            <span className="bg-jr-lightblue text-jr-deepblue rounded-full px-2 py-0.5 text-xs">
-                              {partnerTypeLabels[p.type]}
-                            </span>
-                          </div>
-
-                          <p className="mt-1 text-xs text-gray-600">
-                            {p.contactName && <>{p.contactName} &middot; </>}
-                            {p.email && <>{p.email} &middot; </>}
-                            {p.phone}
-                            {!p.contactName && !p.email && !p.phone && 'geen contactgegevens'}
-                          </p>
-
-                          {p.agreementNotes && (
-                            <p className="mt-2 text-sm text-gray-600">{p.agreementNotes}</p>
-                          )}
-
+                    <li key={p.id} className="flex items-start gap-4 py-4 pr-3 pl-6">
+                      <Avatar naam={p.name} imageId={null} maat={44} rond={false} />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[15px] font-medium">{p.name}</p>
+                        <p className="mt-0.5 text-[13px] text-gray-600">
+                          {[partnerTypeLabels[p.type], p.contactName, p.email, p.phone].filter(Boolean).join(' · ')}
+                        </p>
+                        {p.agreementNotes && <p className="mt-1 text-[13px] text-gray-600">{p.agreementNotes}</p>}
                           {(() => {
                             const c = perPartnerCijfers.get(p.id)
                             if (!c || c.quoteCount === 0) return null
                             return (
-                              <p className="tabular mt-2 text-xs text-gray-600">
-                                {c.quoteCount} {c.quoteCount === 1 ? 'offerte' : 'offertes'},{' '}
-                                {c.acceptedCount} akkoord &middot; {formatCents(c.revenueCents)} omzet
-                                &middot; {formatCents(c.partnerCostCents)} naar hen &middot;{' '}
-                                {formatCents(c.marginCents)} marge
+                              <p className="tabular mt-1 text-[13px] text-gray-600">
+                                {c.acceptedCount} van {c.quoteCount} {c.quoteCount === 1 ? 'offerte' : 'offertes'} akkoord &middot;{' '}
+                                {formatEuro(c.revenueCents)} omzet, {formatEuro(c.marginCents)} marge
                               </p>
                             )
                           })()}
 
                           {klanten.length > 0 ? (
-                            <p className="mt-2.5 text-xs text-gray-600">
+                            <p className="mt-1 text-[13px] text-gray-600">
                               {klanten.map((k, i) => (
                                 <span key={k.link.id}>
                                   {i > 0 && ' · '}
                                   <a
                                     href={`/beheer/klanten/${k.organizationSlug}`}
-                                    className="hover:text-jr-blue"
+                                    className="text-jr-link hover:underline"
                                   >
                                     {k.link.role} bij {k.organizationName}
                                   </a>
@@ -299,84 +325,48 @@ export default async function PartnersPage() {
                               ))}
                             </p>
                           ) : (
-                            <p className="mt-2.5 text-xs text-gray-500">
-                              nog niet aan een klant gekoppeld
-                            </p>
+                            <p className="mt-1 text-[13px] text-gray-500">Nog bij geen klant</p>
                           )}
-                        </div>
-
-                        <div className="shrink-0 text-right">
-                          {p.hourlyRateCents !== null && (
-                            <p className="tabular text-base">
-                              {formatCents(p.hourlyRateCents)}
-                              <span className="text-xs text-gray-600"> /uur</span>
-                            </p>
-                          )}
-                          {p.dayRateCents !== null && (
-                            <p className="tabular text-sm text-gray-600">
-                              {formatCents(p.dayRateCents)}
-                              <span className="text-xs"> /dag</span>
-                            </p>
-                          )}
-                          {p.hourlyRateCents === null && p.dayRateCents === null && (
-                            <p className="text-xs text-gray-500">geen tarief vastgelegd</p>
-                          )}
-                          {p.paymentTermDays !== null && (
-                            <p className="mt-1 text-xs text-gray-500">
-                              betaaltermijn {p.paymentTermDays} dagen
-                            </p>
-                          )}
-                        </div>
+                        {p.notes && <p className="mt-1 text-[13px] text-gray-500">{p.notes}</p>}
                       </div>
 
-                      {p.notes && (
-                        <p className="mt-3 border-t border-gray-200 pt-3 text-xs text-gray-500">
-                          {p.notes}
-                        </p>
-                      )}
+                      <div className="shrink-0 text-right">
+                        {p.hourlyRateCents !== null && (
+                          <p className="tabular text-[15px]">
+                            {formatEuro(p.hourlyRateCents)} <span className="text-xs text-gray-500">per uur</span>
+                          </p>
+                        )}
+                        {p.dayRateCents !== null && (
+                          <p className="tabular text-[13px] text-gray-600">
+                            {formatEuro(p.dayRateCents)} <span className="text-xs text-gray-500">per dag</span>
+                          </p>
+                        )}
+                        {p.hourlyRateCents === null && p.dayRateCents === null && <p className="text-xs text-gray-500">Geen tarief</p>}
+                        {p.paymentTermDays !== null && <p className="text-xs text-gray-500">Betalen binnen {p.paymentTermDays} dagen</p>}
+                      </div>
 
-                      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-gray-200 pt-3">
-                        <ActionForm
-                          action={wisselPartnerActief}
-                          submitLabel="Op non-actief zetten"
-                          submitClassName="text-gray-600 hover:bg-gray-100 !px-2 !py-1 !text-xs"
-                          resetOnSuccess={false}
-                          className=""
+                      <Menu>
+                        <Paneel knop="Gegevens en tarieven" stijl="menu" titel={p.name}>
+                          <PartnerVelden partner={p} />
+                        </Paneel>
+                        <Paneel
+                          knop={`Contactpersonen${(contactenPerPartner.get(p.id) ?? []).length ? ` (${(contactenPerPartner.get(p.id) ?? []).length})` : ''}`}
+                          stijl="menu"
+                          titel={`Contactpersonen bij ${p.name}`}
+                          sluitNaOpslaan={false}
                         >
+                          <PartnerContacten partnerId={p.id} contacten={contactenPerPartner.get(p.id) ?? []} />
+                        </Paneel>
+                        <ActionForm action={wisselPartnerActief} submitLabel="Niet meer actief" submitClassName={MENU_KNOP} resetOnSuccess={false} meldGelukt={false} className="">
                           <input type="hidden" name="partnerId" value={p.id} />
                           <input type="hidden" name="actief" value="nee" />
                         </ActionForm>
-
                         {p.clientCount === 0 && (
-                          <ActionForm
-                            action={verwijderPartner}
-                            submitLabel="Verwijderen"
-                            submitClassName="text-gray-600 hover:bg-gray-100 !px-2 !py-1 !text-xs"
-                            resetOnSuccess={false}
-                            className=""
-                          >
+                          <ActionForm action={verwijderPartner} submitLabel="Verwijderen" submitClassName={MENU_KNOP_GEVAAR} resetOnSuccess={false} meldGelukt={false} className="">
                             <input type="hidden" name="partnerId" value={p.id} />
                           </ActionForm>
                         )}
-                      </div>
-
-                      <Uitklap
-                        label={(() => {
-                          const n = (contactenPerPartner.get(p.id) ?? []).length
-                          return n === 0
-                            ? 'Contactpersonen'
-                            : `Contactpersonen (${n})`
-                        })()}
-                      >
-                        <PartnerContacten
-                          partnerId={p.id}
-                          contacten={contactenPerPartner.get(p.id) ?? []}
-                        />
-                      </Uitklap>
-
-                      <Uitklap label="Gegevens en tarieven wijzigen">
-                        <PartnerVelden partner={p} />
-                      </Uitklap>
+                      </Menu>
                     </li>
                   )
                 })}
@@ -418,37 +408,6 @@ export default async function PartnersPage() {
             )}
           </div>
 
-          <aside className="rounded-xl bg-white p-6 shadow-sm lg:sticky lg:top-4 lg:self-start">
-            <h2 className="mb-3 text-base">Partner toevoegen</h2>
-            <ActionForm action={nieuwePartner} submitLabel="Partner aanmaken">
-              <Field label="Naam" name="naam" required placeholder="Studio Lens" />
-              <Select
-                label="Soort"
-                name="type"
-                defaultValue="photographer"
-                options={Object.entries(partnerTypeLabels).map(([value, label]) => ({ value, label }))}
-              />
-              <Field label="Contactpersoon" name="contactpersoon" placeholder="Tom Lens" />
-              <Field label="E-mailadres" name="email" type="email" placeholder="tom@studiolens.nl" />
-              <Field label="Telefoon" name="telefoon" placeholder="06 12 34 56 78" />
-              <Field label="Website" name="website" placeholder="studiolens.nl" />
-              <Field label="Uurtarief" name="uurtarief" placeholder="95,00" />
-              <Field label="Dagtarief" name="dagtarief" placeholder="650,00" />
-              <Field
-                label="Betaaltermijn in dagen"
-                name="betaaltermijn"
-                type="number"
-                placeholder="30"
-              />
-              <Field
-                label="Tariefafspraken"
-                name="afspraken"
-                placeholder="Reiskosten binnen Limburg inbegrepen"
-                hint="Staffels, voorwaarden, wat er wel en niet bij zit."
-              />
-              <Field label="Interne notities" name="notities" />
-            </ActionForm>
-          </aside>
         </div>
     </AppShell>
   )

@@ -94,7 +94,7 @@ export function QuoteLineForm({
       <input type="hidden" name="soort" value={soort} />
 
       <div>
-        <span className="mb-1 block text-xs text-gray-600">Soort regel</span>
+        <span className="text-jr-text mb-1.5 block text-[13px] font-medium">Soort regel</span>
         <div className="grid grid-cols-2 gap-1.5">
           {(Object.keys(lineKindLabels) as Soort[]).map((k) => (
             <button
@@ -121,7 +121,7 @@ export function QuoteLineForm({
           </p>
         ) : (
           <div>
-            <label htmlFor="regel-dienst" className="mb-1 block text-xs text-gray-600">
+            <label htmlFor="regel-dienst" className="text-jr-text mb-1.5 block text-[13px] font-medium">
               Dienst
             </label>
             <select
@@ -129,7 +129,7 @@ export function QuoteLineForm({
               name="serviceId"
               value={dienstId}
               onChange={(e) => kiesDienst(e.target.value)}
-              className="focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
+              className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
             >
               {diensten.map((d) => (
                 <option key={d.id} value={d.id}>
@@ -178,7 +178,7 @@ export function QuoteLineForm({
       />
 
       <div>
-        <label htmlFor="regel-aantal" className="mb-1 block text-xs text-gray-600">
+        <label htmlFor="regel-aantal" className="text-jr-text mb-1.5 block text-[13px] font-medium">
           Aantal
         </label>
         <input
@@ -187,12 +187,12 @@ export function QuoteLineForm({
           value={aantal}
           onChange={(e) => setAantal(e.target.value)}
           placeholder="1"
-          className="focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
+          className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
         />
       </div>
 
       <div>
-        <label htmlFor="regel-prijs" className="mb-1 block text-xs text-gray-600">
+        <label htmlFor="regel-prijs" className="text-jr-text mb-1.5 block text-[13px] font-medium">
           {soort === 'discount' ? 'Korting per stuk' : 'Prijs per stuk voor de klant'}
         </label>
         <input
@@ -201,7 +201,7 @@ export function QuoteLineForm({
           value={prijs}
           onChange={(e) => setPrijs(e.target.value)}
           placeholder="2.400,00"
-          className="focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
+          className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
         />
         {soort === 'discount' && (
           <p className="mt-1 text-xs text-gray-500">
@@ -212,9 +212,9 @@ export function QuoteLineForm({
 
       {soort !== 'discount' && (
         <div>
-          <label htmlFor="regel-kostprijs" className="mb-1 block text-xs text-gray-600">
+          <label htmlFor="regel-kostprijs" className="text-jr-text mb-1.5 block text-[13px] font-medium">
             {soort === 'partner' ? 'Wat de partner ons rekent' : 'Kostprijs per stuk'}
-            <span className="text-gray-400"> (optioneel)</span>
+            <span className="font-normal text-gray-500"> (optioneel)</span>
           </label>
           <input
             id="regel-kostprijs"
@@ -222,7 +222,7 @@ export function QuoteLineForm({
             value={kostprijs}
             onChange={(e) => setKostprijs(e.target.value)}
             placeholder="1.800,00"
-            className="focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
+            className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
           />
           <p className="mt-1 text-xs text-gray-500">
             Alleen voor ons. De klant ziet dit nooit.

@@ -15,7 +15,8 @@ import { metGeheugen } from '@/lib/cache'
 import { telAchterstand } from '@/lib/pijplijn'
 import { telAchterstandWerving } from '@/lib/werving'
 import { MAANDNAMEN } from '@/lib/dates'
-import { formatCents } from '@/lib/money'
+import { formatCents, formatEuro } from '@/lib/money'
+import { factuurTitel } from '@/lib/weergave'
 import { formatDate, formatRelative } from '@/lib/dates'
 
 /**
@@ -135,7 +136,7 @@ export default async function DashboardPage() {
   const teLaat = openstaand.filter((r) => r.invoice.status === 'overdue')
   for (const r of teLaat) {
     aandacht.push({
-      tekst: `Factuur ${r.invoice.number} van ${r.organizationName} staat te lang open`,
+      tekst: `${factuurTitel(r.invoice)} van ${r.organizationName} staat te lang open`,
       href: `/beheer/klanten/${r.organizationSlug}`,
     })
   }
@@ -203,20 +204,20 @@ export default async function DashboardPage() {
       <section className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Tegel
           label="Walletwaarde per maand"
-          waarde={formatCents(maandbudget.budgetCents)}
-          onder={<p>{formatCents(maandbudget.budgetCents * 12)} per jaar</p>}
+          waarde={formatEuro(maandbudget.budgetCents)}
+          onder={<p>{formatEuro(maandbudget.budgetCents * 12)} per jaar</p>}
           accent
         />
         <Tegel
           label="Abonnementsomzet per maand"
-          waarde={formatCents(mrr)}
+          waarde={formatEuro(mrr)}
           onder={
             <>
-              <p>{formatCents(mrr * 12)} per jaar</p>
+              <p>{formatEuro(mrr * 12)} per jaar</p>
               {maandbudget.kortingCents > 0 && (
                 <p>
                   plus {formatCents(maandbudget.kortingCents)} korting ={' '}
-                  {formatCents(maandbudget.budgetCents)} walletwaarde
+                  {formatEuro(maandbudget.budgetCents)} walletwaarde
                 </p>
               )}
             </>
@@ -230,7 +231,7 @@ export default async function DashboardPage() {
         />
         <Tegel
           label="Offertes open"
-          waarde={formatCents(quoteFigures.openValueCents)}
+          waarde={formatEuro(quoteFigures.openValueCents)}
           onder={`${quoteFigures.openCount} ${quoteFigures.openCount === 1 ? 'voorstel' : 'voorstellen'}${
             quoteFigures.winRatePercent !== null ? ` · ${quoteFigures.winRatePercent}% scoort` : ''
           }`}
@@ -375,13 +376,13 @@ export default async function DashboardPage() {
               {openstaand.slice(0, 5).map((r) => (
                 <li key={r.invoice.id}>
                   <a
-                    href={`/beheer/klanten/${r.organizationSlug}`}
+                    href={`/beheer/klanten/${r.organizationSlug}?tab=budget`}
                     className="flex items-start justify-between gap-3 px-4 py-3 transition-colors hover:bg-gray-50 sm:px-6"
                   >
                     <div className="min-w-0">
                       <p className="text-sm">{r.organizationName}</p>
                       <p className="mt-0.5 text-xs text-gray-600">
-                        {r.invoice.number} &middot; {formatDate(r.invoice.issuedOn)}
+                        {factuurTitel(r.invoice)} &middot; {formatDate(r.invoice.issuedOn)}
                         {r.invoice.status === 'overdue' && (
                           <span className="text-jr-red"> &middot; te laat</span>
                         )}

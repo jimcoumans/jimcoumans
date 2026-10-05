@@ -8,10 +8,12 @@ import {
   marginPercent,
 } from '@/lib/services'
 import { AppShell } from '@/components/AppShell'
+import { Paneel } from '@/components/Paneel'
 import { ActionForm, Field } from '@/components/ActionForm'
 import { nieuweDienst, wijzigDienst, wisselDienstActief } from '../service-actions'
-import { formatCents } from '@/lib/money'
+import { formatEuro } from '@/lib/money'
 import { unitLabels } from '@/lib/quantity'
+import { Menu } from '@/components/Menu'
 
 /** De dienstencatalogus: wat we leveren en wat het kost. */
 export default async function DienstenPage() {
@@ -25,59 +27,25 @@ export default async function DienstenPage() {
 
   return (
     <AppShell user={user} actief="diensten">
-        <h1 className="mb-1 text-[28px] sm:text-[32px]">Diensten</h1>
-        <p className="mb-6 text-sm text-gray-600">
-          {actief.length} actieve {actief.length === 1 ? 'dienst' : 'diensten'}. Het tarief
-          hier is het tarief van nu; bestaande boekingen houden het tarief van hun eigen
-          moment.
-        </p>
-
-        <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
-          <div className="space-y-8">
-            {actief.length === 0 ? (
-              <div className="rounded-xl bg-white p-8 text-center shadow-sm">
-                <p className="text-sm text-gray-600">
-                  Nog geen diensten. Voeg je eerste product toe, bijvoorbeeld
-                  &ldquo;Social media post&rdquo; van &euro; 100.
-                </p>
-              </div>
-            ) : (
-              <ul className="space-y-3">
-                {actief.map((dienst) => (
-                  <DienstKaart key={dienst.id} dienst={dienst} />
-                ))}
-              </ul>
-            )}
-
-            {inactief.length > 0 && (
-              <section>
-                <h2 className="mb-3 text-sm text-gray-600">
-                  Niet meer actief ({inactief.length})
-                </h2>
-                <ul className="space-y-3">
-                  {inactief.map((dienst) => (
-                    <DienstKaart key={dienst.id} dienst={dienst} />
-                  ))}
-                </ul>
-              </section>
-            )}
-          </div>
-
-          <aside className="rounded-xl bg-white p-6 shadow-sm lg:sticky lg:top-4 lg:self-start">
-            <h2 className="mb-3 text-base">Dienst toevoegen</h2>
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <h1 className="mb-1 text-[28px] sm:text-[32px]">Diensten</h1>
+          <Paneel
+            knop="+ Dienst toevoegen"
+            titel="Dienst toevoegen"
+          >
             <ActionForm action={nieuweDienst} submitLabel="Dienst aanmaken">
               <Field label="Naam" name="naam" required placeholder="Social media post" />
               <Field label="Verkooptarief" name="tarief" required placeholder="100,00" />
 
               <div>
-                <label htmlFor="eenheid" className="mb-1 block text-xs text-gray-600">
+                <label htmlFor="eenheid" className="text-jr-text mb-1.5 block text-[13px] font-medium">
                   Eenheid
                 </label>
                 <select
                   id="eenheid"
                   name="eenheid"
                   defaultValue="piece"
-                  className="focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
+                  className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
                 >
                   {Object.entries(unitLabels).map(([value, label]) => (
                     <option key={value} value={value}>
@@ -95,14 +63,14 @@ export default async function DienstenPage() {
               />
 
               <div>
-                <label htmlFor="productgroep" className="mb-1 block text-xs text-gray-600">
+                <label htmlFor="productgroep" className="text-jr-text mb-1.5 block text-[13px] font-medium">
                   Productgroep <span className="text-gray-400">(optioneel)</span>
                 </label>
                 <select
                   id="productgroep"
                   name="productgroep"
                   defaultValue=""
-                  className="focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
+                  className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
                 >
                   <option value="">Geen</option>
                   {PRODUCTGROEPEN.map((p) => (
@@ -114,14 +82,14 @@ export default async function DienstenPage() {
               </div>
 
               <div>
-                <label htmlFor="afdeling" className="mb-1 block text-xs text-gray-600">
+                <label htmlFor="afdeling" className="text-jr-text mb-1.5 block text-[13px] font-medium">
                   Afdeling <span className="text-gray-400">(optioneel)</span>
                 </label>
                 <select
                   id="afdeling"
                   name="afdeling"
                   defaultValue=""
-                  className="focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
+                  className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
                 >
                   <option value="">Geen</option>
                   {AFDELINGEN.map((a) => (
@@ -147,7 +115,55 @@ export default async function DienstenPage() {
               />
               <Field label="Interne notities" name="notities" />
             </ActionForm>
-          </aside>
+          </Paneel>
+        </div>
+        <p className="mb-6 text-sm text-gray-600">
+          {actief.length} actieve {actief.length === 1 ? 'dienst' : 'diensten'}. Het tarief
+          hier is het tarief van nu; bestaande boekingen houden het tarief van hun eigen
+          moment.
+        </p>
+
+        <div>
+          <div className="space-y-8">
+            {actief.length === 0 ? (
+              <div className="rounded-xl bg-white p-8 text-center shadow-sm">
+                <p className="text-sm text-gray-600">
+                  Nog geen diensten. Voeg je eerste product toe, bijvoorbeeld
+                  &ldquo;Social media post&rdquo; van &euro; 100.
+                </p>
+              </div>
+            ) : (
+              // Per productgroep, zoals je een catalogus leest; de groep
+              // staat dan als kop boven de lijst in plaats van als label
+              // achter elke regel.
+              [...new Set(actief.map((d) => d.category ?? 'Overig'))].map((groep) => (
+                <section key={groep}>
+                  <h2 className="mb-2 px-1 text-[17px]">{groep}</h2>
+                  <ul className="divide-y divide-gray-150 rounded-xl bg-white shadow-sm">
+                    {actief
+                      .filter((d) => (d.category ?? 'Overig') === groep)
+                      .map((dienst) => (
+                        <DienstKaart key={dienst.id} dienst={dienst} />
+                      ))}
+                  </ul>
+                </section>
+              ))
+            )}
+
+            {inactief.length > 0 && (
+              <section>
+                <h2 className="mb-3 text-sm text-gray-600">
+                  Niet meer actief ({inactief.length})
+                </h2>
+                <ul className="divide-y divide-gray-150 rounded-xl bg-white shadow-sm">
+                  {inactief.map((dienst) => (
+                    <DienstKaart key={dienst.id} dienst={dienst} />
+                  ))}
+                </ul>
+              </section>
+            )}
+          </div>
+
         </div>
     </AppShell>
   )
@@ -162,67 +178,47 @@ function DienstKaart({
   const margePct = marginPercent(dienst)
 
   return (
-    <li className={`rounded-xl bg-white p-6 shadow-sm ${dienst.active ? '' : 'opacity-60'}`}>
-      <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <h3 className="text-base">{dienst.name}</h3>
-            {dienst.code && (
-              <span className="rounded bg-gray-100 px-1.5 py-0.5 text-xs text-gray-600">
-                {dienst.code}
-              </span>
-            )}
-            {dienst.category && (
-              <span className="bg-jr-lightblue text-jr-deepblue rounded px-1.5 py-0.5 text-xs">
-                {dienst.category}
-              </span>
-            )}
-            {!dienst.active && (
-              <span className="text-jr-orange rounded bg-gray-100 px-1.5 py-0.5 text-xs">
-                inactief
-              </span>
-            )}
-          </div>
-
-          {dienst.description && (
-            <p className="mt-1 text-sm text-gray-600">{dienst.description}</p>
-          )}
-
-          <p className="mt-1.5 text-xs text-gray-600">
-            {dienst.department && <>{dienst.department} &middot; </>}
-            {dienst.timesBooked}× geboekt
-            {dienst.revenueCents > 0 && <> &middot; {formatCents(dienst.revenueCents)} omzet</>}
-            {dienst.estimatedMinutes !== null && <> &middot; ~{dienst.estimatedMinutes} min</>}
-          </p>
-
-          {dienst.notes && <p className="mt-1.5 text-xs text-gray-500">{dienst.notes}</p>}
-        </div>
-
-        <div className="shrink-0 text-right">
-          <p className="tabular text-lg">{formatCents(dienst.unitPriceCents)}</p>
-          <p className="text-xs text-gray-600">{unitLabels[dienst.unit]}</p>
-          {marge !== null && (
-            <p className="mt-1 text-xs text-gray-600">
-              marge {formatCents(marge)}
-              {margePct !== null && <> ({margePct}%)</>}
-            </p>
-          )}
-        </div>
+    <li className={`flex items-start gap-3 py-3.5 pr-3 pl-6 ${dienst.active ? '' : 'opacity-60'}`}>
+      <div className="min-w-0 flex-1">
+        <p className="text-[15px]">{dienst.name}</p>
+        {dienst.description && <p className="mt-0.5 text-[13px] text-gray-600">{dienst.description}</p>}
+        <p className="mt-0.5 text-[13px] text-gray-500">
+          {[
+            dienst.department,
+            dienst.timesBooked === 0
+              ? 'Nog nooit geboekt'
+              : `${dienst.timesBooked} keer geboekt${dienst.revenueCents > 0 ? `, ${formatEuro(dienst.revenueCents)} omzet` : ''}`,
+            dienst.estimatedMinutes !== null ? `ongeveer ${dienst.estimatedMinutes} minuten` : null,
+          ]
+            .filter(Boolean)
+            .join(' · ')}
+        </p>
+        {dienst.notes && <p className="mt-0.5 text-[13px] text-gray-500">{dienst.notes}</p>}
       </div>
 
-      <details className="mt-3">
-        <summary className="text-jr-blue cursor-pointer text-xs">Aanpassen</summary>
-        <div className="mt-3 grid gap-3 rounded-lg bg-gray-50 p-3 sm:grid-cols-2">
-          <div className="sm:col-span-2">
-            <p className="mb-2 text-xs text-gray-600">
-              Een tariefwijziging geldt alleen voor nieuwe boekingen. Bestaande
-              boekingen en saldi veranderen niet.
-            </p>
+      <div className="shrink-0 text-right">
+        <p className="tabular text-[15px]">{formatEuro(dienst.unitPriceCents)}</p>
+        <p className="text-xs text-gray-500">{unitLabels[dienst.unit]}</p>
+        {marge !== null && (
+          <p className="text-xs text-gray-500">
+            marge {formatEuro(marge)}
+            {margePct !== null && <> ({margePct}%)</>}
+          </p>
+        )}
+      </div>
+
+      <Menu>
+        <Paneel
+          knop="Aanpassen"
+          stijl="menu"
+          titel={dienst.name}
+          uitleg="Een nieuw tarief geldt alleen voor nieuwe boekingen. Wat al geboekt is, verandert niet."
+        >
             <ActionForm
               action={wijzigDienst}
               submitLabel="Opslaan"
               resetOnSuccess={false}
-              className="grid gap-3 sm:grid-cols-2"
+              className="grid gap-4 sm:grid-cols-2"
             >
               <input type="hidden" name="id" value={dienst.id} />
               <Field label="Naam" name="naam" required defaultValue={dienst.name} />
@@ -258,27 +254,19 @@ function DienstKaart({
                 <Field label="Interne notities" name="notities" defaultValue={dienst.notes ?? ''} />
               </div>
             </ActionForm>
-          </div>
-
-          <div className="sm:col-span-2 border-t border-gray-200 pt-3">
-            <p className="mb-2 text-xs text-gray-600">
-              {dienst.timesBooked > 0
-                ? 'Deze dienst is geboekt en kan niet verwijderd worden. Op inactief zetten haalt hem uit de keuzelijst; de historie blijft leesbaar.'
-                : 'Deze dienst is nog nooit geboekt.'}
-            </p>
-            <ActionForm
-              action={wisselDienstActief}
-              submitLabel={dienst.active ? 'Op inactief zetten' : 'Weer activeren'}
-              submitClassName="text-gray-600 hover:bg-gray-200 !text-xs"
-              resetOnSuccess={false}
-              className=""
-            >
-              <input type="hidden" name="id" value={dienst.id} />
-              <input type="hidden" name="activeren" value={dienst.active ? '0' : '1'} />
-            </ActionForm>
-          </div>
-        </div>
-      </details>
+        </Paneel>
+        <ActionForm
+          action={wisselDienstActief}
+          submitLabel={dienst.active ? 'Niet meer aanbieden' : 'Weer aanbieden'}
+          submitClassName="!min-h-0 w-full !rounded-lg !px-3 !py-2 text-left !font-normal text-jr-text hover:bg-gray-100"
+          resetOnSuccess={false}
+          meldGelukt={false}
+          className=""
+        >
+          <input type="hidden" name="id" value={dienst.id} />
+          <input type="hidden" name="activeren" value={dienst.active ? '0' : '1'} />
+        </ActionForm>
+      </Menu>
     </li>
   )
 }

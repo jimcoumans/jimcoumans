@@ -605,7 +605,7 @@ export default async function CampagnePage({ params }: { params: Promise<{ id: s
               {v.tijdlijn.map((t) => (
                 <li
                   key={`${t.id}-${t.dueOn?.getTime() ?? 0}-${t.description}-${t.assigneeUserId ?? t.assigneeLabel ?? ''}`}
-                  className="py-2"
+                  className="flex items-center gap-1 py-2"
                 >
                   <ActionForm
                     action={wijzigTijdlijnRegel}
@@ -613,7 +613,8 @@ export default async function CampagnePage({ params }: { params: Promise<{ id: s
                     submitClassName={KNOP_KLEIN}
                     resetOnSuccess={false}
                     meldGelukt={false}
-                    className="grid items-end gap-2 sm:grid-cols-[150px_1fr_170px_auto]"
+                    knopInRij
+                    className="grid min-w-0 flex-1 items-center gap-2 sm:grid-cols-[150px_1fr_170px_auto]"
                   >
                     {verborgen}
                     <input type="hidden" name="id" value={t.id} />
@@ -622,20 +623,20 @@ export default async function CampagnePage({ params }: { params: Promise<{ id: s
                       name="dueOn"
                       aria-label="Deadline"
                       defaultValue={t.dueOn ? formatDateInput(t.dueOn) : ''}
-                      className="focus:border-jr-blue rounded-lg border border-gray-300 px-2 py-1.5 text-sm outline-none"
+                      className="min-h-10 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none hover:border-gray-400"
                     />
                     <input
                       name="description"
                       aria-label="Omschrijving"
                       list="tijdlijn-omschrijvingen"
                       defaultValue={t.description}
-                      className="focus:border-jr-blue rounded-lg border border-gray-300 px-2 py-1.5 text-sm outline-none"
+                      className="min-h-10 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none hover:border-gray-400"
                     />
                     <select
                       name="assignee"
                       aria-label="Wie"
                       defaultValue={t.assigneeUserId ? `user:${t.assigneeUserId}` : t.assigneeLabel ? `label:${t.assigneeLabel}` : ''}
-                      className="focus:border-jr-blue rounded-lg border border-gray-300 px-2 py-1.5 text-sm outline-none"
+                      className="min-h-10 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none hover:border-gray-400"
                     >
                       {wieOpties.map((o) => (
                         <option key={o.value} value={o.value}>
@@ -647,9 +648,7 @@ export default async function CampagnePage({ params }: { params: Promise<{ id: s
                       )}
                     </select>
                   </ActionForm>
-                  <div className="mt-1 flex justify-end">
-                    <KleineKnop action={wisTijdlijn} campaignId={c.id} id={t.id} label="Verwijder regel" />
-                  </div>
+                  <KleineKnop action={wisTijdlijn} campaignId={c.id} id={t.id} label="Weg" />
                 </li>
               ))}
             </ul>
@@ -670,7 +669,7 @@ export default async function CampagnePage({ params }: { params: Promise<{ id: s
                 <Select label="Wie" name="assignee" options={wieOpties} />
               </div>
               <div>
-                <label htmlFor="tijdlijn-nieuw" className="mb-1 block text-xs text-gray-600">
+                <label htmlFor="tijdlijn-nieuw" className="text-jr-text mb-1.5 block text-[13px] font-medium">
                   Omschrijving
                 </label>
                 <input
@@ -679,7 +678,7 @@ export default async function CampagnePage({ params }: { params: Promise<{ id: s
                   list="tijdlijn-omschrijvingen"
                   required
                   placeholder="Kies of typ"
-                  className="focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
+                  className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
                 />
               </div>
             </ActionForm>
@@ -824,7 +823,7 @@ export default async function CampagnePage({ params }: { params: Promise<{ id: s
             <ActionForm
               action={wisCampagne}
               submitLabel="Verwijder deze campagne"
-              submitClassName="text-jr-red hover:bg-jr-red/5 border border-gray-200 w-full"
+              submitClassName="text-[#C02A22] hover:bg-[#FDECEA] border border-gray-300 bg-white !rounded-full"
               resetOnSuccess={false}
               meldGelukt={false}
               className="space-y-2"

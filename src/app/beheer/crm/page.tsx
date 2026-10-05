@@ -7,7 +7,9 @@ import {
   SOORT_LABELS,
   SOORT_STIJLEN,
 } from '@/lib/crm-personen'
+import { FilterBalk, Zoekveld } from '@/components/FilterBalk'
 import { AppShell } from '@/components/AppShell'
+import { PaginaKop } from '@/components/PaginaKop'
 import { Avatar } from '@/components/Avatar'
 import { MAANDNAMEN } from '@/lib/dates'
 import { leeftijd } from '@/lib/leeftijd'
@@ -69,53 +71,23 @@ export default async function CrmPage({
 
   return (
     <AppShell user={user} actief="crm" breed>
-      <div className="mb-5 flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
-        <div>
-          <h1 className="text-[28px] sm:text-[32px]">CRM</h1>
-          <p className="text-sm text-gray-600">
-            Iedereen die we kennen: klanten, partners en collega&rsquo;s. Op achternaam.
-          </p>
-        </div>
-
-        <dl className="flex flex-wrap items-end gap-x-7 gap-y-2">
-          <div>
-            <dt className="text-xs text-gray-600">Mensen</dt>
-            <dd className="tabular text-jr-blue text-xl font-bold leading-tight">
-              {mensen.length}
-              {soort !== '' && (
-                <span className="ml-1 text-xs font-normal text-gray-500">
-                  van {alle.length}
-                </span>
-              )}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-xs text-gray-600">Verjaardag bekend</dt>
-            <dd className="tabular text-xl font-bold leading-tight">
-              {metVerjaardag.length}
-              <span className="ml-1 text-xs font-normal text-gray-500">
-                van {mensen.length}
-              </span>
-            </dd>
-          </div>
-          {zonderGegevens.length > 0 && (
-            <div>
-              <dt className="text-xs text-gray-600">Zonder mail of nummer</dt>
-              <dd className="tabular text-jr-orange text-xl font-bold leading-tight">
-                {zonderGegevens.length}
-              </dd>
-            </div>
-          )}
-        </dl>
-      </div>
+      <PaginaKop
+        titel="CRM"
+        uitleg="Iedereen die we kennen: klanten, partners en collega’s. Op achternaam. Toevoegen en wijzigen doe je waar iemand thuishoort: op de klantkaart, bij de partner of in het teamprofiel."
+        cijfers={[
+          { label: 'Mensen', waarde: mensen.length, hint: soort !== '' ? `van ${alle.length}` : undefined },
+          { label: 'Verjaardag bekend', waarde: metVerjaardag.length, hint: `van ${mensen.length}` },
+          { label: 'Zonder mail of nummer', waarde: zonderGegevens.length, toon: zonderGegevens.length > 0 ? 'let-op' : 'goed' },
+        ]}
+      />
 
       {/* De labels zijn zelf het filter. Een keuzelijst zou hier een klik
           extra kosten en de aantallen verbergen. */}
-      <div className="mb-4 flex flex-wrap items-center gap-1.5">
+      <div className="mb-4 flex flex-wrap items-center gap-2">
         <a
           href={link('')}
-          className={`rounded-full px-3 py-1 text-xs ${
-            soort === '' ? 'bg-jr-blue text-white' : 'bg-white text-gray-600 hover:bg-gray-100'
+          className={`rounded-full px-3.5 py-1.5 text-sm ${
+            soort === '' ? 'bg-jr-text text-white' : 'bg-white text-gray-700 shadow-sm hover:bg-gray-100'
           }`}
         >
           Alles ({alle.length})
@@ -124,8 +96,8 @@ export default async function CrmPage({
           <a
             key={s}
             href={link(s)}
-            className={`rounded-full px-3 py-1 text-xs ${
-              soort === s ? 'bg-jr-blue text-white' : `${SOORT_STIJLEN[s]} hover:opacity-80`
+            className={`rounded-full px-3.5 py-1.5 text-sm ${
+              soort === s ? 'bg-jr-text text-white' : `${SOORT_STIJLEN[s]} hover:opacity-80`
             }`}
           >
             {SOORT_LABELS[s]} ({telling[s]})
@@ -135,30 +107,10 @@ export default async function CrmPage({
 
       {/* Een gewoon formulier met GET: dan staat de zoekterm in de URL en kun
           je een zoekresultaat bewaren of doorsturen. */}
-      <form method="get" className="mb-4 flex flex-wrap gap-2">
+      <FilterBalk className="mb-4 flex flex-wrap items-center gap-2" wisHref={zoek !== '' || soort !== '' ? '/beheer/crm' : null}>
         {soort !== '' && <input type="hidden" name="soort" value={soort} />}
-        <input
-          type="search"
-          name="q"
-          defaultValue={zoek}
-          placeholder="Zoek op naam, e-mail, functie, klant of partner"
-          className="focus:border-jr-blue w-full max-w-sm rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
-        />
-        <button
-          type="submit"
-          className="bg-jr-btn hover:bg-jr-btnhover rounded-lg px-4 py-2 text-sm text-white"
-        >
-          Zoeken
-        </button>
-        {(zoek !== '' || soort !== '') && (
-          <a
-            href="/beheer/crm"
-            className="rounded-lg px-3 py-2 text-sm text-gray-600 hover:bg-gray-100"
-          >
-            Wissen
-          </a>
-        )}
-      </form>
+        <Zoekveld naam="q" waarde={zoek} placeholder="Zoek op naam, e-mail, functie of bedrijf" />
+      </FilterBalk>
 
       {mensen.length === 0 ? (
         <div className="rounded-xl bg-white p-8 text-center shadow-sm">
@@ -169,96 +121,50 @@ export default async function CrmPage({
           </p>
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-xl bg-white shadow-sm">
-          <table className="w-full min-w-[880px] text-sm">
-            <thead>
-              <tr className="border-b border-gray-200 text-left text-xs text-gray-600">
-                <th className="px-4 py-2.5 font-normal">Naam</th>
-                <th className="px-4 py-2.5 font-normal">Waar</th>
-                <th className="px-4 py-2.5 font-normal">Functie</th>
-                <th className="px-4 py-2.5 font-normal">Bereikbaar</th>
-                <th className="px-4 py-2.5 font-normal">Verjaardag</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {mensen.map((m) => (
-                <tr key={`${m.soort}-${m.id}`} className="align-top">
-                  <td className="px-4 py-3">
-                    <div className="flex items-start gap-2.5">
-                      <Avatar naam={m.naam} imageId={m.avatarImageId} maat={32} />
-                      <div className="min-w-0">
-                        <a href={m.href} className="hover:text-jr-blue font-medium">
-                          {m.naam}
-                        </a>
-                        <div className="mt-0.5 flex flex-wrap gap-1.5">
-                          <span
-                            className={`rounded-full px-1.5 py-0.5 text-xs ${SOORT_STIJLEN[m.soort]}`}
-                          >
-                            {SOORT_LABELS[m.soort]}
-                          </span>
-                          {m.isPrimary && (
-                            <span className="bg-jr-lightblue text-jr-deepblue rounded-full px-1.5 py-0.5 text-xs">
-                              Vast aanspreekpunt
-                            </span>
-                          )}
-                          {!m.actief && (
-                            <span className="rounded-full bg-gray-100 px-1.5 py-0.5 text-xs text-gray-500">
-                              Niet meer actief
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-
-                  <td className="px-4 py-3">
-                    <a href={m.href} className="hover:text-jr-blue">
-                      {m.bijNaam}
-                    </a>
-                  </td>
-
-                  <td className="px-4 py-3">
-                    {m.functie ?? <span className="text-gray-400">&mdash;</span>}
-                  </td>
-
-                  <td className="px-4 py-3 text-xs">
-                    {m.email && (
-                      <a href={`mailto:${m.email}`} className="hover:text-jr-blue block">
-                        {m.email}
-                      </a>
-                    )}
-                    {m.telefoon && (
-                      <a
-                        href={`tel:${m.telefoon.replace(/\s/g, '')}`}
-                        className="hover:text-jr-blue block text-gray-600"
-                      >
-                        {m.telefoon}
-                      </a>
-                    )}
-                    {!m.email && !m.telefoon && (
-                      <span className="text-jr-orange">geen gegevens</span>
-                    )}
-                  </td>
-
-                  <td className="px-4 py-3 text-xs">
-                    {m.birthDay !== null && m.birthMonth !== null ? (
-                      <>
-                        {m.birthDay} {MAANDNAMEN[m.birthMonth - 1]}
-                        {leeftijd(m.birthDay, m.birthMonth, m.birthYear) !== null && (
-                          <span className="block text-gray-500">
-                            {leeftijd(m.birthDay, m.birthMonth, m.birthYear)} jaar
-                          </span>
-                        )}
-                      </>
-                    ) : (
-                      <span className="text-gray-400">&mdash;</span>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        // Zoals Contacten op een iPhone: wie, wat en waar op één regel,
+        // bereikbaarheid rechts. Geen tabel met lege kolommen.
+        <ul className="divide-y divide-gray-150 rounded-xl bg-white shadow-sm">
+          {mensen.map((m) => (
+            <li key={`${m.soort}-${m.id}`} className={`flex items-center gap-4 px-5 py-3 ${m.actief ? '' : 'opacity-60'}`}>
+              <Avatar naam={m.naam} imageId={m.avatarImageId} maat={40} />
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-[15px]">
+                  <a href={m.href} className="hover:text-jr-link font-medium">
+                    {m.naam}
+                  </a>
+                  {m.isPrimary && <span className="text-jr-link ml-2 text-xs">Vast aanspreekpunt</span>}
+                  {!m.actief && <span className="ml-2 text-xs text-gray-500">Niet meer actief</span>}
+                </p>
+                <p className="truncate text-[13px] text-gray-600">
+                  {m.functie ? `${m.functie} bij ` : ''}
+                  <a href={m.href} className="hover:text-jr-link">
+                    {m.bijNaam}
+                  </a>
+                  {m.birthDay !== null && m.birthMonth !== null && (
+                    <span className="text-gray-500">
+                      {' '}
+                      &middot; jarig {m.birthDay} {MAANDNAMEN[m.birthMonth - 1]}
+                      {leeftijd(m.birthDay, m.birthMonth, m.birthYear) !== null && ` (${leeftijd(m.birthDay, m.birthMonth, m.birthYear)})`}
+                    </span>
+                  )}
+                </p>
+              </div>
+              <div className="hidden shrink-0 text-right text-[13px] sm:block">
+                {m.email && (
+                  <a href={`mailto:${m.email}`} className="text-jr-link block hover:underline">
+                    {m.email}
+                  </a>
+                )}
+                {m.telefoon && (
+                  <a href={`tel:${m.telefoon.replace(/\s/g, '')}`} className="block text-gray-600 hover:underline">
+                    {m.telefoon}
+                  </a>
+                )}
+                {!m.email && !m.telefoon && <span className="text-[#94590A]">Geen mail of nummer</span>}
+              </div>
+            </li>
+          ))}
+        </ul>
       )}
     </AppShell>
   )

@@ -1,7 +1,9 @@
 import { redirect } from 'next/navigation'
 import { getSessionUser } from '@/lib/auth'
 import { AppShell } from '@/components/AppShell'
-import { ActionForm, Field, Select, TextArea, Check, Uitklap } from '@/components/ActionForm'
+import { ActionForm, Field, Select, TextArea, Check } from '@/components/ActionForm'
+import { Paneel, PaneelKop } from '@/components/Paneel'
+import { PaginaKop, LeegVlak } from '@/components/PaginaKop'
 import { listTeam } from '@/lib/team'
 import {
   listVacatures,
@@ -55,411 +57,289 @@ export default async function WervingPage() {
     (v) => v.vacature.status === 'open' || v.vacature.status === 'gepauzeerd',
   )
 
+  const kandidaatFormulier = (
+    <ActionForm action={nieuweKandidaat} submitLabel="Kandidaat toevoegen" className="grid gap-4 sm:grid-cols-2">
+      <PaneelKop>Wie</PaneelKop>
+      <div className="grid items-end gap-3 sm:col-span-2 sm:grid-cols-[1fr_130px_1fr]">
+        <Field label="Voornaam" name="voornaam" required placeholder="Maarten" />
+        <Field label="Tussenvoegsel" name="tussenvoegsel" placeholder="van der" />
+        <Field label="Achternaam" name="achternaam" placeholder="Brouwer" />
+      </div>
+      <Field label="E-mail" name="email" type="email" placeholder="naam@voorbeeld.nl" />
+      <Field label="Telefoon" name="telefoon" placeholder="06 12 34 56 78" />
+      <div className="sm:col-span-2">
+        <Field label="LinkedIn" name="linkedin" placeholder="https://linkedin.com/in/..." />
+      </div>
+
+      <PaneelKop>Sollicitatie</PaneelKop>
+      <Select
+        label="Voor welke vacature"
+        name="vacatureId"
+        defaultValue=""
+        options={[{ value: '', label: 'Open sollicitatie' }, ...openVacatures.map((v) => ({ value: v.vacature.id, label: v.vacature.title }))]}
+      />
+      <Select
+        label="Waar komt hij vandaan"
+        name="bron"
+        defaultValue="zelf_benaderd"
+        options={Object.entries(BRON_LABELS).map(([value, label]) => ({ value, label }))}
+      />
+      <Select
+        label="Aangebracht door"
+        name="doorverwezenDoor"
+        defaultValue=""
+        options={[{ value: '', label: 'Niemand in het bijzonder' }, ...team.map((t) => ({ value: t.id, label: t.name ?? t.email }))]}
+        hint="Bij een stage: de begeleider, of wie hem aanbracht."
+      />
+      <Field label="Sollicitatiedatum" name="sollicitatiedatum" type="date" hint="Leeg is vandaag. Hiermee meten we hoe lang iemand wacht." />
+
+      <PaneelKop uitleg="Alleen bij stages en starters.">Opleiding</PaneelKop>
+      <Field label="School" name="school" placeholder="Zuyd Hogeschool" />
+      <Field label="Opleiding" name="opleiding" placeholder="Commerciële Economie" />
+
+      <PaneelKop uitleg="Zonder vervolgstap zakt een kandidaat stilletjes weg.">Volgende stap</PaneelKop>
+      <Field label="Wat ga je doen" name="actie" placeholder="Bellen voor een afspraak" />
+      <Field label="Wanneer" name="actiedatum" type="date" />
+      <div className="sm:col-span-2">
+        <TextArea label="Notities" name="notities" rows={3} hint="Wordt vier weken na afloop van de procedure automatisch gewist." />
+      </div>
+    </ActionForm>
+  )
+
+  const vacatureFormulier = (
+    <ActionForm action={nieuweVacature} submitLabel="Vacature aanmaken" className="grid gap-4 sm:grid-cols-2">
+      <div className="sm:col-span-2">
+        <Field label="Titel" name="titel" required placeholder="Marketing Manager" />
+      </div>
+      <Select
+        label="Soort"
+        name="soort"
+        defaultValue="dienstverband"
+        options={[
+          { value: 'dienstverband', label: 'Dienstverband' },
+          { value: 'stage', label: 'Stage' },
+          { value: 'freelance', label: 'Freelance' },
+        ]}
+      />
+      <Field label="Aantal plekken" name="plekken" defaultValue="1" hint="Twee managers zoeken is één vacature met twee plekken." />
+      <div className="sm:col-span-2">
+        <Select
+          label="Van wie is deze vacature"
+          name="eigenaar"
+          defaultValue=""
+          options={[{ value: '', label: 'Nog niet toegewezen' }, ...team.map((t) => ({ value: t.id, label: t.name ?? t.email }))]}
+          hint="Zonder eigenaar blijft een vacature liggen."
+        />
+      </div>
+
+      <PaneelKop>Wat we bieden</PaneelKop>
+      {huis ? (
+        <Select
+          label="Schaal"
+          name="schaal"
+          defaultValue=""
+          options={[{ value: '', label: 'Nog niet bepaald' }, ...schaalNamen(huis).map((n) => ({ value: n, label: n }))]}
+        />
+      ) : (
+        <Field label="Schaal" name="schaal" placeholder="Medior" />
+      )}
+      <Field label="Uren per week" name="uren" placeholder="32" />
+      <Field label="Trede van" name="tredeMin" placeholder="8" />
+      <Field label="Trede tot" name="tredeMax" placeholder="14" />
+
+      <PaneelKop>Waarom en wat</PaneelKop>
+      <div className="sm:col-span-2">
+        <TextArea label="Waarom deze vacature" name="reden" rows={2} hint="Een capaciteitsgat of groei. Over een half jaar weet je anders niet meer waarom je zocht." />
+      </div>
+      <div className="sm:col-span-2">
+        <TextArea label="Omschrijving" name="omschrijving" rows={5} />
+      </div>
+      <div className="sm:col-span-2">
+        <Check label="Meteen openzetten" name="meteenOpen" hint="Anders blijft hij een concept tot je hem openzet." />
+      </div>
+    </ActionForm>
+  )
+
+  const vacaturePaneel = (stijl: 'primair' | 'rustig') => (
+    <Paneel knop="Vacature aanmaken" titel="Vacature aanmaken" uitleg="Stages en freelance horen hier ook bij." stijl={stijl}>
+      {vacatureFormulier}
+    </Paneel>
+  )
+
   return (
     <AppShell user={user} actief="werving" breed>
-      <div className="mb-5 flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
-        <div>
-          <h1 className="text-[28px] sm:text-[32px]">Werving</h1>
-          <p className="text-sm text-gray-600">
-            Vacatures, stages en kandidaten. Wie wacht er op ons.
-          </p>
-        </div>
+      <PaginaKop
+        titel="Werving"
+        uitleg="Vacatures, stages en kandidaten. Bovenaan wie er op ons wacht."
+        acties={
+          <>
+            {vacaturePaneel('rustig')}
+            <Paneel knop="+ Kandidaat toevoegen" titel="Kandidaat toevoegen" uitleg="Voor iemand die je zelf benadert of op het oog hebt. Sollicitaties via de website komen vanzelf binnen.">
+              {kandidaatFormulier}
+            </Paneel>
+          </>
+        }
+        cijfers={[
+          { label: 'Open vacatures', waarde: cijfers.openVacatures },
+          { label: 'Plekken', waarde: cijfers.openPlekken, hint: 'Twee managers is één vacature' },
+          { label: 'In procedure', waarde: cijfers.lopendeKandidaten },
+          { label: 'Wacht op antwoord', waarde: cijfers.wachtenOpAntwoord, toon: cijfers.wachtenOpAntwoord > 0 ? 'let-op' : 'normaal' },
+          {
+            label: 'Reactietijd',
+            waarde: cijfers.gemiddeldeReactiedagen === null ? '–' : `${String(cijfers.gemiddeldeReactiedagen).replace('.', ',')} dagen`,
+            toon: cijfers.gemiddeldeReactiedagen === null ? 'stil' : 'normaal',
+          },
+        ]}
+      />
 
-        <dl className="flex flex-wrap items-end gap-x-7 gap-y-2">
-          <Cijfer label="Open vacatures" waarde={cijfers.openVacatures} />
-          <Cijfer
-            label="Plekken"
-            waarde={cijfers.openPlekken}
-            hint="Twee managers is één vacature"
-          />
-          <Cijfer label="In procedure" waarde={cijfers.lopendeKandidaten} />
-          <Cijfer
-            label="Wacht op antwoord"
-            waarde={cijfers.wachtenOpAntwoord}
-            oranje={cijfers.wachtenOpAntwoord > 0}
-          />
-          <div>
-            <dt className="text-xs text-gray-600">Reactietijd</dt>
-            <dd className="tabular text-xl font-bold leading-tight">
-              {cijfers.gemiddeldeReactiedagen === null ? (
-                <span className="text-gray-400">&mdash;</span>
-              ) : (
-                <>
-                  {String(cijfers.gemiddeldeReactiedagen).replace('.', ',')}
-                  <span className="text-xs font-normal text-gray-500"> dagen</span>
-                </>
-              )}
-            </dd>
-          </div>
-        </dl>
-      </div>
-
-      <div className="grid gap-5 lg:grid-cols-[1fr_320px]">
-        <div className="space-y-5">
-          {/* De stilte. Bovenaan, niet in een filter. */}
-          {achterstand.wachtenOpAntwoord.length > 0 && (
-            <section className="border-jr-orange/30 bg-jr-orange/5 rounded-xl border p-5">
-              <h2 className="text-jr-orange mb-1 text-base">
-                {achterstand.wachtenOpAntwoord.length}{' '}
-                {achterstand.wachtenOpAntwoord.length === 1 ? 'kandidaat wacht' : 'kandidaten wachten'}{' '}
-                op antwoord
-              </h2>
-              <p className="mb-3 text-xs text-gray-600">
-                Langer dan {STILTE_DAGEN} dagen niets van ons gehoord. Dit is waar mensen
-                over praten, niet de afwijzing zelf.
-              </p>
-              <ul className="space-y-2">
-                {achterstand.wachtenOpAntwoord.map((k) => (
-                  <li
-                    key={k.kandidaat.id}
-                    className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-white px-3 py-2 text-sm"
-                  >
-                    <span>
-                      <a
-                        href={k.vacatureId ? `/beheer/werving/${k.vacatureId}` : '/beheer/werving'}
-                        className="hover:text-jr-blue font-medium"
-                      >
-                        {k.kandidaat.name}
-                      </a>
-                      <span className="ml-2 text-xs text-gray-500">
-                        {k.vacatureTitel ?? 'Open sollicitatie'}
-                      </span>
-                    </span>
-                    <span className="flex items-center gap-3">
-                      <span className="text-jr-orange tabular text-xs">
-                        {k.wachtDagen} dagen
-                      </span>
-                      <ActionForm
-                        action={kandidaatBeantwoord}
-                        submitLabel="Gereageerd"
-                        submitClassName="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
-                        className="contents"
-                      >
-                        <input type="hidden" name="kandidaatId" value={k.kandidaat.id} />
-                      </ActionForm>
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          )}
-
-          {/* Zonder vervolgstap. */}
-          {achterstand.zonderVervolg.length > 0 && (
-            <section className="rounded-xl bg-white p-6 shadow-sm">
-              <h2 className="mb-1 text-base">
-                {achterstand.zonderVervolg.length} zonder afgesproken vervolgstap
-              </h2>
-              <p className="mb-3 text-xs text-gray-600">
-                Geen volgende stap afgesproken, of de datum is voorbij. Dit is hoe een
-                kandidaat stilletjes wegzakt.
-              </p>
-              <ul className="divide-y divide-gray-100">
-                {achterstand.zonderVervolg.map((k) => (
-                  <Regel key={k.kandidaat.id} kaart={k} />
-                ))}
-              </ul>
-            </section>
-          )}
-
-          {/* Wat er binnenkort gewist wordt. */}
-          {achterstand.bijnaTeWissen.length > 0 && (
-            <section className="rounded-xl bg-white p-6 shadow-sm">
-              <h2 className="mb-1 text-base">Bewaartermijn loopt af</h2>
-              <p className="mb-3 text-xs text-gray-600">
-                Deze gegevens worden binnenkort automatisch gewist. Wil je iemand houden
-                voor een volgende vacature, vraag dan toestemming en leg die vast op zijn
-                kaart.
-              </p>
-              <ul className="divide-y divide-gray-100">
-                {achterstand.bijnaTeWissen.map((k) => (
-                  <li
-                    key={k.kandidaat.id}
-                    className="flex flex-wrap items-center justify-between gap-2 py-2 text-sm"
-                  >
-                    <span>
-                      {k.kandidaat.name}
-                      <span className="ml-2 text-xs text-gray-500">
-                        {KANDIDAAT_STATUS_LABELS[k.kandidaat.status]}
-                        {k.kandidaat.closedReason && ` · ${k.kandidaat.closedReason}`}
-                      </span>
-                    </span>
-                    <span
-                      className={`tabular text-xs ${
-                        (k.bewaarDagenResterend ?? 0) <= 0 ? 'text-jr-orange' : 'text-gray-500'
-                      }`}
-                    >
-                      {(k.bewaarDagenResterend ?? 0) <= 0
-                        ? 'wordt vannacht gewist'
-                        : `nog ${k.bewaarDagenResterend} dagen`}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          )}
-
-          {/* De vacatures. */}
-          <section className="rounded-xl bg-white p-6 shadow-sm">
-            <h2 className="mb-3 text-base">Vacatures</h2>
-            {vacatures.length === 0 ? (
-              <p className="text-sm text-gray-600">
-                Nog geen vacatures. Maak er een aan; stages horen hier ook bij.
-              </p>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-gray-200 text-left text-xs text-gray-600">
-                      <th className="px-2 py-2 font-normal">Vacature</th>
-                      <th className="px-2 py-2 font-normal">Van wie</th>
-                      <th className="px-2 py-2 text-right font-normal">In procedure</th>
-                      <th className="px-2 py-2 text-right font-normal">Wacht</th>
-                      <th className="px-2 py-2 text-right font-normal">Bezet</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100">
-                    {vacatures.map((r) => (
-                      <tr key={r.vacature.id}>
-                        <td className="px-2 py-2.5">
-                          <a
-                            href={`/beheer/werving/${r.vacature.id}`}
-                            className="hover:text-jr-blue font-medium"
-                          >
-                            {r.vacature.title}
-                          </a>
-                          <div className="mt-0.5 flex flex-wrap gap-1.5">
-                            <span className="rounded-full bg-gray-100 px-1.5 py-0.5 text-xs text-gray-600">
-                              {VACATURE_SOORT_LABELS[r.vacature.kind]}
-                            </span>
-                            <span
-                              className={`rounded-full px-1.5 py-0.5 text-xs ${
-                                r.vacature.status === 'open'
-                                  ? 'bg-jr-lightblue text-jr-deepblue'
-                                  : 'bg-gray-100 text-gray-500'
-                              }`}
-                            >
-                              {VACATURE_STATUS_LABELS[r.vacature.status]}
-                            </span>
-                          </div>
-                        </td>
-                        <td className="px-2 py-2.5 text-gray-600">
-                          {r.eigenaar ?? (
-                            <span className="text-jr-orange text-xs">niemand</span>
-                          )}
-                        </td>
-                        <td className="tabular px-2 py-2.5 text-right">{r.lopend}</td>
-                        <td
-                          className={`tabular px-2 py-2.5 text-right ${
-                            r.wachten > 0 ? 'text-jr-orange font-bold' : 'text-gray-400'
-                          }`}
-                        >
-                          {r.wachten}
-                        </td>
-                        <td className="tabular px-2 py-2.5 text-right text-gray-600">
-                          {r.aangenomen} / {r.vacature.positions}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </section>
-
-          {/* Waarom het niet doorgaat. */}
-          {(redenen.afgewezen.length > 0 || redenen.afgehaakt.length > 0) && (
-            <section className="rounded-xl bg-white p-6 shadow-sm">
-              <h2 className="mb-1 text-base">Waarom het niet doorgaat</h2>
-              <p className="mb-3 text-xs text-gray-600">
-                Apart geteld, want het zijn twee verschillende problemen: wie wij afwijzen
-                zegt iets over onze selectie, wie zelf afhaakt zegt iets over ons aanbod.
-              </p>
-              <div className="grid gap-5 sm:grid-cols-2">
-                <Redenen titel="Wij wezen af" regels={redenen.afgewezen} />
-                <Redenen titel="Zij haakten af" regels={redenen.afgehaakt} />
-              </div>
-            </section>
-          )}
-        </div>
-
-        <aside className="space-y-5">
-          <section className="rounded-xl bg-white p-6 shadow-sm">
-            <h2 className="mb-3 text-base">Kandidaat toevoegen</h2>
-            <p className="mb-3 text-xs text-gray-500">
-              Voor iemand die je zelf benadert of op het oog hebt. Sollicitaties via de
-              website komen straks vanzelf binnen.
+      <div className="space-y-6">
+        {/* De stilte. Bovenaan, niet in een filter. */}
+        {achterstand.wachtenOpAntwoord.length > 0 && (
+          <section className="rounded-xl border border-[#FCE3BE] bg-[#FEF7EE] p-6">
+            <h2 className="mb-1 text-[17px] text-[#94590A]">
+              {achterstand.wachtenOpAntwoord.length}{' '}
+              {achterstand.wachtenOpAntwoord.length === 1 ? 'kandidaat wacht' : 'kandidaten wachten'} op antwoord
+            </h2>
+            <p className="mb-4 text-sm text-gray-600">
+              Langer dan {STILTE_DAGEN} dagen niets van ons gehoord. Dit is waar mensen over praten, niet de afwijzing zelf.
             </p>
-            <ActionForm action={nieuweKandidaat} submitLabel="Kandidaat toevoegen">
-              <Field label="Voornaam" name="voornaam" required placeholder="Maarten" />
-              <div className="grid grid-cols-[1fr_2fr] gap-2">
-                <Field label="Tussenv." name="tussenvoegsel" placeholder="van der" />
-                <Field label="Achternaam" name="achternaam" placeholder="Brouwer" />
-              </div>
-              <Select
-                label="Voor welke vacature"
-                name="vacatureId"
-                defaultValue=""
-                options={[
-                  { value: '', label: 'Open sollicitatie' },
-                  ...openVacatures.map((v) => ({
-                    value: v.vacature.id,
-                    label: v.vacature.title,
-                  })),
-                ]}
-              />
-              <Select
-                label="Waar komt hij vandaan"
-                name="bron"
-                defaultValue="zelf_benaderd"
-                options={Object.entries(BRON_LABELS).map(([value, label]) => ({
-                  value,
-                  label,
-                }))}
-              />
-              <Field label="E-mail" name="email" type="email" placeholder="naam@voorbeeld.nl" />
-
-              <Uitklap label="Meer velden">
-                <div className="space-y-3 pt-1">
-                  <Field label="Telefoon" name="telefoon" />
-                  <Field label="LinkedIn" name="linkedin" placeholder="https://..." />
-                  <Select
-                    label="Aangebracht door"
-                    name="doorverwezenDoor"
-                    defaultValue=""
-                    options={[
-                      { value: '', label: 'Niemand in het bijzonder' },
-                      ...team.map((t) => ({ value: t.id, label: t.name ?? t.email })),
-                    ]}
-                    hint="Bij een stage: wie bij ons de begeleider wordt of wie hem aanbracht."
-                  />
-                  <Field label="School" name="school" placeholder="Zuyd Hogeschool" />
-                  <Field label="Opleiding" name="opleiding" placeholder="Commerciële Economie" />
-                  <Field
-                    label="Sollicitatiedatum"
-                    name="sollicitatiedatum"
-                    type="date"
-                    hint="Leeg laten is vandaag. Hiermee wordt gemeten hoe lang iemand wacht."
-                  />
-                  <TextArea
-                    label="Notities"
-                    name="notities"
-                    rows={3}
-                    hint="Let op: deze gegevens worden vier weken na afloop van de procedure automatisch gewist."
-                  />
-                </div>
-              </Uitklap>
-
-              <div className="border-t border-gray-200 pt-3">
-                <p className="mb-2 text-xs font-bold text-gray-600">Volgende stap</p>
-                <Field label="Wat ga je doen" name="actie" placeholder="Bellen voor een afspraak" />
-                <Field label="Wanneer" name="actiedatum" type="date" />
-              </div>
-            </ActionForm>
+            <ul className="grid gap-2 lg:grid-cols-2">
+              {achterstand.wachtenOpAntwoord.map((k) => (
+                <li key={k.kandidaat.id} className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-white px-4 py-3 text-sm shadow-sm">
+                  <span className="min-w-0">
+                    <a href={k.vacatureId ? `/beheer/werving/${k.vacatureId}` : '/beheer/werving'} className="hover:text-jr-link font-medium">
+                      {k.kandidaat.name}
+                    </a>
+                    <span className="block text-xs text-gray-600">
+                      {k.vacatureTitel ?? 'Open sollicitatie'} · <span className="tabular text-[#94590A]">{k.wachtDagen} dagen</span>
+                    </span>
+                  </span>
+                  <ActionForm
+                    action={kandidaatBeantwoord}
+                    submitLabel="Gereageerd"
+                    submitClassName="border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+                    meldGelukt={false}
+                    className="contents"
+                  >
+                    <input type="hidden" name="kandidaatId" value={k.kandidaat.id} />
+                  </ActionForm>
+                </li>
+              ))}
+            </ul>
           </section>
+        )}
 
+        {(achterstand.zonderVervolg.length > 0 || achterstand.bijnaTeWissen.length > 0) && (
+          <div className="grid items-start gap-6 xl:grid-cols-2">
+            {achterstand.zonderVervolg.length > 0 && (
+              <section className="rounded-xl bg-white p-6 shadow-sm">
+                <h2 className="mb-1 text-[17px]">{achterstand.zonderVervolg.length} zonder afgesproken vervolgstap</h2>
+                <p className="mb-3 text-sm text-gray-600">Geen volgende stap, of de datum is voorbij. Zo zakt een kandidaat stilletjes weg.</p>
+                <ul className="divide-y divide-gray-200">
+                  {achterstand.zonderVervolg.map((k) => (
+                    <Regel key={k.kandidaat.id} kaart={k} />
+                  ))}
+                </ul>
+              </section>
+            )}
+            {achterstand.bijnaTeWissen.length > 0 && (
+              <section className="rounded-xl bg-white p-6 shadow-sm">
+                <h2 className="mb-1 text-[17px]">Bewaartermijn loopt af</h2>
+                <p className="mb-3 text-sm text-gray-600">
+                  Deze gegevens worden binnenkort automatisch gewist. Wil je iemand houden, vraag dan toestemming en leg die vast op zijn kaart.
+                </p>
+                <ul className="divide-y divide-gray-200">
+                  {achterstand.bijnaTeWissen.map((k) => (
+                    <li key={k.kandidaat.id} className="flex flex-wrap items-center justify-between gap-2 py-2.5 text-sm">
+                      <span>
+                        {k.kandidaat.name}
+                        <span className="ml-2 text-xs text-gray-500">
+                          {KANDIDAAT_STATUS_LABELS[k.kandidaat.status]}
+                          {k.kandidaat.closedReason && ` · ${k.kandidaat.closedReason}`}
+                        </span>
+                      </span>
+                      <span className={`tabular text-xs ${(k.bewaarDagenResterend ?? 0) <= 0 ? 'text-[#94590A]' : 'text-gray-500'}`}>
+                        {(k.bewaarDagenResterend ?? 0) <= 0 ? 'wordt vannacht gewist' : `nog ${k.bewaarDagenResterend} dagen`}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+          </div>
+        )}
+
+        {/* De vacatures. */}
+        <section>
+          <div className="mb-3 flex items-baseline justify-between gap-3">
+            <h2 className="text-[19px]">Vacatures</h2>
+            {vacatures.length > 0 && <p className="text-sm text-gray-600">{vacatures.length} in totaal</p>}
+          </div>
+          {vacatures.length === 0 ? (
+            <LeegVlak
+              titel="Nog geen vacatures"
+              tekst="Maak een vacature aan voor een functie of een stage. Kandidaten koppel je er daarna aan, en je ziet per vacature wie er wacht."
+              actie={vacaturePaneel('primair')}
+            />
+          ) : (
+            <div className="overflow-x-auto rounded-xl bg-white shadow-sm">
+              <table className="w-full min-w-[640px] text-sm">
+                <thead>
+                  <tr className="border-b border-gray-200 text-left text-xs text-gray-600">
+                    <th className="px-5 py-3 font-normal">Vacature</th>
+                    <th className="px-5 py-3 font-normal">Van wie</th>
+                    <th className="px-5 py-3 text-right font-normal">In procedure</th>
+                    <th className="px-5 py-3 text-right font-normal">Wacht</th>
+                    <th className="px-5 py-3 text-right font-normal">Bezet</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {vacatures.map((r) => (
+                    <tr key={r.vacature.id} className="hover:bg-gray-50">
+                      <td className="px-5 py-3.5">
+                        <a href={`/beheer/werving/${r.vacature.id}`} className="hover:text-jr-link text-[15px] font-medium">
+                          {r.vacature.title}
+                        </a>
+                        <div className="mt-1 flex flex-wrap gap-1.5">
+                          <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600">{VACATURE_SOORT_LABELS[r.vacature.kind]}</span>
+                          <span
+                            className={`rounded-full px-2 py-0.5 text-xs ${
+                              r.vacature.status === 'open' ? 'bg-jr-lightblue text-jr-deepblue' : 'bg-gray-100 text-gray-500'
+                            }`}
+                          >
+                            {VACATURE_STATUS_LABELS[r.vacature.status]}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-5 py-3.5 text-gray-600">{r.eigenaar ?? <span className="text-xs text-[#94590A]">niemand</span>}</td>
+                      <td className="tabular px-5 py-3.5 text-right">{r.lopend}</td>
+                      <td className={`tabular px-5 py-3.5 text-right ${r.wachten > 0 ? 'font-semibold text-[#94590A]' : 'text-gray-400'}`}>{r.wachten}</td>
+                      <td className="tabular px-5 py-3.5 text-right text-gray-600">
+                        {r.aangenomen} / {r.vacature.positions}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
+
+        {/* Waarom het niet doorgaat. */}
+        {(redenen.afgewezen.length > 0 || redenen.afgehaakt.length > 0) && (
           <section className="rounded-xl bg-white p-6 shadow-sm">
-            <h2 className="mb-3 text-base">Vacature aanmaken</h2>
-            <ActionForm action={nieuweVacature} submitLabel="Vacature aanmaken">
-              <Field label="Titel" name="titel" required placeholder="Marketing Manager" />
-              <Select
-                label="Soort"
-                name="soort"
-                defaultValue="dienstverband"
-                options={[
-                  { value: 'dienstverband', label: 'Dienstverband' },
-                  { value: 'stage', label: 'Stage' },
-                  { value: 'freelance', label: 'Freelance' },
-                ]}
-              />
-              <Field
-                label="Aantal plekken"
-                name="plekken"
-                defaultValue="1"
-                hint="Twee marketing managers zoeken is één vacature met twee plekken."
-              />
-              <Select
-                label="Van wie is deze vacature"
-                name="eigenaar"
-                defaultValue=""
-                options={[
-                  { value: '', label: 'Nog niet toegewezen' },
-                  ...team.map((t) => ({ value: t.id, label: t.name ?? t.email })),
-                ]}
-                hint="Zonder eigenaar blijft een vacature liggen."
-              />
-
-              <Uitklap label="Wat we bieden">
-                <div className="space-y-3 pt-1">
-                  {huis ? (
-                    <Select
-                      label="Schaal"
-                      name="schaal"
-                      defaultValue=""
-                      options={[
-                        { value: '', label: 'Nog niet bepaald' },
-                        ...schaalNamen(huis).map((n) => ({ value: n, label: n })),
-                      ]}
-                    />
-                  ) : (
-                    <Field label="Schaal" name="schaal" placeholder="Medior" />
-                  )}
-                  <div className="grid grid-cols-2 gap-2">
-                    <Field label="Trede van" name="tredeMin" placeholder="8" />
-                    <Field label="tot" name="tredeMax" placeholder="14" />
-                  </div>
-                  <Field label="Uren per week" name="uren" placeholder="32" />
-                </div>
-              </Uitklap>
-
-              <Uitklap label="Waarom en wat">
-                <div className="space-y-3 pt-1">
-                  <TextArea
-                    label="Waarom deze vacature"
-                    name="reden"
-                    rows={2}
-                    hint="Een capaciteitsgat of groei. Over een half jaar weet je anders niet meer waarom je zocht."
-                  />
-                  <TextArea label="Omschrijving" name="omschrijving" rows={4} />
-                </div>
-              </Uitklap>
-
-              <Check
-                label="Meteen openzetten"
-                name="meteenOpen"
-                hint="Anders blijft hij een concept tot je hem openzet."
-              />
-            </ActionForm>
+            <h2 className="mb-1 text-[17px]">Waarom het niet doorgaat</h2>
+            <p className="mb-4 text-sm text-gray-600">
+              Apart geteld: wie wij afwijzen zegt iets over onze selectie, wie zelf afhaakt zegt iets over ons aanbod.
+            </p>
+            <div className="grid gap-6 sm:grid-cols-2">
+              <Redenen titel="Wij wezen af" regels={redenen.afgewezen} />
+              <Redenen titel="Zij haakten af" regels={redenen.afgehaakt} />
+            </div>
           </section>
-        </aside>
+        )}
       </div>
     </AppShell>
-  )
-}
-
-function Cijfer({
-  label,
-  waarde,
-  hint,
-  oranje = false,
-}: {
-  label: string
-  waarde: number
-  hint?: string
-  oranje?: boolean
-}) {
-  return (
-    <div>
-      <dt className="text-xs text-gray-600">{label}</dt>
-      <dd
-        className={`tabular text-xl font-bold leading-tight ${
-          oranje ? 'text-jr-orange' : 'text-jr-blue'
-        }`}
-      >
-        {waarde}
-      </dd>
-      {hint && <p className="text-xs text-gray-500">{hint}</p>}
-    </div>
   )
 }
 

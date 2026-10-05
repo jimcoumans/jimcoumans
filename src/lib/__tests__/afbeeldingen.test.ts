@@ -183,3 +183,9 @@ test('initialen slaan tussenvoegsels over', () => {
   assert.equal(initialen('Hotel Voncken'), 'HV')
   assert.equal(initialen('   '), '?')
 })
+
+test('initialen negeren haakjes en leestekens', () => {
+  assert.equal(initialen('Hotel Voncken (demo)'), 'HV')
+  assert.equal(initialen('Bakker & Zn'), 'BZ')
+  assert.equal(initialen('(test)'), '?')
+})

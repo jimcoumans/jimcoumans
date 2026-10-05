@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import { ActionForm, Field } from './ActionForm'
-import { formatCents } from '@/lib/money'
-import { parseQuantityToHundredths, lineTotalCents, unitShort } from '@/lib/quantity'
+import { formatCents, formatEuro } from '@/lib/money'
+import { parseQuantityToHundredths, lineTotalCents, unitShort, aantalMetEenheid } from '@/lib/quantity'
 import type { ActionResult } from '@/app/beheer/actions'
 import type { Service } from '@/db/schema'
 
@@ -55,7 +55,7 @@ export function BookServiceForm({
       <input type="hidden" name="slug" value={slug} />
 
       <div className="sm:col-span-2">
-        <label htmlFor={`dienst-${walletId}`} className="mb-1 block text-xs text-gray-600">
+        <label htmlFor={`dienst-${walletId}`} className="text-jr-text mb-1.5 block text-[13px] font-medium">
           Dienst
         </label>
         <select
@@ -63,20 +63,25 @@ export function BookServiceForm({
           name="serviceId"
           value={serviceId}
           onChange={(e) => setServiceId(e.target.value)}
-          className="focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
+          className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
         >
-          {services.map((s) => (
-            <option key={s.id} value={s.id}>
-              {s.name} — {formatCents(s.unitPriceCents)} / {unitShort[s.unit]}
-              {s.category ? ` · ${s.category}` : ''}
-            </option>
+          {/* Gegroepeerd per productgroep, zoals in de catalogus, in plaats
+              van de groep achter elke naam te plakken. */}
+          {groepeer(services).map(([groep, lijst]) => (
+            <optgroup key={groep} label={groep}>
+              {lijst.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.name}, {formatEuro(s.unitPriceCents)} per {unitShort[s.unit]}
+                </option>
+              ))}
+            </optgroup>
           ))}
         </select>
       </div>
 
       <div>
-        <label htmlFor={`aantal-${walletId}`} className="mb-1 block text-xs text-gray-600">
-          Aantal {dienst && <span className="text-gray-400">({unitShort[dienst.unit]})</span>}
+        <label htmlFor={`aantal-${walletId}`} className="text-jr-text mb-1.5 block text-[13px] font-medium">
+          Aantal
         </label>
         <input
           id={`aantal-${walletId}`}
@@ -85,12 +90,12 @@ export function BookServiceForm({
           onChange={(e) => setAantal(e.target.value)}
           inputMode="decimal"
           placeholder="1"
-          className="focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
+          className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
         />
       </div>
 
       <div>
-        <label htmlFor={`tarief-${walletId}`} className="mb-1 block text-xs text-gray-600">
+        <label htmlFor={`tarief-${walletId}`} className="text-jr-text mb-1.5 block text-[13px] font-medium">
           Afwijkend tarief <span className="text-gray-400">(optioneel)</span>
         </label>
         <input
@@ -99,14 +104,14 @@ export function BookServiceForm({
           value={tarief}
           onChange={(e) => setTarief(e.target.value)}
           placeholder={dienst ? (dienst.unitPriceCents / 100).toFixed(2).replace('.', ',') : ''}
-          className="focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
+          className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
         />
       </div>
 
       <div>
         <label
           htmlFor={`geleverd-${walletId}`}
-          className="mb-1 block text-xs text-gray-600"
+          className="text-jr-text mb-1.5 block text-[13px] font-medium"
         >
           Geleverd door <span className="text-gray-400">(optioneel)</span>
         </label>
@@ -114,7 +119,7 @@ export function BookServiceForm({
           id={`geleverd-${walletId}`}
           name="geleverdDoor"
           defaultValue=""
-          className="focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
+          className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
         >
           <option value="">Niet ingevuld</option>
           {staff.map((s) => (
@@ -158,6 +163,16 @@ export function BookServiceForm({
   )
 }
 
+function groepeer(services: Service[]): [string, Service[]][] {
+  const groepen = new Map<string, Service[]>()
+  for (const s of services) {
+    const groep = s.category ?? 'Overig'
+    if (!groepen.has(groep)) groepen.set(groep, [])
+    groepen.get(groep)!.push(s)
+  }
+  return [...groepen.entries()]
+}
+
 function berekenVoorbeeld(
   dienst: Service | undefined,
   aantalRaw: string,
@@ -180,7 +195,7 @@ function berekenVoorbeeld(
     return {
       totaal: lineTotalCents(aantal, tarief),
       tarief,
-      aantalTekst: `${(aantal / 100).toLocaleString('nl-NL')} ${unitShort[dienst.unit]}`,
+      aantalTekst: aantalMetEenheid(aantal, dienst.unit),
     }
   } catch {
     return null

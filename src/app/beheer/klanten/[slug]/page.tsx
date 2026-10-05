@@ -5,7 +5,10 @@ import { listActiveServices } from '@/lib/services'
 import { getWalletEntries, getReversedEntryIds } from '@/lib/ledger'
 import { getOrganizationInvoices, invoiceStatusLabels, invoiceStatusStyles } from '@/lib/invoices'
 import { AppShell } from '@/components/AppShell'
-import { ActionForm, Field, Uitklap } from '@/components/ActionForm'
+import { ActionForm, Field, Select } from '@/components/ActionForm'
+import { Paneel } from '@/components/Paneel'
+import { Menu } from '@/components/Menu'
+import { Avatar } from '@/components/Avatar'
 import { boek, draaiTerug, nieuweWallet, nieuweGebruiker, wisselToegang } from '../../actions'
 import { boekDienst, nieuweFactuur, zetFactuurStatus } from '../../service-actions'
 import { nieuwAbonnement } from '../../subscription-actions'
@@ -29,8 +32,9 @@ import { listOwners } from '@/lib/crm-owners'
 import { merkTelling } from '@/lib/merkkluis'
 import { getTijdlijn, laatsteContact } from '@/lib/tijdlijn'
 import { BookServiceForm } from '@/components/BookServiceForm'
-import { formatQuantity, unitShort } from '@/lib/quantity'
-import { formatCents, formatSignedCents } from '@/lib/money'
+import { aantalMetEenheid } from '@/lib/quantity'
+import { formatCents, formatEuro, formatSignedCents } from '@/lib/money'
+import { factuurTitel, bronLabel } from '@/lib/weergave'
 import { formatDate, formatDateInput } from '@/lib/dates'
 
 import { PRODUCTGROEPEN } from '@/lib/services'
@@ -66,14 +70,14 @@ export default async function KlantPage({
   searchParams,
 }: {
   params: Promise<{ slug: string }>
-  searchParams: Promise<{ tab?: string }>
+  searchParams: Promise<{ tab?: string; alles?: string }>
 }) {
   const user = await getSessionUser()
   if (!user) redirect('/login')
   if (user.role !== 'staff' && user.role !== 'admin') redirect('/')
 
   const { slug } = await params
-  const { tab: tabParam } = await searchParams
+  const { tab: tabParam, alles } = await searchParams
   const tab: Tab = TABS.some((t) => t.key === tabParam) ? (tabParam as Tab) : 'overzicht'
   const klant = await getOrganizationBySlug(slug)
   if (!klant) notFound()
@@ -106,6 +110,7 @@ export default async function KlantPage({
     merkTelling(klant.organization.id),
   ])
   const vandaag = new Date().toISOString().slice(0, 10)
+  const vast = contacten.find((c) => c.isPrimary)
 
   // Het budget in één oogopslag: wat er elke maand bijkomt, wat er nu staat
   // en wanneer de volgende bijschrijving is.
@@ -133,41 +138,37 @@ export default async function KlantPage({
                 {organizationStatusLabels[klant.organization.status]}
               </span>
             </div>
-          <p className="mt-1 text-sm text-gray-600">
-            {[
-              `${klant.wallets.length} ${klant.wallets.length === 1 ? 'wallet' : 'wallets'}`,
-              klant.organization.industry,
-              contacten.find((c) => c.isPrimary)?.name,
-              klant.organization.phone,
-            ]
-              .filter(Boolean)
-              .join(' · ')}
+          {/* Wat het bedrijf is en waar het zit. Telefoon en contactpersoon
+              horen bij Contacten, het aantal wallets bij Budget. */}
+          <p className="mt-1 text-[15px] text-gray-600">
+            {[klant.organization.industry, klant.organization.city].filter(Boolean).join(' · ')}
             {klant.organization.website && (
               <>
-                {' · '}
+                {(klant.organization.industry || klant.organization.city) && ' · '}
                 <a
                   href={
                     klant.organization.website.startsWith('http')
                       ? klant.organization.website
                       : `https://${klant.organization.website}`
                   }
-                  className="hover:text-jr-blue"
+                  className="text-jr-link hover:underline"
                   rel="noreferrer noopener"
+                  target="_blank"
                 >
-                  {klant.organization.website.replace(/^https?:\/\//, '')}
+                  {klant.organization.website.replace(/^https?:\/\//, '').replace(/\/$/, '')}
                 </a>
               </>
             )}
           </p>
           </div>
           {/* Het actuele budget, rechtsboven: groen, rood of zwart. */}
-          <div className="text-right">
+          <div className="sm:text-right">
             <p className="text-xs text-gray-600">Actueel budget</p>
             <p className={`font-display tabular text-[32px] leading-tight font-bold tracking-tight ${saldoKleur(saldo)}`}>
               {formatCents(saldo)}
             </p>
             <p className="text-xs text-gray-600">
-              {actief.length > 0 ? `${formatCents(perMaand)} per maand erbij` : 'geen lopend abonnement'}
+              {actief.length > 0 ? `${formatEuro(perMaand)} per maand erbij` : 'Geen lopend abonnement'}
             </p>
           </div>
         </div>
@@ -194,40 +195,44 @@ export default async function KlantPage({
               <div className="rounded-xl bg-white p-6 shadow-sm">
                 <p className="text-xs text-gray-600">Budget per maand</p>
                 <p className="font-display tabular mt-1 text-2xl font-semibold tracking-tight">
-                  {actief.length > 0 ? formatCents(perMaand) : 'Geen abonnement'}
+                  {actief.length > 0 ? formatEuro(perMaand) : 'Geen abonnement'}
                 </p>
                 <p className="mt-1 text-xs text-gray-600">
-                  {actief.length} {actief.length === 1 ? 'actief abonnement' : 'actieve abonnementen'}
+                  {actief.length === 1 ? actief[0]!.subscription.name : actief.length > 1 ? `${actief.length} abonnementen` : 'Alleen losse facturen'}
                 </p>
               </div>
               <div className="rounded-xl bg-white p-6 shadow-sm">
                 <p className="text-xs text-gray-600">Volgende bijschrijving</p>
                 <p className="font-display tabular mt-1 text-2xl font-semibold tracking-tight">
-                  {volgende ? formatDate(volgende) : '-'}
+                  {volgende ? formatDate(volgende) : 'Geen'}
                 </p>
-                <p className="mt-1 text-xs text-gray-600">via de dagelijkse abonnementsrun</p>
+                <p className="mt-1 text-xs text-gray-600">{volgende ? 'Factuur en budget gaan vanzelf' : 'Er loopt geen abonnement'}</p>
               </div>
               <div className="rounded-xl bg-white p-6 shadow-sm">
                 <p className="text-xs text-gray-600">Vaste contactpersoon</p>
                 <p className="font-display mt-1 truncate text-2xl font-semibold tracking-tight">
-                  {contacten.find((c) => c.isPrimary)?.name ?? '-'}
+                  {vast?.name ?? 'Nog niemand'}
                 </p>
-                <p className="mt-1 text-xs text-gray-600">
-                  {contacten.length} {contacten.length === 1 ? 'contactpersoon' : 'contactpersonen'}
+                <p className="mt-1 truncate text-xs text-gray-600">
+                  {vast ? [vast.jobTitle, vast.mobile ?? vast.phone ?? vast.email].filter(Boolean).join(' · ') : 'Kies er een bij Contacten'}
                 </p>
               </div>
             </section>
-            <div className="grid items-start gap-8 xl:grid-cols-[minmax(0,1fr)_minmax(0,440px)]">
-              <div className="min-w-0">
+            {/* Pas naast elkaar als er echt ruimte is; anders wordt de
+                tijdlijn een smalle kolom met afgebroken regels. */}
+            <div className="grid items-start gap-8 2xl:grid-cols-[minmax(0,1fr)_minmax(0,440px)]">
+              <div className="min-w-0 2xl:order-1 order-2">
               <Tijdlijn
                 organizationId={klant.organization.id}
                 slug={slug}
                 items={tijdlijn}
                 contacten={contacten}
                 laatsteContactOp={laatsteContactOp}
+                kort={alles === '1' ? undefined : 10}
+                meerHref={`/beheer/klanten/${slug}?alles=1`}
               />
               </div>
-              <div className="min-w-0">
+              <div className="order-1 min-w-0 2xl:order-2">
                 <KlantCampagnes organizationId={klant.organization.id} slug={slug} metDoelgroepen={false} />
               </div>
             </div>
@@ -235,74 +240,66 @@ export default async function KlantPage({
         )}
 
         {tab === 'budget' && (
-          <div className="space-y-10">
+          <div className="space-y-12">
             {klant.wallets.map(({ wallet, balance }) => (
               <WalletBeheer
                 key={wallet.id}
                 slug={slug}
-                organizationId={klant.organization.id}
                 wallet={wallet}
                 balance={balance}
                 vandaag={vandaag}
                 diensten={diensten}
                 team={team}
+                alles={alles === '1'}
               />
             ))}
-            <section>
-              <h2 className="mb-1 text-lg">Abonnementen</h2>
-              <p className="mb-3 text-sm text-gray-600">
-                Zolang een abonnement loopt, wordt op de facturatiedag elke maand
-                automatisch een factuur gemaakt en het budget bijgeschreven.
-              </p>
 
-              {abonnementen.length > 0 && (
-                <ul className="mb-4 space-y-3">
+            <section>
+              <SectieKop
+                titel="Abonnementen"
+                uitleg="Zolang een abonnement loopt, komt er elke maand vanzelf een factuur en gaat het budget erbij."
+                actie={
+                  klant.wallets.length > 0 && (
+                    <Paneel knop="+ Abonnement" stijl="rustig" titel="Abonnement toevoegen" breed>
+                      <NewSubscriptionForm
+                        action={nieuwAbonnement}
+                        organizationId={klant.organization.id}
+                        slug={slug}
+                        wallets={klant.wallets.map(({ wallet }) => ({ id: wallet.id, name: wallet.name }))}
+                        vandaag={vandaag}
+                      />
+                    </Paneel>
+                  )
+                }
+              />
+              {abonnementen.length > 0 ? (
+                <ul className="space-y-3">
                   {abonnementen.map((item) => (
                     <SubscriptionCard key={item.subscription.id} item={item} slug={slug} />
                   ))}
                 </ul>
+              ) : (
+                <p className="rounded-xl bg-white px-6 py-5 text-sm text-gray-600 shadow-sm">
+                  Geen abonnement. Zonder abonnement komt er geen budget bij, behalve via een losse factuur.
+                </p>
               )}
+            </section>
 
-              <div className="rounded-xl bg-white p-6 shadow-sm">
-                <h3 className="mb-3 text-sm">
-                  {abonnementen.length === 0
-                    ? 'Eerste abonnement aanmaken'
-                    : 'Abonnement toevoegen'}
-                </h3>
-                <NewSubscriptionForm
-                  action={nieuwAbonnement}
-                  organizationId={klant.organization.id}
-                  slug={slug}
-                  wallets={klant.wallets.map(({ wallet }) => ({
-                    id: wallet.id,
-                    name: wallet.name,
-                  }))}
-                  vandaag={vandaag}
+            <Facturen facturen={facturen} klant={klant} slug={slug} vandaag={vandaag} />
+
+            <Paneel knop="+ Nog een wallet" stijl="link" titel="Wallet toevoegen" uitleg="Een tweede potje naast het abonnement, bijvoorbeeld een strippenkaart of een projectbudget.">
+              <ActionForm action={nieuweWallet} submitLabel="Wallet aanmaken" className="grid gap-4 sm:grid-cols-2">
+                <input type="hidden" name="organizationId" value={klant.organization.id} />
+                <input type="hidden" name="slug" value={slug} />
+                <Field label="Naam" name="naam" required placeholder="Strippenkaart 2026" />
+                <Field
+                  label="Melding onder"
+                  name="drempel"
+                  placeholder="250,00"
+                  hint="Komt het saldo hieronder, dan krijgt de klant een seintje."
                 />
-              </div>
-            </section>
-            <Facturen
-              facturen={facturen}
-              klant={klant}
-              slug={slug}
-              vandaag={vandaag}
-            />
-            <section className="grid gap-6 lg:grid-cols-2">
-              <div className="rounded-xl bg-white p-6 shadow-sm">
-                <h2 className="mb-3 text-base">Wallet toevoegen</h2>
-                <ActionForm action={nieuweWallet} submitLabel="Wallet aanmaken">
-                  <input type="hidden" name="organizationId" value={klant.organization.id} />
-                  <input type="hidden" name="slug" value={slug} />
-                  <Field label="Naam" name="naam" required placeholder="Strippenkaart 2026" />
-                  <Field
-                    label="Signaalgrens"
-                    name="drempel"
-                    placeholder="250,00"
-                    hint="Onder dit saldo krijgt de klant een melding dat het budget opraakt."
-                  />
-                </ActionForm>
-              </div>
-            </section>
+              </ActionForm>
+            </Paneel>
           </div>
         )}
 
@@ -332,20 +329,24 @@ export default async function KlantPage({
           <Klantprofiel
             organisatie={klant.organization}
             profiel={profiel}
-            marketingmanager={eigenaren.find((e) => e.isPrimary)?.name ?? null}
-            pakketten={actief.map((a) => ({ naam: a.subscription.name, start: a.subscription.startedOn }))}
-            vestigingen={vestigingen.map((v) => v.name)}
-            rechts={{
-              1: (
-                <div className="space-y-6">
-                  <Bedrijfsgegevens org={klant.organization} slug={slug} />
-                  <Vestigingen
-                organizationId={klant.organization.id}
+            basis={
+              <Bedrijfsgegevens
+                org={klant.organization}
                 slug={slug}
-                vestigingen={vestigingen}
+                extra={[
+                  { label: 'Branche', waarde: klant.organization.industry },
+                  { label: 'Marketingmanager', waarde: eigenaren.find((e) => e.isPrimary)?.name },
+                  {
+                    label: actief.length > 1 ? 'Pakketten' : 'Pakket',
+                    waarde:
+                      actief.length > 0 &&
+                      actief.map((a) => `${a.subscription.name}, sinds ${formatDate(a.subscription.startedOn)}`).join('; '),
+                  },
+                ]}
               />
-                </div>
-              ),
+            }
+            rechts={{
+              1: <Vestigingen organizationId={klant.organization.id} slug={slug} vestigingen={vestigingen} />,
               2: <Concurrenten
                 organizationId={klant.organization.id}
                 slug={slug}
@@ -375,232 +376,186 @@ export default async function KlantPage({
   )
 }
 
+/** Een kop boven een blok, met de actie rechts. */
+function SectieKop({ titel, uitleg, actie }: { titel: string; uitleg?: string; actie?: React.ReactNode }) {
+  return (
+    <div className="mb-4 flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
+      <div className="min-w-0">
+        <h2 className="text-[22px]">{titel}</h2>
+        {uitleg && <p className="mt-0.5 max-w-2xl text-sm text-gray-600">{uitleg}</p>}
+      </div>
+      {actie}
+    </div>
+  )
+}
+
+/** Een knop in een Menu die een formulier verstuurt. */
+const MENU_KNOP = '!min-h-0 w-full !rounded-lg !px-3 !py-2 text-left !font-normal text-jr-text hover:bg-gray-100'
+const MENU_KNOP_GEVAAR = '!min-h-0 w-full !rounded-lg !px-3 !py-2 text-left !font-normal text-[#C02A22] hover:bg-[#FDECEA]'
+
+/** Hoeveel boekingen je ziet voordat je op "alle" klikt. */
+const BOEKINGEN_KORT = 8
+
 async function WalletBeheer({
   slug,
-  organizationId,
   wallet,
   balance,
   vandaag,
   diensten,
   team,
+  alles,
 }: {
   slug: string
-  organizationId: string
   diensten: Awaited<ReturnType<typeof listActiveServices>>
   team: Awaited<ReturnType<typeof listStaff>>
-  wallet: Awaited<ReturnType<typeof getOrganizationBySlug>> extends null
-    ? never
-    : NonNullable<Awaited<ReturnType<typeof getOrganizationBySlug>>>['wallets'][number]['wallet']
-  balance: NonNullable<
-    Awaited<ReturnType<typeof getOrganizationBySlug>>
-  >['wallets'][number]['balance']
+  wallet: NonNullable<Awaited<ReturnType<typeof getOrganizationBySlug>>>['wallets'][number]['wallet']
+  balance: NonNullable<Awaited<ReturnType<typeof getOrganizationBySlug>>>['wallets'][number]['balance']
   vandaag: string
+  alles: boolean
 }) {
-  const [entries, reversedIds] = await Promise.all([
-    getWalletEntries(wallet.id, { limit: 25 }),
+  const [opgehaald, reversedIds] = await Promise.all([
+    getWalletEntries(wallet.id, { limit: alles ? 1000 : BOEKINGEN_KORT + 1 }),
     getReversedEntryIds(wallet.id),
   ])
+  const meer = !alles && opgehaald.length > BOEKINGEN_KORT
+  const entries = meer ? opgehaald.slice(0, BOEKINGEN_KORT) : opgehaald
 
   return (
     <section>
-      <div className="rounded-xl bg-white p-6 shadow-sm sm:p-6">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <h2 className="text-base">{wallet.name}</h2>
-            <p
-              className={`tabular mt-1 text-3xl font-bold ${
-                balance.balanceCents < 0 ? 'text-jr-red' : ''
-              }`}
-            >
-              {formatCents(balance.balanceCents)}
-            </p>
-            <p className="mt-1 text-xs text-gray-600">
-              bijgeschreven {formatCents(balance.toppedUpCents)} &middot; besteed{' '}
-              {formatCents(balance.spentCents)}
-              {wallet.lowBalanceThresholdCents !== null && (
-                <> &middot; signaal onder {formatCents(wallet.lowBalanceThresholdCents)}</>
-              )}
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-6 border-t border-gray-200 pt-5">
-          <h3 className="mb-3 text-sm">Dienst afboeken</h3>
-          <BookServiceForm
-            action={boekDienst}
-            walletId={wallet.id}
-            slug={slug}
-            services={diensten}
-            staff={team}
-            vandaag={vandaag}
-          />
-        </div>
-
-        <details className="mt-4 border-t border-gray-200 pt-4">
-          <summary className="text-jr-blue cursor-pointer text-sm">
-            Los boeken zonder dienst
-          </summary>
-          <p className="mt-2 mb-3 text-xs text-gray-600">
-            Voor werk dat niet in de catalogus staat, of om budget met de hand bij te
-            schrijven. Een bijschrijving via een factuur gaat beter via het
-            factuurformulier onderaan: dan blijven factuur en budget aan elkaar
-            gekoppeld.
+      <div className="flex flex-wrap items-start justify-between gap-6 rounded-xl bg-white p-6 shadow-sm sm:p-8">
+        <div>
+          <p className="text-sm text-gray-600">{wallet.name}</p>
+          <p className={`font-display tabular mt-1 text-[34px] leading-tight font-semibold tracking-tight ${saldoKleur(balance.balanceCents)}`}>
+            {formatCents(balance.balanceCents)}
           </p>
-          <ActionForm action={boek} submitLabel="Boeken" className="grid gap-3 sm:grid-cols-2">
-            <input type="hidden" name="walletId" value={wallet.id} />
-            <input type="hidden" name="slug" value={slug} />
-
-            <div>
-              <label
-                htmlFor={`soort-${wallet.id}`}
-                className="mb-1 block text-xs text-gray-600"
-              >
-                Soort
-              </label>
-              <select
-                id={`soort-${wallet.id}`}
+          <p className="mt-1 text-[13px] text-gray-600">
+            {formatEuro(balance.toppedUpCents)} bijgeschreven, {formatEuro(balance.spentCents)} besteed
+            {wallet.lowBalanceThresholdCents !== null && <>. Seintje onder {formatEuro(wallet.lowBalanceThresholdCents)}</>}
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Paneel
+            knop="Dienst afboeken"
+            titel="Dienst afboeken"
+            uitleg={`Gaat van ${wallet.name} af. De klant ziet de omschrijving in zijn wallet.`}
+          >
+            <BookServiceForm action={boekDienst} walletId={wallet.id} slug={slug} services={diensten} staff={team} vandaag={vandaag} />
+          </Paneel>
+          <Paneel
+            knop="Los boeken"
+            stijl="rustig"
+            titel="Los boeken"
+            uitleg="Voor werk dat niet in de catalogus staat, of om met de hand budget bij te schrijven. Hoort er een factuur bij, voeg dan de factuur toe: dan blijven factuur en budget gekoppeld."
+          >
+            <ActionForm action={boek} submitLabel="Boeken" className="grid gap-4 sm:grid-cols-2">
+              <input type="hidden" name="walletId" value={wallet.id} />
+              <input type="hidden" name="slug" value={slug} />
+              <Select
+                label="Soort"
                 name="soort"
                 defaultValue="spend"
-                className="focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
-              >
-                <option value="spend">Afschrijven (dienst afgenomen)</option>
-                <option value="topup">Bijschrijven (budget erbij)</option>
-              </select>
-            </div>
-
-            <Field label="Bedrag" name="bedrag" required placeholder="122,50" />
-
-            <div className="sm:col-span-2">
-              <Field
-                label="Omschrijving"
-                name="omschrijving"
-                required
-                placeholder="Website wijzigingen"
-                hint="Dit leest de klant in zijn overzicht."
+                options={[
+                  { value: 'spend', label: 'Afschrijven' },
+                  { value: 'topup', label: 'Bijschrijven' },
+                ]}
               />
-            </div>
-
-            <div>
-              <label
-                htmlFor={`cat-${wallet.id}`}
-                className="mb-1 block text-xs text-gray-600"
-              >
-                Productgroep <span className="text-gray-400">(optioneel)</span>
-              </label>
-              <select
-                id={`cat-${wallet.id}`}
+              <Field label="Bedrag" name="bedrag" required placeholder="122,50" />
+              <div className="sm:col-span-2">
+                <Field label="Omschrijving" name="omschrijving" required placeholder="Website wijzigingen" hint="Dit leest de klant." />
+              </div>
+              <Select
+                label="Productgroep"
                 name="categorie"
                 defaultValue=""
-                className="focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
-              >
-                <option value="">Geen</option>
-                {PRODUCTGROEPEN.map((p) => (
-                  <option key={p} value={p}>
-                    {p}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <Field label="Datum" name="datum" type="date" defaultValue={vandaag} />
-
-            <div className="sm:col-span-2">
-              <Field
-                label="Toelichting"
-                name="toelichting"
-                placeholder="Wat is er precies gedaan"
+                options={[{ value: '', label: 'Geen' }, ...PRODUCTGROEPEN.map((p) => ({ value: p, label: p }))]}
               />
-            </div>
-          </ActionForm>
-        </details>
+              <Field label="Datum" name="datum" type="date" defaultValue={vandaag} />
+              <div className="sm:col-span-2">
+                <Field label="Toelichting" name="toelichting" placeholder="Wat er precies is gedaan" />
+              </div>
+            </ActionForm>
+          </Paneel>
+        </div>
       </div>
 
-      <h3 className="mt-6 mb-3 px-1 text-sm text-gray-600">
-        Laatste boekingen &middot; {wallet.name}
-      </h3>
+      <div className="mt-8 mb-3 flex items-baseline justify-between gap-4 px-1">
+        <h3 className="text-[17px]">Boekingen</h3>
+        {meer && (
+          <a href={`/beheer/klanten/${slug}?tab=budget&alles=1`} className="text-jr-link text-sm hover:underline">
+            Alles tonen
+          </a>
+        )}
+        {alles && (
+          <a href={`/beheer/klanten/${slug}?tab=budget`} className="text-jr-link text-sm hover:underline">
+            Alleen de laatste
+          </a>
+        )}
+      </div>
 
       {entries.length === 0 ? (
-        <p className="rounded-xl bg-white p-5 text-sm text-gray-600 shadow-sm">
-          Nog geen boekingen.
-        </p>
+        <p className="rounded-xl bg-white px-6 py-5 text-sm text-gray-600 shadow-sm">Nog geen boekingen.</p>
       ) : (
-        <ul className="divide-y divide-gray-200 overflow-hidden rounded-xl bg-white shadow-sm">
+        <ul className="divide-y divide-gray-150 rounded-xl bg-white shadow-sm">
           {entries.map((entry) => {
             const teruggedraaid = reversedIds.has(entry.id)
-            const corrigeerbaar = entry.kind !== 'correction' && !teruggedraaid
+            // Budget uit een factuur draai je terug door de factuur te
+            // crediteren; dan blijven factuur en wallet gelijk.
+            const vanFactuur = entry.source === 'invoice' || entry.invoiceId !== null
+            const corrigeerbaar = entry.kind !== 'correction' && !teruggedraaid && !vanFactuur
+            const regel = [
+              formatDate(entry.bookedOn),
+              entry.serviceName && entry.quantityHundredths !== null && entry.serviceUnit && entry.unitPriceCents !== null
+                ? `${aantalMetEenheid(entry.quantityHundredths, entry.serviceUnit)} × ${formatEuro(entry.unitPriceCents)}`
+                : null,
+              entry.deliveredByName,
+              bronLabel(entry.source),
+              entry.kind === 'correction' ? 'Correctie' : null,
+              teruggedraaid ? 'Teruggedraaid' : null,
+            ].filter(Boolean)
 
             return (
-              <li key={entry.id} className="px-4 py-3 sm:px-6">
-                <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-1">
-                  <div className="min-w-0 flex-1">
-                    <p
-                      className={`text-sm ${teruggedraaid ? 'text-gray-500 line-through' : ''}`}
-                    >
-                      {entry.description}
-                    </p>
-                    <p className="mt-0.5 text-xs text-gray-600">
-                      {formatDate(entry.bookedOn)}
-                      {entry.serviceName && entry.quantityHundredths !== null && (
-                        <>
-                          {' '}
-                          &middot; {formatQuantity(entry.quantityHundredths)}
-                          {entry.serviceUnit ? ` ${unitShort[entry.serviceUnit]}` : ''} ×{' '}
-                          {entry.unitPriceCents !== null
-                            ? formatCents(entry.unitPriceCents)
-                            : '?'}
-                        </>
-                      )}
-                      {entry.category && <> &middot; {entry.category}</>}
-                      {entry.deliveredByName && <> &middot; {entry.deliveredByName}</>}
-                      <> &middot; {entry.source}</>
-                      {entry.kind === 'correction' && (
-                        <span className="text-jr-orange"> &middot; correctie</span>
-                      )}
-                      {teruggedraaid && <> &middot; teruggedraaid</>}
-                    </p>
-                  </div>
-
-                  <p
-                    className={`tabular shrink-0 text-sm ${
-                      teruggedraaid
-                        ? 'text-gray-500 line-through'
-                        : entry.amountCents > 0
-                          ? 'text-jr-green'
-                          : ''
-                    }`}
-                  >
-                    {formatSignedCents(entry.amountCents)}
-                  </p>
+              <li key={entry.id} className="flex items-start gap-3 py-3.5 pr-3 pl-5 sm:pl-6">
+                {/* Op een telefoon het bedrag onder de omschrijving, niet ernaast. */}
+                <div className="flex min-w-0 flex-1 flex-col gap-1 sm:flex-row sm:gap-3">
+                <div className="min-w-0 flex-1">
+                  <p className={`text-[15px] ${teruggedraaid ? 'text-gray-500 line-through' : ''}`}>{entry.description}</p>
+                  <p className="mt-0.5 text-[13px] text-gray-600">{regel.join(' · ')}</p>
+                  {entry.detail && !vanFactuur && <p className="mt-0.5 text-[13px] text-gray-500">{entry.detail}</p>}
                 </div>
-
-                {corrigeerbaar && (
-                  <details className="mt-2">
-                    <summary className="text-jr-blue cursor-pointer text-xs">
-                      Terugdraaien
-                    </summary>
-                    <div className="mt-2 rounded-lg bg-gray-50 p-3">
-                      <p className="mb-2 text-xs text-gray-600">
-                        De boeking blijft staan en wordt opgeheven met een tegenboeking.
-                        De klant ziet beide regels plus jouw reden.
-                      </p>
-                      <ActionForm
-                        action={draaiTerug}
-                        submitLabel="Terugdraaien"
-                        submitClassName="bg-jr-red hover:bg-jr-red/80 text-white"
-                        resetOnSuccess={false}
+                <p
+                  className={`tabular shrink-0 text-[15px] sm:pt-px ${
+                    teruggedraaid ? 'text-gray-500 line-through' : entry.amountCents > 0 ? 'text-[#1D7D3F]' : ''
+                  }`}
+                >
+                  {formatSignedCents(entry.amountCents)}
+                </p>
+                </div>
+                <div className="w-8 shrink-0">
+                  {corrigeerbaar && (
+                    <Menu>
+                      <Paneel
+                        knop="Terugdraaien"
+                        stijl="menuGevaar"
+                        titel="Boeking terugdraaien"
+                        uitleg="De boeking blijft staan en wordt opgeheven met een tegenboeking. De klant ziet beide regels en jouw reden."
                       >
-                        <input type="hidden" name="entryId" value={entry.id} />
-                        <input type="hidden" name="slug" value={slug} />
-                        <Field
-                          label="Reden"
-                          name="reden"
-                          required
-                          placeholder="Dubbel geboekt door de sync"
-                        />
-                      </ActionForm>
-                    </div>
-                  </details>
-                )}
+                        <p className="mb-4 rounded-lg bg-gray-50 px-4 py-3 text-sm">
+                          {entry.description} <span className="tabular text-gray-600">({formatSignedCents(entry.amountCents)})</span>
+                        </p>
+                        <ActionForm
+                          action={draaiTerug}
+                          submitLabel="Terugdraaien"
+                          submitClassName="bg-[#C02A22] hover:bg-[#A3241D] text-white"
+                          resetOnSuccess={false}
+                        >
+                          <input type="hidden" name="entryId" value={entry.id} />
+                          <input type="hidden" name="slug" value={slug} />
+                          <Field label="Reden" name="reden" required placeholder="Dubbel geboekt" />
+                        </ActionForm>
+                      </Paneel>
+                    </Menu>
+                  )}
+                </div>
               </li>
             )
           })}
@@ -618,57 +573,65 @@ function Gebruikers({
   slug: string
 }) {
   return (
-    <div className="rounded-xl bg-white p-6 shadow-sm">
-      <h2 className="mb-3 text-base">Wie mag inloggen</h2>
+    <section>
+      <SectieKop
+        titel="Wie mag inloggen"
+        uitleg="Wie bij de klant in de wallet kan kijken. Los van wie contactpersoon is."
+        actie={
+          <Paneel knop="+ Toegang geven" stijl="rustig" titel="Toegang geven" uitleg="Deze persoon kan inloggen met een link per mail; een wachtwoord is niet nodig.">
+            <ActionForm action={nieuweGebruiker} submitLabel="Toegang geven" className="grid gap-4 sm:grid-cols-2">
+              <input type="hidden" name="organizationId" value={klant.organization.id} />
+              <input type="hidden" name="slug" value={slug} />
+              <Field label="E-mailadres" name="email" type="email" required placeholder="naam@bedrijf.nl" />
+              <Field label="Naam" name="naam" placeholder="Voor- en achternaam" />
+            </ActionForm>
+          </Paneel>
+        }
+      />
 
       {klant.users.length === 0 ? (
-        <p className="mb-4 text-sm text-gray-600">
-          Nog niemand. Zolang er geen gebruiker is, kan deze klant niet bij zijn wallet.
+        <p className="rounded-xl bg-white px-6 py-5 text-sm text-gray-600 shadow-sm">
+          Nog niemand. Zolang niemand toegang heeft, kan de klant zijn budget niet zien.
         </p>
       ) : (
-        <ul className="mb-4 divide-y divide-gray-200">
+        <ul className="divide-y divide-gray-150 rounded-xl bg-white shadow-sm">
           {klant.users.map((u) => (
-            <li key={u.id} className="flex items-center justify-between gap-3 py-2">
-              <div className="min-w-0">
-                <p className="truncate text-sm">{u.email}</p>
-                <p className="text-xs text-gray-600">
-                  {u.name ?? 'geen naam'}
-                  {u.lastLoginAt
-                    ? ` · laatst ingelogd ${formatDate(u.lastLoginAt)}`
-                    : ' · nog niet ingelogd'}
-                  {u.disabledAt && (
-                    <span className="text-jr-red"> &middot; geblokkeerd</span>
+            <li key={u.id} className="flex items-center gap-4 py-3.5 pr-3 pl-6">
+              <Avatar naam={u.name ?? u.email} imageId={null} maat={36} />
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-[15px]">{u.name ?? u.email}</p>
+                <p className="truncate text-[13px] text-gray-600">
+                  {u.name ? `${u.email} · ` : ''}
+                  {u.disabledAt ? (
+                    <span className="text-[#C02A22]">Geblokkeerd</span>
+                  ) : u.lastLoginAt ? (
+                    `Laatst ingelogd ${formatDate(u.lastLoginAt)}`
+                  ) : (
+                    'Nog nooit ingelogd'
                   )}
                 </p>
               </div>
-              <div className="shrink-0">
+              <Menu>
                 <ActionForm
                   action={wisselToegang}
                   submitLabel={u.disabledAt ? 'Toegang teruggeven' : 'Blokkeren'}
-                  submitClassName="text-gray-600 hover:bg-gray-100 !px-2 !py-1 !text-xs"
+                  submitClassName={u.disabledAt ? MENU_KNOP : MENU_KNOP_GEVAAR}
                   resetOnSuccess={false}
+                  meldGelukt={false}
                   className=""
                 >
                   <input type="hidden" name="userId" value={u.id} />
                   <input type="hidden" name="slug" value={slug} />
                   <input type="hidden" name="blokkeren" value={u.disabledAt ? '0' : '1'} />
                 </ActionForm>
-              </div>
+              </Menu>
             </li>
           ))}
         </ul>
       )}
-
-      <ActionForm action={nieuweGebruiker} submitLabel="Gebruiker toevoegen">
-        <input type="hidden" name="organizationId" value={klant.organization.id} />
-        <input type="hidden" name="slug" value={slug} />
-        <Field label="E-mailadres" name="email" type="email" required placeholder="naam@bedrijf.nl" />
-        <Field label="Naam" name="naam" placeholder="Voor- en achternaam" />
-      </ActionForm>
-    </div>
+    </section>
   )
 }
-
 
 /**
  * Facturen van de klant, met de mogelijkheid er een toe te voegen.
@@ -691,219 +654,132 @@ function Facturen({
 
   return (
     <section>
-      <h2 className="mb-3 text-lg">Facturen</h2>
-
-      <div className="mb-4 rounded-xl bg-white p-6 shadow-sm">
-        <h3 className="mb-1 text-sm">Factuur toevoegen</h3>
-        <p className="mb-3 text-xs text-gray-600">
-          Het bedrag exclusief btw wordt direct als budget bijgeschreven op de gekozen
-          wallet. Een factuur van &euro; 1.000 geeft dus &euro; 1.000 budget.
-        </p>
-
-        {wallets.length === 0 ? (
-          <p className="text-sm text-gray-600">
-            Maak eerst een wallet aan om budget op bij te schrijven.
-          </p>
-        ) : (
-          <ActionForm
-            action={nieuweFactuur}
-            submitLabel="Factuur aanmaken en budget bijschrijven"
-            className="grid gap-3 sm:grid-cols-2"
-          >
-            <input type="hidden" name="organizationId" value={klant.organization.id} />
-
-            <Field label="Factuurnummer" name="nummer" required placeholder="2026-0112" />
-            <Field
-              label="Bedrag excl. btw"
-              name="bedrag"
-              required
-              placeholder="1000,00"
-              hint="Dit wordt het budget."
-            />
-
-            <div>
-              <label htmlFor="factuur-wallet" className="mb-1 block text-xs text-gray-600">
-                Budget bijschrijven op
-              </label>
-              <select
-                id="factuur-wallet"
-                name="walletId"
-                defaultValue={wallets[0]!.wallet.id}
-                className="focus:border-jr-blue w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none"
-              >
-                {wallets.map(({ wallet }) => (
-                  <option key={wallet.id} value={wallet.id}>
-                    {wallet.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <Field label="Factuurdatum" name="datum" type="date" defaultValue={vandaag} />
-
-            <div className="sm:col-span-2">
-              <Field
-                label="Omschrijving"
-                name="omschrijving"
-                placeholder="Marketing abonnement januari"
-                hint="Dit leest de klant bij de bijschrijving."
-              />
-            </div>
-
-            <Field
-              label="Btw-bedrag"
-              name="btw"
-              placeholder="210,00"
-              hint="Leeg laten rekent 21%."
-            />
-          </ActionForm>
-        )}
-      </div>
+      <SectieKop
+        titel="Facturen"
+        uitleg="Het bedrag exclusief btw van een factuur komt direct als budget in de wallet."
+        actie={
+          wallets.length > 0 && (
+            <Paneel
+              knop="+ Factuur"
+              stijl="rustig"
+              titel="Factuur toevoegen"
+              uitleg="Het bedrag exclusief btw wordt meteen als budget bijgeschreven. Een factuur van € 1.000 geeft € 1.000 budget."
+            >
+              <ActionForm action={nieuweFactuur} submitLabel="Factuur toevoegen" className="grid gap-4 sm:grid-cols-2">
+                <input type="hidden" name="organizationId" value={klant.organization.id} />
+                <Field label="Factuurnummer" name="nummer" required placeholder="2026-0112" />
+                <Field label="Bedrag excl. btw" name="bedrag" required placeholder="1000,00" hint="Dit wordt het budget." />
+                <Select
+                  label="Budget naar"
+                  name="walletId"
+                  defaultValue={wallets[0]!.wallet.id}
+                  options={wallets.map(({ wallet }) => ({ value: wallet.id, label: wallet.name }))}
+                />
+                <Field label="Factuurdatum" name="datum" type="date" defaultValue={vandaag} />
+                <div className="sm:col-span-2">
+                  <Field label="Omschrijving" name="omschrijving" placeholder="Marketing abonnement januari" hint="Dit leest de klant bij de bijschrijving." />
+                </div>
+                <Field label="Btw-bedrag" name="btw" placeholder="210,00" hint="Leeg laten rekent 21%." />
+              </ActionForm>
+            </Paneel>
+          )
+        }
+      />
 
       {facturen.length === 0 ? (
-        <p className="rounded-xl bg-white p-6 text-sm text-gray-600 shadow-sm">
+        <p className="rounded-xl bg-white px-6 py-5 text-sm text-gray-600 shadow-sm">
           Nog geen facturen. Zonder factuur heeft de klant geen budget.
         </p>
       ) : (
-        <ul className="divide-y divide-gray-200 overflow-hidden rounded-xl bg-white shadow-sm">
+        <ul className="divide-y divide-gray-150 rounded-xl bg-white shadow-sm">
           {facturen.map((f) => {
             // Factuur en bijschrijving horen exact gelijk te zijn. Wijkt het
             // af, dan is er iets met de hand aangepast en dat verzwijgen we niet.
             const afwijking = f.toppedUpCents !== f.amountExclVatCents
+            const kanWeg = f.status === 'draft' && f.toppedUpCents === 0
 
             return (
-              <li key={f.id} className="px-4 py-3.5 sm:px-6">
-                <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="text-sm">{f.number}</span>
-                      <span
-                        className={`rounded-full px-2 py-0.5 text-xs ${invoiceStatusStyles[f.status]}`}
-                      >
+              <li key={f.id} className="flex items-start gap-3 py-3.5 pr-3 pl-5 sm:pl-6">
+                <div className="flex min-w-0 flex-1 flex-col gap-1 sm:flex-row sm:gap-3">
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-[15px]">{factuurTitel(f)}</span>
+                    {f.status !== 'paid' && (
+                      <span className={`rounded-full px-2 py-0.5 text-xs ${invoiceStatusStyles[f.status]}`}>
                         {invoiceStatusLabels[f.status]}
                       </span>
-                    </div>
-                    <p className="mt-0.5 text-xs text-gray-600">
-                      {formatDate(f.issuedOn)}
-                      {f.description && <> &middot; {f.description}</>}
-                      {f.period && <> &middot; abonnement {f.period}</>}
-                      {f.paidOn && <> &middot; betaald {formatDate(f.paidOn)}</>}
-                    </p>
-                    {afwijking && (
-                      <p className="text-jr-orange mt-1 text-xs">
-                        Als budget bijgeschreven: {formatCents(f.toppedUpCents)} in plaats
-                        van {formatCents(f.amountExclVatCents)}.
-                      </p>
                     )}
                   </div>
-
-                  <div className="shrink-0 text-right">
-                    <p className="tabular text-sm">{formatCents(f.amountExclVatCents)}</p>
-                    <p className="text-xs text-gray-500">
-                      excl. btw &middot; incl. {formatCents(f.amountExclVatCents + f.vatCents)}
+                  <p className="mt-0.5 text-[13px] text-gray-600">
+                    {formatDate(f.issuedOn)}
+                    {f.paidOn && <>, betaald {formatDate(f.paidOn)}</>}
+                    <span className="text-gray-400"> &middot; nr. {f.number}</span>
+                  </p>
+                  {afwijking && (
+                    <p className="mt-1 text-[13px] text-[#94590A]">
+                      Als budget bijgeschreven: {formatCents(f.toppedUpCents)} in plaats van {formatCents(f.amountExclVatCents)}.
                     </p>
-                  </div>
+                  )}
                 </div>
 
-                {f.status !== 'credited' && (
-                  <div className="mt-2 flex flex-wrap items-center gap-2">
-                    {f.status !== 'paid' && (
-                      <ActionForm
-                        action={zetFactuurStatus}
-                        submitLabel="Markeren als betaald"
-                        submitClassName="text-gray-600 hover:bg-gray-100 !px-2 !py-1 !text-xs"
-                        resetOnSuccess={false}
-                        className=""
-                      >
-                        <input type="hidden" name="invoiceId" value={f.id} />
-                        <input type="hidden" name="slug" value={slug} />
-                        <input type="hidden" name="status" value="paid" />
-                      </ActionForm>
-                    )}
+                <div className="shrink-0 sm:text-right">
+                  <p className="tabular text-[15px]">{formatCents(f.amountExclVatCents)}</p>
+                  <p className="text-xs text-gray-500">incl. btw {formatCents(f.amountExclVatCents + f.vatCents)}</p>
+                </div>
+                </div>
 
-                    {/* Verwijderen kan alleen zolang er geen budget aan hangt.
-                        Alles wat al is bijgeschreven wordt gecrediteerd, want
-                        dan blijft in het grootboek staan dat het gebeurd is. */}
-                    {f.status === 'draft' && f.toppedUpCents === 0 && (
-                      <ActionForm
-                        action={verwijderFactuurActie}
-                        submitLabel="Verwijderen"
-                        submitClassName="text-jr-red hover:bg-jr-red/10 !px-2 !py-1 !text-xs"
-                        resetOnSuccess={false}
-                        className=""
+                <div className="w-8 shrink-0">
+                  {f.status !== 'credited' && (
+                    <Menu>
+                      {f.status !== 'paid' && (
+                        <ActionForm action={zetFactuurStatus} submitLabel="Markeren als betaald" submitClassName={MENU_KNOP} resetOnSuccess={false} meldGelukt={false} className="">
+                          <input type="hidden" name="invoiceId" value={f.id} />
+                          <input type="hidden" name="slug" value={slug} />
+                          <input type="hidden" name="status" value="paid" />
+                        </ActionForm>
+                      )}
+                      <Paneel
+                        knop="Gegevens wijzigen"
+                        stijl="menu"
+                        titel="Factuur wijzigen"
+                        uitleg="Het bedrag staat hier niet bij: daar hangt een bijschrijving aan die precies even groot is. Een ander bedrag is crediteren en opnieuw factureren."
                       >
-                        <input type="hidden" name="invoiceId" value={f.id} />
-                        <input type="hidden" name="slug" value={slug} />
-                      </ActionForm>
-                    )}
-                  </div>
-                )}
-
-                {f.status !== 'credited' && (
-                  <div className="mt-2 flex flex-wrap gap-x-4">
-                    <Uitklap label="Gegevens wijzigen">
-                      <p className="mb-3 text-xs text-gray-600">
-                        Het bedrag staat hier niet tussen. Daar hangt een bijschrijving
-                        aan die precies zo groot is; zou je het hier wijzigen, dan klopt
-                        het saldo van de klant niet meer. Een ander bedrag betekent
-                        crediteren en opnieuw factureren.
-                      </p>
-                      <ActionForm
-                        action={wijzigFactuurActie}
-                        submitLabel="Opslaan"
-                        resetOnSuccess={false}
-                        className="grid gap-3 sm:grid-cols-2"
-                      >
-                        <input type="hidden" name="invoiceId" value={f.id} />
-                        <input type="hidden" name="slug" value={slug} />
-                        <Field label="Factuurnummer" name="nummer" required defaultValue={f.number} />
-                        <Field
-                          label="Factuurdatum"
-                          name="factuurdatum"
-                          type="date"
-                          required
-                          defaultValue={formatDateInput(f.issuedOn)}
-                        />
-                        <Field
-                          label="Omschrijving"
-                          name="omschrijving"
-                          defaultValue={f.description ?? ''}
-                        />
-                        <Field
-                          label="Vervaldatum"
-                          name="vervaldatum"
-                          type="date"
-                          defaultValue={f.dueOn ? formatDateInput(f.dueOn) : ''}
-                        />
-                      </ActionForm>
-                    </Uitklap>
-
-                    <Uitklap label="Crediteren">
-                      <p className="mb-3 text-xs text-gray-600">
-                        Het bijgeschreven budget van {formatCents(f.toppedUpCents)} gaat er
-                        weer af en de factuur wordt gemarkeerd als gecrediteerd. Het
-                        factuurnummer blijft bestaan: een gat in de nummering is een vraag
-                        van de accountant die je niet wilt krijgen.
-                      </p>
-                      <ActionForm
-                        action={crediteerFactuurActie}
-                        submitLabel="Crediteren"
-                        submitClassName="bg-jr-red hover:bg-jr-red/90 text-white !text-xs"
-                        resetOnSuccess={false}
-                      >
-                        <input type="hidden" name="invoiceId" value={f.id} />
-                        <input type="hidden" name="slug" value={slug} />
-                        <Field
-                          label="Reden"
-                          name="reden"
-                          required
-                          placeholder="Verkeerd bedrag ingevoerd"
-                          hint="Komt in het grootboek te staan bij de tegenboeking."
-                        />
-                      </ActionForm>
-                    </Uitklap>
-                  </div>
-                )}
+                        <ActionForm action={wijzigFactuurActie} submitLabel="Opslaan" resetOnSuccess={false} className="grid gap-4 sm:grid-cols-2">
+                          <input type="hidden" name="invoiceId" value={f.id} />
+                          <input type="hidden" name="slug" value={slug} />
+                          <Field label="Factuurnummer" name="nummer" required defaultValue={f.number} />
+                          <Field label="Factuurdatum" name="factuurdatum" type="date" required defaultValue={formatDateInput(f.issuedOn)} />
+                          <Field label="Omschrijving" name="omschrijving" defaultValue={f.description ?? ''} />
+                          <Field label="Vervaldatum" name="vervaldatum" type="date" defaultValue={f.dueOn ? formatDateInput(f.dueOn) : ''} />
+                        </ActionForm>
+                      </Paneel>
+                      {kanWeg ? (
+                        <ActionForm action={verwijderFactuurActie} submitLabel="Verwijderen" submitClassName={MENU_KNOP_GEVAAR} resetOnSuccess={false} meldGelukt={false} className="">
+                          <input type="hidden" name="invoiceId" value={f.id} />
+                          <input type="hidden" name="slug" value={slug} />
+                        </ActionForm>
+                      ) : (
+                        <Paneel
+                          knop="Crediteren"
+                          stijl="menuGevaar"
+                          titel="Factuur crediteren"
+                          uitleg={`Het bijgeschreven budget van ${formatCents(f.toppedUpCents)} gaat er weer af en de factuur staat daarna op gecrediteerd. Het nummer blijft bestaan, zodat de nummering geen gat krijgt.`}
+                        >
+                          <ActionForm
+                            action={crediteerFactuurActie}
+                            submitLabel="Crediteren"
+                            submitClassName="bg-[#C02A22] hover:bg-[#A3241D] text-white"
+                            resetOnSuccess={false}
+                          >
+                            <input type="hidden" name="invoiceId" value={f.id} />
+                            <input type="hidden" name="slug" value={slug} />
+                            <Field label="Reden" name="reden" required placeholder="Verkeerd bedrag ingevoerd" hint="Komt bij de tegenboeking te staan." />
+                          </ActionForm>
+                        </Paneel>
+                      )}
+                    </Menu>
+                  )}
+                </div>
               </li>
             )
           })}

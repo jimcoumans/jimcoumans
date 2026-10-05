@@ -10,7 +10,7 @@ import { AppShell } from '@/components/AppShell'
 import { ActionForm } from '@/components/ActionForm'
 import { SubscriptionCard } from '@/components/SubscriptionCard'
 import { factureerNu } from '../subscription-actions'
-import { formatCents } from '@/lib/money'
+import { formatEuro } from '@/lib/money'
 import { formatDate } from '@/lib/dates'
 
 /**
@@ -57,7 +57,7 @@ export default async function AbonnementenPage() {
         <section className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <div className="rounded-xl bg-white p-6 shadow-sm">
             <p className="text-xs text-gray-600">Omzet per maand</p>
-            <p className="tabular mt-1 text-3xl font-bold">{formatCents(mrr)}</p>
+            <p className="tabular mt-1 text-3xl font-bold">{formatEuro(mrr)}</p>
             <p className="mt-1 text-xs text-gray-500">
               uit {lopend.length} {lopend.length === 1 ? 'abonnement' : 'abonnementen'}
               {budget.kortingCents > 0 && ', na korting'}
@@ -65,19 +65,19 @@ export default async function AbonnementenPage() {
           </div>
           <div className="rounded-xl bg-white p-6 shadow-sm">
             <p className="text-xs text-gray-600">Per jaar</p>
-            <p className="tabular mt-1 text-2xl font-bold">{formatCents(mrr * 12)}</p>
+            <p className="tabular mt-1 text-2xl font-bold">{formatEuro(mrr * 12)}</p>
             <p className="mt-1 text-xs text-gray-500">bij ongewijzigde abonnementen</p>
           </div>
           <div className="rounded-xl bg-white p-6 shadow-sm">
             <p className="text-xs text-gray-600">Budget dat we weggeven</p>
             <p className="tabular mt-1 text-2xl font-bold">
-              {formatCents(budget.budgetCents)}
+              {formatEuro(budget.budgetCents)}
             </p>
             <p className="mt-1 text-xs text-gray-500">
               {budget.kortingCents > 0 ? (
                 <>
                   waarvan{' '}
-                  <span className="text-jr-orange">{formatCents(budget.kortingCents)}</span>{' '}
+                  <span className="text-jr-orange">{formatEuro(budget.kortingCents)}</span>{' '}
                   korting
                 </>
               ) : (
@@ -99,7 +99,7 @@ export default async function AbonnementenPage() {
             <div className="flex flex-wrap items-baseline justify-between gap-x-4 border-b border-gray-200 px-5 py-3">
               <h2 className="text-base">Wie vormt de abonnementsomzet</h2>
               <p className="text-xs text-gray-500">
-                Aandeel in {formatCents(aandelen.totaalOmzetCents)} per maand
+                Aandeel in {formatEuro(aandelen.totaalOmzetCents)} per maand
               </p>
             </div>
 
@@ -114,7 +114,7 @@ export default async function AbonnementenPage() {
                       {k.organizationName}
                     </a>
                     <p className="text-sm">
-                      <span className="tabular">{formatCents(k.omzetCents)}</span>
+                      <span className="tabular">{formatEuro(k.omzetCents)}</span>
                       <span className="tabular ml-3 inline-block w-12 text-right font-bold">
                         {k.aandeelProcent}%
                       </span>
@@ -132,8 +132,8 @@ export default async function AbonnementenPage() {
 
                   {k.kortingCents > 0 && (
                     <p className="text-jr-orange mt-0.5 text-xs">
-                      krijgt {formatCents(k.budgetCents)} budget &middot;{' '}
-                      {formatCents(k.kortingCents)} korting
+                      krijgt {formatEuro(k.budgetCents)} budget &middot;{' '}
+                      {formatEuro(k.kortingCents)} korting
                     </p>
                   )}
                 </li>

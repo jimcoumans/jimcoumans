@@ -128,3 +128,20 @@ button.border {
     print-color-adjust: exact;
   }
 }
+
+/* Het zijpaneel schuift van rechts in. */
+@keyframes paneel {
+  from {
+    transform: translateX(32px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+  }
+}

@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { getSessionUser } from '@/lib/auth'
 import { zoekBeelden, beeldTags } from '@/lib/merkkluis'
 import { listKlantenVoorCampagne } from '@/lib/campagnes'
+import { FilterBalk } from '@/components/FilterBalk'
 import { AppShell } from '@/components/AppShell'
 
 export const maxDuration = 26
@@ -37,8 +38,8 @@ export default async function BeeldbankPage({ searchParams }: { searchParams: Pr
         {tag && ` met de tag “${tag}”`}. Toevoegen doe je in de merkkluis van de klant.
       </p>
 
-      <form className="mb-4 flex flex-wrap items-center gap-2" action="/beheer/assets/beeldbank">
-        <select name="klant" defaultValue={klant ?? ''} aria-label="Klant" className="min-h-10 rounded-lg border border-gray-300 px-3 py-2 text-sm">
+      <FilterBalk className="mb-4 flex flex-wrap items-center gap-2">
+        <select name="klant" defaultValue={klant ?? ''} aria-label="Klant" className="min-h-11 rounded-full border border-gray-300 bg-white py-2.5 pr-9 pl-4 text-[15px] outline-none hover:border-gray-400">
           <option value="">Alle klanten</option>
           {klanten.map((k) => (
             <option key={k.id} value={k.id}>
@@ -47,10 +48,7 @@ export default async function BeeldbankPage({ searchParams }: { searchParams: Pr
           ))}
         </select>
         {tag && <input type="hidden" name="tag" value={tag} />}
-        <button type="submit" className="bg-jr-btn hover:bg-jr-btnhover rounded-full px-5 py-2 text-sm font-medium text-white">
-          Filteren
-        </button>
-      </form>
+      </FilterBalk>
 
       {tags.length > 0 && (
         <div className="mb-6 flex flex-wrap gap-2">
