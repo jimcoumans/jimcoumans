@@ -144,8 +144,8 @@ export default async function MerkkluisPage({
               </svg>
               Stylesheet als pdf
             </a>
-            <a href={`/beheer/klanten/${slug}?tab=profiel`} className="text-jr-link text-sm hover:underline">
-              Naar het klantprofiel
+            <a href={`/beheer/klanten/${slug}`} className="text-jr-link text-sm hover:underline">
+              Naar de klantpagina
             </a>
           </div>
         </div>

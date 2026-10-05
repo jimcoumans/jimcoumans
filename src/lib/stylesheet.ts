@@ -243,3 +243,17 @@ export function googleFontsUrls(stijlen: Pick<Tekststijl, 'fontFamily' | 'weight
   }
   return [...uniek.values()]
 }
+
+/** Een rij uit de database als tekststijl, zonder sleutels en datum. */
+export function alsStijl(r: Tekststijl & Record<string, unknown>): Tekststijl {
+  return {
+    fontFamily: r.fontFamily,
+    weight: r.weight,
+    italic: r.italic,
+    sizePx: r.sizePx,
+    lineHeightPct: r.lineHeightPct,
+    trackingTenths: r.trackingTenths,
+    uppercase: r.uppercase,
+    colorHex: r.colorHex,
+  }
+}
