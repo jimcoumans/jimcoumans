@@ -1,4 +1,4 @@
-import { and, asc, count, desc, eq, sql } from 'drizzle-orm'
+import { and, asc, count, desc, eq, ilike, or, sql } from 'drizzle-orm'
 import { randomUUID } from 'node:crypto'
 import { db } from '@/db'
 import { brandColors, brandFiles, brandFonts, brandStylesheets, brandTextStyles, brandVoices, organizations } from '@/db/schema'
@@ -432,6 +432,57 @@ export async function listMerkkluizen() {
     })
     return { ...o, logos: logos.length, beelden: beelden.length, kleuren: kleuren.filter((k) => k.org === o.id).length, volledigheid: v }
   })
+}
+
+/**
+ * Zoeken door alle merkkluizen: op klantnaam, kleur (naam of code),
+ * lettertype, en bestand (naam of tag). Per klant ook waarom hij gevonden
+ * is, zodat je niet hoeft te raden waarom "rood" Thiessen oplevert.
+ */
+export async function zoekInMerkkluizen(zoekterm: string): Promise<Map<string, string[]>> {
+  const q = zoekterm.trim()
+  const treffers = new Map<string, string[]>()
+  if (q.length < 2) return treffers
+  // % en _ zijn jokers in LIKE; wie ze typt, bedoelt het teken zelf.
+  const patroon = `%${q.replace(/[\\%_]/g, (c) => `\\${c}`)}%`
+  const voeg = (org: string, reden: string) => {
+    const lijst = treffers.get(org) ?? []
+    if (!lijst.includes(reden) && lijst.length < 4) lijst.push(reden)
+    treffers.set(org, lijst)
+  }
+
+  const [namen, kleuren, fonts, stijlen, bestanden] = await Promise.all([
+    db.select({ org: organizations.id }).from(organizations).where(ilike(organizations.name, patroon)),
+    db
+      .select({ org: brandColors.organizationId, name: brandColors.name, hex: brandColors.hex })
+      .from(brandColors)
+      .where(or(ilike(brandColors.name, patroon), ilike(brandColors.hex, patroon))),
+    db.select({ org: brandFonts.organizationId, name: brandFonts.name }).from(brandFonts).where(ilike(brandFonts.name, patroon)),
+    db
+      .selectDistinct({ org: brandTextStyles.organizationId, name: brandTextStyles.fontFamily })
+      .from(brandTextStyles)
+      .where(ilike(brandTextStyles.fontFamily, patroon)),
+    db
+      .select({ org: brandFiles.organizationId, title: brandFiles.title, kind: brandFiles.kind, tags: brandFiles.tags })
+      .from(brandFiles)
+      .where(
+        or(
+          ilike(brandFiles.title, patroon),
+          sql`EXISTS (SELECT 1 FROM unnest(${brandFiles.tags}) AS t(tag) WHERE t.tag ILIKE ${patroon})`,
+        ),
+      )
+      .limit(500),
+  ])
+
+  for (const r of namen) voeg(r.org, 'naam')
+  for (const r of kleuren) voeg(r.org, `kleur ${r.name} (${r.hex})`)
+  for (const r of [...fonts, ...stijlen]) voeg(r.org, `lettertype ${r.name}`)
+  const laag = q.toLowerCase()
+  for (const r of bestanden) {
+    const tag = r.tags.find((t) => t.toLowerCase().includes(laag))
+    voeg(r.org, tag ? `tag “${tag}”` : `${SOORT_LABELS[r.kind].toLowerCase()} ${r.title}`)
+  }
+  return treffers
 }
 
 /** De beeldbank: beelden over alle klanten, te filteren op klant en tag. */

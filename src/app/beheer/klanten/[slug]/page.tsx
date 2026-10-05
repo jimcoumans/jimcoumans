@@ -29,7 +29,8 @@ import { Klantprofiel } from '@/components/Klantprofiel'
 import { getKlantreis } from '@/lib/klantreis'
 import { getProfiel } from '@/lib/klantprofiel'
 import { listOwners } from '@/lib/crm-owners'
-import { merkTelling } from '@/lib/merkkluis'
+import { merkTelling, getMerkkluis } from '@/lib/merkkluis'
+import { MerkkluisSamenvatting } from '@/components/stylesheet/MerkkluisSamenvatting'
 import { getTijdlijn, laatsteContact } from '@/lib/tijdlijn'
 import { BookServiceForm } from '@/components/BookServiceForm'
 import { aantalMetEenheid } from '@/lib/quantity'
@@ -54,6 +55,7 @@ const TABS = [
   { key: 'overzicht', label: 'Overzicht' },
   { key: 'klantreis', label: 'Klantreis' },
   { key: 'profiel', label: 'Klantprofiel' },
+  { key: 'merkkluis', label: 'Merkkluis' },
   { key: 'budget', label: 'Budget en facturen' },
   { key: 'campagnes', label: 'Campagnes' },
   { key: 'contacten', label: 'Contacten' },
@@ -303,6 +305,8 @@ export default async function KlantPage({
           </div>
         )}
 
+        {tab === 'merkkluis' && <MerkkluisTab slug={slug} />}
+
         {tab === 'klantreis' && <KlantreisDetail stand={klantreis} organizationId={klant.organization.id} slug={slug} />}
 
         {tab === 'campagnes' && <KlantCampagnes organizationId={klant.organization.id} slug={slug} />}
@@ -374,6 +378,13 @@ export default async function KlantPage({
         )}
     </AppShell>
   )
+}
+
+/** De merkkluis op de klantpagina. Alleen opgehaald als je het tabblad opent. */
+async function MerkkluisTab({ slug }: { slug: string }) {
+  const m = await getMerkkluis(slug)
+  if (!m) return null
+  return <MerkkluisSamenvatting m={m} slug={slug} />
 }
 
 /** Een kop boven een blok, met de actie rechts. */
