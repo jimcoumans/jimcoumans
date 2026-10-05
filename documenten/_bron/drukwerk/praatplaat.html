@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="nl"><head><meta charset="utf-8"><title>Praatplaat intakegesprek</title>
+<style>
+@font-face{font-family:'Inter';font-weight:100 900;src:url('../fonts/Inter.woff2') format('woff2')}
+@font-face{font-family:'Inter Tight';font-weight:100 900;src:url('../fonts/InterTight.woff2') format('woff2')}
+/* A3 liggend, 420 × 297 mm, plus 3 mm afloop rondom. Tekst blijft 15 mm binnen de snijlijn. */
+@page{size:426mm 303mm;margin:0}
+:root{--blue:#007aff;--deep:#005cbf;--black:#1c1c1e;--tx2:#636466;--ln:#c8c8cd;--soft:#e5e5e9;--bg:#f2f2f7;--tint:#e2ebf3;
+  --fd:'Inter Tight','Inter','Helvetica Neue',Helvetica,Arial,sans-serif;--ft:'Inter','Helvetica Neue',Helvetica,Arial,sans-serif}
+*{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact;margin:0}
+html,body{font-family:var(--ft);color:var(--black);font-size:11pt;line-height:1.4}
+.vel{width:426mm;height:303mm;position:relative;overflow:hidden;break-after:page;padding:20mm 20mm 26mm;display:flex;flex-direction:column}
+.vel:last-child{break-after:auto}
+h1,h2,h3{font-family:var(--fd);letter-spacing:-.02em;line-height:1.08}
+h1{font-size:46pt;font-weight:700}
+h2{font-size:17pt;font-weight:700;margin-bottom:4mm}
+.kop{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:8mm}
+.merk{font-family:var(--fd);font-weight:700;font-size:17pt;letter-spacing:-.01em}
+.merk small{display:block;font-family:var(--ft);font-weight:400;font-size:9pt;color:var(--tx2);letter-spacing:0;margin-top:1mm}
+.lead{font-size:14pt;color:var(--tx2);margin-top:3mm;max-width:200mm}
+.invul{display:flex;gap:8mm;font-size:10pt;color:var(--tx2)}
+.invul span{display:inline-block;border-bottom:.3mm solid var(--ln);min-width:58mm;margin-left:2mm;height:6mm;vertical-align:bottom}
+.lijn{display:inline-block;border-bottom:.3mm solid var(--black);min-width:28mm;height:8mm;vertical-align:bottom;margin:0 1.5mm}
+.lijn.k{min-width:16mm}.lijn.l{min-width:40mm}
+/* De keten */
+.keten{display:grid;grid-template-columns:1fr 14mm 1fr 14mm 1fr 14mm 1fr;align-items:stretch;margin-top:7mm}
+.schakel{border-radius:5mm;background:var(--bg);padding:7mm 7mm 7mm}
+.schakel.jij{background:#fff;border:.5mm solid var(--black)}
+.schakel h3{font-size:21pt;font-weight:700}
+.schakel .uitleg{font-size:10pt;color:var(--tx2);margin:1.5mm 0 5mm}
+.rij{display:flex;align-items:flex-end;justify-content:space-between;font-size:10.5pt;color:var(--tx2);margin-top:5mm}
+.rij b{display:block;flex:1;border-bottom:.3mm solid var(--black);margin-left:3mm;height:10mm}
+.pijl{display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:9pt;color:var(--tx2);text-align:center;line-height:1.2}
+.pijl svg{width:9mm;height:6mm;margin-bottom:2mm}
+.pijl .pct{border-bottom:.3mm solid var(--black);width:12mm;height:9mm;margin-bottom:1mm}
+.wie{display:grid;grid-template-columns:1fr 14mm 1fr 14mm 1fr 14mm 1fr;margin-top:3mm;font-size:10pt;font-weight:600}
+.wie .ons{grid-column:1/6;border-top:.6mm solid var(--blue);color:var(--blue);padding-top:1.5mm}
+.wie .jouw{grid-column:7/8;border-top:.6mm solid var(--black);padding-top:1.5mm}
+/* Onderste rij */
+.onder{display:grid;grid-template-columns:1.25fr 1fr;gap:10mm;margin-top:9mm}
+.som{border-radius:5mm;border:.4mm solid var(--soft);padding:6mm}
+.som ol{list-style:none;padding:0}
+.som li{display:grid;grid-template-columns:9mm 1fr;align-items:start;padding:2.6mm 0;border-top:.3mm solid var(--soft);font-size:12pt;line-height:2}
+.som li:first-child{border-top:0}
+.som .n{font-family:var(--fd);font-weight:700;color:var(--blue);font-size:14pt;line-height:2}
+.som small{display:block;font-size:9pt;color:var(--tx2);margin-top:.5mm;line-height:1.35}
+.rechts{display:flex;flex-direction:column;gap:6mm}
+.tijd{border-radius:5mm;background:var(--bg);padding:6mm}
+.tijd ol{list-style:none;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:3mm;margin-top:1mm}
+.tijd li{border-top:.8mm solid var(--ln);padding-top:2.5mm;font-size:10pt;color:var(--tx2)}
+.tijd li.doel{border-top-color:var(--blue)}
+.tijd li b{display:block;color:var(--black);font-size:11.5pt;margin-bottom:.8mm}
+.doelregel{border-radius:5mm;background:var(--blue);color:#fff;padding:7mm 7mm 6mm}
+.doelregel h2{color:#fff}
+.doelregel p{font-family:var(--fd);font-size:18pt;font-weight:600;line-height:1.8}
+.doelregel .lijn{border-color:#fff}
+.doelregel small{display:block;font-size:8.5pt;opacity:.85;margin-top:2mm;font-family:var(--ft);font-weight:400;line-height:1.4}
+.voet{position:absolute;left:20mm;right:20mm;bottom:13mm;display:flex;justify-content:space-between;font-size:9.5pt;color:var(--tx2)}
+.voet b{color:var(--black);font-weight:600}
+/* Achterkant */
+.drie{display:grid;grid-template-columns:repeat(3,1fr);gap:8mm;margin-top:2mm}
+.kol{border-radius:5mm;padding:7mm;background:var(--bg)}
+.kol.ja{background:var(--tint)}
+.kol.nee{background:#fff;border:.4mm solid var(--soft)}
+.kol h2{font-size:18pt;margin-bottom:1mm}
+.kol .sub{font-size:10pt;color:var(--tx2);margin-bottom:4mm;min-height:9mm}
+.kol ul{list-style:none;padding:0}
+.kol li{padding:2.4mm 0;border-top:.3mm solid rgba(0,0,0,.08);font-size:12.5pt}
+.kol li:first-child{border-top:0}
+.kol .noteer{margin-top:6mm;font-size:9.5pt;color:var(--tx2)}
+.kol .noteer i{display:block;border-bottom:.3mm solid var(--ln);height:10mm}
+.plan{display:grid;grid-template-columns:repeat(4,1fr);gap:5mm;margin-top:3mm}
+.stap{border-top:.8mm solid var(--blue);padding-top:3mm}
+.stap .nr{font-family:var(--fd);font-weight:700;font-size:26pt;color:var(--blue);line-height:1}
+.stap b{display:block;font-size:13pt;margin:1.5mm 0 .5mm}
+.stap span{display:block;font-size:9.5pt;color:var(--tx2);margin-bottom:1.5mm}
+.stap p{font-size:10.5pt}
+.grens{display:grid;grid-template-columns:1.6fr 1fr;gap:10mm;margin-top:auto}
+.niet{border-radius:5mm;background:var(--black);color:#fff;padding:7mm}
+.niet h2{color:#fff;font-size:17pt;margin-bottom:2mm}
+.niet p{font-size:10.5pt;opacity:.8;margin-bottom:3.5mm}
+.niet ul{list-style:none;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:2.5mm}
+.niet li{border:.3mm solid rgba(255,255,255,.3);border-radius:2.5mm;padding:3.5mm 4mm;font-size:12pt;font-weight:600}
+</style></head><body>
+
+<!-- Voorkant: het getal van de klant -->
+<section class="vel">
+  <div class="kop">
+    <div>
+      <h1>Wat mag een aanvraag jou kosten?</h1>
+      <p class="lead">Met jouw cijfers, niet met de onze. Aan het eind van dit gesprek weet je het, ook als we niet samen verder gaan.</p>
+    </div>
+    <div style="text-align:right">
+      <div class="merk">James Robinson<small>Marketing &amp; Branding</small></div>
+      <div class="invul" style="margin-top:8mm;flex-direction:column;gap:3mm;align-items:flex-end">
+        <div>Bedrijf<span></span></div>
+        <div>Datum<span></span></div>
+      </div>
+    </div>
+  </div>
+
+  <h2>De keten, van advertentie tot klant</h2>
+  <div class="keten">
+    <div class="schakel"><h3>Weergaven</h3><p class="uitleg">Hoe vaak je advertentie in beeld komt</p>
+      <div class="rij">Nu<b></b></div><div class="rij">Doel<b></b></div></div>
+    <div class="pijl"><svg viewBox="0 0 36 24"><path d="M2 12h30M24 4l8 8-8 8" fill="none" stroke="#1c1c1e" stroke-width="2"/></svg><div class="pct"></div>% klikt</div>
+    <div class="schakel"><h3>Bezoekers</h3><p class="uitleg">Wie doorklikt naar je website</p>
+      <div class="rij">Nu<b></b></div><div class="rij">Doel<b></b></div></div>
+    <div class="pijl"><svg viewBox="0 0 36 24"><path d="M2 12h30M24 4l8 8-8 8" fill="none" stroke="#1c1c1e" stroke-width="2"/></svg><div class="pct"></div>% vraagt aan</div>
+    <div class="schakel"><h3>Aanvragen</h3><p class="uitleg">Formulier, telefoontje, afspraak</p>
+      <div class="rij">Nu<b></b></div><div class="rij">Doel<b></b></div></div>
+    <div class="pijl"><svg viewBox="0 0 36 24"><path d="M2 12h30M24 4l8 8-8 8" fill="none" stroke="#1c1c1e" stroke-width="2"/></svg><div class="pct"></div>% wordt klant</div>
+    <div class="schakel jij"><h3>Klanten</h3><p class="uitleg">Wie echt koopt of tekent</p>
+      <div class="rij">Nu<b></b></div><div class="rij">Doel<b></b></div></div>
+  </div>
+  <div class="wie"><div class="ons">Drie schakels van ons: we meten ze, sturen ze en maken ze goedkoper</div><div class="jouw">Eén van jou: hoe snel je belt, je aanbod, je prijs</div></div>
+
+  <div class="onder">
+    <div class="som">
+      <h2>De rekensom</h2>
+      <ol>
+        <li><span class="n">1</span><span>Extra omzet €<i class="lijn l"></i> × marge<i class="lijn k"></i>%<br>× terugverdientijd<i class="lijn k"></i> maanden ÷ 12 = €<i class="lijn l"></i><small>Wat alle marketing samen mag kosten. Standaard verdient alles zich binnen twaalf maanden terug.</small></span></li>
+        <li><span class="n">2</span><span>Min de vaste kosten in jaar 1 €<i class="lijn l"></i><small>Fundament € 4.500, elf maanden retainer en de licenties. De retainer start altijd in maand 2.</small></span></li>
+        <li><span class="n">3</span><span>Over voor advertenties €<i class="lijn l"></i> ÷ 11 = €<i class="lijn"></i> per maand<small>Dit bedrag bepaalt welk pakket bij je past.</small></span></li>
+        <li><span class="n">4</span><span>Gedeeld door<i class="lijn k"></i> extra aanvragen = €<i class="lijn"></i> per aanvraag<small>Het plafond. Wat een aanvraag echt kost, laten de cijfers zien.</small></span></li>
+      </ol>
+    </div>
+    <div class="rechts">
+      <div class="doelregel">
+        <h2>Jouw doel in één zin</h2>
+        <p><i class="lijn k"></i> extra aanvragen per maand,<br>tegen maximaal €<i class="lijn"></i> per aanvraag,<br>vanaf maand 4.</p>
+        <small>Deze zin staat straks in je voorstel, in je dashboard en in elke Performance Review.</small>
+      </div>
+      <div class="tijd">
+        <h2 style="font-size:13pt;margin-bottom:2mm">Waarom pas vanaf maand 4</h2>
+        <ol>
+          <li><b>Maand 1</b>Set-up en de draaidag</li>
+          <li><b>Eind maand 1</b>Live</li>
+          <li><b>Maand 2 en 3</b>Leren. De eerste aanvragen zijn duur, dat hoort zo</li>
+          <li class="doel"><b>Vanaf maand 4</b>Je doel geldt</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+  <div class="voet"><span><b>James Robinson</b> · Hulsberg · kantoor 045 792 0009 · jamesrobinson.nl</span><span>Alle bedragen exclusief btw</span></div>
+</section>
+
+<!-- Achterkant: wat wij doen, en wat niet -->
+<section class="vel">
+  <div class="kop">
+    <div>
+      <h1>Wat wij doen, en wat niet</h1>
+      <p class="lead">Wij doen één ding, en dat doen we goed: aanvragen binnenhalen via zoekmachines en social, en die steeds goedkoper maken. Je website is het middelpunt.</p>
+    </div>
+    <div class="merk" style="text-align:right">James Robinson<small>Marketing &amp; Branding</small></div>
+  </div>
+
+  <div class="drie">
+    <div class="kol ja"><h2>In je retainer</h2><p class="sub">Krijgt iedereen. Het pakket bepaalt hoeveel.</p>
+      <ul><li>Adverteren in zoekmachines en op social</li><li>Marketingcontent</li><li>Landingspagina’s en CRO</li><li>E-mail en automation</li><li>SEO</li><li>Draaidagen en contentrondes</li></ul>
+      <div class="noteer">Wat jij noemde, en wij oppakken<i></i><i></i></div></div>
+    <div class="kol"><h2>Eigen project of partner</h2><p class="sub">Soms doen we het zelf, anders brengen we je bij een partner die er beter in is. Zonder opslag.</p>
+      <ul><li>Webdevelopment</li><li>Design en branding</li><li>Social-mediatemplates</li><li>Extra draaidagen</li><li>Koppelingen met je systemen</li></ul>
+      <div class="noteer">Wat jij noemde, buiten de retainer<i></i><i></i></div></div>
+    <div class="kol nee"><h2>Doen we niet</h2><p class="sub">Ook niet als het gesprek goed loopt.</p>
+      <ul><li>Losse campagnes</li><li>E-commerce en werving</li><li>Social feeds vullen</li><li>Bedrijfsvideo’s</li><li>Je aanvragen opvolgen</li><li>Uren verantwoorden</li><li>Marge op werk van een ander</li></ul></div>
+  </div>
+
+  <div class="grens">
+    <div>
+      <h2>Ons plan, in vier stappen</h2>
+      <div class="plan">
+        <div class="stap"><div class="nr">1</div><b>Set-up</b><span>Maand 1, week 1 tot 3</span><p>Meting, advertentieaccounts, e-mail, je dashboard, de campagne en de landingspagina. Alles op jouw naam.</p></div>
+        <div class="stap"><div class="nr">2</div><b>Content shooten</b><span>Maand 1, week 3 of 4</span><p>De draaidag bij jou op locatie. Daarna foto, video en graphics voor je advertenties.</p></div>
+        <div class="stap"><div class="nr">3</div><b>Adverteren en leren</b><span>Live eind maand 1, dan maand 2 en 3</span><p>We leren wat werkt en brengen de kosten per aanvraag tot rust.</p></div>
+        <div class="stap"><div class="nr">4</div><b>Optimaliseren</b><span>Vanaf maand 4</span><p>Advertenties, landingspagina’s, e-mail, SEO. Wat eerst komt, bepalen jouw cijfers.</p></div>
+      </div>
+    </div>
+    <div class="niet">
+      <h2>Vier dingen die wij niet oplossen</h2>
+      <p>We meten ze wel, en we zeggen het als het daar zit.</p>
+      <ul><li>Je merk</li><li>Je aanbod en prijs</li><li>Je opvolging</li><li>Je capaciteit</li></ul>
+    </div>
+  </div>
+  <div class="voet"><span><b>Hoe nu verder.</b> Binnen drie werkdagen het voorstel, daarna het voorstelgesprek van 45 minuten. Daarin kies je, niet vandaag.</span><span>support@jamesrobinson.nl · 045 792 0009</span></div>
+</section>
+</body></html>
