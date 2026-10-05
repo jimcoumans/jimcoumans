@@ -12,6 +12,7 @@ import {
   boolean,
   primaryKey,
   jsonb,
+  date,
 } from 'drizzle-orm/pg-core'
 import { relations, sql } from 'drizzle-orm'
 
@@ -3547,3 +3548,75 @@ export type BrandFile = typeof brandFiles.$inferSelect
 export type BrandColor = typeof brandColors.$inferSelect
 export type BrandFont = typeof brandFonts.$inferSelect
 export type BrandVoice = typeof brandVoices.$inferSelect
+
+/* -------------------------------------------------------------------------
+   Performance: wat de marketing per klant oplevert.
+
+   Per klant koppelingen met de bronnen (GA4, Search Console en de
+   advertentieplatforms), en per dag de cijfers per bron. Elke koppeling
+   vult zijn eigen deel: GA4 de bezoeken en conversies, de platforms de
+   impressies, klikken en kosten. Zo telt er niets dubbel. Conversies komen
+   alleen uit GA4; Google Ads en Meta claimen anders allebei dezelfde boeking.
+   ------------------------------------------------------------------------- */
+
+export const analyticsSourceEnum = pgEnum('analytics_source', [
+  'ga4',
+  'search_console',
+  'google_ads',
+  'meta_ads',
+  'linkedin_ads',
+  'tiktok_ads',
+])
+
+export const analyticsConnections = pgTable(
+  'analytics_connections',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    organizationId: uuid('organization_id')
+      .notNull()
+      .references(() => organizations.id, { onDelete: 'cascade' }),
+    source: analyticsSourceEnum('source').notNull(),
+    /** GA4-property, Search Console-site, advertentieaccount: wat de bron zelf gebruikt. */
+    externalId: text('external_id').notNull(),
+    active: boolean('active').notNull().default(true),
+    /** Tot hoe ver terug de cijfers er al zijn. Leeg: nog niets opgehaald. */
+    historyFrom: date('history_from', { mode: 'string' }),
+    lastSyncedAt: timestamp('last_synced_at', { withTimezone: true }),
+    lastError: text('last_error'),
+    lastErrorAt: timestamp('last_error_at', { withTimezone: true }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex('analytics_connections_org_source_idx').on(t.organizationId, t.source),
+    check('analytics_connection_external_id_not_empty', sql`length(trim(${t.externalId})) > 0`),
+  ],
+)
+
+export const performanceDaily = pgTable(
+  'performance_daily',
+  {
+    organizationId: uuid('organization_id')
+      .notNull()
+      .references(() => organizations.id, { onDelete: 'cascade' }),
+    day: date('day', { mode: 'string' }).notNull(),
+    /** De bron zoals wij hem tonen: google_ads, meta, organisch_zoeken, direct, ... */
+    bron: text('bron').notNull(),
+    /** Welke koppeling deze cijfers leverde. */
+    provider: analyticsSourceEnum('provider').notNull(),
+    impressions: bigint('impressions', { mode: 'number' }),
+    clicks: bigint('clicks', { mode: 'number' }),
+    /** Bezoeken (sessies). Optelbaar over dagen, anders dan unieke bezoekers. */
+    sessions: integer('sessions'),
+    conversions: integer('conversions'),
+    costCents: bigint('cost_cents', { mode: 'number' }),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.organizationId, t.day, t.bron, t.provider] }),
+    index('performance_daily_day_idx').on(t.day),
+    check('performance_daily_not_negative', sql`COALESCE(${t.impressions}, 0) >= 0 AND COALESCE(${t.clicks}, 0) >= 0 AND COALESCE(${t.sessions}, 0) >= 0 AND COALESCE(${t.conversions}, 0) >= 0 AND COALESCE(${t.costCents}, 0) >= 0`),
+  ],
+)
+
+export type AnalyticsConnection = typeof analyticsConnections.$inferSelect
+export type PerformanceDag = typeof performanceDaily.$inferSelect

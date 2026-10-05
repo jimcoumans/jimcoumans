@@ -401,6 +401,15 @@ export function describeDbError(error: unknown): string | null {
       return 'Geef de kleur een naam.'
     case 'brand_font_name_not_empty':
       return 'Vul de naam van het lettertype in.'
+    /* --- Performance --- */
+    case 'analytics_connection_external_id_not_empty':
+      return 'Vul het ID of adres van de bron in.'
+    case 'analytics_connections_org_source_idx':
+      return 'Deze bron is al gekoppeld aan deze klant. Wijzig de bestaande koppeling.'
+    case 'performance_daily_not_negative':
+      return 'Een bron gaf een negatief cijfer terug; die regel is overgeslagen.'
+    case 'performance_daily_organization_id_day_bron_provider_pk':
+      return 'Deze dagcijfers staan er al. Probeer het bijwerken opnieuw.'
     /* --- Stylesheet --- */
     case 'brand_text_style_weight_valid':
     case 'brand_button_weight_valid':
