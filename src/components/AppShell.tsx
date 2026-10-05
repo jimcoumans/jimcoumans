@@ -14,6 +14,12 @@ import type { SessionUser } from '@/lib/auth'
 type NavItem = { href: string; label: string; key: string; icon: React.ReactNode }
 
 const icons = {
+  performance: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 17l5-5 4 3 7-8" />
+      <path d="M15 7h4v4" />
+    </svg>
+  ),
   dashboard: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
       <rect x="3" y="3" width="7.5" height="8" rx="2" />
@@ -149,6 +155,7 @@ const icons = {
 type NavGroep = { label: string; key: string; icon: React.ReactNode; items: NavItem[]; alleenAdmin?: boolean }
 
 const DASHBOARD: NavItem = { href: '/beheer', label: 'Dashboard', key: 'dashboard', icon: icons.dashboard }
+const PERFORMANCE: NavItem = { href: '/beheer/performance', label: 'Performance', key: 'performance', icon: icons.performance }
 
 const TEAM_GROEPEN: NavGroep[] = [
   {
@@ -331,6 +338,7 @@ export function AppShell({
           {!isTeam &&
             CLIENT_NAV.map((item) => <li key={item.key}>{link(item)}</li>)}
           {isTeam && <li>{link(DASHBOARD)}</li>}
+          {isTeam && <li>{link(PERFORMANCE)}</li>}
           {isTeam &&
             groepen.map((g) => {
               const isOpen = openGroepen.has(g.key)

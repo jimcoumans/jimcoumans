@@ -26,6 +26,7 @@ async function veilig(fn: () => Promise<void>, ook: string[] = []): Promise<Acti
     await fn()
     vergeet()
     revalidatePath('/beheer/werving')
+    revalidatePath('/beheer/werving/kandidaten')
     revalidatePath('/beheer')
     for (const pad of ook) revalidatePath(pad)
     return { ok: true }

@@ -31,6 +31,13 @@ import { getProfiel } from '@/lib/klantprofiel'
 import { listOwners } from '@/lib/crm-owners'
 import { merkTelling, getMerkkluis } from '@/lib/merkkluis'
 import { MerkkluisSamenvatting } from '@/components/stylesheet/MerkkluisSamenvatting'
+import { PerformanceDashboard } from '@/components/performance/PerformanceDashboard'
+import { Koppelingen, meetcheck } from '@/components/performance/Koppelingen'
+import { FilterBalk } from '@/components/FilterBalk'
+import { LeegVlak } from '@/components/PaginaKop'
+import { getKoppelingen, getDagcijfers } from '@/lib/performance/lezen'
+import { serviceaccountAdres } from '@/lib/performance/google'
+import { PERIODES, periodeGrenzen, perBron, type Periode } from '@/lib/performance/bronnen'
 import { getTijdlijn, laatsteContact } from '@/lib/tijdlijn'
 import { BookServiceForm } from '@/components/BookServiceForm'
 import { aantalMetEenheid } from '@/lib/quantity'
@@ -53,6 +60,7 @@ export const maxDuration = 26
    rest op waar het hoort, in plaats van door één lange pagina te scrollen. */
 const TABS = [
   { key: 'overzicht', label: 'Overzicht' },
+  { key: 'performance', label: 'Performance' },
   { key: 'klantreis', label: 'Klantreis' },
   { key: 'profiel', label: 'Klantprofiel' },
   { key: 'merkkluis', label: 'Merkkluis' },
@@ -72,14 +80,14 @@ export default async function KlantPage({
   searchParams,
 }: {
   params: Promise<{ slug: string }>
-  searchParams: Promise<{ tab?: string; alles?: string }>
+  searchParams: Promise<{ tab?: string; alles?: string; periode?: string }>
 }) {
   const user = await getSessionUser()
   if (!user) redirect('/login')
   if (user.role !== 'staff' && user.role !== 'admin') redirect('/')
 
   const { slug } = await params
-  const { tab: tabParam, alles } = await searchParams
+  const { tab: tabParam, alles, periode } = await searchParams
   const tab: Tab = TABS.some((t) => t.key === tabParam) ? (tabParam as Tab) : 'overzicht'
   const klant = await getOrganizationBySlug(slug)
   if (!klant) notFound()
@@ -307,6 +315,8 @@ export default async function KlantPage({
 
         {tab === 'merkkluis' && <MerkkluisTab slug={slug} />}
 
+        {tab === 'performance' && <PerformanceTab organizationId={klant.organization.id} slug={slug} periode={periode} />}
+
         {tab === 'klantreis' && <KlantreisDetail stand={klantreis} organizationId={klant.organization.id} slug={slug} />}
 
         {tab === 'campagnes' && <KlantCampagnes organizationId={klant.organization.id} slug={slug} />}
@@ -377,6 +387,64 @@ export default async function KlantPage({
           />
         )}
     </AppShell>
+  )
+}
+
+/** De performance van deze klant. Alleen opgehaald als je het tabblad opent. */
+async function PerformanceTab({ organizationId, slug, periode: periodeParam }: { organizationId: string; slug: string; periode?: string }) {
+  const periode = (PERIODES.some((p) => p.periode === periodeParam) ? periodeParam : '30_dagen') as Periode
+  const g = periodeGrenzen(periode)
+  const [koppelingen, rijen, vorige] = await Promise.all([
+    getKoppelingen(organizationId),
+    getDagcijfers(g.van, g.tot, organizationId),
+    getDagcijfers(g.vorigeVan, g.vorigeTot, organizationId),
+  ])
+  const waarschuwingen = meetcheck(koppelingen, perBron(rijen).totaal)
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <FilterBalk className="flex flex-wrap items-center gap-2">
+          <input type="hidden" name="tab" value="performance" />
+          <select name="periode" defaultValue={periode} aria-label="Periode" className="min-h-11 rounded-full border border-gray-300 bg-white py-2.5 pr-9 pl-4 text-[15px] outline-none hover:border-gray-400">
+            {PERIODES.map((p) => (
+              <option key={p.periode} value={p.periode}>
+                {p.label}
+              </option>
+            ))}
+          </select>
+        </FilterBalk>
+        <p className="text-xs text-gray-500">Alleen zichtbaar voor het team. De klant ziet dit later in zijn eigen wallet.</p>
+      </div>
+
+      {waarschuwingen.length > 0 && (
+        <section className="rounded-xl bg-[#FFF4E0] px-5 py-4 text-sm text-[#94590A]">
+          <p className="font-medium">Meetcheck</p>
+          <ul className="mt-1 list-disc space-y-0.5 pl-5">
+            {waarschuwingen.map((w) => (
+              <li key={w}>{w}</li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {rijen.length > 0 ? (
+        <PerformanceDashboard rijen={rijen} vorige={vorige} van={g.van} tot={g.tot} />
+      ) : (
+        <LeegVlak
+          titel={!koppelingen.length ? 'Nog niets gekoppeld' : koppelingen.every((k) => k.lastError) ? 'De koppeling werkt nog niet' : 'Nog geen cijfers in deze periode'}
+          tekst={
+            !koppelingen.length
+              ? 'Koppel Google Analytics en Search Console hieronder. Daarna zie je impressies, bezoeken en conversies per bron.'
+              : koppelingen.every((k) => k.lastError)
+                ? 'Hieronder bij de koppeling staat wat er misgaat. Is dat opgelost, klik dan op Nu bijwerken.'
+                : 'De koppeling staat er; de cijfers komen binnen bij de volgende ronde ophalen (elk uur), of nu met Nu bijwerken.'
+          }
+        />
+      )}
+
+      <Koppelingen organizationId={organizationId} slug={slug} koppelingen={koppelingen} serviceaccount={serviceaccountAdres()} />
+    </div>
   )
 }
 

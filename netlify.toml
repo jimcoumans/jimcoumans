@@ -26,3 +26,9 @@
 # termijn en die mag niet afhangen van of een factuurrun lukt.
 [functions."opruimen"]
   schedule = "0 5 * * *"
+
+# Elk uur de performancecijfers per klant bijwerken (GA4, Search Console,
+# later de advertentieplatforms). Op minuut 17 en niet op het hele uur,
+# zodat het niet samenvalt met de andere runs.
+[functions."performance"]
+  schedule = "17 * * * *"
