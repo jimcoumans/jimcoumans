@@ -57,7 +57,7 @@ async function haalJson(url: string, init: RequestInit, wat: string): Promise<un
     }
     if (!antwoord.ok) {
       const melding = (json as { error?: { message?: string } } | null)?.error?.message ?? tekst.slice(0, 200)
-      if (antwoord.status === 403) throw new KoppelingFout(`${wat}: geen toegang. Is het serviceaccount bij deze klant toegevoegd? (${melding})`)
+      if (antwoord.status === 403) throw new KoppelingFout(`${wat}: geen toegang. Heeft het gekoppelde account (of het serviceaccount) toegang tot deze klant? (${melding})`)
       if (antwoord.status === 404) throw new KoppelingFout(`${wat}: niet gevonden. Klopt het nummer of adres? (${melding})`)
       throw new KoppelingFout(`${wat} gaf fout ${antwoord.status}: ${melding}`)
     }
@@ -123,8 +123,10 @@ export function leesGa4(json: Ga4Antwoord): Dagcijfers[] {
   return [...per.values()]
 }
 
-export async function haalGa4(property: string, van: string, tot: string): Promise<Dagcijfers[]> {
+/** Zonder token gaat het via het serviceaccount; met token via een verbonden Google-account. */
+export async function haalGa4(property: string, van: string, tot: string, toegang?: string): Promise<Dagcijfers[]> {
   const id = ga4PropertyId(property)
+  const bearer = toegang ?? (await token())
   const vraag = (conversie: string) => ({
     dateRanges: [{ startDate: van, endDate: tot }],
     dimensions: [{ name: 'date' }, { name: 'sessionSource' }, { name: 'sessionMedium' }, { name: 'sessionDefaultChannelGroup' }],
@@ -135,7 +137,7 @@ export async function haalGa4(property: string, van: string, tot: string): Promi
     leesGa4(
       (await haalJson(
         `https://analyticsdata.googleapis.com/v1beta/properties/${id}:runReport`,
-        { method: 'POST', headers: { Authorization: `Bearer ${await token()}`, 'Content-Type': 'application/json' }, body: JSON.stringify(vraag(conversie)) },
+        { method: 'POST', headers: { Authorization: `Bearer ${bearer}`, 'Content-Type': 'application/json' }, body: JSON.stringify(vraag(conversie)) },
         'Google Analytics',
       )) as Ga4Antwoord,
     )
@@ -167,14 +169,15 @@ export function leesSearchConsole(json: ScAntwoord): Dagcijfers[] {
     .map((r) => ({ day: r.keys[0]!, bron: 'organisch_zoeken' as const, impressions: Math.round(r.impressions), clicks: Math.round(r.clicks) }))
 }
 
-export async function haalSearchConsole(site: string, van: string, tot: string): Promise<Dagcijfers[]> {
+export async function haalSearchConsole(site: string, van: string, tot: string, toegang?: string): Promise<Dagcijfers[]> {
   const s = searchConsoleSite(site)
+  const bearer = toegang ?? (await token())
   return leesSearchConsole(
     (await haalJson(
       `https://searchconsole.googleapis.com/webmasters/v3/sites/${encodeURIComponent(s)}/searchAnalytics/query`,
       {
         method: 'POST',
-        headers: { Authorization: `Bearer ${await token()}`, 'Content-Type': 'application/json' },
+        headers: { Authorization: `Bearer ${bearer}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ startDate: van, endDate: tot, dimensions: ['date'], rowLimit: 25000, dataState: 'all' }),
       },
       'Search Console',

@@ -44,6 +44,15 @@ const TOEGESTAAN = new Set([
    * wachtwoord een andere hash krijgen, en de kostenfactor maakt raden traag.
    */
   'users.password_hash',
+  /*
+   * De blijvende toegang van onze eigen Google-accounts (info@, marketing@)
+   * voor het performance-dashboard. Bewust toegestaan: zonder dit moet
+   * iemand elk uur opnieuw inloggen. Het is geen wachtwoord van een klant
+   * maar een intrekbare sleutel met alleen leesrechten, AES-256-GCM
+   * versleuteld met TOKEN_SLEUTEL, die niet in de database staat. Een
+   * gelekte database levert dus niets bruikbaars op.
+   */
+  'google_connections.refresh_token_enc',
 ])
 
 test('geen enkele kolom in de database ziet eruit als een bewaard geheim', async () => {
@@ -90,6 +99,7 @@ test('het schema bevat geen wachtwoordvelden in de broncode', () => {
       !TOEGESTAAN.has(`accounts.${naam}`) &&
       !TOEGESTAAN.has(`login_tokens.${naam}`) &&
       !TOEGESTAAN.has(`users.${naam}`) &&
+      !TOEGESTAAN.has(`google_connections.${naam}`) &&
       VERDACHT.some((woord) => naam.includes(woord)),
   )
 

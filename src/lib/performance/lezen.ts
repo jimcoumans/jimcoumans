@@ -106,8 +106,14 @@ export function normaliseerExternId(source: AnalyticsConnection['source'], invoe
   }
 }
 
-export async function zetKoppeling(organizationId: string, source: AnalyticsConnection['source'], invoer: string) {
+export async function zetKoppeling(
+  organizationId: string,
+  source: AnalyticsConnection['source'],
+  invoer: string,
+  via: { googleConnectionId?: string | null; displayName?: string | null } = {},
+) {
   const externalId = normaliseerExternId(source, invoer)
+  const herkomst = { googleConnectionId: via.googleConnectionId ?? null, displayName: via.displayName?.trim() || null }
   // Een ander ID betekent andere cijfers: de oude historie hoort er dan niet meer bij.
   const [oud] = await db
     .select()
@@ -118,10 +124,13 @@ export async function zetKoppeling(organizationId: string, source: AnalyticsConn
   }
   await db
     .insert(analyticsConnections)
-    .values({ organizationId, source, externalId })
+    .values({ organizationId, source, externalId, ...herkomst })
     .onConflictDoUpdate({
       target: [analyticsConnections.organizationId, analyticsConnections.source],
-      set: oud && oud.externalId === externalId ? { active: true } : { externalId, active: true, historyFrom: null, lastSyncedAt: null, lastError: null, lastErrorAt: null },
+      set:
+        oud && oud.externalId === externalId
+          ? { active: true, ...herkomst, lastError: null, lastErrorAt: null }
+          : { externalId, ...herkomst, active: true, historyFrom: null, lastSyncedAt: null, lastError: null, lastErrorAt: null },
     })
 }
 

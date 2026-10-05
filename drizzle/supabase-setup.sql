@@ -2840,3 +2840,43 @@ BEGIN
   END IF;
 END $jr_0031_performance$;
 
+-- ---------------------------------------------------------------------------
+-- 0032_google_verbindingen
+-- ---------------------------------------------------------------------------
+
+DO $jr_0032_google_verbindingen$
+BEGIN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = 'c85271132a3a7c54c1c466678a4e4ce72d4c4452edce6e20b2e820ceb9ee9b9b') THEN
+    RAISE NOTICE 'Overgeslagen: 0032_google_verbindingen stond er al.';
+  ELSE
+    CREATE TABLE "google_connections" (
+    	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+    	"email" text NOT NULL,
+    	"refresh_token_enc" text NOT NULL,
+    	"scopes" text NOT NULL,
+    	"last_error" text,
+    	"last_error_at" timestamp with time zone,
+    	"created_by_user_id" uuid,
+    	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+    	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
+    );
+
+
+    ALTER TABLE "analytics_connections" ADD COLUMN "google_connection_id" uuid;
+
+    ALTER TABLE "analytics_connections" ADD COLUMN "display_name" text;
+
+    ALTER TABLE "google_connections" ADD CONSTRAINT "google_connections_created_by_user_id_users_id_fk" FOREIGN KEY ("created_by_user_id") REFERENCES "public"."users"("id") ON DELETE set null ON UPDATE no action;
+
+    CREATE UNIQUE INDEX "google_connections_email_idx" ON "google_connections" USING btree ("email");
+
+    ALTER TABLE "analytics_connections" ADD CONSTRAINT "analytics_connections_google_connection_id_google_connections_id_fk" FOREIGN KEY ("google_connection_id") REFERENCES "public"."google_connections"("id") ON DELETE set null ON UPDATE no action;
+
+    ALTER TABLE "google_connections" ENABLE ROW LEVEL SECURITY;
+
+    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+    VALUES ('c85271132a3a7c54c1c466678a4e4ce72d4c4452edce6e20b2e820ceb9ee9b9b', 1791225950640);
+    RAISE NOTICE 'Toegepast: 0032_google_verbindingen.';
+  END IF;
+END $jr_0032_google_verbindingen$;
+

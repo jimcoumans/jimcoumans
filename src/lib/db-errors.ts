@@ -402,6 +402,8 @@ export function describeDbError(error: unknown): string | null {
     case 'brand_font_name_not_empty':
       return 'Vul de naam van het lettertype in.'
     /* --- Performance --- */
+    case 'google_connections_email_idx':
+      return 'Dit Google-account is al verbonden.'
     case 'analytics_connection_external_id_not_empty':
       return 'Vul het ID of adres van de bron in.'
     case 'analytics_connections_org_source_idx':

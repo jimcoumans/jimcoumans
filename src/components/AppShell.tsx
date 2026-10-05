@@ -374,11 +374,11 @@ export function AppShell({
         {isTeam && (
           <div className="px-3 pb-2">
             <a
-              href="/beheer/sync"
+              href="/beheer/koppelingen"
               onClick={() => setOpen(false)}
-              aria-current={actief === 'sync' ? 'page' : undefined}
+              aria-current={actief === 'sync' || actief === 'koppelingen' ? 'page' : undefined}
               className={`flex items-center gap-3 rounded-lg px-3 py-2 text-xs transition-colors ${
-                actief === 'sync'
+                actief === 'sync' || actief === 'koppelingen'
                   ? 'bg-white/10 text-white'
                   : 'text-gray-500 hover:bg-white/10 hover:text-gray-300'
               }`}

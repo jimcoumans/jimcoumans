@@ -3568,6 +3568,31 @@ export const analyticsSourceEnum = pgEnum('analytics_source', [
   'tiktok_ads',
 ])
 
+/**
+ * Een Google-account van James Robinson waarmee het portaal mag meekijken
+ * (info@, marketing@, analytics@). Eén keer verbonden door een beheerder;
+ * daarna ziet het portaal alle GA4-properties, Search Console-sites en
+ * Ads-accounts waar dat adres bij kan. Het token staat versleuteld.
+ */
+export const googleConnections = pgTable(
+  'google_connections',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    email: text('email').notNull(),
+    /** Versleuteld met TOKEN_SLEUTEL (AES-256-GCM). Nooit leesbaar in de database. */
+    refreshTokenEnc: text('refresh_token_enc').notNull(),
+    scopes: text('scopes').notNull(),
+    lastError: text('last_error'),
+    lastErrorAt: timestamp('last_error_at', { withTimezone: true }),
+    createdByUserId: uuid('created_by_user_id').references(() => users.id, { onDelete: 'set null' }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex('google_connections_email_idx').on(t.email)],
+)
+
+export type GoogleConnection = typeof googleConnections.$inferSelect
+
 export const analyticsConnections = pgTable(
   'analytics_connections',
   {
@@ -3578,6 +3603,10 @@ export const analyticsConnections = pgTable(
     source: analyticsSourceEnum('source').notNull(),
     /** GA4-property, Search Console-site, advertentieaccount: wat de bron zelf gebruikt. */
     externalId: text('external_id').notNull(),
+    /** Via welk Google-account we erbij kunnen. Leeg: via het serviceaccount (oude manier). */
+    googleConnectionId: uuid('google_connection_id').references(() => googleConnections.id, { onDelete: 'set null' }),
+    /** De naam zoals de bron hem noemt, bijvoorbeeld "Thiessen Wijnkoopers – GA4". */
+    displayName: text('display_name'),
     active: boolean('active').notNull().default(true),
     /** Tot hoe ver terug de cijfers er al zijn. Leeg: nog niets opgehaald. */
     historyFrom: date('history_from', { mode: 'string' }),
