@@ -1,4 +1,4 @@
-<!doctype html><html lang="nl"><head><meta charset="utf-8"><title>Gameplan · Editie 01</title><style>
+<!doctype html><html lang="nl"><head><meta charset="utf-8"><title>James Robinson · The Performance Issue</title><style>
 @font-face{font-family:'Inter';font-weight:100 900;src:url('../fonts/Inter.woff2') format('woff2')}
 @font-face{font-family:'Inter Tight';font-weight:100 900;src:url('../fonts/InterTight.woff2') format('woff2')}
 /* A4 staand, 210 × 297 mm, plus 3 mm afloop rondom. */
@@ -228,136 +228,441 @@ td:first-child{color:var(--tx2)}
 .qr{width:34mm;height:34mm;border-radius:2mm;background:
   conic-gradient(from 90deg at 3mm 3mm,#1c1c1e 25%,#fff 0) 0 0/6mm 6mm;border:2mm solid #fff;outline:.3mm solid var(--ln)}
 .blauw .qr{outline:0}
+/* Versie 3: omslag, inhoud, verklaring en de nieuwe verhalende pagina's */
+.cover{padding:0;color:#fff;background:#0d0d0f}
+.cover .foto{position:absolute;inset:0;background:
+  radial-gradient(60% 50% at 70% 35%,rgba(0,122,255,.35),transparent 70%),
+  radial-gradient(50% 40% at 25% 70%,rgba(255,255,255,.08),transparent 70%),
+  linear-gradient(180deg,#2c2d2e 0%,#141416 60%,#0d0d0f 100%)}
+.cover .foto:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35) 0%,transparent 30%,transparent 55%,rgba(0,0,0,.75) 100%)}
+.cover .ad{position:absolute;top:118mm;left:23mm;right:23mm;text-align:center;font-size:7.5pt;color:rgba(255,255,255,.55);line-height:1.5;z-index:1}
+.cover .ad b{display:block;font-size:8pt;color:rgba(255,255,255,.75);letter-spacing:.05em;margin-bottom:1mm}
+.masthead{position:absolute;top:13mm;left:18mm;right:18mm;z-index:2;text-align:center}
+.masthead .naam{font-family:var(--fd);font-weight:800;font-size:58pt;letter-spacing:-.045em;line-height:.9}
+.masthead .lint{display:flex;justify-content:space-between;font-size:7.5pt;letter-spacing:.06em;text-transform:uppercase;border-top:.3mm solid rgba(255,255,255,.6);border-bottom:.3mm solid rgba(255,255,255,.6);padding:1.5mm 0;margin-top:3mm;font-weight:600}
+.cover .slogan{position:absolute;left:21mm;right:60mm;bottom:58mm;z-index:2;font-family:var(--fd);font-weight:800;font-size:60pt;line-height:.92;letter-spacing:-.045em}
+.cover .slogan i{font-style:normal;color:#5aa9ff}
+.cover .lijnen{position:absolute;left:21mm;right:18mm;bottom:16mm;z-index:2;display:grid;grid-template-columns:repeat(4,1fr);gap:4mm}
+.cover .lijnen div{border-top:.6mm solid #fff;padding-top:2.5mm;font-size:8pt;color:rgba(255,255,255,.8);line-height:1.35}
+.cover .lijnen b{display:block;font-family:var(--fd);font-size:11.5pt;color:#fff;letter-spacing:-.01em;line-height:1.1;margin-bottom:1mm}
+.cover .lijnen span{font-family:var(--fd);font-weight:700;color:#5aa9ff}
+.cover .zijlijn{position:absolute;right:18mm;top:60mm;width:42mm;z-index:2;text-align:right}
+.cover .zijlijn .groot{font-family:var(--fd);font-weight:800;font-size:44pt;letter-spacing:-.04em;line-height:.9;color:#fff}
+.cover .zijlijn p{font-size:8.5pt;color:rgba(255,255,255,.8);margin-top:1.5mm}
+/* Inhoud als magazine */
+.tegels{display:grid;grid-template-columns:1fr 1fr;gap:4mm}
+.tegel{position:relative}
+.tegel .beeld{height:52mm;border-radius:3mm}
+.tegel .pnr{font-family:var(--fd);font-weight:800;font-size:22pt;color:var(--blue);letter-spacing:-.03em;line-height:1;margin-top:2.5mm}
+.tegel b{display:block;font-family:var(--fd);font-size:12.5pt;letter-spacing:-.015em;line-height:1.15;margin-top:1mm}
+.tegel span{display:block;font-size:8.3pt;color:var(--tx2);margin-top:.8mm}
+.hoofdtegel .beeld{height:188mm;border-radius:3mm}
+.hoofdtegel .pnr{font-size:40pt}
+.hoofdtegel b{font-size:22pt}
+.kortlijst{columns:2;column-gap:6mm;margin-top:5mm;list-style:none}
+.kortlijst li{font-size:8.6pt;padding:1.6mm 0;border-top:.25mm solid var(--soft);break-inside:avoid}
+.kortlijst li i{font-style:normal;font-family:var(--fd);font-weight:700;color:var(--blue);display:inline-block;width:8mm}
+/* Verklaring */
+.verklaring{background:#fbfaf7}
+.verklaring .rand{position:absolute;inset:12mm;border:.4mm solid var(--black);pointer-events:none}
+.verklaring .rand:after{content:'';position:absolute;inset:1.5mm;border:.2mm solid var(--black)}
+.verklaring .kop{text-align:center;margin-top:8mm}
+.verklaring .kop .klein{letter-spacing:.2em;text-transform:uppercase;font-size:7pt}
+.verklaring h2{font-family:Charter,'Bitstream Charter','Liberation Serif',Georgia,serif;font-weight:700;font-size:28pt;letter-spacing:0;text-align:center;margin:3mm 0 2mm}
+.verklaring .brief{font-family:Charter,'Bitstream Charter','Liberation Serif',Georgia,serif;font-size:10.3pt;line-height:1.55;margin-top:7mm}
+.verklaring .brief p{margin-bottom:3.2mm}
+.verklaring .punten{list-style:none;margin:2mm 0 4mm}
+.verklaring .punten li{padding-left:7mm;position:relative;margin-bottom:1.6mm}
+.verklaring .punten li:before{content:attr(data-n);position:absolute;left:0;font-family:var(--fd);font-weight:700;color:var(--blue);font-size:9pt}
+.handtekening{margin-top:6mm;display:flex;justify-content:space-between;align-items:flex-end}
+.handtekening .krabbel{width:58mm;height:16mm;border-bottom:.3mm solid var(--black);position:relative}
+.handtekening .krabbel svg{position:absolute;left:2mm;bottom:1mm}
+.handtekening .naam{font-family:var(--ft);font-size:8.5pt;margin-top:1.5mm}
+.zegel{width:26mm;height:26mm;border-radius:50%;border:.5mm solid var(--blue);display:flex;align-items:center;justify-content:center;text-align:center;color:var(--blue);font-size:5.6pt;font-weight:700;letter-spacing:.08em;line-height:1.3;text-transform:uppercase;transform:rotate(-8deg)}
+.zegel b{display:block;font-family:var(--fd);font-size:13pt;letter-spacing:-.02em}
+/* Tegenstelling */
+.vs2{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:4mm}
+.vs2 .k{font-size:8pt;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:0 0 2.5mm}
+.vs2 .k.wij{color:var(--blue)}
+.vs2 div.c{padding:3.2mm 4mm 3.2mm 0;border-top:.25mm solid var(--soft);font-size:9.2pt}
+.vs2 div.c.wij{padding-left:4mm;background:var(--tint);font-weight:500}
+/* Model */
+.machine{position:relative;height:150mm;margin-top:6mm}
+.m-blok{position:absolute;border-radius:4mm;padding:4.5mm;font-size:8.5pt}
+.m-blok h3{font-size:14pt;margin-bottom:1.5mm}
+.m-blok .rol{font-size:7pt;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-bottom:3mm;opacity:.75}
+.m-blok p{margin:0}
+.m-pijl{position:absolute}
+.booster{position:absolute;border-radius:3mm;padding:3mm 3.5mm;font-size:8pt;background:#fff;border:.4mm solid var(--blue)}
+.booster b{display:block;font-size:9.5pt;color:var(--blue)}
+.fasen{display:grid;grid-template-columns:repeat(4,1fr);gap:3mm;margin-top:4mm}
+.fase-b{border-radius:3mm;padding:4mm;background:var(--bg);font-size:8.4pt}
+.fase-b .w{font-size:7pt;font-weight:700;color:var(--blue);letter-spacing:.04em;text-transform:uppercase}
+.fase-b h3{font-size:11pt;margin:1.5mm 0}
+.fase-b .aan{margin-top:2mm;display:flex;flex-wrap:wrap;gap:1mm}
+.fase-b .aan span{font-size:6.8pt;font-weight:600;border-radius:5mm;padding:.6mm 2mm;background:#fff}
+.fase-b .aan span.m{background:var(--blue);color:#fff}
+.illu{font-size:6.8pt;color:var(--tx2);margin-top:1mm}
+.zwart .illu,.blauw .illu{color:rgba(255,255,255,.6)}
+/* Funnel */
+.trechter{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:5mm;align-items:end}
+.tr{text-align:center;padding:0 1mm}
+.tr .bar{background:var(--blue);border-radius:2mm 2mm 0 0;margin:0 auto}
+.tr .n{font-family:var(--fd);font-weight:800;font-size:22pt;letter-spacing:-.03em;line-height:1;margin-bottom:1.5mm}
+.tr .w{font-size:7.5pt;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--tx2);margin-top:2mm}
+.ratio2{display:grid;grid-template-columns:1fr 1fr 1fr;margin:3mm 12.5% 0;text-align:center;font-size:7.6pt;color:var(--tx2)}
+.ratio2 b{display:block;font-family:var(--fd);font-size:12pt;color:var(--black)}
+.diagnose{width:100%;border-collapse:collapse;font-size:8.6pt;margin-top:4mm}
+.diagnose th{font-size:7pt;letter-spacing:.04em;text-transform:uppercase}
+.diagnose td{color:var(--black);vertical-align:top}
+.diagnose td:first-child{font-weight:600;width:28%}
+.diagnose .wie{display:inline-block;font-size:6.8pt;font-weight:700;border-radius:5mm;padding:.5mm 2mm;background:var(--tint);color:var(--deep);margin-top:1mm}
+.diagnose .wie.jij{background:var(--black);color:#fff}
+/* Verhaal */
+.verhaal p{font-size:10pt;line-height:1.6}
+.verhaal p.eerste:first-letter{font-family:var(--fd);font-weight:800;font-size:38pt;float:left;line-height:.8;margin:1.5mm 2mm 0 0;color:var(--blue)}
+.tussenkop{font-family:var(--fd);font-weight:700;font-size:15pt;letter-spacing:-.02em;line-height:1.2;color:var(--blue);margin:5mm 0;border-left:1mm solid var(--blue);padding-left:4mm}
+/* Tijdlijn reclame */
+.eeuw{display:grid;grid-template-columns:repeat(5,1fr);gap:3mm;margin-top:6mm}
+.eeuw div{border-top:1mm solid var(--ln);padding-top:3mm;font-size:8.3pt}
+.eeuw div.nu{border-color:var(--blue)}
+.eeuw .j{font-family:var(--fd);font-weight:800;font-size:15pt;letter-spacing:-.02em}
+.eeuw b{display:block;margin:1mm 0 .8mm;font-size:9.5pt}
+/* Portaal */
+.scherm{border-radius:3mm;overflow:hidden;box-shadow:0 2mm 8mm rgba(0,0,0,.18);border:.3mm solid var(--soft)}
+.scherm img{display:block;width:100%}
+/* Formule */
+.formule{display:flex;align-items:center;gap:4mm;font-family:var(--fd);font-weight:800;letter-spacing:-.04em;font-size:44pt;line-height:1;margin:8mm 0}
+.formule .op{color:var(--tx3);font-weight:400}
+.formule small{display:block;font-family:var(--ft);font-weight:500;font-size:8pt;letter-spacing:0;color:var(--tx2);margin-top:2mm}
+.spectrum{display:grid;grid-template-columns:1fr 1.2fr 1.4fr 1.2fr;margin-top:5mm;font-size:8pt}
+.spectrum div{padding:3mm;border-top:3mm solid}
+.spectrum b{display:block;font-size:9.5pt;margin-bottom:1mm}
 </style></head><body>
-<section class="pg r zwart omslag">
-  <div class="omslagkop"><span>James Robinson · Marketing &amp; Branding</span><span>Editie 01 · najaar 2026</span></div>
-  <div class="mast">Game<i>plan</i></div>
-  <h1>Marketing die zich terugverdient.</h1>
-  <div class="ketting">
-    <div><span>Weergaven</span><b>23.333</b></div>
-    <svg viewBox="0 0 24 24"><path d="M3 12h16M13 6l6 6-6 6" fill="none" stroke="#fff" stroke-width="2"/></svg>
-    <div><span>Bezoekers</span><b>700</b></div>
-    <svg viewBox="0 0 24 24"><path d="M3 12h16M13 6l6 6-6 6" fill="none" stroke="#fff" stroke-width="2"/></svg>
-    <div><span>Aanvragen</span><b>21</b></div>
-    <svg viewBox="0 0 24 24"><path d="M3 12h16M13 6l6 6-6 6" fill="none" stroke="#fff" stroke-width="2"/></svg>
-    <div class="jij"><span>Klanten</span><b>4</b></div>
-  </div>
-  <div class="coverlines">
-    <div><b>We stoppen met posten</b>Niet met social media. Waarom je feed vullen het minst oplevert.</div>
-    <div><b>Drie schakels van ons, één van jou</b>Van advertentie tot klant, en wie waarvoor zorgt.</div>
-    <div><b>Wat het kost</b>Fundament, pakketten en alles wat op jouw naam staat.</div>
-  </div>
-</section>
-<section class="pg l"><div class="kicker">In deze editie</div><h2>Hoe we werken, en waarom zo.</h2>
-<p class="intro">Ons verhaal, van de eerste klik tot maand twaalf. Lees het terug wanneer je wilt, en geef het door aan wie mee moet beslissen.</p>
-<ul class="inhoud" style="columns:2;column-gap:8mm"><li><span class="p">04</span><div><b>Voorwoord</b></div></li><li><span class="p">05</span><div><b>Eén ding, en dat goed</b></div></li><li><span class="p">06</span><div><b>Ons verhaal</b></div></li><li><span class="p">07</span><div><b>Wat niet werkte</b></div></li><li><span class="p">08</span><div><b>Ons kantoor</b></div></li><li><span class="p">10</span><div><b>De ploeg</b></div></li><li><span class="p">12</span><div><b>Drie dingen gelden altijd</b></div></li><li><span class="p">14</span><div><b>Slimmer werken</b></div></li><li><span class="p">16</span><div><b>Het model</b></div></li><li><span class="p">18</span><div><b>De keten</b></div></li><li><span class="p">20</span><div><b>We stoppen met posten</b></div></li><li><span class="p">22</span><div><b>Voor wie we werken</b></div></li><li><span class="p">23</span><div><b>Wat klanten zeggen</b></div></li><li><span class="p">24</span><div><b>Case 1</b></div></li><li><span class="p">26</span><div><b>Case 2</b></div></li><li style="border-top:.5mm solid var(--black)"><span class="p"></span><div><b style="color:var(--blue)">Deel 2 · Wat betekent dat voor jou?</b></div></li><li><span class="p">29</span><div><b>Jouw doel in cijfers</b></div></li><li><span class="p">31</span><div><b>Ons plan</b></div></li><li><span class="p">33</span><div><b>Van handtekening tot live</b></div></li><li><span class="p">34</span><div><b>Het fundament</b></div></li><li><span class="p">35</span><div><b>De pakketten</b></div></li><li><span class="p">36</span><div><b>Licenties en opties</b></div></li><li><span class="p">37</span><div><b>Wat we doen, en wat niet</b></div></li><li><span class="p">38</span><div><b>Partners</b></div></li><li><span class="p">39</span><div><b>Hoe we samenwerken</b></div></li><li><span class="p">41</span><div><b>Negen spelregels</b></div></li><li><span class="p">43</span><div><b>Jouw kant</b></div></li><li><span class="p">44</span><div><b>Hoe nu verder</b></div></li><li><span class="p">45</span><div><b>Padel</b></div></li><li><span class="p">47</span><div><b>Colofon en bronnen</b></div></li></ul><div class="folio"><b>02</b><span>Gameplan · Editie 01</span></div></section>
-<section class="pg r blauw">
-<div style="margin-top:50mm"><div class="quote">Wij beloven geen resultaat. Wij beloven dat we het zelf zeggen als het niet werkt.</div>
-<div class="wie-zegt"><b>Spelregel 1</b>Cijfers zijn leidend</div></div><div class="folio"><span>Gameplan · Editie 01</span><b>03</b></div></section>
+<section class="pg r cover">
+<div class="foto"></div>
+<div class="ad"><b>Beeld: omslagfoto</b>Echte foto, geen stock. Bijvoorbeeld iemand van het team midden in een draaidag,<br>of een ondernemer in zijn zaak. Ruimte boven voor de titel, onder voor de quote.</div>
+<div class="masthead"><div class="naam">JAMES ROBINSON</div>
+  <div class="lint"><span>The Performance Issue</span><span>Editie 01</span><span>Najaar 2026</span></div></div>
+<div class="zijlijn"><div class="groot">7×</div><p>zo vaak een serieus gesprek als je binnen het uur terugbelt. Lees waarom, p. 36</p></div>
+<div class="slogan">Momentum first.<br><i>Mastery later.</i></div>
+<div class="lijnen">
+  <div><b>Tot aan de voordeur</b>Waarom een goede aanvraag nog geen klant is <span>36</span></div>
+  <div><b>Likes don’t pay the bills</b>Wat posten wel en niet doet <span>22</span></div>
+  <div><b>Science + Art</b>Waarom data en merk samen winnen <span>16</span></div>
+  <div><b>Welkom in Hulsberg</b>Binnen bij het team <span>12</span></div>
+</div></section>
 <section class="pg l">
-<div class="concept">Concepttekst, door Jim te herschrijven</div>
-<div class="beeld" style="position:absolute;left:0;right:0;top:0;height:122mm"><span>Beeld: Jim Coumans of Jim Kikken, op kantoor in Hulsberg</span></div>
-<div style="margin-top:110mm">
-  <div class="kicker">Voorwoord</div>
-  <h2 style="font-size:30pt">Ons succes is jullie succes. Niet meer en niet minder.</h2>
-  <div class="kol2">
-    <p>Onze winst is niet een zo hoog mogelijke maandfactuur. Onze winst is dat we je doelen keer op keer halen, dat je blij bent met wat het oplevert, en dat we over tien jaar nog steeds voor je werken.</p>
-    <p>Vraag je je over drie of zes maanden af wat marketing je bedrijf oplevert, dan hebben wij een groter probleem dan een lagere factuur. Daarom zetten we liever een deel van ons werk om in advertentiebudget dan dat we uren steken in iets wat weinig oplevert.</p>
-    <p>In dit magazine staat hoe we werken. Ook wat we niet doen, wat het kost en wat we van jou nodig hebben. We hebben het zo opgeschreven dat je het kunt narekenen.</p>
-    <p style="margin-top:5mm"><b><span class="vv">[Jim Coumans of Jim Kikken]</span></b><br><span class="klein">Eigenaar, James Robinson</span></p>
-  </div>
-</div><div class="folio"><b>04</b><span>Gameplan · Editie 01</span></div></section>
-<section class="pg r blauw">
-  <div class="kicker">Wat we doen</div>
-  <h2 style="font-size:44pt;margin-top:20mm">Wij doen één ding, en dat doen we goed.</h2>
-  <p class="intro" style="font-size:15pt;max-width:150mm">We zorgen dat er aanvragen binnenkomen via advertenties in zoekmachines en op social media, en dat die steeds goedkoper worden. Je website is daarbij het middelpunt.</p>
-  <div style="position:absolute;left:21mm;right:23mm;bottom:28mm;display:grid;grid-template-columns:repeat(3,1fr);gap:6mm">
-    <div class="cijfer"><div class="n">2018</div><div class="t">Opgericht in Hulsberg. Bedacht een jaar eerder.</div></div>
-    <div class="cijfer"><div class="n">±10</div><div class="t">Mensen. Zeven begonnen hier als stagiair.</div></div>
-    <div class="cijfer"><div class="n">1</div><div class="t">Product: een fundament en een vaste maandprijs. Geen uren.</div></div>
-  </div>
-  <div class="folio"><span>Gameplan · Editie 01</span><b>05</b></div></section>
+<div class="kicker">In deze editie</div>
+<div class="tegel hoofdtegel"><div class="beeld" style=""><span>Beeld: een ondernemer aan de telefoon, of een voordeur</span></div><div class="pnr">36</div><b>Tot aan de voordeur</b><span>Het verhaal van Ruud: hoe de beste campagne toch geen klanten opleverde, en wat wij daarvan leerden.</span></div><div class="folio"><b>02</b><span>James Robinson · The Performance Issue</span></div></section>
+<section class="pg r">
+<div class="tegels" style="margin-top:9mm">
+<div class="tegel"><div class="beeld" style=""><span>Beeld: het systeem, als beeld</span></div><div class="pnr">26</div><b>Zo werkt het systeem</b><span>Motor, brandstof en versnellers</span></div><div class="tegel"><div class="beeld" style=""><span>Beeld: een telefoon met een feed</span></div><div class="pnr">22</div><b>Likes don’t pay the bills</b><span>Waarom we adverteren in plaats van hopen</span></div><div class="tegel"><div class="beeld" style=""><span>Beeld: een draaidag, camera in beeld</span></div><div class="pnr">16</div><b>Science + Art</b><span>Data en merk, hand in hand</span></div><div class="tegel"><div class="beeld" style=""><span>Beeld: het kantoor in Hulsberg</span></div><div class="pnr">12</div><b>Welkom in Hulsberg</b><span>Waar je aan tafel zit</span></div>
+</div>
+<ul class="kortlijst">
+  <li><i>05</i>Declaration of Performance</li>
+  <li><i>10</i>Wat normaal is, en hoe wij het doen</li>
+  <li><i>14</i>De ploeg</li>
+  <li><i>18</i>Numbers don’t lie</li>
+  <li><i>30</i>Content: de brandstof</li>
+  <li><i>34</i>Van impressie tot klant</li>
+  <li><i>38</i>Je eigen portaal</li>
+  <li><i>42</i>Cases en klanten</li>
+  <li><i>50</i>Wat € 1 marketing oplevert</li>
+  <li><i>55</i>Fundament en pakketten</li>
+  <li><i>60</i>De spelregels</li>
+  <li><i>64</i>Tot op de baan</li>
+</ul><div class="folio"><span>James Robinson · The Performance Issue</span><b>03</b></div></section>
+<section class="pg l zwart"><div class="beeld" style="position:absolute;inset:0;align-items:flex-start;padding:20mm 23mm"><span>Beeld: portret van Jim Coumans, rustig licht, kijkt in de camera</span></div>
+<div style="position:absolute;left:21mm;bottom:28mm;z-index:2"><div class="kicker">Voorwoord</div><div class="d" style="font-size:22pt">Jim Coumans</div><div style="color:rgba(255,255,255,.75)">Oprichter, James Robinson</div></div><div class="folio"><b>04</b><span>James Robinson · The Performance Issue</span></div></section>
+<section class="pg r verklaring">
+<div class="rand"></div>
+<div class="concept">Concept, Jim geeft nog feedback op de inhoud</div>
+<div class="kop"><div class="klein">James Robinson · Hulsberg</div><h2>Declaration of Performance</h2><div class="klein" style="letter-spacing:.1em">Wat je van ons mag verwachten</div></div>
+<div class="brief">
+  <p>Beste ondernemer,</p>
+  <p>Je hebt dit magazine in handen omdat je wilt groeien. Dat willen wij ook, voor jou. Op deze pagina staat waar je ons aan mag houden. Wat erachter zit, lees je in de rest van het magazine.</p>
+  <ul class="punten">
+    <li data-n="1">Resultaat staat bij ons op één. Niet onze mening, niet die van jou: de cijfers beslissen.</li>
+    <li data-n="2">We bouwen een systeem dat klanten oplevert. Adverteren is de motor, content de brandstof, en SEO, e-mail en je website maken het steeds sterker.</li>
+    <li data-n="3">We beginnen met onderzoek, niet met een offerte. Geloven we er niet in, dan zeggen we dat.</li>
+    <li data-n="4">Je ziet wat wij zien. Realtime, in je eigen portaal.</li>
+    <li data-n="5">Alles staat op jouw naam, en je kunt elke maand opzeggen. Je blijft omdat het werkt.</li>
+    <li data-n="6">We brengen kwalitatieve aanvragen tot aan je voordeur. Wat daarna gebeurt, maakt het verschil, en daar denken we graag over mee.</li>
+  </ul>
+  <p>Marketing moet geld opleveren. Doet het dat niet, dan is het een hobby. Daar zijn we niet voor.</p>
+</div>
+<div class="handtekening">
+  <div><div class="krabbel"><svg width="52mm" height="14mm" viewBox="0 0 52 14"><path d="M2 10 C6 2, 9 2, 10 8 S14 12, 17 5 S22 2, 23 9 C24 12, 27 6, 30 6 S34 10, 37 7 S44 3, 50 5" fill="none" stroke="#1c1c1e" stroke-width=".6" stroke-linecap="round"/></svg></div><div class="naam"><b>Jim Coumans</b> · Oprichter James Robinson<br>Hulsberg, <span class="vv">[datum]</span></div></div>
+  <div class="zegel"><div>James Robinson<b>2018</b>Performance</div></div>
+</div><div class="folio"><span>James Robinson · The Performance Issue</span><b>05</b></div></section>
+<section class="pg l blauw">
+<div style="position:absolute;left:21mm;right:23mm;top:78mm"><div class="quote" style="font-size:46pt">Gokken doe je in het casino. Niet bij James Robinson.</div>
+<div class="wie-zegt"><b>Jim Coumans</b>Oprichter</div></div><div class="folio"><b>06</b><span>James Robinson · The Performance Issue</span></div></section>
+<section class="pg r">
+<div class="kicker">Wie we zijn</div>
+<h2 style="font-size:40pt">Wij doen veel. Alles met één doel: meer klanten voor jou.</h2>
+<p class="intro">Adverteren, content, landingspagina’s, e-mail, SEO. Elk bureau kan dat opsommen. Het verschil zit in hoe het samenwerkt: als één systeem, gestuurd op cijfers, met jouw omzet als maatstaf.</p>
+<div style="position:absolute;left:23mm;right:21mm;bottom:28mm;display:grid;grid-template-columns:repeat(4,1fr);gap:5mm">
+  <div class="cijfer"><div class="n" style="font-size:38pt">2018</div><div class="t">Opgericht in Hulsberg</div></div>
+  <div class="cijfer"><div class="n" style="font-size:38pt">±10</div><div class="t">Specialisten, onder één dak</div></div>
+  <div class="cijfer"><div class="n" style="font-size:38pt"><span class="vv">[00]</span></div><div class="t">Ondernemers geholpen</div></div>
+  <div class="cijfer"><div class="n" style="font-size:38pt">30 km</div><div class="t">Rond Hulsberg zitten onze klanten</div></div>
+</div><div class="beeld" style="position:absolute;left:23mm;right:21mm;bottom:26mm;height:92mm;border-radius:4mm"><span>Beeld: het team aan het werk, breed beeld</span></div><div class="folio"><span>James Robinson · The Performance Issue</span><b>07</b></div></section>
 <section class="pg l">
 <div class="kicker">Ons verhaal</div>
-<h2>Van idee in 2017 tot een bureau met een vast product.</h2>
-<ul class="jaren">
-  <li><span class="j">2017</span><div><h3>Het idee</h3><p>James Robinson wordt bedacht. <span class="vv">[hoe het begon, waar de naam vandaan komt]</span></p></div></li>
-  <li><span class="j">2018</span><div><h3>Opgericht in Hulsberg</h3><p><span class="vv">[de eerste klanten, het eerste kantoor]</span></p></div></li>
-  <li><span class="j"><span class="vv">[jaar]</span></span><div><h3><span class="vv">[mijlpaal]</span></h3><p><span class="vv">[bijvoorbeeld de eerste medewerker, het eerste grote project]</span></p></div></li>
-  <li><span class="j">2022</span><div><h3>Jim Kikken wordt mede-eigenaar</h3><p>Met zijn specialisme, data-gedreven performance marketing, verschuift het zwaartepunt naar meetbaar resultaat.</p></div></li>
-  <li><span class="j"><span class="vv">[jaar]</span></span><div><h3>Ons kantoor</h3><p><span class="vv">[de verhuizing naar het huidige kantoor]</span></p></div></li>
-  <li><span class="j">2026</span><div><h3>Een vast product</h3><p>We stoppen met alles tegelijk doen. Eén fundament, vaste pakketten, één adres voor alles, en een eigen portaal met je cijfers.</p></div></li>
-</ul><div class="folio"><b>06</b><span>Gameplan · Editie 01</span></div></section>
+<h2>Sinds 2018 helpen we ondernemers in Limburg groeien.</h2>
+<p class="intro">Wat begon als een idee in 2017, is een team van specialisten met een eigen manier van werken. Gebouwd op wat we onderweg leerden.</p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6mm;margin-top:6mm">
+  <div class="cijfer"><div class="n" style="font-size:36pt"><span class="vv">[€ 0,0 mln]</span></div><div class="t">advertentiebudget dat we voor klanten aanstuurden</div></div>
+  <div class="cijfer"><div class="n" style="font-size:36pt"><span class="vv">[000]</span></div><div class="t">campagnes live gezet</div></div>
+</div>
+<h3 style="margin-top:10mm">Wat we onderweg leerden</h3>
+<ol class="lijst">
+  <li><b>Posten levert minder op dan het lijkt.</b> Je ziet het zelf, dus het voelt als marketing. Het bereikt vooral wie je al kent.</li>
+  <li><b>Een goede aanvraag is nog geen klant.</b> Wat er na de voordeur gebeurt, beslist. Lees het verhaal van Ruud op p. 36.</li>
+  <li><b>Smaak verliest van cijfers.</b> Ook onze eigen smaak.</li>
+</ol><div class="folio"><b>08</b><span>James Robinson · The Performance Issue</span></div></section>
 <section class="pg r">
-  <div class="kicker">Waarom deze opzet</div>
-  <h2>Wat niet werkte, en wat we nu doen.</h2>
-  <p class="intro">Onze werkwijze is zo gebouwd omdat de oude niet klopte. Elke keuze lost een probleem op dat we zelf hadden.</p>
-  <table>
-    <tr><th style="width:44%">Wat niet werkte</th><th>Wat we nu doen</th></tr>
-    <tr><td>Acht dingen tegelijk, en nergens hard op sturen</td><td>Eén motor, adverteren, en de versnellers pas als de cijfers er zijn</td></tr>
-    <tr><td>Elke start werd opnieuw bedacht</td><td>Een vast fundament, voor iedereen hetzelfde, met standaarden per onderdeel</td></tr>
-    <tr><td>De prijs ontstond na het gesprek, en was dus niet te controleren</td><td>De prijslijst ligt er vóór het gesprek, en is voor iedereen gelijk</td></tr>
-    <tr><td>Klanten vertrokken na een jaar, en het volgende bureau bouwde verder op ons werk</td><td>Het fundament is een eigen product. Je blijft omdat het werkt, niet omdat je vastzit</td></tr>
-    <tr><td>Een groeiende maandfactuur zonder harde grens aan wat erin zat</td><td>Vaste pakketten, met een vaste inhoud</td></tr>
-    <tr><td>Alles liep via twee eigenaren</td><td>Vaste stappen, vaste mensen, en één adres voor alles: support@jamesrobinson.nl</td></tr>
-  </table>
-  <div class="kader" style="margin-top:9mm"><h3>Wat je daaraan hebt</h3><p style="margin:0">Je weet vooraf wat je krijgt, wat het kost en wanneer je wat kunt verwachten. Dat is minder flexibel dan een bureau dat alles doet. Het is wel te controleren.</p></div>
-  <div class="folio"><span>Gameplan · Editie 01</span><b>07</b></div></section>
-<section class="pg l zwart"><div class="beeld" style="position:absolute;inset:0;align-items:flex-start;padding:20mm 23mm"><span>Beeld: ons kantoor in Hulsberg, van buiten of de mooiste ruimte binnen</span></div>
-<div style="position:absolute;left:21mm;right:23mm;bottom:30mm;z-index:2">
-  <div class="kicker">Ons kantoor</div>
-  <h2 style="font-size:44pt;color:#fff">Welkom in Hulsberg.</h2>
-</div><div class="folio"><b>08</b><span>Gameplan · Editie 01</span></div></section>
+<ul class="jaren" style="margin-top:22mm">
+  <li><span class="j">2017</span><div><h3>Het idee</h3><p><span class="vv">[hoe het begon, waar de naam vandaan komt]</span></p></div></li>
+  <li><span class="j">2018</span><div><h3>Opgericht in Hulsberg</h3><p><span class="vv">[de eerste klanten]</span></p></div></li>
+  <li><span class="j"><span class="vv">[jaar]</span></span><div><h3><span class="vv">[mijlpaal voor klanten]</span></h3><p><span class="vv">[bijvoorbeeld de eerste grote campagne, een nieuwe dienst]</span></p></div></li>
+  <li><span class="j">2022</span><div><h3>Jim Kikken wordt mede-eigenaar</h3><p>Data en performance marketing worden de kern van alles wat we doen.</p></div></li>
+  <li><span class="j"><span class="vv">[jaar]</span></span><div><h3>Ons kantoor</h3><p><span class="vv">[de plek waar we nu zitten]</span></p></div></li>
+  <li><span class="j">2026</span><div><h3>Je eigen portaal</h3><p>Elke klant ziet zijn cijfers realtime. Dezelfde cijfers als wij.</p></div></li>
+</ul>
+<div class="beeld" style="height:60mm;border-radius:4mm;margin-top:8mm"><span>Beeld: archieffoto uit de begintijd</span></div><div class="folio"><span>James Robinson · The Performance Issue</span><b>09</b></div></section>
+<section class="pg l">
+<div class="kicker">Het verschil</div>
+<h2 style="font-size:40pt">Wat normaal is.</h2>
+<p class="intro">Veel van wat in marketing normaal is, is vooral handig voor het bureau. We deden het jarenlang zelf ook zo. Tot we zagen wat het onze klanten kostte.</p>
+<div class="beeld" style="height:110mm;border-radius:4mm;margin-top:6mm"><span>Beeld: het team in gesprek met een klant</span></div><div class="folio"><b>10</b><span>James Robinson · The Performance Issue</span></div></section>
+<section class="pg r">
+<div class="vs2" style="margin-top:12mm"><div class="k">Wat normaal is</div><div class="k wij">Hoe wij het doen</div><div class="c">Je betaalt voor uren</div><div class="c wij">Je betaalt voor een vaste samenwerking. Hoeveel uur erin gaat, is ons probleem</div><div class="c">Een rapport aan het eind van de maand</div><div class="c wij">Realtime in je eigen portaal. Dezelfde cijfers als wij</div><div class="c">Advertentieaccounts op naam van het bureau</div><div class="c wij">Alles op jouw naam. Stop je, dan neem je alles mee</div><div class="c">Een contract van een jaar</div><div class="c wij">Maandelijks opzegbaar. Je blijft omdat het werkt</div><div class="c">Een opslag op ingekochte media en diensten</div><div class="c wij">Je advertentiebudget gaat rechtstreeks naar de platformen. Nooit marge erbovenop</div><div class="c">Posten om zichtbaar te zijn</div><div class="c wij">Adverteren op resultaat, gericht op wie nog geen klant is</div><div class="c">Een offerte na de kennismaking</div><div class="c wij">Eerst onderzoek en een onderbouwde hypothese. Of een eerlijk nee</div><div class="c">Smaak beslist</div><div class="c wij">Cijfers beslissen, binnen de grenzen van je merk</div><div class="c">Kanalen los van elkaar</div><div class="c wij">Eén systeem: adverteren, content, website, e-mail en SEO versterken elkaar</div></div><div class="folio"><span>James Robinson · The Performance Issue</span><b>11</b></div></section>
+<section class="pg l zwart"><div class="beeld" style="position:absolute;inset:0;align-items:flex-start;padding:20mm 23mm"><span>Beeld: ons kantoor in Hulsberg, binnen, met licht en ruimte</span></div>
+<div style="position:absolute;left:21mm;right:23mm;bottom:30mm;z-index:2"><div class="kicker">Ons kantoor</div><h2 style="font-size:50pt;color:#fff">Welkom in Hulsberg.</h2></div><div class="folio"><b>12</b><span>James Robinson · The Performance Issue</span></div></section>
 <section class="pg r">
 <div class="kicker">Ons kantoor</div>
-<h2>Hier zit je aan tafel. Niet in een vergaderhok.</h2>
-<p class="intro"><span class="vv">[wat het kantoor bijzonder maakt: de plek, het gebouw, wat er te doen is]</span></p>
-<div class="kol2">
-  <p><b>Je Performance Review</b> houden we hier of online. Een uur, met de cijfers op tafel en een kop koffie erbij.</p>
-  <p><b>De draaidag</b> is bij jou op locatie. Wat we daarna maken, maken we hier.</p>
-  <p><span class="vv">[faciliteiten: studio, ruimte voor sessies, parkeren, bereikbaarheid]</span></p>
-  <p><span class="vv">[waarom het kantoor bij ons verhaal past]</span></p>
+<h2>Online is ons vak. Aan tafel ontstaan de beste ideeën.</h2>
+<div class="kol2 verhaal" style="margin-top:4mm">
+  <p>Wij houden van online en digitaal. Dat is ons vak. Maar meetings, brainstorms en overleg werken het best in een echte ruimte, met mensen aan tafel.</p>
+  <p>Daarom werken we voor ondernemers binnen zo’n dertig kilometer rond Hulsberg. Vraagt de situatie erom, dan zitten we snel bij jou of bij ons aan tafel.</p>
+  <p>Ons kantoor hebben we ingericht om te presteren. Plekken om in stilte te werken, en ruimte om je grootste ideeën te bespreken. <span class="vv">[faciliteiten, wat het bijzonder maakt]</span></p>
+  <p>In onze ideale wereld voelt binnenkomen bij James Robinson als binnenkomen bij een meesterchef met een Michelinster. Alles klopt, tot in het detail, en je merkt het zonder dat iemand het hoeft uit te leggen.</p>
 </div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:4mm;margin-top:8mm"><div class="beeld" style="height:60mm;border-radius:4mm"><span>Beeld: detail kantoor</span></div><div class="beeld" style="height:60mm;border-radius:4mm"><span>Beeld: het team aan het werk</span></div></div>
-<p class="klein" style="margin-top:5mm"><span class="vv">[adres]</span> · Hulsberg · kantoor 045 792 0009</p><div class="folio"><span>Gameplan · Editie 01</span><b>09</b></div></section>
-<section class="pg l">
-<div class="kicker">De ploeg</div>
-<h2>De eigenaren.</h2>
-<div class="duo">
-  <div><div class="beeld" style=""><span>Beeld: Jim Coumans</span></div><div class="persoon"><b>Jim Coumans</b><span>Oprichter en eigenaar</span><p>Marketing, merk en groei van James Robinson. <span class="vv">[één zin in eigen woorden]</span></p></div></div>
-  <div><div class="beeld" style=""><span>Beeld: Jim Kikken</span></div><div class="persoon"><b>Jim Kikken</b><span>Eigenaar</span><p>Data-gedreven performance marketing. <span class="vv">[één zin in eigen woorden]</span></p></div></div>
-</div>
-<p class="intro" style="margin-top:9mm;font-size:11.5pt">Ongeveer tien mensen. Zeven van hen begonnen hier als stagiair. We leiden mensen zelf op, in onze eigen manier van werken.</p><div class="folio"><b>10</b><span>Gameplan · Editie 01</span></div></section>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:4mm;margin-top:6mm"><div class="beeld" style="height:52mm;border-radius:4mm"><span>Beeld: stilteplek</span></div><div class="beeld" style="height:52mm;border-radius:4mm"><span>Beeld: de ruimte voor grote ideeën</span></div></div>
+<p class="klein" style="margin-top:4mm"><span class="vv">[adres]</span> · Hulsberg</p><div class="folio"><span>James Robinson · The Performance Issue</span><b>13</b></div></section>
+<section class="pg l"><div class="kicker">De ploeg</div><h2>Wie er voor je aan de slag gaat.</h2><div class="ploeg" style="grid-template-columns:repeat(3,1fr);margin-top:2mm"><div><div class="beeld" style="height:58mm;border-radius:3mm;padding:3mm"><span>Beeld: portret</span></div><div class="persoon"><b><span class="vv">[naam]</span></b></div></div><div><div class="beeld" style="height:58mm;border-radius:3mm;padding:3mm"><span>Beeld: portret</span></div><div class="persoon"><b><span class="vv">[naam]</span></b></div></div><div><div class="beeld" style="height:58mm;border-radius:3mm;padding:3mm"><span>Beeld: portret</span></div><div class="persoon"><b>Jim Kikken</b></div></div><div><div class="beeld" style="height:58mm;border-radius:3mm;padding:3mm"><span>Beeld: portret</span></div><div class="persoon"><b><span class="vv">[naam]</span></b></div></div><div><div class="beeld" style="height:58mm;border-radius:3mm;padding:3mm"><span>Beeld: portret</span></div><div class="persoon"><b><span class="vv">[naam]</span></b></div></div><div><div class="beeld" style="height:58mm;border-radius:3mm;padding:3mm"><span>Beeld: portret</span></div><div class="persoon"><b><span class="vv">[naam]</span></b></div></div></div><div class="folio"><b>14</b><span>James Robinson · The Performance Issue</span></div></section>
+<section class="pg r"><div class="ploeg" style="grid-template-columns:repeat(3,1fr);margin-top:22mm"><div><div class="beeld" style="height:58mm;border-radius:3mm;padding:3mm"><span>Beeld: portret</span></div><div class="persoon"><b>Jim Coumans</b></div></div><div><div class="beeld" style="height:58mm;border-radius:3mm;padding:3mm"><span>Beeld: portret</span></div><div class="persoon"><b><span class="vv">[naam]</span></b></div></div><div><div class="beeld" style="height:58mm;border-radius:3mm;padding:3mm"><span>Beeld: portret</span></div><div class="persoon"><b><span class="vv">[naam]</span></b></div></div><div><div class="beeld" style="height:58mm;border-radius:3mm;padding:3mm"><span>Beeld: portret</span></div><div class="persoon"><b><span class="vv">[naam]</span></b></div></div><div><div class="beeld" style="height:58mm;border-radius:3mm;padding:3mm"><span>Beeld: portret</span></div><div class="persoon"><b><span class="vv">[naam]</span></b></div></div><div><div class="beeld" style="height:58mm;border-radius:3mm;padding:3mm"><span>Beeld: portret</span></div><div class="persoon"><b><span class="vv">[naam]</span></b></div></div></div><div class="folio"><span>James Robinson · The Performance Issue</span><b>15</b></div></section>
+<section class="pg l blauw">
+<div style="position:absolute;left:21mm;right:23mm;top:60mm">
+  <div class="kicker">Hoe we denken</div>
+  <div class="formule" style="font-size:64pt;flex-direction:column;align-items:flex-start;gap:0">Science<span style="color:rgba(255,255,255,.55)">+ Art</span><span style="font-size:30pt;margin-top:6mm">= High Performance</span></div>
+</div><div class="folio"><b>16</b><span>James Robinson · The Performance Issue</span></div></section>
 <section class="pg r">
-<div class="kicker">De ploeg</div>
-<h2>Wie er aan je campagne werkt.</h2>
-<div class="ploeg"><div><div class="beeld" style="height:44mm;border-radius:3mm;padding:3mm"><span>Beeld: teamlid</span></div><div class="persoon"><b><span class="vv">[naam]</span></b><span><span class="vv">[rol]</span> · <span class="vv">[specialisme]</span></span></div></div><div><div class="beeld" style="height:44mm;border-radius:3mm;padding:3mm"><span>Beeld: teamlid</span></div><div class="persoon"><b><span class="vv">[naam]</span></b><span><span class="vv">[rol]</span> · <span class="vv">[specialisme]</span></span></div></div><div><div class="beeld" style="height:44mm;border-radius:3mm;padding:3mm"><span>Beeld: teamlid</span></div><div class="persoon"><b><span class="vv">[naam]</span></b><span><span class="vv">[rol]</span> · <span class="vv">[specialisme]</span></span></div></div><div><div class="beeld" style="height:44mm;border-radius:3mm;padding:3mm"><span>Beeld: teamlid</span></div><div class="persoon"><b><span class="vv">[naam]</span></b><span><span class="vv">[rol]</span> · <span class="vv">[specialisme]</span></span></div></div><div><div class="beeld" style="height:44mm;border-radius:3mm;padding:3mm"><span>Beeld: teamlid</span></div><div class="persoon"><b><span class="vv">[naam]</span></b><span><span class="vv">[rol]</span> · <span class="vv">[specialisme]</span></span></div></div><div><div class="beeld" style="height:44mm;border-radius:3mm;padding:3mm"><span>Beeld: teamlid</span></div><div class="persoon"><b><span class="vv">[naam]</span></b><span><span class="vv">[rol]</span> · <span class="vv">[specialisme]</span></span></div></div><div><div class="beeld" style="height:44mm;border-radius:3mm;padding:3mm"><span>Beeld: teamlid</span></div><div class="persoon"><b><span class="vv">[naam]</span></b><span><span class="vv">[rol]</span> · <span class="vv">[specialisme]</span></span></div></div><div><div class="beeld" style="height:44mm;border-radius:3mm;padding:3mm"><span>Beeld: teamlid</span></div><div class="persoon"><b><span class="vv">[naam]</span></b><span><span class="vv">[rol]</span> · <span class="vv">[specialisme]</span></span></div></div><div><div class="beeld" style="height:44mm;border-radius:3mm;padding:3mm"><span>Beeld: teamlid</span></div><div class="persoon"><b><span class="vv">[naam]</span></b><span><span class="vv">[rol]</span> · <span class="vv">[specialisme]</span></span></div></div></div><div class="folio"><span>Gameplan · Editie 01</span><b>11</b></div></section>
+<div class="kicker">Science + Art</div>
+<h2>Data vindt de juiste persoon. Je merk zorgt dat die blijft kijken.</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:5mm;margin-top:4mm">
+  <div class="kader"><h3>Science</h3><p style="margin:0">Adverteren, targeting, testen, meten. Wie ziet je advertentie, wanneer, en wat doet die persoon daarna? Dat is rekenwerk.</p></div>
+  <div class="kader g"><h3>Art</h3><p style="margin:0">Je merk: beeld, kleur, toon, verhaal. Waarom iemand stopt met scrollen, en jou onthoudt. Dat is vakmanschap.</p></div>
+</div>
+<div class="verhaal" style="margin-top:7mm">
+  <p>Los van elkaar werken ze half. De perfecte doelgroep met een advertentie die niemand opvalt, levert niets op. De mooiste advertentie bij de verkeerde mensen ook niet.</p>
+  <p>Samen versterken ze elkaar. Groot onderzoek naar honderden campagnes, door het Britse vakinstituut voor reclame (IPA), laat hetzelfde zien: bedrijven die alleen op snelle verkoop sturen, groeien op termijn minder dan bedrijven die ook aan een herkenbaar merk bouwen.</p>
+  <div class="tussenkop">Wat goede resultaten zijn? Dat vertellen de cijfers ons.</div>
+</div><div class="beeld" style="position:absolute;left:23mm;right:21mm;bottom:26mm;height:70mm;border-radius:4mm"><span>Beeld: een draaidag, met de cijfers op een scherm ernaast</span></div><div class="folio"><span>James Robinson · The Performance Issue</span><b>17</b></div></section>
+<section class="pg l zwart">
+<div class="kicker">Hoe we beslissen</div>
+<h2 style="font-size:56pt;margin-top:30mm">Numbers don’t lie.</h2>
+<div class="cijfer" style="position:absolute;left:21mm;right:23mm;bottom:30mm"><div class="n" style="font-size:96pt">10–20%</div><div class="t" style="font-size:11pt">van de ideeën die Google test, levert echt een verbetering op.</div><div class="b">Kohavi &amp; Thomke, The Surprising Power of Online Experiments, Harvard Business Review 2017</div></div><div class="folio"><b>18</b><span>James Robinson · The Performance Issue</span></div></section>
+<section class="pg r">
+<div class="verhaal" style="margin-top:12mm">
+  <p class="eerste">In Silicon Valley werken de slimste mensen ter wereld. Ze komen van de beste universiteiten en hebben één opdracht: technologie bouwen die precies inspeelt op hoe mensen denken en kiezen.</p>
+  <p>Toch blijkt bij Google maar 10 tot 20 procent van de ideeën die ze testen het resultaat echt te verbeteren. De rest werkt niet, of zelfs averechts. En dat zijn de ideeën van mensen die hier hun leven aan wijden.</p>
+  <div class="tussenkop">Als zij het in acht van de tien gevallen mis hebben, waarom zouden wij, of jij, het dan beter weten?</div>
+  <p>Daarom doet onze mening er minder toe dan je zou denken. En de jouwe eerlijk gezegd ook. We praten er zeker over, en we doen nooit iets wat niet goed of niet bij je merk voelt. Maar resultaat staat op één.</p>
+  <p>Het liefst luisteren we naar de klant van onze klant: de mensen die jouw product of dienst kopen. Met hen praten we niet. Wat ze doen, zien we wel: waar ze op klikken, waar ze afhaken, wat ze kopen. Daar sturen we op.</p>
+</div><div class="beeld" style="position:absolute;left:23mm;right:21mm;bottom:26mm;height:74mm;border-radius:4mm"><span>Beeld: een scherm met data, of de klant van onze klant in actie</span></div><div class="folio"><span>James Robinson · The Performance Issue</span><b>19</b></div></section>
 <section class="pg l">
-  <div class="kicker">Drie dingen gelden altijd</div>
-  <h2>Performance eerst. Maar nooit ten koste van je merk.</h2>
-  <div class="kol2" style="margin-top:4mm">
-    <h3>Performance eerst</h3>
-    <p>We worden afgerekend op aanvragen en op wat een aanvraag kost. Elke euro is meetbaar, en je ziet in je dashboard dezelfde cijfers als wij.</p>
-    <h3 style="margin-top:5mm">Altijd on-brand</h3>
-    <p>Elke uiting klopt met je merk: kleur, typografie, toon en beeld. Ook een snelle variant, ook een test. Een advertentie die vandaag klikt maar je merk beschadigt, kost op termijn meer dan hij oplevert.</p>
-    <p>Daar is een goede reden voor. Het grootste onderzoek naar wat marketing oplevert, van Binet en Field voor het Britse IPA, laat zien dat sturen op snel resultaat efficiënt is, maar dat groei op de lange termijn komt van een merk dat mensen herkennen.</p>
-    <p>Wij zijn een performancebureau, en daar zijn we eerlijk over. Ons antwoord op dat onderzoek is dat elke advertentie die we maken ook aan je herkenbaarheid bouwt. Dezelfde kleuren, dezelfde toon, elke keer weer.</p>
-  </div>
-  <div style="position:absolute;left:21mm;right:23mm;bottom:28mm;display:grid;grid-template-columns:1fr 1fr;gap:6mm">
-    <div class="cijfer"><div class="n">46<span style="font-size:28pt">/54</span></div><div class="t">De beste verhouding tussen merk en direct resultaat voor zakelijke dienstverleners.</div><div class="b">Binet &amp; Field, 5 Principles of Growth in B2B Marketing</div></div>
-    <div class="cijfer"><div class="n">996</div><div class="t">Campagnes onderzocht. Korte effecten geven efficiëntie, lange effecten groei.</div><div class="b">Binet &amp; Field, The Long and the Short of It, IPA 2013</div></div>
-  </div>
-  <div class="folio"><b>12</b><span>Gameplan · Editie 01</span></div></section>
-<section class="pg r grijs">
-  <div class="kicker">Drie dingen gelden altijd</div>
-  <h2>Data beats opinion.</h2>
-  <p class="intro">We beslissen op cijfers, niet op smaak. Ook niet op die van ons. Een discussie over wat mooier is, beslechten we met een test.</p>
-  <div class="cijfer" style="margin-top:12mm"><div class="n" style="font-size:96pt">1 op 3</div><div class="t" style="font-size:12pt;max-width:140mm">Bij Microsoft verbeterde maar een derde van de geteste ideeën het resultaat waarvoor ze bedoeld waren. Bij Google en Bing was het 10 tot 20 procent.</div><div class="b">Kohavi &amp; Thomke, The Surprising Power of Online Experiments, Harvard Business Review 2017</div></div>
-  <div class="kol2" style="margin-top:12mm">
-    <p>Als de beste teams ter wereld het meestal mis hebben over wat werkt, dan hebben wij en jij dat ook. Daarom meten we vanaf dag één, en laten we de cijfers kiezen.</p>
-    <p>Je merk bepaalt de grenzen. Binnen die grenzen kiest de data. Eerlijk is ook: echt testen vraagt verkeer. Waar dat er niet is, sturen we op de cijfers die er wel zijn, en zeggen we dat erbij.</p>
-  </div>
-  <div class="folio"><span>Gameplan · Editie 01</span><b>13</b></div></section>
+<div class="kicker">De markt verandert</div>
+<h2 style="font-size:46pt">You don’t know what you don’t know.</h2>
+<div class="eeuw">
+  <div><span class="j">1900+</span><b>De krant</b>Een advertentie in de krant of het tijdschrift was de heilige graal.</div>
+  <div><span class="j">1960+</span><b>Radio en tv</b>Wie een commercial had, had bereik.</div>
+  <div><span class="j">2000+</span><b>De website</b>Gevonden worden in Google werd het nieuwe etalageraam.</div>
+  <div><span class="j">2010+</span><b>Posten op social</b>Gratis bereik, voor wie elke dag postte.</div>
+  <div class="nu"><span class="j">Nu</span><b>Pay to play</b>Data, AI en adverteren op resultaat.</div>
+</div>
+<div class="beeld" style="height:80mm;border-radius:4mm;margin-top:10mm"><span>Beeld: oude krantenadvertentie naast een telefoon</span></div><div class="folio"><b>20</b><span>James Robinson · The Performance Issue</span></div></section>
+<section class="pg r">
+<div class="verhaal" style="margin-top:12mm">
+  <p class="eerste">Veel ondernemers zien posten op social media nog altijd als dé vorm van marketing. Logisch: het is bekend, het is laagdrempelig, en je ziet het zelf, dus het is er.</p>
+  <p>Maar de wereld van marketing verandert sneller dan ooit. Wat gisteren nieuw was, is vandaag achterhaald. Tools, automatisering en AI zorgen voor een versnelling die zijn weerga niet kent.</p>
+  <p>Daar komt bij dat de grote Amerikaanse platformen steeds meer pay to play zijn geworden. Google, Meta, LinkedIn en TikTok willen absoluut resultaat voor je opleveren. Resultaat is hun bestaansrecht. Maar anders dan tien, vijftien jaar geleden moet je er wel voor betalen.</p>
+  <div class="tussenkop">De tijd dat een gewone post verder kwam dan je eigen volgers en die van je moeder, is voorbij.</div>
+  <p>We geloven wel in een goede aanwezigheid op social. Voor je merk heeft het waarde, en het helpt mensen die je al kennen om iets bij je te kopen. Maar wie nieuwe klanten wil, moet verder kijken dan de eigen feed.</p>
+</div><div class="beeld" style="position:absolute;left:23mm;right:21mm;bottom:26mm;height:70mm;border-radius:4mm"><span>Beeld: iemand die scrolt op een telefoon</span></div><div class="folio"><span>James Robinson · The Performance Issue</span><b>21</b></div></section>
+<section class="pg l blauw">
+<div class="kicker">Social media</div>
+<h2 style="font-size:60pt;margin-top:24mm">Likes don’t pay the bills.</h2>
+<div class="cijfer" style="position:absolute;left:21mm;right:23mm;bottom:30mm"><div class="n">1–3%</div><div class="t">van je volgers ziet gemiddeld een bericht van je bedrijfspagina. Bij kleine pagina’s 4 tot 7 procent.</div><div class="b">Socialinsider, Social Media Benchmarks 2026 · 872.075 berichten</div></div><div class="folio"><b>22</b><span>James Robinson · The Performance Issue</span></div></section>
+<section class="pg r">
+<div class="kicker">Organisch tegenover adverteren</div>
+<h2 style="font-size:24pt">Allebei kosten ze iets. Maar niet hetzelfde.</h2>
+<table style="margin-top:3mm">
+  <tr><th></th><th>Organisch posten</th><th style="color:var(--blue)">Adverteren</th></tr>
+  <tr><td>Wat het kost</td><td>Vooral tijd: bedenken, maken, plaatsen. Elke week opnieuw</td><td>Tijd voor goede content, plus je advertentiebudget</td></tr>
+  <tr><td>Wie het ziet</td><td>Een klein deel van je eigen volgers</td><td>Mensen die jij kiest, ook als ze je nog niet kennen</td></tr>
+  <tr><td>Hoe ver het reikt</td><td>Zo ver als het algoritme wil</td><td>Zo ver als je budget, en op te schalen</td></tr>
+  <tr><td>Sturen</td><td>Posten en hopen</td><td>Meten, bijsturen, opnieuw</td></tr>
+  <tr><td>Kans op viraal</td><td>Klein, en niet te plannen</td><td>Niet nodig</td></tr>
+</table>
+<h3 style="margin-top:8mm">Wie je bereikt, een rekenvoorbeeld</h3>
+<div style="margin-top:3mm"><svg viewBox="0 0 190.0 24.0" width="190.0mm" height="24.0mm" font-family="Inter, 'Helvetica Neue', Arial, sans-serif"><text x="0" y="4.2" font-size="3" font-weight="600" fill="#1c1c1e">Een bericht</text><text x="0" y="7.6" font-size="2.4" fill="#86868b">aan 1.000 volgers, 3% bereik</text><rect x="46" y="1.2" width="0.8" height="5" rx="1" fill="#86868b"/><text x="48.8" y="5.0" font-size="3" font-weight="600" fill="#1c1c1e">30</text><text x="0" y="16.2" font-size="3" font-weight="600" fill="#1c1c1e">€ 50 aan advertenties</text><text x="0" y="19.6" font-size="2.4" fill="#86868b">bij € 7 per 1.000 weergaven</text><rect x="46" y="13.2" width="118.0" height="5" rx="1" fill="#007aff"/><text x="166.0" y="17.0" font-size="3" font-weight="600" fill="#1c1c1e">7.000</text></svg></div>
+<p class="illu">Rekenvoorbeeld. Wat 1.000 weergaven kosten, verschilt per doelgroep, kanaal en moment.</p><div class="folio"><span>James Robinson · The Performance Issue</span><b>23</b></div></section>
+<section class="pg l">
+<div class="kicker">Hoe de platformen werken</div>
+<h2 style="font-size:44pt">Tijd + geld = data.</h2>
+<p class="intro">Facebook, Instagram, LinkedIn, TikTok en Google kunnen niet lezen of schrijven. Ze kunnen alleen meten en analyseren: aan wie moeten we deze advertentie laten zien, zodat de kans op succes zo groot mogelijk is?</p>
+<svg viewBox="0 0 160 120" width="150mm" height="112mm" style="margin-top:2mm" font-family="Inter, Arial, sans-serif">
+  <circle cx="80" cy="60" r="42" fill="none" stroke="#e5e5e9" stroke-width="1"/>
+  <path d="M80 18 A42 42 0 0 1 122 60" fill="none" stroke="#007aff" stroke-width="1.6" marker-end="url(#pijl)"/>
+  <path d="M122 60 A42 42 0 0 1 80 102" fill="none" stroke="#007aff" stroke-width="1.6" marker-end="url(#pijl)"/>
+  <path d="M80 102 A42 42 0 0 1 38 60" fill="none" stroke="#007aff" stroke-width="1.6" marker-end="url(#pijl)"/>
+  <path d="M38 60 A42 42 0 0 1 80 18" fill="none" stroke="#007aff" stroke-width="1.6" marker-end="url(#pijl)"/>
+  <defs><marker id="pijl" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0 L6 3 L0 6z" fill="#007aff"/></marker></defs>
+  <g font-size="4.4" font-weight="700" fill="#1c1c1e" text-anchor="middle">
+    <text x="80" y="11">Ballonnetjes oplaten</text><text x="146" y="58">Meten</text><text x="80" y="113">Meer budget naar</text><text x="80" y="118.5">wat werkt</text><text x="14" y="58">Stoppen met</text><text x="14" y="63.5">wat niet werkt</text>
+  </g>
+  <text x="80" y="58" font-size="7" font-weight="800" text-anchor="middle" fill="#007aff">Een systeem</text><text x="80" y="66" font-size="7" font-weight="800" text-anchor="middle" fill="#007aff">dat levert</text>
+</svg><div class="folio"><b>24</b><span>James Robinson · The Performance Issue</span></div></section>
+<section class="pg r">
+<div class="verhaal" style="margin-top:12mm">
+  <p class="eerste">Daarvoor hebben de platformen data nodig. En data krijg je alleen met tijd en geld. Dus laten we in het begin bewust een hoop ballonnetjes op: verschillende doelgroepen, boodschappen en beelden.</p>
+  <p>We meten wat werkt en wat niet. Wat werkt, krijgt meer budget. Met wat niet werkt, stoppen we. Zo bouwen we stap voor stap een systeem dat levert.</p>
+  <div class="tussenkop">Elk advertentiekanaal is een veiling.</div>
+  <p>Is de vraag naar een zoekwoord of een doelgroep hoog, dan is de prijs per klik of per weergave ook hoog. Een loodgieter in Maastricht betaalt in een koude winterweek meer voor “cv-ketel kapot” dan in juli.</p>
+  <p>Aan ons de taak om de beste mix te vinden: de juiste kanalen, doelgroepen en momenten, zodat elke marketingeuro zoveel mogelijk omzet oplevert.</p>
+</div><div class="beeld" style="position:absolute;left:23mm;right:21mm;bottom:26mm;height:74mm;border-radius:4mm"><span>Beeld: advertenties op verschillende schermen</span></div><div class="folio"><span>James Robinson · The Performance Issue</span><b>25</b></div></section>
+<section class="pg l">
+<div class="kicker">Het systeem</div>
+<h2 style="font-size:40pt">Zo maken we van advertenties klanten.</h2>
+<p class="intro">Adverteren is de motor. Content is de brandstof. Je website is waar het landt. En vier versnellers maken elke klant daarna goedkoper.</p>
+<div class="machine"><div class="m-blok" style="left:0mm;top:0mm;width:50mm;height:46mm;background:var(--bg);"><div class="rol">De brandstof</div><h3 style="">Content</h3><p>Foto, video, animatie en visuals. Gemaakt om te presteren, altijd on-brand.</p></div><svg class="m-pijl" style="left:51mm;top:20mm;transform:rotate(0deg)" width="11mm" height="6mm" viewBox="0 0 11 6"><path d="M0 3 H10.5 M8 0 L10.5 3 L8 6" fill="none" stroke="#1c1c1e" stroke-width=".6"/></svg><div class="m-blok" style="left:63mm;top:0mm;width:108mm;height:46mm;background:var(--blue);color:#fff"><div class="rol">De motor</div><h3 style="color:#fff">Paid advertising</h3><p>Google, Meta, LinkedIn, TikTok. Bereikt de juiste mensen, nu, en is per euro te meten en bij te sturen.</p></div><svg class="m-pijl" style="left:114mm;top:47mm" width="6mm" height="12mm" viewBox="0 0 6 12"><path d="M3 0 V11 M0 8 L3 11 L6 8" fill="none" stroke="#1c1c1e" stroke-width=".6"/></svg><div class="m-blok" style="left:63mm;top:60mm;width:108mm;height:36mm;background:var(--black);color:#fff"><div class="rol">De landing</div><h3 style="color:#fff">Je website en landingspagina</h3><p>Hier wordt een bezoeker een aanvraag. Of niet.</p></div><svg class="m-pijl" style="left:114mm;top:97mm" width="6mm" height="12mm" viewBox="0 0 6 12"><path d="M3 0 V11 M0 8 L3 11 L6 8" fill="none" stroke="#1c1c1e" stroke-width=".6"/></svg><div class="m-blok" style="left:63mm;top:110mm;width:108mm;height:30mm;background:var(--tint);"><div class="rol">Bij je voordeur</div><h3 style="">Een kwalitatieve aanvraag</h3><p>Ready to buy. Vanaf hier is het jouw beurt.</p></div><div class="booster" style="left:0mm;top:60mm;width:54mm"><b>CRO</b>Meer aanvragen uit hetzelfde verkeer</div><div class="booster" style="left:0mm;top:80mm;width:54mm"><b>SEO</b>Extra verkeer dat je niet hoeft te kopen</div><div class="booster" style="left:0mm;top:100mm;width:54mm"><b>E-mail en automation</b>Terughalen wie er al was, zonder opnieuw te betalen</div><div class="booster" style="left:0mm;top:120mm;width:54mm"><b>Monitoring</b>Elke dag kijken waar het knelt, en waar kansen liggen</div>
+</div><div class="folio"><b>26</b><span>James Robinson · The Performance Issue</span></div></section>
+<section class="pg r">
+<div class="kicker">Waarom we met adverteren beginnen</div>
+<h2 style="font-size:24pt">Adverteren levert het snelst iets op. Daarna bouwen we verder.</h2>
+<p>SEO en organische social zijn waardevol, maar langzaam. Adverteren staat vandaag aan en laat morgen zien wat werkt. Die kennis gebruiken we daarna voor al het andere.</p>
+<div style="margin-top:5mm"><svg viewBox="0 0 164.0 83.0" width="164.0mm" height="83.0mm" font-family="Inter, 'Helvetica Neue', Arial, sans-serif"><line x1="8" x2="134.0" y1="74.0" y2="74.0" stroke="#e5e5e9" stroke-width=".25"/><line x1="8" x2="134.0" y1="39.0" y2="39.0" stroke="#e5e5e9" stroke-width=".25"/><line x1="8" x2="134.0" y1="4.0" y2="4.0" stroke="#e5e5e9" stroke-width=".25"/><line x1="8" x2="134.0" y1="74.0" y2="74.0" stroke="#86868b" stroke-width=".35"/><text x="8" y="2.8" font-size="2.6" fill="#86868b">Aanvragen per maand</text><text x="8.0" y="79.0" font-size="2.6" fill="#86868b" text-anchor="middle">start</text><text x="39.5" y="79.0" font-size="2.6" fill="#86868b" text-anchor="middle">maand 3</text><text x="71.0" y="79.0" font-size="2.6" fill="#86868b" text-anchor="middle">maand 6</text><text x="102.5" y="79.0" font-size="2.6" fill="#86868b" text-anchor="middle">maand 9</text><text x="134.0" y="79.0" font-size="2.6" fill="#86868b" text-anchor="middle">maand 12</text><path d="M8.0,74.0 L18.5,69.8 L29.0,58.6 L39.5,47.4 L50.0,39.0 L71.0,30.6 L102.5,25.0 L134.0,21.5" fill="none" stroke="#007aff" stroke-width=".8" stroke-linecap="round" stroke-linejoin="round" /><circle cx="134.0" cy="21.5" r="1" fill="#007aff"/><text x="136.2" y="22.5" font-size="3" font-weight="600" fill="#1c1c1e">Adverteren</text><path d="M8.0,74.0 L29.0,72.6 L50.0,69.8 L71.0,64.2 L92.0,55.8 L113.0,46.0 L134.0,37.6" fill="none" stroke="#c96f00" stroke-width=".8" stroke-linecap="round" stroke-linejoin="round" /><circle cx="134.0" cy="37.6" r="1" fill="#c96f00"/><text x="136.2" y="38.6" font-size="3" font-weight="600" fill="#1c1c1e">SEO</text><path d="M8.0,74.0 L29.0,69.8 L50.0,67.7 L71.0,67.0 L102.5,66.3 L134.0,65.6" fill="none" stroke="#86868b" stroke-width=".8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1.6 1.2"/><circle cx="134.0" cy="65.6" r="1" fill="#86868b"/><text x="136.2" y="66.6" font-size="3" font-weight="600" fill="#1c1c1e">Organisch posten</text></svg></div>
+<p class="illu">Illustratief: zo verloopt het meestal. Hoe snel het echt gaat, verschilt per markt en per bedrijf.</p>
+<div class="kader" style="margin-top:6mm"><h3>De versnellers zijn geen losse trucjes</h3><p style="margin:0">We zetten ze pas in als de motor draait, en in de volgorde die de cijfers aanwijzen. CRO kan pas als er verkeer is. E-mail pas als er adressen zijn. SEO loont pas als je weet welke woorden klanten opleveren.</p></div><div class="folio"><span>James Robinson · The Performance Issue</span><b>27</b></div></section>
+<section class="pg l">
+<div class="kicker">Het systeem in de tijd</div>
+<h2>Eerst de motor. Dan de versnellers.</h2>
+<div class="fasen"><div class="fase-b"><div class="w">Maand 0</div><h3>Opstart</h3><p style="margin:0">Meting, accounts, campagne, landingspagina en de eerste content.</p><div class="aan"><span class="m">Content</span></div></div><div class="fase-b"><div class="w">Maand 1 tot 3</div><h3>De motor draait</h3><p style="margin:0">Leren wat werkt. Ballonnetjes oplaten, meten, bijsturen.</p><div class="aan"><span class="m">Adverteren</span><span class="m">Content</span></div></div><div class="fase-b"><div class="w">Maand 4 tot 6</div><h3>Eerste versnellers</h3><p style="margin:0">Je landingspagina beter maken, en e-mail om terug te halen wie er al was.</p><div class="aan"><span class="m">Adverteren</span><span class="m">Content</span><span class="">CRO</span><span class="">E-mail</span></div></div><div class="fase-b"><div class="w">Vanaf maand 6</div><h3>Alles samen</h3><p style="margin:0">SEO op de woorden die bewezen klanten opleveren, en automation.</p><div class="aan"><span class="m">Adverteren</span><span class="m">Content</span><span class="">CRO</span><span class="">E-mail</span><span class="">SEO</span></div></div>
+</div>
+<p class="klein" style="margin-top:3mm">Een voorbeeld. De volgorde van de versnellers bepalen jouw cijfers: bij de een eerst SEO, bij de ander eerst e-mail.</p>
+<h3 style="margin-top:8mm">Aanvragen per maand</h3>
+<svg viewBox="0 0 164.0 65.0" width="164.0mm" height="65.0mm" font-family="Inter, 'Helvetica Neue', Arial, sans-serif"><line x1="8" x2="134.0" y1="56.0" y2="56.0" stroke="#e5e5e9" stroke-width=".25"/><line x1="8" x2="134.0" y1="30.0" y2="30.0" stroke="#e5e5e9" stroke-width=".25"/><line x1="8" x2="134.0" y1="4.0" y2="4.0" stroke="#e5e5e9" stroke-width=".25"/><line x1="8" x2="134.0" y1="56.0" y2="56.0" stroke="#86868b" stroke-width=".35"/><text x="8.0" y="61.0" font-size="2.6" fill="#86868b" text-anchor="middle">0</text><text x="39.5" y="61.0" font-size="2.6" fill="#86868b" text-anchor="middle">3</text><text x="71.0" y="61.0" font-size="2.6" fill="#86868b" text-anchor="middle">6</text><text x="102.5" y="61.0" font-size="2.6" fill="#86868b" text-anchor="middle">9</text><text x="134.0" y="61.0" font-size="2.6" fill="#86868b" text-anchor="middle">12</text><path d="M8.0,56.0 L18.5,51.8 L29.0,46.6 L39.5,42.5 L50.0,38.3 L60.5,35.2 L71.0,31.0 L92.0,25.8 L113.0,20.6 L134.0,16.5" fill="none" stroke="#007aff" stroke-width=".8" stroke-linecap="round" stroke-linejoin="round" /><circle cx="134.0" cy="16.5" r="1" fill="#007aff"/><text x="136.2" y="17.5" font-size="3" font-weight="600" fill="#1c1c1e">Aanvragen</text></svg>
+<p class="illu">Illustratief.</p><div class="folio"><b>28</b><span>James Robinson · The Performance Issue</span></div></section>
+<section class="pg r">
+<h3 style="margin-top:22mm">Wat een aanvraag kost</h3>
+<svg viewBox="0 0 164.0 65.0" width="164.0mm" height="65.0mm" font-family="Inter, 'Helvetica Neue', Arial, sans-serif"><line x1="8" x2="134.0" y1="56.0" y2="56.0" stroke="#e5e5e9" stroke-width=".25"/><line x1="8" x2="134.0" y1="30.0" y2="30.0" stroke="#e5e5e9" stroke-width=".25"/><line x1="8" x2="134.0" y1="4.0" y2="4.0" stroke="#e5e5e9" stroke-width=".25"/><line x1="8" x2="134.0" y1="56.0" y2="56.0" stroke="#86868b" stroke-width=".35"/><text x="8.0" y="61.0" font-size="2.6" fill="#86868b" text-anchor="middle">0</text><text x="39.5" y="61.0" font-size="2.6" fill="#86868b" text-anchor="middle">3</text><text x="71.0" y="61.0" font-size="2.6" fill="#86868b" text-anchor="middle">6</text><text x="102.5" y="61.0" font-size="2.6" fill="#86868b" text-anchor="middle">9</text><text x="134.0" y="61.0" font-size="2.6" fill="#86868b" text-anchor="middle">12</text><path d="M18.5,8.2 L29.0,14.4 L39.5,19.6 L50.0,22.7 L60.5,25.8 L71.0,29.0 L92.0,32.1 L113.0,34.2 L134.0,36.2" fill="none" stroke="#c96f00" stroke-width=".8" stroke-linecap="round" stroke-linejoin="round" /><circle cx="134.0" cy="36.2" r="1" fill="#c96f00"/><text x="136.2" y="37.2" font-size="3" font-weight="600" fill="#1c1c1e">Kosten per aanvraag</text></svg>
+<p class="illu">Illustratief.</p>
+<div class="verhaal" style="margin-top:6mm">
+  <p>De motor brengt aanvragen. De versnellers maken ze goedkoper: een betere landingspagina haalt meer uit hetzelfde verkeer, e-mail haalt mensen terug zonder dat je opnieuw betaalt, en SEO levert verkeer op waar je niet per klik voor betaalt.</p>
+  <div class="tussenkop">Meer aanvragen, tegen lagere kosten per aanvraag. Daar sturen we op.</div>
+</div><div class="beeld" style="position:absolute;left:23mm;right:21mm;bottom:26mm;height:78mm;border-radius:4mm"><span>Beeld: een groeiende zaak: drukte, klanten, beweging</span></div><div class="folio"><span>James Robinson · The Performance Issue</span><b>29</b></div></section>
+<section class="pg l zwart"><div class="beeld" style="position:absolute;inset:0;align-items:flex-start;padding:20mm 21mm"><span>Beeld: een draaidag: camera, licht, iemand van de klant in beeld</span></div>
+<div style="position:absolute;left:23mm;right:21mm;bottom:30mm;z-index:2"><div class="kicker">Content</div><h2 style="font-size:50pt;color:#fff">De brandstof van de motor.</h2></div><div class="folio"><b>30</b><span>James Robinson · The Performance Issue</span></div></section>
+<section class="pg r">
+<div class="kicker">Content</div>
+<h2 style="font-size:26pt">Een advertentie is zo goed als het beeld erin.</h2>
+<div class="verhaal">
+  <p>Daarom plannen we de contentproductie meteen aan het begin van de samenwerking. Eerst een plan: wat moet het beeld vertellen, voor wie, in welke formaten. Dan de shoot, bij jou op locatie. Daar maken we het beeld voor je advertenties.</p>
+  <p>We werken met de absolute experts in hun vak, afgestemd op wat jij nodig hebt.</p>
+</div>
+<div class="partners" style="grid-template-columns:repeat(3,1fr);margin-top:3mm">
+  <div><b>Fotografie</b><span>Je mensen, je product, je zaak</span></div>
+  <div><b>Videografie</b><span>Korte video voor social en YouTube</span></div>
+  <div><b>Animatie</b><span>Uitleg en beweging die opvalt</span></div>
+  <div><b>Statische visuals</b><span>Advertenties in elk formaat</span></div>
+  <div><b>Copywriting</b><span>Woorden die tot actie aanzetten</span></div>
+  <div><b>Formaten</b><span>9:16, 4:5 en 1:1, per kanaal</span></div>
+</div>
+<div class="kader" style="margin-top:6mm"><h3>Waarom we steeds nieuwe content maken</h3><p style="margin:0">Advertenties slijten. Zien dezelfde mensen een advertentie te vaak, dan lopen de kosten per resultaat op. Meta waarschuwt daar zelf voor. Met nieuwe contentrondes houden we je campagnes fris.</p></div><div class="folio"><span>James Robinson · The Performance Issue</span><b>31</b></div></section>
+<section class="pg l">
+<div class="kicker">De versnellers</div>
+<h2 style="font-size:38pt">Geen losse trucjes. Versnellers.</h2>
+<p class="intro">Los ingezet heeft geen van deze vier een ijkpunt. Als versneller van de motor wel: ze komen allemaal uit op één getal, wat een klant je kost.</p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:4mm"><div class="kader g"><h3>Landingspagina’s</h3><p style="font-size:8.8pt">Eén pagina per campagne. Eén boodschap, één actie. Snel, en met een meting die klopt.</p><p class="klein" style="margin:0"><b style="color:var(--black)">Wanneer</b> Vanaf de start</p><p class="klein" style="margin:1mm 0 0"><b style="color:var(--black)">Wat het doet</b> Meer van je bezoekers worden een aanvraag</p></div><div class="kader g"><h3>CRO</h3><p style="font-size:8.8pt">Testen en verbeteren waar bezoekers afhaken: kortere formulieren, duidelijkere pagina’s, bezwaren wegnemen.</p><p class="klein" style="margin:0"><b style="color:var(--black)">Wanneer</b> Als er verkeer is</p><p class="klein" style="margin:1mm 0 0"><b style="color:var(--black)">Wat het doet</b> Meer aanvragen uit hetzelfde budget</p></div>
+</div><div class="folio"><b>32</b><span>James Robinson · The Performance Issue</span></div></section>
+<section class="pg r">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:4mm;margin-top:22mm"><div class="kader g"><h3>E-mail en automation</h3><p style="font-size:8.8pt">Wie er al was terughalen, en bestaande klanten vaker laten kopen. Automatisch, op het juiste moment.</p><p class="klein" style="margin:0"><b style="color:var(--black)">Wanneer</b> Als er adressen zijn</p><p class="klein" style="margin:1mm 0 0"><b style="color:var(--black)">Wat het doet</b> Een klant levert meer op, dus een aanvraag mag meer kosten</p></div><div class="kader g"><h3>SEO</h3><p style="font-size:8.8pt">Gevonden worden op de woorden waarvan we via je advertenties al weten dat ze klanten opleveren.</p><p class="klein" style="margin:0"><b style="color:var(--black)">Wanneer</b> Als de cijfers het aanwijzen</p><p class="klein" style="margin:1mm 0 0"><b style="color:var(--black)">Wat het doet</b> Een deel van je verkeer wordt gratis</p></div>
+</div>
+<div class="cijfer" style="margin-top:12mm"><div class="n">21,6%</div><div class="t" style="max-width:130mm">Zoveel vaker kwamen bezoekers van de eerste stap van een formulier tot het verzenden, bij een mobiele site die een tiende seconde sneller was.</div><div class="b">Deloitte Digital voor Google, Milliseconds Make Millions, 2020 · leadgeneratie, 37 merken</div></div><div class="folio"><span>James Robinson · The Performance Issue</span><b>33</b></div></section>
+<section class="pg l">
+<div class="kicker">Van impressie tot klant</div>
+<h2 style="font-size:36pt">Vier stappen. Drie knoppen ertussen.</h2>
+<p class="intro">Elke stap kun je meten. En als je weet waar het knelt, weet je ook aan welke knop je moet draaien.</p>
+<div class="trechter">
+  <div class="tr"><div class="n">10.000</div><div class="bar" style="width:100%;height:52mm"></div><div class="w">Impressies</div></div>
+  <div class="tr"><div class="n">200</div><div class="bar" style="width:80%;height:22mm"></div><div class="w">Bezoekers</div></div>
+  <div class="tr"><div class="n">4</div><div class="bar" style="width:60%;height:7mm"></div><div class="w">Aanvragen</div></div>
+  <div class="tr"><div class="n">2</div><div class="bar" style="width:40%;height:3.5mm;background:var(--black)"></div><div class="w">Klanten</div></div>
+</div>
+<div class="ratio2"><div><b>2%</b>klikt door</div><div><b>2%</b>vraagt aan</div><div><b>50%</b>wordt klant</div></div>
+<p class="klein" style="margin-top:4mm">Een rekenvoorbeeld bij € 500 aan advertenties in een maand, tegen € 2,50 per klik.</p>
+<h3 style="margin-top:7mm">Eén procentpunt maakt het verschil</h3>
+<svg viewBox="0 0 172.0 36.0" width="172.0mm" height="36.0mm" font-family="Inter, 'Helvetica Neue', Arial, sans-serif"><text x="0" y="4.2" font-size="3" font-weight="600" fill="#1c1c1e">Nu</text><text x="0" y="7.6" font-size="2.4" fill="#86868b">4 aanvragen bij 2% conversie</text><rect x="46" y="1.2" width="96.2" height="5" rx="1" fill="#86868b"/><text x="144.2" y="5.0" font-size="3" font-weight="600" fill="#1c1c1e">125</text><text x="0" y="16.2" font-size="3" font-weight="600" fill="#1c1c1e">50% meer budget</text><text x="0" y="19.6" font-size="2.4" fill="#86868b">6 aanvragen, € 250 extra per maand</text><rect x="46" y="13.2" width="96.2" height="5" rx="1" fill="#86868b"/><text x="144.2" y="17.0" font-size="3" font-weight="600" fill="#1c1c1e">125</text><text x="0" y="28.2" font-size="3" font-weight="600" fill="#1c1c1e">Betere landingspagina</text><text x="0" y="31.6" font-size="2.4" fill="#86868b">6 aanvragen bij 3%, zelfde budget</text><rect x="46" y="25.2" width="63.8" height="5" rx="1" fill="#007aff"/><text x="111.8" y="29.0" font-size="3" font-weight="600" fill="#1c1c1e">83</text></svg>
+<p class="illu">Kosten per aanvraag in euro’s. Meer budget geeft meer aanvragen tegen dezelfde prijs. Een betere pagina geeft ze goedkoper.</p><div class="folio"><b>34</b><span>James Robinson · The Performance Issue</span></div></section>
+<section class="pg r">
+<div class="kicker">Waar zit de bottleneck?</div>
+<h2 style="font-size:24pt">We kijken elke dag waar het knelt. En waar kansen liggen.</h2>
+<table class="diagnose">
+  <tr><th>Wat we zien</th><th>Wat we kunnen doen</th></tr>
+  <tr><td>Weinig impressies<br><span class="wie">Wij</span></td><td>Budget verschuiven, doelgroep verbreden, ander kanaal of zoekwoord</td></tr>
+  <tr><td>Wel gezien, weinig kliks<br><span class="wie">Wij</span></td><td>Nieuw beeld, andere boodschap, scherpere doelgroep</td></tr>
+  <tr><td>Wel bezoekers, weinig aanvragen<br><span class="wie">Wij</span></td><td>Landingspagina sneller en duidelijker, korter formulier, sterker aanbod op de pagina</td></tr>
+  <tr><td>Wel aanvragen, weinig klanten<br><span class="wie jij">Jij, met ons</span></td><td>Sneller opvolgen, aanbod en prijs scherper. Wij kijken mee naar de kwaliteit van de aanvragen</td></tr>
+</table>
+<div class="kader" style="margin-top:8mm"><h3>Proactief, op basis van data</h3><p style="margin:0">Elke ochtend zien wij wat buiten de lijntjes loopt, voor al onze klanten. Zo pakken we een probleem op voordat jij het merkt, en zien we kansen voordat een concurrent ze ziet.</p></div><div class="folio"><span>James Robinson · The Performance Issue</span><b>35</b></div></section>
+<section class="pg l"><div class="beeld" style="position:absolute;left:0;right:0;top:0;height:140mm"><span>Beeld: een voordeur, of een telefoon die overgaat</span></div>
+<div style="margin-top:128mm">
+  <div class="kicker">Tot aan de voordeur</div>
+  <h2 style="font-size:40pt">Het verhaal van Ruud.</h2>
+  <p class="intro" style="font-size:11pt">Ruud heet eigenlijk anders. Zijn bedrijf noemen we niet. Maar zijn verhaal vertellen we aan elke nieuwe klant.</p>
+</div><div class="folio"><b>36</b><span>James Robinson · The Performance Issue</span></div></section>
+<section class="pg r">
+<div class="verhaal kol2" style="margin-top:10mm">
+  <p class="eerste">Ruud zat in een nichemarkt. Hij was een nieuwe speler, en een paar concurrenten hadden al een flink deel van de markt in handen. Toch zagen we kansen.</p>
+  <p>We begonnen met Google Ads, en dat bleek een schot in de roos. Na een korte aanloop van uitproberen stroomden de aanvragen binnen. Meer dan verwacht zelfs. Wij blij, klant blij. Dachten we.</p>
+  <p>Tot Ruud opzegde. Hij haalde er geen klanten uit.</p>
+  <p>Alle alarmbellen gingen af. Kwamen de aanvragen niet binnen? Klopte onze rapportage niet? Was de kwaliteit slecht? In ons overleg hadden we er nooit iets over gehoord. We zochten het uit.</p>
+  <p>Wat bleek: Ruud belde zijn aanvragen pas na zeven dagen. Hij wilde ze niet “stalken”. Ze hadden net een heel formulier ingevuld, dus ze waren er wel even klaar mee.</p>
+  <p>Na een paar dagen stilte hadden ze bij een concurrent geboekt.</p>
+</div>
+<div class="tussenkop" style="margin-top:4mm">Ons werk houdt op bij de voordeur. Daar leveren we aanvragen af die klaar zijn om te kopen. Wat daarna gebeurt, maakt het verschil.</div>
+<div style="display:grid;grid-template-columns:1fr 1.3fr;gap:6mm;margin-top:4mm;align-items:end">
+  <div class="cijfer"><div class="n" style="font-size:60pt">7×</div><div class="t">zo vaak een serieus gesprek voor wie binnen een uur reageert, vergeleken met een uur later.</div><div class="b">Harvard Business Review, The Short Life of Online Sales Leads, 2011</div></div>
+  <p style="font-size:9pt">We denken graag mee over wat er na de voordeur gebeurt. Maar het is goed dat we allebei weten waar onze rol ophoudt, en waar die van jou begint. Daarom spreken we vooraf af hoe snel aanvragen worden opgevolgd.</p>
+</div><div class="folio"><span>James Robinson · The Performance Issue</span><b>37</b></div></section>
+<section class="pg l grijs">
+<div class="kicker">Je eigen portaal</div>
+<h2 style="font-size:40pt">Je ziet wat wij zien. Realtime.</h2>
+<p class="intro">Geen pdf aan het eind van de maand. Een eigen portaal met je cijfers, elk uur bijgewerkt. Van impressie tot aanvraag, per bron.</p>
+<div class="scherm" style="margin-top:4mm"><img src="beeld/portal.png" alt=""></div>
+<p class="illu" style="margin-top:2mm">Voorbeeldweergave met demogegevens.</p><div class="folio"><b>38</b><span>James Robinson · The Performance Issue</span></div></section>
+<section class="pg r">
+<ol class="lijst" style="margin-top:22mm">
+  <li><h3>Volledige transparantie</h3><p style="margin:0">Dezelfde cijfers als wij. Niets weggelaten, niets mooier gemaakt.</p></li>
+  <li><h3>Alle bronnen op één plek</h3><p style="margin:0">Google, Meta, LinkedIn, TikTok, je website en Search Console. Geen losse inlogs, geen losse rapporten.</p></li>
+  <li><h3>Elke aanvraag erin</h3><p style="margin:0">Met één klik geef je aan of een aanvraag goed was, en later of het een klant werd. Zo sturen we op kwaliteit, niet alleen op aantal.</p></li>
+  <li><h3>Je merk, je campagnes, je afspraken</h3><p style="margin:0">Je merkkluis, je lopende campagnes en je budget, allemaal op één plek.</p></li>
+  <li><h3>Van jou</h3><p style="margin:0">Stop je met ons, dan blijft je dashboard van jou.</p></li>
+</ol><div class="beeld" style="position:absolute;left:23mm;right:21mm;bottom:26mm;height:82mm;border-radius:4mm"><span>Beeld: een ondernemer die op zijn telefoon het portaal bekijkt</span></div><div class="folio"><span>James Robinson · The Performance Issue</span><b>39</b></div></section>
 <section class="pg l zwart">
 <div class="kicker">Slimmer werken</div>
 <h2>Mensen beslissen. Machines doen het werk waar fouten in sluipen.</h2>
@@ -369,7 +674,7 @@ td:first-child{color:var(--tx2)}
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:6mm;margin-top:8mm">
   <div class="cijfer"><div class="n">1×</div><div class="t">Je merk één keer vastleggen: kleuren, letters, toon. Daarna klopt elke uiting ermee, ook de duizendste.</div></div>
   <div class="cijfer"><div class="n">0</div><div class="t">Getallen die we met de hand overtypen. Je dashboard haalt ze zelf op.</div></div>
-</div><div class="folio"><b>14</b><span>Gameplan · Editie 01</span></div></section>
+</div><div class="folio"><b>40</b><span>James Robinson · The Performance Issue</span></div></section>
 <section class="pg r">
 <div class="kicker">Slimmer werken</div>
 <h2>Wat het jou oplevert.</h2>
@@ -379,104 +684,18 @@ td:first-child{color:var(--tx2)}
   <li><h3>Meer varianten, altijd on-brand</h3><p style="margin:0">Met je merk vastgelegd in ons portaal maken we sneller nieuwe advertenties om te testen. Hoeveel varianten zinvol zijn, hangt af van je budget: testen vraagt verkeer.</p></li>
   <li><h3>Vaste stappen, minder vergeten</h3><p style="margin:0">Elke start volgt dezelfde 76 taken, met checklists. Wat een machine kan controleren, controleert een machine.</p></li>
 </ol>
-<div class="kader" style="margin-top:8mm"><h3>Wat AI bij ons niet doet</h3><p style="margin:0">Beslissen over je budget, je doelgroep of je merk. Dat doen mensen, met jou.</p></div><div class="folio"><span>Gameplan · Editie 01</span><b>15</b></div></section>
-<section class="pg l">
-  <div class="kicker">Het model</div>
-  <h2>Eén middelpunt, één motor, drie versnellers.</h2>
-  <p class="intro">Elke laag heeft één taak. Lopen die door elkaar, dan wordt marketing een verzameling activiteiten in plaats van een systeem dat ergens op uitkomt.</p>
-  <div class="model">
-    <div class="blok"><div class="rol">De motor</div><h3>Adverteren</h3><p>In zoekmachines en op social. Het enige dat je vandaag aanzet en morgen meet. Content is de brandstof.</p></div>
-    <div class="pijl"><svg viewBox="0 0 24 24"><path d="M3 12h16M13 6l6 6-6 6" fill="none" stroke="#1c1c1e" stroke-width="2"/></svg></div>
-    <div class="blok mid"><div class="rol">Het middelpunt</div><h3>Je website</h3><p>Hier wordt iemand klant, of niet. Elke advertentie landt hier, elk cijfer komt hier vandaan.</p></div>
-    <div class="pijl"><svg viewBox="0 0 24 24"><path d="M3 12h16M13 6l6 6-6 6" fill="none" stroke="#1c1c1e" stroke-width="2"/></svg></div>
-    <div class="blok"><div class="rol">De versnellers</div><h3>CRO, e-mail, SEO</h3><p>Maken elke klant daarna goedkoper.</p></div>
-  </div>
-  <div class="drie">
-    <div><h3>CRO</h3><p>Meer van hetzelfde verkeer wordt klant. Kortere formulieren, duidelijkere pagina’s. Zelfde budget, meer aanvragen.</p></div>
-    <div><h3>E-mail en automation</h3><p>Wie er al was, terughalen zonder opnieuw te betalen. En bestaande klanten meer laten opleveren.</p></div>
-    <div><h3>SEO</h3><p>Verkeer dat je niet hoeft te kopen, op de woorden waarvan je inmiddels weet dat ze klanten opleveren.</p></div>
-  </div>
-  <div class="folio"><b>16</b><span>Gameplan · Editie 01</span></div></section>
-<section class="pg r">
-  <div class="kicker">Het model</div>
-  <h2>Waarom niet alles tegelijk.</h2>
-  <ol class="lijst" style="margin-top:2mm">
-    <li><h3>1 · Eerst het middelpunt meetbaar</h3><p style="margin:0">Zonder betrouwbare meting weet je van niets of het werkt. Daarom bouwen we de landingspagina zelf, op je eigen website. Dan zijn snelheid en meting van ons.</p></li>
-    <li><h3>2 · Dan de motor, en alleen de motor</h3><p style="margin:0">Advertenties leveren binnen weken wat andere kanalen pas na maanden geven: welke woorden, welke doelgroepen, welke boodschap werken.</p></li>
-    <li><h3>3 · Dan de versnellers, in de volgorde die de cijfers aanwijzen</h3><p style="margin:0">CRO kan pas als er verkeer is, e-mail pas als er adressen zijn, SEO loont pas als je weet welke woorden converteren.</p></li>
-  </ol>
-  <div class="cijfer" style="margin-top:12mm"><div class="n">21,6%</div><div class="t" style="max-width:130mm">Zoveel vaker kwamen bezoekers van de eerste stap van een formulier tot het verzenden, bij een mobiele site die een tiende seconde sneller was.</div><div class="b">Deloitte Digital voor Google, Milliseconds Make Millions, 2020 · leadgeneratie, 37 merken</div></div>
-  <p class="klein" style="margin-top:4mm">Daarom meten we de laadtijd van elke landingspagina voordat er een euro naartoe gaat.</p>
-  <div class="folio"><span>Gameplan · Editie 01</span><b>17</b></div></section>
-<section class="pg l">
-  <div class="kicker">De keten</div>
-  <h2>Tussen een advertentie en een klant zitten vier schakels.</h2>
-  <p class="intro">Elke schakel heeft een percentage, en elk percentage zijn eigen knoppen. Een voorbeeld bij 21 aanvragen per maand, tegen € 150 per aanvraag.</p>
-  <div class="keten">
-    <div class="schakel"><div class="w">Weergaven</div><div class="n">23.333</div><div class="staaf" style="height:62mm"></div></div>
-    <div class="ratio"><b>3%</b>klikt</div>
-    <div class="schakel"><div class="w">Bezoekers</div><div class="n">700</div><div class="staaf" style="height:30mm"></div></div>
-    <div class="ratio"><b>3%</b>vraagt aan</div>
-    <div class="schakel"><div class="w">Aanvragen</div><div class="n">21</div><div class="staaf" style="height:12mm"></div></div>
-    <div class="ratio"><b>20%</b>wordt klant</div>
-    <div class="schakel jij"><div class="w">Klanten</div><div class="n">4</div><div class="staaf" style="height:5mm"></div></div>
-  </div>
-  <div class="wie"><div class="o">Drie schakels van ons. We meten ze, sturen ze en maken ze goedkoper.</div><div class="j">Eén van jou</div></div>
-  <p class="klein" style="margin-top:3mm">Staven niet op schaal.</p>
-  <div class="kader" style="margin-top:8mm"><h3>Eén procentpunt is meer waard dan duizend euro budget</h3><p style="margin:0">Van 3 naar 4 procent conversie geeft zeven extra aanvragen, zonder één euro extra. Een aanvraag kost dan € 112 in plaats van € 150. Meer budget geeft meer aanvragen tegen dezelfde prijs. Een beter percentage geeft ze tegen een lagere.</p></div>
-  <div class="folio"><b>18</b><span>Gameplan · Editie 01</span></div></section>
-<section class="pg r zwart">
-  <div class="kicker">De keten</div>
-  <h2>Of een aanvraag klant wordt, bepaal jij.</h2>
-  <p class="intro">Met hoe snel je belt, met je aanbod en met je prijs. Dat is geen verwijt, het is een taakverdeling. En die spreken we af voordat we beginnen.</p>
-  <div class="cijfer" style="margin-top:14mm"><div class="n" style="font-size:110pt">7×</div><div class="t" style="font-size:12pt;max-width:135mm">zo vaak een serieus gesprek voor bedrijven die binnen een uur reageerden op een online aanvraag, vergeleken met een uur later.</div><div class="b">Oldroyd, McElheran &amp; Elkington, The Short Life of Online Sales Leads, Harvard Business Review 2011 · 1,25 miljoen aanvragen</div></div>
-  <div style="position:absolute;left:23mm;right:21mm;bottom:28mm;display:grid;grid-template-columns:1fr 1fr;gap:6mm">
-    <div class="cijfer"><div class="n" style="font-size:40pt">23%</div><div class="t">van de bedrijven reageerde in hetzelfde onderzoek nooit op een aanvraag.</div></div>
-    <div class="cijfer"><div class="n" style="font-size:40pt">42 uur</div><div class="t">was de gemiddelde reactietijd van wie wel reageerde.</div></div>
-  </div>
-  <div class="folio"><span>Gameplan · Editie 01</span><b>19</b></div></section>
-<section class="pg l blauw">
-  <div class="kicker">Social media</div>
-  <h2 style="font-size:52pt;margin-top:14mm">We stoppen met posten.</h2>
-  <h2 style="font-size:52pt;color:rgba(255,255,255,.55)">Niet met social media.</h2>
-  <p class="intro" style="max-width:150mm">We adverteren op Instagram en Facebook, bij mensen die jou nog niet volgen. Dat zit in elk pakket. Wat we niet meer doen, is je feed vullen.</p>
-  <div style="position:absolute;left:21mm;right:23mm;bottom:28mm;display:grid;grid-template-columns:1fr 1fr;gap:6mm">
-    <div class="cijfer"><div class="n">1–3%</div><div class="t">van je volgers ziet gemiddeld een bericht van je bedrijfspagina. Bij kleine pagina’s 4 tot 7 procent.</div><div class="b">Socialinsider, Social Media Benchmarks 2026 · 872.075 berichten</div></div>
-    <div class="cijfer"><div class="n">0</div><div class="t">nieuwe mensen bereik je met een bericht dat alleen naar je eigen volgers gaat.</div></div>
-  </div>
-  <div class="folio"><b>20</b><span>Gameplan · Editie 01</span></div></section>
-<section class="pg r">
-  <div class="kicker">Social media</div>
-  <h2>Wat € 1.000 per maand oplevert.</h2>
-  <div class="vs">
-    <div class="a"><div class="bedrag">€ 1.000</div><div class="lbl">aan je feed vullen</div>
-      <small>Naar maken</small><div class="meter"><i style="width:100%"></i></div>
-      <small>Naar bereik</small><div class="meter"><i style="width:0"></i></div>
-      <p style="font-size:8.8pt;margin:3mm 0 0">Ongeveer tien uur werk, voor mensen die je al kennen. Elke maand opnieuw.</p></div>
-    <div class="b"><div class="bedrag">€ 1.000</div><div class="lbl">aan adverteren</div>
-      <small>Naar maken</small><div class="meter"><i style="width:0"></i></div>
-      <small>Naar bereik</small><div class="meter"><i style="width:100%"></i></div>
-      <p style="font-size:8.8pt;margin:3mm 0 0">Het hele bedrag gaat naar mensen die jij kiest en die je nog niet kennen.</p></div>
-  </div>
-  <div class="kader g">
-    <h3>Probeer het zelf</h3>
-    <p>Tel je eerste vijftig volgers op Instagram of Facebook. Wat blijft er over als je deze groepen eraf haalt?</p>
-    <div class="tel"><span>Bestaande klanten</span><span></span><span>Oud-medewerkers en sollicitanten</span><span></span><span>Concurrenten en leveranciers</span><span></span><span>Vrienden en familie</span><span></span><span><b>Mensen die klant kunnen worden</b></span><span></span></div>
-    <p class="klein" style="margin-top:4mm">Wat in die laatste regel staat, is je markt op dat kanaal.</p>
-  </div>
-  <p class="klein" style="margin-top:5mm">Wil je zelf blijven posten? Dan kunnen we sjablonen of een contentsessie leveren, als eigen project. Het beeld uit je lopende campagnes plaatsen we ook op je eigen kanalen, zodat je profiel klopt met wat mensen in de advertentie zagen.</p>
-  <div class="folio"><span>Gameplan · Editie 01</span><b>21</b></div></section>
+<div class="kader" style="margin-top:8mm"><h3>Wat AI bij ons niet doet</h3><p style="margin:0">Beslissen over je budget, je doelgroep of je merk. Dat doen mensen, met jou.</p></div><div class="folio"><span>James Robinson · The Performance Issue</span><b>41</b></div></section>
 <section class="pg l">
 <div class="kicker">Voor wie we werken</div>
 <h2>Ondernemers in Limburg en daarbuiten.</h2>
 <p class="intro">Van wijnhandel tot makelaar, van garage tot zorgpraktijk. Wat ze gemeen hebben: ze willen dat marketing zich terugverdient.</p>
 <div class="logos"><div><b>Thiessen Wijnkoopers</b></div><div><b>[logo]</b><span>met toestemming</span></div><div><b>[logo]</b><span>met toestemming</span></div><div><b>[logo]</b><span>met toestemming</span></div><div><b>[logo]</b><span>met toestemming</span></div><div><b>[logo]</b><span>met toestemming</span></div><div><b>[logo]</b><span>met toestemming</span></div><div><b>[logo]</b><span>met toestemming</span></div><div><b>[logo]</b><span>met toestemming</span></div><div><b>[logo]</b><span>met toestemming</span></div><div><b>[logo]</b><span>met toestemming</span></div><div><b>[logo]</b><span>met toestemming</span></div><div><b>[logo]</b><span>met toestemming</span></div><div><b>[logo]</b><span>met toestemming</span></div><div><b>[logo]</b><span>met toestemming</span></div><div><b>[logo]</b><span>met toestemming</span></div></div>
-<div class="branches"><span>Horeca</span><span>Makelaardij</span><span>Automotive</span><span>Retail</span><span>Zakelijke dienstverlening</span><span>Zorg</span><span>Overheid</span><span>Sport en vrije tijd</span></div><div class="folio"><b>22</b><span>Gameplan · Editie 01</span></div></section>
+<div class="branches"><span>Horeca</span><span>Makelaardij</span><span>Automotive</span><span>Retail</span><span>Zakelijke dienstverlening</span><span>Zorg</span><span>Overheid</span><span>Sport en vrije tijd</span></div><div class="folio"><b>42</b><span>James Robinson · The Performance Issue</span></div></section>
 <section class="pg r grijs">
 <div class="kicker">Wat klanten zeggen</div>
 <h2>In hun eigen woorden.</h2>
 <div class="reviews"><div class="review" style="background:#fff"><div class="sterren">★★★★★</div><div class="q"><span class="vv">[letterlijke quote, met toestemming]</span></div><div class="w"><span class="vv">[naam]</span> · <span class="vv">[bedrijf, branche]</span></div></div><div class="review" style="background:#fff"><div class="sterren">★★★★★</div><div class="q"><span class="vv">[letterlijke quote, met toestemming]</span></div><div class="w"><span class="vv">[naam]</span> · <span class="vv">[bedrijf, branche]</span></div></div><div class="review" style="background:#fff"><div class="sterren">★★★★★</div><div class="q"><span class="vv">[letterlijke quote, met toestemming]</span></div><div class="w"><span class="vv">[naam]</span> · <span class="vv">[bedrijf, branche]</span></div></div><div class="review" style="background:#fff"><div class="sterren">★★★★★</div><div class="q"><span class="vv">[letterlijke quote, met toestemming]</span></div><div class="w"><span class="vv">[naam]</span> · <span class="vv">[bedrijf, branche]</span></div></div></div>
-<div class="cijfer" style="margin-top:10mm"><div class="n"><span class="vv">[4,9]</span></div><div class="t">gemiddeld op Google, uit <span class="vv">[aantal]</span> reviews.</div></div><div class="folio"><span>Gameplan · Editie 01</span><b>23</b></div></section>
+<div class="cijfer" style="margin-top:10mm"><div class="n"><span class="vv">[4,9]</span></div><div class="t">gemiddeld op Google, uit <span class="vv">[aantal]</span> reviews.</div></div><div class="folio"><span>James Robinson · The Performance Issue</span><b>43</b></div></section>
 <section class="pg l"><div class="beeld" style="position:absolute;left:0;right:0;top:0;height:150mm"><span>Beeld: de klant, zijn zaak of zijn product</span></div>
 <div style="margin-top:138mm">
   <div class="case-kop"><span class="chip">Case 1</span><span class="chip"><span class="vv">[branche]</span></span></div>
@@ -486,7 +705,7 @@ td:first-child{color:var(--tx2)}
     <div><h3>Wat we deden</h3><p><span class="vv">[welke campagne, welke kanalen, wat we aan de landingspagina veranderden]</span></p></div>
     <div><h3>Wat het opleverde</h3><p><span class="vv">[aanvragen, kosten per aanvraag, omzet]</span></p></div>
   </div>
-</div><div class="folio"><b>24</b><span>Gameplan · Editie 01</span></div></section>
+</div><div class="folio"><b>44</b><span>James Robinson · The Performance Issue</span></div></section>
 <section class="pg r">
 <div class="kicker">Case 1</div>
 <div class="resultaten" style="grid-template-columns:1fr;gap:8mm;margin-top:8mm">
@@ -495,7 +714,7 @@ td:first-child{color:var(--tx2)}
   <div class="cijfer"><div class="n"><span class="vv">[00]</span></div><div class="t">maanden tot het fundament zich terugverdiende</div></div>
 </div>
 <div class="kader" style="margin-top:10mm"><div class="quote" style="font-size:20pt"><span class="vv">[quote van de klant over het resultaat of de samenwerking]</span></div><p class="klein" style="margin-top:4mm"><span class="vv">[naam, functie, bedrijf]</span></p></div>
-<p class="klein" style="margin-top:6mm">Cijfers uit het marketingdashboard van de klant, met diens toestemming gedeeld.</p><div class="folio"><span>Gameplan · Editie 01</span><b>25</b></div></section>
+<p class="klein" style="margin-top:6mm">Cijfers uit het marketingdashboard van de klant, met diens toestemming gedeeld.</p><div class="folio"><span>James Robinson · The Performance Issue</span><b>45</b></div></section>
 <section class="pg l"><div class="beeld" style="position:absolute;left:0;right:0;top:0;height:150mm"><span>Beeld: de klant, zijn zaak of zijn product</span></div>
 <div style="margin-top:138mm">
   <div class="case-kop"><span class="chip">Case 2</span><span class="chip"><span class="vv">[branche]</span></span></div>
@@ -505,7 +724,7 @@ td:first-child{color:var(--tx2)}
     <div><h3>Wat we deden</h3><p><span class="vv">[welke campagne, welke kanalen, wat we aan de landingspagina veranderden]</span></p></div>
     <div><h3>Wat het opleverde</h3><p><span class="vv">[aanvragen, kosten per aanvraag, omzet]</span></p></div>
   </div>
-</div><div class="folio"><b>26</b><span>Gameplan · Editie 01</span></div></section>
+</div><div class="folio"><b>46</b><span>James Robinson · The Performance Issue</span></div></section>
 <section class="pg r">
 <div class="kicker">Case 2</div>
 <div class="resultaten" style="grid-template-columns:1fr;gap:8mm;margin-top:8mm">
@@ -514,113 +733,102 @@ td:first-child{color:var(--tx2)}
   <div class="cijfer"><div class="n"><span class="vv">[00]</span></div><div class="t">maanden tot het fundament zich terugverdiende</div></div>
 </div>
 <div class="kader" style="margin-top:10mm"><div class="quote" style="font-size:20pt"><span class="vv">[quote van de klant over het resultaat of de samenwerking]</span></div><p class="klein" style="margin-top:4mm"><span class="vv">[naam, functie, bedrijf]</span></p></div>
-<p class="klein" style="margin-top:6mm">Cijfers uit het marketingdashboard van de klant, met diens toestemming gedeeld.</p><div class="folio"><span>Gameplan · Editie 01</span><b>27</b></div></section>
+<p class="klein" style="margin-top:6mm">Cijfers uit het marketingdashboard van de klant, met diens toestemming gedeeld.</p><div class="folio"><span>James Robinson · The Performance Issue</span><b>47</b></div></section>
 <section class="pg l blauw">
 <div style="position:absolute;left:21mm;right:23mm;top:90mm">
   <div class="kicker">Deel 2</div>
   <h2 style="font-size:58pt">Wat betekent dat voor jou?</h2>
-  <p class="intro" style="max-width:140mm">Je doel in cijfers, het plan, wat het kost, en wat we van elkaar afspreken.</p>
-</div><div class="folio"><b>28</b><span>Gameplan · Editie 01</span></div></section>
+  <p class="intro" style="max-width:140mm">Hoe we tot een voorstel komen, wat je mag verwachten, wat het kost, en wat we van elkaar afspreken.</p>
+</div><div class="folio"><b>48</b><span>James Robinson · The Performance Issue</span></div></section>
 <section class="pg r">
-<div class="kicker">Jouw doel in cijfers</div>
-<h2>We beginnen bij jouw doel. Niet bij ons pakket.</h2>
-<p class="intro">Wat mag marketing jou kosten? Dat rekenen we samen uit, met jouw getallen. Het pakket volgt daaruit.</p>
+<div class="kicker">Eerst onderzoek</div>
+<h2>We beginnen pas als we erin geloven.</h2>
+<p class="intro">Daarom stellen we aan de voorkant veel vragen, en doen we grondig vooronderzoek. Daaruit komt een onderbouwde hypothese, en een advies.</p>
 <ol class="lijst">
-  <li><h3>1 · Hoeveel nieuwe klanten heb je nodig?</h3><p style="margin:0">De extra omzet die je wilt, gedeeld door wat een klant je per jaar oplevert.</p></li>
-  <li><h3>2 · Hoeveel aanvragen horen daarbij?</h3><p style="margin:0">Hoeveel van je aanvragen worden klant? Weet je het niet, dan rekenen we met een op de vijf.</p></li>
-  <li><h3>3 · Wat mag alle marketing samen kosten?</h3><p style="margin:0">Extra omzet keer je marge. Standaard verdient alles zich binnen twaalf maanden terug.</p></li>
-  <li><h3>4 · Wat blijft er over voor advertenties?</h3><p style="margin:0">Daar gaan het fundament, de maandelijkse samenwerking en de licenties af. De rest is je advertentiebudget, en dat bepaalt je pakket.</p></li>
-  <li><h3>5 · Wat mag een aanvraag kosten?</h3><p style="margin:0">Het advertentiebudget gedeeld door het aantal aanvragen. Dat is het plafond waarop we bieden.</p></li>
+  <li><h3>1 · Jouw antwoorden</h3><p style="margin:0">Een vragenlijst over je bedrijf, je klanten en je doelen.</p></li>
+  <li><h3>2 · Onze quickscan</h3><p style="margin:0">We bekijken je website, je meting en je markt. Wat werkt al, wat kost je nu klanten?</p></li>
+  <li><h3>3 · Het intakegesprek</h3><p style="margin:0">Een uur aan tafel. Wat een formulier niet kan vragen, vragen we hier.</p></li>
+  <li><h3>4 · Onze hypothese en ons voorstel</h3><p style="margin:0">Waar we in geloven, waarom, en hoe dat er voor jou uitziet. Of een eerlijk nee.</p></li>
 </ol>
-<div class="doelregel" style="background:var(--blue);color:#fff;border-radius:4mm;padding:6mm;margin-top:6mm">
-  <p class="klein" style="color:rgba(255,255,255,.8);margin-bottom:2mm">Het eindigt in één zin die je kunt onthouden en narekenen. Uit het rekenvoorbeeld op de volgende pagina:</p>
-  <p class="d" style="font-size:16pt;margin:0;line-height:1.4">“10 extra aanvragen per maand, tegen maximaal € 187 per aanvraag aan advertenties, vanaf maand 4.”</p>
-</div><div class="folio"><span>Gameplan · Editie 01</span><b>29</b></div></section>
+<div class="kader" style="margin-top:6mm"><h3>Waarom we soms nee zeggen</h3><p style="margin:0">Denken we op basis van de cijfers dat we te weinig voor je kunnen betekenen, dan zeggen we dat. We hebben er niets aan om over een paar maanden tegenover een ontevreden ondernemer te zitten.</p></div><div class="folio"><span>James Robinson · The Performance Issue</span><b>49</b></div></section>
 <section class="pg l">
-  <div class="kicker">Waar je geld heen gaat</div>
-  <h2>Alles verdient zich terug. Anders beginnen we niet.</h2>
-  <p class="intro">Fundament, maandbedrag, licenties en advertenties samen verdienen zich terug binnen twaalf maanden. Wat na de vaste posten overblijft, is je advertentiebudget.</p>
-  <table class="som">
-    <tr><td>Extra omzet die je komend jaar wilt halen</td><td>€ 120.000</td></tr>
-    <tr><td>Brutomarge<small>Wat je overhoudt van elke euro omzet</small></td><td>× 30%</td></tr>
-    <tr><td>Terugverdiend binnen</td><td>× 12 maanden</td></tr>
-    <tr class="tot"><td>Wat alle marketing in jaar 1 mag kosten</td><td>€ 36.000</td></tr>
-    <tr><td>Het fundament<small>Eenmalig, in maand 1</small></td><td>− € 4.500</td></tr>
-    <tr><td>Starter, elf maanden<small>De samenwerking start altijd in maand 2</small></td><td>− € 11.000</td></tr>
-    <tr><td>Licenties, jaar 1<small>E-mail, cookiemelding, dashboard</small></td><td>− € 544</td></tr>
-    <tr class="tot"><td>Over voor advertenties</td><td>€ 19.956</td></tr>
-    <tr class="eind"><td>Per maand, elf maanden live</td><td>€ 1.814</td></tr>
-  </table>
-  <p class="klein" style="margin-top:4mm">Een rekenvoorbeeld: opdrachten van € 1.500, drie keer per jaar per klant, en een op de vier aanvragen wordt klant. Komt de som niet uit, dan zijn er drie uitwegen: een hoger doel, een langere terugverdientijd, of nee. Nooit goedkoper.</p>
-  <div class="folio"><b>30</b><span>Gameplan · Editie 01</span></div></section>
+<div class="kicker">Jouw investering</div>
+<h2 style="font-size:36pt">Wat levert € 1 marketing jou op?</h2>
+<p class="intro">We beginnen bij jouw ambitie, en rekenen terug.</p>
+<ol class="lijst">
+  <li><h3>Hoeveel extra omzet wil je realiseren?</h3><p style="margin:0">Het startpunt van alles.</p></li>
+  <li><h3>Hoeveel nieuwe klanten zijn daarvoor nodig?</h3><p style="margin:0">Uit wat een klant je gemiddeld oplevert.</p></li>
+  <li><h3>Hoeveel aanvragen horen daarbij?</h3><p style="margin:0">Uit hoeveel van je aanvragen klant worden.</p></li>
+  <li><h3>Wat mag dat kosten, en wat levert het op?</h3><p style="margin:0">Je advertentiebudget is de motor. Hoe groot die motor moet zijn, volgt uit je ambitie.</p></li>
+</ol>
+<div class="formule" style="font-size:30pt;margin-top:8mm"><div>€ 50.000<small>marketing per jaar</small></div><span class="op">× 4</span><div style="color:var(--blue)">€ 200.000<small>omzet, als de hypothese klopt</small></div></div>
+<p class="klein">Een voorbeeld. Elke euro marketing levert er in deze hypothese vier op. Welke verhouding voor jou haalbaar is, onderbouwen we in je voorstel.</p><div class="folio"><b>50</b><span>James Robinson · The Performance Issue</span></div></section>
 <section class="pg r">
-  <div class="kicker">Ons plan</div>
-  <h2>Voor iedere klant hetzelfde plan.</h2>
-  <p class="intro">Alleen de datums en het doel zijn van jou. De variatie komt pas als de eerste resultaten er zijn.</p>
-  <div class="tijd">
-    <div class="stap"><div class="nr">1</div><div class="w">Maand 1, week 1 tot 3</div><h3>Set-up</h3><p>Meting, advertentieaccounts, e-mail, je dashboard, de campagne en de landingspagina. Alles op jouw naam.</p></div>
-    <div class="stap"><div class="nr">2</div><div class="w">Maand 1, week 3 of 4</div><h3>Content shooten</h3><p>De draaidag bij jou op locatie. Daarna foto, video en graphics voor je advertenties.</p></div>
-    <div class="stap live"><div class="nr">3</div><div class="w">Live eind maand 1</div><h3>Adverteren en leren</h3><p>Alleen de motor draait. We leren wat werkt en brengen de kosten per aanvraag tot rust.</p></div>
-    <div class="stap live"><div class="nr">4</div><div class="w">Vanaf maand 4</div><h3>Optimaliseren</h3><p>Advertenties, landingspagina’s, e-mail, SEO. Wat eerst komt, bepalen jouw cijfers.</p></div>
-  </div>
-  <div class="beeld" style="height:82mm;margin-top:10mm;border-radius:4mm"><span>Beeld: draaidag bij een klant op locatie</span></div>
-  <p class="klein" style="margin-top:3mm">Stap 1 en 2 samen zijn het fundament. Vanaf stap 3 loopt de maandelijkse samenwerking, altijd vanaf maand 2.</p>
-  <div class="folio"><span>Gameplan · Editie 01</span><b>31</b></div></section>
+<div class="kicker">Geen alles of niets</div>
+<h3 style="font-size:16pt">De uitkomst ligt op een schaal. Niet op nul of alles.</h3>
+<div class="spectrum">
+  <div style="border-color:#d2d1d7"><b>Tegenvallend</b>We bouwen bij, of stoppen op tijd</div>
+  <div style="border-color:#8ec1ff"><b>Terugverdiend</b>De investering komt terug</div>
+  <div style="border-color:var(--blue)"><b>Hypothese</b>Wat we verwachten</div>
+  <div style="border-color:var(--deep)"><b>Boven verwachting</b>Het kan ook beter uitpakken</div>
+</div>
+<p style="margin-top:4mm">Marketing is per definitie trial and error. We laten ons leiden door cijfers, en handelen op kennis en ervaring. Soms laten we ballonnetjes op die niet vliegen. Dat is niet erg: het is een les over wat niet werkt voor jouw bedrijf, jouw branche, jouw regio.</p>
+<h3 style="margin-top:6mm">Eerst investeren, dan verdienen</h3>
+<svg viewBox="0 0 208.0 85.0" width="208.0mm" height="85.0mm" font-family="Inter, 'Helvetica Neue', Arial, sans-serif"><line x1="14" x2="174.0" y1="47.0" y2="47.0" stroke="#1c1c1e" stroke-width=".4"/><text x="12" y="48.0" font-size="2.6" fill="#86868b" text-anchor="end">€ 0</text><path d="M14.0,51.2 L27.3,54.0 L40.7,56.1 L54.0,56.6 L67.3,56.1 L80.7,53.7 L94.0,49.1 L107.3,42.6 L120.7,35.9 L134.0,30.3 L147.3,26.1 L160.7,23.1 L174.0,20.7" fill="none" stroke="#007aff" stroke-width=".9" stroke-linecap="round" stroke-linejoin="round"/><text x="14.0" y="80.5" font-size="2.6" fill="#86868b" text-anchor="middle">maand 0</text><text x="54.0" y="80.5" font-size="2.6" fill="#86868b" text-anchor="middle">maand 3</text><text x="94.0" y="80.5" font-size="2.6" fill="#86868b" text-anchor="middle">maand 6</text><text x="134.0" y="80.5" font-size="2.6" fill="#86868b" text-anchor="middle">maand 9</text><text x="174.0" y="80.5" font-size="2.6" fill="#86868b" text-anchor="middle">maand 12</text><text x="16.0" y="68.0" font-size="2.6" fill="#86868b">Investering ligt aan de voorkant</text><text x="172.0" y="14.8" font-size="2.6" fill="#86868b" text-anchor="end">Opbrengst komt aan de achterkant</text><text x="176.2" y="21.7" font-size="3" font-weight="600" fill="#1c1c1e">Resultaat</text></svg>
+<p class="illu">Illustratief. Het nadeel van marketing: de investering ligt aan de voorkant, de opbrengst komt aan de achterkant.</p>
+<div class="tussenkop">Marketing moet geld opleveren. Doet het dat niet, dan is het een hobby.</div><div class="folio"><span>James Robinson · The Performance Issue</span><b>51</b></div></section>
 <section class="pg l">
-  <div class="kicker">Ons plan</div>
-  <h2>Waarom je doel pas vanaf maand 4 geldt.</h2>
-  <div class="maanden"><div class="f">1</div><div class="le">2</div><div class="le">3</div><div class="d">4</div><div class="d">5</div><div class="d">6</div><div class="d">7</div><div class="d">8</div><div class="d">9</div><div class="d">10</div><div class="d">11</div><div class="d">12</div></div>
-  <div class="legenda"><span><i style="background:var(--black)"></i>Fundament</span><span><i style="background:var(--tint)"></i>Live en leren</span><span><i style="background:var(--blue)"></i>Je doel geldt</span></div>
-  <div class="kol2" style="margin-top:9mm">
-    <p><b>De eerste aanvragen zijn duur. Dat hoort zo.</b> Google en Meta zeggen zelf dat hun systemen rond de vijftig resultaten nodig hebben voordat de kosten stabiel worden. Bij de meeste bedrijven duurt dat weken, geen dagen.</p>
-    <p>Daarbovenop testen we je beeld en je boodschap, en bouwen we de cijfers op waarop we later sturen. Onze ervaring is dat dat samen ongeveer twee maanden kost.</p>
-    <p>Wie het jaardoel vanaf dag één belooft, staat in maand drie achter op een schema dat nooit klopte. Wij beloven het niet. We spreken af wat het doel is vanaf maand 4, en daar houden we ons aan.</p>
-  </div>
-  <div class="cijfer" style="margin-top:8mm"><div class="n">±50</div><div class="t" style="max-width:130mm">resultaten per advertentieset in een week, zegt Meta, voordat de leerfase voorbij is. Google spreekt van ongeveer vijftig conversies of drie conversiecycli.</div><div class="b">Meta Business Help Center, About the learning phase · Google Ads Help, Duration of the learning period</div></div>
-  <div class="folio"><b>32</b><span>Gameplan · Editie 01</span></div></section>
+<div class="kicker">Wat je mag verwachten</div>
+<h2>Geen storm aan de telefoon in maand één. Wel een motor die op toeren komt.</h2>
+<p class="intro">Advertenties hebben tijd, geld en data nodig. In het begin loopt de lijn vlak. Als er eenmaal tractie is, versnelt het. Bij de een na een week, bij de ander na zes maanden.</p>
+<svg viewBox="0 0 200.0 88.0" width="200.0mm" height="88.0mm" font-family="Inter, 'Helvetica Neue', Arial, sans-serif"><polygon points="8.0,73.9 11.3,73.5 14.7,72.9 18.0,72.2 21.3,71.1 24.7,69.8 28.0,68.1 31.3,65.8 34.7,63.0 38.0,59.6 41.3,55.6 44.7,51.1 48.0,46.1 51.3,41.0 54.7,35.9 58.0,31.0 61.3,26.7 64.7,22.9 68.0,19.8 71.3,17.2 74.7,15.2 78.0,13.6 81.3,12.4 84.7,11.5 88.0,10.8 91.3,10.3 94.7,9.9 98.0,9.7 101.3,9.4 104.7,9.3 108.0,9.2 111.3,9.1 114.7,9.0 118.0,9.0 121.3,9.0 124.7,8.9 128.0,8.9 131.3,8.9 134.7,8.9 138.0,8.9 141.3,8.9 144.7,8.9 148.0,8.9 151.3,8.9 154.7,8.9 158.0,8.9 161.3,8.9 164.7,8.9 168.0,8.9 168.0,9.0 164.7,9.1 161.3,9.2 158.0,9.3 154.7,9.4 151.3,9.7 148.0,9.9 144.7,10.3 141.3,10.8 138.0,11.5 134.7,12.4 131.3,13.6 128.0,15.2 124.7,17.2 121.3,19.8 118.0,22.9 114.7,26.7 111.3,31.0 108.0,35.9 104.7,41.0 101.3,46.1 98.0,51.1 94.7,55.6 91.3,59.6 88.0,63.0 84.7,65.8 81.3,68.1 78.0,69.8 74.7,71.1 71.3,72.2 68.0,72.9 64.7,73.5 61.3,73.9 58.0,74.2 54.7,74.5 51.3,74.6 48.0,74.8 44.7,74.9 41.3,74.9 38.0,75.0 34.7,75.0 31.3,75.0 28.0,75.1 24.7,75.1 21.3,75.1 18.0,75.1 14.7,75.1 11.3,75.1 8.0,75.1" fill="#007aff" opacity=".12"/><line x1="8" x2="168.0" y1="78.0" y2="78.0" stroke="#86868b" stroke-width=".35"/><path d="M8.0,75.0 L11.3,74.9 L14.7,74.9 L18.0,74.8 L21.3,74.7 L24.7,74.5 L28.0,74.3 L31.3,74.0 L34.7,73.6 L38.0,73.1 L41.3,72.3 L44.7,71.4 L48.0,70.1 L51.3,68.4 L54.7,66.3 L58.0,63.6 L61.3,60.4 L64.7,56.5 L68.0,52.0 L71.3,47.1 L74.7,42.0 L78.0,36.9 L81.3,32.0 L84.7,27.5 L88.0,23.6 L91.3,20.4 L94.7,17.7 L98.0,15.6 L101.3,13.9 L104.7,12.6 L108.0,11.7 L111.3,10.9 L114.7,10.4 L118.0,10.0 L121.3,9.7 L124.7,9.5 L128.0,9.3 L131.3,9.2 L134.7,9.1 L138.0,9.1 L141.3,9.0 L144.7,9.0 L148.0,8.9 L151.3,8.9 L154.7,8.9 L158.0,8.9 L161.3,8.9 L164.7,8.9 L168.0,8.9" fill="none" stroke="#007aff" stroke-width=".9" stroke-linecap="round"/><text x="8.0" y="83.5" font-size="2.6" fill="#86868b" text-anchor="middle">maand 0</text><text x="48.0" y="83.5" font-size="2.6" fill="#86868b" text-anchor="middle">maand 3</text><text x="88.0" y="83.5" font-size="2.6" fill="#86868b" text-anchor="middle">maand 6</text><text x="128.0" y="83.5" font-size="2.6" fill="#86868b" text-anchor="middle">maand 9</text><text x="168.0" y="83.5" font-size="2.6" fill="#86868b" text-anchor="middle">maand 12</text><text x="170.2" y="9.9" font-size="3" font-weight="600" fill="#1c1c1e">Resultaat</text><text x="53.3" y="27.6" font-size="2.6" fill="#86868b">Het omslagpunt verschilt per bedrijf</text><text x="10.0" y="69.4" font-size="2.6" fill="#86868b">Leren: tijd, geld en data</text></svg>
+<p class="illu">Illustratief. De band laat zien dat het omslagpunt per bedrijf verschilt.</p>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5mm;margin-top:6mm">
+  <div class="cijfer"><div class="n" style="font-size:30pt">Tijd</div><div class="t">De platformen moeten leren wie jouw klant is.</div></div>
+  <div class="cijfer"><div class="n" style="font-size:30pt">Geld</div><div class="t">Zonder budget geen weergaven, en zonder weergaven geen data.</div></div>
+  <div class="cijfer"><div class="n" style="font-size:30pt">Data</div><div class="t">Rond maand drie trekken we de eerste voorzichtige conclusies.</div></div>
+</div><div class="folio"><b>52</b><span>James Robinson · The Performance Issue</span></div></section>
 <section class="pg r">
-<div class="kicker">Het fundament, dag voor dag</div>
-<h2>Van handtekening tot live in vier weken.</h2>
-<p class="intro">De klok start zodra alle toegangen binnen zijn. Elke dag dat we op een toegang of akkoord wachten, schuift alles op.</p>
+<div class="kicker">Maand 0</div>
+<h2>De opstart. Daarna je eerste jaar.</h2>
+<p class="intro">In de opstartmaand zetten we alles neer. Vanaf dan rekenen we gewoon per maand en per jaar.</p>
 <table class="som" style="font-size:9.5pt">
   <tr><td><b>Binnen 3 werkdagen</b><small>na het tekenen</small></td><td style="text-align:left;font-weight:400">Onboardingformulier en alle toegangen, in één sessie van 45 minuten</td></tr>
-  <tr><td><b>Dag 1</b></td><td style="text-align:left;font-weight:400">De klok start. Wij beginnen met de technische check</td></tr>
-  <tr><td><b>Dag 2 tot 4</b></td><td style="text-align:left;font-weight:400">Doelgroep, boodschap en zoekwoorden</td></tr>
-  <tr><td><b>Dag 4</b></td><td style="text-align:left;font-weight:400">Wat technisch niet deugt, met wat herstel kost. Jij beslist</td></tr>
-  <tr><td><b>Dag 5 tot 10</b></td><td style="text-align:left;font-weight:400">Advertentieaccounts, e-mail, je dashboard en de meting</td></tr>
-  <tr><td><b>Dag 10 tot 16</b></td><td style="text-align:left;font-weight:400">Campagne en landingspagina bouwen</td></tr>
-  <tr><td><b>Week 3 of 4</b></td><td style="text-align:left;font-weight:400">De draaidag bij jou op locatie</td></tr>
-  <tr class="tot"><td>Dag 19</td><td style="text-align:left">Live</td></tr>
-  <tr><td><b>Dag 26</b></td><td style="text-align:left;font-weight:400">De eerste cijfers</td></tr>
-</table><div class="folio"><span>Gameplan · Editie 01</span><b>33</b></div></section>
+  <tr><td><b>Week 1</b></td><td style="text-align:left;font-weight:400">Technische check, doelgroep, boodschap en zoekwoorden</td></tr>
+  <tr><td><b>Week 2</b></td><td style="text-align:left;font-weight:400">Advertentieaccounts, e-mail, je portaal en de meting</td></tr>
+  <tr><td><b>Week 3</b></td><td style="text-align:left;font-weight:400">Campagne en landingspagina bouwen, en de shoot bij jou op locatie</td></tr>
+  <tr class="tot"><td>Week 4</td><td style="text-align:left">Live</td></tr>
+</table>
+<div class="maanden" style="margin-top:9mm"><div class="f">0</div><div class="d">1</div><div class="d">2</div><div class="d">3</div><div class="d">4</div><div class="d">5</div><div class="d">6</div><div class="d">7</div><div class="d">8</div><div class="d">9</div><div class="d">10</div><div class="d">11</div><div class="d">12</div></div>
+<div class="legenda"><span><i style="background:var(--black)"></i>Opstartmaand: het fundament</span><span><i style="background:var(--blue)"></i>Je eerste jaar: de maandelijkse samenwerking</span></div><div class="folio"><span>James Robinson · The Performance Issue</span><b>53</b></div></section>
 <section class="pg l">
 <div class="kicker">Het fundament</div>
 <h2>Eén keer goed neerzetten.</h2>
-<div style="display:flex;align-items:baseline;gap:3mm;margin:2mm 0 6mm"><div class="prijs">€ 4.500</div><span class="klein">eenmalig, bij ondertekening</span></div>
+<div style="display:flex;align-items:baseline;gap:3mm;margin:2mm 0 6mm"><div class="prijs">€ 4.500</div><span class="klein">eenmalig, in de opstartmaand</span></div>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:4mm">
   <div class="deel"><div class="pct">Deel 1 · De basis</div><ul class="lijst"><li>Doelgroep, boodschap en concurrenten</li><li>Technische check en meting</li><li>Advertentieaccounts op jouw naam</li><li>E-mail met je contacten</li><li>Je marketingdashboard</li><li>De nulmeting</li></ul></div>
   <div class="deel b"><div class="pct">Deel 2 · Je eerste campagne</div><ul class="lijst"><li>Zoekwoorden, structuur, advertenties</li><li>Een landingspagina met formulier</li><li>Een dagdeel filmen bij jou</li><li>Montage in drie formaten, plus foto’s</li><li>Livegang, testaanvraag, eerste week dagelijks</li></ul></div>
 </div>
 <p style="margin-top:6mm"><b>Niet los verkrijgbaar.</b> De basis zonder campagne is een stopcontact zonder apparaat. Een campagne zonder basis levert aanvragen op die je niet kunt meten of verbeteren.</p>
-<p class="klein">Een dag filmen kost bij een extern bureau al snel € 1.500. Het fundament krijg je na de start niet terug: dat werk is gedaan.</p><div class="folio"><b>34</b><span>Gameplan · Editie 01</span></div></section>
+<p class="klein">Een dag filmen kost bij een extern bureau al snel € 1.500. Het fundament krijg je na de start niet terug: dat werk is gedaan.</p><div class="folio"><b>54</b><span>James Robinson · The Performance Issue</span></div></section>
 <section class="pg r">
 <div class="kicker">De pakketten</div>
-<h2>Iedereen krijgt hetzelfde werk. Het pakket bepaalt hoeveel.</h2>
-<p class="intro">Welk pakket bij je past, volgt uit je rekensom. De namen komen uit de sport.</p>
+<h2>Je pakket groeit mee met je ambitie.</h2>
+<p class="intro">Welk pakket bij je past, volgt uit je doel en je advertentiebudget. De namen komen uit de sport.</p>
 <div class="pakketten"><div class="pakket"><div class="naam">Starter</div><div class="bedrag">€ 1.000</div><div class="pm">per maand</div><ul><li><b>Campagnes tegelijk</b>1</li><li><b>Advertentiebudget</b>€ 1.000 – 2.500</li><li><b>Contentrondes</b>elk kwartaal</li><li><b>Draaidagen</b>1 per jaar</li><li><b>Performance Review</b>elk kwartaal</li></ul></div><div class="pakket uit"><div class="naam">Playmaker</div><div class="bedrag">€ 1.500</div><div class="pm">per maand</div><ul><li><b>Campagnes tegelijk</b>2</li><li><b>Advertentiebudget</b>€ 2.500 – 5.000</li><li><b>Contentrondes</b>elke 2 maanden</li><li><b>Draaidagen</b>2 per jaar</li><li><b>Performance Review</b>elke 2 maanden</li></ul></div><div class="pakket"><div class="naam">Captain</div><div class="bedrag">€ 2.000</div><div class="pm">per maand</div><ul><li><b>Campagnes tegelijk</b>3</li><li><b>Advertentiebudget</b>€ 5.000 – 7.500</li><li><b>Contentrondes</b>maandelijks</li><li><b>Draaidagen</b>3 per jaar</li><li><b>Performance Review</b>maandelijks</li></ul></div><div class="pakket"><div class="naam">Champion</div><div class="bedrag">€ 2.500</div><div class="pm">per maand</div><ul><li><b>Campagnes tegelijk</b>4</li><li><b>Advertentiebudget</b>vanaf € 7.500</li><li><b>Contentrondes</b>2 per maand</li><li><b>Draaidagen</b>4 per jaar</li><li><b>Performance Review</b>maandelijks</li></ul></div></div>
 <div class="kol2" style="margin-top:7mm">
-  <p><b>Altijd vanaf maand 2.</b> De maandelijkse samenwerking start na het fundament. Het advertentiebudget betaal je rechtstreeks aan de platformen.</p>
+  <p><b>Na de opstartmaand.</b> De maandelijkse samenwerking start als je campagne live is. Het advertentiebudget betaal je rechtstreeks aan de platformen.</p>
   <p><b>Het hoogste van twee telt:</b> campagnes of budget. Omhoog gaat per direct, omlaag per de eerste van de maand.</p>
   <p><b>Eén campagne</b> is één aanbod, voor één doelgroep, met één landingspagina. Op Google en Meta samen is het nog steeds één campagne.</p>
   <p><b>Liever één kanaal goed dan drie half.</b> Per kanaal minimaal € 500 per campagne per maand, op LinkedIn € 1.000.</p>
-</div><div class="folio"><span>Gameplan · Editie 01</span><b>35</b></div></section>
+</div><div class="folio"><span>James Robinson · The Performance Issue</span><b>55</b></div></section>
 <section class="pg l">
-<div class="kicker">Licenties en opties</div>
-<h2>Wat op jouw naam staat.</h2>
-<p class="intro">Alleen de maandelijkse samenwerking en het dashboard gaan naar ons. De rest staat op jouw naam en factureert de leverancier rechtstreeks.</p>
+<div class="kicker">Je toolset</div>
+<h2>De toolset voor succes.</h2>
+<p class="intro">De tools waarmee je motor draait. Ze staan op jouw naam en de leverancier factureert rechtstreeks. Alleen het portaal en de samenwerking gaan via ons.</p>
 <table>
   <tr><th>Wat</th><th>Wanneer</th><th style="text-align:right">Bedrag</th></tr>
-  <tr><td style="color:var(--black)"><b>Marketingdashboard</b></td><td>Altijd. Blijft van jou als je stopt</td><td style="text-align:right">€ 25 p/m</td></tr>
+  <tr><td style="color:var(--black)"><b>Je portaal</b></td><td>Altijd. Blijft van jou als je stopt</td><td style="text-align:right">€ 25 p/m</td></tr>
   <tr><td style="color:var(--black)"><b>E-mail (MailerLite)</b></td><td>Altijd, naar lijstgrootte</td><td style="text-align:right">€ 9,90 – 73 p/m</td></tr>
   <tr><td style="color:var(--black)"><b>Cookiemelding</b></td><td>Altijd: zonder toestemming mag je niet meten</td><td style="text-align:right">€ 150 p/j</td></tr>
   <tr><td style="color:var(--black)"><b>Klikfraudebescherming</b></td><td>Optioneel, jij beslist</td><td style="text-align:right">vanaf $ 99 p/m</td></tr>
@@ -634,7 +842,7 @@ td:first-child{color:var(--tx2)}
   <tr><td style="color:var(--black)">Redirects en dode links</td><td style="text-align:right">€ 500</td></tr>
   <tr><td style="color:var(--black)">E-mailauthenticatie</td><td style="text-align:right">€ 250</td></tr>
 </table>
-<p class="klein" style="margin-top:3mm">Bij een gezonde website is dit allemaal nul. Meting, indexatie en je bedrijfsprofiel kosten nooit extra: dat zit in het fundament.</p><div class="folio"><b>36</b><span>Gameplan · Editie 01</span></div></section>
+<p class="klein" style="margin-top:3mm">Bij een gezonde website is dit allemaal nul. Meting, indexatie en je bedrijfsprofiel kosten nooit extra: dat zit in het fundament.</p><div class="folio"><b>56</b><span>James Robinson · The Performance Issue</span></div></section>
 <section class="pg r">
   <div class="kicker">De grens</div>
   <h2>Wat we doen, en wat niet.</h2>
@@ -653,7 +861,7 @@ td:first-child{color:var(--tx2)}
     <tr><td style="color:var(--black);font-weight:600">LinkedIn</td><td>Bereikt op functie, branche en bedrijfsgrootte</td><td>Zakelijk, duurder per klik</td></tr>
     <tr><td style="color:var(--black);font-weight:600">TikTok</td><td>Jonger publiek, met video</td><td>Als je doelgroep daar zit</td></tr>
   </table>
-  <div class="folio"><span>Gameplan · Editie 01</span><b>37</b></div></section>
+  <div class="folio"><span>James Robinson · The Performance Issue</span><b>57</b></div></section>
 <section class="pg l grijs">
 <div class="kicker">Partners</div>
 <h2>We kunnen je altijd helpen.</h2>
@@ -663,7 +871,7 @@ td:first-child{color:var(--tx2)}
   <div style="background:#fff"><b><span class="vv">[partner]</span></b><span><span class="vv">[design en branding]</span></span></div><div style="background:#fff"><b><span class="vv">[partner]</span></b><span><span class="vv">[fotografie]</span></span></div><div style="background:#fff"><b><span class="vv">[partner]</span></b><span><span class="vv">[drukwerk]</span></span></div><div style="background:#fff"><b><span class="vv">[partner]</span></b><span><span class="vv">[juridisch]</span></span></div><div style="background:#fff"><b><span class="vv">[partner]</span></b><span><span class="vv">[boekhouding]</span></span></div><div style="background:#fff"><b><span class="vv">[partner]</span></b><span><span class="vv">[video]</span></span></div><div style="background:#fff"><b><span class="vv">[partner]</span></b><span><span class="vv">[vacatures en werving]</span></span></div>
   <div style="background:#fff"><b>En meer</b><span>Vraag het ons</span></div>
 </div>
-<div class="kader" style="margin-top:8mm;background:#fff"><h3>Nooit marge erbovenop</h3><p style="margin:0">Krijgen we van een partner een vergoeding voor het doorverwijzen, dan zeggen we dat erbij. Je betaalt nooit meer omdat het via ons loopt.</p></div><div class="folio"><b>38</b><span>Gameplan · Editie 01</span></div></section>
+<div class="kader" style="margin-top:8mm;background:#fff"><h3>Nooit marge erbovenop</h3><p style="margin:0">Krijgen we van een partner een vergoeding voor het doorverwijzen, dan zeggen we dat erbij. Je betaalt nooit meer omdat het via ons loopt.</p></div><div class="folio"><b>58</b><span>James Robinson · The Performance Issue</span></div></section>
 <section class="pg r">
 <div class="kicker">Hoe we samenwerken</div>
 <h2>Radicaal transparant. Op een vaste plek.</h2>
@@ -680,34 +888,20 @@ td:first-child{color:var(--tx2)}
   <tr><td style="color:var(--black)"><b>Na 100 dagen</b></td><td>Een eerlijke terugblik: werkt het, en wat moet anders</td></tr>
   <tr><td style="color:var(--black)"><b>Elk jaar</b></td><td>Het jaargesprek: waar wil je volgend jaar staan</td></tr>
 </table>
-<p class="klein" style="margin-top:5mm">Waarom geen WhatsApp-groep? Een mail blijft openstaan tot iemand hem heeft afgehandeld. Een appje zakt weg.</p><div class="folio"><span>Gameplan · Editie 01</span><b>39</b></div></section>
+<p class="klein" style="margin-top:5mm">Waarom geen WhatsApp-groep? Een mail blijft openstaan tot iemand hem heeft afgehandeld. Een appje zakt weg.</p><div class="folio"><span>James Robinson · The Performance Issue</span><b>59</b></div></section>
 <section class="pg l">
-  <div class="kicker">Waar je geld heen gaat</div>
-  <h2>Drie dingen die je bij ons nooit ziet.</h2>
-  <div class="drie" style="margin-top:6mm">
-    <div class="kader g"><h3>Geen uurtarief</h3><p style="margin:0">Je koopt een fundament en een samenwerking met een vaste inhoud. Hoeveel uur erin gaat, is ons probleem.</p></div>
-    <div class="kader g"><h3>Geen meerwerk</h3><p style="margin:0">Wat niet in je pakket zit, wordt een apart voorstel met een prijs vooraf. Of we doen het niet.</p></div>
-    <div class="kader g"><h3>Geen korting</h3><p style="margin:0">De prijslijst is voor iedereen gelijk. Wie onderhandelt, onderhandelt met de vorige klant die de prijs wel betaalde.</p></div>
-  </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8mm;margin-top:12mm">
-    <div class="cijfer"><div class="n">50%</div><div class="t">Ons maandbedrag is nooit meer dan de helft van wat je per maand aan marketing uitgeeft: maandbedrag en advertenties samen.</div></div>
-    <div class="cijfer"><div class="n">100%</div><div class="t">op jouw naam. Advertentieaccounts, e-mail, licenties. Stop je, dan neem je alles mee.</div></div>
-  </div>
-  <div class="kader" style="margin-top:12mm"><h3>Waar het advertentiebudget heen gaat</h3><p style="margin:0">Rechtstreeks naar Google, Meta en de andere platformen, via jouw eigen accounts en jouw eigen betaalgegevens. Niet via ons. Je ziet elke euro terug.</p></div>
-  <div class="folio"><b>40</b><span>Gameplan · Editie 01</span></div></section>
-<section class="pg r">
   <div class="kicker">De spelregels</div>
   <h2>Negen regels die altijd gelden.</h2>
   <p class="intro">Ook als het gesprek goed loopt. Juist dan.</p>
   <div class="regels" style="grid-template-columns:1fr">
-    <div class="regel"><div class="n">1</div><div><h3>Cijfers zijn leidend</h3><p>We beloven geen resultaat. We beloven dat we het zelf zeggen als het niet werkt, en waarom. Je ziet in je dashboard wat wij zien.</p></div></div>
+    <div class="regel"><div class="n">1</div><div><h3>Cijfers zijn leidend</h3><p>Resultaat staat op één. Werkt iets niet, dan zeggen we dat zelf, met de cijfers erbij. Je ziet in je portaal wat wij zien.</p></div></div>
     <div class="regel"><div class="n">2</div><div><h3>Maandelijks opzegbaar, voor allebei</h3><p>Opzeggen kan tot de laatste dag van de maand. De maand erna komt er geen factuur meer. Je blijft alleen omdat het werkt.</p></div></div>
-    <div class="regel"><div class="n">3</div><div><h3>Alles verdient zich terug</h3><p>Binnen twaalf maanden, alles samen. Lukt dat op papier niet, dan beginnen we niet.</p></div></div>
+    <div class="regel"><div class="n">3</div><div><h3>We beginnen alleen als we erin geloven</h3><p>Op basis van onderzoek en een onderbouwde hypothese. Anders zeggen we nee.</p></div></div>
     <div class="regel"><div class="n">4</div><div><h3>De 50%-regel</h3><p>Ons maandbedrag is nooit meer dan de helft van wat je aan marketing uitgeeft.</p></div></div>
     <div class="regel"><div class="n">5</div><div><h3>Nooit marge erbovenop</h3><p>Je betaalt de specialist, niet ons bovenop de specialist. Krijgen we een vergoeding van een leverancier, dan zeggen we dat erbij.</p></div></div>
   </div>
-  <div class="folio"><span>Gameplan · Editie 01</span><b>41</b></div></section>
-<section class="pg l">
+  <div class="folio"><b>60</b><span>James Robinson · The Performance Issue</span></div></section>
+<section class="pg r">
   <div class="regels" style="grid-template-columns:1fr;margin-top:30mm">
     <div class="regel"><div class="n">6</div><div><h3>Niets gratis erbij</h3><p>Nooit iets “even doen omdat het klein is”. Kleine gunsten worden de norm, en dan betaalt een andere klant ervoor.</p></div></div>
     <div class="regel"><div class="n">7</div><div><h3>Altijd on-brand</h3><p>Elke uiting klopt met je merk, ook een snelle test. Geen bruikbaar merk? Dan leggen we kleur en typografie vast in het fundament.</p></div></div>
@@ -715,8 +909,8 @@ td:first-child{color:var(--tx2)}
     <div class="regel"><div class="n">9</div><div><h3>Alles op jouw naam</h3><p>Accounts, e-mail en licenties staan op jouw naam, met jouw betaalgegevens. Wij zijn beheerder. Nooit op onze naam, ook niet even.</p></div></div>
   </div>
   <div class="beeld" style="height:70mm;margin-top:12mm;border-radius:4mm"><span>Beeld: het team aan het werk, kantoor Hulsberg</span></div>
-  <div class="folio"><b>42</b><span>Gameplan · Editie 01</span></div></section>
-<section class="pg r zwart">
+  <div class="folio"><span>James Robinson · The Performance Issue</span><b>61</b></div></section>
+<section class="pg l zwart">
   <div class="kicker">Jouw kant</div>
   <h2>Vier dingen die wij niet oplossen.</h2>
   <p class="intro">Je merk, je aanbod en prijs, je opvolging en je capaciteit. We meten ze wel, en we zeggen het als het daar zit.</p>
@@ -729,8 +923,8 @@ td:first-child{color:var(--tx2)}
     <div class="afspraak"><div class="n">4</div><div><b>Een oordeel per aanvraag</b><span>Met één klik in je dashboard: goede aanvraag of niet. En later: wie klant werd.</span></div></div>
     <div class="afspraak"><div class="n">5</div><div><b>Beeld en inhoud</b><span>Dagdelen om te filmen in week 3 en 4, en iemand die het werk doet op beeld.</span></div></div>
   </div>
-  <div class="folio"><span>Gameplan · Editie 01</span><b>43</b></div></section>
-<section class="pg l">
+  <div class="folio"><b>62</b><span>James Robinson · The Performance Issue</span></div></section>
+<section class="pg r">
   <div class="kicker">Hoe nu verder</div>
   <h2 style="font-size:28pt">Van eerste klik tot maand twaalf.</h2>
   <div class="fase">Verkopen · je betaalt niets</div>
@@ -748,11 +942,11 @@ td:first-child{color:var(--tx2)}
   </ul>
   <div class="fase">Samenwerken · maandelijks opzegbaar</div>
   <ul class="reis"><li><span class="n">08</span><b>Live, en elke maand beter</b><span>vanaf maand 2</span></li></ul>
-  <div class="kader" style="margin-top:7mm;display:flex;gap:6mm;align-items:center"><div class="qr"></div><div><h3>Akkoord?</h3><p style="margin:0">Je voorstel met jouw cijfers en de offerte krijg je binnen drie werkdagen na het intakegesprek. Tekenen en betalen doe je online, dezelfde dag.</p></div></div>
-  <div class="folio"><b>44</b><span>Gameplan · Editie 01</span></div></section>
-<section class="pg r zwart"><div class="beeld" style="position:absolute;inset:0;align-items:flex-start;padding:20mm 21mm"><span>Beeld: een padelwedstrijd met klanten en team</span></div>
-<div style="position:absolute;left:21mm;right:23mm;bottom:30mm;z-index:2"><h2 style="font-size:52pt;color:#fff">Tot op de baan.</h2></div><div class="folio"><span>Gameplan · Editie 01</span><b>45</b></div></section>
-<section class="pg l">
+  <div class="kader" style="margin-top:7mm;display:flex;gap:6mm;align-items:center"><div class="qr"></div><div><h3>Akkoord?</h3><p style="margin:0">Je voorstel en de offerte krijg je binnen drie werkdagen na het intakegesprek. Tekenen en betalen doe je online, dezelfde dag.</p></div></div>
+  <div class="folio"><span>James Robinson · The Performance Issue</span><b>63</b></div></section>
+<section class="pg l zwart"><div class="beeld" style="position:absolute;inset:0;align-items:flex-start;padding:20mm 21mm"><span>Beeld: een padelwedstrijd met klanten en team</span></div>
+<div style="position:absolute;left:21mm;right:23mm;bottom:30mm;z-index:2"><h2 style="font-size:52pt;color:#fff">Tot op de baan.</h2></div><div class="folio"><b>64</b><span>James Robinson · The Performance Issue</span></div></section>
+<section class="pg r">
 <div class="kicker">Padel</div>
 <h2>Je bent uitgenodigd.</h2>
 <p class="intro">Een paar keer per jaar spelen we padel met klanten en het team. Geen presentaties, geen verkooppraat. Gewoon een potje, en daarna een drankje.</p>
@@ -760,23 +954,30 @@ td:first-child{color:var(--tx2)}
 <div style="display:flex;gap:8mm;align-items:center;margin-top:10mm">
   <div class="qr"></div>
   <div><div class="klein">Scan en meld je aan</div><div class="d" style="font-size:16pt"><span class="vv">[link of datum]</span></div><p class="klein" style="margin-top:2mm"><span class="vv">[waar we spelen]</span></p></div>
-</div><div class="folio"><b>46</b><span>Gameplan · Editie 01</span></div></section>
-<section class="pg r">
+</div><div class="beeld" style="position:absolute;left:23mm;right:21mm;bottom:26mm;height:96mm;border-radius:4mm"><span>Beeld: de padelbaan, team en klanten na de wedstrijd</span></div><div class="folio"><span>James Robinson · The Performance Issue</span><b>65</b></div></section>
+<section class="pg l">
 <div class="kicker">Colofon en bronnen</div>
 <h2 style="font-size:24pt">Waar de cijfers vandaan komen.</h2>
 <div class="bronnen" style="font-size:8pt;margin-top:4mm">
-<p><b>Binet &amp; Field</b>, The Long and the Short of It, IPA 2013; The 5 Principles of Growth in B2B Marketing, B2B Institute.</p>
-<p><b>Kohavi &amp; Thomke</b>, The Surprising Power of Online Experiments, Harvard Business Review, september 2017.</p>
+<p><b>Binet &amp; Field</b>, The Long and the Short of It, IPA 2013.</p>
+<p><b>Kohavi &amp; Thomke</b>, The Surprising Power of Online Experiments, Harvard Business Review, september 2017. Het cijfer van 10 tot 20 procent geldt volgens de auteurs voor Google en Bing.</p>
 <p><b>Deloitte Digital</b>, Milliseconds Make Millions, in opdracht van Google, 2020.</p>
 <p><b>Oldroyd, McElheran &amp; Elkington</b>, The Short Life of Online Sales Leads, Harvard Business Review, maart 2011.</p>
 <p><b>Socialinsider</b>, Social Media Benchmarks 2026.</p>
 <p><b>Meta Business Help Center</b>, About the learning phase; Creative fatigue. <b>Google Ads Help</b>, Duration of the learning period.</p>
 </div>
 <div style="position:absolute;left:23mm;right:21mm;bottom:28mm" class="klein">
-<p><b style="color:var(--black)">Gameplan</b> is het magazine van James Robinson, Marketing &amp; Branding, Hulsberg. Editie 01, najaar 2026.</p>
+<p><b style="color:var(--black)">The Performance Issue</b> is het magazine van James Robinson, Marketing &amp; Branding, Hulsberg. Editie 01, najaar 2026.</p>
 <p>Alle bedragen zijn exclusief btw. Prijzen gelden voor deze editie; de actuele prijzen staan in je voorstel.</p>
 <p>Tekst en vormgeving: James Robinson. Fotografie: <span class="vv">[fotograaf]</span>. Druk: <span class="vv">[drukker]</span>.</p>
-</div><div class="folio"><span>Gameplan · Editie 01</span><b>47</b></div></section>
+</div><div class="folio"><b>66</b><span>James Robinson · The Performance Issue</span></div></section>
+<section class="pg r zwart">
+<div style="position:absolute;left:21mm;right:23mm;top:64mm">
+  <div class="kicker">Klaar voor momentum?</div>
+  <h2 style="font-size:52pt;color:#fff">Laten we kijken wat er voor jou in zit.</h2>
+  <p class="intro" style="max-width:140mm">Vul de vragenlijst in, dan doen wij de quickscan. In het intakegesprek hoor je wat we zagen, en wat een klant jou mag kosten. Ook als we niet samen verder gaan.</p>
+  <div style="display:flex;gap:8mm;align-items:center;margin-top:12mm"><div class="qr" style="outline:0"></div><div><div class="klein" style="color:rgba(255,255,255,.7)">Scan en start</div><div class="d" style="font-size:18pt"><span class="vv">[link naar de vragenlijst]</span></div><div class="d" style="font-size:14pt;margin-top:3mm">045 792 0009</div></div></div>
+</div><div class="folio"><span>James Robinson · The Performance Issue</span><b>67</b></div></section>
 <section class="pg l blauw">
   <div class="mast" style="font-size:64pt;margin-top:8mm">On top of<br>your game.</div>
   <div style="position:absolute;left:21mm;right:23mm;bottom:24mm">
