@@ -319,23 +319,26 @@ THI = {
  'Type': vv('[retainer of project]'),
  'Marketingmanager': vv('[uit het systeem]'),
  'Contactpersonen': vv('[uit de contacten van Thiessen]'),
- 'Doel in één zin': 'Alle drie de kerstmomenten vol: 190 couverts verkopen, goed voor € 17.900 omzet.',
- 'Wat telt als resultaat': 'Een reservering in Odoo, geteld in couverts.',
+ 'Doel in één zin': 'De kerstbrunch en beide kerstdiners vol: minimaal 180 gasten, goed voor € 12.750 omzet.',
+ 'Wat telt als resultaat': 'Een reservering via de eventpagina in Odoo, geteld in gasten.',
  'kpi': [
-   ['Kerstbrunch', '25 december 2026', '60', '€ 60', '€ 3.600'],
-   ['Kerstdiner', '25 december 2026', '80', '€ 110', '€ 8.800'],
-   ['Kerstdiner', '26 december 2026', '50', '€ 110', '€ 5.500'],
-   ('tot', ['Totaal', '', '190', '', '€ 17.900']),
+   ['Kerstbrunch', '25 december 2026', '60', '€ 47,50', '€ 2.850'],
+   ['Kerstdiner', '25 december 2026', '60', '€ 82,50', '€ 4.950'],
+   ['Kerstdiner', '26 december 2026', '60', '€ 82,50', '€ 4.950'],
+   ('tot', ['Totaal', '', '180', '', '€ 12.750']),
  ],
  'kpi_opmerking': [
-   'Op 26 december zijn al 30 couverts verkocht; alles vol is € 21.200 omzet.',
+   'Minimaal 60 gasten per moment; meer is welkom.',
+   'De omzet is gerekend met de basisprijs. Arrangementen komen erbovenop: all-in is het diner € 115 per persoon.',
+   'Op 26 december zijn al 30 gasten geboekt; daar moeten er nog 30 bij.',
    'Op 25 november beslist Thiessen per moment of het doorgaat.',
-   voorstel() + ' Doorgaan bij minimaal 30 couverts voor de brunch en 40 per diner.',
-   'Tussenstand om op te sturen: op 1 november 15, 20 en 40 couverts; op 15 november 30, 40 en 55.',
+   voorstel() + ' Doorgaan bij minimaal 30 gasten voor de brunch en 40 per diner.',
+   'Tussenstand om op te sturen: op 1 november 15 gasten per moment, op 15 november 30.',
  ],
  'Start': '7 oktober 2026',
  'Einde': '17 december 2026',
  'planning_opmerking': [
+   voorstel() + ' Adverteren in twee flights in plaats van elke dag: aankondigen van 7 oktober tot 1 november, en “nog X plaatsen” van 9 november tot 17 december. Retargeting loopt tussendoor door met een klein budget.',
    'Per moment stoppen zodra het vol is.',
    'Vervalt een moment op 25 november, dan passen wij dezelfde dag de advertenties en de landingspagina aan.',
  ],
@@ -344,32 +347,54 @@ THI = {
    ['6 oktober 2026', 'Landingspagina klaar', 'Content en techniek'],
    ['6 oktober 2026', 'Content klaar, merkcheck', 'Content'],
    ['6 oktober 2026', 'Doelgroepen en meting klaar', 'Campagne en techniek'],
-   ['7 oktober 2026', 'Live', 'Campagne'],
+   ['7 oktober 2026', 'Live: flight 1, aankondigen', 'Campagne'],
+   ['9 oktober 2026', 'Flyer klaar, met QR-code naar de landingspagina', 'Content'],
    ['elke maandag', 'Stand per moment, budget bijsturen', 'Campagne'],
    [vv('[datum]'), 'Mailing: oktobernieuwsbrief', 'Marketingmanager'],
+   ['1 november 2026', 'Einde flight 1; retargeting loopt door', 'Campagne'],
    ['2 november 2026', 'Contentronde: nog X plaatsen per moment', 'Content'],
    [vv('[datum]'), 'Mailing: novembernieuwsbrief', 'Marketingmanager'],
+   ['9 november 2026', 'Live: flight 2, nog X plaatsen', 'Campagne'],
    ['10 november 2026', 'Mailing: Kerst bij Thiessen', 'Marketingmanager'],
    ['25 november 2026', 'Beslismoment: doorgaan of annuleren, per moment', 'Thiessen'],
    ['17 december 2026', 'Einde campagne', 'Campagne'],
    ['januari 2027', 'Evaluatie in de Performance Review', 'Marketingmanager'],
  ],
- 'Wat we verkopen': 'Kerstdiner op 25 en 26 december, € 110 per persoon. Kerstbrunch op 25 december, € 60 per persoon. ' + vv('[wat zit erbij: gangen, wijn, kinderprijs]'),
- 'Kernboodschap': voorstel() + ' “Kerst bij Thiessen. Jij reserveert, wij zorgen voor de rest, tot en met de mooiste plek aan tafel.”',
+ 'Wat we verkopen': (
+   '<p><b>Kerstbrunch, eerste kerstdag (25 december), € 47,50 per persoon.</b> Inloop van 11.00 tot 11.30 uur, brunch tot 14.00 uur. '
+   'Voor kleine en grote groepen en voor gezinnen. Welkom met mousserende wijn, ook alcoholvrij, en een alternatief voor kinderen. '
+   'Daarna een buffet met kerststol met amandelspijs, vleeswaren en kazen, huisgemaakte soep, warme quiche, petit pâté, ambachtelijke broodjes en croissants, en een zoete afsluiter. '
+   'De ontvangstbubbel, koffie en thee zitten erbij; andere dranken worden achteraf afgerekend.</p>'
+   '<p><b>Kerstdiner, eerste en tweede kerstdag (25 en 26 december), € 82,50 per persoon.</b> Inloop van 18.00 tot 18.30 uur. '
+   'Ontvangst met een bubbel en twee amuses, daarna een viergangendiner met tafelwater en brood. '
+   'Bob-arrangement € 27,50, wijnarrangement € 32,50. All-in € 115 per persoon.</p>'
+   + ul(['Voorgerecht: knolselderij, gerookte paling, dressing van groene kruiden en karnemelk, limoen',
+         'Tussengerecht: Iberico wang, schorseneren, tenkasu, pompoen',
+         'Hoofdgerecht: hert, rode kool, stoofpeer, schuim van Cepes, Madeira-Port jus',
+         'Nagerecht: kerstdessert van Thiessen'])
+   + '<p>Op kerstavond is er geen aanbod.</p>'
+   '<p>Reserveren via de eventpagina’s: '
+   '<a href="https://www.thiessen.nl/event/kerstbrunch-745/register">kerstbrunch</a>, '
+   '<a href="https://www.thiessen.nl/event/kerstdiner-581/register">kerstdiner eerste kerstdag</a>, '
+   '<a href="https://www.thiessen.nl/event/kerstdiner-583/register">kerstdiner tweede kerstdag</a>.</p>'
+ ),
+ 'Kernboodschap': voorstel() + ' “Vier de kerst bij Thiessen. Jij reserveert, wij zorgen voor de rest, tot en met de mooiste plek aan tafel.”',
  'Waarom nu': 'Beperkt aantal plaatsen per moment. Reserveren zonder aanbetaling: nu boeken, eind november betalen. Vanaf november noemen we per moment hoeveel plaatsen er nog zijn.',
  'Wat we niet beloven': 'Een plek in de kelder of de orangerie: dat bepaalt Thiessen. Dat staat op de landingspagina en in de bevestiging. Dat een moment kan vervallen bij te weinig reserveringen, staat in de voorwaarden en de bevestiging, met een plek bij een ander restaurant in Maastricht. Niet in de advertenties.',
  'Doelgroepen': ul(['Bestaande gasten (klantenlijst)', 'Nieuwsbriefabonnees', 'Websitebezoekers, laatste 180 dagen', 'Volgers en interacties op Instagram en Facebook', 'Nieuw: 30 tot 65 jaar, uit eten en wijn, plus een lookalike van de gasten']),
  'Regio': voorstel() + ' Maastricht en 25 kilometer eromheen.',
  'Uitsluiten': 'Wie al gereserveerd heeft, via de wekelijkse stand uit Odoo.',
- 'doelgroep_opmerking': '',
+ 'doelgroep_opmerking': 'De brunch is er ook voor gezinnen met kinderen en voor grotere groepen; daar mogen beeld en tekst bij de brunch op inspelen.',
  'kanalen': [
-   ['Meta Ads: targeting', '1 campagne', 'Nieuwe gasten in de regio.', 'maken'],
-   ['Meta Ads: retargeting', '1 campagne', 'Websitebezoekers, volgers en nieuwsbriefabonnees, tot het einde van de campagne.', 'maken'],
+   ['Meta Ads: targeting', '1 campagne, 2 flights', 'Nieuwe gasten in de regio. Flight 1 aankondigen, flight 2 nog X plaatsen.', 'maken'],
+   ['Meta Ads: retargeting', '1 campagne', 'Websitebezoekers, volgers en nieuwsbriefabonnees, tot het einde van de campagne, ook tussen de flights.', 'maken'],
+   ['Organische posts Instagram en Facebook', '6', 'Twee in oktober, drie in november, één in december: aankondigen, de brunch, het menu, nog X plaatsen. Met dezelfde beelden als de advertenties.', 'maken'],
    ['Mailing', '3', 'Oktobernieuwsbrief, novembernieuwsbrief en een aparte mailing Kerst bij Thiessen.', 'maken'],
-   ['Landingspagina', '1', 'thiessen.nl/events/kerst-bij/thiessen: de drie momenten, wat erbij zit, reserveren via Odoo, en per moment hoeveel plaatsen er nog zijn.', 'maken'],
+   ['Landingspagina', '1', 'thiessen.nl/events/kerst-bij/thiessen: de drie momenten, het menu, wat erbij zit, de arrangementen, per moment hoeveel plaatsen er nog zijn, en per moment een knop naar de eventpagina om te reserveren.', 'maken'],
+   ['Flyer in de winkel', '1 ontwerp', 'De drie momenten met een QR-code naar de landingspagina.', 'maken'],
    ['Content: beeldenbank (Kive)', '3–5 beelden per moment', 'Formaten 1:1, 4:5 en 9:16. Twee contentrondes: aankondigen (oktober) en nog X plaatsen (november).', 'bestaat'],
  ],
- 'Wat de klant zelf doet': 'Elke maandag de stand per moment uit Odoo naar support@jamesrobinson.nl. Odoo actueel houden. Gasten informeren als een moment vervalt.',
+ 'Wat de klant zelf doet': 'Elke maandag de stand per moment uit Odoo naar support@jamesrobinson.nl. Odoo en de eventpagina’s actueel houden. De flyer in de winkel neerleggen. Gasten informeren als een moment vervalt.',
  'afspraken_opmerking': [
    'Reserveren gaat zonder aanbetaling.',
    'Gasten krijgen vier weken voor kerst een betaallink en betalen uiterlijk een week voor kerst.',
@@ -378,21 +403,23 @@ THI = {
  'Risico’s': ul([
    'Zonder aanbetaling valt een deel van de reserveringen af als de betaallink komt.',
    'Drie momenten, één budget: we sturen per moment, en schuiven budget naar wat achterloopt.',
-   'De brunch levert het minst op per couvert: als het moet, stoppen we daar eerder met adverteren dan bij de diners.',
+   'De brunch levert het minst op per gast: als het moet, stoppen we daar eerder met adverteren dan bij de diners.',
+   'Tussen de flights zakt het bereik. Loopt een moment op 1 november achter, dan starten we flight 2 eerder.',
  ]),
 }
 
-THI['hyp'] = bereken(doel=190, per_conversie=3, conversieratio=0.025, doorklik=0.01, cpm=8, omzet=17900,
+THI['hyp'] = bereken(doel=180, per_conversie=3, conversieratio=0.025, doorklik=0.01, cpm=8, omzet=12750,
     bronnen=dict(per_conversie='inschatting; checken in Odoo', cr='marktgemiddelde; eigen norm volgt', ctr='marktgemiddelde Meta; eigen norm volgt', cpm='inschatting; checken in Ads Manager'),
-    scenario_cr=0.015, weken=10, kanalen_extra='de drie mailings, vaste gasten en direct',
-    opmerkingen=['Eenheden per conversie: gemiddeld 3 couverts per reservering (groepsgrootte). Na de eerste tien reserveringen checken in Odoo.', 'Conversie: een reservering in Odoo.'])
+    scenario_cr=0.015, weken=10, kanalen_extra='de organische posts, de drie mailings, de flyer, vaste gasten en direct',
+    opmerkingen=['Eenheden per conversie: gemiddeld 3 gasten per reservering (groepsgrootte). Na de eerste tien reserveringen checken in Odoo.', 'Conversie: een reservering via de eventpagina in Odoo.'])
 _h = THI['hyp']
-_okt, _nov = round(_h['budget'] / 3 / 100) * 100, round(_h['budget'] * 7 / 15 / 100) * 100
-THI['Advertentiebudget'] = voorstel() + ' Berekend uit het doel: advies € %s aan Meta (%s%% van de omzet), rechtstreeks van Thiessen; zie de hypothese onderaan. Dat is de bovengrens, als alles via advertenties komt. Oktober € %s, november € %s, december € %s, verdeeld over targeting en retargeting.' % (
-    nl(_h['budget']), pct(_h['pct_budget']), nl(_okt), nl(_nov), nl(_h['budget'] - _okt - _nov))
+_f1 = round(_h['budget'] * 2 / 5 / 100) * 100
+THI['Advertentiebudget'] = voorstel() + ' Berekend uit het doel: advies € %s aan Meta (%s%% van de omzet), rechtstreeks van Thiessen; zie de hypothese onderaan. Dat is de bovengrens, als alles via advertenties komt. Flight 1 (oktober) € %s, flight 2 en de retargeting tussendoor (november en december) € %s, verdeeld over targeting en retargeting.' % (
+    nl(_h['budget']), pct(_h['pct_budget']), nl(_f1), nl(_h['budget'] - _f1))
 
-THI_SAMENVATTING = ('Thiessen Wijnkoopers wil drie kerstmomenten vullen: twee kerstdiners en een kerstbrunch. Het doel is 190 couverts (ongeveer %s reserveringen) en € 17.900 omzet, '
-                    'met Meta Ads, een eigen landingspagina en drie mailings, van 7 oktober tot 17 december 2026.') % nl(THI['hyp']['conv'])
+THI_SAMENVATTING = ('Thiessen Wijnkoopers wil drie kerstmomenten vullen: de kerstbrunch op eerste kerstdag en het kerstdiner op eerste en tweede kerstdag. '
+                    'Het doel is minimaal 180 gasten (ongeveer %s reserveringen) en € 12.750 omzet, met Meta Ads in twee flights, organische posts, '
+                    'een eigen landingspagina, drie mailings en een flyer in de winkel, van 7 oktober tot 17 december 2026.') % nl(THI['hyp']['conv'])
 
 DOCS = [
  dict(code='I.3', titel='Klantprofiel', fase='Intern · Briefings', voor='Intern', wanneer='Aan het eind van de onboarding, daarna bijhouden', wie='Marketingmanager',
@@ -402,7 +429,7 @@ DOCS = [
  dict(code='I.5', titel='Briefings in het portaal', fase='Intern · Briefings', voor='Intern', wanneer='Bij het bouwen van het portaal', wie='Jim Coumans, Jim Kikken, de bouwer van het portaal',
       lead='Welke velden uit het systeem komen, welke je kiest, waar je een suggestie kunt laten doen, hoe een briefing van voorstel naar akkoord gaat, en hoe de tijdlijn in ClickUp komt.', concept=True, body=specificatie()),
  dict(code='K.THI.1', titel='Kerst bij Thiessen', fase='Campagnebriefing', voor='Intern en klant', wanneer='7 oktober – 17 december 2026', wie='Marketingmanager',
-      kop_rechts='Versie 1.0 · 2 oktober 2026', bestand='Campagnebriefing Kerst bij Thiessen', map_sub='Thiessen',
+      kop_rechts='Versie 2.0 · 6 oktober 2026', bestand='Campagnebriefing Kerst bij Thiessen', map_sub='Thiessen',
       meta=[('Klant', 'Thiessen Wijnkoopers'), ('Start', '7 oktober 2026'), ('Einde', '17 december 2026'), ('Status', voorstel())],
       lead=THI_SAMENVATTING, body=campagnebriefing(THI)),
 ]
