@@ -1,6 +1,4 @@
-<!doctype html>
-<html lang="nl"><head><meta charset="utf-8"><title>Gameplan · Editie 01</title>
-<style>
+<!doctype html><html lang="nl"><head><meta charset="utf-8"><title>Gameplan · Editie 01</title><style>
 @font-face{font-family:'Inter';font-weight:100 900;src:url('../fonts/Inter.woff2') format('woff2')}
 @font-face{font-family:'Inter Tight';font-weight:100 900;src:url('../fonts/InterTight.woff2') format('woff2')}
 /* A4 staand, 210 × 297 mm, plus 3 mm afloop rondom. */
@@ -155,9 +153,82 @@ td:first-child{color:var(--tx2)}
 .bronnen{font-size:6.8pt;color:var(--tx2);line-height:1.45}
 .bronnen p{margin-bottom:1.6mm}
 .concept{position:absolute;top:9mm;right:9mm;font-size:6.5pt;font-weight:700;color:#94590a;background:#fef2e0;border-radius:10mm;padding:1mm 3mm;z-index:5}
+/* Aanvullingen voor editie 01, 44 pagina's */
+.vv{background:#fef2e0;color:#94590a;border-radius:1mm;padding:0 1mm;font-weight:500}
+.zwart .vv,.blauw .vv{background:rgba(255,255,255,.18);color:#fff}
+.quote{font-family:var(--fd);font-weight:700;font-size:40pt;line-height:1.08;letter-spacing:-.03em}
+.quote:before{content:'“';display:block;font-size:90pt;line-height:.6;color:var(--blue);margin-bottom:4mm}
+.blauw .quote:before{color:#fff}
+.wie-zegt{margin-top:8mm;font-size:10pt}
+.wie-zegt b{display:block;font-size:11pt}
+/* Historie */
+.jaren{list-style:none;position:relative;margin-top:6mm}
+.jaren:before{content:'';position:absolute;left:21mm;top:2mm;bottom:2mm;width:.5mm;background:var(--soft)}
+.jaren li{display:grid;grid-template-columns:21mm 1fr;gap:7mm;padding:3.4mm 0;position:relative}
+.jaren li:after{content:'';position:absolute;left:19.8mm;top:5.6mm;width:3mm;height:3mm;border-radius:50%;background:var(--blue)}
+.jaren .j{font-family:var(--fd);font-weight:700;font-size:17pt;letter-spacing:-.02em;line-height:1}
+.jaren h3{font-size:11.5pt;margin-bottom:1mm}
+.jaren p{font-size:8.8pt;margin:0;color:var(--ink2)}
+/* Ploeg */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:5mm;margin-top:4mm}
+.duo .beeld{height:92mm;border-radius:4mm}
+.persoon{margin-top:3mm}
+.persoon b{display:block;font-family:var(--fd);font-size:14pt;letter-spacing:-.015em}
+.persoon span{display:block;font-size:8.5pt;color:var(--tx2)}
+.persoon p{font-size:8.8pt;margin-top:2mm}
+.ploeg{display:grid;grid-template-columns:repeat(3,1fr);gap:5mm 4mm;margin-top:6mm}
+.ploeg .beeld{height:44mm;border-radius:3mm;padding:3mm}
+.ploeg .persoon b{font-size:11pt}
+.ploeg .persoon span{font-size:7.8pt}
+/* Logo's */
+.logos{display:grid;grid-template-columns:repeat(4,1fr);gap:3mm;margin-top:6mm}
+.logos div{height:30mm;border-radius:3mm;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:7.5pt;color:var(--tx3);text-align:center;gap:1mm}
+.logos div b{font-family:var(--fd);font-size:11pt;color:var(--tx2);letter-spacing:-.01em}
+.branches{display:flex;flex-wrap:wrap;gap:2mm;margin-top:6mm}
+.branches span{border:.3mm solid var(--ln);border-radius:10mm;padding:1.5mm 4mm;font-size:8.5pt}
+/* Case */
+.case-kop{display:flex;gap:3mm;align-items:center;margin-bottom:4mm}
+.resultaten{display:grid;grid-template-columns:repeat(3,1fr);gap:5mm;margin:6mm 0}
+.saa{display:grid;grid-template-columns:repeat(3,1fr);gap:5mm;margin-top:4mm}
+.saa h3{font-size:11pt;color:var(--blue)}
+.saa p{font-size:8.8pt}
+/* Reviews */
+.reviews{display:grid;grid-template-columns:1fr 1fr;gap:5mm;margin-top:6mm}
+.review{background:var(--bg);border-radius:4mm;padding:6mm}
+.review .q{font-family:var(--fd);font-size:13pt;font-weight:600;line-height:1.3;letter-spacing:-.01em}
+.review .w{font-size:8pt;color:var(--tx2);margin-top:4mm}
+.sterren{color:var(--blue);letter-spacing:1mm;font-size:11pt;margin-bottom:3mm}
+/* Fundament */
+.deel{border-radius:4mm;padding:6mm;background:var(--bg)}
+.deel.b{background:var(--tint)}
+.deel .pct{font-size:7.5pt;font-weight:600;color:var(--tx2);margin-bottom:2mm}
+.prijs{font-family:var(--fd);font-weight:700;font-size:44pt;letter-spacing:-.04em;line-height:1}
+.prijs small{font-size:12pt;font-weight:500;letter-spacing:0;color:var(--tx2);margin-left:2mm}
+/* Pakketten */
+.pakketten{display:grid;grid-template-columns:repeat(4,1fr);gap:3mm;margin-top:6mm}
+.pakket{border-radius:4mm;padding:5mm 4.5mm;background:var(--bg);display:flex;flex-direction:column}
+.pakket.uit{background:var(--black);color:#fff}
+.pakket .naam{font-family:var(--fd);font-weight:700;font-size:15pt;letter-spacing:-.02em}
+.pakket .bedrag{font-family:var(--fd);font-weight:700;font-size:22pt;letter-spacing:-.03em;margin:4mm 0 0}
+.pakket .pm{font-size:7.5pt;opacity:.7;margin-bottom:4mm}
+.pakket ul{list-style:none;font-size:8.3pt}
+.pakket li{padding:1.7mm 0;border-top:.25mm solid rgba(0,0,0,.08)}
+.pakket.uit li{border-color:rgba(255,255,255,.15)}
+.pakket li b{display:block;font-size:7pt;font-weight:600;opacity:.6}
+/* Partners */
+.partners{display:grid;grid-template-columns:repeat(3,1fr);gap:3mm;margin-top:4mm}
+.partners div{border:.3mm solid var(--soft);border-radius:3mm;padding:4mm}
+.partners b{display:block;font-size:10pt}
+.partners span{font-size:8pt;color:var(--tx2)}
+/* Kanalen van contact */
+.contact3{display:grid;grid-template-columns:repeat(3,1fr);gap:4mm;margin-top:5mm}
+.contact3>div{border-radius:4mm;padding:5mm;background:var(--bg)}
+.contact3 .groot{font-family:var(--fd);font-weight:700;font-size:13pt;letter-spacing:-.015em;margin:2mm 0}
+/* QR */
+.qr{width:34mm;height:34mm;border-radius:2mm;background:
+  conic-gradient(from 90deg at 3mm 3mm,#1c1c1e 25%,#fff 0) 0 0/6mm 6mm;border:2mm solid #fff;outline:.3mm solid var(--ln)}
+.blauw .qr{outline:0}
 </style></head><body>
-
-<!-- 1 · Omslag -->
 <section class="pg r zwart omslag">
   <div class="omslagkop"><span>James Robinson · Marketing &amp; Branding</span><span>Editie 01 · najaar 2026</span></div>
   <div class="mast">Game<i>plan</i></div>
@@ -174,52 +245,29 @@ td:first-child{color:var(--tx2)}
   <div class="coverlines">
     <div><b>We stoppen met posten</b>Niet met social media. Waarom je feed vullen het minst oplevert.</div>
     <div><b>Drie schakels van ons, één van jou</b>Van advertentie tot klant, en wie waarvoor zorgt.</div>
-    <div><b>Negen spelregels</b>Wat altijd geldt, ook als het gesprek goed loopt.</div>
+    <div><b>Wat het kost</b>Fundament, pakketten en alles wat op jouw naam staat.</div>
   </div>
 </section>
-
-<!-- 2 · Inhoud -->
+<section class="pg l"><div class="kicker">In deze editie</div><h2>Hoe we werken, en waarom zo.</h2>
+<p class="intro">Ons verhaal, van de eerste klik tot maand twaalf. Lees het terug wanneer je wilt, en geef het door aan wie mee moet beslissen.</p>
+<ul class="inhoud" style="columns:2;column-gap:8mm"><li><span class="p">04</span><div><b>Voorwoord</b></div></li><li><span class="p">05</span><div><b>Eén ding, en dat goed</b></div></li><li><span class="p">06</span><div><b>Ons verhaal</b></div></li><li><span class="p">07</span><div><b>Wat niet werkte</b></div></li><li><span class="p">08</span><div><b>Ons kantoor</b></div></li><li><span class="p">10</span><div><b>De ploeg</b></div></li><li><span class="p">12</span><div><b>Drie dingen gelden altijd</b></div></li><li><span class="p">14</span><div><b>Slimmer werken</b></div></li><li><span class="p">16</span><div><b>Het model</b></div></li><li><span class="p">18</span><div><b>De keten</b></div></li><li><span class="p">20</span><div><b>We stoppen met posten</b></div></li><li><span class="p">22</span><div><b>Voor wie we werken</b></div></li><li><span class="p">23</span><div><b>Wat klanten zeggen</b></div></li><li><span class="p">24</span><div><b>Case 1</b></div></li><li><span class="p">26</span><div><b>Case 2</b></div></li><li style="border-top:.5mm solid var(--black)"><span class="p"></span><div><b style="color:var(--blue)">Deel 2 · Wat betekent dat voor jou?</b></div></li><li><span class="p">29</span><div><b>Jouw doel in cijfers</b></div></li><li><span class="p">31</span><div><b>Ons plan</b></div></li><li><span class="p">33</span><div><b>Van handtekening tot live</b></div></li><li><span class="p">34</span><div><b>Het fundament</b></div></li><li><span class="p">35</span><div><b>De pakketten</b></div></li><li><span class="p">36</span><div><b>Licenties en opties</b></div></li><li><span class="p">37</span><div><b>Wat we doen, en wat niet</b></div></li><li><span class="p">38</span><div><b>Partners</b></div></li><li><span class="p">39</span><div><b>Hoe we samenwerken</b></div></li><li><span class="p">41</span><div><b>Negen spelregels</b></div></li><li><span class="p">43</span><div><b>Jouw kant</b></div></li><li><span class="p">44</span><div><b>Hoe nu verder</b></div></li><li><span class="p">45</span><div><b>Padel</b></div></li><li><span class="p">47</span><div><b>Colofon en bronnen</b></div></li></ul><div class="folio"><b>02</b><span>Gameplan · Editie 01</span></div></section>
+<section class="pg r blauw">
+<div style="margin-top:50mm"><div class="quote">Wij beloven geen resultaat. Wij beloven dat we het zelf zeggen als het niet werkt.</div>
+<div class="wie-zegt"><b>Spelregel 1</b>Cijfers zijn leidend</div></div><div class="folio"><span>Gameplan · Editie 01</span><b>03</b></div></section>
 <section class="pg l">
-  <div class="kicker">In deze editie</div>
-  <h2>Hoe we werken, en waarom zo.</h2>
-  <p class="intro">Dit magazine is ons verhaal, van de eerste klik tot maand twaalf. Lees het terug wanneer je wilt, en geef het door aan wie mee moet beslissen.</p>
-  <ul class="inhoud">
-    <li><span class="p">03</span><div><b>Ons succes is jullie succes</b><span>Een woord vooraf van de eigenaren</span></div></li>
-    <li><span class="p">04</span><div><b>Eén ding, en dat goed</b><span>Wat we doen, en wat we anders zijn gaan doen</span></div></li>
-    <li><span class="p">06</span><div><b>Drie dingen gelden altijd</b><span>Performance eerst, altijd on-brand, data beats opinion</span></div></li>
-    <li><span class="p">08</span><div><b>Eén middelpunt, één motor</b><span>Ons model, en waarom niet alles tegelijk</span></div></li>
-    <li><span class="p">10</span><div><b>De keten</b><span>Vier schakels tussen een advertentie en een klant</span></div></li>
-    <li><span class="p">12</span><div><b>We stoppen met posten</b><span>Niet met social media</span></div></li>
-    <li><span class="p">14</span><div><b>Ons plan</b><span>Vier stappen, en waarom je doel vanaf maand 4 geldt</span></div></li>
-    <li><span class="p">16</span><div><b>Wat we doen, en wat niet</b><span>De grens, de kanalen en de pakketten</span></div></li>
-    <li><span class="p">18</span><div><b>Waar je geld heen gaat</b><span>Alles verdient zich terug, alles op jouw naam</span></div></li>
-    <li><span class="p">20</span><div><b>Negen spelregels</b><span>Wat altijd geldt</span></div></li>
-    <li><span class="p">22</span><div><b>Jouw kant</b><span>Vier dingen die wij niet oplossen, vijf afspraken</span></div></li>
-    <li><span class="p">23</span><div><b>Hoe nu verder</b><span>De hele reis, en waar je nu staat</span></div></li>
-  </ul>
-  <p class="klein" style="margin-top:6mm">Gameplan is het magazine van James Robinson, Hulsberg. Alle bedragen zijn exclusief btw. De bronnen bij de cijfers staan op pagina 23.</p>
-  <div class="folio"><b>02</b><span>Gameplan · Editie 01</span></div>
-</section>
-
-<!-- 3 · Voorwoord -->
-<section class="pg r">
-  <div class="concept">Concepttekst, nog door Jim &amp; Jim te herschrijven</div>
-  <div class="beeld" style="position:absolute;left:0;right:0;top:0;height:122mm"><span>Beeld: Jim Coumans en Jim Kikken, op kantoor in Hulsberg</span></div>
-  <div style="margin-top:110mm">
-    <div class="kicker">Woord vooraf</div>
-    <h2 style="font-size:30pt">Ons succes is jullie succes. Niet meer en niet minder.</h2>
-    <div class="kol2">
-      <p>Onze winst is niet een zo hoog mogelijke maandfactuur. Onze winst is dat we je doelen keer op keer halen, dat je tevreden bent over wat het oplevert, en dat we over tien jaar nog steeds voor je werken.</p>
-      <p>Vraag je je over drie of zes maanden af wat marketing je bedrijf oplevert, dan hebben wij een groter probleem dan een lagere factuur. Daarom zetten we liever een deel van ons werk om in advertentiebudget dan dat we uren steken in iets wat weinig oplevert.</p>
-      <p>In dit magazine staat hoe we werken. Ook wat we niet doen, en wat we van jou nodig hebben. We hebben het zo opgeschreven dat je het kunt narekenen.</p>
-      <p style="margin-top:5mm"><b>Jim Coumans en Jim Kikken</b><br><span class="klein">Eigenaren, James Robinson</span></p>
-    </div>
+<div class="concept">Concepttekst, door Jim te herschrijven</div>
+<div class="beeld" style="position:absolute;left:0;right:0;top:0;height:122mm"><span>Beeld: Jim Coumans of Jim Kikken, op kantoor in Hulsberg</span></div>
+<div style="margin-top:110mm">
+  <div class="kicker">Voorwoord</div>
+  <h2 style="font-size:30pt">Ons succes is jullie succes. Niet meer en niet minder.</h2>
+  <div class="kol2">
+    <p>Onze winst is niet een zo hoog mogelijke maandfactuur. Onze winst is dat we je doelen keer op keer halen, dat je blij bent met wat het oplevert, en dat we over tien jaar nog steeds voor je werken.</p>
+    <p>Vraag je je over drie of zes maanden af wat marketing je bedrijf oplevert, dan hebben wij een groter probleem dan een lagere factuur. Daarom zetten we liever een deel van ons werk om in advertentiebudget dan dat we uren steken in iets wat weinig oplevert.</p>
+    <p>In dit magazine staat hoe we werken. Ook wat we niet doen, wat het kost en wat we van jou nodig hebben. We hebben het zo opgeschreven dat je het kunt narekenen.</p>
+    <p style="margin-top:5mm"><b><span class="vv">[Jim Coumans of Jim Kikken]</span></b><br><span class="klein">Eigenaar, James Robinson</span></p>
   </div>
-  <div class="folio"><span>Gameplan · Editie 01</span><b>03</b></div>
-</section>
-
-<!-- 4 · Eén ding -->
-<section class="pg l blauw">
+</div><div class="folio"><b>04</b><span>Gameplan · Editie 01</span></div></section>
+<section class="pg r blauw">
   <div class="kicker">Wat we doen</div>
   <h2 style="font-size:44pt;margin-top:20mm">Wij doen één ding, en dat doen we goed.</h2>
   <p class="intro" style="font-size:15pt;max-width:150mm">We zorgen dat er aanvragen binnenkomen via advertenties in zoekmachines en op social media, en dat die steeds goedkoper worden. Je website is daarbij het middelpunt.</p>
@@ -228,10 +276,18 @@ td:first-child{color:var(--tx2)}
     <div class="cijfer"><div class="n">±10</div><div class="t">Mensen. Zeven begonnen hier als stagiair.</div></div>
     <div class="cijfer"><div class="n">1</div><div class="t">Product: een fundament en een vaste maandprijs. Geen uren.</div></div>
   </div>
-  <div class="folio"><b>04</b><span>Gameplan · Editie 01</span></div>
-</section>
-
-<!-- 5 · Wat we anders doen -->
+  <div class="folio"><span>Gameplan · Editie 01</span><b>05</b></div></section>
+<section class="pg l">
+<div class="kicker">Ons verhaal</div>
+<h2>Van idee in 2017 tot een bureau met een vast product.</h2>
+<ul class="jaren">
+  <li><span class="j">2017</span><div><h3>Het idee</h3><p>James Robinson wordt bedacht. <span class="vv">[hoe het begon, waar de naam vandaan komt]</span></p></div></li>
+  <li><span class="j">2018</span><div><h3>Opgericht in Hulsberg</h3><p><span class="vv">[de eerste klanten, het eerste kantoor]</span></p></div></li>
+  <li><span class="j"><span class="vv">[jaar]</span></span><div><h3><span class="vv">[mijlpaal]</span></h3><p><span class="vv">[bijvoorbeeld de eerste medewerker, het eerste grote project]</span></p></div></li>
+  <li><span class="j">2022</span><div><h3>Jim Kikken wordt mede-eigenaar</h3><p>Met zijn specialisme, data-gedreven performance marketing, verschuift het zwaartepunt naar meetbaar resultaat.</p></div></li>
+  <li><span class="j"><span class="vv">[jaar]</span></span><div><h3>Ons kantoor</h3><p><span class="vv">[de verhuizing naar het huidige kantoor]</span></p></div></li>
+  <li><span class="j">2026</span><div><h3>Een vast product</h3><p>We stoppen met alles tegelijk doen. Eén fundament, vaste pakketten, één adres voor alles, en een eigen portaal met je cijfers.</p></div></li>
+</ul><div class="folio"><b>06</b><span>Gameplan · Editie 01</span></div></section>
 <section class="pg r">
   <div class="kicker">Waarom deze opzet</div>
   <h2>Wat niet werkte, en wat we nu doen.</h2>
@@ -246,10 +302,36 @@ td:first-child{color:var(--tx2)}
     <tr><td>Alles liep via twee eigenaren</td><td>Vaste stappen, vaste mensen, en één adres voor alles: support@jamesrobinson.nl</td></tr>
   </table>
   <div class="kader" style="margin-top:9mm"><h3>Wat je daaraan hebt</h3><p style="margin:0">Je weet vooraf wat je krijgt, wat het kost en wanneer je wat kunt verwachten. Dat is minder flexibel dan een bureau dat alles doet. Het is wel te controleren.</p></div>
-  <div class="folio"><span>Gameplan · Editie 01</span><b>05</b></div>
-</section>
-
-<!-- 6 · Principes 1 -->
+  <div class="folio"><span>Gameplan · Editie 01</span><b>07</b></div></section>
+<section class="pg l zwart"><div class="beeld" style="position:absolute;inset:0;align-items:flex-start;padding:20mm 23mm"><span>Beeld: ons kantoor in Hulsberg, van buiten of de mooiste ruimte binnen</span></div>
+<div style="position:absolute;left:21mm;right:23mm;bottom:30mm;z-index:2">
+  <div class="kicker">Ons kantoor</div>
+  <h2 style="font-size:44pt;color:#fff">Welkom in Hulsberg.</h2>
+</div><div class="folio"><b>08</b><span>Gameplan · Editie 01</span></div></section>
+<section class="pg r">
+<div class="kicker">Ons kantoor</div>
+<h2>Hier zit je aan tafel. Niet in een vergaderhok.</h2>
+<p class="intro"><span class="vv">[wat het kantoor bijzonder maakt: de plek, het gebouw, wat er te doen is]</span></p>
+<div class="kol2">
+  <p><b>Je Performance Review</b> houden we hier of online. Een uur, met de cijfers op tafel en een kop koffie erbij.</p>
+  <p><b>De draaidag</b> is bij jou op locatie. Wat we daarna maken, maken we hier.</p>
+  <p><span class="vv">[faciliteiten: studio, ruimte voor sessies, parkeren, bereikbaarheid]</span></p>
+  <p><span class="vv">[waarom het kantoor bij ons verhaal past]</span></p>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:4mm;margin-top:8mm"><div class="beeld" style="height:60mm;border-radius:4mm"><span>Beeld: detail kantoor</span></div><div class="beeld" style="height:60mm;border-radius:4mm"><span>Beeld: het team aan het werk</span></div></div>
+<p class="klein" style="margin-top:5mm"><span class="vv">[adres]</span> · Hulsberg · kantoor 045 792 0009</p><div class="folio"><span>Gameplan · Editie 01</span><b>09</b></div></section>
+<section class="pg l">
+<div class="kicker">De ploeg</div>
+<h2>De eigenaren.</h2>
+<div class="duo">
+  <div><div class="beeld" style=""><span>Beeld: Jim Coumans</span></div><div class="persoon"><b>Jim Coumans</b><span>Oprichter en eigenaar</span><p>Marketing, merk en groei van James Robinson. <span class="vv">[één zin in eigen woorden]</span></p></div></div>
+  <div><div class="beeld" style=""><span>Beeld: Jim Kikken</span></div><div class="persoon"><b>Jim Kikken</b><span>Eigenaar</span><p>Data-gedreven performance marketing. <span class="vv">[één zin in eigen woorden]</span></p></div></div>
+</div>
+<p class="intro" style="margin-top:9mm;font-size:11.5pt">Ongeveer tien mensen. Zeven van hen begonnen hier als stagiair. We leiden mensen zelf op, in onze eigen manier van werken.</p><div class="folio"><b>10</b><span>Gameplan · Editie 01</span></div></section>
+<section class="pg r">
+<div class="kicker">De ploeg</div>
+<h2>Wie er aan je campagne werkt.</h2>
+<div class="ploeg"><div><div class="beeld" style="height:44mm;border-radius:3mm;padding:3mm"><span>Beeld: teamlid</span></div><div class="persoon"><b><span class="vv">[naam]</span></b><span><span class="vv">[rol]</span> · <span class="vv">[specialisme]</span></span></div></div><div><div class="beeld" style="height:44mm;border-radius:3mm;padding:3mm"><span>Beeld: teamlid</span></div><div class="persoon"><b><span class="vv">[naam]</span></b><span><span class="vv">[rol]</span> · <span class="vv">[specialisme]</span></span></div></div><div><div class="beeld" style="height:44mm;border-radius:3mm;padding:3mm"><span>Beeld: teamlid</span></div><div class="persoon"><b><span class="vv">[naam]</span></b><span><span class="vv">[rol]</span> · <span class="vv">[specialisme]</span></span></div></div><div><div class="beeld" style="height:44mm;border-radius:3mm;padding:3mm"><span>Beeld: teamlid</span></div><div class="persoon"><b><span class="vv">[naam]</span></b><span><span class="vv">[rol]</span> · <span class="vv">[specialisme]</span></span></div></div><div><div class="beeld" style="height:44mm;border-radius:3mm;padding:3mm"><span>Beeld: teamlid</span></div><div class="persoon"><b><span class="vv">[naam]</span></b><span><span class="vv">[rol]</span> · <span class="vv">[specialisme]</span></span></div></div><div><div class="beeld" style="height:44mm;border-radius:3mm;padding:3mm"><span>Beeld: teamlid</span></div><div class="persoon"><b><span class="vv">[naam]</span></b><span><span class="vv">[rol]</span> · <span class="vv">[specialisme]</span></span></div></div><div><div class="beeld" style="height:44mm;border-radius:3mm;padding:3mm"><span>Beeld: teamlid</span></div><div class="persoon"><b><span class="vv">[naam]</span></b><span><span class="vv">[rol]</span> · <span class="vv">[specialisme]</span></span></div></div><div><div class="beeld" style="height:44mm;border-radius:3mm;padding:3mm"><span>Beeld: teamlid</span></div><div class="persoon"><b><span class="vv">[naam]</span></b><span><span class="vv">[rol]</span> · <span class="vv">[specialisme]</span></span></div></div><div><div class="beeld" style="height:44mm;border-radius:3mm;padding:3mm"><span>Beeld: teamlid</span></div><div class="persoon"><b><span class="vv">[naam]</span></b><span><span class="vv">[rol]</span> · <span class="vv">[specialisme]</span></span></div></div></div><div class="folio"><span>Gameplan · Editie 01</span><b>11</b></div></section>
 <section class="pg l">
   <div class="kicker">Drie dingen gelden altijd</div>
   <h2>Performance eerst. Maar nooit ten koste van je merk.</h2>
@@ -265,10 +347,7 @@ td:first-child{color:var(--tx2)}
     <div class="cijfer"><div class="n">46<span style="font-size:28pt">/54</span></div><div class="t">De beste verhouding tussen merk en direct resultaat voor zakelijke dienstverleners.</div><div class="b">Binet &amp; Field, 5 Principles of Growth in B2B Marketing</div></div>
     <div class="cijfer"><div class="n">996</div><div class="t">Campagnes onderzocht. Korte effecten geven efficiëntie, lange effecten groei.</div><div class="b">Binet &amp; Field, The Long and the Short of It, IPA 2013</div></div>
   </div>
-  <div class="folio"><b>06</b><span>Gameplan · Editie 01</span></div>
-</section>
-
-<!-- 7 · Principes 2 -->
+  <div class="folio"><b>12</b><span>Gameplan · Editie 01</span></div></section>
 <section class="pg r grijs">
   <div class="kicker">Drie dingen gelden altijd</div>
   <h2>Data beats opinion.</h2>
@@ -278,10 +357,29 @@ td:first-child{color:var(--tx2)}
     <p>Als de beste teams ter wereld het meestal mis hebben over wat werkt, dan hebben wij en jij dat ook. Daarom meten we vanaf dag één, en laten we de cijfers kiezen.</p>
     <p>Je merk bepaalt de grenzen. Binnen die grenzen kiest de data. Eerlijk is ook: echt testen vraagt verkeer. Waar dat er niet is, sturen we op de cijfers die er wel zijn, en zeggen we dat erbij.</p>
   </div>
-  <div class="folio"><span>Gameplan · Editie 01</span><b>07</b></div>
-</section>
-
-<!-- 8 · Model -->
+  <div class="folio"><span>Gameplan · Editie 01</span><b>13</b></div></section>
+<section class="pg l zwart">
+<div class="kicker">Slimmer werken</div>
+<h2>Mensen beslissen. Machines doen het werk waar fouten in sluipen.</h2>
+<p class="intro">We zetten AI en automatisering in waar het je iets oplevert: minder fouten, sneller bijsturen, en meer werk voor hetzelfde geld. Niet om mensen te vervangen, wel om ze vrij te maken voor wat telt.</p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6mm;margin-top:10mm">
+  <div class="cijfer"><div class="n">7.00</div><div class="t">Elke ochtend een dagmail met alles wat buiten de lijntjes loopt, voor al onze klanten. Bovenaan in rood.</div></div>
+  <div class="cijfer"><div class="n">24/7</div><div class="t">We volgen uitgaven, afgekeurde advertenties, de meting en je landingspagina doorlopend.</div></div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6mm;margin-top:8mm">
+  <div class="cijfer"><div class="n">1×</div><div class="t">Je merk één keer vastleggen: kleuren, letters, toon. Daarna klopt elke uiting ermee, ook de duizendste.</div></div>
+  <div class="cijfer"><div class="n">0</div><div class="t">Getallen die we met de hand overtypen. Je dashboard haalt ze zelf op.</div></div>
+</div><div class="folio"><b>14</b><span>Gameplan · Editie 01</span></div></section>
+<section class="pg r">
+<div class="kicker">Slimmer werken</div>
+<h2>Wat het jou oplevert.</h2>
+<ol class="lijst" style="margin-top:4mm">
+  <li><h3>Je ziet wat wij zien</h3><p style="margin:0">Je eigen marketingdashboard, met de vier ketengetallen en de kosten per aanvraag. Elk uur bijgewerkt, zonder dat iemand iets hoeft over te typen.</p></li>
+  <li><h3>We zien een probleem voordat jij het merkt</h3><p style="margin:0">Besteedt een campagne niets, wordt een advertentie afgekeurd of komen er geen aanvragen meer binnen, dan staat het de volgende ochtend bovenaan bij ons.</p></li>
+  <li><h3>Meer varianten, altijd on-brand</h3><p style="margin:0">Met je merk vastgelegd in ons portaal maken we sneller nieuwe advertenties om te testen. Hoeveel varianten zinvol zijn, hangt af van je budget: testen vraagt verkeer.</p></li>
+  <li><h3>Vaste stappen, minder vergeten</h3><p style="margin:0">Elke start volgt dezelfde 76 taken, met checklists. Wat een machine kan controleren, controleert een machine.</p></li>
+</ol>
+<div class="kader" style="margin-top:8mm"><h3>Wat AI bij ons niet doet</h3><p style="margin:0">Beslissen over je budget, je doelgroep of je merk. Dat doen mensen, met jou.</p></div><div class="folio"><span>Gameplan · Editie 01</span><b>15</b></div></section>
 <section class="pg l">
   <div class="kicker">Het model</div>
   <h2>Eén middelpunt, één motor, drie versnellers.</h2>
@@ -298,10 +396,7 @@ td:first-child{color:var(--tx2)}
     <div><h3>E-mail en automation</h3><p>Wie er al was, terughalen zonder opnieuw te betalen. En bestaande klanten meer laten opleveren.</p></div>
     <div><h3>SEO</h3><p>Verkeer dat je niet hoeft te kopen, op de woorden waarvan je inmiddels weet dat ze klanten opleveren.</p></div>
   </div>
-  <div class="folio"><b>08</b><span>Gameplan · Editie 01</span></div>
-</section>
-
-<!-- 9 · Waarom niet alles tegelijk -->
+  <div class="folio"><b>16</b><span>Gameplan · Editie 01</span></div></section>
 <section class="pg r">
   <div class="kicker">Het model</div>
   <h2>Waarom niet alles tegelijk.</h2>
@@ -312,10 +407,7 @@ td:first-child{color:var(--tx2)}
   </ol>
   <div class="cijfer" style="margin-top:12mm"><div class="n">21,6%</div><div class="t" style="max-width:130mm">Zoveel vaker kwamen bezoekers van de eerste stap van een formulier tot het verzenden, bij een mobiele site die een tiende seconde sneller was.</div><div class="b">Deloitte Digital voor Google, Milliseconds Make Millions, 2020 · leadgeneratie, 37 merken</div></div>
   <p class="klein" style="margin-top:4mm">Daarom meten we de laadtijd van elke landingspagina voordat er een euro naartoe gaat.</p>
-  <div class="folio"><span>Gameplan · Editie 01</span><b>09</b></div>
-</section>
-
-<!-- 10 · De keten -->
+  <div class="folio"><span>Gameplan · Editie 01</span><b>17</b></div></section>
 <section class="pg l">
   <div class="kicker">De keten</div>
   <h2>Tussen een advertentie en een klant zitten vier schakels.</h2>
@@ -332,10 +424,7 @@ td:first-child{color:var(--tx2)}
   <div class="wie"><div class="o">Drie schakels van ons. We meten ze, sturen ze en maken ze goedkoper.</div><div class="j">Eén van jou</div></div>
   <p class="klein" style="margin-top:3mm">Staven niet op schaal.</p>
   <div class="kader" style="margin-top:8mm"><h3>Eén procentpunt is meer waard dan duizend euro budget</h3><p style="margin:0">Van 3 naar 4 procent conversie geeft zeven extra aanvragen, zonder één euro extra. Een aanvraag kost dan € 112 in plaats van € 150. Meer budget geeft meer aanvragen tegen dezelfde prijs. Een beter percentage geeft ze tegen een lagere.</p></div>
-  <div class="folio"><b>10</b><span>Gameplan · Editie 01</span></div>
-</section>
-
-<!-- 11 · Jouw schakel -->
+  <div class="folio"><b>18</b><span>Gameplan · Editie 01</span></div></section>
 <section class="pg r zwart">
   <div class="kicker">De keten</div>
   <h2>Of een aanvraag klant wordt, bepaal jij.</h2>
@@ -345,10 +434,7 @@ td:first-child{color:var(--tx2)}
     <div class="cijfer"><div class="n" style="font-size:40pt">23%</div><div class="t">van de bedrijven reageerde in hetzelfde onderzoek nooit op een aanvraag.</div></div>
     <div class="cijfer"><div class="n" style="font-size:40pt">42 uur</div><div class="t">was de gemiddelde reactietijd van wie wel reageerde.</div></div>
   </div>
-  <div class="folio"><span>Gameplan · Editie 01</span><b>11</b></div>
-</section>
-
-<!-- 12 · Stoppen met posten -->
+  <div class="folio"><span>Gameplan · Editie 01</span><b>19</b></div></section>
 <section class="pg l blauw">
   <div class="kicker">Social media</div>
   <h2 style="font-size:52pt;margin-top:14mm">We stoppen met posten.</h2>
@@ -358,10 +444,7 @@ td:first-child{color:var(--tx2)}
     <div class="cijfer"><div class="n">1–3%</div><div class="t">van je volgers ziet gemiddeld een bericht van je bedrijfspagina. Bij kleine pagina’s 4 tot 7 procent.</div><div class="b">Socialinsider, Social Media Benchmarks 2026 · 872.075 berichten</div></div>
     <div class="cijfer"><div class="n">0</div><div class="t">nieuwe mensen bereik je met een bericht dat alleen naar je eigen volgers gaat.</div></div>
   </div>
-  <div class="folio"><b>12</b><span>Gameplan · Editie 01</span></div>
-</section>
-
-<!-- 13 · € 1.000 -->
+  <div class="folio"><b>20</b><span>Gameplan · Editie 01</span></div></section>
 <section class="pg r">
   <div class="kicker">Social media</div>
   <h2>Wat € 1.000 per maand oplevert.</h2>
@@ -382,11 +465,95 @@ td:first-child{color:var(--tx2)}
     <p class="klein" style="margin-top:4mm">Wat in die laatste regel staat, is je markt op dat kanaal.</p>
   </div>
   <p class="klein" style="margin-top:5mm">Wil je zelf blijven posten? Dan kunnen we sjablonen of een contentsessie leveren, als eigen project. Het beeld uit je lopende campagnes plaatsen we ook op je eigen kanalen, zodat je profiel klopt met wat mensen in de advertentie zagen.</p>
-  <div class="folio"><span>Gameplan · Editie 01</span><b>13</b></div>
-</section>
-
-<!-- 14 · Plan -->
+  <div class="folio"><span>Gameplan · Editie 01</span><b>21</b></div></section>
 <section class="pg l">
+<div class="kicker">Voor wie we werken</div>
+<h2>Ondernemers in Limburg en daarbuiten.</h2>
+<p class="intro">Van wijnhandel tot makelaar, van garage tot zorgpraktijk. Wat ze gemeen hebben: ze willen dat marketing zich terugverdient.</p>
+<div class="logos"><div><b>Thiessen Wijnkoopers</b></div><div><b>[logo]</b><span>met toestemming</span></div><div><b>[logo]</b><span>met toestemming</span></div><div><b>[logo]</b><span>met toestemming</span></div><div><b>[logo]</b><span>met toestemming</span></div><div><b>[logo]</b><span>met toestemming</span></div><div><b>[logo]</b><span>met toestemming</span></div><div><b>[logo]</b><span>met toestemming</span></div><div><b>[logo]</b><span>met toestemming</span></div><div><b>[logo]</b><span>met toestemming</span></div><div><b>[logo]</b><span>met toestemming</span></div><div><b>[logo]</b><span>met toestemming</span></div><div><b>[logo]</b><span>met toestemming</span></div><div><b>[logo]</b><span>met toestemming</span></div><div><b>[logo]</b><span>met toestemming</span></div><div><b>[logo]</b><span>met toestemming</span></div></div>
+<div class="branches"><span>Horeca</span><span>Makelaardij</span><span>Automotive</span><span>Retail</span><span>Zakelijke dienstverlening</span><span>Zorg</span><span>Overheid</span><span>Sport en vrije tijd</span></div><div class="folio"><b>22</b><span>Gameplan · Editie 01</span></div></section>
+<section class="pg r grijs">
+<div class="kicker">Wat klanten zeggen</div>
+<h2>In hun eigen woorden.</h2>
+<div class="reviews"><div class="review" style="background:#fff"><div class="sterren">★★★★★</div><div class="q"><span class="vv">[letterlijke quote, met toestemming]</span></div><div class="w"><span class="vv">[naam]</span> · <span class="vv">[bedrijf, branche]</span></div></div><div class="review" style="background:#fff"><div class="sterren">★★★★★</div><div class="q"><span class="vv">[letterlijke quote, met toestemming]</span></div><div class="w"><span class="vv">[naam]</span> · <span class="vv">[bedrijf, branche]</span></div></div><div class="review" style="background:#fff"><div class="sterren">★★★★★</div><div class="q"><span class="vv">[letterlijke quote, met toestemming]</span></div><div class="w"><span class="vv">[naam]</span> · <span class="vv">[bedrijf, branche]</span></div></div><div class="review" style="background:#fff"><div class="sterren">★★★★★</div><div class="q"><span class="vv">[letterlijke quote, met toestemming]</span></div><div class="w"><span class="vv">[naam]</span> · <span class="vv">[bedrijf, branche]</span></div></div></div>
+<div class="cijfer" style="margin-top:10mm"><div class="n"><span class="vv">[4,9]</span></div><div class="t">gemiddeld op Google, uit <span class="vv">[aantal]</span> reviews.</div></div><div class="folio"><span>Gameplan · Editie 01</span><b>23</b></div></section>
+<section class="pg l"><div class="beeld" style="position:absolute;left:0;right:0;top:0;height:150mm"><span>Beeld: de klant, zijn zaak of zijn product</span></div>
+<div style="margin-top:138mm">
+  <div class="case-kop"><span class="chip">Case 1</span><span class="chip"><span class="vv">[branche]</span></span></div>
+  <h2 style="font-size:30pt"><span class="vv">[klantnaam]</span>: <span class="vv">[het resultaat in één zin]</span></h2>
+  <div class="saa">
+    <div><h3>De situatie</h3><p><span class="vv">[waar de klant stond, en wat het probleem kostte]</span></p></div>
+    <div><h3>Wat we deden</h3><p><span class="vv">[welke campagne, welke kanalen, wat we aan de landingspagina veranderden]</span></p></div>
+    <div><h3>Wat het opleverde</h3><p><span class="vv">[aanvragen, kosten per aanvraag, omzet]</span></p></div>
+  </div>
+</div><div class="folio"><b>24</b><span>Gameplan · Editie 01</span></div></section>
+<section class="pg r">
+<div class="kicker">Case 1</div>
+<div class="resultaten" style="grid-template-columns:1fr;gap:8mm;margin-top:8mm">
+  <div class="cijfer"><div class="n"><span class="vv">[+00]</span></div><div class="t">aanvragen per maand, van <span class="vv">[x]</span> naar <span class="vv">[y]</span></div></div>
+  <div class="cijfer"><div class="n"><span class="vv">[€ 00]</span></div><div class="t">per aanvraag, was <span class="vv">[€ x]</span></div></div>
+  <div class="cijfer"><div class="n"><span class="vv">[00]</span></div><div class="t">maanden tot het fundament zich terugverdiende</div></div>
+</div>
+<div class="kader" style="margin-top:10mm"><div class="quote" style="font-size:20pt"><span class="vv">[quote van de klant over het resultaat of de samenwerking]</span></div><p class="klein" style="margin-top:4mm"><span class="vv">[naam, functie, bedrijf]</span></p></div>
+<p class="klein" style="margin-top:6mm">Cijfers uit het marketingdashboard van de klant, met diens toestemming gedeeld.</p><div class="folio"><span>Gameplan · Editie 01</span><b>25</b></div></section>
+<section class="pg l"><div class="beeld" style="position:absolute;left:0;right:0;top:0;height:150mm"><span>Beeld: de klant, zijn zaak of zijn product</span></div>
+<div style="margin-top:138mm">
+  <div class="case-kop"><span class="chip">Case 2</span><span class="chip"><span class="vv">[branche]</span></span></div>
+  <h2 style="font-size:30pt"><span class="vv">[klantnaam]</span>: <span class="vv">[het resultaat in één zin]</span></h2>
+  <div class="saa">
+    <div><h3>De situatie</h3><p><span class="vv">[waar de klant stond, en wat het probleem kostte]</span></p></div>
+    <div><h3>Wat we deden</h3><p><span class="vv">[welke campagne, welke kanalen, wat we aan de landingspagina veranderden]</span></p></div>
+    <div><h3>Wat het opleverde</h3><p><span class="vv">[aanvragen, kosten per aanvraag, omzet]</span></p></div>
+  </div>
+</div><div class="folio"><b>26</b><span>Gameplan · Editie 01</span></div></section>
+<section class="pg r">
+<div class="kicker">Case 2</div>
+<div class="resultaten" style="grid-template-columns:1fr;gap:8mm;margin-top:8mm">
+  <div class="cijfer"><div class="n"><span class="vv">[+00]</span></div><div class="t">aanvragen per maand, van <span class="vv">[x]</span> naar <span class="vv">[y]</span></div></div>
+  <div class="cijfer"><div class="n"><span class="vv">[€ 00]</span></div><div class="t">per aanvraag, was <span class="vv">[€ x]</span></div></div>
+  <div class="cijfer"><div class="n"><span class="vv">[00]</span></div><div class="t">maanden tot het fundament zich terugverdiende</div></div>
+</div>
+<div class="kader" style="margin-top:10mm"><div class="quote" style="font-size:20pt"><span class="vv">[quote van de klant over het resultaat of de samenwerking]</span></div><p class="klein" style="margin-top:4mm"><span class="vv">[naam, functie, bedrijf]</span></p></div>
+<p class="klein" style="margin-top:6mm">Cijfers uit het marketingdashboard van de klant, met diens toestemming gedeeld.</p><div class="folio"><span>Gameplan · Editie 01</span><b>27</b></div></section>
+<section class="pg l blauw">
+<div style="position:absolute;left:21mm;right:23mm;top:90mm">
+  <div class="kicker">Deel 2</div>
+  <h2 style="font-size:58pt">Wat betekent dat voor jou?</h2>
+  <p class="intro" style="max-width:140mm">Je doel in cijfers, het plan, wat het kost, en wat we van elkaar afspreken.</p>
+</div><div class="folio"><b>28</b><span>Gameplan · Editie 01</span></div></section>
+<section class="pg r">
+<div class="kicker">Jouw doel in cijfers</div>
+<h2>We beginnen bij jouw doel. Niet bij ons pakket.</h2>
+<p class="intro">Wat mag marketing jou kosten? Dat rekenen we samen uit, met jouw getallen. Het pakket volgt daaruit.</p>
+<ol class="lijst">
+  <li><h3>1 · Hoeveel nieuwe klanten heb je nodig?</h3><p style="margin:0">De extra omzet die je wilt, gedeeld door wat een klant je per jaar oplevert.</p></li>
+  <li><h3>2 · Hoeveel aanvragen horen daarbij?</h3><p style="margin:0">Hoeveel van je aanvragen worden klant? Weet je het niet, dan rekenen we met een op de vijf.</p></li>
+  <li><h3>3 · Wat mag alle marketing samen kosten?</h3><p style="margin:0">Extra omzet keer je marge. Standaard verdient alles zich binnen twaalf maanden terug.</p></li>
+  <li><h3>4 · Wat blijft er over voor advertenties?</h3><p style="margin:0">Daar gaan het fundament, de maandelijkse samenwerking en de licenties af. De rest is je advertentiebudget, en dat bepaalt je pakket.</p></li>
+  <li><h3>5 · Wat mag een aanvraag kosten?</h3><p style="margin:0">Het advertentiebudget gedeeld door het aantal aanvragen. Dat is het plafond waarop we bieden.</p></li>
+</ol>
+<div class="doelregel" style="background:var(--blue);color:#fff;border-radius:4mm;padding:6mm;margin-top:6mm">
+  <p class="klein" style="color:rgba(255,255,255,.8);margin-bottom:2mm">Het eindigt in één zin die je kunt onthouden en narekenen. Uit het rekenvoorbeeld op de volgende pagina:</p>
+  <p class="d" style="font-size:16pt;margin:0;line-height:1.4">“10 extra aanvragen per maand, tegen maximaal € 187 per aanvraag aan advertenties, vanaf maand 4.”</p>
+</div><div class="folio"><span>Gameplan · Editie 01</span><b>29</b></div></section>
+<section class="pg l">
+  <div class="kicker">Waar je geld heen gaat</div>
+  <h2>Alles verdient zich terug. Anders beginnen we niet.</h2>
+  <p class="intro">Fundament, maandbedrag, licenties en advertenties samen verdienen zich terug binnen twaalf maanden. Wat na de vaste posten overblijft, is je advertentiebudget.</p>
+  <table class="som">
+    <tr><td>Extra omzet die je komend jaar wilt halen</td><td>€ 120.000</td></tr>
+    <tr><td>Brutomarge<small>Wat je overhoudt van elke euro omzet</small></td><td>× 30%</td></tr>
+    <tr><td>Terugverdiend binnen</td><td>× 12 maanden</td></tr>
+    <tr class="tot"><td>Wat alle marketing in jaar 1 mag kosten</td><td>€ 36.000</td></tr>
+    <tr><td>Het fundament<small>Eenmalig, in maand 1</small></td><td>− € 4.500</td></tr>
+    <tr><td>Starter, elf maanden<small>De samenwerking start altijd in maand 2</small></td><td>− € 11.000</td></tr>
+    <tr><td>Licenties, jaar 1<small>E-mail, cookiemelding, dashboard</small></td><td>− € 544</td></tr>
+    <tr class="tot"><td>Over voor advertenties</td><td>€ 19.956</td></tr>
+    <tr class="eind"><td>Per maand, elf maanden live</td><td>€ 1.814</td></tr>
+  </table>
+  <p class="klein" style="margin-top:4mm">Een rekenvoorbeeld: opdrachten van € 1.500, drie keer per jaar per klant, en een op de vier aanvragen wordt klant. Komt de som niet uit, dan zijn er drie uitwegen: een hoger doel, een langere terugverdientijd, of nee. Nooit goedkoper.</p>
+  <div class="folio"><b>30</b><span>Gameplan · Editie 01</span></div></section>
+<section class="pg r">
   <div class="kicker">Ons plan</div>
   <h2>Voor iedere klant hetzelfde plan.</h2>
   <p class="intro">Alleen de datums en het doel zijn van jou. De variatie komt pas als de eerste resultaten er zijn.</p>
@@ -398,11 +565,8 @@ td:first-child{color:var(--tx2)}
   </div>
   <div class="beeld" style="height:82mm;margin-top:10mm;border-radius:4mm"><span>Beeld: draaidag bij een klant op locatie</span></div>
   <p class="klein" style="margin-top:3mm">Stap 1 en 2 samen zijn het fundament. Vanaf stap 3 loopt de maandelijkse samenwerking, altijd vanaf maand 2.</p>
-  <div class="folio"><b>14</b><span>Gameplan · Editie 01</span></div>
-</section>
-
-<!-- 15 · Maand 4 -->
-<section class="pg r">
+  <div class="folio"><span>Gameplan · Editie 01</span><b>31</b></div></section>
+<section class="pg l">
   <div class="kicker">Ons plan</div>
   <h2>Waarom je doel pas vanaf maand 4 geldt.</h2>
   <div class="maanden"><div class="f">1</div><div class="le">2</div><div class="le">3</div><div class="d">4</div><div class="d">5</div><div class="d">6</div><div class="d">7</div><div class="d">8</div><div class="d">9</div><div class="d">10</div><div class="d">11</div><div class="d">12</div></div>
@@ -413,11 +577,65 @@ td:first-child{color:var(--tx2)}
     <p>Wie het jaardoel vanaf dag één belooft, staat in maand drie achter op een schema dat nooit klopte. Wij beloven het niet. We spreken af wat het doel is vanaf maand 4, en daar houden we ons aan.</p>
   </div>
   <div class="cijfer" style="margin-top:8mm"><div class="n">±50</div><div class="t" style="max-width:130mm">resultaten per advertentieset in een week, zegt Meta, voordat de leerfase voorbij is. Google spreekt van ongeveer vijftig conversies of drie conversiecycli.</div><div class="b">Meta Business Help Center, About the learning phase · Google Ads Help, Duration of the learning period</div></div>
-  <div class="folio"><span>Gameplan · Editie 01</span><b>15</b></div>
-</section>
-
-<!-- 16 · Wat we doen en wat niet -->
+  <div class="folio"><b>32</b><span>Gameplan · Editie 01</span></div></section>
+<section class="pg r">
+<div class="kicker">Het fundament, dag voor dag</div>
+<h2>Van handtekening tot live in vier weken.</h2>
+<p class="intro">De klok start zodra alle toegangen binnen zijn. Elke dag dat we op een toegang of akkoord wachten, schuift alles op.</p>
+<table class="som" style="font-size:9.5pt">
+  <tr><td><b>Binnen 3 werkdagen</b><small>na het tekenen</small></td><td style="text-align:left;font-weight:400">Onboardingformulier en alle toegangen, in één sessie van 45 minuten</td></tr>
+  <tr><td><b>Dag 1</b></td><td style="text-align:left;font-weight:400">De klok start. Wij beginnen met de technische check</td></tr>
+  <tr><td><b>Dag 2 tot 4</b></td><td style="text-align:left;font-weight:400">Doelgroep, boodschap en zoekwoorden</td></tr>
+  <tr><td><b>Dag 4</b></td><td style="text-align:left;font-weight:400">Wat technisch niet deugt, met wat herstel kost. Jij beslist</td></tr>
+  <tr><td><b>Dag 5 tot 10</b></td><td style="text-align:left;font-weight:400">Advertentieaccounts, e-mail, je dashboard en de meting</td></tr>
+  <tr><td><b>Dag 10 tot 16</b></td><td style="text-align:left;font-weight:400">Campagne en landingspagina bouwen</td></tr>
+  <tr><td><b>Week 3 of 4</b></td><td style="text-align:left;font-weight:400">De draaidag bij jou op locatie</td></tr>
+  <tr class="tot"><td>Dag 19</td><td style="text-align:left">Live</td></tr>
+  <tr><td><b>Dag 26</b></td><td style="text-align:left;font-weight:400">De eerste cijfers</td></tr>
+</table><div class="folio"><span>Gameplan · Editie 01</span><b>33</b></div></section>
 <section class="pg l">
+<div class="kicker">Het fundament</div>
+<h2>Eén keer goed neerzetten.</h2>
+<div style="display:flex;align-items:baseline;gap:3mm;margin:2mm 0 6mm"><div class="prijs">€ 4.500</div><span class="klein">eenmalig, bij ondertekening</span></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:4mm">
+  <div class="deel"><div class="pct">Deel 1 · De basis</div><ul class="lijst"><li>Doelgroep, boodschap en concurrenten</li><li>Technische check en meting</li><li>Advertentieaccounts op jouw naam</li><li>E-mail met je contacten</li><li>Je marketingdashboard</li><li>De nulmeting</li></ul></div>
+  <div class="deel b"><div class="pct">Deel 2 · Je eerste campagne</div><ul class="lijst"><li>Zoekwoorden, structuur, advertenties</li><li>Een landingspagina met formulier</li><li>Een dagdeel filmen bij jou</li><li>Montage in drie formaten, plus foto’s</li><li>Livegang, testaanvraag, eerste week dagelijks</li></ul></div>
+</div>
+<p style="margin-top:6mm"><b>Niet los verkrijgbaar.</b> De basis zonder campagne is een stopcontact zonder apparaat. Een campagne zonder basis levert aanvragen op die je niet kunt meten of verbeteren.</p>
+<p class="klein">Een dag filmen kost bij een extern bureau al snel € 1.500. Het fundament krijg je na de start niet terug: dat werk is gedaan.</p><div class="folio"><b>34</b><span>Gameplan · Editie 01</span></div></section>
+<section class="pg r">
+<div class="kicker">De pakketten</div>
+<h2>Iedereen krijgt hetzelfde werk. Het pakket bepaalt hoeveel.</h2>
+<p class="intro">Welk pakket bij je past, volgt uit je rekensom. De namen komen uit de sport.</p>
+<div class="pakketten"><div class="pakket"><div class="naam">Starter</div><div class="bedrag">€ 1.000</div><div class="pm">per maand</div><ul><li><b>Campagnes tegelijk</b>1</li><li><b>Advertentiebudget</b>€ 1.000 – 2.500</li><li><b>Contentrondes</b>elk kwartaal</li><li><b>Draaidagen</b>1 per jaar</li><li><b>Performance Review</b>elk kwartaal</li></ul></div><div class="pakket uit"><div class="naam">Playmaker</div><div class="bedrag">€ 1.500</div><div class="pm">per maand</div><ul><li><b>Campagnes tegelijk</b>2</li><li><b>Advertentiebudget</b>€ 2.500 – 5.000</li><li><b>Contentrondes</b>elke 2 maanden</li><li><b>Draaidagen</b>2 per jaar</li><li><b>Performance Review</b>elke 2 maanden</li></ul></div><div class="pakket"><div class="naam">Captain</div><div class="bedrag">€ 2.000</div><div class="pm">per maand</div><ul><li><b>Campagnes tegelijk</b>3</li><li><b>Advertentiebudget</b>€ 5.000 – 7.500</li><li><b>Contentrondes</b>maandelijks</li><li><b>Draaidagen</b>3 per jaar</li><li><b>Performance Review</b>maandelijks</li></ul></div><div class="pakket"><div class="naam">Champion</div><div class="bedrag">€ 2.500</div><div class="pm">per maand</div><ul><li><b>Campagnes tegelijk</b>4</li><li><b>Advertentiebudget</b>vanaf € 7.500</li><li><b>Contentrondes</b>2 per maand</li><li><b>Draaidagen</b>4 per jaar</li><li><b>Performance Review</b>maandelijks</li></ul></div></div>
+<div class="kol2" style="margin-top:7mm">
+  <p><b>Altijd vanaf maand 2.</b> De maandelijkse samenwerking start na het fundament. Het advertentiebudget betaal je rechtstreeks aan de platformen.</p>
+  <p><b>Het hoogste van twee telt:</b> campagnes of budget. Omhoog gaat per direct, omlaag per de eerste van de maand.</p>
+  <p><b>Eén campagne</b> is één aanbod, voor één doelgroep, met één landingspagina. Op Google en Meta samen is het nog steeds één campagne.</p>
+  <p><b>Liever één kanaal goed dan drie half.</b> Per kanaal minimaal € 500 per campagne per maand, op LinkedIn € 1.000.</p>
+</div><div class="folio"><span>Gameplan · Editie 01</span><b>35</b></div></section>
+<section class="pg l">
+<div class="kicker">Licenties en opties</div>
+<h2>Wat op jouw naam staat.</h2>
+<p class="intro">Alleen de maandelijkse samenwerking en het dashboard gaan naar ons. De rest staat op jouw naam en factureert de leverancier rechtstreeks.</p>
+<table>
+  <tr><th>Wat</th><th>Wanneer</th><th style="text-align:right">Bedrag</th></tr>
+  <tr><td style="color:var(--black)"><b>Marketingdashboard</b></td><td>Altijd. Blijft van jou als je stopt</td><td style="text-align:right">€ 25 p/m</td></tr>
+  <tr><td style="color:var(--black)"><b>E-mail (MailerLite)</b></td><td>Altijd, naar lijstgrootte</td><td style="text-align:right">€ 9,90 – 73 p/m</td></tr>
+  <tr><td style="color:var(--black)"><b>Cookiemelding</b></td><td>Altijd: zonder toestemming mag je niet meten</td><td style="text-align:right">€ 150 p/j</td></tr>
+  <tr><td style="color:var(--black)"><b>Klikfraudebescherming</b></td><td>Optioneel, jij beslist</td><td style="text-align:right">vanaf $ 99 p/m</td></tr>
+  <tr><td style="color:var(--black)"><b>Bezoekersherkenning (Leadinfo)</b></td><td>Optioneel, alleen zakelijk</td><td style="text-align:right">€ 69 – 179 p/m</td></tr>
+  <tr><td style="color:var(--black)"><b>Afsprakenplanner</b></td><td>Optioneel, per gebruiker</td><td style="text-align:right">€ 15 p/m</td></tr>
+  <tr><td style="color:var(--black)"><b>Hosting en onderhoud</b></td><td>Alleen als je overstapt; migratie is gratis</td><td style="text-align:right">€ 85 p/m</td></tr>
+</table>
+<h3 style="margin-top:8mm">Alleen als de quickscan het vindt</h3>
+<table>
+  <tr><td style="color:var(--black)">Snelheid van de site zelf</td><td style="text-align:right">€ 750</td></tr>
+  <tr><td style="color:var(--black)">Redirects en dode links</td><td style="text-align:right">€ 500</td></tr>
+  <tr><td style="color:var(--black)">E-mailauthenticatie</td><td style="text-align:right">€ 250</td></tr>
+</table>
+<p class="klein" style="margin-top:3mm">Bij een gezonde website is dit allemaal nul. Meting, indexatie en je bedrijfsprofiel kosten nooit extra: dat zit in het fundament.</p><div class="folio"><b>36</b><span>Gameplan · Editie 01</span></div></section>
+<section class="pg r">
   <div class="kicker">De grens</div>
   <h2>Wat we doen, en wat niet.</h2>
   <p class="intro">Je mag elke marketingvraag bij ons neerleggen. Soms is het antwoord “dat doen wij”, soms “daarvoor moet je bij haar zijn”.</p>
@@ -435,53 +653,35 @@ td:first-child{color:var(--tx2)}
     <tr><td style="color:var(--black);font-weight:600">LinkedIn</td><td>Bereikt op functie, branche en bedrijfsgrootte</td><td>Zakelijk, duurder per klik</td></tr>
     <tr><td style="color:var(--black);font-weight:600">TikTok</td><td>Jonger publiek, met video</td><td>Als je doelgroep daar zit</td></tr>
   </table>
-  <div class="folio"><b>16</b><span>Gameplan · Editie 01</span></div>
-</section>
-
-<!-- 17 · Pakketten -->
-<section class="pg r grijs">
-  <div class="kicker">De pakketten</div>
-  <h2>Iedereen krijgt hetzelfde werk. Het pakket bepaalt hoeveel.</h2>
-  <p class="intro">De namen komen uit de sport, van invaller tot kampioen. Welk pakket bij je past, volgt uit de rekensom: uit jouw doel, niet uit wat wij willen verkopen.</p>
-  <table style="background:#fff;border-radius:4mm">
-    <tr><th style="padding-left:4mm"></th><th>Starter</th><th>Playmaker</th><th>Captain</th><th>Champion</th></tr>
-    <tr><td style="padding-left:4mm">Campagnes tegelijk</td><td>1</td><td>2</td><td>3</td><td>4</td></tr>
-    <tr><td style="padding-left:4mm">Advertentiebudget per maand</td><td>€ 1.000 – 2.500</td><td>€ 2.500 – 5.000</td><td>€ 5.000 – 7.500</td><td>vanaf € 7.500</td></tr>
-    <tr><td style="padding-left:4mm">Contentrondes</td><td>elk kwartaal</td><td>elke 2 maanden</td><td>maandelijks</td><td>2 per maand</td></tr>
-    <tr><td style="padding-left:4mm">Draaidagen per jaar</td><td>1</td><td>2</td><td>3</td><td>4</td></tr>
-    <tr><td style="padding-left:4mm;border:0">Performance Review</td><td style="border:0">elk kwartaal</td><td style="border:0">elke 2 maanden</td><td style="border:0">maandelijks</td><td style="border:0">maandelijks</td></tr>
-  </table>
-  <div class="kol2" style="margin-top:9mm">
-    <p><b>Eén campagne</b> is één aanbod, voor één doelgroep, met één doel en één landingspagina. Dezelfde campagne op Google en Meta is één campagne.</p>
-    <p><b>Eén contentronde</b> is een nieuwe set advertenties, beeld en tekst, om tegen de lopende te testen. Als dezelfde mensen een advertentie te vaak zien, lopen de kosten per resultaat op. Meta waarschuwt daar zelf voor.</p>
-    <p><b>Liever één kanaal goed dan drie half.</b> Per kanaal is minimaal € 500 per campagne per maand nodig, op LinkedIn € 1.000. Daarom kiezen wij de kanalen.</p>
-    <p><b>Wat het kost</b> staat in jouw voorstel en in onze tarievenlijst. Die is voor iedereen gelijk.</p>
-  </div>
-  <div class="folio"><span>Gameplan · Editie 01</span><b>17</b></div>
-</section>
-
-<!-- 18 · Geld -->
-<section class="pg l">
-  <div class="kicker">Waar je geld heen gaat</div>
-  <h2>Alles verdient zich terug. Anders beginnen we niet.</h2>
-  <p class="intro">Fundament, maandbedrag, licenties en advertenties samen verdienen zich terug binnen twaalf maanden. Wat na de vaste posten overblijft, is je advertentiebudget.</p>
-  <table class="som">
-    <tr><td>Extra omzet die je komend jaar wilt halen</td><td>€ 120.000</td></tr>
-    <tr><td>Brutomarge<small>Wat je overhoudt van elke euro omzet</small></td><td>× 30%</td></tr>
-    <tr><td>Terugverdiend binnen</td><td>× 12 maanden</td></tr>
-    <tr class="tot"><td>Wat alle marketing in jaar 1 mag kosten</td><td>€ 36.000</td></tr>
-    <tr><td>Het fundament<small>Eenmalig, in maand 1</small></td><td>− € 4.500</td></tr>
-    <tr><td>Starter, elf maanden<small>De samenwerking start altijd in maand 2</small></td><td>− € 11.000</td></tr>
-    <tr><td>Licenties, jaar 1<small>E-mail, cookiemelding, dashboard</small></td><td>− € 544</td></tr>
-    <tr class="tot"><td>Over voor advertenties</td><td>€ 19.956</td></tr>
-    <tr class="eind"><td>Per maand, elf maanden live</td><td>€ 1.814</td></tr>
-  </table>
-  <p class="klein" style="margin-top:4mm">Een rekenvoorbeeld: opdrachten van € 1.500, drie keer per jaar per klant, en een op de vier aanvragen wordt klant. Komt de som niet uit, dan zijn er drie uitwegen: een hoger doel, een langere terugverdientijd, of nee. Nooit goedkoper.</p>
-  <div class="folio"><b>18</b><span>Gameplan · Editie 01</span></div>
-</section>
-
-<!-- 19 · Geld 2 -->
+  <div class="folio"><span>Gameplan · Editie 01</span><b>37</b></div></section>
+<section class="pg l grijs">
+<div class="kicker">Partners</div>
+<h2>We kunnen je altijd helpen.</h2>
+<p class="intro">Zelf, of door je te koppelen aan de beste vakmensen in de regio. Jij hebt één aanspreekpunt, en je betaalt de specialist, niet ons bovenop de specialist.</p>
+<div class="partners">
+  <div style="background:#fff"><b>Webmix</b><span>Websites, hosting en onderhoud</span></div>
+  <div style="background:#fff"><b><span class="vv">[partner]</span></b><span><span class="vv">[design en branding]</span></span></div><div style="background:#fff"><b><span class="vv">[partner]</span></b><span><span class="vv">[fotografie]</span></span></div><div style="background:#fff"><b><span class="vv">[partner]</span></b><span><span class="vv">[drukwerk]</span></span></div><div style="background:#fff"><b><span class="vv">[partner]</span></b><span><span class="vv">[juridisch]</span></span></div><div style="background:#fff"><b><span class="vv">[partner]</span></b><span><span class="vv">[boekhouding]</span></span></div><div style="background:#fff"><b><span class="vv">[partner]</span></b><span><span class="vv">[video]</span></span></div><div style="background:#fff"><b><span class="vv">[partner]</span></b><span><span class="vv">[vacatures en werving]</span></span></div>
+  <div style="background:#fff"><b>En meer</b><span>Vraag het ons</span></div>
+</div>
+<div class="kader" style="margin-top:8mm;background:#fff"><h3>Nooit marge erbovenop</h3><p style="margin:0">Krijgen we van een partner een vergoeding voor het doorverwijzen, dan zeggen we dat erbij. Je betaalt nooit meer omdat het via ons loopt.</p></div><div class="folio"><b>38</b><span>Gameplan · Editie 01</span></div></section>
 <section class="pg r">
+<div class="kicker">Hoe we samenwerken</div>
+<h2>Radicaal transparant. Op een vaste plek.</h2>
+<div class="contact3">
+  <div><div class="klein">Voor alles</div><div class="groot">support@jamesrobinson.nl</div><p style="font-size:8.6pt;margin:0">Binnen één werkdag antwoord, van wie erover gaat. Iedereen die aan je werkt, leest mee.</p></div>
+  <div><div class="klein">Dringend</div><div class="groot">045 792 0009</div><p style="font-size:8.6pt;margin:0">Als je campagne of website eruit ligt, of er geld verloren gaat.</p></div>
+  <div><div class="klein">Altijd open</div><div class="groot">Je dashboard</div><p style="font-size:8.6pt;margin:0">Dezelfde cijfers als wij, elk uur bijgewerkt. Met elke aanvraag erin.</p></div>
+</div>
+<h3 style="margin-top:9mm">Het ritme</h3>
+<table>
+  <tr><td style="color:var(--black)"><b>Elke dag</b></td><td>Wij kijken mee. Wat afwijkt, pakken we op voordat jij het merkt</td></tr>
+  <tr><td style="color:var(--black)"><b>Elke maand</b></td><td>Een update in je dashboard: zitten we op je doel, wat deden we, wat doen we nu</td></tr>
+  <tr><td style="color:var(--black)"><b>Per pakket</b></td><td>De Performance Review: een uur, op ons kantoor of online, over resultaat</td></tr>
+  <tr><td style="color:var(--black)"><b>Na 100 dagen</b></td><td>Een eerlijke terugblik: werkt het, en wat moet anders</td></tr>
+  <tr><td style="color:var(--black)"><b>Elk jaar</b></td><td>Het jaargesprek: waar wil je volgend jaar staan</td></tr>
+</table>
+<p class="klein" style="margin-top:5mm">Waarom geen WhatsApp-groep? Een mail blijft openstaan tot iemand hem heeft afgehandeld. Een appje zakt weg.</p><div class="folio"><span>Gameplan · Editie 01</span><b>39</b></div></section>
+<section class="pg l">
   <div class="kicker">Waar je geld heen gaat</div>
   <h2>Drie dingen die je bij ons nooit ziet.</h2>
   <div class="drie" style="margin-top:6mm">
@@ -494,11 +694,8 @@ td:first-child{color:var(--tx2)}
     <div class="cijfer"><div class="n">100%</div><div class="t">op jouw naam. Advertentieaccounts, e-mail, licenties. Stop je, dan neem je alles mee.</div></div>
   </div>
   <div class="kader" style="margin-top:12mm"><h3>Waar het advertentiebudget heen gaat</h3><p style="margin:0">Rechtstreeks naar Google, Meta en de andere platformen, via jouw eigen accounts en jouw eigen betaalgegevens. Niet via ons. Je ziet elke euro terug.</p></div>
-  <div class="folio"><span>Gameplan · Editie 01</span><b>19</b></div>
-</section>
-
-<!-- 20-21 · Spelregels -->
-<section class="pg l">
+  <div class="folio"><b>40</b><span>Gameplan · Editie 01</span></div></section>
+<section class="pg r">
   <div class="kicker">De spelregels</div>
   <h2>Negen regels die altijd gelden.</h2>
   <p class="intro">Ook als het gesprek goed loopt. Juist dan.</p>
@@ -509,9 +706,8 @@ td:first-child{color:var(--tx2)}
     <div class="regel"><div class="n">4</div><div><h3>De 50%-regel</h3><p>Ons maandbedrag is nooit meer dan de helft van wat je aan marketing uitgeeft.</p></div></div>
     <div class="regel"><div class="n">5</div><div><h3>Nooit marge erbovenop</h3><p>Je betaalt de specialist, niet ons bovenop de specialist. Krijgen we een vergoeding van een leverancier, dan zeggen we dat erbij.</p></div></div>
   </div>
-  <div class="folio"><b>20</b><span>Gameplan · Editie 01</span></div>
-</section>
-<section class="pg r">
+  <div class="folio"><span>Gameplan · Editie 01</span><b>41</b></div></section>
+<section class="pg l">
   <div class="regels" style="grid-template-columns:1fr;margin-top:30mm">
     <div class="regel"><div class="n">6</div><div><h3>Niets gratis erbij</h3><p>Nooit iets “even doen omdat het klein is”. Kleine gunsten worden de norm, en dan betaalt een andere klant ervoor.</p></div></div>
     <div class="regel"><div class="n">7</div><div><h3>Altijd on-brand</h3><p>Elke uiting klopt met je merk, ook een snelle test. Geen bruikbaar merk? Dan leggen we kleur en typografie vast in het fundament.</p></div></div>
@@ -519,11 +715,8 @@ td:first-child{color:var(--tx2)}
     <div class="regel"><div class="n">9</div><div><h3>Alles op jouw naam</h3><p>Accounts, e-mail en licenties staan op jouw naam, met jouw betaalgegevens. Wij zijn beheerder. Nooit op onze naam, ook niet even.</p></div></div>
   </div>
   <div class="beeld" style="height:70mm;margin-top:12mm;border-radius:4mm"><span>Beeld: het team aan het werk, kantoor Hulsberg</span></div>
-  <div class="folio"><span>Gameplan · Editie 01</span><b>21</b></div>
-</section>
-
-<!-- 22 · Jouw kant -->
-<section class="pg l zwart">
+  <div class="folio"><b>42</b><span>Gameplan · Editie 01</span></div></section>
+<section class="pg r zwart">
   <div class="kicker">Jouw kant</div>
   <h2>Vier dingen die wij niet oplossen.</h2>
   <p class="intro">Je merk, je aanbod en prijs, je opvolging en je capaciteit. We meten ze wel, en we zeggen het als het daar zit.</p>
@@ -536,11 +729,8 @@ td:first-child{color:var(--tx2)}
     <div class="afspraak"><div class="n">4</div><div><b>Een oordeel per aanvraag</b><span>Met één klik in je dashboard: goede aanvraag of niet. En later: wie klant werd.</span></div></div>
     <div class="afspraak"><div class="n">5</div><div><b>Beeld en inhoud</b><span>Dagdelen om te filmen in week 3 en 4, en iemand die het werk doet op beeld.</span></div></div>
   </div>
-  <div class="folio"><b>22</b><span>Gameplan · Editie 01</span></div>
-</section>
-
-<!-- 23 · Hoe nu verder + bronnen -->
-<section class="pg r">
+  <div class="folio"><span>Gameplan · Editie 01</span><b>43</b></div></section>
+<section class="pg l">
   <div class="kicker">Hoe nu verder</div>
   <h2 style="font-size:28pt">Van eerste klik tot maand twaalf.</h2>
   <div class="fase">Verkopen · je betaalt niets</div>
@@ -558,14 +748,35 @@ td:first-child{color:var(--tx2)}
   </ul>
   <div class="fase">Samenwerken · maandelijks opzegbaar</div>
   <ul class="reis"><li><span class="n">08</span><b>Live, en elke maand beter</b><span>vanaf maand 2</span></li></ul>
-  <div class="bronnen" style="margin-top:7mm;border-top:.4mm solid var(--black);padding-top:3mm">
-    <p><b>Bronnen</b></p>
-    <p>p. 6 · Binet &amp; Field, The Long and the Short of It, IPA 2013; The 5 Principles of Growth in B2B Marketing, B2B Institute. p. 7 · Kohavi &amp; Thomke, The Surprising Power of Online Experiments, Harvard Business Review, september 2017. p. 9 · Deloitte Digital, Milliseconds Make Millions, in opdracht van Google, 2020. p. 11 · Oldroyd, McElheran &amp; Elkington, The Short Life of Online Sales Leads, Harvard Business Review, maart 2011. p. 12 · Socialinsider, Social Media Benchmarks 2026. p. 15 · Meta Business Help Center, About the learning phase; Google Ads Help, Duration of the learning period. p. 17 · Meta Business Help Center, Creative fatigue.</p>
-  </div>
-  <div class="folio"><span>Gameplan · Editie 01</span><b>23</b></div>
-</section>
-
-<!-- 24 · Achterkant -->
+  <div class="kader" style="margin-top:7mm;display:flex;gap:6mm;align-items:center"><div class="qr"></div><div><h3>Akkoord?</h3><p style="margin:0">Je voorstel met jouw cijfers en de offerte krijg je binnen drie werkdagen na het intakegesprek. Tekenen en betalen doe je online, dezelfde dag.</p></div></div>
+  <div class="folio"><b>44</b><span>Gameplan · Editie 01</span></div></section>
+<section class="pg r zwart"><div class="beeld" style="position:absolute;inset:0;align-items:flex-start;padding:20mm 21mm"><span>Beeld: een padelwedstrijd met klanten en team</span></div>
+<div style="position:absolute;left:21mm;right:23mm;bottom:30mm;z-index:2"><h2 style="font-size:52pt;color:#fff">Tot op de baan.</h2></div><div class="folio"><span>Gameplan · Editie 01</span><b>45</b></div></section>
+<section class="pg l">
+<div class="kicker">Padel</div>
+<h2>Je bent uitgenodigd.</h2>
+<p class="intro">Een paar keer per jaar spelen we padel met klanten en het team. Geen presentaties, geen verkooppraat. Gewoon een potje, en daarna een drankje.</p>
+<p>Je hoeft nog geen klant te zijn. Wil je meedoen met de volgende wedstrijd, meld je dan aan. Ook als je nog nooit gespeeld hebt.</p>
+<div style="display:flex;gap:8mm;align-items:center;margin-top:10mm">
+  <div class="qr"></div>
+  <div><div class="klein">Scan en meld je aan</div><div class="d" style="font-size:16pt"><span class="vv">[link of datum]</span></div><p class="klein" style="margin-top:2mm"><span class="vv">[waar we spelen]</span></p></div>
+</div><div class="folio"><b>46</b><span>Gameplan · Editie 01</span></div></section>
+<section class="pg r">
+<div class="kicker">Colofon en bronnen</div>
+<h2 style="font-size:24pt">Waar de cijfers vandaan komen.</h2>
+<div class="bronnen" style="font-size:8pt;margin-top:4mm">
+<p><b>Binet &amp; Field</b>, The Long and the Short of It, IPA 2013; The 5 Principles of Growth in B2B Marketing, B2B Institute.</p>
+<p><b>Kohavi &amp; Thomke</b>, The Surprising Power of Online Experiments, Harvard Business Review, september 2017.</p>
+<p><b>Deloitte Digital</b>, Milliseconds Make Millions, in opdracht van Google, 2020.</p>
+<p><b>Oldroyd, McElheran &amp; Elkington</b>, The Short Life of Online Sales Leads, Harvard Business Review, maart 2011.</p>
+<p><b>Socialinsider</b>, Social Media Benchmarks 2026.</p>
+<p><b>Meta Business Help Center</b>, About the learning phase; Creative fatigue. <b>Google Ads Help</b>, Duration of the learning period.</p>
+</div>
+<div style="position:absolute;left:23mm;right:21mm;bottom:28mm" class="klein">
+<p><b style="color:var(--black)">Gameplan</b> is het magazine van James Robinson, Marketing &amp; Branding, Hulsberg. Editie 01, najaar 2026.</p>
+<p>Alle bedragen zijn exclusief btw. Prijzen gelden voor deze editie; de actuele prijzen staan in je voorstel.</p>
+<p>Tekst en vormgeving: James Robinson. Fotografie: <span class="vv">[fotograaf]</span>. Druk: <span class="vv">[drukker]</span>.</p>
+</div><div class="folio"><span>Gameplan · Editie 01</span><b>47</b></div></section>
 <section class="pg l blauw">
   <div class="mast" style="font-size:64pt;margin-top:8mm">On top of<br>your game.</div>
   <div style="position:absolute;left:21mm;right:23mm;bottom:24mm">
