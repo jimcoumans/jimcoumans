@@ -232,6 +232,13 @@
       "when": 1791225950640,
       "tag": "0032_google_verbindingen",
       "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "7",
+      "when": 1791299472678,
+      "tag": "0033_briefing_verwerkingen",
+      "breakpoints": true
     }
   ]
 }

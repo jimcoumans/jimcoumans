@@ -48,7 +48,10 @@ import {
   terugNaarConcept,
   rondAf,
   wisCampagne,
+  draaiVerwerkingTerugActie,
 } from '../../campagne-actions'
+import { listVerwerkingen, type VerwerkingWeergave } from '@/lib/campagne-verwerken'
+import { FeedbackVerwerken } from '@/components/FeedbackVerwerken'
 import type { CampaignKpi, CampaignChannel } from '@/db/schema'
 import { formatBp, formatHonderdsten, formatAantal } from '@/lib/hypothese'
 import { formatDate, formatDateInput, formatDateLong } from '@/lib/dates'
@@ -77,7 +80,13 @@ export default async function CampagnePage({ params }: { params: Promise<{ id: s
 
   const c = v.campagne
   const org = v.organisatie
-  const [team, contacten, doelgroepen] = await Promise.all([listTeam(), listContacts(org.id), listDoelgroepen(org.id)])
+  const [team, contacten, doelgroepen, verwerkingen] = await Promise.all([
+    listTeam(),
+    listContacts(org.id),
+    listDoelgroepen(org.id),
+    listVerwerkingen(id),
+  ])
+  const verwerkingLoopt = verwerkingen.some((r) => (r.status === 'wacht' || r.status === 'bezig') && !r.vastgelopen)
 
   const gewijzigd = gewijzigdSindsVersie(v)
   const verborgen = <input type="hidden" name="campaignId" value={c.id} />
@@ -227,6 +236,34 @@ export default async function CampagnePage({ params }: { params: Promise<{ id: s
       </div>
 
       <div className="space-y-6">
+        {/* ------------------------- Feedback van de klant ------------------------- */}
+        {(c.status !== 'afgerond' || verwerkingen.length > 0) && (
+          <Kaart
+            titel="Feedback van de klant verwerken"
+            uitleg="Plak of upload wat de klant terugstuurde. De AI maakt er een nieuwe, schone briefing van: zonder sporen van wat er veranderde. Wat er veranderde en wat nog open staat, lees je hier, alleen intern."
+          >
+            <div className="grid items-start gap-8 xl:grid-cols-[1fr_1.2fr]">
+              {c.status !== 'afgerond' ? (
+                <FeedbackVerwerken campaignId={c.id} loopt={verwerkingLoopt} />
+              ) : (
+                <p className="text-sm text-gray-600">Afgerond: hier verwerken we geen feedback meer.</p>
+              )}
+              <div>
+                <h3 className="mb-3 text-sm font-semibold">Notities bij de verwerkingen</h3>
+                {verwerkingen.length === 0 ? (
+                  <p className="text-sm text-gray-500">Nog niets verwerkt.</p>
+                ) : (
+                  <ol className="space-y-4">
+                    {verwerkingen.map((r) => (
+                      <VerwerkingNotitie key={r.id} r={r} campaignId={c.id} />
+                    ))}
+                  </ol>
+                )}
+              </div>
+            </div>
+          </Kaart>
+        )}
+
         <div className="grid items-start gap-6 xl:grid-cols-2">
           {/* ---------------------------- Samenvatting ---------------------------- */}
           <Kaart
@@ -904,6 +941,77 @@ function Kaart({ nummer, titel, uitleg, children }: { nummer?: number; titel: st
       {uitleg && <p className="mt-1.5 max-w-2xl text-sm text-gray-600">{uitleg}</p>}
       <div className="mt-6">{children}</div>
     </section>
+  )
+}
+
+const VERWERKING_STATUS: Record<VerwerkingWeergave['status'], { label: string; stijl: string }> = {
+  wacht: { label: 'Wacht', stijl: 'bg-gray-200 text-gray-700' },
+  bezig: { label: 'Bezig', stijl: 'bg-jr-lightblue text-jr-deepblue' },
+  klaar: { label: 'Verwerkt', stijl: 'bg-jr-green/15 text-[#1d7a36]' },
+  fout: { label: 'Mislukt', stijl: 'bg-[#FDECEA] text-[#C02A22]' },
+  teruggedraaid: { label: 'Teruggedraaid', stijl: 'bg-gray-200 text-gray-700' },
+}
+
+function VerwerkingNotitie({ r, campaignId }: { r: VerwerkingWeergave; campaignId: string }) {
+  const status = r.vastgelopen ? { label: 'Vastgelopen', stijl: 'bg-[#FDECEA] text-[#C02A22]' } : VERWERKING_STATUS[r.status]
+  return (
+    <li className="rounded-lg border border-gray-200 p-4">
+      <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+        <p className="text-xs text-gray-600">
+          {formatDateLong(r.createdAt)} om {r.createdAt.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Amsterdam' })}
+          {r.door && <> &middot; {r.door}</>}
+          {r.bestandNaam && <> &middot; {r.bestandNaam}</>}
+        </p>
+        <span className={`rounded-full px-2.5 py-0.5 text-xs ${status.stijl}`}>{status.label}</span>
+      </div>
+      {(r.status === 'wacht' || r.status === 'bezig') && !r.vastgelopen && (
+        <p className="text-sm text-gray-600">De AI leest de feedback en schrijft de briefing opnieuw. Dit duurt meestal een à twee minuten.</p>
+      )}
+      {r.vastgelopen && <p className="text-sm text-[#C02A22]">Deze verwerking is nooit afgerond. De briefing is niet aangepast; probeer het opnieuw.</p>}
+      {r.status === 'fout' && r.fout && <p className="text-sm text-[#C02A22]">{r.fout} De briefing is niet aangepast.</p>}
+      {r.openVragen.length > 0 && r.status !== 'teruggedraaid' && (
+        <div className="border-jr-orange bg-jr-orange/10 mb-3 rounded border-l-4 p-3">
+          <p className="mb-1 text-xs font-semibold">Nog open</p>
+          <ul className="list-disc space-y-1 pl-4 text-sm">
+            {r.openVragen.map((v) => (
+              <li key={v}>{v}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {r.wijzigingen.length > 0 && (
+        <div className={r.status === 'teruggedraaid' ? 'opacity-60' : ''}>
+          <p className="mb-1 text-xs font-semibold">Wat er veranderde{r.status === 'teruggedraaid' && ' (teruggedraaid)'}</p>
+          <ul className="list-disc space-y-1 pl-4 text-sm text-gray-700">
+            {r.wijzigingen.map((w) => (
+              <li key={w}>{w}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {r.invoer && (
+        <details className="mt-3">
+          <summary className="text-jr-link cursor-pointer text-xs font-medium select-none hover:underline">Wat de klant schreef</summary>
+          <p className="mt-2 rounded bg-gray-50 p-3 text-sm whitespace-pre-wrap text-gray-700">{r.invoer}</p>
+        </details>
+      )}
+      {r.magTerug && (
+        <div className="mt-3">
+          <ActionForm
+            action={draaiVerwerkingTerugActie}
+            submitLabel="Draai terug"
+            submitClassName={KNOP_KLEIN}
+            resetOnSuccess={false}
+            meldGelukt={false}
+            bevestig
+            className=""
+          >
+            <input type="hidden" name="campaignId" value={campaignId} />
+            <input type="hidden" name="id" value={r.id} />
+          </ActionForm>
+        </div>
+      )}
+    </li>
   )
 }
 

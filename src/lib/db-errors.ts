@@ -374,6 +374,8 @@ export function describeDbError(error: unknown): string | null {
       return 'Een prijs kan niet negatief zijn. Laat hem leeg als er geen prijs bij hoort.'
     case 'timeline_description_not_empty':
       return 'Geef de regel in de tijdlijn een omschrijving.'
+    case 'verwerking_heeft_invoer':
+      return 'Plak de feedback van de klant of kies een bestand.'
     case 'audience_name_not_empty':
       return 'Geef de doelgroep een naam.'
     case 'campaign_contacts_campaign_id_contact_id_pk':

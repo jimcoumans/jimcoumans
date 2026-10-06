@@ -587,7 +587,7 @@ export async function verwijderCampagne(id: string): Promise<void> {
   await db.delete(campaigns).where(eq(campaigns.id, id))
 }
 
-function momentopname(v: CampagneVolledig) {
+export function momentopname(v: CampagneVolledig) {
   return JSON.parse(
     JSON.stringify({
       campagne: v.campagne,

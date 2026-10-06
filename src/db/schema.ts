@@ -3219,7 +3219,62 @@ export const campaignVersions = pgTable(
   (t) => [uniqueIndex('campaign_versions_idx').on(t.campaignId, t.version, t.status)],
 )
 
+/**
+ * Feedback van de klant op een briefing, door AI verwerkt tot een nieuwe,
+ * schone versie.
+ *
+ * De briefing zelf vermeldt nooit wat er veranderd is: de specialist moet
+ * één eindproduct lezen, niet de geschiedenis. Wat er veranderde en wat nog
+ * open staat, staat hier, als interne notitie. Met de momentopname van
+ * daarvoor kun je een verwerking terugdraaien.
+ */
+export const verwerkingStatusEnum = pgEnum('verwerking_status', [
+  'wacht', // aangemaakt, de achtergrondfunctie moet hem nog oppakken
+  'bezig', // de AI is aan het werk
+  'klaar', // verwerkt in de briefing
+  'fout', // mislukt; de briefing is niet aangeraakt
+  'teruggedraaid', // de briefing staat weer zoals hij daarvoor was
+])
+
+export const campaignVerwerkingen = pgTable(
+  'campaign_verwerkingen',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    campaignId: uuid('campaign_id')
+      .notNull()
+      .references(() => campaigns.id, { onDelete: 'cascade' }),
+    status: verwerkingStatusEnum('status').notNull().default('wacht'),
+    /** Wat de klant schreef: geplakt uit mail, WhatsApp of een gesprek. */
+    invoer: text('invoer'),
+    bestandNaam: text('bestand_naam'),
+    bestandType: text('bestand_type'),
+    /** Sleutel in de bestandsopslag. */
+    bestandSleutel: text('bestand_sleutel'),
+    /** Wat er in de briefing veranderde, kort per regel. Alleen intern. */
+    wijzigingen: text('wijzigingen').array().notNull().default(sql`ARRAY[]::text[]`),
+    /** Wat de feedback niet beantwoordt of wat tegenstrijdig is. */
+    openVragen: text('open_vragen').array().notNull().default(sql`ARRAY[]::text[]`),
+    /** De briefing zoals hij was vlak voor het verwerken. */
+    voor: jsonb('voor'),
+    fout: text('fout'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    gestartOp: timestamp('gestart_op', { withTimezone: true }),
+    klaarOp: timestamp('klaar_op', { withTimezone: true }),
+    createdByUserId: uuid('created_by_user_id').references(() => users.id, {
+      onDelete: 'set null',
+    }),
+  },
+  (t) => [
+    index('campaign_verwerkingen_campaign_idx').on(t.campaignId, t.createdAt),
+    check(
+      'verwerking_heeft_invoer',
+      sql`length(trim(coalesce(${t.invoer}, ''))) > 0 OR ${t.bestandSleutel} IS NOT NULL`,
+    ),
+  ],
+)
+
 export type Organization = typeof organizations.$inferSelect
+export type CampaignVerwerking = typeof campaignVerwerkingen.$inferSelect
 export type User = typeof users.$inferSelect
 export type Wallet = typeof wallets.$inferSelect
 export type LedgerEntry = typeof ledgerEntries.$inferSelect
