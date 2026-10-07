@@ -53,6 +53,7 @@ import {
 } from '../../campagne-actions'
 import { listVerwerkingen, type VerwerkingWeergave } from '@/lib/campagne-verwerken'
 import { FeedbackVerwerken } from '@/components/FeedbackVerwerken'
+import { PdfDownload } from '@/components/PdfDownload'
 import type { CampaignKpi, CampaignChannel } from '@/db/schema'
 import { formatBp, formatHonderdsten, formatAantal } from '@/lib/hypothese'
 import { formatDate, formatDateInput, formatDateLong } from '@/lib/dates'
@@ -192,8 +193,11 @@ export default async function CampagnePage({ params }: { params: Promise<{ id: s
 
           <div className="mt-4 border-t border-gray-100 pt-3">
             <a href={`/beheer/campagnes/${c.id}/briefing`} className="text-jr-blue text-sm hover:underline">
-              Bekijk, print of bewaar als pdf
+              Bekijk de briefing zoals de klant hem krijgt
             </a>
+            <div className="mt-3">
+              <PdfDownload href={`/api/campagnes/${c.id}/pdf`} rustig />
+            </div>
           </div>
         </section>
         <section className="rounded-xl bg-white p-6 shadow-sm">

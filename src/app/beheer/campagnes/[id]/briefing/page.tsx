@@ -4,6 +4,7 @@ import { getSessionUser } from '@/lib/auth'
 import { getCampagne } from '@/lib/campagnes'
 import { CampagneBriefing, versieLabel } from '@/components/CampagneBriefing'
 import { PrintKnop } from '@/components/PrintKnop'
+import { PdfDownload } from '@/components/PdfDownload'
 
 export const maxDuration = 26
 
@@ -36,7 +37,8 @@ export default async function BriefingPage({ params }: { params: Promise<{ id: s
           <span className="text-xs text-gray-600">
             {v.campagne.version === 0 ? 'Nog niet verstuurd' : `Versie ${versieLabel(v.campagne.version)}`}
           </span>
-          <PrintKnop />
+          <PrintKnop label="Afdrukken" />
+          <PdfDownload href={`/api/campagnes/${id}/pdf`} />
         </div>
       </div>
       <div className="shadow-sm print:shadow-none">
