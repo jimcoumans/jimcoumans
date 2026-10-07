@@ -376,6 +376,8 @@ export function describeDbError(error: unknown): string | null {
       return 'Geef de regel in de tijdlijn een omschrijving.'
     case 'channel_live_period':
       return 'De einddatum van een deliverable ligt vóór de startdatum. Controleer allebei de datums.'
+    case 'client_forms_uitkomst_geldig':
+      return 'De uitkomst van een vragenlijst is groen, oranje, later of rood.'
     case 'verwerking_bron_geldig':
       return 'Een verwerking komt van de AI of uit een import.'
     case 'verwerking_heeft_invoer':

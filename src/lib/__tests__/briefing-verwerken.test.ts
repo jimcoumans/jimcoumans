@@ -309,3 +309,38 @@ test('na de daglimiet aan AI-verwerkingen weigert het portaal een nieuwe', async
   await assert.rejects(maakVerwerking({ campaignId: c!.id, invoer: 'Nog een', bestand: null, userId }), /24 uur/)
   await db.delete(campaigns).where(eq(campaigns.id, c!.id))
 })
+
+test('bedragen lezen zoals ze in een briefing staan', async () => {
+  const { bedragenIn } = await import('../campagne-verwerken')
+  assert.deepEqual(bedragenIn('Alles vol is € 21.200; diner € 82,50, all-in €115,- en € 1.900 advies'), [2_120_000, 8_250, 11_500, 190_000])
+})
+
+test('een oud bedrag dat na een prijswijziging blijft staan, wordt een vraag', async () => {
+  const { vindOudeBedragen } = await import('../campagne-verwerken')
+  const oud = nieuweBriefing()
+  oud.kpis = [{ label: 'Kerstdiner', datum: '', aantal: 80, prijs: '110' }]
+  oud.doel.kpiOpmerkingen = 'Alles vol is € 21.200 omzet.'
+  oud.aanbod.wat = 'Kerstdiner € 110 per persoon.'
+  const nieuw = nieuweBriefing()
+  nieuw.kpis = [{ label: 'Kerstdiner', datum: '', aantal: 60, prijs: '115' }]
+  nieuw.doel.kpiOpmerkingen = 'Alles vol is € 21.200 omzet. Samen € 6.900.'
+  nieuw.aanbod.wat = 'Kerstdiner all-in € 115, zonder arrangement € 82,50.'
+  // € 21.200 stond er al en volgt niet uit de nieuwe KPI's; € 6.900 en € 115 wel; € 82,50 komt uit de feedback.
+  assert.deepEqual(vindOudeBedragen(oud, nieuw, 'Diner € 82,50, all-in € 115'), ['€ 21.200 in de opmerkingen bij de KPI’s'])
+  // Zonder wijziging in de KPI's: geen vragen.
+  assert.deepEqual(vindOudeBedragen(oud, { ...nieuw, kpis: oud.kpis }, null), [])
+})
+
+test('een feedbackpunt zonder plek in de briefing wordt een open vraag', async () => {
+  const r = await maakVerwerking({ campaignId, invoer: 'Tweede kerstdag pas openen als eerste kerstdag vol is.', bestand: null, userId })
+  const model: Model = async () => ({
+    ...nieuweBriefing(),
+    dekking: [
+      { punt: 'Brunch € 47,50', verwerktIn: 'kpis, aanbod.wat' },
+      { punt: 'Tweede kerstdag pas openen als eerste kerstdag vol is', verwerktIn: '' },
+    ],
+  })
+  const uit = await voerVerwerkingUit(r.id, model)
+  assert.equal(uit?.status, 'klaar')
+  assert.ok(uit?.openVragen.includes('Niet in de briefing verwerkt: Tweede kerstdag pas openen als eerste kerstdag vol is'))
+})

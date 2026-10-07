@@ -3,12 +3,12 @@
  * er geen SVG-export beschikbaar is, is dit een nette benadering die op elke
  * achtergrond werkt en nooit vervormt.
  */
-export function Logo({ variant = 'dark' }: { variant?: 'dark' | 'light' }) {
+export function Logo({ variant = 'dark', onderschrift = 'Wallet' }: { variant?: 'dark' | 'light'; onderschrift?: string }) {
   const naam = variant === 'light' ? 'text-white' : 'text-jr-black'
   return (
     <span className="inline-flex items-baseline gap-2 leading-none">
       <span className={`text-lg font-bold tracking-tight ${naam}`}>James Robinson</span>
-      <span className="text-jr-blue text-sm font-normal">Wallet</span>
+      <span className="text-jr-blue text-sm font-normal">{onderschrift}</span>
     </span>
   )
 }

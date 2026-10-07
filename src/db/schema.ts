@@ -3295,7 +3295,62 @@ export const campaignVerwerkingen = pgTable(
   ],
 )
 
+/* -------------------------------------------------------------------------
+   Formulieren in het klantdossier.
+
+   De vragenlijst (01.1), de quickscan (02.1) en de vragenlijst van het
+   intakegesprek (03.2) als gegevens in plaats van losse pdf's. Elk formulier
+   hoort bij een klant en eventueel bij de deal waar het om draait. Een
+   afgerond formulier vinkt de mijlpaal in de klantreis af, zodat je ziet in
+   welke stap een klant zit.
+   ------------------------------------------------------------------------- */
+
+export const formulierSoortEnum = pgEnum('formulier_soort', ['vragenlijst', 'quickscan', 'intake'])
+
+export const formulierStatusEnum = pgEnum('formulier_status', [
+  'open', // aangemaakt, wordt ingevuld
+  'ingevuld', // afgerond; bij de vragenlijst ook beoordeeld
+  'vrijgegeven', // alleen de quickscan: het scanrapport mag naar de klant
+])
+
+export const clientForms = pgTable(
+  'client_forms',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    organizationId: uuid('organization_id')
+      .notNull()
+      .references(() => organizations.id, { onDelete: 'cascade' }),
+    dealId: uuid('deal_id').references(() => deals.id, { onDelete: 'set null' }),
+    soort: formulierSoortEnum('soort').notNull(),
+    status: formulierStatusEnum('status').notNull().default('open'),
+    antwoorden: jsonb('antwoorden').notNull().default(sql`'{}'::jsonb`),
+    /** Bij de vragenlijst: groen, oranje, later of rood (01.2). */
+    uitkomst: text('uitkomst'),
+    /**
+     * De link voor de klant is te herleiden uit het id, deze versie en een
+     * geheim op de server; er staat dus geen token in de database. Versie
+     * ophogen maakt een eerder verstuurde link ongeldig.
+     */
+    linkVersie: integer('link_versie').notNull().default(0),
+    linkVerlooptOp: timestamp('link_verloopt_op', { withTimezone: true }),
+    ingevuldOp: timestamp('ingevuld_op', { withTimezone: true }),
+    /** Door de klant zelf via de link, of door ons (aan de telefoon, aan tafel). */
+    ingevuldDoorKlant: boolean('ingevuld_door_klant').notNull().default(false),
+    vrijgegevenOp: timestamp('vrijgegeven_op', { withTimezone: true }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+    createdByUserId: uuid('created_by_user_id').references(() => users.id, { onDelete: 'set null' }),
+    updatedByUserId: uuid('updated_by_user_id').references(() => users.id, { onDelete: 'set null' }),
+  },
+  (t) => [
+    index('client_forms_org_idx').on(t.organizationId, t.createdAt),
+    index('client_forms_deal_idx').on(t.dealId),
+    check('client_forms_uitkomst_geldig', sql`${t.uitkomst} IS NULL OR ${t.uitkomst} IN ('groen', 'oranje', 'later', 'rood')`),
+  ],
+)
+
 export type Organization = typeof organizations.$inferSelect
+export type ClientForm = typeof clientForms.$inferSelect
 export type CampaignVerwerking = typeof campaignVerwerkingen.$inferSelect
 export type User = typeof users.$inferSelect
 export type Wallet = typeof wallets.$inferSelect
