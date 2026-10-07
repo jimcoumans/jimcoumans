@@ -37,7 +37,7 @@ export default async function VragenlijstPagina({ params }: { params: Promise<{ 
                 Vijftien korte vragen, zo’n vijf minuten. Schatten mag: een globaal getal is genoeg. Bij elke vraag over geld zeggen we waarom we hem stellen. Met je antwoorden kijken we naar je website en je markt voordat we elkaar spreken. Past het niet, dan hoor je dat direct, met de reden.
               </p>
             </header>
-            <PubliekeVragenlijst id={id} token={token} antwoorden={f.antwoorden as Antwoorden} />
+            <PubliekeVragenlijst id={id} token={token} antwoorden={f.antwoorden as Antwoorden} versie={f.updatedAt.toISOString()} />
           </>
         )}
       </div>

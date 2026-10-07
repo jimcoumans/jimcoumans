@@ -2,7 +2,6 @@
 
 import { dienInViaLink, antwoordenUitFormData, FormulierError } from '@/lib/formulieren'
 import type { Kleur } from '@/lib/formulieren/vragenlijst'
-import { beoordeel, type Antwoorden } from '@/lib/formulieren/vragenlijst'
 
 /* De vragenlijst insturen via de link. Een publiek endpoint: geen login, wel
    het token uit de link, en een lokveld dat een mens niet ziet. */
@@ -16,9 +15,8 @@ export async function dienIn(_vorige: Inzending, formData: FormData): Promise<In
   const token = String(formData.get('token') ?? '')
   try {
     const ruw = antwoordenUitFormData('vragenlijst', formData)
-    const kleur = await dienInViaLink(id, token, ruw)
-    const b = beoordeel(ruw as Antwoorden)
-    return { ok: true, kleur, redenen: b.redenen, voornaam: String(formData.get('voornaam') ?? '').trim() }
+    const b = await dienInViaLink(id, token, ruw)
+    return { ok: true, kleur: b.kleur, redenen: b.redenen, voornaam: String(formData.get('voornaam') ?? '').trim() }
   } catch (error) {
     if (error instanceof FormulierError) return { ok: false, error: error.message }
     console.error('[vragenlijst] insturen mislukt:', error)

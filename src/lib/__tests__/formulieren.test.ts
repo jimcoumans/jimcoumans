@@ -95,9 +95,9 @@ test('de klant vult in: beoordeeld, klantreis afgevinkt, op de tijdlijn, en maar
 
   await assert.rejects(dienInViaLink(f.id, token, { aanWie: 'Aan bedrijven' }), /Vul nog in/)
 
-  const kleur = await dienInViaLink(f.id, token, antwoorden)
+  const b = await dienInViaLink(f.id, token, antwoorden)
   // 2.400 × 1 × 30% × 1 jaar × 20% ("weet ik niet") = 144: groen.
-  assert.equal(kleur, 'groen')
+  assert.equal(b.kleur, 'groen')
   const opgeslagen = (await getFormulier(f.id))!
   assert.equal(opgeslagen.formulier.status, 'ingevuld')
   assert.equal(opgeslagen.formulier.ingevuldDoorKlant, true)
@@ -113,6 +113,18 @@ test('de klant vult in: beoordeeld, klantreis afgevinkt, op de tijdlijn, en maar
   assert.equal(org!.website, 'balance.example')
 
   await assert.rejects(dienInViaLink(f.id, token, antwoorden), FormulierError)
+})
+
+test('wij vullen in: een onleesbaar getal slaat niets op, afronden pas als het compleet is', async () => {
+  const f = await maakFormulier({ organizationId: orgId, soort: 'vragenlijst', userId })
+  await slaOp(f.id, { aanWie: 'Aan bedrijven', website: 'balance.example' }, userId)
+  await assert.rejects(slaOp(f.id, { aanWie: 'Aan particulieren', opdracht: 'ongeveer duizend' }, userId), /Niet opgeslagen\. Vraag 8/)
+  // Het eerder opgeslagene staat er nog: niets half overschreven.
+  assert.equal(((await getFormulier(f.id))!.formulier.antwoorden as Record<string, unknown>).aanWie, 'Aan bedrijven')
+  // Afronden met lege verplichte vragen: geen beoordeling, en het formulier blijft open.
+  await assert.rejects(rondAf(f.id, userId), /nog niet afgerond: zonder vraag 2, 3/)
+  assert.equal((await getFormulier(f.id))!.formulier.status, 'open')
+  assert.equal((await getFormulier(f.id))!.formulier.uitkomst, null)
 })
 
 test('de quickscan rondt pas af als hij compleet is, en de stopknop houdt het rapport tegen', async () => {

@@ -1,8 +1,9 @@
 'use client'
 
-import { useActionState, useEffect, useRef, useState } from 'react'
+import { startTransition, useActionState, useEffect, useRef, useState } from 'react'
 import type { ActionResult } from '@/app/beheer/actions'
 import { Paneel } from './Paneel'
+import { useConcept } from './useConcept'
 
 /**
  * Formulier rond een server action, dat de foutmelding van die action
@@ -11,6 +12,21 @@ import { Paneel } from './Paneel'
  * Zonder dit zou een mislukte boeking er stil uitzien alsof hij gelukt is,
  * en bij geld is stil falen het slechtste wat je kunt doen.
  */
+/** Een fout die de server niet netjes teruggaf: geen verbinding, of een nieuwe versie van het portaal. */
+function foutTekst(error: unknown): string {
+  const bericht = error instanceof Error ? error.message : ''
+  if (/server action/i.test(bericht)) {
+    return 'Het portaal is net bijgewerkt naar een nieuwe versie. Herlaad de pagina en klik nog eens op opslaan. Wat je invulde, staat er na het herladen nog.'
+  }
+  return 'Opslaan lukte niet: geen verbinding met het portaal. Wat je invulde, staat er nog. Probeer het zo nog eens.'
+}
+
+/** Next gebruikt fouten om door te sturen (redirect, notFound); die moeten door. */
+function isNextSignaal(error: unknown): boolean {
+  const digest = (error as { digest?: unknown } | null)?.digest
+  return typeof digest === 'string' && digest.startsWith('NEXT_')
+}
+
 /** Labels van acties die je niet terugdraait; die vragen eerst om bevestiging. */
 const ONOMKEERBAAR = /verwijder|^weg$|weghalen|wissen|stopzetten|ontkoppel|blokkeren|leegmaken/i
 
@@ -24,6 +40,7 @@ export function ActionForm({
   meldGelukt = true,
   bevestig,
   knopInRij = false,
+  concept,
 }: {
   action: (formData: FormData) => Promise<ActionResult>
   children: React.ReactNode
@@ -41,6 +58,13 @@ export function ActionForm({
   bevestig?: boolean
   /** De knop als laatste kolom op dezelfde regel, in een raster dat daar een kolom voor heeft. */
   knopInRij?: boolean
+  /**
+   * Bewaar wat er is ingevuld ook in de browser, tot het is opgeslagen. Voor
+   * lange formulieren: mislukt opslaan of herlaad je de pagina, dan staat het
+   * er nog. `versie` is wanneer het formulier op de server veranderde; een
+   * concept van een oudere versie wordt niet teruggezet.
+   */
+  concept?: { sleutel: string; versie: string }
 }) {
   const vragen = bevestig ?? ONOMKEERBAAR.test(submitLabel)
   const [zeker, setZeker] = useState(false)
@@ -50,36 +74,59 @@ export function ActionForm({
     return () => clearTimeout(t)
   }, [zeker])
 
-  const [state, formAction, bezig] = useActionState(
-    async (_prev: ActionResult | null, formData: FormData) => action(formData),
-    null,
-  )
+  const [state, formAction, bezig] = useActionState(async (_prev: ActionResult | null, formData: FormData): Promise<ActionResult> => {
+    try {
+      return await action(formData)
+    } catch (error) {
+      if (isNextSignaal(error)) throw error
+      console.error('[formulier] opslaan mislukt:', error)
+      return { ok: false, error: foutTekst(error) }
+    }
+  }, null)
 
   const gelukt = state?.ok === true
   const formulier = useRef<HTMLFormElement>(null)
 
-  // Laat een omringend paneel weten dat het gelukt is, zodat het kan sluiten.
-  useEffect(() => {
-    if (state?.ok) formulier.current?.dispatchEvent(new CustomEvent('actionform:gelukt', { bubbles: true }))
-  }, [state])
+  const { teruggezet, bewaar: bewaarConcept, gooiWeg } = useConcept(formulier, concept, state?.ok ? state : null)
 
   return (
     <form
       ref={formulier}
-      action={formAction}
+      onInput={concept ? bewaarConcept : undefined}
+      onChange={concept ? bewaarConcept : undefined}
       onSubmit={(e) => {
+        // Zelf versturen in plaats van via action={…}: dan zet React het formulier na
+        // afloop niet terug. Mislukt opslaan, dan blijft staan wat je invulde.
+        e.preventDefault()
         // Eerste klik: vragen. Tweede klik binnen vier seconden: uitvoeren.
-        if (!vragen) return
-        if (!zeker) {
-          e.preventDefault()
+        if (vragen && !zeker) {
           setZeker(true)
-        } else setZeker(false)
+          return
+        }
+        setZeker(false)
+        const submitter = (e.nativeEvent as SubmitEvent).submitter
+        const data = new FormData(e.currentTarget, submitter instanceof HTMLElement ? submitter : null)
+        startTransition(() => formAction(data))
       }}
       className={className}
       // Na een gelukte actie het formulier leegmaken, zodat je niet per
       // ongeluk dezelfde boeking twee keer verstuurt.
       key={resetOnSuccess && gelukt ? 'leeg' : 'ingevuld'}
     >
+      {teruggezet && !gelukt && (
+        <p className="col-span-full rounded-lg border-l-4 border-jr-orange bg-jr-orange/10 px-4 py-3 text-sm">
+          Wat je op {teruggezet.toLocaleString('nl-NL', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })} invulde maar nog niet
+          opsloeg, staat er weer in. Klik op {submitLabel.toLowerCase()} om het te bewaren.{' '}
+          <button
+            type="button"
+            className="text-jr-link font-medium hover:underline"
+            onClick={gooiWeg}
+          >
+            Weggooien
+          </button>
+        </p>
+      )}
+
       {children}
 
       {state?.ok === false && (

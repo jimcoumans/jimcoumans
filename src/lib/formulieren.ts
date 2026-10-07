@@ -4,7 +4,7 @@ import { db } from '@/db'
 import { clientForms, clientJourneyItems, contacts, deals, organizations } from '@/db/schema'
 import type { ClientForm } from '@/db/schema'
 import { createActivity } from './tijdlijn'
-import { VRAGEN, CONTACT, NOG_GEEN_WEBSITE, beoordeel, KLEUR_LABEL, type Antwoorden, type Kleur } from './formulieren/vragenlijst'
+import { VRAGEN, CONTACT, NOG_GEEN_WEBSITE, beoordeel, leesGetal, conversieTelt, ontbrekend, KLEUR_LABEL, type Antwoorden, type Beoordeling } from './formulieren/vragenlijst'
 import { PUNTEN, standVanScan, type ScanInvulling, type ScanKleur } from './formulieren/quickscan'
 import { INTAKE, ontbrekendInIntake } from './formulieren/intake'
 
@@ -205,8 +205,12 @@ export async function formulierViaLink(id: string, token: string): Promise<(Clie
 
 const kort = (w: unknown) => (typeof w === 'string' ? w.trim().slice(0, MAX_TEKST) : '')
 
-/** Alleen bekende vragen, alleen bestaande opties, nooit eindeloze tekst. */
-export function schoonVragenlijst(ruw: Record<string, unknown>): Antwoorden {
+/**
+ * Alleen bekende vragen, alleen bestaande opties, nooit eindeloze tekst.
+ * Een getal dat niet te lezen is of buiten het bereik valt, komt in `fouten`:
+ * stil weggooien zou betekenen dat een antwoord ongemerkt verdwijnt.
+ */
+export function schoonVragenlijst(ruw: Record<string, unknown>, fouten: string[] = []): Antwoorden {
   const uit: Antwoorden = {}
   for (const v of VRAGEN) {
     const w = ruw[v.id]
@@ -217,13 +221,19 @@ export function schoonVragenlijst(ruw: Record<string, unknown>): Antwoorden {
       const lijst = (Array.isArray(w) ? w : w === undefined ? [] : [w]).map(kort).filter((o) => v.opties.includes(o))
       uit[v.id] = [...new Set(lijst)]
     } else if (v.soort === 'getal') {
-      const t = kort(w).replace(/[€%\s.]/g, '').replace(',', '.')
-      const n = t === '' ? null : Number(t)
-      uit[v.id] = n !== null && Number.isFinite(n) && n >= (v.min ?? -Infinity) && n <= (v.max ?? Infinity) ? n : null
+      const t = typeof w === 'number' ? String(w) : kort(w)
+      const n = t === '' ? null : leesGetal(t)
+      if (t !== '' && n === null) fouten.push(`Vraag ${v.nr}: “${t}” is geen getal.`)
+      else if (n !== null && (n < (v.min ?? -Infinity) || n > (v.max ?? Infinity))) {
+        fouten.push(`Vraag ${v.nr}: kies een getal${v.max !== undefined ? ` van ${v.min ?? 0} tot ${v.max}` : ` vanaf ${v.min ?? 0}`}.`)
+      }
+      uit[v.id] = n !== null && n >= (v.min ?? -Infinity) && n <= (v.max ?? Infinity) ? n : null
     } else {
       uit[v.id] = kort(w)
     }
   }
+  // Nog geen aanvragen: een percentage daarvan bestaat niet. De rekensom neemt dan 20% aan.
+  if (!conversieTelt(uit)) uit.conversie = null
   uit.knelpuntAnders = kort(ruw.knelpuntAnders)
   for (const c of CONTACT) uit[c.id] = kort(ruw[c.id])
   return uit
@@ -292,7 +302,9 @@ async function vinkAf(organizationId: string, keys: string[], userId: string | n
 export async function slaOp(id: string, ruw: Record<string, unknown>, userId: string): Promise<ClientForm> {
   const [f] = await db.select().from(clientForms).where(eq(clientForms.id, id)).limit(1)
   if (!f) throw new FormulierError('Dit formulier bestaat niet meer.')
-  const antwoorden = schoon(f.soort, ruw)
+  const fouten: string[] = []
+  const antwoorden = f.soort === 'vragenlijst' ? schoonVragenlijst(ruw, fouten) : schoon(f.soort, ruw)
+  if (fouten.length > 0) throw new FormulierError(`Niet opgeslagen. ${fouten.join(' ')}`)
   const uitkomst = f.soort === 'vragenlijst' && f.status !== 'open' ? beoordeel(antwoorden as Antwoorden).kleur : f.uitkomst
   const [r] = await db
     .update(clientForms)
@@ -310,7 +322,7 @@ async function websiteOpKlantkaart(organizationId: string, a: Antwoorden) {
   if (org && !org.website) await db.update(organizations).set({ website: site, updatedAt: new Date() }).where(eq(organizations.id, organizationId))
 }
 
-async function rondVragenlijstAf(f: ClientForm, antwoorden: Antwoorden, userId: string | null, doorKlant: boolean): Promise<Kleur> {
+async function rondVragenlijstAf(f: ClientForm, antwoorden: Antwoorden, userId: string | null, doorKlant: boolean): Promise<Beoordeling> {
   const b = beoordeel(antwoorden)
   await db
     .update(clientForms)
@@ -333,21 +345,19 @@ async function rondVragenlijstAf(f: ClientForm, antwoorden: Antwoorden, userId: 
     body: [...b.redenen, b.maxPerAanvraag !== null ? `Mag per aanvraag kosten: € ${b.maxPerAanvraag.toLocaleString('nl-NL')}` : ''].filter(Boolean).join('\n'),
     userId,
   })
-  return b.kleur
+  return b
 }
 
 /** De klant vult de vragenlijst in via de link. Eén keer; daarna is hij van ons. */
-export async function dienInViaLink(id: string, token: string, ruw: Record<string, unknown>): Promise<Kleur> {
+export async function dienInViaLink(id: string, token: string, ruw: Record<string, unknown>): Promise<Beoordeling> {
   const f = await formulierViaLink(id, token)
   if (!f) throw new FormulierError('Deze link werkt niet meer. Vraag ons om een nieuwe.')
   if (f.status !== 'open') throw new FormulierError('Deze vragenlijst is al ingevuld. Dank je wel!')
-  const antwoorden = schoonVragenlijst(ruw)
-  const zonder = VRAGEN.filter((v) => v.id !== 'budgetGepland' && v.id !== 'perJaar' && v.id !== 'conversie' && v.id !== 'waaraan' && v.id !== 'knelpunt')
-    .filter((v) => {
-      const w = antwoorden[v.id]
-      return w === null || w === undefined || w === ''
-    })
-  if (zonder.length > 0) throw new FormulierError(`Vul nog in: vraag ${zonder.map((v) => v.nr).join(', ')}.`)
+  const fouten: string[] = []
+  const antwoorden = schoonVragenlijst(ruw, fouten)
+  const zonder = ontbrekend(antwoorden)
+  if (zonder.length > 0) fouten.unshift(`Vul nog in: vraag ${zonder.map((v) => v.nr).join(', ')}.`)
+  if (fouten.length > 0) throw new FormulierError(fouten.join(' '))
   return rondVragenlijstAf(f, antwoorden, null, true)
 }
 
@@ -359,7 +369,12 @@ export async function rondAf(id: string, userId: string): Promise<void> {
   const a = f.antwoorden as Record<string, unknown>
 
   if (f.soort === 'vragenlijst') {
-    await rondVragenlijstAf(f, schoonVragenlijst(a), userId, false)
+    const antwoorden = schoonVragenlijst(a)
+    const zonder = ontbrekend(antwoorden)
+    if (zonder.length > 0) {
+      throw new FormulierError(`Opgeslagen, maar nog niet afgerond: zonder vraag ${zonder.map((v) => v.nr).join(', ')} is er geen beoordeling. Vul die in en rond dan af.`)
+    }
+    await rondVragenlijstAf(f, antwoorden, userId, false)
     return
   }
   if (f.soort === 'quickscan') {
