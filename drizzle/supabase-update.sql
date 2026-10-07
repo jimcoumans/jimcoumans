@@ -2428,3 +2428,23 @@ BEGIN
   END IF;
 END $jr_0036_formulieren$;
 
+-- ---------------------------------------------------------------------------
+-- 0037_contract_blijft_bij_wissen
+-- ---------------------------------------------------------------------------
+
+DO $jr_0037_contract_blijft_bij_wissen$
+BEGIN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = '2684693ad2feb215abcf9b44ea20801fa2318bd4145b1c5aa1c4b30ebdbb68a5') THEN
+    RAISE NOTICE 'Overgeslagen: 0037_contract_blijft_bij_wissen stond er al.';
+  ELSE
+    ALTER TABLE "generated_contracts" DROP CONSTRAINT "generated_contracts_candidate_id_candidates_id_fk";
+
+
+    ALTER TABLE "generated_contracts" ADD CONSTRAINT "generated_contracts_candidate_id_candidates_id_fk" FOREIGN KEY ("candidate_id") REFERENCES "public"."candidates"("id") ON DELETE set null ON UPDATE no action;
+
+    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+    VALUES ('2684693ad2feb215abcf9b44ea20801fa2318bd4145b1c5aa1c4b30ebdbb68a5', 1791385529594);
+    RAISE NOTICE 'Toegepast: 0037_contract_blijft_bij_wissen.';
+  END IF;
+END $jr_0037_contract_blijft_bij_wissen$;
+

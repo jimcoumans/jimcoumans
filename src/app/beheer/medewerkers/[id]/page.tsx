@@ -126,6 +126,9 @@ export default async function MedewerkerPage({
             boekingen; wijzig je dat, dan is het een andere persoon. Dat doe je op de teamlijst.
           </p>
 
+          {!isBeheerder && !isZelf ? (
+            <p className="text-sm text-gray-600">Dit profiel houdt {lid.firstName ?? lid.name ?? 'je collega'} zelf bij, samen met een beheerder.</p>
+          ) : (
           <ActionForm
             action={bewerkMedewerkerprofiel}
             submitLabel="Opslaan"
@@ -228,41 +231,47 @@ export default async function MedewerkerPage({
               </p>
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-2">
-              <Field
-                label="In dienst"
-                name="indienst"
-                type="date"
-                defaultValue={lid.startedOn ? formatDateInput(lid.startedOn) : ''}
-              />
-              <Field
-                label="Uit dienst"
-                name="uitdienst"
-                type="date"
-                defaultValue={lid.endedOn ? formatDateInput(lid.endedOn) : ''}
-                hint="Alleen invullen als iemand vertrokken is."
-              />
-            </div>
+            {/* In en uit dienst, uren en notities horen bij het dienstverband: die zet een beheerder. */}
+            {isBeheerder && (
+              <>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <Field
+                    label="In dienst"
+                    name="indienst"
+                    type="date"
+                    defaultValue={lid.startedOn ? formatDateInput(lid.startedOn) : ''}
+                  />
+                  <Field
+                    label="Uit dienst"
+                    name="uitdienst"
+                    type="date"
+                    defaultValue={lid.endedOn ? formatDateInput(lid.endedOn) : ''}
+                    hint="Alleen invullen als iemand vertrokken is."
+                  />
+                </div>
 
-            <Field
-              label="Contracturen per week"
-              name="contracturen"
-              defaultValue={
-                lid.contractHoursPerWeekQuarters === null
-                  ? ''
-                  : String(lid.contractHoursPerWeekQuarters / 100).replace('.', ',')
-              }
-              placeholder="32"
-              hint="Halve uren mogen: 36,5."
-            />
+                <Field
+                  label="Contracturen per week"
+                  name="contracturen"
+                  defaultValue={
+                    lid.contractHoursPerWeekQuarters === null
+                      ? ''
+                      : String(lid.contractHoursPerWeekQuarters / 100).replace('.', ',')
+                  }
+                  placeholder="32"
+                  hint="Halve uren mogen: 36,5."
+                />
 
-            <TextArea
-              label="Notities"
-              name="notities"
-              defaultValue={lid.notes ?? ''}
-              placeholder="Afspraken, aandachtspunten, wat dan ook."
-            />
+                <TextArea
+                  label="Notities"
+                  name="notities"
+                  defaultValue={lid.notes ?? ''}
+                  placeholder="Afspraken, aandachtspunten, wat dan ook."
+                />
+              </>
+            )}
           </ActionForm>
+          )}
 
           <div className="mt-4 border-t border-gray-200 pt-4">
             <AfbeeldingKiezer

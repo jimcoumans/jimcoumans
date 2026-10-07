@@ -65,10 +65,15 @@ function datum(f: FormData, n: string): Date | null {
 }
 
 export async function bewerkMedewerkerprofiel(formData: FormData): Promise<ActionResult> {
-  await requireStaff()
+  const staff = await requireStaff()
 
   const userId = tekst(formData, 'userId')
   if (!userId) return { ok: false, error: 'Onbekende collega.' }
+  // Je eigen profiel houd je zelf bij; dat van een ander alleen als beheerder.
+  const beheerder = staff.role === 'admin'
+  if (!beheerder && userId !== staff.id) {
+    return { ok: false, error: 'Je kunt alleen je eigen profiel bijwerken. Vraag een beheerder om het profiel van een collega.' }
+  }
 
   const uren = tekst(formData, 'contracturen')
   const urenQuarters = uren === '' ? null : parseContractUren(uren)
@@ -101,10 +106,15 @@ export async function bewerkMedewerkerprofiel(formData: FormData): Promise<Actio
       birthDay: getal(formData, 'geboortedag'),
       birthMonth: getal(formData, 'geboortemaand'),
       birthYear: getal(formData, 'geboortejaar'),
-      startedOn: datum(formData, 'indienst'),
-      endedOn: datum(formData, 'uitdienst'),
-      contractHoursPerWeekQuarters: urenQuarters,
-      notes: tekst(formData, 'notities') || null,
+      // In en uit dienst, contracturen en notities horen bij het dienstverband: die zet een beheerder.
+      ...(beheerder
+        ? {
+            startedOn: datum(formData, 'indienst'),
+            endedOn: datum(formData, 'uitdienst'),
+            contractHoursPerWeekQuarters: urenQuarters,
+            notes: tekst(formData, 'notities') || null,
+          }
+        : {}),
     })
 
     revalidatePath('/beheer/medewerkers')

@@ -13,6 +13,7 @@ import { test, before, after } from 'node:test'
 import assert from 'node:assert/strict'
 import { eq, inArray } from 'drizzle-orm'
 import { db, client } from '../../db'
+import { wisKandidaten } from '../werving'
 import {
   jobProfiles,
   users,
@@ -97,9 +98,7 @@ before(async () => {
 })
 
 after(async () => {
-  if (gemaakteKandidaten.length > 0) {
-    await db.delete(candidates).where(inArray(candidates.id, gemaakteKandidaten))
-  }
+  await wisKandidaten(gemaakteKandidaten)
   if (gemaakteUsers.length > 0) {
     await db.delete(users).where(inArray(users.id, gemaakteUsers))
   }

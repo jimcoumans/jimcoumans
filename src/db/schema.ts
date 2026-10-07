@@ -2842,8 +2842,11 @@ export const generatedContracts = pgTable(
       onDelete: 'set null',
     }),
     /** Een concept voor een kandidaat, of een contract voor een collega. */
+    /* Set null, geen cascade: wist de bewaartermijn een aangenomen kandidaat,
+       dan blijft zijn contract staan (dat hangt dan aan de collega). Een
+       concept zonder collega wist wisVerlopenKandidaten zelf eerst. */
     candidateId: uuid('candidate_id').references(() => candidates.id, {
-      onDelete: 'cascade',
+      onDelete: 'set null',
     }),
     userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }),
 

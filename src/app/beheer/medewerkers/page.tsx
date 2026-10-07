@@ -80,6 +80,8 @@ export default async function MedewerkersPage() {
             </dd>
           </div>
         </dl>
+            {/* Wie er in het team zit, bepaalt een beheerder. */}
+            {isBeheerder && (
             <Paneel
               knop="+ Collega toevoegen"
               titel="Collega toevoegen"
@@ -118,6 +120,7 @@ export default async function MedewerkersPage() {
             </div>
           </ActionForm>
             </Paneel>
+            )}
       </div>
 
       {kosten && (
@@ -305,6 +308,7 @@ function Tabel({
             </div>
 
             <Menu>
+              {magAdminMaken && (
               <Paneel knop="Rol wijzigen" stijl="menu" titel={`Rol van ${lid.name ?? lid.email}`}>
                 <ActionForm action={wijzigMedewerker} submitLabel="Opslaan" resetOnSuccess={false}>
                   <input type="hidden" name="userId" value={lid.id} />
@@ -317,18 +321,15 @@ function Tabel({
                       { value: 'staff', label: 'Medewerker' },
                       { value: 'admin', label: 'Beheerder' },
                     ]}
-                    hint={
-                      magAdminMaken
-                        ? 'Alleen een beheerder kan abonnementen en medewerkers beheren.'
-                        : 'Alleen een beheerder kan iemand tot beheerder maken.'
-                    }
+                    hint="Een beheerder beheert ook abonnementen, het team, contracten en salarissen."
                   />
                 </ActionForm>
               </Paneel>
+              )}
               <a href={`/beheer/medewerkers/${lid.id}`} className="block w-full rounded-lg px-3 py-2 text-left text-sm text-jr-text hover:bg-gray-100">
                 Profiel openen
               </a>
-              {lid.id !== huidigeId && (
+              {magAdminMaken && lid.id !== huidigeId && (
                 <ActionForm
                   action={wisselMedewerkerToegang}
                   submitLabel={lid.disabledAt ? 'Toegang teruggeven' : 'Blokkeren'}

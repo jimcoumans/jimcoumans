@@ -214,6 +214,16 @@ export async function requireStaff(): Promise<SessionUser> {
   return user
 }
 
+/**
+ * Voor acties die alleen een beheerder mag. Null in plaats van een fout, zodat
+ * de actie een nette melding geeft: een server action is een publiek endpoint,
+ * dus de controle hoort in de actie zelf, niet alleen bij de knop.
+ */
+export async function alsBeheerder(): Promise<SessionUser | null> {
+  const user = await requireStaff()
+  return user.role === 'admin' ? user : null
+}
+
 export class UnauthorizedError extends Error {
   constructor() {
     super('Niet ingelogd')

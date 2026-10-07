@@ -1,6 +1,6 @@
 import { and, asc, count, desc, eq, inArray, isNull, lt, lte, or, sql } from 'drizzle-orm'
 import { db } from '@/db'
-import { candidates, vacancies, users } from '@/db/schema'
+import { candidates, vacancies, users, generatedContracts } from '@/db/schema'
 import type { Candidate, Vacancy } from '@/db/schema'
 import { volledigeNaam } from './namen'
 
@@ -630,9 +630,24 @@ export async function zetBewaartoestemming(
     .where(eq(candidates.id, kandidaatId))
 }
 
+/**
+ * Kandidaten wissen, met wat er aan hen hangt. Een contract dat nog niet aan
+ * een collega hangt (een concept, een pro forma), gaat mee: dat zijn
+ * persoonsgegevens van iemand die niet bij ons werkt. Een contract van een
+ * collega blijft staan; de verwijzing naar de kandidaat valt weg. De enige
+ * plek waar kandidaten verdwijnen, zodat geen pad dit vergeet.
+ */
+export async function wisKandidaten(ids: string[]): Promise<void> {
+  if (ids.length === 0) return
+  await db.transaction(async (tx) => {
+    await tx.delete(generatedContracts).where(and(inArray(generatedContracts.candidateId, ids), isNull(generatedContracts.userId)))
+    await tx.delete(candidates).where(inArray(candidates.id, ids))
+  })
+}
+
 /** Een kandidaat nu meteen wissen, op verzoek of omdat het klaar is. */
 export async function wisKandidaat(kandidaatId: string): Promise<void> {
-  await db.delete(candidates).where(eq(candidates.id, kandidaatId))
+  await wisKandidaten([kandidaatId])
 }
 
 /**
@@ -654,12 +669,7 @@ export async function wisVerlopenKandidaten(
 
   if (verlopen.length === 0) return { gewist: 0, namen: [] }
 
-  await db.delete(candidates).where(
-    inArray(
-      candidates.id,
-      verlopen.map((v) => v.id),
-    ),
-  )
+  await wisKandidaten(verlopen.map((v) => v.id))
 
   return { gewist: verlopen.length, namen: verlopen.map((v) => v.name) }
 }

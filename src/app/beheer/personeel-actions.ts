@@ -1,7 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { requireStaff } from '@/lib/auth'
+import { alsBeheerder } from '@/lib/auth'
 import { describeDbError } from '@/lib/db-errors'
 import { parseAmountToCents } from '@/lib/money'
 import { parseContractUren } from '@/lib/team'
@@ -29,13 +29,7 @@ import { vergeet } from '@/lib/cache'
    dat is geen kwestie van de knop verstoppen: elke actie controleert het zelf.
    ------------------------------------------------------------------------- */
 
-async function beheerder() {
-  const staff = await requireStaff()
-  if (staff.role !== 'admin') {
-    throw new PersoneelError('Alleen een beheerder kan het personeelsdossier bijwerken.')
-  }
-  return staff
-}
+const GEEN_RECHT: ActionResult = { ok: false, error: 'Alleen een beheerder kan het personeelsdossier bijwerken.' }
 
 async function veilig(fn: () => Promise<void>): Promise<ActionResult> {
   try {
@@ -82,7 +76,8 @@ const CONTRACT_TYPES: readonly EmploymentContract['type'][] = [
 ]
 
 export async function nieuwContract(formData: FormData): Promise<ActionResult> {
-  const staff = await beheerder()
+  const staff = await alsBeheerder()
+  if (!staff) return GEEN_RECHT
 
   const userId = tekst(formData, 'userId')
   if (!userId) return { ok: false, error: 'Onbekende collega.' }
@@ -116,7 +111,7 @@ export async function nieuwContract(formData: FormData): Promise<ActionResult> {
 }
 
 export async function wisContract(formData: FormData): Promise<ActionResult> {
-  await beheerder()
+  if (!(await alsBeheerder())) return GEEN_RECHT
   const id = tekst(formData, 'contractId')
   const userId = tekst(formData, 'userId')
   if (!id) return { ok: false, error: 'Onbekend contract.' }
@@ -130,7 +125,8 @@ export async function wisContract(formData: FormData): Promise<ActionResult> {
 /* --- Salaris ------------------------------------------------------------- */
 
 export async function nieuwSalaris(formData: FormData): Promise<ActionResult> {
-  const staff = await beheerder()
+  const staff = await alsBeheerder()
+  if (!staff) return GEEN_RECHT
 
   const userId = tekst(formData, 'userId')
   if (!userId) return { ok: false, error: 'Onbekende collega.' }
@@ -187,7 +183,7 @@ export async function nieuwSalaris(formData: FormData): Promise<ActionResult> {
 }
 
 export async function wisSalaris(formData: FormData): Promise<ActionResult> {
-  await beheerder()
+  if (!(await alsBeheerder())) return GEEN_RECHT
   const id = tekst(formData, 'salarisId')
   const userId = tekst(formData, 'userId')
   if (!id) return { ok: false, error: 'Onbekende salarisregel.' }
@@ -210,7 +206,8 @@ const DOSSIER_SOORTEN: readonly DossierEntry['kind'][] = [
 ]
 
 export async function nieuweDossierRegel(formData: FormData): Promise<ActionResult> {
-  const staff = await beheerder()
+  const staff = await alsBeheerder()
+  if (!staff) return GEEN_RECHT
 
   const userId = tekst(formData, 'userId')
   if (!userId) return { ok: false, error: 'Onbekende collega.' }
@@ -237,7 +234,7 @@ export async function nieuweDossierRegel(formData: FormData): Promise<ActionResu
 }
 
 export async function wisDossierRegel(formData: FormData): Promise<ActionResult> {
-  await beheerder()
+  if (!(await alsBeheerder())) return GEEN_RECHT
   const id = tekst(formData, 'regelId')
   const userId = tekst(formData, 'userId')
   if (!id) return { ok: false, error: 'Onbekende dossierregel.' }
@@ -260,7 +257,7 @@ const MIDDEL_SOORTEN: readonly CompanyAsset['kind'][] = [
 ]
 
 export async function nieuwMiddel(formData: FormData): Promise<ActionResult> {
-  await beheerder()
+  if (!(await alsBeheerder())) return GEEN_RECHT
 
   const userId = tekst(formData, 'userId')
   if (!userId) return { ok: false, error: 'Onbekende collega.' }
@@ -287,7 +284,7 @@ export async function nieuwMiddel(formData: FormData): Promise<ActionResult> {
 }
 
 export async function leverIn(formData: FormData): Promise<ActionResult> {
-  await beheerder()
+  if (!(await alsBeheerder())) return GEEN_RECHT
   const id = tekst(formData, 'middelId')
   const userId = tekst(formData, 'userId')
   if (!id) return { ok: false, error: 'Onbekend bedrijfsmiddel.' }
@@ -299,7 +296,7 @@ export async function leverIn(formData: FormData): Promise<ActionResult> {
 }
 
 export async function wisMiddel(formData: FormData): Promise<ActionResult> {
-  await beheerder()
+  if (!(await alsBeheerder())) return GEEN_RECHT
   const id = tekst(formData, 'middelId')
   const userId = tekst(formData, 'userId')
   if (!id) return { ok: false, error: 'Onbekend bedrijfsmiddel.' }

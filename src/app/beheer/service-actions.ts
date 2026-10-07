@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { eq } from 'drizzle-orm'
 import { db } from '@/db'
 import { services, users } from '@/db/schema'
-import { requireStaff, normalizeEmail } from '@/lib/auth'
+import { requireStaff, normalizeEmail, alsBeheerder } from '@/lib/auth'
 import { addServiceEntry, LedgerError } from '@/lib/ledger'
 import { createInvoiceWithTopup } from '@/lib/invoices'
 import { parseAmountToCents } from '@/lib/money'
@@ -286,14 +286,11 @@ export async function zetFactuurStatus(formData: FormData): Promise<ActionResult
 
 /** Collega toevoegen die in het beheer mag. */
 export async function nieuweMedewerker(formData: FormData): Promise<ActionResult> {
-  const staff = await requireStaff()
+  // Wie er in het team zit en wat die mag, bepaalt een beheerder. Anders kan
+  // iedere collega mensen toevoegen of een beheerder buitensluiten.
+  if (!(await alsBeheerder())) return { ok: false, error: 'Alleen een beheerder kan collega’s toevoegen.' }
 
-  // Alleen een beheerder mag nieuwe beheerders maken; anders kan iedereen
-  // met beheerrechten zichzelf tot admin promoveren.
   const rol = String(formData.get('rol') ?? 'staff')
-  if (rol === 'admin' && staff.role !== 'admin') {
-    return { ok: false, error: 'Alleen een beheerder kan een nieuwe beheerder toevoegen.' }
-  }
   if (rol !== 'staff' && rol !== 'admin') {
     return { ok: false, error: 'Kies een geldige rol.' }
   }
@@ -304,6 +301,12 @@ export async function nieuweMedewerker(formData: FormData): Promise<ActionResult
   }
 
   const naam = String(formData.get('naam') ?? '').trim()
+
+  // Een adres dat al bij een klant hoort, maken we niet stilletjes tot collega.
+  const [bestaand] = await db.select({ organizationId: users.organizationId, role: users.role }).from(users).where(eq(users.email, email)).limit(1)
+  if (bestaand && (bestaand.organizationId || bestaand.role === 'client')) {
+    return { ok: false, error: 'Dit e-mailadres hoort bij een klant. Gebruik voor een collega het werkadres.' }
+  }
 
   return veilig(async () => {
     await db
@@ -325,17 +328,14 @@ export async function nieuweMedewerker(formData: FormData): Promise<ActionResult
  * boekingen hangen. Een ander adres is een andere persoon, en die voeg je toe.
  */
 export async function wijzigMedewerker(formData: FormData): Promise<ActionResult> {
-  const staff = await requireStaff()
+  const staff = await alsBeheerder()
+  if (!staff) return { ok: false, error: 'Alleen een beheerder kan rollen wijzigen.' }
 
   const id = String(formData.get('userId') ?? '').trim()
   if (!id) return { ok: false, error: 'Onbekende collega.' }
 
   const rol = String(formData.get('rol') ?? 'staff')
   if (rol !== 'staff' && rol !== 'admin') return { ok: false, error: 'Kies een geldige rol.' }
-  if (rol === 'admin' && staff.role !== 'admin') {
-    return { ok: false, error: 'Alleen een beheerder kan iemand tot beheerder maken.' }
-  }
-
   // Jezelf degraderen kan de laatste beheerder buitensluiten.
   if (id === staff.id && rol !== 'admin' && staff.role === 'admin') {
     return {
@@ -356,7 +356,8 @@ export async function wijzigMedewerker(formData: FormData): Promise<ActionResult
 }
 
 export async function wisselMedewerkerToegang(formData: FormData): Promise<ActionResult> {
-  const staff = await requireStaff()
+  const staff = await alsBeheerder()
+  if (!staff) return { ok: false, error: 'Alleen een beheerder kan toegang intrekken of teruggeven.' }
 
   const userId = String(formData.get('userId') ?? '')
   const blokkeren = String(formData.get('blokkeren') ?? '') === '1'

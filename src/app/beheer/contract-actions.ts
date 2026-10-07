@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { requireStaff } from '@/lib/auth'
+import { alsBeheerder } from '@/lib/auth'
 import { describeDbError } from '@/lib/db-errors'
 import { parseAmountToCents } from '@/lib/money'
 import { vergeet } from '@/lib/cache'
@@ -20,8 +20,11 @@ import {
 import { berekenBeloning, getHuis } from '@/lib/salarishuis'
 import type { ActionResult } from './actions'
 
-/* Acties voor de contractgenerator. Elke actie begint met requireStaff():
-   een server action is een publiek endpoint. */
+/* Acties voor de contractgenerator. Alleen voor beheerders, net als de
+   pagina's: elke actie controleert het zelf, want een server action is een
+   publiek endpoint. */
+
+const GEEN_RECHT: ActionResult = { ok: false, error: 'Alleen een beheerder kan contracten opstellen en bijwerken.' }
 
 async function veilig(fn: () => Promise<void>, ook: string[] = []): Promise<ActionResult> {
   try {
@@ -67,7 +70,8 @@ function getal(formData: FormData, naam: string): number | null {
  * salarishuis niet meer met je contracten.
  */
 export async function nieuwContract(formData: FormData): Promise<ActionResult> {
-  const gebruiker = await requireStaff()
+  const gebruiker = await alsBeheerder()
+  if (!gebruiker) return GEEN_RECHT
 
   const kandidaatId = tekst(formData, 'kandidaatId') || null
   const collegaId = tekst(formData, 'collegaId') || null
@@ -204,7 +208,7 @@ export async function nieuwContract(formData: FormData): Promise<ActionResult> {
 }
 
 export async function contractDefinitief(formData: FormData): Promise<ActionResult> {
-  await requireStaff()
+  if (!(await alsBeheerder())) return GEEN_RECHT
   const contractId = tekst(formData, 'contractId')
   const collegaId = tekst(formData, 'collegaId')
   if (!contractId) return { ok: false, error: 'Onbekend contract.' }
@@ -222,7 +226,7 @@ export async function contractDefinitief(formData: FormData): Promise<ActionResu
 }
 
 export async function contractAangezegd(formData: FormData): Promise<ActionResult> {
-  await requireStaff()
+  if (!(await alsBeheerder())) return GEEN_RECHT
   const contractId = tekst(formData, 'contractId')
   if (!contractId) return { ok: false, error: 'Onbekend contract.' }
 

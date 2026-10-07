@@ -260,6 +260,13 @@
       "when": 1791354949607,
       "tag": "0036_formulieren",
       "breakpoints": true
+    },
+    {
+      "idx": 37,
+      "version": "7",
+      "when": 1791385529594,
+      "tag": "0037_contract_blijft_bij_wissen",
+      "breakpoints": true
     }
   ]
 }

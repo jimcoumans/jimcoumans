@@ -16,7 +16,7 @@ import { test, before, after, beforeEach } from 'node:test'
 import assert from 'node:assert/strict'
 import { eq, inArray } from 'drizzle-orm'
 import { db, client } from '../../db'
-import { candidates, vacancies, users } from '../../db/schema'
+import { candidates, vacancies, users, generatedContracts } from '../../db/schema'
 import {
   maakVacature,
   zetVacatureStatus,
@@ -185,6 +185,42 @@ test('de opruimtaak wist wat verlopen is en laat de rest staan', async () => {
   assert.ok(!ids.includes(oud.id), 'de verlopen kandidaat hoort echt weg te zijn')
   assert.ok(ids.includes(vers.id), 'net afgewezen blijft nog vier weken staan')
   assert.ok(ids.includes(lopend.id), 'een lopende procedure wordt nooit gewist')
+})
+
+test('de opruimtaak laat het contract van een aangenomen collega staan, en wist een los concept', async () => {
+  const aangenomen = await maakKandidaat({ name: 'Aangenomen Testman', vacancyId: vacatureId })
+  const concept = await maakKandidaat({ name: 'Concept Testman', vacancyId: vacatureId })
+  const contract = (candidateId: string, userId: string | null) => ({
+    candidateId,
+    userId,
+    employeeName: 'Contract Testman',
+    jobTitle: 'Tester',
+    contractType: 'bepaalde_tijd' as const,
+    startedOn: new Date('2026-01-01T12:00:00'),
+    endsOn: new Date('2026-12-31T12:00:00'),
+    durationMonths: 12,
+    probationMonths: 1,
+    hoursWeekQuarters: 3200,
+    grossMonthlyCents: 300_000,
+    body: 'x',
+  })
+  const [vanCollega] = await db.insert(generatedContracts).values(contract(aangenomen.id, collegaId)).returning()
+  const [los] = await db.insert(generatedContracts).values(contract(concept.id, null)).returning()
+
+  const langGeleden = dagenGeleden(60)
+  for (const k of [aangenomen, concept]) {
+    await zetKandidaatStatus(k.id, k === aangenomen ? 'aangenomen' : 'afgewezen', k === aangenomen ? null : 'Past niet')
+    await db.update(candidates).set({ closedOn: langGeleden, retentionUntil: bewaarTot(langGeleden, null) }).where(eq(candidates.id, k.id))
+  }
+  await wisVerlopenKandidaten()
+
+  const [blijft] = await db.select().from(generatedContracts).where(eq(generatedContracts.id, vanCollega!.id))
+  assert.ok(blijft, 'het contract van de collega blijft bestaan')
+  assert.equal(blijft!.candidateId, null)
+  assert.equal(blijft!.userId, collegaId)
+  const [weg] = await db.select().from(generatedContracts).where(eq(generatedContracts.id, los!.id))
+  assert.equal(weg, undefined, 'een concept zonder collega gaat mee')
+  await db.delete(generatedContracts).where(eq(generatedContracts.id, vanCollega!.id))
 })
 
 test('wissen is echt wissen en geen vlaggetje', async () => {
