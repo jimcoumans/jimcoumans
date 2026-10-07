@@ -38,6 +38,7 @@ import {
   raakAan,
 } from '@/lib/campagnes'
 import { zetCampagneInClickUp } from '@/lib/clickup/campagne'
+import { draaiVerwerkingTerug, VerwerkError } from '@/lib/campagne-verwerken'
 import type { ActionResult } from './actions'
 
 /* Acties voor campagnebriefings. Elke actie begint met requireStaff():
@@ -282,9 +283,12 @@ export async function wisKpi(formData: FormData): Promise<ActionResult> {
 
 function kanaalUit(formData: FormData) {
   return {
+    name: ofNull(formData, 'name'),
     kind: tekst(formData, 'kind'),
     quantity: ofNull(formData, 'quantity'),
     note: ofNull(formData, 'note'),
+    liveFrom: datum(formData, 'liveFrom'),
+    liveUntil: datum(formData, 'liveUntil'),
     status: (tekst(formData, 'status') === 'bestaat' ? 'bestaat' : 'maken') as 'bestaat' | 'maken',
   }
 }
@@ -476,4 +480,23 @@ export async function wisCampagne(formData: FormData): Promise<ActionResult> {
   const r = await veilig(id, () => verwijderCampagne(id), false)
   if (r.ok) redirect('/beheer/campagnes')
   return r
+}
+
+/** De laatste AI-verwerking terugdraaien: de briefing staat weer zoals hij daarvoor was. */
+export async function draaiVerwerkingTerugActie(formData: FormData): Promise<ActionResult> {
+  await requireStaff()
+  const campaignId = tekst(formData, 'campaignId')
+  const id = tekst(formData, 'id')
+  return veilig(
+    campaignId,
+    async () => {
+      try {
+        await draaiVerwerkingTerug(id)
+      } catch (error) {
+        if (error instanceof VerwerkError) throw new CampagneError(error.message)
+        throw error
+      }
+    },
+    false,
+  )
 }

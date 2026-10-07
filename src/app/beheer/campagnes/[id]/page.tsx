@@ -9,6 +9,7 @@ import {
   STATUS_STIJL,
   KANAAL_SOORTEN,
   TIJDLIJN_OMSCHRIJVINGEN,
+  livePeriode,
   type CampagneVolledig,
 } from '@/lib/campagnes'
 import { listContacts } from '@/lib/crm'
@@ -48,7 +49,10 @@ import {
   terugNaarConcept,
   rondAf,
   wisCampagne,
+  draaiVerwerkingTerugActie,
 } from '../../campagne-actions'
+import { listVerwerkingen, type VerwerkingWeergave } from '@/lib/campagne-verwerken'
+import { FeedbackVerwerken } from '@/components/FeedbackVerwerken'
 import type { CampaignKpi, CampaignChannel } from '@/db/schema'
 import { formatBp, formatHonderdsten, formatAantal } from '@/lib/hypothese'
 import { formatDate, formatDateInput, formatDateLong } from '@/lib/dates'
@@ -77,7 +81,13 @@ export default async function CampagnePage({ params }: { params: Promise<{ id: s
 
   const c = v.campagne
   const org = v.organisatie
-  const [team, contacten, doelgroepen] = await Promise.all([listTeam(), listContacts(org.id), listDoelgroepen(org.id)])
+  const [team, contacten, doelgroepen, verwerkingen] = await Promise.all([
+    listTeam(),
+    listContacts(org.id),
+    listDoelgroepen(org.id),
+    listVerwerkingen(id),
+  ])
+  const verwerkingLoopt = verwerkingen.some((r) => (r.status === 'wacht' || r.status === 'bezig') && !r.vastgelopen)
 
   const gewijzigd = gewijzigdSindsVersie(v)
   const verborgen = <input type="hidden" name="campaignId" value={c.id} />
@@ -227,6 +237,34 @@ export default async function CampagnePage({ params }: { params: Promise<{ id: s
       </div>
 
       <div className="space-y-6">
+        {/* ------------------------- Feedback van de klant ------------------------- */}
+        {(c.status !== 'afgerond' || verwerkingen.length > 0) && (
+          <Kaart
+            titel="Feedback van de klant verwerken"
+            uitleg="Plak of upload wat de klant terugstuurde. De AI maakt er een nieuwe, schone briefing van: zonder sporen van wat er veranderde. Wat er veranderde en wat nog open staat, lees je hier, alleen intern."
+          >
+            <div className="grid items-start gap-8 xl:grid-cols-[1fr_1.2fr]">
+              {c.status !== 'afgerond' ? (
+                <FeedbackVerwerken campaignId={c.id} loopt={verwerkingLoopt} />
+              ) : (
+                <p className="text-sm text-gray-600">Afgerond: hier verwerken we geen feedback meer.</p>
+              )}
+              <div>
+                <h3 className="mb-3 text-sm font-semibold">Notities bij de verwerkingen</h3>
+                {verwerkingen.length === 0 ? (
+                  <p className="text-sm text-gray-500">Nog niets verwerkt.</p>
+                ) : (
+                  <ol className="space-y-4">
+                    {verwerkingen.map((r) => (
+                      <VerwerkingNotitie key={r.id} r={r} campaignId={c.id} />
+                    ))}
+                  </ol>
+                )}
+              </div>
+            </div>
+          </Kaart>
+        )}
+
         <div className="grid items-start gap-6 xl:grid-cols-2">
           {/* ---------------------------- Samenvatting ---------------------------- */}
           <Kaart
@@ -517,24 +555,26 @@ export default async function CampagnePage({ params }: { params: Promise<{ id: s
             </div>
           </Kaart>
         </div>
-        {/* ---------------------------- 5 Kanalen ---------------------------- */}
+        {/* ---------------------------- 5 Deliverables ---------------------------- */}
         <Kaart
           nummer={5}
-          titel="Kanalen en content"
-          uitleg="Per regel: bestaat het al, of moet het nog gemaakt worden? Wat nog gemaakt moet worden, komt in de tijdlijn."
+          titel="Deliverables"
+          uitleg="Elke uiting een eigen regel met een eigen naam: Ad 1, Ad 2, Mailing 1, Post 1. Dus niet “3 mailings”, maar drie regels, elk met wat erin staat en wanneer hij live gaat. Wat nog gemaakt moet worden, komt in de tijdlijn."
         >
           {v.kanalen.length === 0 ? (
-            <p className="mb-3 text-sm text-gray-600">Nog geen kanalen.</p>
+            <p className="mb-3 text-sm text-gray-600">Nog geen deliverables.</p>
           ) : (
             <ul className="mb-3 divide-y divide-gray-200">
               {v.kanalen.map((k) => (
                 <Regel
-                  key={`${k.id}-${k.kind}-${k.quantity ?? ''}-${k.note ?? ''}-${k.status}`}
+                  key={`${k.id}-${k.name ?? ''}-${k.kind}-${k.quantity ?? ''}-${k.note ?? ''}-${k.liveFrom?.getTime() ?? ''}-${k.liveUntil?.getTime() ?? ''}-${k.status}`}
                   weergave={
                     <div className="text-[15px]">
-                      {k.kind}
-                      {k.quantity && <span className="text-gray-600"> · {k.quantity}</span>}
+                      <span className="font-medium">{k.name ?? k.kind}</span>
+                      {k.name && <span className="text-gray-600"> · {k.kind}</span>}
+                      {(k.liveFrom || k.liveUntil) && <span className="text-gray-600"> · {livePeriode(k)}</span>}
                       {k.note && <p className="text-xs text-gray-600">{k.note}</p>}
+                      {k.quantity && <p className="text-xs text-gray-500">Formaat: {k.quantity}</p>}
                     </div>
                   }
                   acties={
@@ -569,7 +609,7 @@ export default async function CampagnePage({ params }: { params: Promise<{ id: s
               <option key={s} value={s} />
             ))}
           </datalist>
-          <Uitklap label="Kanaal, middel of content toevoegen">
+          <Uitklap label="Deliverable toevoegen">
             <ActionForm action={nieuwKanaal} submitLabel="Toevoegen">
               {verborgen}
               <KanaalVelden />
@@ -599,7 +639,7 @@ export default async function CampagnePage({ params }: { params: Promise<{ id: s
             {c.clickupTaskId && <span className="text-xs text-gray-500">Staat in ClickUp als subtaken</span>}
           </div>
           {v.tijdlijn.length === 0 ? (
-            <p className="mt-1 mb-3 text-sm text-gray-500">Nog leeg. Laat een suggestie doen uit de data en de kanalen, en pas die aan.</p>
+            <p className="mt-1 mb-3 text-sm text-gray-500">Nog leeg. Laat een suggestie doen uit de data en de deliverables, en pas die aan.</p>
           ) : (
             <ul className="mt-2 mb-3 divide-y divide-gray-100">
               {v.tijdlijn.map((t) => (
@@ -854,27 +894,39 @@ function KpiVelden({ k }: { k?: CampaignKpi }) {
   )
 }
 
-/** De velden van een kanaal, middel of soort content. */
+/** De velden van een deliverable. */
 function KanaalVelden({ k }: { k?: CampaignChannel }) {
   const id = `kanaal-soort-${k?.id ?? 'nieuw'}`
   return (
     <>
-      <div>
-        <label htmlFor={id} className="text-jr-text mb-1.5 block text-[13px] font-medium">
-          Wat
-        </label>
-        <input
-          id={id}
-          name="kind"
-          list="kanaal-soorten"
-          required
-          placeholder="Kies of typ"
-          defaultValue={k?.kind ?? ''}
-          className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
-        />
-      </div>
       <div className="grid gap-3 sm:grid-cols-2">
-        <Field label="Aantal" name="quantity" placeholder="3" defaultValue={k?.quantity ?? ''} />
+        <Field label="Naam" name="name" placeholder="Ad 1 · Kerstbrunch" defaultValue={k?.name ?? ''} />
+        <div>
+          <label htmlFor={id} className="text-jr-text mb-1.5 block text-[13px] font-medium">
+            Kanaal
+          </label>
+          <input
+            id={id}
+            name="kind"
+            list="kanaal-soorten"
+            required
+            placeholder="Kies of typ"
+            defaultValue={k?.kind ?? ''}
+            className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
+          />
+        </div>
+      </div>
+      <TextArea label="Wat erin staat en voor wie" name="note" rows={2} defaultValue={k?.note ?? ''} />
+      <Field label="Formaat" name="quantity" placeholder="1:1, 4:5 en 9:16" defaultValue={k?.quantity ?? ''} />
+      <div className="grid gap-3 sm:grid-cols-3">
+        <Field
+          label="Live vanaf"
+          name="liveFrom"
+          type="date"
+          defaultValue={k?.liveFrom ? formatDateInput(k.liveFrom) : ''}
+          hint="Bij een mailing: de verzenddag."
+        />
+        <Field label="Live tot" name="liveUntil" type="date" defaultValue={k?.liveUntil ? formatDateInput(k.liveUntil) : ''} />
         <Select
           label="Status"
           name="status"
@@ -885,7 +937,6 @@ function KanaalVelden({ k }: { k?: CampaignChannel }) {
           ]}
         />
       </div>
-      <Field label="Toelichting" name="note" defaultValue={k?.note ?? ''} />
     </>
   )
 }
@@ -904,6 +955,77 @@ function Kaart({ nummer, titel, uitleg, children }: { nummer?: number; titel: st
       {uitleg && <p className="mt-1.5 max-w-2xl text-sm text-gray-600">{uitleg}</p>}
       <div className="mt-6">{children}</div>
     </section>
+  )
+}
+
+const VERWERKING_STATUS: Record<VerwerkingWeergave['status'], { label: string; stijl: string }> = {
+  wacht: { label: 'Wacht', stijl: 'bg-gray-200 text-gray-700' },
+  bezig: { label: 'Bezig', stijl: 'bg-jr-lightblue text-jr-deepblue' },
+  klaar: { label: 'Verwerkt', stijl: 'bg-jr-green/15 text-[#1d7a36]' },
+  fout: { label: 'Mislukt', stijl: 'bg-[#FDECEA] text-[#C02A22]' },
+  teruggedraaid: { label: 'Teruggedraaid', stijl: 'bg-gray-200 text-gray-700' },
+}
+
+function VerwerkingNotitie({ r, campaignId }: { r: VerwerkingWeergave; campaignId: string }) {
+  const status = r.vastgelopen ? { label: 'Vastgelopen', stijl: 'bg-[#FDECEA] text-[#C02A22]' } : VERWERKING_STATUS[r.status]
+  return (
+    <li className="rounded-lg border border-gray-200 p-4">
+      <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+        <p className="text-xs text-gray-600">
+          {formatDateLong(r.createdAt)} om {r.createdAt.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Amsterdam' })}
+          {r.door && <> &middot; {r.door}</>}
+          {r.bestandNaam && <> &middot; {r.bestandNaam}</>}
+        </p>
+        <span className={`rounded-full px-2.5 py-0.5 text-xs ${status.stijl}`}>{status.label}</span>
+      </div>
+      {(r.status === 'wacht' || r.status === 'bezig') && !r.vastgelopen && (
+        <p className="text-sm text-gray-600">De AI leest de feedback en schrijft de briefing opnieuw. Dit duurt meestal een à twee minuten.</p>
+      )}
+      {r.vastgelopen && <p className="text-sm text-[#C02A22]">Deze verwerking is nooit afgerond. De briefing is niet aangepast; probeer het opnieuw.</p>}
+      {r.status === 'fout' && r.fout && <p className="text-sm text-[#C02A22]">{r.fout} De briefing is niet aangepast.</p>}
+      {r.openVragen.length > 0 && r.status !== 'teruggedraaid' && (
+        <div className="border-jr-orange bg-jr-orange/10 mb-3 rounded border-l-4 p-3">
+          <p className="mb-1 text-xs font-semibold">Nog open</p>
+          <ul className="list-disc space-y-1 pl-4 text-sm">
+            {r.openVragen.map((v) => (
+              <li key={v}>{v}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {r.wijzigingen.length > 0 && (
+        <div className={r.status === 'teruggedraaid' ? 'opacity-60' : ''}>
+          <p className="mb-1 text-xs font-semibold">Wat er veranderde{r.status === 'teruggedraaid' && ' (teruggedraaid)'}</p>
+          <ul className="list-disc space-y-1 pl-4 text-sm text-gray-700">
+            {r.wijzigingen.map((w) => (
+              <li key={w}>{w}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {r.invoer && (
+        <details className="mt-3">
+          <summary className="text-jr-link cursor-pointer text-xs font-medium select-none hover:underline">Wat de klant schreef</summary>
+          <p className="mt-2 rounded bg-gray-50 p-3 text-sm whitespace-pre-wrap text-gray-700">{r.invoer}</p>
+        </details>
+      )}
+      {r.magTerug && (
+        <div className="mt-3">
+          <ActionForm
+            action={draaiVerwerkingTerugActie}
+            submitLabel="Draai terug"
+            submitClassName={KNOP_KLEIN}
+            resetOnSuccess={false}
+            meldGelukt={false}
+            bevestig
+            className=""
+          >
+            <input type="hidden" name="campaignId" value={campaignId} />
+            <input type="hidden" name="id" value={r.id} />
+          </ActionForm>
+        </div>
+      )}
+    </li>
   )
 }
 

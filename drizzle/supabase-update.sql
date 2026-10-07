@@ -2247,3 +2247,111 @@ BEGIN
   END IF;
 END $jr_0031_performance$;
 
+-- ---------------------------------------------------------------------------
+-- 0032_google_verbindingen
+-- ---------------------------------------------------------------------------
+
+DO $jr_0032_google_verbindingen$
+BEGIN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = 'c85271132a3a7c54c1c466678a4e4ce72d4c4452edce6e20b2e820ceb9ee9b9b') THEN
+    RAISE NOTICE 'Overgeslagen: 0032_google_verbindingen stond er al.';
+  ELSE
+    CREATE TABLE "google_connections" (
+    	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+    	"email" text NOT NULL,
+    	"refresh_token_enc" text NOT NULL,
+    	"scopes" text NOT NULL,
+    	"last_error" text,
+    	"last_error_at" timestamp with time zone,
+    	"created_by_user_id" uuid,
+    	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+    	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
+    );
+
+
+    ALTER TABLE "analytics_connections" ADD COLUMN "google_connection_id" uuid;
+
+    ALTER TABLE "analytics_connections" ADD COLUMN "display_name" text;
+
+    ALTER TABLE "google_connections" ADD CONSTRAINT "google_connections_created_by_user_id_users_id_fk" FOREIGN KEY ("created_by_user_id") REFERENCES "public"."users"("id") ON DELETE set null ON UPDATE no action;
+
+    CREATE UNIQUE INDEX "google_connections_email_idx" ON "google_connections" USING btree ("email");
+
+    ALTER TABLE "analytics_connections" ADD CONSTRAINT "analytics_connections_google_connection_id_google_connections_id_fk" FOREIGN KEY ("google_connection_id") REFERENCES "public"."google_connections"("id") ON DELETE set null ON UPDATE no action;
+
+    ALTER TABLE "google_connections" ENABLE ROW LEVEL SECURITY;
+
+    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+    VALUES ('c85271132a3a7c54c1c466678a4e4ce72d4c4452edce6e20b2e820ceb9ee9b9b', 1791225950640);
+    RAISE NOTICE 'Toegepast: 0032_google_verbindingen.';
+  END IF;
+END $jr_0032_google_verbindingen$;
+
+-- ---------------------------------------------------------------------------
+-- 0033_briefing_verwerkingen
+-- ---------------------------------------------------------------------------
+
+DO $jr_0033_briefing_verwerkingen$
+BEGIN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = 'a313d58581fd78505896a0f857c5bbd30f4c87b19dd2024dc07ae4dbc562865a') THEN
+    RAISE NOTICE 'Overgeslagen: 0033_briefing_verwerkingen stond er al.';
+  ELSE
+    CREATE TYPE "public"."verwerking_status" AS ENUM('wacht', 'bezig', 'klaar', 'fout', 'teruggedraaid');
+
+    CREATE TABLE "campaign_verwerkingen" (
+    	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+    	"campaign_id" uuid NOT NULL,
+    	"status" "verwerking_status" DEFAULT 'wacht' NOT NULL,
+    	"invoer" text,
+    	"bestand_naam" text,
+    	"bestand_type" text,
+    	"bestand_sleutel" text,
+    	"wijzigingen" text[] DEFAULT ARRAY[]::text[] NOT NULL,
+    	"open_vragen" text[] DEFAULT ARRAY[]::text[] NOT NULL,
+    	"voor" jsonb,
+    	"fout" text,
+    	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+    	"gestart_op" timestamp with time zone,
+    	"klaar_op" timestamp with time zone,
+    	"created_by_user_id" uuid,
+    	CONSTRAINT "verwerking_heeft_invoer" CHECK (length(trim(coalesce("campaign_verwerkingen"."invoer", ''))) > 0 OR "campaign_verwerkingen"."bestand_sleutel" IS NOT NULL)
+    );
+
+
+    ALTER TABLE "campaign_verwerkingen" ADD CONSTRAINT "campaign_verwerkingen_campaign_id_campaigns_id_fk" FOREIGN KEY ("campaign_id") REFERENCES "public"."campaigns"("id") ON DELETE cascade ON UPDATE no action;
+
+    ALTER TABLE "campaign_verwerkingen" ADD CONSTRAINT "campaign_verwerkingen_created_by_user_id_users_id_fk" FOREIGN KEY ("created_by_user_id") REFERENCES "public"."users"("id") ON DELETE set null ON UPDATE no action;
+
+    CREATE INDEX "campaign_verwerkingen_campaign_idx" ON "campaign_verwerkingen" USING btree ("campaign_id","created_at");
+
+    ALTER TABLE "campaign_verwerkingen" ENABLE ROW LEVEL SECURITY;
+
+    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+    VALUES ('a313d58581fd78505896a0f857c5bbd30f4c87b19dd2024dc07ae4dbc562865a', 1791299472678);
+    RAISE NOTICE 'Toegepast: 0033_briefing_verwerkingen.';
+  END IF;
+END $jr_0033_briefing_verwerkingen$;
+
+-- ---------------------------------------------------------------------------
+-- 0034_deliverables
+-- ---------------------------------------------------------------------------
+
+DO $jr_0034_deliverables$
+BEGIN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = 'a501269df30e364611a4c94e60dab5dd5902efce168d1b44bcc7e63c744e3e99') THEN
+    RAISE NOTICE 'Overgeslagen: 0034_deliverables stond er al.';
+  ELSE
+    ALTER TABLE "campaign_channels" ADD COLUMN "name" text;
+
+    ALTER TABLE "campaign_channels" ADD COLUMN "live_from" timestamp with time zone;
+
+    ALTER TABLE "campaign_channels" ADD COLUMN "live_until" timestamp with time zone;
+
+    ALTER TABLE "campaign_channels" ADD CONSTRAINT "channel_live_period" CHECK ("campaign_channels"."live_from" IS NULL OR "campaign_channels"."live_until" IS NULL OR "campaign_channels"."live_until" >= "campaign_channels"."live_from");
+
+    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+    VALUES ('a501269df30e364611a4c94e60dab5dd5902efce168d1b44bcc7e63c744e3e99', 1791353234386);
+    RAISE NOTICE 'Toegepast: 0034_deliverables.';
+  END IF;
+END $jr_0034_deliverables$;
+

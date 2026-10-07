@@ -6,6 +6,7 @@ import { describeDbError } from '@/lib/db-errors'
 import { KoppelingFout } from '@/lib/performance/google'
 import { zetKoppeling, verwijderKoppeling } from '@/lib/performance/lezen'
 import { syncAlles } from '@/lib/performance/sync'
+import { alleKeuzes } from '@/lib/performance/oauth'
 import type { AnalyticsConnection } from '@/db/schema'
 import type { ActionResult } from './actions'
 
@@ -36,8 +37,21 @@ export async function koppel(formData: FormData): Promise<ActionResult> {
   const bron = tekst(formData, 'bron') as AnalyticsConnection['source']
   if (!(BRONNEN as readonly string[]).includes(bron)) return { ok: false, error: 'Onbekende bron.' }
   const orgId = tekst(formData, 'organizationId')
+  const keuze = tekst(formData, 'keuze')
   return veilig(tekst(formData, 'slug'), async () => {
-    await zetKoppeling(orgId, bron, tekst(formData, 'externalId'))
+    if (keuze) {
+      // Gekozen uit de lijst: verbinding en ID komen uit wat Google zelf gaf.
+      const scheiding = keuze.indexOf('|')
+      const verbindingId = keuze.slice(0, scheiding)
+      const externalId = keuze.slice(scheiding + 1)
+      const gevonden = (await alleKeuzes()).keuzes.find((k) => k.verbindingId === verbindingId && k.externalId === externalId && k.source === bron)
+      if (!gevonden) throw new KoppelingFout('Deze keuze staat niet (meer) in de lijst. Ververs de lijst onder Koppelingen en probeer opnieuw.')
+      await zetKoppeling(orgId, bron, externalId, { googleConnectionId: verbindingId, displayName: gevonden.naam })
+    } else {
+      const externalId = tekst(formData, 'externalId')
+      if (!externalId) throw new KoppelingFout('Kies een property uit de lijst.')
+      await zetKoppeling(orgId, bron, externalId)
+    }
     // Meteen een eerste keer ophalen, zodat je ziet of de toegang klopt.
     await syncAlles({ organizationId: orgId, budgetMs: 15000 })
   })

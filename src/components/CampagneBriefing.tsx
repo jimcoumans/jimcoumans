@@ -1,5 +1,5 @@
 import type { CampagneVolledig, VoorstelVeld } from '@/lib/campagnes'
-import { STATUS_LABELS } from '@/lib/campagnes'
+import { STATUS_LABELS, livePeriode } from '@/lib/campagnes'
 import { verdeelPerMaand, formatBp, formatHonderdsten, formatAantal, type Hypothese } from '@/lib/hypothese'
 import { formatDateLong } from '@/lib/dates'
 
@@ -327,19 +327,23 @@ export function CampagneBriefing({ v }: { v: CampagneVolledig }) {
         </dl>
       </Sectie>
 
-      <Sectie nummer={5} titel="Kanalen en content">
+      <Sectie nummer={5} titel="Deliverables">
         {v.kanalen.length === 0 ? (
           <p className="text-sm text-gray-500">{LEEG}</p>
         ) : (
           <ul className="divide-y divide-gray-200 text-sm">
             {v.kanalen.map((k) => (
-              <li key={k.id} className="grid gap-x-6 gap-y-1 py-2.5 sm:grid-cols-[180px_1fr_auto]">
+              <li key={k.id} className="grid gap-x-6 gap-y-1 py-2.5 sm:grid-cols-[200px_1fr_auto]">
                 <span>
-                  {k.kind}
-                  {k.quantity && <span className="text-gray-600"> · {k.quantity}</span>}
+                  <span className="font-medium">{k.name ?? k.kind}</span>
+                  {k.name && <span className="block text-xs text-gray-600">{k.kind}</span>}
                 </span>
                 <span className="text-gray-700">
                   <Waarde>{k.note}</Waarde>
+                  {k.quantity && <span className="block text-xs text-gray-600">Formaat: {k.quantity}</span>}
+                  {(k.liveFrom || k.liveUntil) && (
+                    <span className="block text-xs text-gray-600">Live: {livePeriode(k)}</span>
+                  )}
                 </span>
                 <span>
                   <Chip kleur={k.status === 'bestaat' ? 'groen' : 'blauw'}>{k.status === 'bestaat' ? 'bestaat al' : 'nog te maken'}</Chip>

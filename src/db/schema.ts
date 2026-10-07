@@ -3156,7 +3156,12 @@ export const campaignKpis = pgTable(
   ],
 )
 
-/** Kanalen, middelen en content: één regel per stuk, met of het er al is. */
+/**
+ * De deliverables: één regel per uiting. Niet "3 mailings", maar Mailing 1,
+ * Mailing 2 en Mailing 3, elk met wat erin staat, het formaat en wanneer hij
+ * live gaat of verstuurd wordt. De tabel heet nog naar de kanalen, waar hij
+ * mee begon.
+ */
 export const campaignChannels = pgTable(
   'campaign_channels',
   {
@@ -3165,12 +3170,23 @@ export const campaignChannels = pgTable(
       .notNull()
       .references(() => campaigns.id, { onDelete: 'cascade' }),
     position: integer('position').notNull().default(0),
+    /** De naam van de deliverable: "Ad 1 · Kerstbrunch", "Mailing 2". */
+    name: text('name'),
+    /** Het kanaal, uit de keuzelijst: "Meta Ads: targeting", "Mailing". */
     kind: text('kind').notNull(),
+    /** Formaat of aantal: "1:1, 4:5 en 9:16", "blok in de nieuwsbrief". */
     quantity: text('quantity'),
+    /** Wat erin staat en voor wie. */
     note: text('note'),
+    /** Live of verstuurd vanaf; bij een mailing de verzenddag. */
+    liveFrom: timestamp('live_from', { withTimezone: true }),
+    liveUntil: timestamp('live_until', { withTimezone: true }),
     status: channelStatusEnum('status').notNull().default('maken'),
   },
-  (t) => [index('campaign_channels_campaign_idx').on(t.campaignId)],
+  (t) => [
+    index('campaign_channels_campaign_idx').on(t.campaignId),
+    check('channel_live_period', sql`${t.liveFrom} IS NULL OR ${t.liveUntil} IS NULL OR ${t.liveUntil} >= ${t.liveFrom}`),
+  ],
 )
 
 /** De tijdlijn is de takenlijst. Bij akkoord wordt elke regel een subtaak in ClickUp. */
@@ -3219,7 +3235,62 @@ export const campaignVersions = pgTable(
   (t) => [uniqueIndex('campaign_versions_idx').on(t.campaignId, t.version, t.status)],
 )
 
+/**
+ * Feedback van de klant op een briefing, door AI verwerkt tot een nieuwe,
+ * schone versie.
+ *
+ * De briefing zelf vermeldt nooit wat er veranderd is: de specialist moet
+ * één eindproduct lezen, niet de geschiedenis. Wat er veranderde en wat nog
+ * open staat, staat hier, als interne notitie. Met de momentopname van
+ * daarvoor kun je een verwerking terugdraaien.
+ */
+export const verwerkingStatusEnum = pgEnum('verwerking_status', [
+  'wacht', // aangemaakt, de achtergrondfunctie moet hem nog oppakken
+  'bezig', // de AI is aan het werk
+  'klaar', // verwerkt in de briefing
+  'fout', // mislukt; de briefing is niet aangeraakt
+  'teruggedraaid', // de briefing staat weer zoals hij daarvoor was
+])
+
+export const campaignVerwerkingen = pgTable(
+  'campaign_verwerkingen',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    campaignId: uuid('campaign_id')
+      .notNull()
+      .references(() => campaigns.id, { onDelete: 'cascade' }),
+    status: verwerkingStatusEnum('status').notNull().default('wacht'),
+    /** Wat de klant schreef: geplakt uit mail, WhatsApp of een gesprek. */
+    invoer: text('invoer'),
+    bestandNaam: text('bestand_naam'),
+    bestandType: text('bestand_type'),
+    /** Sleutel in de bestandsopslag. */
+    bestandSleutel: text('bestand_sleutel'),
+    /** Wat er in de briefing veranderde, kort per regel. Alleen intern. */
+    wijzigingen: text('wijzigingen').array().notNull().default(sql`ARRAY[]::text[]`),
+    /** Wat de feedback niet beantwoordt of wat tegenstrijdig is. */
+    openVragen: text('open_vragen').array().notNull().default(sql`ARRAY[]::text[]`),
+    /** De briefing zoals hij was vlak voor het verwerken. */
+    voor: jsonb('voor'),
+    fout: text('fout'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    gestartOp: timestamp('gestart_op', { withTimezone: true }),
+    klaarOp: timestamp('klaar_op', { withTimezone: true }),
+    createdByUserId: uuid('created_by_user_id').references(() => users.id, {
+      onDelete: 'set null',
+    }),
+  },
+  (t) => [
+    index('campaign_verwerkingen_campaign_idx').on(t.campaignId, t.createdAt),
+    check(
+      'verwerking_heeft_invoer',
+      sql`length(trim(coalesce(${t.invoer}, ''))) > 0 OR ${t.bestandSleutel} IS NOT NULL`,
+    ),
+  ],
+)
+
 export type Organization = typeof organizations.$inferSelect
+export type CampaignVerwerking = typeof campaignVerwerkingen.$inferSelect
 export type User = typeof users.$inferSelect
 export type Wallet = typeof wallets.$inferSelect
 export type LedgerEntry = typeof ledgerEntries.$inferSelect
@@ -3568,6 +3639,31 @@ export const analyticsSourceEnum = pgEnum('analytics_source', [
   'tiktok_ads',
 ])
 
+/**
+ * Een Google-account van James Robinson waarmee het portaal mag meekijken
+ * (info@, marketing@, analytics@). Eén keer verbonden door een beheerder;
+ * daarna ziet het portaal alle GA4-properties, Search Console-sites en
+ * Ads-accounts waar dat adres bij kan. Het token staat versleuteld.
+ */
+export const googleConnections = pgTable(
+  'google_connections',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    email: text('email').notNull(),
+    /** Versleuteld met TOKEN_SLEUTEL (AES-256-GCM). Nooit leesbaar in de database. */
+    refreshTokenEnc: text('refresh_token_enc').notNull(),
+    scopes: text('scopes').notNull(),
+    lastError: text('last_error'),
+    lastErrorAt: timestamp('last_error_at', { withTimezone: true }),
+    createdByUserId: uuid('created_by_user_id').references(() => users.id, { onDelete: 'set null' }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex('google_connections_email_idx').on(t.email)],
+)
+
+export type GoogleConnection = typeof googleConnections.$inferSelect
+
 export const analyticsConnections = pgTable(
   'analytics_connections',
   {
@@ -3578,6 +3674,10 @@ export const analyticsConnections = pgTable(
     source: analyticsSourceEnum('source').notNull(),
     /** GA4-property, Search Console-site, advertentieaccount: wat de bron zelf gebruikt. */
     externalId: text('external_id').notNull(),
+    /** Via welk Google-account we erbij kunnen. Leeg: via het serviceaccount (oude manier). */
+    googleConnectionId: uuid('google_connection_id').references(() => googleConnections.id, { onDelete: 'set null' }),
+    /** De naam zoals de bron hem noemt, bijvoorbeeld "Thiessen Wijnkoopers – GA4". */
+    displayName: text('display_name'),
     active: boolean('active').notNull().default(true),
     /** Tot hoe ver terug de cijfers er al zijn. Leeg: nog niets opgehaald. */
     historyFrom: date('history_from', { mode: 'string' }),

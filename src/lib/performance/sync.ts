@@ -2,6 +2,7 @@ import { and, asc, eq, gte, lte, sql } from 'drizzle-orm'
 import { db } from '@/db'
 import { analyticsConnections, organizations, performanceDaily, type AnalyticsConnection } from '@/db/schema'
 import { KoppelingFout, haalGa4, haalSearchConsole, type Dagcijfers } from './google'
+import { getVerbinding, toegangstoken } from './oauth'
 
 /* -------------------------------------------------------------------------
    Cijfers ophalen en bewaren.
@@ -45,12 +46,20 @@ export function teHalen(historyFrom: string | null, vandaag: Date): { van: strin
   return stukken
 }
 
-async function haal(k: AnalyticsConnection, van: string, tot: string): Promise<Dagcijfers[]> {
+/** Via het verbonden Google-account als dat er is, anders via het serviceaccount. */
+async function tokenVoor(k: AnalyticsConnection): Promise<string | undefined> {
+  if (!k.googleConnectionId) return undefined
+  const v = await getVerbinding(k.googleConnectionId)
+  if (!v) throw new KoppelingFout('Het Google-account van deze koppeling is losgekoppeld. Kies de property opnieuw.')
+  return toegangstoken(v)
+}
+
+async function haal(k: AnalyticsConnection, van: string, tot: string, toegang?: string): Promise<Dagcijfers[]> {
   switch (k.source) {
     case 'ga4':
-      return haalGa4(k.externalId, van, tot)
+      return haalGa4(k.externalId, van, tot, toegang)
     case 'search_console':
-      return haalSearchConsole(k.externalId, van, tot)
+      return haalSearchConsole(k.externalId, van, tot, toegang)
     default:
       throw new KoppelingFout('Deze bron kunnen we nog niet ophalen; de koppeling volgt.')
   }
@@ -95,8 +104,9 @@ export async function syncKoppeling(k: AnalyticsConnection & { klant?: string },
   try {
     let historie = k.historyFrom
     let regels = 0
+    const toegang = await tokenVoor(k)
     for (const stuk of teHalen(k.historyFrom, vandaag)) {
-      const rijen = await haal(k, stuk.van, stuk.tot)
+      const rijen = await haal(k, stuk.van, stuk.tot, toegang)
       await bewaar(k, stuk.van, stuk.tot, rijen)
       regels += rijen.length
       historie = historie && historie < stuk.nieuweHistorie ? historie : stuk.nieuweHistorie

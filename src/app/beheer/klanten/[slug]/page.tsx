@@ -37,6 +37,7 @@ import { FilterBalk } from '@/components/FilterBalk'
 import { LeegVlak } from '@/components/PaginaKop'
 import { getKoppelingen, getDagcijfers } from '@/lib/performance/lezen'
 import { serviceaccountAdres } from '@/lib/performance/google'
+import { alleKeuzes, listVerbindingen } from '@/lib/performance/oauth'
 import { PERIODES, periodeGrenzen, perBron, type Periode } from '@/lib/performance/bronnen'
 import { getTijdlijn, laatsteContact } from '@/lib/tijdlijn'
 import { BookServiceForm } from '@/components/BookServiceForm'
@@ -315,7 +316,7 @@ export default async function KlantPage({
 
         {tab === 'merkkluis' && <MerkkluisTab slug={slug} />}
 
-        {tab === 'performance' && <PerformanceTab organizationId={klant.organization.id} slug={slug} periode={periode} />}
+        {tab === 'performance' && <PerformanceTab organizationId={klant.organization.id} slug={slug} periode={periode} klant={{ name: klant.organization.name, website: klant.organization.website }} />}
 
         {tab === 'klantreis' && <KlantreisDetail stand={klantreis} organizationId={klant.organization.id} slug={slug} />}
 
@@ -391,13 +392,25 @@ export default async function KlantPage({
 }
 
 /** De performance van deze klant. Alleen opgehaald als je het tabblad opent. */
-async function PerformanceTab({ organizationId, slug, periode: periodeParam }: { organizationId: string; slug: string; periode?: string }) {
+async function PerformanceTab({
+  organizationId,
+  slug,
+  periode: periodeParam,
+  klant,
+}: {
+  organizationId: string
+  slug: string
+  periode?: string
+  klant: { name: string; website: string | null }
+}) {
   const periode = (PERIODES.some((p) => p.periode === periodeParam) ? periodeParam : '30_dagen') as Periode
   const g = periodeGrenzen(periode)
-  const [koppelingen, rijen, vorige] = await Promise.all([
+  const [koppelingen, rijen, vorige, google, verbindingen] = await Promise.all([
     getKoppelingen(organizationId),
     getDagcijfers(g.van, g.tot, organizationId),
     getDagcijfers(g.vorigeVan, g.vorigeTot, organizationId),
+    alleKeuzes(),
+    listVerbindingen(),
   ])
   const waarschuwingen = meetcheck(koppelingen, perBron(rijen).totaal)
 
@@ -443,7 +456,15 @@ async function PerformanceTab({ organizationId, slug, periode: periodeParam }: {
         />
       )}
 
-      <Koppelingen organizationId={organizationId} slug={slug} koppelingen={koppelingen} serviceaccount={serviceaccountAdres()} />
+      <Koppelingen
+        organizationId={organizationId}
+        slug={slug}
+        koppelingen={koppelingen}
+        serviceaccount={serviceaccountAdres()}
+        klant={klant}
+        keuzes={google.keuzes}
+        verbonden={verbindingen.map((v) => v.email)}
+      />
     </div>
   )
 }

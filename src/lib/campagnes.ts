@@ -25,6 +25,7 @@ import type {
   Organization,
 } from '@/db/schema'
 import { berekenHypothese, type HypotheseUitkomst } from './hypothese'
+import { formatDate } from './dates'
 
 /* -------------------------------------------------------------------------
    Campagnebriefings.
@@ -76,7 +77,7 @@ export const TIJDLIJN_OMSCHRIJVINGEN = [
   'Evaluatie in de Performance Review',
 ] as const
 
-/** De keuzelijst voor kanalen, middelen en content. */
+/** De keuzelijst voor het kanaal van een deliverable. */
 export const KANAAL_SOORTEN = [
   'Meta Ads: targeting',
   'Meta Ads: retargeting',
@@ -84,13 +85,27 @@ export const KANAAL_SOORTEN = [
   'Microsoft Ads',
   'LinkedIn Ads',
   'TikTok Ads',
+  'Organisch: Instagram en Facebook',
+  'Organisch: LinkedIn',
   'Mailing',
   'Landingspagina',
+  'Drukwerk: flyer of poster',
   'Content: beeldenbank',
   'Content: draaidag',
   'Content: materiaal van de klant',
   'Content: sjablonen',
 ] as const
+
+/**
+ * Wanneer een deliverable live staat. Een mailing of post is één dag; een ad
+ * loopt van tot. Zonder einddatum loopt hij "vanaf".
+ */
+export function livePeriode(k: Pick<CampaignChannel, 'kind' | 'liveFrom' | 'liveUntil'>): string {
+  const eenDag = /^(mailing|organisch)/i.test(k.kind.trim())
+  if (k.liveFrom && k.liveUntil && k.liveUntil.getTime() !== k.liveFrom.getTime()) return `${formatDate(k.liveFrom)} – ${formatDate(k.liveUntil)}`
+  if (k.liveFrom) return eenDag || k.liveUntil ? formatDate(k.liveFrom) : `vanaf ${formatDate(k.liveFrom)}`
+  return k.liveUntil ? `tot ${formatDate(k.liveUntil)}` : ''
+}
 
 /* ------------------------------ Lezen ------------------------------------ */
 
@@ -382,16 +397,31 @@ export async function verwijderKpi(id: string) {
   if (k) await raak(k.campaignId)
 }
 
-export async function voegKanaalToe(campaignId: string, k: { kind: string; quantity: string | null; note: string | null; status: 'bestaat' | 'maken' }) {
-  if (k.kind.trim() === '') throw new CampagneError('Kies een kanaal, middel of soort content.')
+export type DeliverableInvoer = {
+  name: string | null
+  kind: string
+  quantity: string | null
+  note: string | null
+  liveFrom: Date | null
+  liveUntil: Date | null
+  status: 'bestaat' | 'maken'
+}
+
+function controleerDeliverable(k: DeliverableInvoer) {
+  if (k.kind.trim() === '') throw new CampagneError('Kies het kanaal van deze deliverable.')
+  if (k.liveFrom && k.liveUntil && k.liveUntil < k.liveFrom) throw new CampagneError('De einddatum ligt vóór de startdatum.')
+}
+
+export async function voegKanaalToe(campaignId: string, k: DeliverableInvoer) {
+  controleerDeliverable(k)
   const [telling] = await db.select({ n: sql<number>`count(*)::int` }).from(campaignChannels).where(eq(campaignChannels.campaignId, campaignId))
-  await db.insert(campaignChannels).values({ campaignId, position: telling?.n ?? 0, ...k, kind: k.kind.trim() })
+  await db.insert(campaignChannels).values({ campaignId, position: telling?.n ?? 0, ...k, kind: k.kind.trim(), name: k.name?.trim() || null })
   await raak(campaignId)
 }
 
-export async function wijzigKanaalRegel(id: string, k: { kind: string; quantity: string | null; note: string | null; status: 'bestaat' | 'maken' }) {
-  if (k.kind.trim() === '') throw new CampagneError('Kies een kanaal, middel of soort content.')
-  const [r] = await db.update(campaignChannels).set({ ...k, kind: k.kind.trim() }).where(eq(campaignChannels.id, id)).returning()
+export async function wijzigKanaalRegel(id: string, k: DeliverableInvoer) {
+  controleerDeliverable(k)
+  const [r] = await db.update(campaignChannels).set({ ...k, kind: k.kind.trim(), name: k.name?.trim() || null }).where(eq(campaignChannels.id, id)).returning()
   if (r) await raak(r.campaignId)
 }
 
@@ -448,7 +478,7 @@ const plus = (d: Date, dagen: number) => new Date(d.getTime() + dagen * DAG)
 export function suggereerTijdlijn(input: {
   start: Date
   einde: Date
-  kanalen: Pick<CampaignChannel, 'kind' | 'quantity' | 'status'>[]
+  kanalen: (Pick<CampaignChannel, 'kind' | 'quantity' | 'status'> & Partial<Pick<CampaignChannel, 'name' | 'liveFrom'>>)[]
   marketingmanagerId: string | null
 }): { dueOn: Date; description: string; assigneeUserId: string | null; assigneeLabel: string | null }[] {
   const { start, einde, kanalen } = input
@@ -458,8 +488,24 @@ export function suggereerTijdlijn(input: {
     regels.push({ dueOn, description, assigneeUserId: viaMm ? mm : null, assigneeLabel: viaMm ? null : label })
 
   voor('Briefing akkoord', plus(start, -2), null, true)
+  // Ads die later live gaan dan de start (een tweede flight): per datum één regel "Live".
+  const laterLive = new Map<number, string[]>()
   for (const k of kanalen.filter((k) => k.status === 'maken')) {
     const soort = k.kind.toLowerCase()
+    const naam = k.name?.trim()
+    // Een deliverable met een naam krijgt zijn eigen regel, op de dag voor hij live gaat.
+    if (naam) {
+      const live = k.liveFrom ?? start
+      if (soort.startsWith('mailing')) voor(`${naam} verstuurd`, live, null, true)
+      else if (soort.startsWith('organisch')) voor(`${naam} online`, live, 'Content')
+      else if (soort.startsWith('landingspagina')) voor(`${naam} klaar`, plus(live, -2), 'Content en techniek')
+      else voor(`${naam} klaar`, plus(live, -2), 'Content')
+      if (/ads/.test(soort) && live.getTime() > start.getTime()) {
+        const dag = live.getTime()
+        laterLive.set(dag, [...(laterLive.get(dag) ?? []), naam])
+      }
+      continue
+    }
     if (soort.startsWith('landingspagina')) voor('Landingspagina klaar', plus(start, -1), 'Content en techniek')
     else if (soort.startsWith('content')) voor(`Content klaar: ${k.kind.replace(/^Content:\s*/i, '')}`, plus(start, -1), 'Content')
     else if (soort.startsWith('mailing')) {
@@ -473,6 +519,7 @@ export function suggereerTijdlijn(input: {
   }
   voor('Merkcheck', plus(start, -1), null, true)
   voor('Live', start, 'Campagne')
+  for (const [dag, namen] of laterLive) voor(`Live: ${opsomming(namen)}`, new Date(dag), 'Campagne')
   voor('Hypothese naast de echte cijfers', plus(start, 14), null, true)
   voor('Einde campagne', einde, 'Campagne')
   voor('Evaluatie in de Performance Review', plus(einde, 21), null, true)
@@ -587,7 +634,7 @@ export async function verwijderCampagne(id: string): Promise<void> {
   await db.delete(campaigns).where(eq(campaigns.id, id))
 }
 
-function momentopname(v: CampagneVolledig) {
+export function momentopname(v: CampagneVolledig) {
   return JSON.parse(
     JSON.stringify({
       campagne: v.campagne,

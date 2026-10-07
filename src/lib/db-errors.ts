@@ -374,6 +374,10 @@ export function describeDbError(error: unknown): string | null {
       return 'Een prijs kan niet negatief zijn. Laat hem leeg als er geen prijs bij hoort.'
     case 'timeline_description_not_empty':
       return 'Geef de regel in de tijdlijn een omschrijving.'
+    case 'channel_live_period':
+      return 'De einddatum van een deliverable ligt vóór de startdatum. Controleer allebei de datums.'
+    case 'verwerking_heeft_invoer':
+      return 'Plak de feedback van de klant of kies een bestand.'
     case 'audience_name_not_empty':
       return 'Geef de doelgroep een naam.'
     case 'campaign_contacts_campaign_id_contact_id_pk':
@@ -402,6 +406,8 @@ export function describeDbError(error: unknown): string | null {
     case 'brand_font_name_not_empty':
       return 'Vul de naam van het lettertype in.'
     /* --- Performance --- */
+    case 'google_connections_email_idx':
+      return 'Dit Google-account is al verbonden.'
     case 'analytics_connection_external_id_not_empty':
       return 'Vul het ID of adres van de bron in.'
     case 'analytics_connections_org_source_idx':

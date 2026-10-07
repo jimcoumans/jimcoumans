@@ -1,0 +1,617 @@
+<!doctype html><html lang="nl"><head><meta charset="utf-8"><title>James Robinson · The Performance Issue · proefkatern</title><style>
+@font-face{font-family:'Inter';font-weight:100 900;src:url('../fonts/Inter.woff2') format('woff2')}
+@font-face{font-family:'Inter Tight';font-weight:100 900;src:url('../fonts/InterTight.woff2') format('woff2')}
+/* A4 staand, 210 × 297 mm, plus 3 mm afloop rondom. */
+@page{size:216mm 303mm;margin:0}
+:root{--blue:#007aff;--deep:#005cbf;--black:#1c1c1e;--ink2:#3a3a3c;--tx2:#636466;--tx3:#adadb2;--ln:#d2d1d7;--soft:#e5e5e9;--bg:#f2f2f7;--tint:#e2ebf3;--green:#25ad42;--red:#ef302b;
+  --fd:'Inter Tight','Inter','Helvetica Neue',Helvetica,Arial,sans-serif;--ft:'Inter','Helvetica Neue',Helvetica,Arial,sans-serif}
+*{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact;margin:0;padding:0}
+html,body{font-family:var(--ft);color:var(--black);font-size:9.6pt;line-height:1.5;font-weight:400}
+.pg{width:216mm;height:303mm;position:relative;overflow:hidden;break-after:page;padding:24mm 21mm 24mm 23mm}
+.pg.l{padding:24mm 23mm 24mm 21mm}
+.pg:last-child{break-after:auto}
+.zwart{background:var(--black);color:#fff}.blauw{background:var(--blue);color:#fff}.grijs{background:var(--bg)}
+h1,h2,h3,h4,.d{font-family:var(--fd);letter-spacing:-.025em;line-height:1.05;font-weight:700}
+.kicker{font-size:8pt;font-weight:600;letter-spacing:.02em;color:var(--blue);margin-bottom:5mm;display:flex;gap:3mm;align-items:center}
+.kicker:before{content:'';width:8mm;height:.6mm;background:currentColor;display:inline-block}
+.zwart .kicker,.blauw .kicker{color:#fff}
+h2{font-size:34pt;margin-bottom:6mm}
+h3{font-size:14pt;letter-spacing:-.015em;margin-bottom:2.5mm;line-height:1.15}
+.intro{font-size:13pt;line-height:1.4;color:var(--ink2);margin-bottom:8mm;font-weight:400}
+.zwart .intro,.blauw .intro{color:rgba(255,255,255,.82)}
+p{margin-bottom:3mm}
+.kol2{columns:2;column-gap:7mm}
+.kol2 p{break-inside:avoid-column}
+.klein{font-size:7.6pt;color:var(--tx2);line-height:1.4}
+.folio{position:absolute;bottom:12mm;font-size:7pt;color:var(--tx2);display:flex;gap:3mm}
+.pg.l .folio{left:21mm}.pg.r .folio{right:21mm}
+.zwart .folio,.blauw .folio{color:rgba(255,255,255,.6)}
+.folio b{color:var(--black);font-weight:600}.zwart .folio b,.blauw .folio b{color:#fff}
+/* Beeld: plek voor fotografie */
+.beeld{background:linear-gradient(135deg,#3a3a3c,#1c1c1e);color:rgba(255,255,255,.75);display:flex;align-items:flex-end;padding:5mm;font-size:7.5pt;position:relative}
+.beeld:after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(255,255,255,.035) 0 2mm,transparent 2mm 4mm)}
+.beeld span{position:relative;z-index:1;border:.2mm solid rgba(255,255,255,.35);border-radius:10mm;padding:1.2mm 3.5mm}
+/* Cijfer met bron */
+.cijfer{border-top:.6mm solid var(--black);padding-top:3mm}
+.cijfer .n{font-family:var(--fd);font-weight:700;font-size:54pt;letter-spacing:-.04em;line-height:.95;color:var(--blue)}
+.cijfer .t{font-size:10pt;line-height:1.4;margin-top:2mm}
+.cijfer .b{font-size:7pt;color:var(--tx2);margin-top:2mm}
+.zwart .cijfer,.blauw .cijfer{border-color:#fff}.zwart .cijfer .n{color:#fff}.blauw .cijfer .n{color:#fff}
+.zwart .cijfer .b,.blauw .cijfer .b{color:rgba(255,255,255,.65)}
+.kader{background:var(--tint);border-radius:4mm;padding:6mm}
+.kader.g{background:var(--bg)}
+.lijst{list-style:none}
+.lijst li{padding:2.2mm 0;border-top:.25mm solid var(--soft)}
+.lijst li:first-child{border-top:0}
+.chip{display:inline-block;font-size:7pt;font-weight:600;border-radius:10mm;padding:.8mm 3mm;background:var(--tint);color:var(--deep)}
+/* Omslag */
+.omslag{padding:20mm 18mm 18mm 21mm}
+.mast{font-family:var(--fd);font-weight:800;font-size:92pt;letter-spacing:-.055em;line-height:.85}
+.mast i{font-style:normal;color:var(--blue)}
+.omslagkop{display:flex;justify-content:space-between;align-items:flex-start;font-size:8pt;color:rgba(255,255,255,.7);margin-bottom:6mm}
+.omslag h1{font-size:40pt;line-height:1;margin-top:14mm;max-width:150mm}
+.coverlines{position:absolute;left:21mm;right:18mm;bottom:20mm;display:grid;grid-template-columns:repeat(3,1fr);gap:6mm}
+.coverlines div{border-top:.4mm solid rgba(255,255,255,.4);padding-top:3mm;font-size:9pt;color:rgba(255,255,255,.8)}
+.coverlines b{display:block;color:#fff;font-family:var(--fd);font-size:13pt;letter-spacing:-.01em;margin-bottom:1mm;line-height:1.15}
+.ketting{position:absolute;left:21mm;right:18mm;top:132mm;display:flex;align-items:center;gap:3mm}
+.ketting div{flex:1;height:30mm;border-radius:4mm;border:.5mm solid rgba(255,255,255,.25);display:flex;flex-direction:column;justify-content:flex-end;padding:4mm;font-size:8pt;color:rgba(255,255,255,.7)}
+.ketting div b{font-family:var(--fd);font-size:19pt;color:#fff;letter-spacing:-.03em}
+.ketting div.jij{background:var(--blue);border-color:var(--blue)}
+.ketting svg{width:6mm;flex:none}
+/* Inhoud */
+.inhoud{list-style:none;margin-top:4mm}
+.inhoud li{display:grid;grid-template-columns:14mm 1fr;padding:1.9mm 0;border-top:.25mm solid var(--soft);align-items:baseline}
+.inhoud .p{font-family:var(--fd);font-weight:700;color:var(--blue);font-size:12pt}
+.inhoud b{font-family:var(--fd);font-size:13pt;letter-spacing:-.015em;display:block}
+.inhoud span{color:var(--tx2);font-size:9pt}
+/* Tabel */
+table{width:100%;border-collapse:collapse;font-size:9pt}
+th{text-align:left;font-size:7.5pt;font-weight:600;color:var(--tx2);padding:2mm 3mm 2mm 0;border-bottom:.4mm solid var(--black)}
+td{padding:3mm 3mm 3mm 0;border-bottom:.25mm solid var(--soft);vertical-align:top}
+td:first-child{color:var(--tx2)}
+/* Model */
+.model{display:grid;grid-template-columns:1fr 9mm 1.15fr 9mm 1fr;align-items:stretch;margin:6mm 0 8mm}
+.blok{border-radius:4mm;padding:5mm;background:var(--bg)}
+.blok.mid{background:var(--black);color:#fff}
+.blok .rol{font-size:7pt;font-weight:600;color:var(--blue);margin-bottom:6mm}
+.blok.mid .rol{color:#7db8ff}
+.blok h3{font-size:16pt}
+.blok p{font-size:8.8pt;margin:0}
+.pijl{display:flex;align-items:center;justify-content:center}
+.pijl svg{width:7mm}
+/* Keten */
+.keten{display:grid;grid-template-columns:1fr 12mm 1fr 12mm 1fr 12mm 1fr;align-items:end;margin-top:4mm}
+.schakel .n{font-family:var(--fd);font-weight:700;font-size:40pt;letter-spacing:-.04em;line-height:1}
+.schakel .w{font-size:8pt;font-weight:600;color:var(--tx2);margin-bottom:2mm}
+.staaf{background:var(--blue);border-radius:2mm 2mm 0 0;margin-top:3mm}
+.schakel.jij .staaf{background:var(--black)}
+.ratio{font-size:7.5pt;color:var(--tx2);text-align:center;padding-bottom:6mm;line-height:1.3}
+.ratio b{display:block;font-family:var(--fd);font-size:13pt;color:var(--black)}
+.wie{display:grid;grid-template-columns:1fr 12mm 1fr 12mm 1fr 12mm 1fr;margin-top:2mm;font-size:8.5pt;font-weight:600}
+.wie .o{grid-column:1/6;border-top:.8mm solid var(--blue);color:var(--blue);padding-top:2mm}
+.wie .j{grid-column:7/8;border-top:.8mm solid var(--black);padding-top:2mm}
+/* Vergelijking */
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:5mm;margin:6mm 0}
+.vs>div{border-radius:4mm;padding:6mm}
+.vs .a{background:var(--bg)}.vs .b{background:var(--blue);color:#fff}
+.vs .bedrag{font-family:var(--fd);font-weight:700;font-size:28pt;letter-spacing:-.03em;line-height:1}
+.vs .lbl{font-size:8pt;font-weight:600;margin:1mm 0 5mm;opacity:.75}
+.meter{height:3mm;border-radius:2mm;background:rgba(0,0,0,.08);margin:1.5mm 0 3.5mm;overflow:hidden}
+.vs .b .meter{background:rgba(255,255,255,.25)}
+.meter i{display:block;height:100%;background:var(--black)}
+.vs .b .meter i{background:#fff}
+.vs small{font-size:8pt;display:block}
+.tel{display:grid;grid-template-columns:1fr auto;gap:2mm 6mm;font-size:9pt;margin-top:3mm}
+.tel span:nth-child(even){width:22mm;border-bottom:.3mm solid var(--black)}
+/* Tijdlijn */
+.tijd{display:grid;grid-template-columns:repeat(4,1fr);gap:4mm;margin-top:4mm}
+.stap{border-top:1.2mm solid var(--ln);padding-top:4mm}
+.stap.live{border-color:var(--blue)}
+.stap .nr{font-family:var(--fd);font-weight:700;font-size:30pt;color:var(--blue);line-height:1;letter-spacing:-.03em}
+.stap .w{font-size:7.5pt;font-weight:600;color:var(--tx2);margin:2mm 0 1.5mm}
+.stap h3{font-size:12.5pt}
+.stap p{font-size:8.6pt}
+.maanden{display:grid;grid-template-columns:repeat(12,1fr);gap:1mm;margin:7mm 0 2mm}
+.maanden div{height:9mm;border-radius:1.5mm;background:var(--bg);font-size:7pt;display:flex;align-items:center;justify-content:center;color:var(--tx2);font-weight:600}
+.maanden .f{background:var(--black);color:#fff}.maanden .le{background:var(--tint);color:var(--deep)}.maanden .d{background:var(--blue);color:#fff}
+.legenda{display:flex;gap:5mm;font-size:7.5pt;color:var(--tx2)}
+.legenda i{display:inline-block;width:3mm;height:3mm;border-radius:.8mm;margin-right:1.5mm;vertical-align:-.4mm}
+/* Drie kolommen */
+.drie{display:grid;grid-template-columns:repeat(3,1fr);gap:4mm}
+.kol{border-radius:4mm;padding:5mm}
+.kol.ja{background:var(--tint)}.kol.mis{background:var(--bg)}.kol.nee{border:.4mm solid var(--soft)}
+.kol h3{font-size:12.5pt;margin-bottom:1mm}
+.kol .s{font-size:7.8pt;color:var(--tx2);min-height:10mm;margin-bottom:2mm}
+.kol li{font-size:8.8pt}
+/* Rekensom */
+.som{width:100%;border-collapse:collapse;font-size:9.5pt;margin-top:4mm}
+.som td{padding:2.6mm 0;border-bottom:.25mm solid var(--soft);color:var(--black)}
+.som td:last-child{text-align:right;font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}
+.som td small{display:block;color:var(--tx2);font-size:7.5pt}
+.som tr.tot td{border-bottom:.5mm solid var(--black);font-weight:700;font-family:var(--fd);font-size:12pt}
+.som tr.eind td{border:0;color:var(--blue);font-family:var(--fd);font-weight:700;font-size:14pt;padding-top:4mm}
+/* Spelregels */
+.regels{display:grid;grid-template-columns:1fr 1fr;gap:0 8mm}
+.regel{display:grid;grid-template-columns:13mm 1fr;padding:4.2mm 0;border-top:.25mm solid var(--soft)}
+.regel .n{font-family:var(--fd);font-weight:700;font-size:22pt;color:var(--blue);line-height:.9;letter-spacing:-.03em}
+.regel h3{font-size:11.5pt;margin-bottom:1.2mm}
+.regel p{font-size:8.6pt;margin:0;color:var(--ink2)}
+/* Reis */
+.reis{list-style:none;margin-top:5mm}
+.reis li{display:grid;grid-template-columns:12mm 1fr auto;gap:3mm;padding:2.6mm 0;border-top:.25mm solid var(--soft);align-items:baseline;font-size:9pt}
+.reis .n{font-family:var(--fd);font-weight:700;color:var(--tx3);font-size:11pt}
+.reis .af .n{color:var(--blue)}
+.reis b{font-weight:600}
+.reis .hier{background:var(--blue);color:#fff;border-radius:3mm;padding:2.6mm 3mm;border:0;margin:1mm 0}
+.reis .hier .n,.reis .hier span{color:#fff}
+.reis span{color:var(--tx2);font-size:8pt}
+.fase{font-size:7pt;font-weight:600;color:var(--tx2);margin-top:4mm}
+.afspraak{display:grid;grid-template-columns:9mm 1fr;padding:3mm 0;border-top:.25mm solid rgba(255,255,255,.2)}
+.afspraak .n{font-family:var(--fd);font-weight:700;font-size:14pt;color:#7db8ff}
+.afspraak b{display:block;font-size:10pt}
+.afspraak span{font-size:8.4pt;color:rgba(255,255,255,.75)}
+.bronnen{font-size:6.8pt;color:var(--tx2);line-height:1.45}
+.bronnen p{margin-bottom:1.6mm}
+.concept{position:absolute;top:9mm;right:9mm;font-size:6.5pt;font-weight:700;color:#94590a;background:#fef2e0;border-radius:10mm;padding:1mm 3mm;z-index:5}
+/* Aanvullingen voor editie 01, 44 pagina's */
+.vv{background:#fef2e0;color:#94590a;border-radius:1mm;padding:0 1mm;font-weight:500}
+.zwart .vv,.blauw .vv{background:rgba(255,255,255,.18);color:#fff}
+.quote{font-family:var(--fd);font-weight:700;font-size:40pt;line-height:1.08;letter-spacing:-.03em}
+.quote:before{content:'“';display:block;font-size:90pt;line-height:.6;color:var(--blue);margin-bottom:4mm}
+.blauw .quote:before{color:#fff}
+.wie-zegt{margin-top:8mm;font-size:10pt}
+.wie-zegt b{display:block;font-size:11pt}
+/* Historie */
+.jaren{list-style:none;position:relative;margin-top:6mm}
+.jaren:before{content:'';position:absolute;left:21mm;top:2mm;bottom:2mm;width:.5mm;background:var(--soft)}
+.jaren li{display:grid;grid-template-columns:21mm 1fr;gap:7mm;padding:3.4mm 0;position:relative}
+.jaren li:after{content:'';position:absolute;left:19.8mm;top:5.6mm;width:3mm;height:3mm;border-radius:50%;background:var(--blue)}
+.jaren .j{font-family:var(--fd);font-weight:700;font-size:17pt;letter-spacing:-.02em;line-height:1}
+.jaren h3{font-size:11.5pt;margin-bottom:1mm}
+.jaren p{font-size:8.8pt;margin:0;color:var(--ink2)}
+/* Ploeg */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:5mm;margin-top:4mm}
+.duo .beeld{height:92mm;border-radius:4mm}
+.persoon{margin-top:3mm}
+.persoon b{display:block;font-family:var(--fd);font-size:14pt;letter-spacing:-.015em}
+.persoon span{display:block;font-size:8.5pt;color:var(--tx2)}
+.persoon p{font-size:8.8pt;margin-top:2mm}
+.ploeg{display:grid;grid-template-columns:repeat(3,1fr);gap:5mm 4mm;margin-top:6mm}
+.ploeg .beeld{height:44mm;border-radius:3mm;padding:3mm}
+.ploeg .persoon b{font-size:11pt}
+.ploeg .persoon span{font-size:7.8pt}
+/* Logo's */
+.logos{display:grid;grid-template-columns:repeat(4,1fr);gap:3mm;margin-top:6mm}
+.logos div{height:30mm;border-radius:3mm;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:7.5pt;color:var(--tx3);text-align:center;gap:1mm}
+.logos div b{font-family:var(--fd);font-size:11pt;color:var(--tx2);letter-spacing:-.01em}
+.branches{display:flex;flex-wrap:wrap;gap:2mm;margin-top:6mm}
+.branches span{border:.3mm solid var(--ln);border-radius:10mm;padding:1.5mm 4mm;font-size:8.5pt}
+/* Case */
+.case-kop{display:flex;gap:3mm;align-items:center;margin-bottom:4mm}
+.resultaten{display:grid;grid-template-columns:repeat(3,1fr);gap:5mm;margin:6mm 0}
+.saa{display:grid;grid-template-columns:repeat(3,1fr);gap:5mm;margin-top:4mm}
+.saa h3{font-size:11pt;color:var(--blue)}
+.saa p{font-size:8.8pt}
+/* Reviews */
+.reviews{display:grid;grid-template-columns:1fr 1fr;gap:5mm;margin-top:6mm}
+.review{background:var(--bg);border-radius:4mm;padding:6mm}
+.review .q{font-family:var(--fd);font-size:13pt;font-weight:600;line-height:1.3;letter-spacing:-.01em}
+.review .w{font-size:8pt;color:var(--tx2);margin-top:4mm}
+.sterren{color:var(--blue);letter-spacing:1mm;font-size:11pt;margin-bottom:3mm}
+/* Fundament */
+.deel{border-radius:4mm;padding:6mm;background:var(--bg)}
+.deel.b{background:var(--tint)}
+.deel .pct{font-size:7.5pt;font-weight:600;color:var(--tx2);margin-bottom:2mm}
+.prijs{font-family:var(--fd);font-weight:700;font-size:44pt;letter-spacing:-.04em;line-height:1}
+.prijs small{font-size:12pt;font-weight:500;letter-spacing:0;color:var(--tx2);margin-left:2mm}
+/* Pakketten */
+.pakketten{display:grid;grid-template-columns:repeat(4,1fr);gap:3mm;margin-top:6mm}
+.pakket{border-radius:4mm;padding:5mm 4.5mm;background:var(--bg);display:flex;flex-direction:column}
+.pakket.uit{background:var(--black);color:#fff}
+.pakket .naam{font-family:var(--fd);font-weight:700;font-size:15pt;letter-spacing:-.02em}
+.pakket .bedrag{font-family:var(--fd);font-weight:700;font-size:22pt;letter-spacing:-.03em;margin:4mm 0 0}
+.pakket .pm{font-size:7.5pt;opacity:.7;margin-bottom:4mm}
+.pakket ul{list-style:none;font-size:8.3pt}
+.pakket li{padding:1.7mm 0;border-top:.25mm solid rgba(0,0,0,.08)}
+.pakket.uit li{border-color:rgba(255,255,255,.15)}
+.pakket li b{display:block;font-size:7pt;font-weight:600;opacity:.6}
+/* Partners */
+.partners{display:grid;grid-template-columns:repeat(3,1fr);gap:3mm;margin-top:4mm}
+.partners div{border:.3mm solid var(--soft);border-radius:3mm;padding:4mm}
+.partners b{display:block;font-size:10pt}
+.partners span{font-size:8pt;color:var(--tx2)}
+/* Kanalen van contact */
+.contact3{display:grid;grid-template-columns:repeat(3,1fr);gap:4mm;margin-top:5mm}
+.contact3>div{border-radius:4mm;padding:5mm;background:var(--bg)}
+.contact3 .groot{font-family:var(--fd);font-weight:700;font-size:13pt;letter-spacing:-.015em;margin:2mm 0}
+/* QR */
+.qr{width:34mm;height:34mm;border-radius:2mm;background:
+  conic-gradient(from 90deg at 3mm 3mm,#1c1c1e 25%,#fff 0) 0 0/6mm 6mm;border:2mm solid #fff;outline:.3mm solid var(--ln)}
+.blauw .qr{outline:0}
+/* Versie 3: omslag, inhoud, verklaring en de nieuwe verhalende pagina's */
+.cover{padding:0;color:#fff;background:#0d0d0f}
+.cover .foto{position:absolute;inset:0;background:
+  radial-gradient(60% 50% at 70% 35%,rgba(0,122,255,.35),transparent 70%),
+  radial-gradient(50% 40% at 25% 70%,rgba(255,255,255,.08),transparent 70%),
+  linear-gradient(180deg,#2c2d2e 0%,#141416 60%,#0d0d0f 100%)}
+.cover .foto:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35) 0%,transparent 30%,transparent 55%,rgba(0,0,0,.75) 100%)}
+.cover .ad{position:absolute;top:118mm;left:23mm;right:23mm;text-align:center;font-size:7.5pt;color:rgba(255,255,255,.55);line-height:1.5;z-index:1}
+.cover .ad b{display:block;font-size:8pt;color:rgba(255,255,255,.75);letter-spacing:.05em;margin-bottom:1mm}
+.masthead{position:absolute;top:13mm;left:18mm;right:18mm;z-index:2;text-align:center}
+.masthead .naam{font-family:var(--fd);font-weight:800;font-size:58pt;letter-spacing:-.045em;line-height:.9}
+.masthead .lint{display:flex;justify-content:space-between;font-size:7.5pt;letter-spacing:.06em;text-transform:uppercase;border-top:.3mm solid rgba(255,255,255,.6);border-bottom:.3mm solid rgba(255,255,255,.6);padding:1.5mm 0;margin-top:3mm;font-weight:600}
+.cover .slogan{position:absolute;left:21mm;right:60mm;bottom:58mm;z-index:2;font-family:var(--fd);font-weight:800;font-size:60pt;line-height:.92;letter-spacing:-.045em}
+.cover .slogan i{font-style:normal;color:#5aa9ff}
+.cover .lijnen{position:absolute;left:21mm;right:18mm;bottom:16mm;z-index:2;display:grid;grid-template-columns:repeat(4,1fr);gap:4mm}
+.cover .lijnen div{border-top:.6mm solid #fff;padding-top:2.5mm;font-size:8pt;color:rgba(255,255,255,.8);line-height:1.35}
+.cover .lijnen b{display:block;font-family:var(--fd);font-size:11.5pt;color:#fff;letter-spacing:-.01em;line-height:1.1;margin-bottom:1mm}
+.cover .lijnen span{font-family:var(--fd);font-weight:700;color:#5aa9ff}
+.cover .zijlijn{position:absolute;right:18mm;top:60mm;width:42mm;z-index:2;text-align:right}
+.cover .zijlijn .groot{font-family:var(--fd);font-weight:800;font-size:44pt;letter-spacing:-.04em;line-height:.9;color:#fff}
+.cover .zijlijn p{font-size:8.5pt;color:rgba(255,255,255,.8);margin-top:1.5mm}
+/* Inhoud als magazine */
+.tegels{display:grid;grid-template-columns:1fr 1fr;gap:4mm}
+.tegel{position:relative}
+.tegel .beeld{height:52mm;border-radius:3mm}
+.tegel .pnr{font-family:var(--fd);font-weight:800;font-size:22pt;color:var(--blue);letter-spacing:-.03em;line-height:1;margin-top:2.5mm}
+.tegel b{display:block;font-family:var(--fd);font-size:12.5pt;letter-spacing:-.015em;line-height:1.15;margin-top:1mm}
+.tegel span{display:block;font-size:8.3pt;color:var(--tx2);margin-top:.8mm}
+.hoofdtegel .beeld{height:188mm;border-radius:3mm}
+.hoofdtegel .pnr{font-size:40pt}
+.hoofdtegel b{font-size:22pt}
+.kortlijst{columns:2;column-gap:6mm;margin-top:5mm;list-style:none}
+.kortlijst li{font-size:8.6pt;padding:1.6mm 0;border-top:.25mm solid var(--soft);break-inside:avoid}
+.kortlijst li i{font-style:normal;font-family:var(--fd);font-weight:700;color:var(--blue);display:inline-block;width:8mm}
+/* Verklaring */
+.verklaring{background:#fbfaf7}
+.verklaring .rand{position:absolute;inset:12mm;border:.4mm solid var(--black);pointer-events:none}
+.verklaring .rand:after{content:'';position:absolute;inset:1.5mm;border:.2mm solid var(--black)}
+.verklaring .kop{text-align:center;margin-top:8mm}
+.verklaring .kop .klein{letter-spacing:.2em;text-transform:uppercase;font-size:7pt}
+.verklaring h2{font-family:Charter,'Bitstream Charter','Liberation Serif',Georgia,serif;font-weight:700;font-size:28pt;letter-spacing:0;text-align:center;margin:3mm 0 2mm}
+.verklaring .brief{font-family:Charter,'Bitstream Charter','Liberation Serif',Georgia,serif;font-size:10.3pt;line-height:1.55;margin-top:7mm}
+.verklaring .brief p{margin-bottom:3.2mm}
+.verklaring .punten{list-style:none;margin:2mm 0 4mm}
+.verklaring .punten li{padding-left:7mm;position:relative;margin-bottom:1.6mm}
+.verklaring .punten li:before{content:attr(data-n);position:absolute;left:0;font-family:var(--fd);font-weight:700;color:var(--blue);font-size:9pt}
+.handtekening{margin-top:6mm;display:flex;justify-content:space-between;align-items:flex-end}
+.handtekening .krabbel{width:58mm;height:16mm;border-bottom:.3mm solid var(--black);position:relative}
+.handtekening .krabbel svg{position:absolute;left:2mm;bottom:1mm}
+.handtekening .naam{font-family:var(--ft);font-size:8.5pt;margin-top:1.5mm}
+.zegel{width:26mm;height:26mm;border-radius:50%;border:.5mm solid var(--blue);display:flex;align-items:center;justify-content:center;text-align:center;color:var(--blue);font-size:5.6pt;font-weight:700;letter-spacing:.08em;line-height:1.3;text-transform:uppercase;transform:rotate(-8deg)}
+.zegel b{display:block;font-family:var(--fd);font-size:13pt;letter-spacing:-.02em}
+/* Tegenstelling */
+.vs2{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:4mm}
+.vs2 .k{font-size:8pt;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:0 0 2.5mm}
+.vs2 .k.wij{color:var(--blue)}
+.vs2 div.c{padding:3.2mm 4mm 3.2mm 0;border-top:.25mm solid var(--soft);font-size:9.2pt}
+.vs2 div.c.wij{padding-left:4mm;background:var(--tint);font-weight:500}
+/* Model */
+.machine{position:relative;height:150mm;margin-top:6mm}
+.m-blok{position:absolute;border-radius:4mm;padding:4.5mm;font-size:8.5pt}
+.m-blok h3{font-size:14pt;margin-bottom:1.5mm}
+.m-blok .rol{font-size:7pt;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-bottom:3mm;opacity:.75}
+.m-blok p{margin:0}
+.m-pijl{position:absolute}
+.booster{position:absolute;border-radius:3mm;padding:3mm 3.5mm;font-size:8pt;background:#fff;border:.4mm solid var(--blue)}
+.booster b{display:block;font-size:9.5pt;color:var(--blue)}
+.fasen{display:grid;grid-template-columns:repeat(4,1fr);gap:3mm;margin-top:4mm}
+.fase-b{border-radius:3mm;padding:4mm;background:var(--bg);font-size:8.4pt}
+.fase-b .w{font-size:7pt;font-weight:700;color:var(--blue);letter-spacing:.04em;text-transform:uppercase}
+.fase-b h3{font-size:11pt;margin:1.5mm 0}
+.fase-b .aan{margin-top:2mm;display:flex;flex-wrap:wrap;gap:1mm}
+.fase-b .aan span{font-size:6.8pt;font-weight:600;border-radius:5mm;padding:.6mm 2mm;background:#fff}
+.fase-b .aan span.m{background:var(--blue);color:#fff}
+.illu{font-size:6.8pt;color:var(--tx2);margin-top:1mm}
+.zwart .illu,.blauw .illu{color:rgba(255,255,255,.6)}
+/* Funnel */
+.trechter{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:5mm;align-items:end}
+.tr{text-align:center;padding:0 1mm}
+.tr .bar{background:var(--blue);border-radius:2mm 2mm 0 0;margin:0 auto}
+.tr .n{font-family:var(--fd);font-weight:800;font-size:22pt;letter-spacing:-.03em;line-height:1;margin-bottom:1.5mm}
+.tr .w{font-size:7.5pt;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--tx2);margin-top:2mm}
+.ratio2{display:grid;grid-template-columns:1fr 1fr 1fr;margin:3mm 12.5% 0;text-align:center;font-size:7.6pt;color:var(--tx2)}
+.ratio2 b{display:block;font-family:var(--fd);font-size:12pt;color:var(--black)}
+.diagnose{width:100%;border-collapse:collapse;font-size:8.6pt;margin-top:4mm}
+.diagnose th{font-size:7pt;letter-spacing:.04em;text-transform:uppercase}
+.diagnose td{color:var(--black);vertical-align:top}
+.diagnose td:first-child{font-weight:600;width:28%}
+.diagnose .wie{display:inline-block;font-size:6.8pt;font-weight:700;border-radius:5mm;padding:.5mm 2mm;background:var(--tint);color:var(--deep);margin-top:1mm}
+.diagnose .wie.jij{background:var(--black);color:#fff}
+/* Verhaal */
+.verhaal p{font-size:10pt;line-height:1.6}
+.verhaal p.eerste:first-letter{font-family:var(--fd);font-weight:800;font-size:38pt;float:left;line-height:.8;margin:1.5mm 2mm 0 0;color:var(--blue)}
+.tussenkop{font-family:var(--fd);font-weight:700;font-size:15pt;letter-spacing:-.02em;line-height:1.2;color:var(--blue);margin:5mm 0;border-left:1mm solid var(--blue);padding-left:4mm}
+/* Tijdlijn reclame */
+.eeuw{display:grid;grid-template-columns:repeat(5,1fr);gap:3mm;margin-top:6mm}
+.eeuw div{border-top:1mm solid var(--ln);padding-top:3mm;font-size:8.3pt}
+.eeuw div.nu{border-color:var(--blue)}
+.eeuw .j{font-family:var(--fd);font-weight:800;font-size:15pt;letter-spacing:-.02em}
+.eeuw b{display:block;margin:1mm 0 .8mm;font-size:9.5pt}
+/* Portaal */
+.scherm{border-radius:3mm;overflow:hidden;box-shadow:0 2mm 8mm rgba(0,0,0,.18);border:.3mm solid var(--soft)}
+.scherm img{display:block;width:100%}
+/* Formule */
+.formule{display:flex;align-items:center;gap:4mm;font-family:var(--fd);font-weight:800;letter-spacing:-.04em;font-size:44pt;line-height:1;margin:8mm 0}
+.formule .op{color:var(--tx3);font-weight:400}
+.formule small{display:block;font-family:var(--ft);font-weight:500;font-size:8pt;letter-spacing:0;color:var(--tx2);margin-top:2mm}
+.spectrum{display:grid;grid-template-columns:1fr 1.2fr 1.4fr 1.2fr;margin-top:5mm;font-size:8pt}
+.spectrum div{padding:3mm;border-top:3mm solid}
+.spectrum b{display:block;font-size:9.5pt;margin-bottom:1mm}
+/* Artikelen: lopende tekst in kolommen, intro, tussenkoppen, streamers, bijschriften en kaders */
+:root{--serif:Charter,'Bitstream Charter','Liberation Serif',Georgia,serif}
+.rubriek{position:absolute;top:12mm;font-size:6.8pt;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--tx2)}
+.pg.r .rubriek{right:21mm}.pg.l .rubriek{left:21mm}
+.zwart .rubriek,.blauw .rubriek,.over-beeld .rubriek{color:rgba(255,255,255,.7)}
+.rubriek b{color:var(--blue)}
+.zwart .rubriek b,.over-beeld .rubriek b{color:#5aa9ff}
+.kop-artikel{font-family:var(--fd);font-weight:800;letter-spacing:-.04em;line-height:.95;font-size:54pt}
+.intro-artikel{font-family:var(--fd);font-weight:500;font-size:14.5pt;line-height:1.32;letter-spacing:-.01em;margin-top:6mm}
+.naamregel{font-size:7.2pt;letter-spacing:.08em;text-transform:uppercase;margin-top:5mm;color:var(--tx2)}
+.over-beeld .naamregel{color:rgba(255,255,255,.7)}
+.over-beeld{color:#fff}
+.over-beeld .tekstblok{position:absolute;z-index:2;left:21mm;right:23mm;bottom:28mm}
+.pg.r.over-beeld .tekstblok{left:23mm;right:21mm}
+.over-beeld .verloop{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,transparent 35%,rgba(0,0,0,.75) 100%)}
+.tekst{font-family:var(--serif);font-size:9.6pt;line-height:1.55;column-gap:6mm;color:#222}
+.tekst.k2{columns:2}.tekst.k3{columns:3;font-size:9.2pt}
+.tekst p{margin:0 0 2.6mm;text-indent:0}
+.tekst p+p{text-indent:4mm;margin-top:-1.2mm}
+.tekst h4,.tekst p.na-kop{text-indent:0}
+.tekst h4{font-family:var(--fd);font-size:10pt;font-weight:700;letter-spacing:-.005em;margin:4mm 0 1.4mm;color:var(--black);break-after:avoid}
+.tekst h4+p{text-indent:0;margin-top:0}
+.tekst p.begin:first-letter{font-family:var(--fd);font-weight:800;font-size:40pt;float:left;line-height:.78;margin:1.4mm 2.2mm 0 0;color:var(--blue)}
+.tekst p.begin{text-indent:0}
+.streamer{break-inside:avoid;font-family:var(--serif);font-style:italic;font-size:15pt;line-height:1.3;color:var(--blue);border-top:.5mm solid var(--blue);border-bottom:.5mm solid var(--blue);padding:3.5mm 0;margin:4mm 0 5mm;text-indent:0!important}
+.streamer small{display:block;font-family:var(--ft);font-style:normal;font-size:7pt;color:var(--tx2);margin-top:2mm;letter-spacing:.04em;text-transform:uppercase}
+.bijschrift{font-size:7pt;color:var(--tx2);margin-top:1.6mm;line-height:1.4}
+.bijschrift b{color:var(--black)}
+.kaderblok{background:var(--bg);border-radius:3mm;padding:5mm;break-inside:avoid}
+.kaderblok.blauw-k{background:var(--tint)}
+.kaderblok.donker{background:var(--black);color:#fff}
+.kaderblok .kl{font-size:6.8pt;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:2mm}
+.kaderblok.donker .kl{color:#5aa9ff}
+.kaderblok h3{font-size:13pt;margin-bottom:2mm}
+.kaderblok ol,.kaderblok ul{padding-left:4.5mm;font-size:8.8pt;line-height:1.45}
+.kaderblok li{margin-bottom:1.6mm}
+.einde:after{content:'';display:inline-block;width:2.2mm;height:2.2mm;background:var(--blue);margin-left:1.5mm;vertical-align:.1mm}
+/* In het kort */
+.kort{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6mm 6mm;margin-top:6mm}
+.kort-item{border-top:.6mm solid var(--black);padding-top:3mm}
+.kort-item .kl{font-size:6.8pt;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:1.5mm}
+.kort-item h3{font-size:12pt;line-height:1.15;margin-bottom:1.8mm}
+.kort-item p{font-family:var(--serif);font-size:8.8pt;line-height:1.5;margin:0}
+.kort-item .beeld{height:34mm;border-radius:2mm;margin-bottom:2.5mm;padding:2mm}
+.kort-item .groot{font-family:var(--fd);font-weight:800;font-size:40pt;letter-spacing:-.04em;line-height:1;color:var(--blue);margin-bottom:1mm}
+/* Keten met voordeur */
+.voordeur{display:grid;grid-template-columns:repeat(4,1fr) 22mm 1fr;align-items:end;gap:2mm;margin-top:5mm}
+.voordeur .st{background:var(--tint);border-radius:2mm;padding:3mm;font-size:7.6pt;min-height:22mm}
+.voordeur .st b{display:block;font-family:var(--fd);font-size:10pt;color:var(--deep)}
+.voordeur .deur{height:34mm;border:.6mm solid var(--black);border-radius:1.5mm 1.5mm 0 0;position:relative;display:flex;align-items:flex-end;justify-content:center;font-size:6.4pt;font-weight:700;padding-bottom:1.5mm;text-transform:uppercase;letter-spacing:.06em}
+.voordeur .deur:after{content:'';position:absolute;right:3mm;top:17mm;width:1.6mm;height:1.6mm;border-radius:50%;background:var(--black)}
+.voordeur .st.jij{background:var(--black);color:#fff}
+.voordeur .st.jij b{color:#fff}
+.wie-rij{display:grid;grid-template-columns:4fr 22mm 1fr;gap:2mm;margin-top:2mm;font-size:7.4pt;font-weight:700}
+.wie-rij .o{border-top:.8mm solid var(--blue);color:var(--blue);padding-top:1.5mm}
+.wie-rij .j{border-top:.8mm solid var(--black);padding-top:1.5mm;grid-column:3}
+</style></head><body>
+<section class="pg r cover">
+<div class="foto"></div>
+<div class="ad"><b>Beeld: omslagfoto</b>Echte foto, geen stock. Bijvoorbeeld iemand van het team midden in een draaidag,<br>of een ondernemer in zijn zaak. Ruimte boven voor de titel, onder voor de quote.</div>
+<div class="masthead"><div class="naam">JAMES ROBINSON</div>
+  <div class="lint"><span>The Performance Issue</span><span>Editie 01</span><span>Najaar 2026</span></div></div>
+<div class="zijlijn"><div class="groot">7×</div><p>zo vaak een serieus gesprek als je binnen het uur terugbelt. Lees waarom, p. 32</p></div>
+<div class="slogan">Momentum first.<br><i>Mastery later.</i></div>
+<div class="lijnen">
+  <div><b>Tot aan de voordeur</b>Waarom een goede aanvraag nog geen klant is <span>32</span></div>
+  <div><b>Van krant tot algoritme</b>Waarom gratis bereik voorbij is <span>18</span></div>
+  <div><b>Science + Art</b>Waarom data en merk samen winnen <span>16</span></div>
+  <div><b>Welkom in Hulsberg</b>Binnen bij het team <span>12</span></div>
+</div></section>
+<section class="pg l">
+<div class="kicker">In deze editie</div>
+<div class="tegel hoofdtegel"><div class="beeld" style=""><span>Beeld: een ondernemer aan de telefoon, of een voordeur</span></div><div class="pnr">32</div><b>Tot aan de voordeur</b><span>Het verhaal van Ruud: hoe de beste campagne toch geen klanten opleverde, en wat wij daarvan leerden.</span></div><div class="folio"><b>02</b><span>James Robinson · The Performance Issue</span></div></section>
+<section class="pg r">
+<div class="tegels" style="margin-top:9mm">
+<div class="tegel"><div class="beeld" style=""><span>Beeld: het systeem, als beeld</span></div><div class="pnr">24</div><b>Zo werkt het systeem</b><span>Motor, brandstof en versnellers</span></div><div class="tegel"><div class="beeld" style=""><span>Beeld: een krant naast een telefoon</span></div><div class="pnr">18</div><b>Van krant tot algoritme</b><span>Waarom gratis bereik voorbij is</span></div><div class="tegel"><div class="beeld" style=""><span>Beeld: een draaidag, camera in beeld</span></div><div class="pnr">16</div><b>Science + Art</b><span>Data en merk, hand in hand</span></div><div class="tegel"><div class="beeld" style=""><span>Beeld: het kantoor in Hulsberg</span></div><div class="pnr">12</div><b>Welkom in Hulsberg</b><span>Waar je aan tafel zit</span></div>
+</div>
+<ul class="kortlijst">
+  <li><i>04</i>Declaration of Performance</li>
+  <li><i>10</i>Wat normaal is, en hoe wij het doen</li>
+  <li><i>14</i>De ploeg</li>
+  <li><i>06</i>In het kort</li>
+  <li><i>58</i>Veelgestelde vragen</li>
+  <li><i>30</i>Van impressie tot klant</li>
+  <li><i>36</i>Je eigen portaal</li>
+  <li><i>40</i>Cases en klanten</li>
+  <li><i>48</i>Wat € 1 marketing oplevert</li>
+  <li><i>52</i>Fundament en pakketten</li>
+  <li><i>62</i>Marketing van A tot Z</li>
+  <li><i>64</i>Tot op de baan</li>
+</ul><div class="folio"><span>James Robinson · The Performance Issue</span><b>03</b></div></section>
+<section class="pg l zwart"><div class="beeld" style="position:absolute;inset:0;align-items:flex-start;padding:20mm 23mm"><span>Beeld: portret van Jim Coumans, rustig licht, kijkt in de camera</span></div>
+<div style="position:absolute;left:21mm;bottom:28mm;z-index:2"><div class="kicker">Voorwoord</div><div class="d" style="font-size:22pt">Jim Coumans</div><div style="color:rgba(255,255,255,.75)">Oprichter, James Robinson</div></div><div class="folio"><b>04</b><span>James Robinson · The Performance Issue</span></div></section>
+<section class="pg r verklaring">
+<div class="rand"></div>
+<div class="concept">Concept, Jim geeft nog feedback op de inhoud</div>
+<div class="kop"><div class="klein">James Robinson · Hulsberg</div><h2>Declaration of Performance</h2><div class="klein" style="letter-spacing:.1em">Wat je van ons mag verwachten</div></div>
+<div class="brief">
+  <p>Beste ondernemer,</p>
+  <p>Je hebt dit magazine in handen omdat je wilt groeien. Dat willen wij ook, voor jou. Op deze pagina staat waar je ons aan mag houden. Wat erachter zit, lees je in de rest van het magazine.</p>
+  <ul class="punten">
+    <li data-n="1">Resultaat staat bij ons op één. Niet onze mening, niet die van jou: de cijfers beslissen.</li>
+    <li data-n="2">We bouwen een systeem dat klanten oplevert. Adverteren is de motor, content de brandstof, en SEO, e-mail en je website maken het steeds sterker.</li>
+    <li data-n="3">We beginnen met onderzoek, niet met een offerte. Geloven we er niet in, dan zeggen we dat.</li>
+    <li data-n="4">Je ziet wat wij zien. Realtime, in je eigen portaal.</li>
+    <li data-n="5">Alles staat op jouw naam, en je kunt elke maand opzeggen. Je blijft omdat het werkt.</li>
+    <li data-n="6">We brengen kwalitatieve aanvragen tot aan je voordeur. Wat daarna gebeurt, maakt het verschil, en daar denken we graag over mee.</li>
+  </ul>
+  <p>Marketing moet geld opleveren. Doet het dat niet, dan is het een hobby. Daar zijn we niet voor.</p>
+</div>
+<div class="handtekening">
+  <div><div class="krabbel"><svg width="52mm" height="14mm" viewBox="0 0 52 14"><path d="M2 10 C6 2, 9 2, 10 8 S14 12, 17 5 S22 2, 23 9 C24 12, 27 6, 30 6 S34 10, 37 7 S44 3, 50 5" fill="none" stroke="#1c1c1e" stroke-width=".6" stroke-linecap="round"/></svg></div><div class="naam"><b>Jim Coumans</b> · Oprichter James Robinson<br>Hulsberg, <span class="vv">[datum]</span></div></div>
+  <div class="zegel"><div>James Robinson<b>2018</b>Performance</div></div>
+</div><div class="folio"><span>James Robinson · The Performance Issue</span><b>05</b></div></section>
+<section class="pg l"><div class="rubriek"><b>In het kort</b> · Nieuws uit Hulsberg</div>
+<div class="kop-artikel" style="font-size:48pt;margin-top:10mm">In het kort</div>
+<div class="kort" style="grid-template-columns:1fr 1fr">
+  <div class="kort-item"><div class="beeld" style=""><span>Beeld: het portaal op een laptop, op kantoor</span></div><div class="kl">Nieuw</div><h3>Je cijfers, live</h3>
+    <p>Geen pdf meer aan het eind van de maand. Elke klant van James Robinson krijgt een eigen portaal waarin de cijfers van Google, Meta, LinkedIn en de eigen website samenkomen. Elk uur bijgewerkt, en precies dezelfde cijfers die wij gebruiken om je campagnes bij te sturen.</p></div>
+  <div class="kort-item"><div class="kl">Bereikbaarheid</div><h3>Eén adres voor alles</h3>
+    <p>Vragen, materiaal, akkoorden: alles gaat naar één adres, support@jamesrobinson.nl. Iedereen die aan jouw campagnes werkt, leest mee. Je krijgt binnen één werkdag antwoord van degene die erover gaat. Brandt er echt iets, dan bel je gewoon naar kantoor.</p>
+    <div class="kl" style="margin-top:6mm">Agenda</div><h3>Padel met klanten</h3>
+    <p>Een paar keer per jaar staan we met klanten en het team op de padelbaan. Geen presentaties, wel een goed potje en een drankje achteraf. Ook als je nog geen klant bent, ben je welkom. Meer op pagina 64.</p></div>
+</div><div style="position:absolute;left:21mm;right:23mm;bottom:24mm"><div class="beeld" style="height:70mm;border-radius:3mm"><span>Beeld: achter de schermen: een draaidag bij een klant</span></div><div class="bijschrift"><b>Achter de schermen.</b> <span class="vv">[bij welke klant, en wat we maakten]</span></div></div><div class="folio"><b>06</b><span>James Robinson · The Performance Issue</span></div></section>
+<section class="pg r"><div class="rubriek"><b>In het kort</b> · Cijfers en feiten</div>
+<div class="kort" style="margin-top:22mm">
+  <div class="kort-item"><div class="groot">23%</div><div class="kl">Onderzoek</div><h3>Van de bedrijven belt nooit terug</h3>
+    <p>Onderzoekers stuurden ruim tweeduizend bedrijven een online aanvraag. Bijna een kwart reageerde nooit. Wie wel reageerde, deed er gemiddeld 42 uur over. Waarom dat ertoe doet, lees je op pagina 32.</p></div>
+  <div class="kort-item"><div class="groot">1 op 3</div><div class="kl">Wist je dat</div><h3>Zelfs de grootste techbedrijven gokken vaak mis</h3>
+    <p>Bij de grote techbedrijven blijkt hooguit een op de drie geteste ideeën het resultaat te verbeteren. De rest werkt niet, of zelfs averechts. Het bewijs dat meten belangrijker is dan mening.</p></div>
+  <div class="kort-item"><div class="groot">30 km</div><div class="kl">Dichtbij</div><h3>Focus op Zuid-Limburg</h3>
+    <p>We werken voor ondernemers binnen zo’n dertig kilometer van ons kantoor in Hulsberg. Dicht genoeg om snel aan tafel te zitten als dat nodig is.</p></div>
+</div>
+<div class="kort" style="grid-template-columns:2fr 1fr;margin-top:8mm">
+  <div class="kort-item"><div class="beeld" style="height:52mm;border-radius:2mm;margin-bottom:2.5mm"><span>Beeld: nieuwe collega’s, samen op de foto</span></div><div class="kl">Team</div><h3><span class="vv">[nieuwe collega’s of een mijlpaal van het team]</span></h3>
+    <p><span class="vv">[twee of drie zinnen, met naam en wat ze komen doen]</span></p></div>
+  <div class="kort-item"><div class="kl">Veelgehoord</div><h3>“Moet ik dan stoppen met posten?”</h3>
+    <p>Nee. Een verzorgd profiel op social media is goed voor je merk. Alleen is het geen manier om voorspelbaar nieuwe klanten te vinden. Daarover gaat het verhaal op pagina 18.</p></div>
+</div><div class="folio"><span>James Robinson · The Performance Issue</span><b>07</b></div></section>
+<section class="pg l over-beeld"><div class="beeld" style="position:absolute;inset:0;align-items:flex-start;padding:20mm 21mm"><span>Beeld: een oude krantenpagina met advertenties, en een hand met een telefoon ervoor</span></div><div class="verloop"></div>
+<div class="rubriek"><b>Feature</b> · De markt</div>
+<div class="tekstblok">
+  <div class="kop-artikel" style="font-size:66pt">Van krant tot algoritme</div>
+  <div class="intro-artikel" style="max-width:150mm">Elke generatie ondernemers had een vaste manier om klanten te vinden. Een advertentie in de krant, een spotje op de radio, een bericht op Facebook. Wat lang vanzelf werkte, werkt vandaag niet meer vanzelf. Wat er veranderde, en wat dat betekent voor wie nu wil groeien.</div>
+  <div class="naamregel">Tekst James Robinson · Beeld <span class="vv">[fotograaf]</span></div>
+</div><div class="folio"><b>08</b><span>James Robinson · The Performance Issue</span></div></section>
+<section class="pg r"><div class="rubriek"><b>Feature</b> · Van krant tot algoritme</div>
+<div class="tekst k3" style="margin-top:12mm">
+  <p class="begin">Wie in de jaren zeventig een zaak opende, wist wat hem te doen stond. Een advertentie in de regionale krant, misschien een spotje op de lokale radio, een bord langs de doorgaande weg. Iedereen in de streek las dezelfde krant. Wie erin stond, bestond.</p>
+  <p>Dertig jaar later verschoof dat naar internet. Eerst kwam de website, als digitaal visitekaartje. Daarna Google: wie bovenaan stond, kreeg de klanten. En toen kwam social media. Facebook, later Instagram en LinkedIn, beloofden iets wat nog nooit had bestaan: bereik zonder dat het iets kostte. Een goed bericht kon duizenden mensen bereiken, gewoon via de tijdlijn van je volgers.</p>
+  <p>Die belofte is blijven hangen. Voor veel ondernemers is posten nog altijd het hart van hun marketing. Dat is begrijpelijk. Het is vertrouwd, je kunt het zelf, en je ziet het resultaat met eigen ogen op je telefoon. Alleen ziet bijna niemand anders het.</p>
+  <h4>Het gratis bereik is op</h4>
+  <p>In tien jaar zijn de grote platformen veranderd van een plek waar je gratis werd gezien in een marktplaats waar je betaalt voor aandacht. Dat is geen complot, het is hun verdienmodel. Google, Meta, LinkedIn en TikTok verdienen hun geld met advertenties. Hoe beter die advertenties werken, hoe meer bedrijven terugkomen.</p>
+  <p>Ze hebben er dus alle belang bij dat jouw advertentie resultaat oplevert. Ze zijn er ook steeds beter in geworden: geen platform weet zo goed wie op het punt staat iets te kopen. Maar die kennis zetten ze alleen in als je ervoor betaalt.</p>
+  <div class="streamer">“Een bericht bereikt vooral de mensen die je al kent. Groei zit bij de mensen die je nog niet kent.”</div>
+  <p>Voor gewone berichten blijft weinig ruimte over. Een bedrijfspagina bereikt met een bericht gemiddeld één tot drie procent van de eigen volgers, blijkt uit recente cijfers van het onderzoeksbureau Socialinsider. Bij kleine pagina’s ligt dat wat hoger, maar zelden boven de zeven procent.</p>
+  <p>En wie zijn die volgers eigenlijk? Kijk eens naar de eerste vijftig. Meestal zijn het bestaande klanten, oud-collega’s, familie, leveranciers en een paar concurrenten die je in de gaten houden. Allemaal mensen die je al kennen. De mensen die je nog niet kent, en die volgende maand je klant kunnen worden, zitten er nauwelijks tussen.</p>
+  <h4>Posten heeft waarde. Maar een andere</h4>
+  <p>Betekent dat dat je social media moet laten liggen? Nee. Een verzorgd profiel bouwt aan je merk. Het laat zien dat je bestaat, dat je zaak leeft, en het geeft mensen die je al kennen een reden om terug te komen. Wie op zoek is naar een nieuwe leverancier, kijkt vaak even op je Instagram of LinkedIn. Dan is het fijn als daar iets staat.</p>
+</div><div style="position:absolute;left:21mm;right:23mm;bottom:24mm"><div class="beeld" style="height:92mm;border-radius:3mm"><span>Beeld: een ondernemer die op zijn telefoon door zijn eigen feed scrolt</span></div><div class="bijschrift"><b>Vertrouwd.</b> Posten voelt als marketing: je ziet het zelf, dus het is er. Maar de meeste mensen die je nog niet kent, zien het niet.</div></div><div class="folio"><span>James Robinson · The Performance Issue</span><b>09</b></div></section>
+<section class="pg l"><div class="rubriek"><b>Feature</b> · Van krant tot algoritme</div>
+<div class="tekst k3" style="margin-top:12mm">
+  <p class="na-kop">Alleen is het geen manier om voorspelbaar nieuwe klanten te vinden. Viraal gaan kan, maar niemand kan het plannen, en op toeval bouw je geen omzet. Bovendien is posten minder gratis dan het lijkt. Iemand moet het bedenken, fotograferen, schrijven en plaatsen, elke week opnieuw. Die tijd is geld, en het bereik dat je ervoor terugkrijgt, is klein en niet te sturen.</p>
+  <h4>Adverteren draait het om</h4>
+  <p>Bij adverteren kies je zelf wie je ziet. Mensen in jouw regio. Met een bepaalde functie of in een bepaalde branche. Die net zochten op precies wat jij aanbiedt, of die vorige week op je website waren en nog twijfelen. Je ziet per euro wat het oplevert, en wat niet werkt, zet je uit.</p>
+  <p>Dat vraagt ook iets: goede content, een budget, en geduld in de eerste maanden. Daar komen we later in dit magazine op terug. Maar het levert iets op wat posten niet kan: een voorspelbare stroom nieuwe aanvragen, die je kunt laten groeien als het werkt.</p>
+</div>
+<div class="kaderblok" style="margin-top:6mm">
+  <div class="kl">Rekenvoorbeeld</div><h3>Wie je bereikt</h3>
+  <svg viewBox="0 0 184.0 24.0" width="184.0mm" height="24.0mm" font-family="Inter, 'Helvetica Neue', Arial, sans-serif"><text x="0" y="4.2" font-size="3" font-weight="600" fill="#1c1c1e">Een bericht</text><text x="0" y="7.6" font-size="2.4" fill="#86868b">naar 1.000 volgers, 3% bereik</text><rect x="46" y="1.2" width="0.8" height="5" rx="1" fill="#86868b"/><text x="48.8" y="5.0" font-size="3" font-weight="600" fill="#1c1c1e">30</text><text x="0" y="16.2" font-size="3" font-weight="600" fill="#1c1c1e">€ 50 aan advertenties</text><text x="0" y="19.6" font-size="2.4" fill="#86868b">bij € 7 per 1.000 weergaven</text><rect x="46" y="13.2" width="112.0" height="5" rx="1" fill="#007aff"/><text x="160.0" y="17.0" font-size="3" font-weight="600" fill="#1c1c1e">7.000</text></svg>
+  <div class="bijschrift">Een rekenvoorbeeld, geen belofte. Wat 1.000 weergaven kosten, verschilt per doelgroep, kanaal en seizoen. Het bereik van een bericht: Socialinsider, Social Media Benchmarks 2026.</div>
+</div>
+<table style="margin-top:6mm;font-size:8.4pt">
+  <tr><th style="width:24%"></th><th>Een bericht plaatsen</th><th style="color:var(--blue)">Adverteren</th></tr>
+  <tr><td>Wat het kost</td><td>Vooral tijd, elke week opnieuw</td><td>Tijd voor goede content, plus budget</td></tr>
+  <tr><td>Wie het ziet</td><td>Een klein deel van je volgers</td><td>Mensen die jij kiest, ook nieuwe</td></tr>
+  <tr><td>Sturen</td><td>Plaatsen en afwachten</td><td>Meten, bijsturen, opschalen</td></tr>
+  <tr><td>Goed voor</td><td>Je merk en je vaste klanten</td><td>Nieuwe klanten, voorspelbaar</td></tr>
+</table><div class="folio"><b>10</b><span>James Robinson · The Performance Issue</span></div></section>
+<section class="pg r"><div class="rubriek"><b>Feature</b> · Van krant tot algoritme</div>
+<div class="tekst k3" style="margin-top:12mm">
+  <h4 style="margin-top:0">Hoe de platformen leren</h4>
+  <p class="na-kop">De algoritmes van Google en Meta kunnen niet lezen wat jij goed vindt aan je product. Ze kunnen wel meten. Wie klikt, wie haakt af, wie vult een formulier in. Met elke weergave leren ze beter wie jouw klant is. Daarvoor hebben ze data nodig, en data komt pas met tijd en budget.</p>
+  <p>Daarom beginnen we breed. We testen verschillende doelgroepen, boodschappen en beelden naast elkaar. Na een paar weken zie je wat aanslaat. Wat werkt, krijgt meer budget. Wat niet werkt, stopt. Zo wordt elke maand een beetje slimmer dan de vorige.</p>
+  <h4>Elk kanaal is een veiling</h4>
+  <p class="na-kop">Elk advertentiekanaal werkt als een veiling. Willen veel bedrijven dezelfde doelgroep of hetzelfde zoekwoord bereiken, dan stijgt de prijs. Een installateur betaalt in een koude winterweek meer voor een klik op “cv-ketel storing” dan in juli. Een makelaar betaalt meer in een drukke markt dan in een rustige.</p>
+  <p>Het vak zit in de mix: op het juiste moment, bij de juiste mensen, met de juiste boodschap, tegen een prijs die uit kan. Dat is geen eenmalige instelling. Het is werk dat elke week doorgaat.</p>
+  <p class="einde">De vraag is dus niet of je zichtbaar bent. De vraag is of je zichtbaar bent bij de mensen die morgen je klant kunnen worden.</p>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1.25fr;gap:6mm;position:absolute;left:23mm;right:21mm;bottom:24mm">
+  <div class="kaderblok donker">
+    <div class="kl">Wat dit voor jou betekent</div>
+    <ol>
+      <li><b>Houd je profiel verzorgd.</b> Goed voor je merk en voor wie je al kent.</li>
+      <li><b>Zoek groei niet in berichten.</b> Nieuwe klanten vind je gericht, met advertenties.</li>
+      <li><b>Geef het tijd.</b> De eerste weken zijn leren. Daarna gaat het sneller.</li>
+      <li><b>Stuur op cijfers.</b> Niet op likes, wel op aanvragen en wat ze kosten.</li>
+    </ol>
+  </div>
+  <div><div class="beeld" style="height:74mm;border-radius:3mm"><span>Beeld: een campagne op verschillende schermen</span></div>
+    <div class="bijschrift"><b>Gericht.</b> Eén campagne, zichtbaar op Google, Instagram en LinkedIn, steeds bij de mensen die het meest op je klant lijken.</div>
+  </div>
+</div><div class="folio"><span>James Robinson · The Performance Issue</span><b>11</b></div></section>
+<section class="pg l over-beeld"><div class="beeld" style="position:absolute;inset:0;align-items:flex-start;padding:20mm 23mm"><span>Beeld: een voordeur op een kier, warm licht, of een telefoon die op tafel overgaat</span></div><div class="verloop"></div>
+<div class="rubriek"><b>Verhaal</b> · Een les uit de praktijk</div>
+<div class="tekstblok">
+  <div class="kop-artikel" style="font-size:70pt">Tot aan de voordeur</div>
+  <div class="intro-artikel" style="max-width:150mm">Een nieuwe speler in een kleine markt. Een campagne die beter liep dan iemand had verwacht. En toch zegde hij op. Het verhaal van Ruud vertellen we aan elke nieuwe klant.</div>
+  <div class="naamregel">Tekst James Robinson · Ruud heet in werkelijkheid anders</div>
+</div><div class="folio"><b>12</b><span>James Robinson · The Performance Issue</span></div></section>
+<section class="pg r"><div class="rubriek"><b>Verhaal</b> · Tot aan de voordeur</div>
+<div class="tekst k3" style="margin-top:12mm">
+  <p class="begin">Een paar jaar geleden zat Ruud bij ons aan tafel. Een ondernemer met ambitie, net begonnen in een nichemarkt waar een handvol gevestigde namen de dienst uitmaakte. Hun websites stonden bovenaan in Google, hun namen kende iedereen in de branche. Ruud was de nieuwkomer, en dat wist hij.</p>
+  <p>Toch zagen we ruimte. Zijn aanbod was scherp, zijn prijs eerlijk, en er werd genoeg gezocht op wat hij deed. We besloten te beginnen met Google Ads: adverteren bij mensen die op dat moment actief zochten naar precies zijn dienst.</p>
+  <h4>Zoeken, bijsturen, en dan kantelt het</h4>
+  <p>De eerste weken waren zoeken. Welke zoekwoorden leverden aanvragen op, en welke alleen kliks? Welke advertentietekst sprak aan? Op welke uren en in welke plaatsen zat de vraag? We stelden bij, schoven met budget en testten opnieuw.</p>
+  <p>En toen kantelde het. De aanvragen kwamen binnen, eerst een paar per week, daarna bijna elke dag. Meer dan we vooraf hadden ingeschat. In de periodieke overleggen ging het over de cijfers, en die zagen er goed uit. Wij tevreden, Ruud tevreden. Dachten we.</p>
+  <div class="streamer">“De campagne deed precies wat ze moest doen. Alleen deed niemand de deur open.”</div>
+  <h4>Dan komt de opzegging</h4>
+  <p>Op een dag kwam er een mail. Ruud zegde op. Zijn reden was kort: het leverde hem geen klanten op.</p>
+  <p>Bij ons gingen alle alarmbellen af. Kwamen de aanvragen wel echt binnen? Klopte onze meting? Was de kwaliteit misschien slecht, en hadden we dat over het hoofd gezien? We doken erin en controleerden alles, aanvraag voor aanvraag.</p>
+  <p>De aanvragen waren echt. Het waren mensen uit de juiste regio, met precies de vraag waarvoor Ruud zijn bedrijf was begonnen. Aan de campagne lag het niet.</p>
+  <h4>Zeven dagen</h4>
+  <p>Het antwoord kwam pas toen we Ruud vroegen hoe hij zijn aanvragen opvolgde. Hij belde ze na een dag of zeven. Bewust. Ze hadden net een heel formulier ingevuld, legde hij uit. Dan wilde hij ze niet meteen lastigvallen. Hij wilde niet opdringerig overkomen.</p>
+</div><div style="position:absolute;left:23mm;right:21mm;bottom:24mm"><div class="beeld" style="height:88mm;border-radius:3mm"><span>Beeld: een telefoon met gemiste oproepen, of een agenda met een omcirkelde datum</span></div><div class="bijschrift"><b>Zeven dagen.</b> Zo lang wachtte Ruud met terugbellen. Lang genoeg voor zijn klanten om ergens anders te boeken.</div></div><div class="folio"><span>James Robinson · The Performance Issue</span><b>13</b></div></section>
+<section class="pg l"><div class="rubriek"><b>Verhaal</b> · Tot aan de voordeur</div>
+<div style="display:grid;grid-template-columns:2fr 1fr;gap:7mm;margin-top:12mm">
+  <div class="tekst k2">
+    <p class="na-kop">Vanuit Ruud gezien was dat beleefd. Vanuit zijn klant gezien was het stilte. Wie een aanvraag doet, heeft op dat moment een vraag of een probleem, en wil verder. Hoort hij een paar dagen niets, dan zoekt hij verder. De concurrent die wel binnen het uur belde, kreeg de opdracht.</p>
+    <p>Zo leverde een campagne die alles deed wat ze moest doen, toch geen klanten op. Niet omdat er iets mis was met de advertenties, maar omdat er niemand opendeed.</p>
+    <h4>Waar ons werk ophoudt</h4>
+    <p class="na-kop">Ruud is bij ons een begrip geworden. Niet omdat hij iets doms deed, maar omdat zijn verhaal laat zien waar het in marketing vaak misgaat: precies op het moment dat het werk van het bureau ophoudt en dat van de ondernemer begint.</p>
+    <p>Onze rol is helder. Wij zorgen dat de juiste mensen je vinden, dat ze een aanvraag doen, en dat die aanvraag van goede kwaliteit is. Mensen die klaar zijn om te kopen, afgeleverd tot aan je voordeur. Wat daarna gebeurt, bepaal jij: hoe snel je belt, hoe je het gesprek voert, wat je aanbiedt.</p>
+    <p class="einde">We denken daar graag over mee. Maar we spreken het vooraf af, zodat we allebei weten wie waarvoor verantwoordelijk is. En we meten het, vanaf de eerste dag.</p>
+    <div style="column-span:all;margin-top:6mm"><div class="beeld" style="height:96mm;border-radius:3mm"><span>Beeld: het team bespreekt de aanvragen van een klant in het portaal</span></div><div class="bijschrift"><b>Kwaliteit boven aantal.</b> In het portaal geeft de klant per aanvraag aan of die goed was. Zo sturen we op aanvragen die klant worden.</div></div>
+  </div>
+  <div class="kaderblok blauw-k">
+    <div class="kl">De cijfers</div><h3>Snelheid wint</h3>
+    <div class="cijfer" style="border-color:var(--deep);margin-top:3mm"><div class="n" style="font-size:42pt">7×</div><div class="t" style="font-size:8.6pt">zo vaak een serieus gesprek voor bedrijven die binnen een uur reageerden, vergeleken met een uur later.</div></div>
+    <div class="cijfer" style="border-color:var(--deep);margin-top:4mm"><div class="n" style="font-size:32pt">42 uur</div><div class="t" style="font-size:8.6pt">was de gemiddelde reactietijd van bedrijven die wel reageerden.</div></div>
+    <div class="cijfer" style="border-color:var(--deep);margin-top:4mm"><div class="n" style="font-size:32pt">23%</div><div class="t" style="font-size:8.6pt">reageerde nooit.</div></div>
+    <div class="bijschrift" style="margin-top:4mm">Oldroyd, McElheran &amp; Elkington, The Short Life of Online Sales Leads, Harvard Business Review, 2011. Ruim 2.200 bedrijven en 1,25 miljoen aanvragen.</div>
+  </div>
+</div><div class="folio"><b>14</b><span>James Robinson · The Performance Issue</span></div></section>
+<section class="pg r"><div class="rubriek"><b>Verhaal</b> · Tot aan de voordeur</div>
+<div class="kicker" style="margin-top:12mm">Wie doet wat</div>
+<h2 style="font-size:28pt">Tot de voordeur zijn wij. Daarna ben jij aan zet.</h2>
+<div class="voordeur">
+  <div class="st"><b>Gezien</b>De juiste mensen zien je advertentie</div>
+  <div class="st"><b>Geklikt</b>Ze komen op je website</div>
+  <div class="st"><b>Overtuigd</b>Je pagina neemt twijfel weg</div>
+  <div class="st"><b>Aanvraag</b>Een kwalitatieve aanvraag</div>
+  <div class="deur">Voordeur</div>
+  <div class="st jij"><b>Klant</b>Jouw gesprek, jouw aanbod</div>
+</div>
+<div class="wie-rij"><div class="o">James Robinson</div><div></div><div class="j">Jij</div></div>
+<div class="kaderblok" style="margin-top:9mm">
+  <div class="kl">Praktisch</div><h3>Vijf gewoontes van ondernemers die meer aanvragen omzetten</h3>
+  <ol style="columns:2;column-gap:7mm">
+    <li><b>Bel binnen het uur.</b> Wie snel reageert, spreekt de klant terwijl de vraag nog speelt.</li>
+    <li><b>Regel een vervanger.</b> Ook tijdens vakantie, ziekte of een drukke week.</li>
+    <li><b>Probeer het vaker dan één keer.</b> Niet opgenomen? Bel later terug en stuur een kort bericht.</li>
+    <li><b>Ken je eerste vragen.</b> Een vaste opening maakt elk gesprek beter en sneller.</li>
+    <li><b>Geef elke aanvraag een oordeel.</b> In je portaal, met één klik: goed of niet, en later of het een klant werd. Zo sturen wij op kwaliteit, niet alleen op aantal.</li>
+  </ol>
+</div>
+<div class="beeld" style="height:62mm;border-radius:3mm;margin-top:7mm"><span>Beeld: een ondernemer aan de telefoon in zijn zaak</span></div><div class="folio"><span>James Robinson · The Performance Issue</span><b>15</b></div></section>
+<section class="pg l blauw">
+  <div class="mast" style="font-size:64pt;margin-top:8mm">On top of<br>your game.</div>
+  <div style="position:absolute;left:21mm;right:23mm;bottom:24mm">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8mm;font-size:10pt">
+      <div><div class="d" style="font-size:20pt">James Robinson</div><div style="opacity:.8">Marketing &amp; Branding<br>Hulsberg, Zuid-Limburg</div></div>
+      <div style="text-align:right"><div style="opacity:.7;font-size:8pt">Alles per mail, binnen één werkdag antwoord</div><div class="d" style="font-size:16pt">support@jamesrobinson.nl</div><div style="opacity:.7;font-size:8pt;margin-top:3mm">Dringend</div><div class="d" style="font-size:16pt">045 792 0009</div><div style="opacity:.8;margin-top:3mm">jamesrobinson.nl</div></div>
+    </div>
+  </div>
+</section>
+</body></html>
