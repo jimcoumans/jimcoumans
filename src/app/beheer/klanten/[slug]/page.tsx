@@ -23,6 +23,7 @@ import { listContacts, listAccounts, listPartnersForOrganization, listActivePart
 import { Contactpersonen, Partners, Accounts, Bedrijfsgegevens } from '@/components/CrmSections'
 import { Vestigingen, Concurrenten, Doelen } from '@/components/Bedrijfsprofiel'
 import { Tijdlijn } from '@/components/Tijdlijn'
+import { FormulierenTab } from '@/components/formulieren/FormulierenTab'
 import { KlantCampagnes, VasteDoelgroepen } from '@/components/KlantCampagnes'
 import { KlantreisBalk, KlantreisDetail } from '@/components/Klantreis'
 import { Klantprofiel } from '@/components/Klantprofiel'
@@ -63,6 +64,7 @@ const TABS = [
   { key: 'overzicht', label: 'Overzicht' },
   { key: 'performance', label: 'Performance' },
   { key: 'klantreis', label: 'Klantreis' },
+  { key: 'formulieren', label: 'Formulieren' },
   { key: 'profiel', label: 'Klantprofiel' },
   { key: 'merkkluis', label: 'Merkkluis' },
   { key: 'budget', label: 'Budget en facturen' },
@@ -319,6 +321,8 @@ export default async function KlantPage({
         {tab === 'performance' && <PerformanceTab organizationId={klant.organization.id} slug={slug} periode={periode} klant={{ name: klant.organization.name, website: klant.organization.website }} />}
 
         {tab === 'klantreis' && <KlantreisDetail stand={klantreis} organizationId={klant.organization.id} slug={slug} />}
+
+        {tab === 'formulieren' && <FormulierenTab organizationId={klant.organization.id} />}
 
         {tab === 'campagnes' && <KlantCampagnes organizationId={klant.organization.id} slug={slug} />}
 
