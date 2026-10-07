@@ -111,6 +111,10 @@ export type ContractInvoer = {
   vakantieUren?: number
   /** Krijgt deze medewerker het vrijetijdsbudget? */
   vrijetijdsbudget?: boolean
+  /** Relatiebeding aan of uit. Leeg: wat het functieprofiel zegt. */
+  relatiebeding?: boolean
+  /** Extra afspraken voor dit contract. Leeg: die van het functieprofiel. */
+  extraAfspraken?: string | null
 }
 
 export type Artikel = { nummer: number; titel: string; leden: string[] }
@@ -221,8 +225,13 @@ export function stelContractOp(
     )
   }
 
-  const heeftRelatiebeding = profiel?.hasRelationClause === true
-  if (!heeftRelatiebeding && profiel !== null) {
+  const heeftRelatiebeding = invoer.relatiebeding ?? profiel?.hasRelationClause === true
+  // Een relatiebeding in een tijdelijk contract is alleen geldig met een schriftelijke motivering (art. 7:653 BW).
+  if (heeftRelatiebeding && !(profiel?.relationClauseMotivation ?? '').trim()) {
+    throw new ContractError('Een relatiebeding moet gemotiveerd zijn. Kies een functieprofiel met een motivering, of zet het relatiebeding uit.')
+  }
+  const extraAfspraken = (invoer.extraAfspraken ?? profiel?.extraClauses ?? '').trim()
+  if (!heeftRelatiebeding && profiel !== null && invoer.relatiebeding === undefined) {
     opmerkingen.push(
       `Bij de functie ${profiel.title} staat geen relatiebeding. Dat artikel blijft dus weg uit het contract.`,
     )
@@ -277,7 +286,7 @@ export function stelContractOp(
 
     relatiebeding_maanden: String(profiel?.relationClauseMonths ?? 12),
     relatiebeding_motivering: profiel?.relationClauseMotivation ?? '',
-    extra_afspraken: profiel?.extraClauses ?? '',
+    extra_afspraken: extraAfspraken,
   }
 
   /* De voorwaarden. Vaste namen en geen uitdrukking die in de database
@@ -292,7 +301,7 @@ export function stelContractOp(
     op_toeslag: opToeslag > 0,
     pensioenregeling: false,
     vrijetijdsbudget: invoer.vrijetijdsbudget === true,
-    extra_afspraken: (profiel?.extraClauses ?? '').trim() !== '',
+    extra_afspraken: extraAfspraken !== '',
   }
 
   const ontbrekend: string[] = []
@@ -508,8 +517,9 @@ export async function maakDefinitief(
 ): Promise<void> {
   const contract = await getContract(contractId)
   if (!contract) throw new ContractError('Dit contract bestaat niet meer.')
-  if (contract.soort === 'definitief') {
-    throw new ContractError('Dit contract is al definitief gemaakt.')
+  // Een definitief contract voor een kandidaat hangt nog aan niemand; pas bij aanname gaat het naar het dossier.
+  if (contract.soort === 'definitief' && contract.userId) {
+    throw new ContractError('Dit contract staat al in het dossier van een collega.')
   }
 
   await db.transaction(async (tx) => {
@@ -630,6 +640,6 @@ export async function listKandidatenMetAanbod() {
       status: candidates.status,
     })
     .from(candidates)
-    .where(or(eq(candidates.status, 'aanbod'), eq(candidates.status, 'aangenomen')))
+    .where(or(eq(candidates.status, 'aanbod'), eq(candidates.status, 'contract'), eq(candidates.status, 'aangenomen')))
     .orderBy(asc(candidates.name))
 }

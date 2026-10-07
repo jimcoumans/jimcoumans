@@ -46,7 +46,11 @@ export function KandidaatKaartWeergave({
     <article className="rounded-xl bg-white p-4 shadow-sm">
       <div className="mb-3 flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
         <div>
-          <h3 className="font-medium">{k.name}</h3>
+          <h3 className="font-medium">
+            <a href={`/beheer/werving/kandidaten/${k.id}`} className="hover:text-jr-blue">
+              {k.name}
+            </a>
+          </h3>
           <p className="flex flex-wrap items-center gap-1.5 text-xs text-gray-500">
             <span className="rounded-full bg-gray-100 px-1.5 py-0.5">
               {KANDIDAAT_STATUS_LABELS[k.status]}
@@ -128,11 +132,6 @@ export function KandidaatKaartWeergave({
         </p>
       )}
 
-      {k.notes && (
-        <p className="mb-3 rounded-lg bg-gray-50 p-2.5 text-xs whitespace-pre-wrap text-gray-700">
-          {k.notes}
-        </p>
-      )}
 
       {isLopend && (
         <p className="mb-3 text-xs text-gray-600">
@@ -224,6 +223,12 @@ export function KandidaatKaartWeergave({
           <input type="hidden" name="kandidaatId" value={k.id} />
           <input type="hidden" name="vacatureId" value={vacatureId ?? ''} />
         </ActionForm>
+        <a
+          href={`/beheer/werving/kandidaten/${k.id}`}
+          className="text-jr-link ml-auto inline-flex min-h-10 items-center rounded-lg px-3 text-sm font-medium hover:underline"
+        >
+          Profiel, notities en contract &rarr;
+        </a>
       </div>
     </article>
   )

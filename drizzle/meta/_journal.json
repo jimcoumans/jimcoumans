@@ -267,6 +267,13 @@
       "when": 1791385529594,
       "tag": "0037_contract_blijft_bij_wissen",
       "breakpoints": true
+    },
+    {
+      "idx": 38,
+      "version": "7",
+      "when": 1791387605304,
+      "tag": "0038_werving_contractfase",
+      "breakpoints": true
     }
   ]
 }

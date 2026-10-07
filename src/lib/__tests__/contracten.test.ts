@@ -200,6 +200,22 @@ test('zonder relatiebeding bij de functie komt dat artikel er niet in', () => {
   assert.ok(concept.opmerkingen.some((o) => /geen relatiebeding/.test(o)))
 })
 
+test('per contract: relatiebeding uit te zetten, aanzetten alleen met motivering, eigen extra afspraken', () => {
+  // Uitzetten mag altijd, ook als het functieprofiel het wel heeft.
+  const uit = stelContractOp(voncken({ relatiebeding: false }), sjabloon, werkgever, managerProfiel)
+  assert.ok(!uit.artikelen.some((a) => a.titel === 'Relatiebeding'))
+
+  // Aanzetten zonder motivering is een beding dat niet geldt: weigeren in plaats van het erin zetten.
+  assert.throws(() => stelContractOp(voncken({ relatiebeding: true }), sjabloon, werkgever, null), /moet gemotiveerd zijn/)
+
+  // Eigen extra afspraken gaan voor die van het profiel.
+  const metAfspraak = stelContractOp(voncken({ extraAfspraken: 'Twee dagen per week thuiswerken.' }), sjabloon, werkgever, managerProfiel)
+  const tekst = metAfspraak.artikelen.map((a) => a.leden.join(' ')).join(' ')
+  if (sjabloon.artikelen.some((a) => a.voorwaarde === 'extra_afspraken')) {
+    assert.ok(tekst.includes('Twee dagen per week thuiswerken.'))
+  }
+})
+
 test('de motivering van het relatiebeding komt uit het functieprofiel', () => {
   const eigen: JobProfile = {
     ...managerProfiel,

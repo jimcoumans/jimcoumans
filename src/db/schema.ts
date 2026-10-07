@@ -282,7 +282,8 @@ export const candidateStatusEnum = pgEnum('candidate_status', [
   'nieuw',
   'in_gesprek',
   'tweede_gesprek',
-  'aanbod',
+  'aanbod', // een pro-formavoorstel ligt bij de kandidaat
+  'contract', // akkoord op het voorstel: definitief contract ter ondertekening, gegevens aanleveren
   'aangenomen',
   'afgewezen',
   'afgehaakt',
@@ -2522,6 +2523,8 @@ export const candidates = pgTable(
     firstName: text('first_name'),
     infix: text('infix'),
     lastName: text('last_name'),
+    /** Alle voornamen zoals in het paspoort, voor het contract. De roepnaam staat in firstName. */
+    officialFirstNames: text('official_first_names'),
     email: text('email'),
     phone: text('phone'),
     linkedinUrl: text('linkedin_url'),
@@ -2665,6 +2668,128 @@ export const candidateDocuments = pgTable(
       )`,
     ),
   ],
+)
+
+/**
+ * Wat er over een kandidaat is vastgelegd: gespreksnotities, en vanzelf elke
+ * statuswijziging. Eén tijdlijn in plaats van één tekstveld dat steeds wordt
+ * overschreven. Gaat mee als de kandidaat wordt gewist.
+ */
+export const candidateNoteKindEnum = pgEnum('candidate_note_kind', ['notitie', 'gesprek', 'status'])
+
+export const candidateNotes = pgTable(
+  'candidate_notes',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    candidateId: uuid('candidate_id')
+      .notNull()
+      .references(() => candidates.id, { onDelete: 'cascade' }),
+    kind: candidateNoteKindEnum('kind').notNull().default('notitie'),
+    body: text('body').notNull(),
+    createdByUserId: uuid('created_by_user_id').references(() => users.id, { onDelete: 'set null' }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('candidate_notes_candidate_idx').on(t.candidateId, t.createdAt),
+    check('candidate_note_not_empty', sql`length(trim(${t.body})) > 0`),
+  ],
+)
+
+/* ----------------------------- Persoonsgegevens --------------------------
+   Wat er nodig is voor het contract en de salarisadministratie: naam zoals
+   in het paspoort, adres, geboortedatum, IBAN, een kopie van het ID en het
+   ingevulde loonheffingsformulier.
+
+   Pas vanaf de fase "contract", niet bij een sollicitant: wie niet bij ons
+   komt werken, hoeft ons zijn paspoort niet te geven. Het hoort eerst bij de
+   kandidaat en gaat bij aanname mee naar de medewerker; wordt de kandidaat
+   gewist, dan gaat het mee.
+
+   Het IBAN en de documenten staan versleuteld in de database (AES-256-GCM,
+   sleutel in GEGEVENS_SLEUTEL). Wie een document opent, wordt vastgelegd.
+   ------------------------------------------------------------------------- */
+
+export const personalDocumentKindEnum = pgEnum('personal_document_kind', ['id_kopie', 'loonheffing', 'overig'])
+
+export const personalRecords = pgTable(
+  'personal_records',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    candidateId: uuid('candidate_id').references(() => candidates.id, { onDelete: 'cascade' }),
+    userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }),
+
+    officialFirstNames: text('official_first_names'),
+    infix: text('infix'),
+    lastName: text('last_name'),
+    birthDate: timestamp('birth_date', { withTimezone: true }),
+    birthPlace: text('birth_place'),
+    addressLine: text('address_line'),
+    postalCode: text('postal_code'),
+    city: text('city'),
+    /** Versleuteld. Alleen de laatste vier cijfers staan leesbaar, om te tonen. */
+    ibanEnc: text('iban_enc'),
+    ibanLast4: text('iban_last4'),
+    accountHolder: text('account_holder'),
+
+    /* De invullink voor de kandidaat: geen token in de database, net als bij
+       de vragenlijst. Een nieuwe versie maakt de oude link ongeldig. */
+    linkVersie: integer('link_versie').notNull().default(0),
+    linkVerlooptOp: timestamp('link_verloopt_op', { withTimezone: true }),
+    /** Wanneer de kandidaat het formulier instuurde. */
+    aangeleverdOp: timestamp('aangeleverd_op', { withTimezone: true }),
+    /** Wanneer het is doorgegeven aan de salarisadministratie. */
+    doorgegevenOp: timestamp('doorgegeven_op', { withTimezone: true }),
+    doorgegevenDoorUserId: uuid('doorgegeven_door_user_id').references(() => users.id, { onDelete: 'set null' }),
+
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex('personal_records_candidate_uniq').on(t.candidateId),
+    uniqueIndex('personal_records_user_uniq').on(t.userId),
+    check('personal_record_belongs_to_someone', sql`${t.candidateId} IS NOT NULL OR ${t.userId} IS NOT NULL`),
+  ],
+)
+
+export const personalDocuments = pgTable(
+  'personal_documents',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    recordId: uuid('record_id')
+      .notNull()
+      .references(() => personalRecords.id, { onDelete: 'cascade' }),
+    kind: personalDocumentKindEnum('kind').notNull(),
+    contentType: text('content_type').notNull(),
+    bytes: integer('bytes').notNull(),
+    /** Het bestand, versleuteld. */
+    dataEnc: text('data_enc').notNull(),
+    filename: text('filename'),
+    /** Leeg als de kandidaat het zelf aanleverde via de link. */
+    uploadedByUserId: uuid('uploaded_by_user_id').references(() => users.id, { onDelete: 'set null' }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('personal_documents_record_idx').on(t.recordId),
+    check('personal_document_size_reasonable', sql`${t.bytes} > 0 AND ${t.bytes} <= 5242880`),
+    check(
+      'personal_document_type_allowed',
+      sql`${t.contentType} IN ('application/pdf', 'image/jpeg', 'image/png')`,
+    ),
+  ],
+)
+
+/** Wie wanneer een persoonsdocument opende. Bij een kopie paspoort wil je dat kunnen laten zien. */
+export const personalDocumentViews = pgTable(
+  'personal_document_views',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    documentId: uuid('document_id')
+      .notNull()
+      .references(() => personalDocuments.id, { onDelete: 'cascade' }),
+    userId: uuid('user_id').references(() => users.id, { onDelete: 'set null' }),
+    viewedAt: timestamp('viewed_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index('personal_document_views_document_idx').on(t.documentId)],
 )
 
 /* -------------------------------- Contracten -----------------------------
@@ -3388,6 +3513,9 @@ export type SalaryScale = typeof salaryScales.$inferSelect
 export type Vacancy = typeof vacancies.$inferSelect
 export type Candidate = typeof candidates.$inferSelect
 export type CandidateDocument = typeof candidateDocuments.$inferSelect
+export type CandidateNote = typeof candidateNotes.$inferSelect
+export type PersonalRecord = typeof personalRecords.$inferSelect
+export type PersonalDocument = typeof personalDocuments.$inferSelect
 export type EmployerSettings = typeof employerSettings.$inferSelect
 export type JobProfile = typeof jobProfiles.$inferSelect
 export type ContractTemplate = typeof contractTemplates.$inferSelect

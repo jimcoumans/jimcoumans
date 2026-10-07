@@ -18,6 +18,10 @@ import {
   type ContractInvoer,
 } from '@/lib/contracten'
 import { berekenBeloning, getHuis } from '@/lib/salarishuis'
+import { zetKandidaatStatus } from '@/lib/werving'
+import { db } from '@/db'
+import { candidates, candidateNotes } from '@/db/schema'
+import { eq } from 'drizzle-orm'
 import type { ActionResult } from './actions'
 
 /* Acties voor de contractgenerator. Alleen voor beheerders, net als de
@@ -116,7 +120,9 @@ export async function nieuwContract(formData: FormData): Promise<ActionResult> {
     try {
       const beloning = berekenBeloning(huis, schaal, Math.round(trede), urenKwartier)
       brutoCents = beloning.maandCents
-      opToeslagCents = beloning.opToeslagCents
+      // OP-toeslag in plaats van een pensioenregeling: standaard aan, uit te zetten.
+      const opUit = formData.has('opToeslagKeuze') && !['ja', 'on', 'true'].includes(tekst(formData, 'opToeslagAan'))
+      opToeslagCents = opUit ? 0 : beloning.opToeslagCents
       vakantieUren = beloning.vakantieUren
       vakantieUrenFulltime = huis.huis.holidayHoursFulltime
       vakantietoeslagBp = huis.huis.holidayAllowanceBp
@@ -180,6 +186,9 @@ export async function nieuwContract(formData: FormData): Promise<ActionResult> {
     vakantieUrenFulltime,
     vakantieUren: vakantieUren ?? undefined,
     vrijetijdsbudget: ['ja', 'on', 'true'].includes(tekst(formData, 'vrijetijdsbudget')),
+    // Alleen als het formulier de keuze aanbiedt; anders beslist het functieprofiel.
+    relatiebeding: formData.has('relatiebedingKeuze') ? ['ja', 'on', 'true'].includes(tekst(formData, 'relatiebeding')) : undefined,
+    extraAfspraken: formData.has('extraAfspraken') ? tekst(formData, 'extraAfspraken') : undefined,
   }
 
   if (invoer.naam === '') return { ok: false, error: 'Vul de naam van de werknemer in.' }
@@ -199,12 +208,35 @@ export async function nieuwContract(formData: FormData): Promise<ActionResult> {
     }
 
     const concept = stelContractOp(invoer, sjabloon, werkgever, profiel)
-    const bewaard = await bewaarContract(invoer, concept, sjabloon, 'proforma', gebruiker.id)
+    // Pro forma: een voorstel om over te praten. Definitief: ter ondertekening.
+    const contractSoort = tekst(formData, 'contractSoort') === 'definitief' ? 'definitief' : 'proforma'
+    const bewaard = await bewaarContract(invoer, concept, sjabloon, contractSoort, gebruiker.id)
     nieuwId = bewaard.id
-  })
+    if (kandidaatId) await kandidaatNaarFase(kandidaatId, contractSoort, gebruiker.id)
+  }, kandidaatId ? [`/beheer/werving/kandidaten/${kandidaatId}`] : [])
 
   if (resultaat.ok && nieuwId) redirect(`/beheer/contracten/${nieuwId}`)
   return resultaat
+}
+
+/**
+ * Een contract voor een kandidaat zet hem in de bijbehorende fase, als hij daar
+ * nog niet was: pro forma is "voorstel", definitief is "contract ter
+ * ondertekening". Terug in de tijd gaat het nooit.
+ */
+async function kandidaatNaarFase(kandidaatId: string, soort: 'proforma' | 'definitief', userId: string) {
+  const [k] = await db.select({ status: candidates.status }).from(candidates).where(eq(candidates.id, kandidaatId)).limit(1)
+  if (!k) return
+  const volgorde = ['nieuw', 'in_gesprek', 'tweede_gesprek', 'aanbod', 'contract']
+  const doel = soort === 'definitief' ? 'contract' : 'aanbod'
+  const nu = volgorde.indexOf(k.status)
+  if (nu >= 0 && nu < volgorde.indexOf(doel)) await zetKandidaatStatus(kandidaatId, doel, null, new Date(), userId)
+  await db.insert(candidateNotes).values({
+    candidateId: kandidaatId,
+    kind: 'status',
+    body: soort === 'definitief' ? 'Definitief contract opgesteld, ter ondertekening.' : 'Pro-formacontract opgesteld.',
+    createdByUserId: userId,
+  })
 }
 
 export async function contractDefinitief(formData: FormData): Promise<ActionResult> {

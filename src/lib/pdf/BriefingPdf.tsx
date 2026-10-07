@@ -1,10 +1,10 @@
-import path from 'node:path'
-import { Document, Page, View, Text, Link, Font, StyleSheet, renderToBuffer } from '@react-pdf/renderer'
+import { Document, Page, View, Text, Link, StyleSheet, renderToBuffer } from '@react-pdf/renderer'
 import type { CampagneVolledig } from '@/lib/campagnes'
 import { STATUS_LABELS, livePeriode } from '@/lib/campagnes'
 import { formatBp, formatHonderdsten, formatAantal } from '@/lib/hypothese'
 import { formatDateLong } from '@/lib/dates'
 import { leesPunten, groepeerPunten } from '@/lib/punten'
+import { registreerFonts } from './fonts'
 import { budgetTekst, budgetBereik, omzetBereik, euro, euroPrecies, prijs, regels, versieLabel, LEEG } from '@/components/CampagneBriefing'
 
 /* -------------------------------------------------------------------------
@@ -20,24 +20,6 @@ import { budgetTekst, budgetBereik, omzetBereik, euro, euroPrecies, prijs, regel
    webfonts in src/app/fonts (OFL-licentie).
    ------------------------------------------------------------------------- */
 
-const FONTS = path.join(/*turbopackIgnore: true*/ process.cwd(), 'src/fonts/pdf')
-let geregistreerd = false
-function registreerFonts() {
-  if (geregistreerd) return
-  Font.register({
-    family: 'Inter',
-    fonts: [
-      { src: path.join(FONTS, 'Inter-400.ttf'), fontWeight: 400 },
-      { src: path.join(FONTS, 'Inter-500.ttf'), fontWeight: 500 },
-      { src: path.join(FONTS, 'Inter-700.ttf'), fontWeight: 700 },
-    ],
-  })
-  Font.register({ family: 'InterTight', src: path.join(FONTS, 'InterTight-700.ttf'), fontWeight: 700 })
-  // Geen afbreekstreepjes midden in woorden; alleen een heel lang woord (een webadres) mag breken.
-  // Nooit afbreken binnen een woord: de bibliotheek zet er dan een streepje bij, ook in een webadres.
-  Font.registerHyphenationCallback((woord) => [woord])
-  geregistreerd = true
-}
 
 const BLAUW = '#007AFF'
 const ZWART = '#1C1C1E'
