@@ -86,10 +86,11 @@ export function budgetBereik(h: Hypothese): string {
 /** Het budget als deel van de omzet, met dezelfde bandbreedte. */
 export function omzetBereik(h: Hypothese): string | null {
   if (h.omzetCents <= 0 || h.budgetVanOmzetBp === null) return null
-  if (h.ondergrensCents === null) return `${formatBp(h.budgetVanOmzetBp)}%`
+  const fmt = (n: number) => n.toLocaleString('nl-NL', { maximumFractionDigits: 1 })
+  // Eén decimaal: 18,5% en niet 18,49%. Meer precisie suggereert een zekerheid die de hypothese niet heeft.
+  if (h.ondergrensCents === null) return `${fmt(Math.round(h.budgetVanOmzetBp / 10) / 10)}%`
   const onder = Math.round((h.ondergrensCents / h.omzetCents) * 1000) / 10
   const boven = Math.round((h.budgetCents / h.omzetCents) * 1000) / 10
-  const fmt = (n: number) => n.toLocaleString('nl-NL', { maximumFractionDigits: 1 })
   return `${fmt(onder)} – ${fmt(boven)}%`
 }
 
@@ -168,7 +169,7 @@ export function CampagneBriefing({ v }: { v: CampagneVolledig }) {
         </div>
         <div className="text-right text-xs text-gray-600">
           <p>
-            {c.version === 0 ? 'Concept' : `Versie ${versieLabel(c.version)}`} · {formatDateLong(versieDatum)}
+            {c.version === 0 ? 'Nog niet verstuurd' : `Versie ${versieLabel(c.version)}`} · {formatDateLong(versieDatum)}
           </p>
           <p className="mt-1">
             <Chip kleur={c.status === 'akkoord' ? 'groen' : c.status === 'voorstel' ? 'oranje' : 'grijs'}>

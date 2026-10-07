@@ -607,7 +607,8 @@ export async function voerVerwerkingUit(id: string, model: Model = claude, vanda
     if (versietaal.length > 0) {
       extraVragen.push(`Lees ${versietaal.join(', ')} na: daar lijkt nog naar een eerdere versie verwezen te worden.`)
     }
-    const oudeBedragen = vindOudeBedragen(oud, gelezen.data, opgepakt.invoer)
+    // Alleen bij feedback die de AI verwerkt: een ingelezen briefing is al uitgewerkt, met bewuste bedragen.
+    const oudeBedragen = opgepakt.bron === 'ai' ? vindOudeBedragen(oud, gelezen.data, opgepakt.invoer) : []
     if (oudeBedragen.length > 0) {
       extraVragen.push(`De prijzen of aantallen veranderden, maar deze bedragen stonden er al en staan er nog. Kloppen ze nog? ${oudeBedragen.join('; ')}.`)
     }
