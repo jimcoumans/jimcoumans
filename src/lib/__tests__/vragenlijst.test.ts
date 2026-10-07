@@ -4,7 +4,8 @@
  */
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { beoordeel, rekensom, type Antwoorden } from '../formulieren/vragenlijst'
+import { beoordeel, rekensom, leesGetal, ontbrekend, type Antwoorden } from '../formulieren/vragenlijst'
+import { schoonVragenlijst } from '../formulieren'
 
 const basis: Antwoorden = {
   aanWie: 'Aan particulieren',
@@ -54,4 +55,40 @@ test('oranje: budget, wat een aanvraag mag kosten, of de markt', () => {
   const twee = beoordeel({ ...basis, budgetNu: 'Minder dan € 1.000', aanWie: 'Aan bedrijven', doorlooptijd: 'Langer dan een half jaar' })
   assert.equal(twee.redenen.length, 2)
   assert.match(twee.redenen[0]!, /Budget/)
+})
+
+test('een leeg websiteveld is nog niet ingevuld, niet "geen website"', () => {
+  assert.notEqual(beoordeel({ ...basis, website: '' }).kleur, 'rood')
+  assert.equal(beoordeel({ ...basis, website: 'Ik heb nog geen website' }).kleur, 'rood')
+})
+
+test('een lege vragenlijst mist de verplichte vragen en heeft dus nog geen uitkomst', () => {
+  assert.deepEqual(
+    ontbrekend({}).map((v) => v.nr),
+    [1, 2, 3, 4, 5, 7, 8, 9, 11, 13, 15],
+  )
+  assert.deepEqual(ontbrekend({ ...basis, watVerkoop: 'Training', aanvragen: 0 }), [])
+})
+
+test('nog geen aanvragen: het percentage telt niet, de rekensom neemt 20% aan', () => {
+  const a = schoonVragenlijst({ ...basis, aanvragen: '0', conversie: '0' })
+  assert.equal(a.conversie, null)
+  const som = rekensom(a)
+  // 1.500 × 3 × 30% × 1 jaar × 20% = 270, niet 0.
+  assert.equal(som.maxPerAanvraag, 270)
+  assert.match(som.rekensom.at(-2)!.label, /nog geen aanvragen/)
+  // Met aanvragen telt 0% wel: dan wordt er echt niemand klant.
+  assert.equal(schoonVragenlijst({ ...basis, aanvragen: '10', conversie: '0' }).conversie, 0)
+})
+
+test('getallen zoals mensen ze typen, en geen stil verlies bij onzin', () => {
+  assert.equal(leesGetal('€ 1.200,-'), 1200)
+  assert.equal(leesGetal('1.200'), 1200)
+  assert.equal(leesGetal('1.200,50'), 1200.5)
+  assert.equal(leesGetal('12,5%'), 12.5)
+  assert.equal(leesGetal('2.5'), 2.5)
+  assert.equal(leesGetal('veel'), null)
+  const fouten: string[] = []
+  schoonVragenlijst({ ...basis, opdracht: 'ongeveer duizend', perJaar: '60' }, fouten)
+  assert.deepEqual(fouten, ['Vraag 8: “ongeveer duizend” is geen getal.', 'Vraag 10: kies een getal van 1 tot 52.'])
 })

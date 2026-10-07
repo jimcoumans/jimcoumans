@@ -1,9 +1,10 @@
 'use client'
 
-import { useActionState } from 'react'
+import { startTransition, useActionState, useRef } from 'react'
 import { VragenlijstVelden } from '@/components/formulieren/VragenlijstVelden'
 import type { Antwoorden, Kleur } from '@/lib/formulieren/vragenlijst'
 import { dienIn, type Inzending } from './actions'
+import { useConcept } from '@/components/useConcept'
 
 /* De bedankpagina's uit 01.2, in de woorden van de klant. */
 function onderwerp(reden: string): string {
@@ -58,11 +59,31 @@ function Blok({ kop, children }: { kop: string; children: React.ReactNode }) {
   )
 }
 
-export function PubliekeVragenlijst({ id, token, antwoorden }: { id: string; token: string; antwoorden: Antwoorden }) {
-  const [state, actie, bezig] = useActionState<Inzending, FormData>(dienIn, null)
+export function PubliekeVragenlijst({ id, token, antwoorden, versie }: { id: string; token: string; antwoorden: Antwoorden; versie: string }) {
+  const [state, actie, bezig] = useActionState<Inzending, FormData>(async (vorige, data) => {
+    try {
+      return await dienIn(vorige, data)
+    } catch {
+      return { ok: false, error: 'Versturen lukte niet. Herlaad de pagina en probeer het nog eens: je antwoorden blijven staan. Lukt het niet, bel ons: 045 792 0009.' }
+    }
+  }, null)
+  const formulier = useRef<HTMLFormElement>(null)
+  // Wat de klant invult, blijft in de browser staan tot het verstuurd is: ook na herladen.
+  const { bewaar } = useConcept(formulier, { sleutel: `vragenlijst:${id}`, versie }, state?.ok ? state : null)
   if (state?.ok) return <Bedankt kleur={state.kleur} redenen={state.redenen} voornaam={state.voornaam} />
   return (
-    <form action={actie} className="space-y-8 rounded-2xl bg-white p-5 shadow-sm sm:p-8">
+    <form
+      ref={formulier}
+      onInput={bewaar}
+      onChange={bewaar}
+      onSubmit={(e) => {
+        // Zelf versturen: dan zet React het formulier na een foutmelding niet leeg.
+        e.preventDefault()
+        const data = new FormData(e.currentTarget)
+        startTransition(() => actie(data))
+      }}
+      className="space-y-8 rounded-2xl bg-white p-5 shadow-sm sm:p-8"
+    >
       <input type="hidden" name="id" value={id} />
       <input type="hidden" name="token" value={token} />
       <div aria-hidden="true" className="absolute -left-[9999px]">

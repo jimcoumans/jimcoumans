@@ -101,7 +101,16 @@ export const VRAGEN: Vraag[] = [
     na: 'aanvragen per maand',
     min: 0,
   },
-  { id: 'conversie', nr: 12, vraag: 'Hoeveel procent van die aanvragen wordt klant?', hulp: 'Weet je het niet? Laat het dan leeg.', soort: 'getal', na: '%', min: 0, max: 100 },
+  {
+    id: 'conversie',
+    nr: 12,
+    vraag: 'Hoeveel procent van die aanvragen wordt klant?',
+    hulp: 'Weet je het niet, of krijg je nu nog geen aanvragen? Laat het dan leeg; we rekenen dan met 20%.',
+    soort: 'getal',
+    na: '%',
+    min: 0,
+    max: 100,
+  },
   {
     id: 'doorlooptijd',
     nr: 13,
@@ -161,12 +170,39 @@ const tekst = (a: Antwoorden, id: string) => {
   const w = a[id]
   return typeof w === 'string' ? w.trim() : ''
 }
-const getal = (a: Antwoorden, id: string): number | null => {
-  const w = a[id]
+/**
+ * Een getal zoals mensen het typen: 1200, 1.200, € 1.200,-, 1.200,50, 12,5% of 2.5.
+ * Null als er geen getal in te lezen is.
+ */
+export function leesGetal(w: unknown): number | null {
   if (typeof w === 'number') return Number.isFinite(w) ? w : null
-  if (typeof w !== 'string' || w.trim() === '') return null
-  const n = Number(w.replace(/[€%\s.]/g, '').replace(',', '.'))
+  if (typeof w !== 'string') return null
+  let t = w.replace(/[€%\s]/g, '').replace(/[,.][-–]+$/, '')
+  if (t === '') return null
+  if (t.includes(',') && t.includes('.')) t = t.replace(/\./g, '').replace(',', '.')
+  else if (t.includes(',')) t = t.replace(',', '.')
+  else if (/^\d{1,3}(\.\d{3})+$/.test(t)) t = t.replace(/\./g, '')
+  if (!/^-?\d+(\.\d+)?$/.test(t)) return null
+  const n = Number(t)
   return Number.isFinite(n) ? n : null
+}
+
+const getal = (a: Antwoorden, id: string): number | null => leesGetal(a[id])
+
+/** Nog geen aanvragen: dan zegt een conversiepercentage niets, en rekenen we met de aanname. */
+export function conversieTelt(a: Antwoorden): boolean {
+  return getal(a, 'aanvragen') !== 0
+}
+
+/** De vragen die er moeten zijn voor een beoordeling. De rest mag leeg. */
+export const VERPLICHT = VRAGEN.filter((v) => !['budgetGepland', 'perJaar', 'conversie', 'waaraan', 'knelpunt'].includes(v.id))
+
+/** Welke verplichte vragen nog leeg zijn. */
+export function ontbrekend(a: Antwoorden): Vraag[] {
+  return VERPLICHT.filter((v) => {
+    const w = a[v.id]
+    return w === null || w === undefined || (typeof w === 'string' && w.trim() === '')
+  })
 }
 const euro = (n: number) => `€ ${n.toLocaleString('nl-NL', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 })}`
 
@@ -178,7 +214,8 @@ export function rekensom(a: Antwoorden): Pick<Beoordeling, 'maxPerAanvraag' | 'r
   const eenmalig = duur === 'Eenmalige aankoop'
   const keer = eenmalig ? 1 : Math.min(52, Math.max(1, getal(a, 'perJaar') ?? 1))
   const jaren = duur === 'Korter dan een jaar' ? 0.5 : 1
-  const conv = getal(a, 'conversie')
+  const geenAanvragen = !conversieTelt(a)
+  const conv = geenAanvragen ? null : getal(a, 'conversie')
   const conversie = conv === null ? 20 : Math.min(100, Math.max(0, conv))
   const omzet = opdracht * keer
   const max = Math.round(omzet * 0.3 * jaren * (conversie / 100) * 100) / 100
@@ -190,7 +227,12 @@ export function rekensom(a: Antwoorden): Pick<Beoordeling, 'maxPerAanvraag' | 'r
       { label: 'Omzet per klant per jaar', waarde: euro(omzet) },
       { label: 'Standaardmarge', waarde: '× 30%' },
       { label: 'Terugverdiend binnen twaalf maanden (vraag 9)', waarde: jaren === 0.5 ? '× ½ jaar' : '× 1 jaar' },
-      { label: `Deel van de aanvragen dat klant wordt (vraag 12)${conv === null ? ', “weet ik niet” telt als 20%' : ''}`, waarde: `× ${conversie}%` },
+      {
+        label: `Deel van de aanvragen dat klant wordt (vraag 12)${
+          geenAanvragen ? ': nog geen aanvragen, dus 20% aangenomen' : conv === null ? ', “weet ik niet” telt als 20%' : ''
+        }`,
+        waarde: `× ${conversie}%`,
+      },
       { label: 'Alles bij elkaar per aanvraag', waarde: euro(max) },
     ],
   }
@@ -204,8 +246,8 @@ export function beoordeel(a: Antwoorden): Beoordeling {
   const som = rekensom(a)
   const rood: string[] = []
   if (tekst(a, 'hoeKlant') === 'Ze kopen direct online') rood.push('Ze kopen direct online: e-commerce is niet onze propositie.')
-  const site = tekst(a, 'website')
-  if (site === '' || site === NOG_GEEN_WEBSITE) rood.push('Nog geen website: eerst een websiteproject.')
+  // Alleen als het echt zo is aangevinkt: een leeg veld is "nog niet ingevuld", niet "geen website".
+  if (tekst(a, 'website') === NOG_GEEN_WEBSITE) rood.push('Nog geen website: eerst een websiteproject.')
   if (rood.length > 0) return { kleur: 'rood', redenen: rood, ...som }
 
   const beginnen = tekst(a, 'beginnen')

@@ -2,7 +2,7 @@ import { redirect, notFound } from 'next/navigation'
 import { headers } from 'next/headers'
 import { getSessionUser } from '@/lib/auth'
 import { getFormulier, laatsteVragenlijst, linkPad, schoonQuickscan, SOORT_LABEL, SOORT_CODE, LINK_DAGEN } from '@/lib/formulieren'
-import { beoordeel, KLEUR_LABEL, VRAGEN, type Antwoorden, type Kleur } from '@/lib/formulieren/vragenlijst'
+import { beoordeel, ontbrekend, KLEUR_LABEL, VRAGEN, type Antwoorden, type Kleur } from '@/lib/formulieren/vragenlijst'
 import { PUNTEN, GROEPEN, standVanScan, OPLOSSER_LABEL, type ScanKleur } from '@/lib/formulieren/quickscan'
 import { INTAKE } from '@/lib/formulieren/intake'
 import { AppShell } from '@/components/AppShell'
@@ -32,6 +32,8 @@ export default async function FormulierPagina({ params }: { params: Promise<{ id
   const a = fm.antwoorden as Record<string, unknown>
   const verborgen = <input type="hidden" name="id" value={fm.id} />
   const vragenlijst = fm.soort === 'vragenlijst' ? null : await laatsteVragenlijst(org.id)
+  // Wat er is ingevuld, blijft ook in de browser staan tot het is opgeslagen.
+  const concept = { sleutel: `formulier:${fm.id}`, versie: fm.updatedAt.toISOString() }
 
   return (
     <AppShell user={user} actief="klanten">
@@ -63,7 +65,7 @@ export default async function FormulierPagina({ params }: { params: Promise<{ id
             <p className="mb-6 max-w-2xl text-sm text-gray-600">
               Vult de klant hem zelf in via de link, dan staan de antwoorden hier vanzelf. Aan de telefoon loop je hem samen door en vul je hem hier in: vijf minuten.
             </p>
-            <ActionForm action={slaFormulierOp} submitLabel="Opslaan" resetOnSuccess={false}>
+            <ActionForm action={slaFormulierOp} submitLabel="Opslaan" resetOnSuccess={false} concept={concept}>
               {verborgen}
               <VragenlijstVelden a={a as Antwoorden} />
               {fm.status === 'open' && (
@@ -78,7 +80,7 @@ export default async function FormulierPagina({ params }: { params: Promise<{ id
         </div>
       )}
 
-      {fm.soort === 'quickscan' && <Quickscan id={fm.id} a={a} status={fm.status} vragenlijst={vragenlijst?.antwoorden as Antwoorden | undefined} />}
+      {fm.soort === 'quickscan' && <Quickscan id={fm.id} concept={concept} a={a} status={fm.status} vragenlijst={vragenlijst?.antwoorden as Antwoorden | undefined} />}
 
       {fm.soort === 'intake' && (
         <div className="grid items-start gap-6 xl:grid-cols-[1.4fr_1fr]">
@@ -87,7 +89,7 @@ export default async function FormulierPagina({ params }: { params: Promise<{ id
             <p className="mb-6 max-w-2xl text-sm text-gray-600">
               De volgorde en de toon staan in het draaiboek (03.1). Wat al uit de vragenlijst of de quickscan komt, vraag je niet opnieuw: je toetst het (vraag 2). Verplicht voor het voorstel: 3, 6, 10 en 24.
             </p>
-            <ActionForm action={slaFormulierOp} submitLabel="Opslaan" resetOnSuccess={false}>
+            <ActionForm action={slaFormulierOp} submitLabel="Opslaan" resetOnSuccess={false} concept={concept}>
               {verborgen}
               <div className="space-y-5">
                 {INTAKE.map((v, i) => (
@@ -197,6 +199,19 @@ const WAT_NU: Record<Kleur, string> = {
 }
 
 function Beoordeling({ a, afgerond }: { a: Antwoorden; afgerond: boolean }) {
+  // Pas een uitkomst als de vragen beantwoord zijn die ertoe doen: een lege vragenlijst is niet rood.
+  const leeg = afgerond ? [] : ontbrekend(a)
+  if (leeg.length > 0) {
+    return (
+      <section className="rounded-xl bg-white p-6 shadow-sm">
+        <h2 className="mb-2 text-base">Beoordeling (01.2)</h2>
+        <p className="text-sm text-gray-600">
+          De beoordeling verschijnt zodra deze vragen beantwoord en opgeslagen zijn: {leeg.map((v) => v.nr).join(', ')}.
+        </p>
+        <p className="mt-2 text-xs text-gray-500">Niet verplicht: 6 (alleen bij “nog niets”), 10, 12 en 14.</p>
+      </section>
+    )
+  }
   const b = beoordeel(a)
   return (
     <section className="rounded-xl bg-white p-6 shadow-sm">
@@ -204,7 +219,7 @@ function Beoordeling({ a, afgerond }: { a: Antwoorden; afgerond: boolean }) {
         <h2 className="text-base">Beoordeling (01.2)</h2>
         <span className={`rounded-full px-3 py-1 text-xs font-medium ${KLEUR_STIJL[b.kleur]}`}>{KLEUR_LABEL[b.kleur]}</span>
       </div>
-      {!afgerond && <p className="mb-3 text-xs text-gray-500">Voorlopig, op wat er nu is opgeslagen.</p>}
+      {!afgerond && <p className="mb-3 text-xs text-gray-500">Voorlopig, op wat er nu is opgeslagen. Definitief als je de vragenlijst afrondt.</p>}
       <ul className="mb-3 list-disc space-y-1 pl-4 text-sm">
         {b.redenen.map((r) => (
           <li key={r}>{r}</li>
@@ -278,7 +293,19 @@ const KLEUR_KNOP: Record<ScanKleur, string> = {
   nvt: 'has-[:checked]:bg-gray-100 has-[:checked]:border-gray-500',
 }
 
-function Quickscan({ id, a, status, vragenlijst }: { id: string; a: Record<string, unknown>; status: string; vragenlijst: Antwoorden | undefined }) {
+function Quickscan({
+  id,
+  concept,
+  a,
+  status,
+  vragenlijst,
+}: {
+  id: string
+  concept: { sleutel: string; versie: string }
+  a: Record<string, unknown>
+  status: string
+  vragenlijst: Antwoorden | undefined
+}) {
   const s = schoonQuickscan(a)
   const stand = standVanScan(s)
   const groepen = Object.keys(GROEPEN) as (keyof typeof GROEPEN)[]
@@ -289,7 +316,7 @@ function Quickscan({ id, a, status, vragenlijst }: { id: string; a: Record<strin
         <p className="mb-5 max-w-2xl text-sm text-gray-600">
           Per punt: wat je zag (de meting), de kleur en een notitie. Wat tussen groen en rood valt, is oranje; bestaat een punt uit meer metingen, dan telt de slechtste. Eerst alles invullen, dan pas de drie bevindingen. <b>Doe nooit zelf een aanvraag op de site.</b>
         </p>
-        <ActionForm action={slaFormulierOp} submitLabel="Opslaan" resetOnSuccess={false}>
+        <ActionForm action={slaFormulierOp} submitLabel="Opslaan" resetOnSuccess={false} concept={concept}>
           <input type="hidden" name="id" value={id} />
           <div className="grid gap-3 sm:grid-cols-2">
             <label className="block">
