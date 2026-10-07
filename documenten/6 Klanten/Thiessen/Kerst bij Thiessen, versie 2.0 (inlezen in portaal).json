@@ -1,0 +1,337 @@
+{
+  "samenvatting": "Thiessen Wijnkoopers wil drie kerstmomenten vullen met 60 gasten per moment: de kerstbrunch op eerste kerstdag en het kerstdiner op eerste en tweede kerstdag. Er moeten nog 150 gasten verkocht worden (ongeveer 50 reserveringen), goed voor € 10.275 omzet. Met vijf Meta-ads in twee flights, drie posts met de beelden van de ads, drie mailings, een landingspagina en een flyer in de winkel, van 15 oktober tot 17 december 2026.",
+  "doel": {
+    "doelInEenZin": "De kerstbrunch en beide kerstdiners vol met 60 gasten per moment: nog 150 gasten te verkopen, goed voor € 10.275 omzet.",
+    "resultaatDefinitie": "Een reservering via de eventpagina in Odoo, geteld in gasten.",
+    "budgetVorm": "berekend",
+    "vastBudget": "",
+    "budgetToelichting": "Per ad: Ad 1 € 250 en Ad 2 € 400 (flight 1), Ad 3 € 300 (retargeting, hele looptijd), Ad 4 € 400 en Ad 5 € 550 (flight 2). De diners krijgen meer dan de brunch, omdat daar meer plaatsen en meer omzet te halen zijn. Loopt een moment achter, dan schuiven we budget.",
+    "kpiOpmerkingen": "Per moment 60 gasten, 180 in totaal. Op 26 december zijn er al 30 geboekt: die tellen niet mee in het doel van de campagne. Meer dan 60 is welkom.\nDe stand van maandag 12 oktober is het startpunt: wat er dan bij de brunch of op 25 december al geboekt is, gaat daar nog van het doel af.\nDe omzet is gerekend met de basisprijs. Arrangementen komen erbovenop: all-in is het diner € 115 per persoon.\nOp 25 november beslist Thiessen per moment of het doorgaat.\nVoorstel: Doorgaan bij minimaal 30 gasten voor de brunch en 40 per diner.\nTussenstand om op te sturen: op 1 november een kwart van wat we per moment moeten verkopen, op 15 november de helft. Voor de brunch en het diner op 25 december is dat 15 en 30 gasten, voor 26 december 8 en 15 bovenop de 30 die er al staan."
+  },
+  "aanbod": {
+    "wat": "Kerstbrunch, eerste kerstdag (25 december), € 47,50 per persoon. Inloop van 11.00 tot 11.30 uur, brunch tot 14.00 uur. Voor kleine en grote groepen en voor gezinnen. Welkom met mousserende wijn, ook alcoholvrij, en een alternatief voor kinderen. Daarna een buffet met kerststol met amandelspijs, vleeswaren en kazen, huisgemaakte soep, warme quiche, petit pâté, ambachtelijke broodjes en croissants, en een zoete afsluiter. De ontvangstbubbel, koffie en thee zitten erbij; andere dranken worden achteraf afgerekend.\n\nKerstdiner, eerste en tweede kerstdag (25 en 26 december), € 82,50 per persoon. Inloop van 18.00 tot 18.30 uur. Ontvangst met een bubbel en twee amuses, daarna een viergangendiner met tafelwater en brood. Bob-arrangement € 27,50, wijnarrangement € 32,50. All-in € 115 per persoon.\n\n- Voorgerecht: knolselderij, gerookte paling, dressing van groene kruiden en karnemelk, limoen\n- Tussengerecht: Iberico wang, schorseneren, tenkasu, pompoen\n- Hoofdgerecht: hert, rode kool, stoofpeer, schuim van Cepes, Madeira-Port jus\n- Nagerecht: kerstdessert van Thiessen\n\nOp kerstavond is er geen aanbod.\n\nReserveren via de eventpagina’s: kerstbrunch (https://www.thiessen.nl/event/kerstbrunch-745/register), kerstdiner eerste kerstdag (https://www.thiessen.nl/event/kerstdiner-581/register), kerstdiner tweede kerstdag (https://www.thiessen.nl/event/kerstdiner-583/register).",
+    "boodschap": "“Vier de kerst bij Thiessen. Jij reserveert, wij zorgen voor de rest, tot en met de mooiste plek aan tafel.”",
+    "waaromNu": "Beperkt aantal plaatsen per moment. Reserveren zonder aanbetaling: nu boeken, eind november betalen. Vanaf november noemen we per moment hoeveel plaatsen er nog zijn.",
+    "nietBeloofd": "Een plek in de kelder of de orangerie: dat bepaalt Thiessen. Dat staat op de landingspagina en in de bevestiging. Dat een moment kan vervallen bij te weinig reserveringen, staat in de voorwaarden en de bevestiging, met een plek bij een ander restaurant in Maastricht. Niet in de advertenties."
+  },
+  "doelgroep": {
+    "regio": "Maastricht en 25 kilometer eromheen.",
+    "uitsluitingen": "Wie al gereserveerd heeft, via de wekelijkse stand uit Odoo.",
+    "toelichting": "De brunch is er ook voor gezinnen met kinderen en voor grotere groepen; daar spelen Ad 1 en Ad 4 op in."
+  },
+  "planning": {
+    "start": "2026-10-15",
+    "einde": "2026-12-17",
+    "toelichting": "De briefing gaat op 7 oktober naar Thiessen; akkoord uiterlijk vrijdag 9 oktober. Dan staat alles op 15 oktober live. Komt het akkoord later, dan schuift de start even ver op.\nVoorstel: Adverteren in twee flights in plaats van elke dag: aankondigen van 15 oktober tot 1 november, en “nog X plaatsen” van 9 november tot 17 december. Retargeting loopt tussendoor door met een klein budget.\nPer moment stoppen zodra het vol is.\nVervalt een moment op 25 november, dan passen wij dezelfde dag de advertenties en de landingspagina aan.\nVoorstel: De data van de posts en mailings. Heeft Thiessen vaste dagen voor de nieuwsbrief, dan schuiven we mee.\nGeen losse organische posts: we posten de beelden van de ads ook organisch."
+  },
+  "afspraken": {
+    "klantDoet": "Elke maandag de stand per moment uit Odoo naar support@jamesrobinson.nl. Odoo en de eventpagina’s actueel houden. De flyer laten drukken en in de winkel neerleggen. Gasten informeren als een moment vervalt.",
+    "overig": "Reserveren gaat zonder aanbetaling.\nGasten krijgen vier weken voor kerst een betaallink en betalen uiterlijk een week voor kerst."
+  },
+  "achtergrond": {
+    "eerder": "Vorig jaar kwamen er op één dag maar acht gasten. Het personeel moest met kerst werken en had niets te doen; dat gaf veel weerstand. Daarom de afspraak: is er een maand voor kerst te weinig verkocht voor een moment, dan vervalt dat moment.",
+    "risicos": "Zonder aanbetaling valt een deel van de reserveringen af als de betaallink komt.\nDrie momenten, één budget: we sturen per moment, en schuiven budget naar wat achterloopt.\nDe brunch levert het minst op per gast: als het moet, stoppen we daar eerder met adverteren dan bij de diners.\nTussen de flights zakt het bereik. Loopt een moment op 1 november achter, dan starten we flight 2 eerder."
+  },
+  "kpis": [
+    {
+      "label": "Kerstbrunch",
+      "datum": "2026-12-25",
+      "aantal": 60,
+      "prijs": "47,50"
+    },
+    {
+      "label": "Kerstdiner",
+      "datum": "2026-12-25",
+      "aantal": 60,
+      "prijs": "82,50"
+    },
+    {
+      "label": "Kerstdiner",
+      "datum": "2026-12-26",
+      "aantal": 30,
+      "prijs": "82,50"
+    }
+  ],
+  "deliverables": [
+    {
+      "naam": "Ad 1 · Kerstbrunch",
+      "kanaal": "Meta Ads · targeting · flight 1",
+      "inhoud": "Nieuwe gasten in de regio, met nadruk op gezinnen en groepen. De brunch op eerste kerstdag: welkom met bubbels, het buffet, € 47,50. Knop naar de landingspagina.",
+      "formaat": "Beeld of korte video uit de beeldenbank, in 1:1, 4:5 en 9:16",
+      "liveVanaf": "2026-10-15",
+      "liveTot": "2026-11-01",
+      "status": "maken"
+    },
+    {
+      "naam": "Ad 2 · Kerstdiner",
+      "kanaal": "Meta Ads · targeting · flight 1",
+      "inhoud": "Nieuwe gasten in de regio. Het viergangendiner op eerste en tweede kerstdag, het menu en het all-in-arrangement van € 115. Knop naar de landingspagina.",
+      "formaat": "Beeld of korte video uit de beeldenbank, in 1:1, 4:5 en 9:16",
+      "liveVanaf": "2026-10-15",
+      "liveTot": "2026-11-01",
+      "status": "maken"
+    },
+    {
+      "naam": "Ad 3 · Vier de kerst bij Thiessen",
+      "kanaal": "Meta Ads · retargeting · hele looptijd",
+      "inhoud": "Websitebezoekers, volgers en nieuwsbriefabonnees die nog niet geboekt hebben. Carrousel met de drie momenten, elk met een eigen knop naar de eventpagina.",
+      "formaat": "Carrousel, 1:1 en 4:5",
+      "liveVanaf": "2026-10-15",
+      "liveTot": "2026-12-17",
+      "status": "maken"
+    },
+    {
+      "naam": "Ad 4 · Kerstbrunch, nog X plaatsen",
+      "kanaal": "Meta Ads · targeting · flight 2",
+      "inhoud": "Als Ad 1, met het aantal plaatsen dat er nog is. Stopt zodra de brunch vol is.",
+      "formaat": "Beeld of korte video uit de beeldenbank, in 1:1, 4:5 en 9:16",
+      "liveVanaf": "2026-11-09",
+      "liveTot": "2026-12-17",
+      "status": "maken"
+    },
+    {
+      "naam": "Ad 5 · Kerstdiner, nog X plaatsen",
+      "kanaal": "Meta Ads · targeting · flight 2",
+      "inhoud": "Als Ad 2, met het aantal plaatsen per dag. Per dag stoppen zodra dat diner vol is.",
+      "formaat": "Beeld of korte video uit de beeldenbank, in 1:1, 4:5 en 9:16",
+      "liveVanaf": "2026-11-09",
+      "liveTot": "2026-12-17",
+      "status": "maken"
+    },
+    {
+      "naam": "Post 1",
+      "kanaal": "Organisch · beeld van Ad 1",
+      "inhoud": "De kerstbrunch aankondigen, met de link naar de landingspagina in de bio en in het verhaal.",
+      "formaat": "4:5 en 9:16 (verhaal)",
+      "liveVanaf": "2026-10-16",
+      "liveTot": "",
+      "status": "maken"
+    },
+    {
+      "naam": "Post 2",
+      "kanaal": "Organisch · beeld van Ad 2",
+      "inhoud": "Het kerstdiner en het menu.",
+      "formaat": "4:5 en 9:16 (verhaal)",
+      "liveVanaf": "2026-10-23",
+      "liveTot": "",
+      "status": "maken"
+    },
+    {
+      "naam": "Post 3",
+      "kanaal": "Organisch · beeld van Ad 5",
+      "inhoud": "Nog X plaatsen, per moment.",
+      "formaat": "4:5 en 9:16 (verhaal)",
+      "liveVanaf": "2026-11-11",
+      "liveTot": "",
+      "status": "maken"
+    },
+    {
+      "naam": "Mailing 1 · Oktobernieuwsbrief",
+      "kanaal": "Mailing · alle abonnees",
+      "inhoud": "Een blok Kerst bij Thiessen: de drie momenten in het kort, met een knop naar de landingspagina.",
+      "formaat": "Blok in de nieuwsbrief",
+      "liveVanaf": "2026-10-22",
+      "liveTot": "",
+      "status": "maken"
+    },
+    {
+      "naam": "Mailing 2 · Kerst bij Thiessen",
+      "kanaal": "Mailing · alle abonnees",
+      "inhoud": "Een aparte mailing over alleen de kerst: brunch en diner, het menu, de arrangementen, reserveren zonder aanbetaling. Per moment een knop naar de eventpagina.",
+      "formaat": "Losse mailing",
+      "liveVanaf": "2026-11-10",
+      "liveTot": "",
+      "status": "maken"
+    },
+    {
+      "naam": "Mailing 3 · Novembernieuwsbrief",
+      "kanaal": "Mailing · abonnees die nog niet geboekt hebben",
+      "inhoud": "Nog X plaatsen per moment, en de datum waarop we beslissen (25 november).",
+      "formaat": "Blok in de nieuwsbrief",
+      "liveVanaf": "2026-11-18",
+      "liveTot": "",
+      "status": "maken"
+    },
+    {
+      "naam": "Landingspagina",
+      "kanaal": "thiessen.nl/events/kerst-bij/thiessen",
+      "inhoud": "De drie momenten, het menu, wat erbij zit, de arrangementen, per moment hoeveel plaatsen er nog zijn, en per moment een knop naar de eventpagina om te reserveren.",
+      "formaat": "Pagina op de eigen website",
+      "liveVanaf": "2026-10-15",
+      "liveTot": "",
+      "status": "maken"
+    },
+    {
+      "naam": "Flyer",
+      "kanaal": "Drukwerk in de winkel · wij ontwerpen, Thiessen drukt",
+      "inhoud": "De drie momenten in het kort, met een QR-code naar de landingspagina.",
+      "formaat": "Drukklare pdf, [formaat met Thiessen afstemmen]",
+      "liveVanaf": "",
+      "liveTot": "",
+      "status": "maken"
+    },
+    {
+      "naam": "Beeldenbank",
+      "kanaal": "Kive",
+      "inhoud": "3 tot 5 beelden per moment; de basis voor alle ads, posts, mailings en de flyer.",
+      "formaat": "1:1, 4:5 en 9:16",
+      "liveVanaf": "",
+      "liveTot": "",
+      "status": "bestaat"
+    }
+  ],
+  "tijdlijn": [
+    {
+      "id": "",
+      "datum": "2026-10-07",
+      "omschrijving": "Briefing naar Thiessen",
+      "wie": "Marketingmanager"
+    },
+    {
+      "id": "",
+      "datum": "2026-10-09",
+      "omschrijving": "Briefing akkoord, uiterlijk",
+      "wie": "Thiessen"
+    },
+    {
+      "id": "",
+      "datum": "2026-10-12",
+      "omschrijving": "Doelgroepen en meting klaar",
+      "wie": "Campagne en techniek"
+    },
+    {
+      "id": "",
+      "datum": "2026-10-13",
+      "omschrijving": "Landingspagina klaar",
+      "wie": "Content en techniek"
+    },
+    {
+      "id": "",
+      "datum": "2026-10-13",
+      "omschrijving": "Ad 1, Ad 2 en Ad 3 klaar",
+      "wie": "Content"
+    },
+    {
+      "id": "",
+      "datum": "2026-10-14",
+      "omschrijving": "Flyer drukklaar naar Thiessen",
+      "wie": "Content"
+    },
+    {
+      "id": "",
+      "datum": "2026-10-14",
+      "omschrijving": "Merkcheck: landingspagina, ads en flyer",
+      "wie": "Marketingmanager"
+    },
+    {
+      "id": "",
+      "datum": "2026-10-15",
+      "omschrijving": "Live: flight 1 (Ad 1 en Ad 2) en retargeting (Ad 3)",
+      "wie": "Campagne"
+    },
+    {
+      "id": "",
+      "datum": "2026-10-16",
+      "omschrijving": "Post 1 online",
+      "wie": "Content"
+    },
+    {
+      "id": "",
+      "datum": "",
+      "omschrijving": "Stand per moment, budget bijsturen (elke maandag)",
+      "wie": "Campagne"
+    },
+    {
+      "id": "",
+      "datum": "2026-10-22",
+      "omschrijving": "Mailing 1 verstuurd: oktobernieuwsbrief",
+      "wie": "Marketingmanager"
+    },
+    {
+      "id": "",
+      "datum": "2026-10-23",
+      "omschrijving": "Post 2 online",
+      "wie": "Content"
+    },
+    {
+      "id": "",
+      "datum": "2026-11-01",
+      "omschrijving": "Einde flight 1, tussenstand; retargeting loopt door",
+      "wie": "Campagne"
+    },
+    {
+      "id": "",
+      "datum": "2026-11-05",
+      "omschrijving": "Ad 4 en Ad 5 klaar, met merkcheck",
+      "wie": "Content"
+    },
+    {
+      "id": "",
+      "datum": "2026-11-09",
+      "omschrijving": "Live: flight 2 (Ad 4 en Ad 5)",
+      "wie": "Campagne"
+    },
+    {
+      "id": "",
+      "datum": "2026-11-10",
+      "omschrijving": "Mailing 2 verstuurd: Kerst bij Thiessen",
+      "wie": "Marketingmanager"
+    },
+    {
+      "id": "",
+      "datum": "2026-11-11",
+      "omschrijving": "Post 3 online",
+      "wie": "Content"
+    },
+    {
+      "id": "",
+      "datum": "2026-11-18",
+      "omschrijving": "Mailing 3 verstuurd: novembernieuwsbrief",
+      "wie": "Marketingmanager"
+    },
+    {
+      "id": "",
+      "datum": "2026-11-25",
+      "omschrijving": "Beslismoment: doorgaan of annuleren, per moment",
+      "wie": "Thiessen"
+    },
+    {
+      "id": "",
+      "datum": "2026-12-17",
+      "omschrijving": "Einde campagne",
+      "wie": "Campagne"
+    },
+    {
+      "id": "",
+      "datum": "",
+      "omschrijving": "Evaluatie in de Performance Review (januari 2027)",
+      "wie": "Marketingmanager"
+    }
+  ],
+  "wijzigingen": [
+    "Kerstavond geschrapt; brunch op eerste kerstdag en diner op beide kerstdagen met tijden, menu, prijzen en arrangementen",
+    "Doel 60 gasten per moment; de 30 al geboekte gasten op 26 december tellen niet mee: nog 150 gasten, € 10.275 omzet",
+    "Hypothese en advertentiebudget opnieuw berekend (advies € 1.900), uitgesplitst per ad",
+    "Planning: akkoord uiterlijk 9 oktober, live 15 oktober, adverteren in twee flights",
+    "Deliverables één voor één: Ad 1 t/m 5, Post 1 t/m 3 (beelden van de ads), Mailing 1 t/m 3, landingspagina en flyer",
+    "Flyer: wij ontwerpen, Thiessen drukt"
+  ],
+  "openVragen": [
+    "Formaat van de flyer afstemmen met Thiessen.",
+    "Verzenddata van de mailings en posts zijn een voorstel: heeft Thiessen vaste dagen voor de nieuwsbrief?",
+    "Stand op maandag 12 oktober opvragen: wat er dan al geboekt is voor de brunch en 25 december, gaat van het doel af.",
+    "Vink in het portaal budget, kernboodschap en regio aan als voorstel."
+  ],
+  "aannames": {
+    "eenhedenPerConversie": "3",
+    "conversieratio": "2,5",
+    "doorklikratio": "1",
+    "kostenPer1000": "8",
+    "buffer": "20",
+    "bronEenheden": "inschatting; checken in Odoo",
+    "bronConversie": "marktgemiddelde; eigen norm volgt",
+    "bronDoorklik": "marktgemiddelde Meta; eigen norm volgt",
+    "bronKosten": "inschatting; checken in Ads Manager",
+    "opmerkingen": "Eenheden per conversie: gemiddeld 3 gasten per reservering (groepsgrootte). Na de eerste tien reserveringen checken in Odoo.\nConversie: een reservering via de eventpagina in Odoo.\nDoel en omzet zonder de 30 gasten die op 26 december al geboekt zijn."
+  }
+}

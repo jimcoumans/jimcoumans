@@ -17,6 +17,12 @@ export function euro(cents: number | null | undefined): string {
   return `€ ${Math.round(cents / 100).toLocaleString('nl-NL')}`
 }
 
+/** Een prijs: hele euro's zonder centen, anders met: € 82,50. */
+export function prijs(cents: number | null | undefined): string {
+  if (cents === null || cents === undefined) return LEEG
+  return cents % 100 === 0 ? euro(cents) : euroPrecies(cents)
+}
+
 /** Euro's met centen als het om kleine bedragen gaat: € 0,80 */
 export function euroPrecies(cents: number): string {
   return `€ ${(cents / 100).toLocaleString('nl-NL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
@@ -61,7 +67,8 @@ export function budgetTekst(v: CampagneVolledig): string {
         : ` Dat is minder dan het deel dat we uit advertenties verwachten (${formatBp(h.aandeelAdsBp)}%).`
     }
   }
-  if (c.startOn && c.endOn) {
+  // Staat er een eigen verdeling in de toelichting (per flight, per ad), dan geen verdeling per maand ernaast.
+  if (c.startOn && c.endOn && regels(c.budgetNote).length === 0) {
     const maanden = verdeelPerMaand(h.budgetCents, c.startOn, c.endOn)
     if (maanden.length > 1) {
       const delen = maanden.map((m) => `${maandNaam.format(m.maand)} ${euro(m.cents)}`)
@@ -262,8 +269,8 @@ export function CampagneBriefing({ v }: { v: CampagneVolledig }) {
                   <td className="py-1.5 pr-3">{k.label}</td>
                   <td className="py-1.5 pr-3 whitespace-nowrap">{k.on ? formatDateLong(k.on) : LEEG}</td>
                   <td className="py-1.5 pr-3 text-right">{formatAantal(k.targetQuantity)}</td>
-                  <td className="py-1.5 pr-3 text-right whitespace-nowrap">{euro(k.priceCents)}</td>
-                  <td className="py-1.5 text-right whitespace-nowrap">{k.priceCents === null ? LEEG : euro(k.priceCents * k.targetQuantity)}</td>
+                  <td className="py-1.5 pr-3 text-right whitespace-nowrap">{prijs(k.priceCents)}</td>
+                  <td className="py-1.5 text-right whitespace-nowrap">{k.priceCents === null ? LEEG : prijs(k.priceCents * k.targetQuantity)}</td>
                 </tr>
               ))}
               {v.kpis.length > 1 && (
@@ -287,7 +294,7 @@ export function CampagneBriefing({ v }: { v: CampagneVolledig }) {
 
       <Sectie nummer={3} titel="Aanbod en boodschap">
         <dl>
-          <Rij label="Wat we verkopen">{c.offerWhat}</Rij>
+          <Rij label="Wat we verkopen">{c.offerWhat ? <span className="whitespace-pre-line">{c.offerWhat}</span> : null}</Rij>
           <Rij label="Kernboodschap">
             {c.offerMessage && (
               <>

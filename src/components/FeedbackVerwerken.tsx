@@ -41,13 +41,15 @@ export function FeedbackVerwerken({ campaignId, loopt }: { campaignId: string; l
     setBezig(true)
     try {
       const antwoord = await fetch('/api/campagnes/verwerken', { method: 'POST', body: form })
-      const json = (await antwoord.json().catch(() => null)) as { ok: boolean; id?: string; error?: string } | null
+      const json = (await antwoord.json().catch(() => null)) as { ok: boolean; id?: string; klaar?: boolean; error?: string } | null
       if (!antwoord.ok || !json?.ok || !json.id) {
         setFout(json?.error ?? `Klaarzetten mislukt (fout ${antwoord.status}).`)
         return
       }
       formulier.current?.reset()
       router.refresh()
+      // Een uitgewerkte briefing (.json) is al ingelezen.
+      if (json.klaar) return
 
       const start = await fetch('/.netlify/functions/briefing-verwerken-background', {
         method: 'POST',
@@ -90,10 +92,12 @@ export function FeedbackVerwerken({ campaignId, loopt }: { campaignId: string; l
           type="file"
           name="bestand"
           disabled={uit}
-          accept="application/pdf,image/png,image/jpeg,image/webp,image/gif,text/plain,.txt,.md,.eml"
+          accept="application/pdf,image/png,image/jpeg,image/webp,image/gif,text/plain,.txt,.md,.eml,application/json,.json"
           className="block w-full text-sm text-gray-600 file:mr-3 file:rounded-full file:border file:border-gray-300 file:bg-white file:px-4 file:py-1.5 file:text-sm hover:file:bg-gray-50"
         />
-        <span className="mt-1 block text-xs text-gray-500">Pdf, afbeelding of tekst, tot 4,5 MB. Word? Bewaar het eerst als pdf.</span>
+        <span className="mt-1 block text-xs text-gray-500">
+          Pdf, afbeelding of tekst, tot 4,5 MB. Word? Bewaar het eerst als pdf. Een al uitgewerkte briefing als .json wordt meteen ingelezen, zonder AI.
+        </span>
       </label>
       {fout && (
         <p role="alert" className="rounded-lg bg-[#FDECEA] px-4 py-3 text-sm text-[#C02A22]">

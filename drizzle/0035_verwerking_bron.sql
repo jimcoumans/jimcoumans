@@ -1,0 +1,2 @@
+ALTER TABLE "campaign_verwerkingen" ADD COLUMN "bron" text DEFAULT 'ai' NOT NULL;--> statement-breakpoint
+ALTER TABLE "campaign_verwerkingen" ADD CONSTRAINT "verwerking_bron_geldig" CHECK ("campaign_verwerkingen"."bron" IN ('ai', 'import'));
