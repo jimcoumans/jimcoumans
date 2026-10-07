@@ -3260,6 +3260,11 @@ export const campaignVerwerkingen = pgTable(
       .notNull()
       .references(() => campaigns.id, { onDelete: 'cascade' }),
     status: verwerkingStatusEnum('status').notNull().default('wacht'),
+    /**
+     * ai: de AI verwerkte feedback. import: een al uitgewerkte briefing
+     * (een .json-bestand) is rechtstreeks ingelezen, zonder AI en zonder kosten.
+     */
+    bron: text('bron').notNull().default('ai'),
     /** Wat de klant schreef: geplakt uit mail, WhatsApp of een gesprek. */
     invoer: text('invoer'),
     bestandNaam: text('bestand_naam'),
@@ -3282,6 +3287,7 @@ export const campaignVerwerkingen = pgTable(
   },
   (t) => [
     index('campaign_verwerkingen_campaign_idx').on(t.campaignId, t.createdAt),
+    check('verwerking_bron_geldig', sql`${t.bron} IN ('ai', 'import')`),
     check(
       'verwerking_heeft_invoer',
       sql`length(trim(coalesce(${t.invoer}, ''))) > 0 OR ${t.bestandSleutel} IS NOT NULL`,

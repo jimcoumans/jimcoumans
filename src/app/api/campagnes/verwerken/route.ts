@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { getSessionUser } from '@/lib/auth'
 import { describeDbError } from '@/lib/db-errors'
-import { maakVerwerking, markeerVastgelopen, VerwerkError } from '@/lib/campagne-verwerken'
+import { importeerBriefing, isBriefingBestand, maakVerwerking, markeerVastgelopen, VerwerkError } from '@/lib/campagne-verwerken'
 
 /**
  * Feedback van de klant klaarzetten om te verwerken.
@@ -32,12 +32,17 @@ export async function POST(request: Request) {
 
   try {
     await markeerVastgelopen(campaignId)
-    const rij = await maakVerwerking({
-      campaignId,
-      invoer: String(form.get('invoer') ?? ''),
-      bestand: bestand instanceof File && bestand.size > 0 ? { naam: bestand.name || 'feedback', data: Buffer.from(await bestand.arrayBuffer()) } : null,
-      userId: user.id,
-    })
+    const data = bestand instanceof File && bestand.size > 0 ? { naam: bestand.name || 'feedback', data: Buffer.from(await bestand.arrayBuffer()) } : null
+
+    // Een uitgewerkte briefing (.json) lezen we meteen in: geen AI, geen achtergrondfunctie.
+    if (data && isBriefingBestand(data.naam, data.data)) {
+      const uit = await importeerBriefing({ campaignId, naam: data.naam, data: data.data, userId: user.id })
+      revalidatePath(`/beheer/campagnes/${campaignId}`)
+      if (uit.status !== 'klaar') return NextResponse.json({ ok: false, error: uit.fout ?? 'De import is mislukt.' }, { status: 400 })
+      return NextResponse.json({ ok: true, id: uit.id, klaar: true })
+    }
+
+    const rij = await maakVerwerking({ campaignId, invoer: String(form.get('invoer') ?? ''), bestand: data, userId: user.id })
     revalidatePath(`/beheer/campagnes/${campaignId}`)
     return NextResponse.json({ ok: true, id: rij.id })
   } catch (error) {

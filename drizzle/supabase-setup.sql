@@ -2948,3 +2948,22 @@ BEGIN
   END IF;
 END $jr_0034_deliverables$;
 
+-- ---------------------------------------------------------------------------
+-- 0035_verwerking_bron
+-- ---------------------------------------------------------------------------
+
+DO $jr_0035_verwerking_bron$
+BEGIN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = 'f3fdcafcac72c756e52e50a82746ab03ea8c5eb9e46b3a42894cc9723866d39b') THEN
+    RAISE NOTICE 'Overgeslagen: 0035_verwerking_bron stond er al.';
+  ELSE
+    ALTER TABLE "campaign_verwerkingen" ADD COLUMN "bron" text DEFAULT 'ai' NOT NULL;
+
+    ALTER TABLE "campaign_verwerkingen" ADD CONSTRAINT "verwerking_bron_geldig" CHECK ("campaign_verwerkingen"."bron" IN ('ai', 'import'));
+
+    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+    VALUES ('f3fdcafcac72c756e52e50a82746ab03ea8c5eb9e46b3a42894cc9723866d39b', 1791354112091);
+    RAISE NOTICE 'Toegepast: 0035_verwerking_bron.';
+  END IF;
+END $jr_0035_verwerking_bron$;
+

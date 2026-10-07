@@ -271,3 +271,41 @@ test('de tijdlijn-suggestie maakt per benoemde deliverable een eigen regel', asy
   // Wat er al is, hoeft niet gemaakt te worden.
   assert.ok(!regels.some((r) => r.description.includes('Beeldenbank')))
 })
+
+test('een uitgewerkte briefing (.json) wordt zonder AI ingelezen, met de aannames', async () => {
+  const { importeerBriefing, isBriefingBestand } = await import('../campagne-verwerken')
+  const briefing = {
+    ...nieuweBriefing(),
+    wijzigingen: ['Doel naar 150 gasten'],
+    openVragen: [],
+    aannames: { eenhedenPerConversie: '3', conversieratio: '2,5', doorklikratio: '1', kostenPer1000: '8', buffer: '20', bronEenheden: 'inschatting' },
+  }
+  const data = Buffer.from(JSON.stringify(briefing))
+  assert.ok(isBriefingBestand('briefing.json', data))
+  assert.ok(!isBriefingBestand('mail.txt', Buffer.from('Beste Robin,')))
+
+  const uit = await importeerBriefing({ campaignId, naam: 'briefing.json', data, userId })
+  assert.equal(uit.status, 'klaar')
+  assert.equal(uit.bron, 'import')
+  const v = await getCampagne(campaignId)
+  assert.equal(v?.campagne.unitsPerConversionHundredths, 300)
+  assert.equal(v?.campagne.conversionRateBp, 250)
+  assert.equal(v?.campagne.cpmCents, 800)
+  assert.equal(v?.campagne.sourceUnits, 'inschatting')
+
+  // Iets anders dan een briefing wordt geweigerd, zonder iets aan te raken.
+  await assert.rejects(importeerBriefing({ campaignId, naam: 'x.json', data: Buffer.from('{"hallo": 1}'), userId }), VerwerkError)
+})
+
+test('na de daglimiet aan AI-verwerkingen weigert het portaal een nieuwe', async () => {
+  const { MAX_AI_PER_DAG } = await import('../campagne-verwerken')
+  const [c] = await db.insert(campaigns).values({ organizationId: orgId, title: 'Limiet' }).returning()
+  // Vul de teller tot de grens, als afgeronde AI-verwerkingen van net.
+  const al = await db.select().from(campaignVerwerkingen)
+  const nodig = Math.max(0, MAX_AI_PER_DAG - al.filter((r) => r.bron === 'ai' && Date.now() - r.createdAt.getTime() < 86_400_000).length)
+  if (nodig > 0) {
+    await db.insert(campaignVerwerkingen).values(Array.from({ length: nodig }, () => ({ campaignId: c!.id, invoer: 'x', status: 'klaar' as const })))
+  }
+  await assert.rejects(maakVerwerking({ campaignId: c!.id, invoer: 'Nog een', bestand: null, userId }), /24 uur/)
+  await db.delete(campaigns).where(eq(campaigns.id, c!.id))
+})

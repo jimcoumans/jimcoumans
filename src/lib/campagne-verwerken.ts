@@ -2,11 +2,12 @@ import Anthropic from '@anthropic-ai/sdk'
 import type { BetaContentBlockParam } from '@anthropic-ai/sdk/resources/beta/messages/messages'
 import { betaZodOutputFormat } from '@anthropic-ai/sdk/helpers/beta/zod'
 import { z } from 'zod'
-import { and, desc, eq, inArray, notInArray } from 'drizzle-orm'
+import { and, desc, eq, gte, inArray, notInArray, sql } from 'drizzle-orm'
 import { db } from '@/db'
 import { campaigns, campaignKpis, campaignChannels, campaignTimeline, campaignVerwerkingen } from '@/db/schema'
 import type { Campaign, CampaignVerwerking } from '@/db/schema'
 import { parseAmountToCents } from './money'
+import { parseHonderdsten, parsePercentageToBp } from './hypothese'
 import { formatDateInput } from './dates'
 import { bewaar, haal } from './bestandsopslag'
 import {
@@ -114,6 +115,32 @@ const Uitkomst = z.object({
 })
 export type Uitkomst = z.infer<typeof Uitkomst>
 
+/**
+ * Een al uitgewerkte briefing om in te lezen, bijvoorbeeld gemaakt in een
+ * gesprek met Claude. Dezelfde vorm als wat de AI teruggeeft, plus de
+ * aannames van de hypothese: die bedenkt de AI hier nooit zelf, maar bij een
+ * nieuwe briefing wil je ze wel in één keer meegeven.
+ */
+const Aannames = z
+  .object({
+    eenhedenPerConversie: z.string(),
+    conversieratio: z.string(),
+    doorklikratio: z.string(),
+    kostenPer1000: z.string(),
+    buffer: z.string(),
+    bronEenheden: z.string(),
+    bronConversie: z.string(),
+    bronDoorklik: z.string(),
+    bronKosten: z.string(),
+    opmerkingen: z.string(),
+  })
+  .partial()
+export const BriefingImport = Uitkomst.extend({ aannames: Aannames.optional() })
+export type BriefingImport = z.infer<typeof BriefingImport>
+
+/** Zoveel AI-verwerkingen per 24 uur, voor het hele portaal. Een rem op de kosten, naast de limiet in de Claude Console. */
+export const MAX_AI_PER_DAG = 30
+
 /** De velden van de campagne die een verwerking mag aanpassen, en dus ook terugzet. */
 const VERWERKBARE_VELDEN = [
   'summary',
@@ -137,6 +164,16 @@ const VERWERKBARE_VELDEN = [
   'agreementNotes',
   'backgroundPrevious',
   'backgroundRisks',
+  'unitsPerConversionHundredths',
+  'conversionRateBp',
+  'clickThroughRateBp',
+  'cpmCents',
+  'bufferBp',
+  'sourceUnits',
+  'sourceConversion',
+  'sourceClickThrough',
+  'sourceCpm',
+  'assumptionNotes',
 ] as const satisfies readonly (keyof Campaign)[]
 
 const ymd = (d: Date | null) => (d ? formatDateInput(d) : '')
@@ -345,6 +382,14 @@ export async function maakVerwerking(input: {
     .where(and(eq(campaignVerwerkingen.campaignId, input.campaignId), inArray(campaignVerwerkingen.status, ['wacht', 'bezig'])))
   if (lopend.some((r) => !isVastgelopen(r))) throw new VerwerkError('Er loopt al een verwerking voor deze briefing. Wacht tot die klaar is.')
 
+  const [vandaag] = await db
+    .select({ n: sql<number>`count(*)::int` })
+    .from(campaignVerwerkingen)
+    .where(and(eq(campaignVerwerkingen.bron, 'ai'), gte(campaignVerwerkingen.createdAt, new Date(Date.now() - 24 * 60 * 60 * 1000))))
+  if ((vandaag?.n ?? 0) >= MAX_AI_PER_DAG) {
+    throw new VerwerkError(`Het portaal heeft de afgelopen 24 uur al ${MAX_AI_PER_DAG} keer feedback met AI verwerkt. Dat is de grens die we hebben ingesteld om de kosten te bewaken. Probeer het morgen opnieuw.`)
+  }
+
   let soort: Soort | null = null
   if (bestand) {
     if (bestand.data.length > MAX_BESTAND_BYTES) throw new VerwerkError('Het bestand is groter dan 4,5 MB. Maak het kleiner of plak de tekst.')
@@ -375,6 +420,44 @@ export async function maakVerwerking(input: {
     .where(eq(campaignVerwerkingen.id, rij.id))
     .returning()
   return metBestand ?? rij
+}
+
+/** Is dit bestand een uitgewerkte briefing (.json) in plaats van feedback? */
+export function isBriefingBestand(naam: string, data: Buffer): boolean {
+  if (/\.json$/i.test(naam)) return true
+  return data.subarray(0, 64).toString('utf8').trimStart().startsWith('{')
+}
+
+/**
+ * Een uitgewerkte briefing rechtstreeks inlezen, zonder AI en zonder kosten.
+ * Werkt net als een verwerking: één schone briefing, de wijzigingen en open
+ * vragen als interne notitie, en terug te draaien.
+ */
+export async function importeerBriefing(input: { campaignId: string; naam: string; data: Buffer; userId: string }): Promise<CampaignVerwerking> {
+  let json: unknown
+  try {
+    json = JSON.parse(input.data.toString('utf8'))
+  } catch {
+    throw new VerwerkError('Dit .json-bestand is niet te lezen. Controleer of het compleet is.')
+  }
+  const gelezen = BriefingImport.safeParse(json)
+  if (!gelezen.success) {
+    const veld = gelezen.error.issues[0]?.path.join('.') || 'onbekend'
+    throw new VerwerkError(`Dit bestand heeft niet de vorm van een briefing (eerste fout bij: ${veld}).`)
+  }
+
+  const [campagne] = await db.select({ status: campaigns.status }).from(campaigns).where(eq(campaigns.id, input.campaignId)).limit(1)
+  if (!campagne) throw new VerwerkError('Deze campagne bestaat niet meer.')
+  if (campagne.status === 'afgerond') throw new VerwerkError('Een afgeronde campagne passen we niet meer aan.')
+
+  const [rij] = await db
+    .insert(campaignVerwerkingen)
+    .values({ campaignId: input.campaignId, bron: 'import', invoer: `Uitgewerkte briefing ingelezen uit ${input.naam}.`, createdByUserId: input.userId })
+    .returning()
+  if (!rij) throw new VerwerkError('De import kon niet worden aangemaakt.')
+  const uit = await voerVerwerkingUit(rij.id, async () => gelezen.data)
+  if (!uit) throw new VerwerkError('De import is niet uitgevoerd.')
+  return uit
 }
 
 /* ------------------------------ Uitvoeren --------------------------------- */
@@ -423,7 +506,7 @@ export async function voerVerwerkingUit(id: string, model: Model = claude, vanda
     inhoud.push({ type: 'text', text: 'Geef de volledige nieuwe briefing terug, met de wijzigingen en open vragen als interne lijsten.' })
 
     const ruw = await model({ systeem: systeemPrompt(vandaag, team.map((t) => t.name ?? t.email)), inhoud })
-    const gelezen = Uitkomst.safeParse(ruw)
+    const gelezen = BriefingImport.safeParse(ruw)
     if (!gelezen.success) throw new VerwerkError('Het antwoord van de AI had niet de vorm van een briefing. Probeer het opnieuw.')
 
     const extraVragen = await pasToe(v, gelezen.data, team)
@@ -491,12 +574,46 @@ function wieNaar(
   return { assigneeUserId: null, assigneeLabel: naam }
 }
 
+/** De aannames uit een import, gelezen zoals iemand ze in het formulier typt. Wat niet te lezen is, blijft staan. */
+function leesAannames(a: NonNullable<BriefingImport['aannames']>, vragen: string[]): Partial<Campaign> {
+  const uit: Partial<Campaign> = {}
+  const pct = (w: string | undefined, label: string, zet: (bp: number) => void) => {
+    if (w === undefined || w.trim() === '') return
+    const bp = parsePercentageToBp(w)
+    if (bp === null || bp <= 0 || bp > 10_000) vragen.push(`${label} "${w}" kon niet gelezen worden; de oude waarde staat er nog.`)
+    else zet(bp)
+  }
+  if (a.eenhedenPerConversie?.trim()) {
+    const h = parseHonderdsten(a.eenhedenPerConversie)
+    if (h && h > 0) uit.unitsPerConversionHundredths = h
+    else vragen.push(`Eenheden per conversie "${a.eenhedenPerConversie}" kon niet gelezen worden; de oude waarde staat er nog.`)
+  }
+  pct(a.conversieratio, 'Conversieratio', (bp) => (uit.conversionRateBp = bp))
+  pct(a.doorklikratio, 'Doorklikratio', (bp) => (uit.clickThroughRateBp = bp))
+  if (a.buffer?.trim()) {
+    const bp = parsePercentageToBp(a.buffer)
+    if (bp !== null && bp <= 10_000) uit.bufferBp = bp
+    else vragen.push(`Buffer "${a.buffer}" kon niet gelezen worden; de oude waarde staat er nog.`)
+  }
+  if (a.kostenPer1000?.trim()) {
+    const c = parseAmountToCents(a.kostenPer1000)
+    if (c && c > 0) uit.cpmCents = c
+    else vragen.push(`Kosten per 1.000 impressies "${a.kostenPer1000}" kon niet gelezen worden; de oude waarde staat er nog.`)
+  }
+  if (a.bronEenheden !== undefined) uit.sourceUnits = ofNull(a.bronEenheden)
+  if (a.bronConversie !== undefined) uit.sourceConversion = ofNull(a.bronConversie)
+  if (a.bronDoorklik !== undefined) uit.sourceClickThrough = ofNull(a.bronDoorklik)
+  if (a.bronKosten !== undefined) uit.sourceCpm = ofNull(a.bronKosten)
+  if (a.opmerkingen !== undefined) uit.assumptionNotes = ofNull(a.opmerkingen)
+  return uit
+}
+
 /**
  * De nieuwe briefing terugschrijven, in één transactie. Wat niet in de
  * database past (een KPI zonder aantal), laten we weg en melden we als open
  * vraag, zodat niets stilletjes verdwijnt.
  */
-async function pasToe(v: CampagneVolledig, u: Uitkomst, team: Teamlid[]): Promise<string[]> {
+async function pasToe(v: CampagneVolledig, u: BriefingImport, team: Teamlid[]): Promise<string[]> {
   const c = v.campagne
   const vragen: string[] = []
 
@@ -541,6 +658,8 @@ async function pasToe(v: CampagneVolledig, u: Uitkomst, team: Teamlid[]): Promis
         status: k.status.trim().toLowerCase() === 'bestaat' ? ('bestaat' as const) : ('maken' as const),
       }
     })
+
+  const aannames = u.aannames ? leesAannames(u.aannames, vragen) : {}
 
   const bestaand = new Map(v.tijdlijn.map((t) => [t.id, t]))
   const tijdlijn = u.tijdlijn
@@ -587,6 +706,7 @@ async function pasToe(v: CampagneVolledig, u: Uitkomst, team: Teamlid[]): Promis
         agreementNotes: ofNull(u.afspraken.overig),
         backgroundPrevious: ofNull(u.achtergrond.eerder),
         backgroundRisks: ofNull(u.achtergrond.risicos),
+        ...aannames,
         updatedAt: new Date(),
       })
       .where(eq(campaigns.id, c.id))

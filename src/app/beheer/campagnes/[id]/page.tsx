@@ -16,7 +16,7 @@ import { listContacts } from '@/lib/crm'
 import { AppShell } from '@/components/AppShell'
 import { Regel } from '@/components/Regel'
 import { ActionForm, Check, Field, Select, TextArea, Uitklap } from '@/components/ActionForm'
-import { HypotheseWeergave, budgetTekst, budgetBereik, omzetBereik, euro, versieLabel, LEEG } from '@/components/CampagneBriefing'
+import { HypotheseWeergave, budgetTekst, budgetBereik, omzetBereik, euro, prijs, versieLabel, LEEG } from '@/components/CampagneBriefing'
 import {
   wijzigBasis,
   wijzigDoel,
@@ -376,8 +376,8 @@ export default async function CampagnePage({ params }: { params: Promise<{ id: s
                         <span>{k.label}</span>
                         <span className="text-gray-600">{k.on ? formatDate(k.on) : LEEG}</span>
                         <span className="sm:text-right">{formatAantal(k.targetQuantity)}</span>
-                        <span className="whitespace-nowrap sm:text-right">{euro(k.priceCents)}</span>
-                        <span className="whitespace-nowrap sm:text-right">{k.priceCents === null ? LEEG : euro(k.priceCents * k.targetQuantity)}</span>
+                        <span className="whitespace-nowrap sm:text-right">{prijs(k.priceCents)}</span>
+                        <span className="whitespace-nowrap sm:text-right">{k.priceCents === null ? LEEG : prijs(k.priceCents * k.targetQuantity)}</span>
                       </div>
                     }
                     acties={<KleineKnop action={wisKpi} campaignId={c.id} id={k.id} label="Weg" />}
@@ -974,6 +974,7 @@ function VerwerkingNotitie({ r, campaignId }: { r: VerwerkingWeergave; campaignI
         <p className="text-xs text-gray-600">
           {formatDateLong(r.createdAt)} om {r.createdAt.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Amsterdam' })}
           {r.door && <> &middot; {r.door}</>}
+          {r.bron === 'import' && <> &middot; ingelezen zonder AI</>}
           {r.bestandNaam && <> &middot; {r.bestandNaam}</>}
         </p>
         <span className={`rounded-full px-2.5 py-0.5 text-xs ${status.stijl}`}>{status.label}</span>
