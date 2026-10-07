@@ -96,13 +96,20 @@ def klantprofiel():
 
 # ---------------------------------------------------------------- I.4 Campagnebriefing
 VINK = '<span class="opt" style="margin-right:6pt">%s</span>'
-def kanalen_tabel(regels):
-    """Eén regel per kanaal, middel of stuk content: wat, aantal, toelichting, en of het er al is of nog gemaakt moet worden."""
+def deliverables_tabel(regels):
+    """Eén regel per deliverable: elke ad, mailing, post, pagina of flyer apart, met een naam (Ad 1, Mailing 2),
+    het kanaal, wat erin staat en voor wie, het formaat, wanneer hij live gaat of verstuurd wordt, en of hij er al is."""
+    kop = ['Deliverable', 'Wat erin staat en voor wie', 'Formaat', 'Live', 'Status']
     if not regels:
-        rijen = [['', '', '', VINK % 'bestaat' + VINK % 'nog te maken'] for _ in range(6)]
-        return tabel(['Kanaal, middel of content', 'Aantal', 'Toelichting', 'Status'], rijen) + p('Kies uit: Meta Ads targeting, Meta Ads retargeting, Google Ads, Microsoft Ads, LinkedIn, TikTok, mailing, landingspagina, content (beeldenbank, draaidag, materiaal van de klant, sjablonen). Wat nog gemaakt moet worden, komt in de tijdlijn.', 'klein')
+        rijen = [['', '', '', '', VINK % 'bestaat' + VINK % 'nog te maken'] for _ in range(8)]
+        return tabel(kop, rijen) + p('Elke uiting is een eigen regel met een eigen naam: Ad 1, Ad 2, Mailing 1, Post 1. Dus niet “3 mailings”, maar drie regels. Kanaal kies je uit: Meta Ads (targeting of retargeting), Google Ads, Microsoft Ads, LinkedIn, TikTok, organisch (Instagram, Facebook, LinkedIn), mailing, landingspagina, drukwerk, content (beeldenbank, draaidag, materiaal van de klant, sjablonen). Wat nog gemaakt moet worden, komt in de tijdlijn.', 'klein')
     st = lambda x: chip('nog te maken', 'oranje') if x == 'maken' else chip('bestaat', 'groen')
-    return tabel(['Kanaal, middel of content', 'Aantal', 'Toelichting', 'Status'], streep([[a, b, c, st(d)] for a, b, c, d in regels]))
+    rijen = []
+    for r in regels:
+        if isinstance(r, tuple):
+            rijen.append(r); continue
+        rijen.append(['<b>%s</b><div class="klein" style="margin-top:1pt">%s</div>' % (r['naam'], r['kanaal']), r['inhoud'], r.get('formaat', ''), r.get('live', ''), st(r['status'])])
+    return tabel(kop, streep(rijen))
 
 CB = [
  ('1 · De basis', [
@@ -128,7 +135,7 @@ CB = [
    ('Regio', '', ''),
    ('Uitsluiten', '', ''),
  ]),
- ('5 · Kanalen en content', [
+ ('5 · Deliverables', [
  ]),
  ('6 · De planning', [
    ('Start', '', ''),
@@ -153,8 +160,9 @@ def campagnebriefing(w=None):
                          + bron('systeem') + ' komen uit het klantprofiel, ' + bron('keuze') + ' kies je uit een lijst, en bij ' + bron('suggestie') + ' kun je zelf typen of op “doe suggestie” klikken. Een veld dat niet van toepassing is, blijft leeg staan, zodat elke briefing dezelfde indeling heeft. Verandert er iets na het versturen, dan wordt het een nieuwe versie.</p>', 'Zo werkt de briefing', 'blauw'))
     for titel, rijen in CB:
         out.append(h3(titel))
-        if 'Kanalen' in titel:
-            out.append(kanalen_tabel(g('kanalen')))
+        if 'Deliverables' in titel:
+            out.append(deliverables_tabel(g('deliverables')))
+            out.append(opmerking(g('deliverables_opmerking')))
         out.append(velden_tabel(rijen, w))
         if 'doel' in titel:
             out.append(h3('KPI’s'))
@@ -298,12 +306,12 @@ def specificatie():
         ['Start, einde', 'Invoer', 'Datum (kalender)'],
         ['Opmerkingen bij de planning', 'Invoer', 'Opsomming, bijvoorbeeld een stopcriterium of beslismoment'],
         ['Tijdlijn', 'Invoer of suggestie', 'Regels: deadline (kalender), vaste omschrijving met toelichting, verantwoordelijke'],
-        ('grp', 'Aanbod, doelgroep, kanalen'),
+        ('grp', 'Aanbod, doelgroep, deliverables'),
         ['Wat we verkopen', 'Invoer', 'Tekst'],
         ['Kernboodschap, waarom nu, wat we niet beloven', 'Invoer of suggestie', 'Tekst'],
         ['Doelgroepen', 'Keuze uit de vaste doelgroepen van de klant, of nieuw', 'Een of meer'],
         ['Regio, uitsluiten, opmerkingen', 'Invoer', 'Tekst en opsomming'],
-        ['Kanalen, middelen en content', 'Keuze per regel', 'Per regel: wat (kanaal, landingspagina, mailing, content), aantal, toelichting, en een vinkje: bestaat al of nog te maken. Wat nog gemaakt moet worden, komt in de tijdlijn'],
+        ['Deliverables', 'Per regel', 'Elke uiting apart: naam (Ad 1, Mailing 2, Post 1), kanaal (keuzelijst), wat erin staat en voor wie, formaat, live of verzenden (datum of periode), en een vinkje: bestaat al of nog te maken. Wat nog gemaakt moet worden, komt in de tijdlijn'],
         ('grp', 'Afspraken en achtergrond'),
         ['Wat de klant zelf doet, opmerkingen', 'Invoer', 'Tekst en opsomming'],
         ['Achtergrond', 'Invoer', 'Tekst, mag leeg'],
@@ -313,49 +321,56 @@ def specificatie():
     return ''.join(out)
 
 # ---------------------------------------------------------------- Kerst bij Thiessen
+FORMATEN_AD = 'Beeld of korte video uit de beeldenbank, in 1:1, 4:5 en 9:16'
 THI = {
  'Campagnenaam': '<b>Kerst bij Thiessen</b>',
  'Klant': 'Thiessen Wijnkoopers',
  'Type': vv('[retainer of project]'),
  'Marketingmanager': vv('[uit het systeem]'),
  'Contactpersonen': vv('[uit de contacten van Thiessen]'),
- 'Doel in één zin': 'De kerstbrunch en beide kerstdiners vol: minimaal 180 gasten, goed voor € 12.750 omzet.',
+ 'Doel in één zin': 'De kerstbrunch en beide kerstdiners vol met 60 gasten per moment: nog 150 gasten te verkopen, goed voor € 10.275 omzet.',
  'Wat telt als resultaat': 'Een reservering via de eventpagina in Odoo, geteld in gasten.',
  'kpi': [
    ['Kerstbrunch', '25 december 2026', '60', '€ 47,50', '€ 2.850'],
    ['Kerstdiner', '25 december 2026', '60', '€ 82,50', '€ 4.950'],
-   ['Kerstdiner', '26 december 2026', '60', '€ 82,50', '€ 4.950'],
-   ('tot', ['Totaal', '', '180', '', '€ 12.750']),
+   ['Kerstdiner', '26 december 2026', '30', '€ 82,50', '€ 2.475'],
+   ('tot', ['Nog te verkopen', '', '150', '', '€ 10.275']),
  ],
  'kpi_opmerking': [
-   'Minimaal 60 gasten per moment; meer is welkom.',
+   'Per moment 60 gasten, 180 in totaal. Op 26 december zijn er al 30 geboekt: die tellen niet mee in het doel van de campagne. Meer dan 60 is welkom.',
+   'De stand van maandag 12 oktober is het startpunt: wat er dan bij de brunch of op 25 december al geboekt is, gaat daar nog van het doel af.',
    'De omzet is gerekend met de basisprijs. Arrangementen komen erbovenop: all-in is het diner € 115 per persoon.',
-   'Op 26 december zijn al 30 gasten geboekt; daar moeten er nog 30 bij.',
    'Op 25 november beslist Thiessen per moment of het doorgaat.',
    voorstel() + ' Doorgaan bij minimaal 30 gasten voor de brunch en 40 per diner.',
-   'Tussenstand om op te sturen: op 1 november 15 gasten per moment, op 15 november 30.',
+   'Tussenstand om op te sturen: op 1 november een kwart van wat we per moment moeten verkopen, op 15 november de helft. Voor de brunch en het diner op 25 december is dat 15 en 30 gasten, voor 26 december 8 en 15 bovenop de 30 die er al staan.',
  ],
- 'Start': '7 oktober 2026',
+ 'Start': '15 oktober 2026',
  'Einde': '17 december 2026',
  'planning_opmerking': [
-   voorstel() + ' Adverteren in twee flights in plaats van elke dag: aankondigen van 7 oktober tot 1 november, en “nog X plaatsen” van 9 november tot 17 december. Retargeting loopt tussendoor door met een klein budget.',
+   'De briefing gaat op 7 oktober naar Thiessen; akkoord uiterlijk vrijdag 9 oktober. Dan staat alles op 15 oktober live. Komt het akkoord later, dan schuift de start even ver op.',
+   voorstel() + ' Adverteren in twee flights in plaats van elke dag: aankondigen van 15 oktober tot 1 november, en “nog X plaatsen” van 9 november tot 17 december. Retargeting loopt tussendoor door met een klein budget.',
    'Per moment stoppen zodra het vol is.',
    'Vervalt een moment op 25 november, dan passen wij dezelfde dag de advertenties en de landingspagina aan.',
  ],
  'tijdlijn': [
-   ['5 oktober 2026', 'Briefing akkoord', 'Marketingmanager'],
-   ['6 oktober 2026', 'Landingspagina klaar', 'Content en techniek'],
-   ['6 oktober 2026', 'Content klaar, merkcheck', 'Content'],
-   ['6 oktober 2026', 'Doelgroepen en meting klaar', 'Campagne en techniek'],
-   ['7 oktober 2026', 'Live: flight 1, aankondigen', 'Campagne'],
-   ['9 oktober 2026', 'Flyer klaar, met QR-code naar de landingspagina', 'Content'],
+   ['7 oktober 2026', 'Briefing naar Thiessen', 'Marketingmanager'],
+   ['9 oktober 2026', 'Briefing akkoord, uiterlijk', 'Thiessen'],
+   ['12 oktober 2026', 'Doelgroepen en meting klaar', 'Campagne en techniek'],
+   ['13 oktober 2026', 'Landingspagina klaar', 'Content en techniek'],
+   ['13 oktober 2026', 'Ad 1, Ad 2 en Ad 3 klaar', 'Content'],
+   ['14 oktober 2026', 'Flyer drukklaar naar Thiessen', 'Content'],
+   ['14 oktober 2026', 'Merkcheck: landingspagina, ads en flyer', 'Marketingmanager'],
+   ['15 oktober 2026', 'Live: flight 1 (Ad 1 en Ad 2) en retargeting (Ad 3)', 'Campagne'],
+   ['16 oktober 2026', 'Post 1 online', 'Content'],
    ['elke maandag', 'Stand per moment, budget bijsturen', 'Campagne'],
-   [vv('[datum]'), 'Mailing: oktobernieuwsbrief', 'Marketingmanager'],
-   ['1 november 2026', 'Einde flight 1; retargeting loopt door', 'Campagne'],
-   ['2 november 2026', 'Contentronde: nog X plaatsen per moment', 'Content'],
-   [vv('[datum]'), 'Mailing: novembernieuwsbrief', 'Marketingmanager'],
-   ['9 november 2026', 'Live: flight 2, nog X plaatsen', 'Campagne'],
-   ['10 november 2026', 'Mailing: Kerst bij Thiessen', 'Marketingmanager'],
+   ['22 oktober 2026', 'Mailing 1 verstuurd: oktobernieuwsbrief', 'Marketingmanager'],
+   ['23 oktober 2026', 'Post 2 online', 'Content'],
+   ['1 november 2026', 'Einde flight 1, tussenstand; retargeting loopt door', 'Campagne'],
+   ['5 november 2026', 'Ad 4 en Ad 5 klaar, met merkcheck', 'Content'],
+   ['9 november 2026', 'Live: flight 2 (Ad 4 en Ad 5)', 'Campagne'],
+   ['10 november 2026', 'Mailing 2 verstuurd: Kerst bij Thiessen', 'Marketingmanager'],
+   ['11 november 2026', 'Post 3 online', 'Content'],
+   ['18 november 2026', 'Mailing 3 verstuurd: novembernieuwsbrief', 'Marketingmanager'],
    ['25 november 2026', 'Beslismoment: doorgaan of annuleren, per moment', 'Thiessen'],
    ['17 december 2026', 'Einde campagne', 'Campagne'],
    ['januari 2027', 'Evaluatie in de Performance Review', 'Marketingmanager'],
@@ -384,17 +399,57 @@ THI = {
  'Doelgroepen': ul(['Bestaande gasten (klantenlijst)', 'Nieuwsbriefabonnees', 'Websitebezoekers, laatste 180 dagen', 'Volgers en interacties op Instagram en Facebook', 'Nieuw: 30 tot 65 jaar, uit eten en wijn, plus een lookalike van de gasten']),
  'Regio': voorstel() + ' Maastricht en 25 kilometer eromheen.',
  'Uitsluiten': 'Wie al gereserveerd heeft, via de wekelijkse stand uit Odoo.',
- 'doelgroep_opmerking': 'De brunch is er ook voor gezinnen met kinderen en voor grotere groepen; daar mogen beeld en tekst bij de brunch op inspelen.',
- 'kanalen': [
-   ['Meta Ads: targeting', '1 campagne, 2 flights', 'Nieuwe gasten in de regio. Flight 1 aankondigen, flight 2 nog X plaatsen.', 'maken'],
-   ['Meta Ads: retargeting', '1 campagne', 'Websitebezoekers, volgers en nieuwsbriefabonnees, tot het einde van de campagne, ook tussen de flights.', 'maken'],
-   ['Organische posts Instagram en Facebook', '6', 'Twee in oktober, drie in november, één in december: aankondigen, de brunch, het menu, nog X plaatsen. Met dezelfde beelden als de advertenties.', 'maken'],
-   ['Mailing', '3', 'Oktobernieuwsbrief, novembernieuwsbrief en een aparte mailing Kerst bij Thiessen.', 'maken'],
-   ['Landingspagina', '1', 'thiessen.nl/events/kerst-bij/thiessen: de drie momenten, het menu, wat erbij zit, de arrangementen, per moment hoeveel plaatsen er nog zijn, en per moment een knop naar de eventpagina om te reserveren.', 'maken'],
-   ['Flyer in de winkel', '1 ontwerp', 'De drie momenten met een QR-code naar de landingspagina.', 'maken'],
-   ['Content: beeldenbank (Kive)', '3–5 beelden per moment', 'Formaten 1:1, 4:5 en 9:16. Twee contentrondes: aankondigen (oktober) en nog X plaatsen (november).', 'bestaat'],
+ 'doelgroep_opmerking': 'De brunch is er ook voor gezinnen met kinderen en voor grotere groepen; daar spelen Ad 1 en Ad 4 op in.',
+ 'deliverables': [
+   ('grp', 'Advertenties (Meta Ads: Instagram en Facebook)'),
+   dict(naam='Ad 1 · Kerstbrunch', kanaal='Meta Ads · targeting · flight 1',
+        inhoud='Nieuwe gasten in de regio, met nadruk op gezinnen en groepen. De brunch op eerste kerstdag: welkom met bubbels, het buffet, € 47,50. Knop naar de landingspagina.',
+        formaat=FORMATEN_AD, live='15 oktober – 1 november', status='maken'),
+   dict(naam='Ad 2 · Kerstdiner', kanaal='Meta Ads · targeting · flight 1',
+        inhoud='Nieuwe gasten in de regio. Het viergangendiner op eerste en tweede kerstdag, het menu en het all-in-arrangement van € 115. Knop naar de landingspagina.',
+        formaat=FORMATEN_AD, live='15 oktober – 1 november', status='maken'),
+   dict(naam='Ad 3 · Vier de kerst bij Thiessen', kanaal='Meta Ads · retargeting · hele looptijd',
+        inhoud='Websitebezoekers, volgers en nieuwsbriefabonnees die nog niet geboekt hebben. Carrousel met de drie momenten, elk met een eigen knop naar de eventpagina.',
+        formaat='Carrousel, 1:1 en 4:5', live='15 oktober – 17 december', status='maken'),
+   dict(naam='Ad 4 · Kerstbrunch, nog X plaatsen', kanaal='Meta Ads · targeting · flight 2',
+        inhoud='Als Ad 1, met het aantal plaatsen dat er nog is. Stopt zodra de brunch vol is.',
+        formaat=FORMATEN_AD, live='9 november – 17 december', status='maken'),
+   dict(naam='Ad 5 · Kerstdiner, nog X plaatsen', kanaal='Meta Ads · targeting · flight 2',
+        inhoud='Als Ad 2, met het aantal plaatsen per dag. Per dag stoppen zodra dat diner vol is.',
+        formaat=FORMATEN_AD, live='9 november – 17 december', status='maken'),
+   ('grp', 'Organisch (Instagram en Facebook)'),
+   dict(naam='Post 1', kanaal='Organisch · beeld van Ad 1', inhoud='De kerstbrunch aankondigen, met de link naar de landingspagina in de bio en in het verhaal.',
+        formaat='4:5 en 9:16 (verhaal)', live='16 oktober', status='maken'),
+   dict(naam='Post 2', kanaal='Organisch · beeld van Ad 2', inhoud='Het kerstdiner en het menu.',
+        formaat='4:5 en 9:16 (verhaal)', live='23 oktober', status='maken'),
+   dict(naam='Post 3', kanaal='Organisch · beeld van Ad 5', inhoud='Nog X plaatsen, per moment.',
+        formaat='4:5 en 9:16 (verhaal)', live='11 november', status='maken'),
+   ('grp', 'Mailings'),
+   dict(naam='Mailing 1 · Oktobernieuwsbrief', kanaal='Mailing · alle abonnees',
+        inhoud='Een blok Kerst bij Thiessen: de drie momenten in het kort, met een knop naar de landingspagina.',
+        formaat='Blok in de nieuwsbrief', live='22 oktober', status='maken'),
+   dict(naam='Mailing 2 · Kerst bij Thiessen', kanaal='Mailing · alle abonnees',
+        inhoud='Een aparte mailing over alleen de kerst: brunch en diner, het menu, de arrangementen, reserveren zonder aanbetaling. Per moment een knop naar de eventpagina.',
+        formaat='Losse mailing', live='10 november', status='maken'),
+   dict(naam='Mailing 3 · Novembernieuwsbrief', kanaal='Mailing · abonnees die nog niet geboekt hebben',
+        inhoud='Nog X plaatsen per moment, en de datum waarop we beslissen (25 november).',
+        formaat='Blok in de nieuwsbrief', live='18 november', status='maken'),
+   ('grp', 'Website en winkel'),
+   dict(naam='Landingspagina', kanaal='thiessen.nl/events/kerst-bij/thiessen',
+        inhoud='De drie momenten, het menu, wat erbij zit, de arrangementen, per moment hoeveel plaatsen er nog zijn, en per moment een knop naar de eventpagina om te reserveren.',
+        formaat='Pagina op de eigen website', live='vanaf 15 oktober', status='maken'),
+   dict(naam='Flyer', kanaal='Drukwerk in de winkel · wij ontwerpen, Thiessen drukt',
+        inhoud='De drie momenten in het kort, met een QR-code naar de landingspagina.',
+        formaat='Drukklare pdf, ' + vv('[formaat met Thiessen afstemmen]'), live='in de winkel zodra gedrukt', status='maken'),
+   ('grp', 'Wat er al is'),
+   dict(naam='Beeldenbank', kanaal='Kive', inhoud='3 tot 5 beelden per moment; de basis voor alle ads, posts, mailings en de flyer.',
+        formaat='1:1, 4:5 en 9:16', live='', status='bestaat'),
  ],
- 'Wat de klant zelf doet': 'Elke maandag de stand per moment uit Odoo naar support@jamesrobinson.nl. Odoo en de eventpagina’s actueel houden. De flyer in de winkel neerleggen. Gasten informeren als een moment vervalt.',
+ 'deliverables_opmerking': [
+   voorstel() + ' De data van de posts en mailings. Heeft Thiessen vaste dagen voor de nieuwsbrief, dan schuiven we mee.',
+   'Geen losse organische posts: we posten de beelden van de ads ook organisch.',
+ ],
+ 'Wat de klant zelf doet': 'Elke maandag de stand per moment uit Odoo naar support@jamesrobinson.nl. Odoo en de eventpagina’s actueel houden. De flyer laten drukken en in de winkel neerleggen. Gasten informeren als een moment vervalt.',
  'afspraken_opmerking': [
    'Reserveren gaat zonder aanbetaling.',
    'Gasten krijgen vier weken voor kerst een betaallink en betalen uiterlijk een week voor kerst.',
@@ -408,28 +463,41 @@ THI = {
  ]),
 }
 
-THI['hyp'] = bereken(doel=180, per_conversie=3, conversieratio=0.025, doorklik=0.01, cpm=8, omzet=12750,
+THI['hyp'] = bereken(doel=150, per_conversie=3, conversieratio=0.025, doorklik=0.01, cpm=8, omzet=10275,
     bronnen=dict(per_conversie='inschatting; checken in Odoo', cr='marktgemiddelde; eigen norm volgt', ctr='marktgemiddelde Meta; eigen norm volgt', cpm='inschatting; checken in Ads Manager'),
-    scenario_cr=0.015, weken=10, kanalen_extra='de organische posts, de drie mailings, de flyer, vaste gasten en direct',
-    opmerkingen=['Eenheden per conversie: gemiddeld 3 gasten per reservering (groepsgrootte). Na de eerste tien reserveringen checken in Odoo.', 'Conversie: een reservering via de eventpagina in Odoo.'])
-_h = THI['hyp']
-_f1 = round(_h['budget'] * 2 / 5 / 100) * 100
-THI['Advertentiebudget'] = voorstel() + ' Berekend uit het doel: advies € %s aan Meta (%s%% van de omzet), rechtstreeks van Thiessen; zie de hypothese onderaan. Dat is de bovengrens, als alles via advertenties komt. Flight 1 (oktober) € %s, flight 2 en de retargeting tussendoor (november en december) € %s, verdeeld over targeting en retargeting.' % (
-    nl(_h['budget']), pct(_h['pct_budget']), nl(_f1), nl(_h['budget'] - _f1))
+    scenario_cr=0.015, weken=9, kanalen_extra='de posts, de drie mailings, de flyer, vaste gasten en direct',
+    opmerkingen=['Eenheden per conversie: gemiddeld 3 gasten per reservering (groepsgrootte). Na de eerste tien reserveringen checken in Odoo.', 'Conversie: een reservering via de eventpagina in Odoo.',
+                 'Doel en omzet zonder de 30 gasten die op 26 december al geboekt zijn.'])
 
-THI_SAMENVATTING = ('Thiessen Wijnkoopers wil drie kerstmomenten vullen: de kerstbrunch op eerste kerstdag en het kerstdiner op eerste en tweede kerstdag. '
-                    'Het doel is minimaal 180 gasten (ongeveer %s reserveringen) en € 12.750 omzet, met Meta Ads in twee flights, organische posts, '
-                    'een eigen landingspagina, drie mailings en een flyer in de winkel, van 7 oktober tot 17 december 2026.') % nl(THI['hyp']['conv'])
+def _verdeel_budget(totaal):
+    """Per ad: retargeting een vast deel over de hele looptijd, de rest 40/60 over de flights,
+    en per flight naar wat er nog te verkopen is (brunch 60, diners 90). Afgerond op € 50."""
+    r50 = lambda x: int(round(x / 50.0)) * 50
+    ad3 = r50(totaal * 0.15)
+    f1, f2 = (totaal - ad3) * 0.4, (totaal - ad3) * 0.6
+    ad1, ad2, ad4 = r50(f1 * 0.4), r50(f1 * 0.6), r50(f2 * 0.4)
+    return dict(ad1=ad1, ad2=ad2, ad3=ad3, ad4=ad4, ad5=totaal - ad1 - ad2 - ad3 - ad4)
+_h = THI['hyp']
+_b = _verdeel_budget(_h['budget'])
+THI['Advertentiebudget'] = voorstel() + (
+    ' Berekend uit het doel: advies € %s aan Meta (%s%% van de omzet), rechtstreeks van Thiessen; zie de hypothese onderaan. Dat is de bovengrens, als alles via advertenties komt. '
+    'Per ad: Ad 1 € %s en Ad 2 € %s (flight 1), Ad 3 € %s (retargeting, hele looptijd), Ad 4 € %s en Ad 5 € %s (flight 2). '
+    'De diners krijgen meer dan de brunch, omdat daar meer plaatsen en meer omzet te halen zijn. Loopt een moment achter, dan schuiven we budget.') % (
+    nl(_h['budget']), pct(_h['pct_budget']), nl(_b['ad1']), nl(_b['ad2']), nl(_b['ad3']), nl(_b['ad4']), nl(_b['ad5']))
+
+THI_SAMENVATTING = ('Thiessen Wijnkoopers wil drie kerstmomenten vullen met 60 gasten per moment: de kerstbrunch op eerste kerstdag en het kerstdiner op eerste en tweede kerstdag. '
+                    'Er moeten nog 150 gasten verkocht worden (ongeveer %s reserveringen), goed voor € 10.275 omzet. Met vijf Meta-ads in twee flights, drie posts met de beelden van de ads, '
+                    'drie mailings, een landingspagina en een flyer in de winkel, van 15 oktober tot 17 december 2026.') % nl(THI['hyp']['conv'])
 
 DOCS = [
  dict(code='I.3', titel='Klantprofiel', fase='Intern · Briefings', voor='Intern', wanneer='Aan het eind van de onboarding, daarna bijhouden', wie='Marketingmanager',
       lead='Alles wat iemand moet weten voordat die aan een klant werkt: wie de klant is, de contactpersonen, de doelen, de vaste doelgroepen, het merk, de systemen en de afspraken.', body=klantprofiel()),
  dict(code='I.4', titel='Campagnebriefing', fase='Intern · Briefings', voor='Intern en klant', wanneer='Vóór elke nieuwe campagne', wie='Marketingmanager, met akkoord van de klant',
-      lead='Eén briefing per campagne: het doel in harde getallen, de planning met de tijdlijn, aanbod, doelgroep, kanalen en content, en de afspraken. Eerst als voorstel naar de klant, na akkoord naar het team en in ClickUp.', body=campagnebriefing()),
+      lead='Eén briefing per campagne: het doel in harde getallen, de planning met de tijdlijn, aanbod, doelgroep, de deliverables één voor één, en de afspraken. Eerst als voorstel naar de klant, na akkoord naar het team en in ClickUp.', body=campagnebriefing()),
  dict(code='I.5', titel='Briefings in het portaal', fase='Intern · Briefings', voor='Intern', wanneer='Bij het bouwen van het portaal', wie='Jim Coumans, Jim Kikken, de bouwer van het portaal',
       lead='Welke velden uit het systeem komen, welke je kiest, waar je een suggestie kunt laten doen, hoe een briefing van voorstel naar akkoord gaat, en hoe de tijdlijn in ClickUp komt.', concept=True, body=specificatie()),
- dict(code='K.THI.1', titel='Kerst bij Thiessen', fase='Campagnebriefing', voor='Intern en klant', wanneer='7 oktober – 17 december 2026', wie='Marketingmanager',
-      kop_rechts='Versie 2.0 · 6 oktober 2026', bestand='Campagnebriefing Kerst bij Thiessen', map_sub='Thiessen',
-      meta=[('Klant', 'Thiessen Wijnkoopers'), ('Start', '7 oktober 2026'), ('Einde', '17 december 2026'), ('Status', voorstel())],
+ dict(code='K.THI.1', titel='Kerst bij Thiessen', fase='Campagnebriefing', voor='Intern en klant', wanneer='15 oktober – 17 december 2026', wie='Marketingmanager',
+      kop_rechts='Versie 2.0 · 7 oktober 2026', bestand='Campagnebriefing Kerst bij Thiessen', map_sub='Thiessen',
+      meta=[('Klant', 'Thiessen Wijnkoopers'), ('Start', '15 oktober 2026'), ('Einde', '17 december 2026'), ('Status', voorstel())],
       lead=THI_SAMENVATTING, body=campagnebriefing(THI)),
 ]
