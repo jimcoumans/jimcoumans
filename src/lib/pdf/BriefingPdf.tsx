@@ -4,6 +4,7 @@ import type { CampagneVolledig } from '@/lib/campagnes'
 import { STATUS_LABELS, livePeriode } from '@/lib/campagnes'
 import { formatBp, formatHonderdsten, formatAantal } from '@/lib/hypothese'
 import { formatDateLong } from '@/lib/dates'
+import { leesPunten, groepeerPunten } from '@/lib/punten'
 import { budgetTekst, budgetBereik, omzetBereik, euro, euroPrecies, prijs, regels, versieLabel, LEEG } from '@/components/CampagneBriefing'
 
 /* -------------------------------------------------------------------------
@@ -110,36 +111,31 @@ function MetLinks({ tekst }: { tekst: string }) {
   )
 }
 
+/** Een puntenveld: één punt als gewone tekst, meer als opsomming, met subpunten eronder. */
 function Opsomming({ tekst }: { tekst: string | null | undefined }) {
-  const r = regels(tekst)
-  if (r.length === 0) return <Text style={{ color: GRIJS }}>{LEEG}</Text>
-  if (r.length === 1) return <Text>{r[0]}</Text>
+  const groepen = groepeerPunten(leesPunten(tekst))
+  if (groepen.length === 0) return <Text style={{ color: GRIJS }}>{LEEG}</Text>
+  if (groepen.length === 1 && groepen[0]!.sub.length === 0) return <MetLinks tekst={groepen[0]!.tekst} />
   return (
     <View>
-      {r.map((x, i) => (
-        <View key={i} style={s.opsomming} wrap={false}>
-          <Text style={s.bolletje}>•</Text>
-          <Text style={{ flex: 1 }}>{x}</Text>
+      {groepen.map((g, i) => (
+        <View key={i}>
+          <View style={s.opsomming} wrap={false}>
+            <Text style={s.bolletje}>•</Text>
+            <View style={{ flex: 1 }}>
+              <MetLinks tekst={g.tekst} />
+            </View>
+          </View>
+          {g.sub.map((x, j) => (
+            <View key={j} style={[s.opsomming, { paddingLeft: 10 }]} wrap={false}>
+              <Text style={s.bolletje}>–</Text>
+              <View style={{ flex: 1 }}>
+                <MetLinks tekst={x} />
+              </View>
+            </View>
+          ))}
         </View>
       ))}
-    </View>
-  )
-}
-
-/** Platte tekst met lege regels als alinea's en "- " als opsomming, zoals in "wat we verkopen". */
-function Alinea({ tekst }: { tekst: string }) {
-  const blokken = tekst.split(/\n\s*\n/)
-  return (
-    <View>
-      {blokken.map((b, i) => {
-        const r = b.split('\n').map((x) => x.trim()).filter(Boolean)
-        const lijst = r.length > 0 && r.every((x) => /^[-•*]\s/.test(x))
-        return (
-          <View key={i} style={{ marginBottom: i < blokken.length - 1 ? 5 : 0 }}>
-            {lijst ? <Opsomming tekst={r.join('\n')} /> : <MetLinks tekst={r.join(' ')} />}
-          </View>
-        )
-      })}
     </View>
   )
 }
@@ -307,7 +303,9 @@ export function BriefingPdf({ v }: { v: CampagneVolledig }) {
         </Sectie>
 
         <Sectie nummer={3} titel="Aanbod en boodschap">
-          <LangeRij label="Wat we verkopen">{c.offerWhat ? <Alinea tekst={c.offerWhat} /> : <Text style={{ color: GRIJS }}>{LEEG}</Text>}</LangeRij>
+          <LangeRij label="Wat we verkopen">
+            <Opsomming tekst={c.offerWhat} />
+          </LangeRij>
           <Rij label="Kernboodschap" leeg={!c.offerMessage}>
             <Text>
               {voorstel('kernboodschap') && <Voorstel />}
@@ -315,10 +313,10 @@ export function BriefingPdf({ v }: { v: CampagneVolledig }) {
             </Text>
           </Rij>
           <Rij label="Waarom nu">
-            <Tekst waarde={c.offerWhyNow} />
+            <Opsomming tekst={c.offerWhyNow} />
           </Rij>
           <Rij label="Wat we niet beloven">
-            <Tekst waarde={c.offerNotPromised} />
+            <Opsomming tekst={c.offerNotPromised} />
           </Rij>
         </Sectie>
 
@@ -333,7 +331,7 @@ export function BriefingPdf({ v }: { v: CampagneVolledig }) {
             </Text>
           </Rij>
           <Rij label="Uitsluiten">
-            <Tekst waarde={c.exclusions} />
+            <Opsomming tekst={c.exclusions} />
           </Rij>
           <Rij label="Opmerkingen">
             <Opsomming tekst={c.audienceNotes} />
@@ -391,7 +389,7 @@ export function BriefingPdf({ v }: { v: CampagneVolledig }) {
 
         <Sectie nummer={7} titel="Afspraken met de klant">
           <Rij label="Wat de klant zelf doet">
-            <Tekst waarde={c.clientDoes} />
+            <Opsomming tekst={c.clientDoes} />
           </Rij>
           <Rij label="Opmerkingen">
             <Opsomming tekst={c.agreementNotes} />
@@ -400,7 +398,7 @@ export function BriefingPdf({ v }: { v: CampagneVolledig }) {
 
         <Sectie nummer={8} titel="Achtergrondinformatie">
           <Rij label="Wat we weten van vorige keer">
-            <Tekst waarde={c.backgroundPrevious} />
+            <Opsomming tekst={c.backgroundPrevious} />
           </Rij>
           <Rij label="Risico’s">
             <Opsomming tekst={c.backgroundRisks} />
@@ -510,6 +508,14 @@ export async function maakBriefingPdf(v: CampagneVolledig): Promise<Buffer> {
 
 /** De bestandsnaam: "Kerst bij Thiessen – campagnebriefing versie 2.0.pdf". */
 export function pdfNaam(v: CampagneVolledig): string {
-  const naam = v.campagne.title.replace(/[\\/:*?"<>|]+/g, ' ').trim() || 'Campagne'
-  return `${naam} – campagnebriefing${v.campagne.version > 0 ? ` versie ${versieLabel(v.campagne.version)}` : ''}.pdf`
+  // Alleen gewone letters: met een accent of een lang streepje noemt een deel van de browsers het bestand "download".
+  const naam =
+    v.campagne.title
+      .normalize('NFKD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^\x20-\x7E]/g, '-')
+      .replace(/[\\/:*?"<>|]+/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim() || 'Campagne'
+  return `${naam} - campagnebriefing${v.campagne.version > 0 ? ` versie ${versieLabel(v.campagne.version)}` : ''}.pdf`
 }

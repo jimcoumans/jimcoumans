@@ -249,15 +249,6 @@ async function listSpecialisten(campaignId: string, organizationId: string): Pro
   return rijen.map((r) => ({ id: r.id, name: r.name, email: r.email, functie: r.jobTitle?.trim() || r.rol?.trim() || null }))
 }
 
-export async function zetSpecialisten(id: string, userIds: string[]): Promise<void> {
-  await db.transaction(async (tx) => {
-    await tx.delete(campaignSpecialists).where(eq(campaignSpecialists.campaignId, id))
-    const uniek = [...new Set(userIds)]
-    if (uniek.length > 0) await tx.insert(campaignSpecialists).values(uniek.map((userId) => ({ campaignId: id, userId })))
-    await tx.update(campaigns).set({ updatedAt: new Date() }).where(eq(campaigns.id, id))
-  })
-}
-
 /** Collega's die een tijdlijnregel of een campagne kunnen trekken. */
 export async function listTeam() {
   return db
@@ -327,22 +318,6 @@ export async function wijzigCampagne(
   await db.update(campaigns).set({ ...patch, updatedAt: new Date() }).where(eq(campaigns.id, id))
 }
 
-export async function zetContactpersonen(id: string, contactIds: string[]): Promise<void> {
-  await db.transaction(async (tx) => {
-    await tx.delete(campaignContacts).where(eq(campaignContacts.campaignId, id))
-    if (contactIds.length > 0) await tx.insert(campaignContacts).values(contactIds.map((contactId) => ({ campaignId: id, contactId })))
-    await tx.update(campaigns).set({ updatedAt: new Date() }).where(eq(campaigns.id, id))
-  })
-}
-
-export async function zetDoelgroepen(id: string, audienceIds: string[]): Promise<void> {
-  await db.transaction(async (tx) => {
-    await tx.delete(campaignAudiences).where(eq(campaignAudiences.campaignId, id))
-    if (audienceIds.length > 0) await tx.insert(campaignAudiences).values(audienceIds.map((audienceId) => ({ campaignId: id, audienceId })))
-    await tx.update(campaigns).set({ updatedAt: new Date() }).where(eq(campaigns.id, id))
-  })
-}
-
 /** Doelgroepen aan een campagne hangen, zonder de bestaande los te laten. */
 export async function koppelDoelgroepen(campaignId: string, audienceIds: string[]): Promise<void> {
   const uniek = [...new Set(audienceIds)].filter(Boolean)
@@ -377,68 +352,6 @@ export async function verwijderDoelgroep(id: string) {
   await db.delete(organizationAudiences).where(eq(organizationAudiences.id, id))
 }
 
-export async function voegKpiToe(campaignId: string, kpi: { label: string; on: Date | null; targetQuantity: number; priceCents: number | null }) {
-  if (kpi.label.trim() === '') throw new CampagneError('Geef het product of onderdeel een naam.')
-  if (!Number.isInteger(kpi.targetQuantity) || kpi.targetQuantity <= 0) throw new CampagneError('Het doel is een heel aantal groter dan nul.')
-  const [telling] = await db.select({ n: sql<number>`count(*)::int` }).from(campaignKpis).where(eq(campaignKpis.campaignId, campaignId))
-  await db.insert(campaignKpis).values({ campaignId, position: telling?.n ?? 0, ...kpi, label: kpi.label.trim() })
-  await raak(campaignId)
-}
-
-export async function wijzigKpiRegel(id: string, kpi: { label: string; on: Date | null; targetQuantity: number; priceCents: number | null }) {
-  if (kpi.label.trim() === '') throw new CampagneError('Geef het product of onderdeel een naam.')
-  if (!Number.isInteger(kpi.targetQuantity) || kpi.targetQuantity <= 0) throw new CampagneError('Het doel is een heel aantal groter dan nul.')
-  const [k] = await db.update(campaignKpis).set({ ...kpi, label: kpi.label.trim() }).where(eq(campaignKpis.id, id)).returning()
-  if (k) await raak(k.campaignId)
-}
-
-export async function verwijderKpi(id: string) {
-  const [k] = await db.delete(campaignKpis).where(eq(campaignKpis.id, id)).returning()
-  if (k) await raak(k.campaignId)
-}
-
-export type DeliverableInvoer = {
-  name: string | null
-  kind: string
-  quantity: string | null
-  note: string | null
-  liveFrom: Date | null
-  liveUntil: Date | null
-  status: 'bestaat' | 'maken'
-}
-
-function controleerDeliverable(k: DeliverableInvoer) {
-  if (k.kind.trim() === '') throw new CampagneError('Kies het kanaal van deze deliverable.')
-  if (k.liveFrom && k.liveUntil && k.liveUntil < k.liveFrom) throw new CampagneError('De einddatum ligt vóór de startdatum.')
-}
-
-export async function voegKanaalToe(campaignId: string, k: DeliverableInvoer) {
-  controleerDeliverable(k)
-  const [telling] = await db.select({ n: sql<number>`count(*)::int` }).from(campaignChannels).where(eq(campaignChannels.campaignId, campaignId))
-  await db.insert(campaignChannels).values({ campaignId, position: telling?.n ?? 0, ...k, kind: k.kind.trim(), name: k.name?.trim() || null })
-  await raak(campaignId)
-}
-
-export async function wijzigKanaalRegel(id: string, k: DeliverableInvoer) {
-  controleerDeliverable(k)
-  const [r] = await db.update(campaignChannels).set({ ...k, kind: k.kind.trim(), name: k.name?.trim() || null }).where(eq(campaignChannels.id, id)).returning()
-  if (r) await raak(r.campaignId)
-}
-
-export async function wisselKanaalStatus(id: string) {
-  const [k] = await db
-    .update(campaignChannels)
-    .set({ status: sql`CASE WHEN ${campaignChannels.status} = 'maken' THEN 'bestaat'::channel_status ELSE 'maken'::channel_status END` })
-    .where(eq(campaignChannels.id, id))
-    .returning()
-  if (k) await raak(k.campaignId)
-}
-
-export async function verwijderKanaal(id: string) {
-  const [k] = await db.delete(campaignChannels).where(eq(campaignChannels.id, id)).returning()
-  if (k) await raak(k.campaignId)
-}
-
 export async function voegTijdlijnToe(
   campaignId: string,
   t: { dueOn: Date | null; description: string; assigneeUserId: string | null; assigneeLabel: string | null },
@@ -446,20 +359,6 @@ export async function voegTijdlijnToe(
   if (t.description.trim() === '') throw new CampagneError('Zeg wat er moet gebeuren.')
   await db.insert(campaignTimeline).values({ campaignId, ...t, description: t.description.trim() })
   await raak(campaignId)
-}
-
-export async function wijzigTijdlijn(
-  id: string,
-  t: { dueOn: Date | null; description: string; assigneeUserId: string | null; assigneeLabel: string | null },
-) {
-  if (t.description.trim() === '') throw new CampagneError('Zeg wat er moet gebeuren.')
-  const [r] = await db.update(campaignTimeline).set({ ...t, description: t.description.trim() }).where(eq(campaignTimeline.id, id)).returning()
-  if (r) await raak(r.campaignId)
-}
-
-export async function verwijderTijdlijn(id: string) {
-  const [r] = await db.delete(campaignTimeline).where(eq(campaignTimeline.id, id)).returning()
-  if (r) await raak(r.campaignId)
 }
 
 async function raak(campaignId: string) {
