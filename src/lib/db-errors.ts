@@ -374,6 +374,8 @@ export function describeDbError(error: unknown): string | null {
       return 'Een prijs kan niet negatief zijn. Laat hem leeg als er geen prijs bij hoort.'
     case 'timeline_description_not_empty':
       return 'Geef de regel in de tijdlijn een omschrijving.'
+    case 'channel_live_period':
+      return 'De einddatum van een deliverable ligt vóór de startdatum. Controleer allebei de datums.'
     case 'verwerking_heeft_invoer':
       return 'Plak de feedback van de klant of kies een bestand.'
     case 'audience_name_not_empty':

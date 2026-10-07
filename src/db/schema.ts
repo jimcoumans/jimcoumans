@@ -3156,7 +3156,12 @@ export const campaignKpis = pgTable(
   ],
 )
 
-/** Kanalen, middelen en content: één regel per stuk, met of het er al is. */
+/**
+ * De deliverables: één regel per uiting. Niet "3 mailings", maar Mailing 1,
+ * Mailing 2 en Mailing 3, elk met wat erin staat, het formaat en wanneer hij
+ * live gaat of verstuurd wordt. De tabel heet nog naar de kanalen, waar hij
+ * mee begon.
+ */
 export const campaignChannels = pgTable(
   'campaign_channels',
   {
@@ -3165,12 +3170,23 @@ export const campaignChannels = pgTable(
       .notNull()
       .references(() => campaigns.id, { onDelete: 'cascade' }),
     position: integer('position').notNull().default(0),
+    /** De naam van de deliverable: "Ad 1 · Kerstbrunch", "Mailing 2". */
+    name: text('name'),
+    /** Het kanaal, uit de keuzelijst: "Meta Ads: targeting", "Mailing". */
     kind: text('kind').notNull(),
+    /** Formaat of aantal: "1:1, 4:5 en 9:16", "blok in de nieuwsbrief". */
     quantity: text('quantity'),
+    /** Wat erin staat en voor wie. */
     note: text('note'),
+    /** Live of verstuurd vanaf; bij een mailing de verzenddag. */
+    liveFrom: timestamp('live_from', { withTimezone: true }),
+    liveUntil: timestamp('live_until', { withTimezone: true }),
     status: channelStatusEnum('status').notNull().default('maken'),
   },
-  (t) => [index('campaign_channels_campaign_idx').on(t.campaignId)],
+  (t) => [
+    index('campaign_channels_campaign_idx').on(t.campaignId),
+    check('channel_live_period', sql`${t.liveFrom} IS NULL OR ${t.liveUntil} IS NULL OR ${t.liveUntil} >= ${t.liveFrom}`),
+  ],
 )
 
 /** De tijdlijn is de takenlijst. Bij akkoord wordt elke regel een subtaak in ClickUp. */

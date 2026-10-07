@@ -102,7 +102,10 @@ function nieuweBriefing(): Uitkomst {
       { label: 'Kerstdiner', datum: '', aantal: 60, prijs: '82,50' },
       { label: 'Zonder aantal', datum: '', aantal: 0, prijs: '' },
     ],
-    kanalen: [{ soort: 'Meta Ads: targeting', aantal: '2 flights', toelichting: '', status: 'maken' }],
+    deliverables: [
+      { naam: 'Ad 1 · Kerstbrunch', kanaal: 'Meta Ads: targeting', inhoud: 'Gezinnen in de regio.', formaat: '4:5', liveVanaf: '2026-10-15', liveTot: '2026-11-01', status: 'maken' },
+      { naam: 'Mailing 2', kanaal: 'Mailing', inhoud: 'Alleen de kerst.', formaat: 'Losse mailing', liveVanaf: '2026-11-10', liveTot: '', status: 'maken' },
+    ],
     tijdlijn: [
       { id: '', datum: '2026-10-07', omschrijving: 'Live', wie: 'Campagne' },
       { id: '', datum: '2026-11-15', omschrijving: 'Mailing', wie: `Robin ${suffix}` },
@@ -186,7 +189,13 @@ test('feedback verwerken geeft één schone briefing en een interne notitie', as
       ['Kerstdiner', 60, 8250],
     ],
   )
-  assert.equal(v.kanalen[0]?.quantity, '2 flights')
+  assert.deepEqual(
+    v.kanalen.map((k) => [k.name, k.kind, k.quantity, k.liveFrom?.getTime() ?? null, k.liveUntil?.getTime() ?? null]),
+    [
+      ['Ad 1 · Kerstbrunch', 'Meta Ads: targeting', '4:5', new Date('2026-10-15T12:00:00').getTime(), new Date('2026-11-01T12:00:00').getTime()],
+      ['Mailing 2', 'Mailing', 'Losse mailing', new Date('2026-11-10T12:00:00').getTime(), null],
+    ],
+  )
 
   // De regel die bleef, houdt zijn id en zijn ClickUp-taak; de geschrapte is weg.
   const live = v.tijdlijn.find((t) => t.description === 'Live')
@@ -236,4 +245,29 @@ test('terugdraaien zet de briefing terug zoals hij was', async () => {
 
   const [r] = await db.select().from(campaignVerwerkingen).where(eq(campaignVerwerkingen.id, laatste.id))
   assert.equal(r?.status, 'teruggedraaid')
+})
+
+test('de tijdlijn-suggestie maakt per benoemde deliverable een eigen regel', async () => {
+  const { suggereerTijdlijn } = await import('../campagnes')
+  const d = (s: string) => new Date(`${s}T12:00:00`)
+  const regels = suggereerTijdlijn({
+    start: d('2026-10-15'),
+    einde: d('2026-12-17'),
+    marketingmanagerId: userId,
+    kanalen: [
+      { name: 'Ad 1 · Kerstbrunch', kind: 'Meta Ads: targeting', quantity: null, status: 'maken', liveFrom: d('2026-10-15') },
+      { name: 'Ad 4 · Nog X plaatsen', kind: 'Meta Ads: targeting', quantity: null, status: 'maken', liveFrom: d('2026-11-09') },
+      { name: 'Mailing 2', kind: 'Mailing', quantity: null, status: 'maken', liveFrom: d('2026-11-10') },
+      { name: 'Post 1', kind: 'Organisch: Instagram en Facebook', quantity: null, status: 'maken', liveFrom: d('2026-10-16') },
+      { name: 'Beeldenbank', kind: 'Content: beeldenbank', quantity: null, status: 'bestaat', liveFrom: null },
+    ],
+  })
+  const op = (omschrijving: string) => regels.find((r) => r.description === omschrijving)
+  assert.equal(op('Ad 1 · Kerstbrunch klaar')?.dueOn.getTime(), d('2026-10-13').getTime())
+  assert.equal(op('Ad 4 · Nog X plaatsen klaar')?.dueOn.getTime(), d('2026-11-07').getTime())
+  assert.equal(op('Live: Ad 4 · Nog X plaatsen')?.dueOn.getTime(), d('2026-11-09').getTime())
+  assert.equal(op('Mailing 2 verstuurd')?.assigneeUserId, userId)
+  assert.equal(op('Post 1 online')?.assigneeLabel, 'Content')
+  // Wat er al is, hoeft niet gemaakt te worden.
+  assert.ok(!regels.some((r) => r.description.includes('Beeldenbank')))
 })

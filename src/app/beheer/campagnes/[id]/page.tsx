@@ -9,6 +9,7 @@ import {
   STATUS_STIJL,
   KANAAL_SOORTEN,
   TIJDLIJN_OMSCHRIJVINGEN,
+  livePeriode,
   type CampagneVolledig,
 } from '@/lib/campagnes'
 import { listContacts } from '@/lib/crm'
@@ -554,24 +555,26 @@ export default async function CampagnePage({ params }: { params: Promise<{ id: s
             </div>
           </Kaart>
         </div>
-        {/* ---------------------------- 5 Kanalen ---------------------------- */}
+        {/* ---------------------------- 5 Deliverables ---------------------------- */}
         <Kaart
           nummer={5}
-          titel="Kanalen en content"
-          uitleg="Per regel: bestaat het al, of moet het nog gemaakt worden? Wat nog gemaakt moet worden, komt in de tijdlijn."
+          titel="Deliverables"
+          uitleg="Elke uiting een eigen regel met een eigen naam: Ad 1, Ad 2, Mailing 1, Post 1. Dus niet “3 mailings”, maar drie regels, elk met wat erin staat en wanneer hij live gaat. Wat nog gemaakt moet worden, komt in de tijdlijn."
         >
           {v.kanalen.length === 0 ? (
-            <p className="mb-3 text-sm text-gray-600">Nog geen kanalen.</p>
+            <p className="mb-3 text-sm text-gray-600">Nog geen deliverables.</p>
           ) : (
             <ul className="mb-3 divide-y divide-gray-200">
               {v.kanalen.map((k) => (
                 <Regel
-                  key={`${k.id}-${k.kind}-${k.quantity ?? ''}-${k.note ?? ''}-${k.status}`}
+                  key={`${k.id}-${k.name ?? ''}-${k.kind}-${k.quantity ?? ''}-${k.note ?? ''}-${k.liveFrom?.getTime() ?? ''}-${k.liveUntil?.getTime() ?? ''}-${k.status}`}
                   weergave={
                     <div className="text-[15px]">
-                      {k.kind}
-                      {k.quantity && <span className="text-gray-600"> · {k.quantity}</span>}
+                      <span className="font-medium">{k.name ?? k.kind}</span>
+                      {k.name && <span className="text-gray-600"> · {k.kind}</span>}
+                      {(k.liveFrom || k.liveUntil) && <span className="text-gray-600"> · {livePeriode(k)}</span>}
                       {k.note && <p className="text-xs text-gray-600">{k.note}</p>}
+                      {k.quantity && <p className="text-xs text-gray-500">Formaat: {k.quantity}</p>}
                     </div>
                   }
                   acties={
@@ -606,7 +609,7 @@ export default async function CampagnePage({ params }: { params: Promise<{ id: s
               <option key={s} value={s} />
             ))}
           </datalist>
-          <Uitklap label="Kanaal, middel of content toevoegen">
+          <Uitklap label="Deliverable toevoegen">
             <ActionForm action={nieuwKanaal} submitLabel="Toevoegen">
               {verborgen}
               <KanaalVelden />
@@ -636,7 +639,7 @@ export default async function CampagnePage({ params }: { params: Promise<{ id: s
             {c.clickupTaskId && <span className="text-xs text-gray-500">Staat in ClickUp als subtaken</span>}
           </div>
           {v.tijdlijn.length === 0 ? (
-            <p className="mt-1 mb-3 text-sm text-gray-500">Nog leeg. Laat een suggestie doen uit de data en de kanalen, en pas die aan.</p>
+            <p className="mt-1 mb-3 text-sm text-gray-500">Nog leeg. Laat een suggestie doen uit de data en de deliverables, en pas die aan.</p>
           ) : (
             <ul className="mt-2 mb-3 divide-y divide-gray-100">
               {v.tijdlijn.map((t) => (
@@ -891,27 +894,39 @@ function KpiVelden({ k }: { k?: CampaignKpi }) {
   )
 }
 
-/** De velden van een kanaal, middel of soort content. */
+/** De velden van een deliverable. */
 function KanaalVelden({ k }: { k?: CampaignChannel }) {
   const id = `kanaal-soort-${k?.id ?? 'nieuw'}`
   return (
     <>
-      <div>
-        <label htmlFor={id} className="text-jr-text mb-1.5 block text-[13px] font-medium">
-          Wat
-        </label>
-        <input
-          id={id}
-          name="kind"
-          list="kanaal-soorten"
-          required
-          placeholder="Kies of typ"
-          defaultValue={k?.kind ?? ''}
-          className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
-        />
-      </div>
       <div className="grid gap-3 sm:grid-cols-2">
-        <Field label="Aantal" name="quantity" placeholder="3" defaultValue={k?.quantity ?? ''} />
+        <Field label="Naam" name="name" placeholder="Ad 1 · Kerstbrunch" defaultValue={k?.name ?? ''} />
+        <div>
+          <label htmlFor={id} className="text-jr-text mb-1.5 block text-[13px] font-medium">
+            Kanaal
+          </label>
+          <input
+            id={id}
+            name="kind"
+            list="kanaal-soorten"
+            required
+            placeholder="Kies of typ"
+            defaultValue={k?.kind ?? ''}
+            className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
+          />
+        </div>
+      </div>
+      <TextArea label="Wat erin staat en voor wie" name="note" rows={2} defaultValue={k?.note ?? ''} />
+      <Field label="Formaat" name="quantity" placeholder="1:1, 4:5 en 9:16" defaultValue={k?.quantity ?? ''} />
+      <div className="grid gap-3 sm:grid-cols-3">
+        <Field
+          label="Live vanaf"
+          name="liveFrom"
+          type="date"
+          defaultValue={k?.liveFrom ? formatDateInput(k.liveFrom) : ''}
+          hint="Bij een mailing: de verzenddag."
+        />
+        <Field label="Live tot" name="liveUntil" type="date" defaultValue={k?.liveUntil ? formatDateInput(k.liveUntil) : ''} />
         <Select
           label="Status"
           name="status"
@@ -922,7 +937,6 @@ function KanaalVelden({ k }: { k?: CampaignChannel }) {
           ]}
         />
       </div>
-      <Field label="Toelichting" name="note" defaultValue={k?.note ?? ''} />
     </>
   )
 }

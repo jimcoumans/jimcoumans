@@ -96,7 +96,18 @@ const Uitkomst = z.object({
   }),
   kpis: z.array(z.object({ label: z.string(), datum: z.string(), aantal: z.number(), prijs: z.string() })),
   /** status: "bestaat" of "maken". */
-  kanalen: z.array(z.object({ soort: z.string(), aantal: z.string(), toelichting: z.string(), status: z.string() })),
+  /** Eén regel per uiting. status: "bestaat" of "maken". */
+  deliverables: z.array(
+    z.object({
+      naam: z.string(),
+      kanaal: z.string(),
+      inhoud: z.string(),
+      formaat: z.string(),
+      liveVanaf: z.string(),
+      liveTot: z.string(),
+      status: z.string(),
+    }),
+  ),
   tijdlijn: z.array(z.object({ id: z.string(), datum: z.string(), omschrijving: z.string(), wie: z.string() })),
   wijzigingen: z.array(z.string()),
   openVragen: z.array(z.string()),
@@ -155,7 +166,15 @@ export function briefingAlsInvoer(v: CampagneVolledig) {
     afspraken: { klantDoet: c.clientDoes ?? '', overig: c.agreementNotes ?? '' },
     achtergrond: { eerder: c.backgroundPrevious ?? '', risicos: c.backgroundRisks ?? '' },
     kpis: v.kpis.map((k) => ({ label: k.label, datum: ymd(k.on), aantal: k.targetQuantity, prijs: bedrag(k.priceCents) })),
-    kanalen: v.kanalen.map((k) => ({ soort: k.kind, aantal: k.quantity ?? '', toelichting: k.note ?? '', status: k.status })),
+    deliverables: v.kanalen.map((k) => ({
+      naam: k.name ?? '',
+      kanaal: k.kind,
+      inhoud: k.note ?? '',
+      formaat: k.quantity ?? '',
+      liveVanaf: ymd(k.liveFrom),
+      liveTot: ymd(k.liveUntil),
+      status: k.status,
+    })),
     tijdlijn: v.tijdlijn.map((t) => ({
       id: t.id,
       datum: ymd(t.dueOn),
@@ -176,7 +195,7 @@ Waar de briefing voor is: een specialist (campagne, content, techniek) pakt hem 
 
 Regels voor de briefing zelf:
 - Eén eindproduct. Schrijf alsof het altijd zo heeft gestaan. Nergens woorden die naar een eerdere versie of naar de feedback verwijzen: geen "nieuw", "aangepast", "gewijzigd", "update", "in plaats van", "voorheen", "zoals de klant aangaf", "op verzoek van", geen versienummers, geen doorgestreepte of gemarkeerde tekst.
-- Wat de klant schrapt, verdwijnt overal: uit de tekstvelden, de samenvatting, de KPI's, de kanalen en de tijdlijn.
+- Wat de klant schrapt, verdwijnt overal: uit de tekstvelden, de samenvatting, de KPI's, de deliverables en de tijdlijn.
 - Feiten van de klant gaan voor: prijzen, tijden, menu's, aantallen, links, wat wel en niet wordt aangeboden. Neem ze precies over, met de spelling van de klant.
 - Ideeën van de klant over de marketing zelf (kanalen, aantal posts, timing van advertenties) zijn input, geen opdracht. Het vak ligt bij ons. Neem een idee op als het klopt; kan het niet meer (de datum is voorbij) of botst het met het advies in de briefing, kies dan wat verstandig is en zet het verschil in openVragen.
 - Verzin niets. Geen cijfers, prijzen, data, namen of beloftes die niet in de briefing of de feedback staan. Is iets onduidelijk, laat het veld dan zoals het was en zet de vraag in openVragen.
@@ -188,7 +207,7 @@ Vorm:
 - Data als JJJJ-MM-DD, of "" als er geen is. Vandaag is ${formatDateInput(vandaag)}.
 - Bedragen als tekst in euro's met een komma: "47,50". Leeg is "".
 - KPI's: één regel per product of onderdeel dat verkocht moet worden, eventueel per datum. "aantal" is een heel getal groter dan nul; "prijs" is de prijs per stuk.
-- Kanalen: "status" is "bestaat" of "maken". Gebruik bij voorkeur deze soorten: ${KANAAL_SOORTEN.join(', ')}.
+- Deliverables: één regel per uiting, nooit samengevat. Niet "3 mailings", maar Mailing 1, Mailing 2 en Mailing 3, elk een eigen regel. "naam" is kort en genummerd per soort (Ad 1 · Kerstbrunch, Post 2, Mailing 3 · Novembernieuwsbrief). "inhoud" zegt wat erin staat en voor wie. "formaat" is het formaat of het aantal. "liveVanaf" en "liveTot" zijn data; bij een mailing is "liveVanaf" de verzenddag en "liveTot" leeg. "status" is "bestaat" of "maken". Kies "kanaal" bij voorkeur uit: ${KANAAL_SOORTEN.join(', ')}.
 - Tijdlijn: houd het "id" van een bestaande regel die blijft, ook als de datum of omschrijving verandert. Een nieuwe regel krijgt id "". Gebruik bij voorkeur deze omschrijvingen: ${TIJDLIJN_OMSCHRIJVINGEN.join(', ')}. "wie" is een naam uit het team (${team.join(', ') || 'geen'}) of een rol: Campagne, Content, Content en techniek, Campagne en techniek, Klant. Leeg mag.
 
 De twee interne lijsten (die komen niet in de briefing, alleen als notitie in het portaal):
@@ -209,7 +228,7 @@ export function vindVersietaal(u: Uitkomst): string[] {
     ...Object.entries(u.planning).map(([k, w]) => [`planning.${k}`, w] as [string, string]),
     ...Object.entries(u.afspraken).map(([k, w]) => [`afspraken.${k}`, w] as [string, string]),
     ...Object.entries(u.achtergrond).map(([k, w]) => [`achtergrond.${k}`, w] as [string, string]),
-    ...u.kanalen.map((k, i) => [`kanaal ${i + 1}`, `${k.soort} ${k.toelichting}`] as [string, string]),
+    ...u.deliverables.map((k, i) => [`deliverable ${k.naam || i + 1}`, `${k.naam} ${k.inhoud}`] as [string, string]),
     ...u.tijdlijn.map((t, i) => [`tijdlijn ${i + 1}`, t.omschrijving] as [string, string]),
   ]
   return teksten.filter(([, w]) => VERSIETAAL.test(w)).map(([veld]) => veld)
@@ -506,14 +525,22 @@ async function pasToe(v: CampagneVolledig, u: Uitkomst, team: Teamlid[]): Promis
     const prijs = k.prijs.trim() === '' ? null : parseAmountToCents(k.prijs)
     return [{ label, on: leesDatum(k.datum), targetQuantity: k.aantal, priceCents: prijs !== null && prijs >= 0 ? prijs : null }]
   })
-  const kanalen = u.kanalen
-    .filter((k) => k.soort.trim() !== '')
-    .map((k) => ({
-      kind: k.soort.trim(),
-      quantity: ofNull(k.aantal),
-      note: ofNull(k.toelichting),
-      status: k.status.trim().toLowerCase() === 'bestaat' ? ('bestaat' as const) : ('maken' as const),
-    }))
+  const kanalen = u.deliverables
+    .filter((k) => k.kanaal.trim() !== '' || k.naam.trim() !== '')
+    .map((k) => {
+      let liveFrom = leesDatum(k.liveVanaf)
+      let liveUntil = leesDatum(k.liveTot)
+      if (liveFrom && liveUntil && liveUntil < liveFrom) [liveFrom, liveUntil] = [liveUntil, liveFrom]
+      return {
+        name: ofNull(k.naam),
+        kind: k.kanaal.trim() || k.naam.trim(),
+        quantity: ofNull(k.formaat),
+        note: ofNull(k.inhoud),
+        liveFrom,
+        liveUntil,
+        status: k.status.trim().toLowerCase() === 'bestaat' ? ('bestaat' as const) : ('maken' as const),
+      }
+    })
 
   const bestaand = new Map(v.tijdlijn.map((t) => [t.id, t]))
   const tijdlijn = u.tijdlijn
@@ -623,7 +650,17 @@ export async function markeerVastgelopen(campaignId: string): Promise<void> {
 type Momentopname = {
   campagne: Record<string, unknown>
   kpis: { id: string; position: number; label: string; on: string | null; targetQuantity: number; priceCents: number | null }[]
-  kanalen: { id: string; position: number; kind: string; quantity: string | null; note: string | null; status: 'bestaat' | 'maken' }[]
+  kanalen: {
+    id: string
+    position: number
+    name?: string | null
+    kind: string
+    quantity: string | null
+    note: string | null
+    liveFrom?: string | null
+    liveUntil?: string | null
+    status: 'bestaat' | 'maken'
+  }[]
   tijdlijn: {
     id: string
     dueOn: string | null
@@ -670,7 +707,11 @@ export async function draaiVerwerkingTerug(id: string): Promise<void> {
       await tx.insert(campaignKpis).values(voor.kpis.map((k) => ({ ...k, campaignId: r.campaignId, on: alsDatum(k.on) })))
     }
     await tx.delete(campaignChannels).where(eq(campaignChannels.campaignId, r.campaignId))
-    if (voor.kanalen.length > 0) await tx.insert(campaignChannels).values(voor.kanalen.map((k) => ({ ...k, campaignId: r.campaignId })))
+    if (voor.kanalen.length > 0) {
+      await tx
+        .insert(campaignChannels)
+        .values(voor.kanalen.map((k) => ({ ...k, campaignId: r.campaignId, liveFrom: alsDatum(k.liveFrom), liveUntil: alsDatum(k.liveUntil) })))
+    }
     await tx.delete(campaignTimeline).where(eq(campaignTimeline.campaignId, r.campaignId))
     if (voor.tijdlijn.length > 0) {
       await tx.insert(campaignTimeline).values(

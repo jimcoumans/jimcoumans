@@ -2925,3 +2925,26 @@ BEGIN
   END IF;
 END $jr_0033_briefing_verwerkingen$;
 
+-- ---------------------------------------------------------------------------
+-- 0034_deliverables
+-- ---------------------------------------------------------------------------
+
+DO $jr_0034_deliverables$
+BEGIN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = 'a501269df30e364611a4c94e60dab5dd5902efce168d1b44bcc7e63c744e3e99') THEN
+    RAISE NOTICE 'Overgeslagen: 0034_deliverables stond er al.';
+  ELSE
+    ALTER TABLE "campaign_channels" ADD COLUMN "name" text;
+
+    ALTER TABLE "campaign_channels" ADD COLUMN "live_from" timestamp with time zone;
+
+    ALTER TABLE "campaign_channels" ADD COLUMN "live_until" timestamp with time zone;
+
+    ALTER TABLE "campaign_channels" ADD CONSTRAINT "channel_live_period" CHECK ("campaign_channels"."live_from" IS NULL OR "campaign_channels"."live_until" IS NULL OR "campaign_channels"."live_until" >= "campaign_channels"."live_from");
+
+    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+    VALUES ('a501269df30e364611a4c94e60dab5dd5902efce168d1b44bcc7e63c744e3e99', 1791353234386);
+    RAISE NOTICE 'Toegepast: 0034_deliverables.';
+  END IF;
+END $jr_0034_deliverables$;
+

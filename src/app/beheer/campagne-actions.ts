@@ -283,9 +283,12 @@ export async function wisKpi(formData: FormData): Promise<ActionResult> {
 
 function kanaalUit(formData: FormData) {
   return {
+    name: ofNull(formData, 'name'),
     kind: tekst(formData, 'kind'),
     quantity: ofNull(formData, 'quantity'),
     note: ofNull(formData, 'note'),
+    liveFrom: datum(formData, 'liveFrom'),
+    liveUntil: datum(formData, 'liveUntil'),
     status: (tekst(formData, 'status') === 'bestaat' ? 'bestaat' : 'maken') as 'bestaat' | 'maken',
   }
 }
