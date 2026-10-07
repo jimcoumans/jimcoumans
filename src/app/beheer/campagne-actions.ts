@@ -4,31 +4,17 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { requireStaff } from '@/lib/auth'
 import { describeDbError } from '@/lib/db-errors'
-import { parseAmountToCents } from '@/lib/money'
-import { parsePercentageToBp, parseHonderdsten } from '@/lib/hypothese'
 import {
   CampagneError,
-  VOORSTEL_VELDEN,
   getCampagne,
   maakCampagne,
   wijzigCampagne,
-  zetContactpersonen,
-  zetSpecialisten,
   voegDoelgroepToe,
   koppelDoelgroepen,
   ontkoppelDoelgroep,
   verwijderDoelgroep,
-  voegKpiToe,
-  verwijderKpi,
-  wijzigKpiRegel,
-  wijzigKanaalRegel,
   wijzigDoelgroepRegel,
-  voegKanaalToe,
-  wisselKanaalStatus,
-  verwijderKanaal,
   voegTijdlijnToe,
-  wijzigTijdlijn,
-  verwijderTijdlijn,
   suggereerTijdlijn,
   suggereerSamenvatting,
   verstuurAlsVoorstel,
@@ -39,6 +25,7 @@ import {
 } from '@/lib/campagnes'
 import { zetCampagneInClickUp } from '@/lib/clickup/campagne'
 import { draaiVerwerkingTerug, VerwerkError } from '@/lib/campagne-verwerken'
+import { slaConceptOp, type Opgeslagen } from '@/lib/briefing-opslaan'
 import type { ActionResult } from './actions'
 
 /* Acties voor campagnebriefings. Elke actie begint met requireStaff():
@@ -64,24 +51,6 @@ async function veilig(campaignId: string | null, fn: () => Promise<void>, aanrak
 const tekst = (f: FormData, naam: string) => String(f.get(naam) ?? '').trim()
 const ofNull = (f: FormData, naam: string) => tekst(f, naam) || null
 
-function datum(f: FormData, naam: string): Date | null {
-  const waarde = tekst(f, naam)
-  if (waarde === '') return null
-  const d = new Date(`${waarde}T12:00:00`)
-  return Number.isNaN(d.getTime()) ? null : d
-}
-
-/** De voorstel-vinkjes die in dit formulier stonden, samengevoegd met de rest. */
-async function voorstelVelden(campaignId: string, f: FormData, inDitFormulier: (keyof typeof VOORSTEL_VELDEN)[]) {
-  const v = await getCampagne(campaignId)
-  const bestaand = new Set(v?.campagne.proposalFields ?? [])
-  for (const veld of inDitFormulier) {
-    if (f.get(`voorstel_${veld}`) === 'on') bestaand.add(veld)
-    else bestaand.delete(veld)
-  }
-  return [...bestaand]
-}
-
 /* ------------------------------ Aanmaken -------------------------------- */
 
 export async function nieuweCampagne(formData: FormData): Promise<ActionResult> {
@@ -99,150 +68,29 @@ export async function nieuweCampagne(formData: FormData): Promise<ActionResult> 
 
 /* ------------------------------ Briefing -------------------------------- */
 
-export async function wijzigBasis(formData: FormData): Promise<ActionResult> {
+/**
+ * De hele briefing in één keer opslaan: wat je in het scherm wijzigde, in
+ * één transactie. Geeft de ids van nieuwe regels terug, zodat het scherm
+ * bij de volgende keer opslaan weet dat ze al bestaan.
+ */
+export async function slaBriefingOp(
+  campaignId: string,
+  concept: unknown,
+  sinds: string,
+): Promise<{ ok: true; ids: Record<string, string>; stempel: string } | { ok: false; error: string }> {
   await requireStaff()
-  const id = tekst(formData, 'campaignId')
-  return veilig(id, async () => {
-    const mm = ofNull(formData, 'marketingManagerId')
-    await wijzigCampagne(id, {
-      title: tekst(formData, 'title'),
-      marketingManagerId: mm,
-    })
-    await zetContactpersonen(id, formData.getAll('contactIds').map(String).filter(Boolean))
-    // De marketingmanager is geen specialist naast zichzelf.
-    await zetSpecialisten(
-      id,
-      formData
-        .getAll('specialistIds')
-        .map(String)
-        .filter((u) => u && u !== mm),
-    )
-  })
-}
-
-export async function wijzigDoel(formData: FormData): Promise<ActionResult> {
-  await requireStaff()
-  const id = tekst(formData, 'campaignId')
-  return veilig(id, async () => {
-    const stand = tekst(formData, 'budgetMode') === 'vast' ? 'vast' : 'berekend'
-    let vast: number | null = null
-    if (stand === 'vast') {
-      vast = parseAmountToCents(tekst(formData, 'fixedBudget'))
-      if (!vast || vast <= 0) throw new CampagneError('Vul bij een vast budget het bedrag in.')
-    }
-    await wijzigCampagne(id, {
-      goalSentence: ofNull(formData, 'goalSentence'),
-      resultDefinition: ofNull(formData, 'resultDefinition'),
-      budgetMode: stand,
-      fixedBudgetCents: vast,
-      budgetNote: ofNull(formData, 'budgetNote'),
-      kpiNotes: ofNull(formData, 'kpiNotes'),
-      proposalFields: await voorstelVelden(id, formData, ['doel', 'budget']),
-    })
-  })
-}
-
-export async function wijzigAanbod(formData: FormData): Promise<ActionResult> {
-  await requireStaff()
-  const id = tekst(formData, 'campaignId')
-  return veilig(id, async () => {
-    await wijzigCampagne(id, {
-      offerWhat: ofNull(formData, 'offerWhat'),
-      offerMessage: ofNull(formData, 'offerMessage'),
-      offerWhyNow: ofNull(formData, 'offerWhyNow'),
-      offerNotPromised: ofNull(formData, 'offerNotPromised'),
-      proposalFields: await voorstelVelden(id, formData, ['kernboodschap']),
-    })
-  })
-}
-
-export async function wijzigDoelgroep(formData: FormData): Promise<ActionResult> {
-  await requireStaff()
-  const id = tekst(formData, 'campaignId')
-  return veilig(id, async () => {
-    await wijzigCampagne(id, {
-      region: ofNull(formData, 'region'),
-      exclusions: ofNull(formData, 'exclusions'),
-      audienceNotes: ofNull(formData, 'audienceNotes'),
-      proposalFields: await voorstelVelden(id, formData, ['regio']),
-    })
-  })
-}
-
-export async function wijzigPlanning(formData: FormData): Promise<ActionResult> {
-  await requireStaff()
-  const id = tekst(formData, 'campaignId')
-  return veilig(id, async () => {
-    await wijzigCampagne(id, {
-      startOn: datum(formData, 'startOn'),
-      endOn: datum(formData, 'endOn'),
-      planningNotes: ofNull(formData, 'planningNotes'),
-    })
-  })
-}
-
-export async function wijzigAfspraken(formData: FormData): Promise<ActionResult> {
-  await requireStaff()
-  const id = tekst(formData, 'campaignId')
-  return veilig(id, async () => {
-    await wijzigCampagne(id, {
-      clientDoes: ofNull(formData, 'clientDoes'),
-      agreementNotes: ofNull(formData, 'agreementNotes'),
-    })
-  })
-}
-
-export async function wijzigAchtergrond(formData: FormData): Promise<ActionResult> {
-  await requireStaff()
-  const id = tekst(formData, 'campaignId')
-  return veilig(id, async () => {
-    await wijzigCampagne(id, {
-      backgroundPrevious: ofNull(formData, 'backgroundPrevious'),
-      backgroundRisks: ofNull(formData, 'backgroundRisks'),
-    })
-  })
-}
-
-export async function wijzigAannames(formData: FormData): Promise<ActionResult> {
-  await requireStaff()
-  const id = tekst(formData, 'campaignId')
-  return veilig(id, async () => {
-    const eenheden = parseHonderdsten(tekst(formData, 'units'))
-    if (eenheden === null || eenheden <= 0) throw new CampagneError('Eenheden per conversie is een getal groter dan nul, meestal 1.')
-    const percentage = (naam: string, label: string) => {
-      const ruw = tekst(formData, naam)
-      if (ruw === '') return null
-      const bp = parsePercentageToBp(ruw)
-      if (bp === null || bp <= 0 || bp > 10_000) throw new CampagneError(`${label}: vul een percentage in, bijvoorbeeld 2,5.`)
-      return bp
-    }
-    const cpmRuw = tekst(formData, 'cpm')
-    const cpm = cpmRuw === '' ? null : parseAmountToCents(cpmRuw)
-    if (cpmRuw !== '' && (!cpm || cpm <= 0)) throw new CampagneError('Kosten per 1.000 impressies: vul een bedrag in, bijvoorbeeld 8.')
-    const buffer = percentage('buffer', 'Buffer') ?? 0
-    const aandeel = percentage('adsShare', 'Deel uit advertenties')
-    await wijzigCampagne(id, {
-      unitsPerConversionHundredths: eenheden,
-      conversionRateBp: percentage('conversion', 'Conversieratio'),
-      clickThroughRateBp: percentage('ctr', 'Doorklikratio'),
-      cpmCents: cpm,
-      bufferBp: buffer,
-      adsShareBp: aandeel,
-      sourceUnits: ofNull(formData, 'sourceUnits'),
-      sourceConversion: ofNull(formData, 'sourceConversion'),
-      sourceClickThrough: ofNull(formData, 'sourceClickThrough'),
-      sourceCpm: ofNull(formData, 'sourceCpm'),
-      assumptionNotes: ofNull(formData, 'assumptionNotes'),
-    })
-  })
-}
-
-export async function wijzigSamenvatting(formData: FormData): Promise<ActionResult> {
-  await requireStaff()
-  const id = tekst(formData, 'campaignId')
-  return veilig(id, async () => {
-    await wijzigCampagne(id, { summary: ofNull(formData, 'summary') })
-  })
+  let uit: Opgeslagen | null = null
+  const r = await veilig(
+    campaignId,
+    async () => {
+      uit = await slaConceptOp(campaignId, concept, sinds)
+    },
+    false,
+  )
+  if (!r.ok) return r
+  revalidatePath(`/beheer/campagnes/${campaignId}/briefing`)
+  const o = uit as Opgeslagen | null
+  return { ok: true, ids: o?.ids ?? {}, stempel: o?.stempel ?? new Date().toISOString() }
 }
 
 export async function doeSuggestieSamenvatting(formData: FormData): Promise<ActionResult> {
@@ -256,89 +104,6 @@ export async function doeSuggestieSamenvatting(formData: FormData): Promise<Acti
 }
 
 /* ------------------------------ Regels ---------------------------------- */
-
-function kpiUit(formData: FormData) {
-  const aantal = Number.parseInt(tekst(formData, 'targetQuantity'), 10)
-  const prijsRuw = tekst(formData, 'price')
-  const prijs = prijsRuw === '' ? null : parseAmountToCents(prijsRuw)
-  if (prijsRuw !== '' && prijs === null) throw new CampagneError('Vul de prijs in als bedrag, bijvoorbeeld 110.')
-  return { label: tekst(formData, 'label'), on: datum(formData, 'on'), targetQuantity: aantal, priceCents: prijs }
-}
-
-export async function nieuweKpi(formData: FormData): Promise<ActionResult> {
-  await requireStaff()
-  const id = tekst(formData, 'campaignId')
-  return veilig(id, () => voegKpiToe(id, kpiUit(formData)))
-}
-
-export async function wijzigKpi(formData: FormData): Promise<ActionResult> {
-  await requireStaff()
-  return veilig(tekst(formData, 'campaignId'), () => wijzigKpiRegel(tekst(formData, 'id'), kpiUit(formData)))
-}
-
-export async function wisKpi(formData: FormData): Promise<ActionResult> {
-  await requireStaff()
-  return veilig(tekst(formData, 'campaignId'), () => verwijderKpi(tekst(formData, 'id')))
-}
-
-function kanaalUit(formData: FormData) {
-  return {
-    name: ofNull(formData, 'name'),
-    kind: tekst(formData, 'kind'),
-    quantity: ofNull(formData, 'quantity'),
-    note: ofNull(formData, 'note'),
-    liveFrom: datum(formData, 'liveFrom'),
-    liveUntil: datum(formData, 'liveUntil'),
-    status: (tekst(formData, 'status') === 'bestaat' ? 'bestaat' : 'maken') as 'bestaat' | 'maken',
-  }
-}
-
-export async function nieuwKanaal(formData: FormData): Promise<ActionResult> {
-  await requireStaff()
-  const id = tekst(formData, 'campaignId')
-  return veilig(id, () => voegKanaalToe(id, kanaalUit(formData)))
-}
-
-export async function wijzigKanaal(formData: FormData): Promise<ActionResult> {
-  await requireStaff()
-  return veilig(tekst(formData, 'campaignId'), () => wijzigKanaalRegel(tekst(formData, 'id'), kanaalUit(formData)))
-}
-
-export async function wisselKanaal(formData: FormData): Promise<ActionResult> {
-  await requireStaff()
-  return veilig(tekst(formData, 'campaignId'), () => wisselKanaalStatus(tekst(formData, 'id')))
-}
-
-export async function wisKanaal(formData: FormData): Promise<ActionResult> {
-  await requireStaff()
-  return veilig(tekst(formData, 'campaignId'), () => verwijderKanaal(tekst(formData, 'id')))
-}
-
-function tijdlijnUit(formData: FormData) {
-  const wie = tekst(formData, 'assignee')
-  return {
-    dueOn: datum(formData, 'dueOn'),
-    description: tekst(formData, 'description'),
-    assigneeUserId: wie.startsWith('user:') ? wie.slice(5) : null,
-    assigneeLabel: wie.startsWith('label:') ? wie.slice(6) : null,
-  }
-}
-
-export async function nieuweTijdlijn(formData: FormData): Promise<ActionResult> {
-  await requireStaff()
-  const id = tekst(formData, 'campaignId')
-  return veilig(id, () => voegTijdlijnToe(id, tijdlijnUit(formData)))
-}
-
-export async function wijzigTijdlijnRegel(formData: FormData): Promise<ActionResult> {
-  await requireStaff()
-  return veilig(tekst(formData, 'campaignId'), () => wijzigTijdlijn(tekst(formData, 'id'), tijdlijnUit(formData)))
-}
-
-export async function wisTijdlijn(formData: FormData): Promise<ActionResult> {
-  await requireStaff()
-  return veilig(tekst(formData, 'campaignId'), () => verwijderTijdlijn(tekst(formData, 'id')))
-}
 
 /** "Doe suggestie": een tijdlijn uit start, einde en wat er gemaakt moet worden. Voegt toe, wist niets. */
 export async function doeSuggestieTijdlijn(formData: FormData): Promise<ActionResult> {

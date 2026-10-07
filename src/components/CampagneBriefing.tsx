@@ -2,6 +2,7 @@ import type { CampagneVolledig, VoorstelVeld } from '@/lib/campagnes'
 import { STATUS_LABELS, livePeriode } from '@/lib/campagnes'
 import { verdeelPerMaand, formatBp, formatHonderdsten, formatAantal, type Hypothese } from '@/lib/hypothese'
 import { formatDateLong } from '@/lib/dates'
+import { leesPunten, groepeerPunten } from '@/lib/punten'
 
 /* -------------------------------------------------------------------------
    De campagnebriefing zoals de klant hem ziet: dezelfde versie als wij,
@@ -118,14 +119,26 @@ function Waarde({ children }: { children: React.ReactNode }) {
   return <>{leeg ? <span className="text-gray-500">{LEEG}</span> : children}</>
 }
 
+/** Een puntenveld: één punt als gewone tekst, meer als opsomming, met subpunten eronder. */
 function Opsomming({ tekst }: { tekst: string | null | undefined }) {
-  const r = regels(tekst)
-  if (r.length === 0) return <span className="text-gray-500">{LEEG}</span>
-  if (r.length === 1) return <>{r[0]}</>
+  const groepen = groepeerPunten(leesPunten(tekst))
+  if (groepen.length === 0) return <span className="text-gray-500">{LEEG}</span>
+  const sub = (g: (typeof groepen)[number]) =>
+    g.sub.length > 0 && (
+      <ul className="mt-0.5 list-[circle] space-y-0.5 pl-4">
+        {g.sub.map((x, k) => (
+          <li key={k}>{x}</li>
+        ))}
+      </ul>
+    )
+  if (groepen.length === 1 && groepen[0]!.sub.length === 0) return <>{groepen[0]!.tekst}</>
   return (
-    <ul className="list-disc space-y-0.5 pl-4">
-      {r.map((x, k) => (
-        <li key={k}>{x}</li>
+    <ul className="list-disc space-y-1 pl-4">
+      {groepen.map((g, k) => (
+        <li key={k}>
+          {g.tekst}
+          {sub(g)}
+        </li>
       ))}
     </ul>
   )
@@ -295,7 +308,9 @@ export function CampagneBriefing({ v }: { v: CampagneVolledig }) {
 
       <Sectie nummer={3} titel="Aanbod en boodschap">
         <dl>
-          <Rij label="Wat we verkopen">{c.offerWhat ? <span className="whitespace-pre-line">{c.offerWhat}</span> : null}</Rij>
+          <Rij label="Wat we verkopen">
+            <Opsomming tekst={c.offerWhat} />
+          </Rij>
           <Rij label="Kernboodschap">
             {c.offerMessage && (
               <>
@@ -304,8 +319,12 @@ export function CampagneBriefing({ v }: { v: CampagneVolledig }) {
               </>
             )}
           </Rij>
-          <Rij label="Waarom nu">{c.offerWhyNow}</Rij>
-          <Rij label="Wat we niet beloven">{c.offerNotPromised}</Rij>
+          <Rij label="Waarom nu">
+            <Opsomming tekst={c.offerWhyNow} />
+          </Rij>
+          <Rij label="Wat we niet beloven">
+            <Opsomming tekst={c.offerNotPromised} />
+          </Rij>
         </dl>
       </Sectie>
 
@@ -328,7 +347,9 @@ export function CampagneBriefing({ v }: { v: CampagneVolledig }) {
               </>
             )}
           </Rij>
-          <Rij label="Uitsluiten">{c.exclusions}</Rij>
+          <Rij label="Uitsluiten">
+            <Opsomming tekst={c.exclusions} />
+          </Rij>
           <Rij label="Opmerkingen">
             <Opsomming tekst={c.audienceNotes} />
           </Rij>
@@ -390,7 +411,9 @@ export function CampagneBriefing({ v }: { v: CampagneVolledig }) {
 
       <Sectie nummer={7} titel="Afspraken met de klant">
         <dl>
-          <Rij label="Wat de klant zelf doet">{c.clientDoes}</Rij>
+          <Rij label="Wat de klant zelf doet">
+            <Opsomming tekst={c.clientDoes} />
+          </Rij>
           <Rij label="Opmerkingen">
             <Opsomming tekst={c.agreementNotes} />
           </Rij>
@@ -399,7 +422,9 @@ export function CampagneBriefing({ v }: { v: CampagneVolledig }) {
 
       <Sectie nummer={8} titel="Achtergrondinformatie">
         <dl>
-          <Rij label="Wat we weten van vorige keer">{c.backgroundPrevious}</Rij>
+          <Rij label="Wat we weten van vorige keer">
+            <Opsomming tekst={c.backgroundPrevious} />
+          </Rij>
           <Rij label="Risico’s">
             <Opsomming tekst={c.backgroundRisks} />
           </Rij>

@@ -9,40 +9,17 @@ import {
   STATUS_STIJL,
   KANAAL_SOORTEN,
   TIJDLIJN_OMSCHRIJVINGEN,
-  livePeriode,
-  type CampagneVolledig,
 } from '@/lib/campagnes'
 import { listContacts } from '@/lib/crm'
 import { AppShell } from '@/components/AppShell'
 import { Regel } from '@/components/Regel'
-import { ActionForm, Check, Field, Select, TextArea, Uitklap } from '@/components/ActionForm'
-import { HypotheseWeergave, budgetTekst, budgetBereik, omzetBereik, euro, prijs, versieLabel, LEEG } from '@/components/CampagneBriefing'
+import { ActionForm, Field, Uitklap } from '@/components/ActionForm'
+import { HypotheseWeergave, budgetTekst, budgetBereik, omzetBereik, euro, versieLabel, LEEG } from '@/components/CampagneBriefing'
 import {
-  wijzigBasis,
-  wijzigDoel,
-  wijzigAanbod,
-  wijzigDoelgroep,
-  wijzigPlanning,
-  wijzigAfspraken,
-  wijzigAchtergrond,
-  wijzigAannames,
-  wijzigSamenvatting,
-  doeSuggestieSamenvatting,
-  nieuweKpi,
-  wijzigKpi,
-  wijzigKanaal,
   doelgroepInCampagne,
   kiesDoelgroepen,
   haalDoelgroepWeg,
   bewerkDoelgroep,
-  wisKpi,
-  nieuwKanaal,
-  wisselKanaal,
-  wisKanaal,
-  nieuweTijdlijn,
-  wijzigTijdlijnRegel,
-  wisTijdlijn,
-  doeSuggestieTijdlijn,
   verstuurVoorstel,
   klantAkkoord,
   naarClickUp,
@@ -54,9 +31,12 @@ import {
 import { listVerwerkingen, type VerwerkingWeergave } from '@/lib/campagne-verwerken'
 import { FeedbackVerwerken } from '@/components/FeedbackVerwerken'
 import { PdfDownload } from '@/components/PdfDownload'
-import type { CampaignKpi, CampaignChannel } from '@/db/schema'
-import { formatBp, formatHonderdsten, formatAantal } from '@/lib/hypothese'
-import { formatDate, formatDateInput, formatDateLong } from '@/lib/dates'
+import { BriefingEditor } from '@/components/briefing/BriefingEditor'
+import { Kaart } from '@/components/briefing/Kaart'
+import { EerstOpslaan, OpslaanLink } from '@/components/briefing/opslaan'
+import { conceptVan } from '@/lib/briefing-concept'
+import { formatAantal } from '@/lib/hypothese'
+import { formatDate, formatDateLong } from '@/lib/dates'
 
 export const maxDuration = 26
 
@@ -66,10 +46,6 @@ const ROLLEN = ['Campagne', 'Content', 'Content en techniek', 'Campagne en techn
 const KNOP_OPSLAAN = 'bg-jr-btn hover:bg-jr-btnhover text-white'
 const KNOP_RUSTIG = 'border border-gray-300 text-gray-700 hover:bg-gray-50'
 const KNOP_KLEIN = 'text-gray-500 hover:bg-gray-100 !px-2 !py-1 !text-xs'
-
-function bedragVeld(cents: number | null): string {
-  return cents === null ? '' : String(cents / 100).replace('.', ',')
-}
 
 export default async function CampagnePage({ params }: { params: Promise<{ id: string }> }) {
   const user = await getSessionUser()
@@ -92,10 +68,8 @@ export default async function CampagnePage({ params }: { params: Promise<{ id: s
 
   const gewijzigd = gewijzigdSindsVersie(v)
   const verborgen = <input type="hidden" name="campaignId" value={c.id} />
-  const gekozenContacten = new Set(v.contactpersonen.map((p) => p.id))
   const gekozenDoelgroepen = new Set(v.doelgroepen.map((d) => d.id))
   const beschikbareDoelgroepen = doelgroepen.filter((d) => !gekozenDoelgroepen.has(d.id))
-  const gekozenSpecialisten = new Set(v.specialisten.map((p) => p.id))
   const wieOpties = [
     { value: '', label: LEEG },
     ...team.map((t) => ({ value: `user:${t.id}`, label: t.name ?? t.email })),
@@ -126,9 +100,9 @@ export default async function CampagnePage({ params }: { params: Promise<{ id: s
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <a href={`/beheer/campagnes/${c.id}/briefing`} className="text-jr-blue text-sm hover:underline">
+          <OpslaanLink href={`/beheer/campagnes/${c.id}/briefing`} className="text-jr-blue text-sm hover:underline">
             Bekijk de briefing
-          </a>
+          </OpslaanLink>
           <span className={`rounded-full px-3 py-1 text-xs ${STATUS_STIJL[c.status]}`}>{STATUS_LABELS[c.status]}</span>
         </div>
       </div>
@@ -154,7 +128,7 @@ export default async function CampagnePage({ params }: { params: Promise<{ id: s
             </p>
           )}
 
-          <div className="space-y-2">
+          <EerstOpslaan className="space-y-2">
             {(c.status === 'concept' || ((c.status === 'voorstel' || c.status === 'akkoord') && gewijzigd)) && (
               <StatusKnop
                 action={verstuurVoorstel}
@@ -170,12 +144,14 @@ export default async function CampagnePage({ params }: { params: Promise<{ id: s
             {(c.status === 'voorstel' || c.status === 'afgerond') && (
               <StatusKnop action={terugNaarConcept} campaignId={c.id} label="Terug naar concept" />
             )}
-          </div>
+          </EerstOpslaan>
 
           {c.status === 'akkoord' && !c.clickupTaskId && (
             <div className="border-jr-orange bg-jr-orange/10 mt-3 rounded border-l-4 p-2.5 text-xs">
               <p className="mb-2">De tijdlijn staat nog niet in ClickUp.</p>
-              <StatusKnop action={naarClickUp} campaignId={c.id} label="Zet in ClickUp" />
+              <EerstOpslaan>
+                <StatusKnop action={naarClickUp} campaignId={c.id} label="Zet in ClickUp" />
+              </EerstOpslaan>
             </div>
           )}
           {c.clickupTaskId && (
@@ -192,9 +168,9 @@ export default async function CampagnePage({ params }: { params: Promise<{ id: s
           )}
 
           <div className="mt-4 border-t border-gray-100 pt-3">
-            <a href={`/beheer/campagnes/${c.id}/briefing`} className="text-jr-blue text-sm hover:underline">
+            <OpslaanLink href={`/beheer/campagnes/${c.id}/briefing`} className="text-jr-blue text-sm hover:underline">
               Bekijk de briefing zoals de klant hem krijgt
-            </a>
+            </OpslaanLink>
             <div className="mt-3">
               <PdfDownload href={`/api/campagnes/${c.id}/pdf`} rustig />
             </div>
@@ -249,7 +225,9 @@ export default async function CampagnePage({ params }: { params: Promise<{ id: s
           >
             <div className="grid items-start gap-8 xl:grid-cols-[1fr_1.2fr]">
               {c.status !== 'afgerond' ? (
-                <FeedbackVerwerken campaignId={c.id} loopt={verwerkingLoopt} />
+                <EerstOpslaan>
+                  <FeedbackVerwerken campaignId={c.id} loopt={verwerkingLoopt} />
+                </EerstOpslaan>
               ) : (
                 <p className="text-sm text-gray-600">Afgerond: hier verwerken we geen feedback meer.</p>
               )}
@@ -269,599 +247,82 @@ export default async function CampagnePage({ params }: { params: Promise<{ id: s
           </Kaart>
         )}
 
-        <div className="grid items-start gap-6 xl:grid-cols-2">
-          {/* ---------------------------- Samenvatting ---------------------------- */}
-          <Kaart
-            titel="Samenvatting"
-            uitleg="Eén of twee zinnen bovenaan de briefing. Leeg bij het versturen? Dan schrijven we hem uit wat er is ingevuld."
-          >
-            <ActionForm key={c.summary ?? ''} action={wijzigSamenvatting} submitLabel="Opslaan" resetOnSuccess={false}>
-              {verborgen}
-              <TextArea label="Samenvatting" name="summary" rows={3} defaultValue={c.summary ?? ''} />
-            </ActionForm>
-            <SuggestieKnop action={doeSuggestieSamenvatting} campaignId={c.id} />
-          </Kaart>
-
-          {/* ---------------------------- 1 De basis ---------------------------- */}
-          <Kaart nummer={1} titel="De basis">
-            <ActionForm action={wijzigBasis} submitLabel="Opslaan" resetOnSuccess={false}>
-              {verborgen}
-              <Field label="Campagnenaam" name="title" required defaultValue={c.title} />
-              <Select
-                label="Marketingmanager"
-                name="marketingManagerId"
-                defaultValue={c.marketingManagerId ?? ''}
-                hint="Komt van de klantkaart; hier aan te passen voor deze campagne."
-                options={[
-                  { value: '', label: LEEG },
-                  ...team.map((t) => ({ value: t.id, label: t.jobTitle ? `${t.name ?? t.email} · ${t.jobTitle}` : (t.name ?? t.email) })),
-                ]}
-              />
-              <fieldset>
-                <legend className="text-jr-text mb-2 text-[13px] font-medium">Aangesloten specialisten</legend>
-                <div className="grid gap-2 sm:grid-cols-2">
-                  {team
-                    .filter((t) => t.id !== c.marketingManagerId)
-                    .map((t) => (
-                      <label key={t.id} className="flex items-start gap-2.5 text-[15px]">
-                        <input
-                          type="checkbox"
-                          name="specialistIds"
-                          value={t.id}
-                          defaultChecked={gekozenSpecialisten.has(t.id)}
-                          className="accent-jr-blue mt-0.5 h-[18px] w-[18px] shrink-0"
-                        />
-                        <span>
-                          {t.name ?? t.email}
-                          <span className="block text-xs text-gray-600">{t.jobTitle ?? 'Functie nog niet ingevuld'}</span>
-                        </span>
-                      </label>
-                    ))}
-                </div>
-              </fieldset>
-              <fieldset>
-                <legend className="text-jr-text mb-2 text-[13px] font-medium">Contactpersonen</legend>
-                {contacten.length === 0 ? (
-                  <p className="text-sm text-gray-600">
-                    Nog geen contactpersonen. Voeg ze toe op de{' '}
-                    <a href={`/beheer/klanten/${org.slug}`} className="text-jr-link hover:underline">
-                      klantkaart
-                    </a>
-                    .
-                  </p>
+        <BriefingEditor
+          campaignId={c.id}
+          concept={conceptVan(v)}
+          stempel={c.updatedAt.toISOString()}
+          team={team.map((t) => ({ id: t.id, naam: t.name ?? t.email, functie: t.jobTitle }))}
+          contacten={contacten.map((p) => ({ id: p.id, naam: p.name, functie: p.jobTitle }))}
+          klantSlug={org.slug}
+          wieOpties={wieOpties}
+          kanaalSoorten={[...KANAAL_SOORTEN]}
+          tijdlijnOmschrijvingen={[...TIJDLIJN_OMSCHRIJVINGEN]}
+          inClickUp={!!c.clickupTaskId}
+          budgetNu={budgetTekst(v)}
+          hypothese={<HypotheseWeergave v={v} compact />}
+          doelgroepen={
+            <>
+                <h3 className="mb-2 text-[15px]">Doelgroepen in deze campagne</h3>
+                {v.doelgroepen.length === 0 ? (
+                  <p className="mb-3 text-sm text-gray-600">Nog geen doelgroepen. Voeg er een toe, of kies uit de bestaande.</p>
                 ) : (
-                  <div className="grid gap-2 sm:grid-cols-2">
-                    {contacten.map((p) => (
-                      <label key={p.id} className="flex items-start gap-2.5 text-[15px]">
-                        <input
-                          type="checkbox"
-                          name="contactIds"
-                          value={p.id}
-                          defaultChecked={gekozenContacten.has(p.id)}
-                          className="accent-jr-blue mt-0.5 h-[18px] w-[18px] shrink-0"
-                        />
-                        <span>
-                          {p.name}
-                          {p.jobTitle && <span className="block text-xs text-gray-600">{p.jobTitle}</span>}
-                        </span>
-                      </label>
-                    ))}
-                  </div>
-                )}
-              </fieldset>
-            </ActionForm>
-          </Kaart>
-        </div>
-        {/* ---------------------------- 2 Het doel ---------------------------- */}
-        <Kaart
-          nummer={2}
-          titel="Het doel"
-          uitleg="De KPI’s zijn de basis van de hypothese: het doel is hun som, de omzet aantal maal prijs."
-        >
-          <h3 className="mb-2 text-[15px]">KPI’s</h3>
-          {v.kpis.length === 0 ? (
-            <p className="mb-3 text-sm text-gray-600">Nog geen KPI’s.</p>
-          ) : (
-            <div className="mb-3">
-              <div className="hidden grid-cols-[minmax(0,1fr)_130px_70px_90px_100px_120px] gap-3 border-b border-gray-200 pb-2 text-xs text-gray-600 sm:grid">
-                <span>Wat</span>
-                <span>Datum</span>
-                <span className="text-right">Doel</span>
-                <span className="text-right">Prijs</span>
-                <span className="text-right">Omzet</span>
-                <span />
-              </div>
-              <ul className="tabular divide-y divide-gray-200">
-                {v.kpis.map((k) => (
-                  <Regel
-                    key={`${k.id}-${k.label}-${k.targetQuantity}-${k.priceCents}-${k.on?.getTime()}`}
-                    weergave={
-                      <div className="grid gap-x-3 text-[15px] sm:grid-cols-[minmax(0,1fr)_130px_70px_90px_100px]">
-                        <span>{k.label}</span>
-                        <span className="text-gray-600">{k.on ? formatDate(k.on) : LEEG}</span>
-                        <span className="sm:text-right">{formatAantal(k.targetQuantity)}</span>
-                        <span className="whitespace-nowrap sm:text-right">{prijs(k.priceCents)}</span>
-                        <span className="whitespace-nowrap sm:text-right">{k.priceCents === null ? LEEG : prijs(k.priceCents * k.targetQuantity)}</span>
-                      </div>
-                    }
-                    acties={<KleineKnop action={wisKpi} campaignId={c.id} id={k.id} label="Weg" />}
-                    formulier={
-                      <ActionForm action={wijzigKpi} submitLabel="Opslaan" resetOnSuccess={false}>
-                        {verborgen}
-                        <input type="hidden" name="id" value={k.id} />
-                        <KpiVelden k={k} />
-                      </ActionForm>
-                    }
-                  />
-                ))}
-              </ul>
-              <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-3 border-t border-gray-300 pt-2 text-[15px] font-semibold sm:grid-cols-[minmax(0,1fr)_130px_70px_90px_100px_120px]">
-                <span>Totaal</span>
-                <span className="hidden sm:block" />
-                <span className="text-right">{formatAantal(v.doelEenheden)}</span>
-                <span className="hidden sm:block" />
-                <span className="hidden text-right sm:block">{v.omzetCents > 0 ? euro(v.omzetCents) : LEEG}</span>
-              </div>
-            </div>
-          )}
-          <Uitklap label="KPI toevoegen" className="mb-6">
-            <ActionForm action={nieuweKpi} submitLabel="Toevoegen">
-              {verborgen}
-              <KpiVelden />
-            </ActionForm>
-          </Uitklap>
-
-          <ActionForm action={wijzigDoel} submitLabel="Opslaan" resetOnSuccess={false}>
-            {verborgen}
-            <Field label="Doel in één zin" name="goalSentence" defaultValue={c.goalSentence ?? ''} />
-            <VoorstelVink naam="doel" v={v} />
-            <Field
-              label="Wat telt als resultaat"
-              name="resultDefinition"
-              defaultValue={c.resultDefinition ?? ''}
-              placeholder="Een reservering in Odoo"
-            />
-            <TextArea
-              label="Opmerkingen bij de KPI’s"
-              name="kpiNotes"
-              rows={3}
-              defaultValue={c.kpiNotes ?? ''}
-              hint="Eén punt per regel."
-            />
-
-            <fieldset className="rounded-lg border border-gray-200 p-3">
-              <legend className="text-jr-text px-1 text-[13px] font-medium">Advertentiebudget</legend>
-              <div className="space-y-2 text-sm">
-                <label className="flex items-start gap-2">
-                  <input
-                    type="radio"
-                    name="budgetMode"
-                    value="berekend"
-                    defaultChecked={c.budgetMode === 'berekend'}
-                    className="accent-jr-blue mt-0.5"
-                  />
-                  <span>
-                    Berekend uit het doel
-                    <span className="block text-xs text-gray-500">
-                      De hypothese geeft een bandbreedte: van het deel dat we uit advertenties verwachten tot de bovengrens, als alles uit advertenties komt.
-                    </span>
-                  </span>
-                </label>
-                <label className="flex items-start gap-2">
-                  <input
-                    type="radio"
-                    name="budgetMode"
-                    value="vast"
-                    defaultChecked={c.budgetMode === 'vast'}
-                    className="accent-jr-blue mt-0.5"
-                  />
-                  <span>
-                    Vast budget
-                    <span className="block text-xs text-gray-500">De hypothese rekent vooruit naar het verwachte resultaat.</span>
-                  </span>
-                </label>
-                <Field label="Vast budget in euro’s" name="fixedBudget" defaultValue={bedragVeld(c.fixedBudgetCents)} placeholder="1500" />
-              </div>
-              <p className="mt-2 rounded bg-gray-100 p-2 text-xs text-gray-700">Nu: {budgetTekst(v)}</p>
-            </fieldset>
-            <TextArea
-              label="Opmerkingen bij het budget"
-              name="budgetNote"
-              rows={2}
-              defaultValue={c.budgetNote ?? ''}
-              hint="Bijvoorbeeld wie de advertenties betaalt. Eén punt per regel."
-            />
-            <VoorstelVink naam="budget" v={v} />
-          </ActionForm>
-        </Kaart>
-
-        <div className="grid items-start gap-6 xl:grid-cols-2">
-          {/* ---------------------------- 3 Aanbod ---------------------------- */}
-          <Kaart nummer={3} titel="Aanbod en boodschap">
-            <ActionForm action={wijzigAanbod} submitLabel="Opslaan" resetOnSuccess={false}>
-              {verborgen}
-              <TextArea label="Wat we verkopen" name="offerWhat" rows={2} defaultValue={c.offerWhat ?? ''} />
-              <TextArea label="Kernboodschap" name="offerMessage" rows={2} defaultValue={c.offerMessage ?? ''} />
-              <VoorstelVink naam="kernboodschap" v={v} />
-              <TextArea label="Waarom nu" name="offerWhyNow" rows={2} defaultValue={c.offerWhyNow ?? ''} />
-              <TextArea label="Wat we niet beloven" name="offerNotPromised" rows={2} defaultValue={c.offerNotPromised ?? ''} />
-            </ActionForm>
-          </Kaart>
-
-          {/* ---------------------------- 4 Doelgroep ---------------------------- */}
-          <Kaart nummer={4} titel="Doelgroep">
-            <h3 className="mb-2 text-[15px]">Doelgroepen in deze campagne</h3>
-            {v.doelgroepen.length === 0 ? (
-              <p className="mb-3 text-sm text-gray-600">Nog geen doelgroepen. Voeg er een toe, of kies uit de bestaande.</p>
-            ) : (
-              <ul className="mb-3 divide-y divide-gray-200">
-                {v.doelgroepen.map((d) => (
-                  <Regel
-                    key={`${d.id}-${d.name}-${d.description ?? ''}`}
-                    weergave={
-                      <div className="text-[15px]">
-                        {d.name}
-                        {d.description && <span className="block text-xs text-gray-600">{d.description}</span>}
-                      </div>
-                    }
-                    acties={<KleineKnop action={haalDoelgroepWeg} campaignId={c.id} id={d.id} label="Weg" />}
-                    formulier={
-                      <ActionForm action={bewerkDoelgroep} submitLabel="Opslaan" resetOnSuccess={false}>
-                        {verborgen}
-                        <input type="hidden" name="id" value={d.id} />
-                        <input type="hidden" name="slug" value={org.slug} />
-                        <Field label="Naam" name="name" required defaultValue={d.name} />
-                        <Field label="Omschrijving" name="description" defaultValue={d.description ?? ''} />
-                        <p className="text-xs text-gray-600">Dit wijzigt de doelgroep ook bij {org.name}, voor volgende campagnes.</p>
-                      </ActionForm>
-                    }
-                  />
-                ))}
-              </ul>
-            )}
-            <div className="space-y-3">
-              <Uitklap label="Doelgroep toevoegen" className="">
-                <ActionForm action={doelgroepInCampagne} submitLabel="Toevoegen">
-                  {verborgen}
-                  <Field label="Naam" name="name" required placeholder="Nieuwsbriefabonnees" />
-                  <Field label="Omschrijving" name="description" />
-                  <p className="text-xs text-gray-600">Wordt ook bewaard bij {org.name}, zodat je hem bij een volgende campagne kunt kiezen.</p>
-                </ActionForm>
-              </Uitklap>
-              {beschikbareDoelgroepen.length > 0 && (
-                <Uitklap label={`Kies uit bestaande doelgroepen van ${org.name} (${beschikbareDoelgroepen.length})`} className="">
-                  <ActionForm action={kiesDoelgroepen} submitLabel="Toevoegen aan de campagne">
-                    {verborgen}
-                    <div className="space-y-2">
-                      {beschikbareDoelgroepen.map((d) => (
-                        <label key={d.id} className="flex items-start gap-2.5 text-[15px]">
-                          <input type="checkbox" name="audienceIds" value={d.id} className="accent-jr-blue mt-0.5 h-[18px] w-[18px] shrink-0" />
-                          <span>
+                  <ul className="mb-3 divide-y divide-gray-200">
+                    {v.doelgroepen.map((d) => (
+                      <Regel
+                        key={`${d.id}-${d.name}-${d.description ?? ''}`}
+                        weergave={
+                          <div className="text-[15px]">
                             {d.name}
                             {d.description && <span className="block text-xs text-gray-600">{d.description}</span>}
-                          </span>
-                        </label>
-                      ))}
-                    </div>
-                  </ActionForm>
-                </Uitklap>
-              )}
-            </div>
-
-            <div className="mt-6 border-t border-gray-200 pt-6">
-              <ActionForm action={wijzigDoelgroep} submitLabel="Opslaan" resetOnSuccess={false}>
-                {verborgen}
-                <Field label="Regio" name="region" defaultValue={c.region ?? ''} placeholder="Maastricht en 25 kilometer eromheen" />
-                <VoorstelVink naam="regio" v={v} />
-                <Field label="Uitsluiten" name="exclusions" defaultValue={c.exclusions ?? ''} />
-                <TextArea label="Opmerkingen" name="audienceNotes" rows={2} defaultValue={c.audienceNotes ?? ''} hint="Eén punt per regel." />
-              </ActionForm>
-            </div>
-          </Kaart>
-        </div>
-        {/* ---------------------------- 5 Deliverables ---------------------------- */}
-        <Kaart
-          nummer={5}
-          titel="Deliverables"
-          uitleg="Elke uiting een eigen regel met een eigen naam: Ad 1, Ad 2, Mailing 1, Post 1. Dus niet “3 mailings”, maar drie regels, elk met wat erin staat en wanneer hij live gaat. Wat nog gemaakt moet worden, komt in de tijdlijn."
-        >
-          {v.kanalen.length === 0 ? (
-            <p className="mb-3 text-sm text-gray-600">Nog geen deliverables.</p>
-          ) : (
-            <ul className="mb-3 divide-y divide-gray-200">
-              {v.kanalen.map((k) => (
-                <Regel
-                  key={`${k.id}-${k.name ?? ''}-${k.kind}-${k.quantity ?? ''}-${k.note ?? ''}-${k.liveFrom?.getTime() ?? ''}-${k.liveUntil?.getTime() ?? ''}-${k.status}`}
-                  weergave={
-                    <div className="text-[15px]">
-                      <span className="font-medium">{k.name ?? k.kind}</span>
-                      {k.name && <span className="text-gray-600"> · {k.kind}</span>}
-                      {(k.liveFrom || k.liveUntil) && <span className="text-gray-600"> · {livePeriode(k)}</span>}
-                      {k.note && <p className="text-xs text-gray-600">{k.note}</p>}
-                      {k.quantity && <p className="text-xs text-gray-500">Formaat: {k.quantity}</p>}
-                    </div>
-                  }
-                  acties={
-                    <>
-                      <ActionForm
-                        action={wisselKanaal}
-                        submitLabel={k.status === 'bestaat' ? 'Bestaat al' : 'Nog te maken'}
-                        submitClassName={`!min-h-0 !px-3 !py-1 !text-xs !rounded-full ${k.status === 'bestaat' ? 'bg-jr-green/15 text-[#1d7a36]' : 'bg-jr-lightblue text-jr-deepblue'}`}
-                        resetOnSuccess={false}
-                        meldGelukt={false}
-                        className=""
-                      >
-                        {verborgen}
-                        <input type="hidden" name="id" value={k.id} />
-                      </ActionForm>
-                      <KleineKnop action={wisKanaal} campaignId={c.id} id={k.id} label="Weg" />
-                    </>
-                  }
-                  formulier={
-                    <ActionForm action={wijzigKanaal} submitLabel="Opslaan" resetOnSuccess={false}>
+                          </div>
+                        }
+                        acties={<KleineKnop action={haalDoelgroepWeg} campaignId={c.id} id={d.id} label="Weg" />}
+                        formulier={
+                          <ActionForm action={bewerkDoelgroep} submitLabel="Opslaan" resetOnSuccess={false}>
+                            {verborgen}
+                            <input type="hidden" name="id" value={d.id} />
+                            <input type="hidden" name="slug" value={org.slug} />
+                            <Field label="Naam" name="name" required defaultValue={d.name} />
+                            <Field label="Omschrijving" name="description" defaultValue={d.description ?? ''} />
+                            <p className="text-xs text-gray-600">Dit wijzigt de doelgroep ook bij {org.name}, voor volgende campagnes.</p>
+                          </ActionForm>
+                        }
+                      />
+                    ))}
+                  </ul>
+                )}
+                <div className="space-y-3">
+                  <Uitklap label="Doelgroep toevoegen" className="">
+                    <ActionForm action={doelgroepInCampagne} submitLabel="Toevoegen">
                       {verborgen}
-                      <input type="hidden" name="id" value={k.id} />
-                      <KanaalVelden k={k} />
+                      <Field label="Naam" name="name" required placeholder="Nieuwsbriefabonnees" />
+                      <Field label="Omschrijving" name="description" />
+                      <p className="text-xs text-gray-600">Wordt ook bewaard bij {org.name}, zodat je hem bij een volgende campagne kunt kiezen.</p>
                     </ActionForm>
-                  }
-                />
-              ))}
-            </ul>
-          )}
-          <datalist id="kanaal-soorten">
-            {KANAAL_SOORTEN.map((s) => (
-              <option key={s} value={s} />
-            ))}
-          </datalist>
-          <Uitklap label="Deliverable toevoegen">
-            <ActionForm action={nieuwKanaal} submitLabel="Toevoegen">
-              {verborgen}
-              <KanaalVelden />
-            </ActionForm>
-          </Uitklap>
-        </Kaart>
-
-        {/* ---------------------------- 6 Planning ---------------------------- */}
-        <Kaart nummer={6} titel="De planning">
-          <ActionForm action={wijzigPlanning} submitLabel="Opslaan" resetOnSuccess={false}>
-            {verborgen}
-            <div className="grid gap-3 sm:grid-cols-2">
-              <Field label="Start" name="startOn" type="date" defaultValue={c.startOn ? formatDateInput(c.startOn) : ''} />
-              <Field label="Einde" name="endOn" type="date" defaultValue={c.endOn ? formatDateInput(c.endOn) : ''} />
-            </div>
-            <TextArea
-              label="Opmerkingen bij de planning"
-              name="planningNotes"
-              rows={2}
-              defaultValue={c.planningNotes ?? ''}
-              hint="Bijvoorbeeld een stopcriterium of beslismoment. Eén punt per regel."
-            />
-          </ActionForm>
-
-          <div className="mt-6 flex flex-wrap items-baseline justify-between gap-2">
-            <h3 className="text-sm">Tijdlijn</h3>
-            {c.clickupTaskId && <span className="text-xs text-gray-500">Staat in ClickUp als subtaken</span>}
-          </div>
-          {v.tijdlijn.length === 0 ? (
-            <p className="mt-1 mb-3 text-sm text-gray-500">Nog leeg. Laat een suggestie doen uit de data en de deliverables, en pas die aan.</p>
-          ) : (
-            <ul className="mt-2 mb-3 divide-y divide-gray-100">
-              {v.tijdlijn.map((t) => (
-                <li
-                  key={`${t.id}-${t.dueOn?.getTime() ?? 0}-${t.description}-${t.assigneeUserId ?? t.assigneeLabel ?? ''}`}
-                  className="flex items-center gap-1 py-2"
-                >
-                  <ActionForm
-                    action={wijzigTijdlijnRegel}
-                    submitLabel="Bewaar"
-                    submitClassName={KNOP_KLEIN}
-                    resetOnSuccess={false}
-                    meldGelukt={false}
-                    knopInRij
-                    className="grid min-w-0 flex-1 items-center gap-2 sm:grid-cols-[150px_1fr_170px_auto]"
-                  >
-                    {verborgen}
-                    <input type="hidden" name="id" value={t.id} />
-                    <input
-                      type="date"
-                      name="dueOn"
-                      aria-label="Deadline"
-                      defaultValue={t.dueOn ? formatDateInput(t.dueOn) : ''}
-                      className="min-h-10 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none hover:border-gray-400"
-                    />
-                    <input
-                      name="description"
-                      aria-label="Omschrijving"
-                      list="tijdlijn-omschrijvingen"
-                      defaultValue={t.description}
-                      className="min-h-10 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none hover:border-gray-400"
-                    />
-                    <select
-                      name="assignee"
-                      aria-label="Wie"
-                      defaultValue={t.assigneeUserId ? `user:${t.assigneeUserId}` : t.assigneeLabel ? `label:${t.assigneeLabel}` : ''}
-                      className="min-h-10 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none hover:border-gray-400"
-                    >
-                      {wieOpties.map((o) => (
-                        <option key={o.value} value={o.value}>
-                          {o.label}
-                        </option>
-                      ))}
-                      {t.assigneeLabel && !ROLLEN.includes(t.assigneeLabel) && (
-                        <option value={`label:${t.assigneeLabel}`}>{t.assigneeLabel}</option>
-                      )}
-                    </select>
-                  </ActionForm>
-                  <KleineKnop action={wisTijdlijn} campaignId={c.id} id={t.id} label="Weg" />
-                </li>
-              ))}
-            </ul>
-          )}
-          <datalist id="tijdlijn-omschrijvingen">
-            {TIJDLIJN_OMSCHRIJVINGEN.map((s) => (
-              <option key={s} value={s} />
-            ))}
-          </datalist>
-          <div className="flex flex-wrap items-start gap-3">
-            <SuggestieKnop action={doeSuggestieTijdlijn} campaignId={c.id} uitleg="Vult aan, wist niets." />
-          </div>
-          <Uitklap label="Regel toevoegen" className="mt-3">
-            <ActionForm action={nieuweTijdlijn} submitLabel="Toevoegen">
-              {verborgen}
-              <div className="grid gap-3 sm:grid-cols-2">
-                <Field label="Deadline" name="dueOn" type="date" />
-                <Select label="Wie" name="assignee" options={wieOpties} />
-              </div>
-              <div>
-                <label htmlFor="tijdlijn-nieuw" className="text-jr-text mb-1.5 block text-[13px] font-medium">
-                  Omschrijving
-                </label>
-                <input
-                  id="tijdlijn-nieuw"
-                  name="description"
-                  list="tijdlijn-omschrijvingen"
-                  required
-                  placeholder="Kies of typ"
-                  className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
-                />
-              </div>
-            </ActionForm>
-          </Uitklap>
-        </Kaart>
-
-        <div className="grid items-start gap-6 xl:grid-cols-2">
-          {/* ---------------------------- 7 Afspraken ---------------------------- */}
-          <Kaart nummer={7} titel="Afspraken met de klant">
-            <ActionForm action={wijzigAfspraken} submitLabel="Opslaan" resetOnSuccess={false}>
-              {verborgen}
-              <TextArea
-                label="Wat de klant zelf doet"
-                name="clientDoes"
-                rows={2}
-                defaultValue={c.clientDoes ?? ''}
-                placeholder="Elke maandag de stand doorgeven"
-              />
-              <TextArea
-                label="Opmerkingen"
-                name="agreementNotes"
-                rows={2}
-                defaultValue={c.agreementNotes ?? ''}
-                hint="Bijvoorbeeld betaal- of annuleringsvoorwaarden van de klant zelf. Eén punt per regel."
-              />
-            </ActionForm>
-          </Kaart>
-
-          {/* ---------------------------- 8 Achtergrond ---------------------------- */}
-          <Kaart nummer={8} titel="Achtergrondinformatie">
-            <ActionForm action={wijzigAchtergrond} submitLabel="Opslaan" resetOnSuccess={false}>
-              {verborgen}
-              <TextArea label="Wat we weten van vorige keer" name="backgroundPrevious" rows={3} defaultValue={c.backgroundPrevious ?? ''} />
-              <TextArea
-                label="Risico’s"
-                name="backgroundRisks"
-                rows={3}
-                defaultValue={c.backgroundRisks ?? ''}
-                hint="Eén punt per regel."
-              />
-            </ActionForm>
-          </Kaart>
-        </div>
-        {/* ---------------------------- 9 Hypothese ---------------------------- */}
-        <Kaart
-          nummer={9}
-          titel="Hypothese"
-          uitleg="Alleen getallen, met per aanname de bron. Pas ze aan per campagne; de rest rekent het portaal."
-        >
-          <div className="space-y-8">
-            <ActionForm action={wijzigAannames} submitLabel="Opslaan en herrekenen" resetOnSuccess={false}>
-              {verborgen}
-              {/* In de volgorde van de trechter: vertoning, klik, conversie, opbrengst. */}
-              <div>
-                <div className="hidden gap-4 border-b border-gray-200 pb-2 text-xs text-gray-600 md:grid md:grid-cols-[minmax(0,1fr)_140px_minmax(0,1.2fr)]">
-                  <span>Aanname</span>
-                  <span>Waarde</span>
-                  <span>Bron</span>
+                  </Uitklap>
+                  {beschikbareDoelgroepen.length > 0 && (
+                    <Uitklap label={`Kies uit bestaande doelgroepen van ${org.name} (${beschikbareDoelgroepen.length})`} className="">
+                      <ActionForm action={kiesDoelgroepen} submitLabel="Toevoegen aan de campagne">
+                        {verborgen}
+                        <div className="space-y-2">
+                          {beschikbareDoelgroepen.map((d) => (
+                            <label key={d.id} className="flex items-start gap-2.5 text-[15px]">
+                              <input type="checkbox" name="audienceIds" value={d.id} className="accent-jr-blue mt-0.5 h-[18px] w-[18px] shrink-0" />
+                              <span>
+                                {d.name}
+                                {d.description && <span className="block text-xs text-gray-600">{d.description}</span>}
+                              </span>
+                            </label>
+                          ))}
+                        </div>
+                      </ActionForm>
+                    </Uitklap>
+                  )}
                 </div>
-                <ol className="divide-y divide-gray-200">
-                  <AannameRij
-                    stap={1}
-                    label="Kosten per 1.000 impressies"
-                    uitleg="Wat het kost om de advertentie 1.000 keer te tonen."
-                    naam="cpm"
-                    eenheid="€"
-                    waarde={bedragVeld(c.cpmCents)}
-                    placeholder="8"
-                    bronNaam="sourceCpm"
-                    bron={c.sourceCpm}
-                  />
-                  <AannameRij
-                    stap={2}
-                    label="Doorklikratio"
-                    uitleg="Welk deel van wie de advertentie ziet, klikt door."
-                    naam="ctr"
-                    eenheid="%"
-                    waarde={c.clickThroughRateBp ? formatBp(c.clickThroughRateBp) : ''}
-                    placeholder="1"
-                    bronNaam="sourceClickThrough"
-                    bron={c.sourceClickThrough}
-                  />
-                  <AannameRij
-                    stap={3}
-                    label="Conversieratio"
-                    uitleg="Welk deel van de bezoekers converteert."
-                    naam="conversion"
-                    eenheid="%"
-                    waarde={c.conversionRateBp ? formatBp(c.conversionRateBp) : ''}
-                    placeholder="2,5"
-                    bronNaam="sourceConversion"
-                    bron={c.sourceConversion}
-                  />
-                  <AannameRij
-                    stap={4}
-                    label="Eenheden per conversie"
-                    uitleg="Wat één conversie oplevert. Meestal 1."
-                    naam="units"
-                    waarde={formatHonderdsten(c.unitsPerConversionHundredths)}
-                    placeholder="1"
-                    bronNaam="sourceUnits"
-                    bron={c.sourceUnits}
-                    verplicht
-                  />
-                  <AannameRij
-                    stap={5}
-                    label="Deel uit advertenties"
-                    uitleg="Welk deel van het doel we uit advertenties verwachten. Geeft de ondergrens van het budget; leeg is alles."
-                    naam="adsShare"
-                    eenheid="%"
-                    waarde={c.adsShareBp ? formatBp(c.adsShareBp) : ''}
-                    placeholder="60"
-                    vasteBron="De rest via mailings, vaste klanten en direct"
-                  />
-                  <AannameRij
-                    stap={6}
-                    label="Buffer"
-                    uitleg="Bovenop wat nodig is, voor tegenvallers."
-                    naam="buffer"
-                    eenheid="%"
-                    waarde={formatBp(c.bufferBp)}
-                    placeholder="20"
-                    vasteBron="Vaste regel: 20%"
-                  />
-                </ol>
-              </div>
-              <TextArea
-                label="Opmerkingen bij de aannames"
-                name="assumptionNotes"
-                rows={2}
-                defaultValue={c.assumptionNotes ?? ''}
-                hint="Bijvoorbeeld: gemiddeld 3 per reservering. Eén punt per regel."
-              />
-            </ActionForm>
-            <div className="border-t border-gray-200 pt-8">
-              <HypotheseWeergave v={v} compact />
-            </div>
-          </div>
-        </Kaart>
+              <p className="mt-3 text-xs text-gray-500">Doelgroepen koppelen en weghalen gaat meteen, zonder Opslaan.</p>
+            </>
+          }
+        />
         {c.version === 0 && (
           <section className="max-w-sm">
             <ActionForm
@@ -883,84 +344,6 @@ export default async function CampagnePage({ params }: { params: Promise<{ id: s
 }
 
 /* ------------------------------ Bouwstenen ------------------------------- */
-
-/** De velden van een KPI, leeg om toe te voegen of ingevuld om te wijzigen. */
-function KpiVelden({ k }: { k?: CampaignKpi }) {
-  return (
-    <>
-      <Field label="Wat" name="label" required placeholder="Kerstdiner" defaultValue={k?.label ?? ''} />
-      <div className="grid gap-3 sm:grid-cols-3">
-        <Field label="Datum" name="on" type="date" defaultValue={k?.on ? formatDateInput(k.on) : ''} />
-        <Field label="Doel (aantal)" name="targetQuantity" type="number" required placeholder="80" defaultValue={k ? String(k.targetQuantity) : ''} />
-        <Field label="Prijs per stuk" name="price" placeholder="110" defaultValue={k ? bedragVeld(k.priceCents) : ''} />
-      </div>
-    </>
-  )
-}
-
-/** De velden van een deliverable. */
-function KanaalVelden({ k }: { k?: CampaignChannel }) {
-  const id = `kanaal-soort-${k?.id ?? 'nieuw'}`
-  return (
-    <>
-      <div className="grid gap-3 sm:grid-cols-2">
-        <Field label="Naam" name="name" placeholder="Ad 1 · Kerstbrunch" defaultValue={k?.name ?? ''} />
-        <div>
-          <label htmlFor={id} className="text-jr-text mb-1.5 block text-[13px] font-medium">
-            Kanaal
-          </label>
-          <input
-            id={id}
-            name="kind"
-            list="kanaal-soorten"
-            required
-            placeholder="Kies of typ"
-            defaultValue={k?.kind ?? ''}
-            className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"
-          />
-        </div>
-      </div>
-      <TextArea label="Wat erin staat en voor wie" name="note" rows={2} defaultValue={k?.note ?? ''} />
-      <Field label="Formaat" name="quantity" placeholder="1:1, 4:5 en 9:16" defaultValue={k?.quantity ?? ''} />
-      <div className="grid gap-3 sm:grid-cols-3">
-        <Field
-          label="Live vanaf"
-          name="liveFrom"
-          type="date"
-          defaultValue={k?.liveFrom ? formatDateInput(k.liveFrom) : ''}
-          hint="Bij een mailing: de verzenddag."
-        />
-        <Field label="Live tot" name="liveUntil" type="date" defaultValue={k?.liveUntil ? formatDateInput(k.liveUntil) : ''} />
-        <Select
-          label="Status"
-          name="status"
-          defaultValue={k?.status ?? 'maken'}
-          options={[
-            { value: 'maken', label: 'Nog te maken' },
-            { value: 'bestaat', label: 'Bestaat al' },
-          ]}
-        />
-      </div>
-    </>
-  )
-}
-
-function Kaart({ nummer, titel, uitleg, children }: { nummer?: number; titel: string; uitleg?: string; children: React.ReactNode }) {
-  return (
-    <section className="rounded-xl bg-white p-6 shadow-sm lg:p-8">
-      <h2 className="flex items-center gap-3 text-[19px]">
-        {nummer !== undefined && (
-          <span className="bg-jr-lightblue text-jr-link inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-sm font-semibold">
-            {nummer}
-          </span>
-        )}
-        {titel}
-      </h2>
-      {uitleg && <p className="mt-1.5 max-w-2xl text-sm text-gray-600">{uitleg}</p>}
-      <div className="mt-6">{children}</div>
-    </section>
-  )
-}
 
 const VERWERKING_STATUS: Record<VerwerkingWeergave['status'], { label: string; stijl: string }> = {
   wacht: { label: 'Wacht', stijl: 'bg-gray-200 text-gray-700' },
@@ -1045,71 +428,6 @@ function Kerngetal({ label, waarde, blauw = false }: { label: string; waarde: st
   )
 }
 
-function VoorstelVink({ naam, v }: { naam: 'doel' | 'budget' | 'kernboodschap' | 'regio'; v: CampagneVolledig }) {
-  return (
-    <Check label="Dit is een voorstel aan de klant" name={`voorstel_${naam}`} defaultChecked={v.campagne.proposalFields.includes(naam)} />
-  )
-}
-
-function AannameRij({
-  stap,
-  label,
-  uitleg,
-  naam,
-  eenheid,
-  waarde,
-  placeholder,
-  bronNaam,
-  bron,
-  vasteBron,
-  verplicht = false,
-}: {
-  stap: number
-  label: string
-  uitleg: string
-  naam: string
-  eenheid?: string
-  waarde: string
-  placeholder: string
-  bronNaam?: string
-  bron?: string | null
-  vasteBron?: string
-  verplicht?: boolean
-}) {
-  const id = `aanname-${naam}`
-  const veld = 'min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400'
-  return (
-    <li className="grid items-center gap-x-4 gap-y-2 py-3.5 md:grid-cols-[minmax(0,1fr)_140px_minmax(0,1.2fr)]">
-      <label htmlFor={id} className="flex items-start gap-3">
-        <span className="bg-jr-lightblue text-jr-link mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-semibold">
-          {stap}
-        </span>
-        <span>
-          <span className="block text-[15px] font-medium">{label}</span>
-          <span className="block text-xs text-gray-600">{uitleg}</span>
-        </span>
-      </label>
-      <div className="relative ml-9 md:ml-0">
-        <input id={id} name={naam} defaultValue={waarde} placeholder={placeholder} required={verplicht} inputMode="decimal" className={`${veld} ${eenheid ? 'pr-9' : ''}`} />
-        {eenheid && <span className="pointer-events-none absolute top-1/2 right-3.5 -translate-y-1/2 text-sm text-gray-500">{eenheid}</span>}
-      </div>
-      <div className="ml-9 md:ml-0">
-        {bronNaam ? (
-          <input
-            name={bronNaam}
-            aria-label={`Bron van ${label.toLowerCase()}`}
-            defaultValue={bron ?? ''}
-            placeholder="Bron: marktgemiddelde, Ads Manager, Odoo"
-            className={veld}
-          />
-        ) : (
-          <span className="text-sm text-gray-600">{vasteBron}</span>
-        )}
-      </div>
-    </li>
-  )
-}
-
 type Actie = (formData: FormData) => Promise<{ ok: true } | { ok: false; error: string }>
 
 function KleineKnop({ action, campaignId, id, label }: { action: Actie; campaignId: string; id: string; label: string }) {
@@ -1117,22 +435,6 @@ function KleineKnop({ action, campaignId, id, label }: { action: Actie; campaign
     <ActionForm action={action} submitLabel={label} submitClassName={KNOP_KLEIN} resetOnSuccess={false} meldGelukt={false} className="">
       <input type="hidden" name="campaignId" value={campaignId} />
       <input type="hidden" name="id" value={id} />
-    </ActionForm>
-  )
-}
-
-function SuggestieKnop({ action, campaignId, uitleg }: { action: Actie; campaignId: string; uitleg?: string }) {
-  return (
-    <ActionForm
-      action={action}
-      submitLabel="Doe suggestie"
-      submitClassName={`${KNOP_RUSTIG} mt-2`}
-      resetOnSuccess={false}
-      meldGelukt={false}
-      className="flex flex-wrap items-center gap-2"
-    >
-      <input type="hidden" name="campaignId" value={campaignId} />
-      {uitleg && <span className="order-last mt-2 text-xs text-gray-500">{uitleg}</span>}
     </ActionForm>
   )
 }
