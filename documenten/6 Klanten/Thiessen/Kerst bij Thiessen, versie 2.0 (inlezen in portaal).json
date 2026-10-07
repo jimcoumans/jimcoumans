@@ -1,36 +1,36 @@
 {
-  "samenvatting": "Thiessen Wijnkoopers wil drie kerstmomenten vullen met 60 gasten per moment: de kerstbrunch op eerste kerstdag en het kerstdiner op eerste en tweede kerstdag. Er moeten nog 150 gasten verkocht worden (ongeveer 50 reserveringen), goed voor € 10.275 omzet. Met vijf Meta-ads in twee flights, drie posts met de beelden van de ads, drie mailings, een landingspagina en een flyer in de winkel, van 15 oktober tot 17 december 2026.",
+  "samenvatting": "Thiessen Wijnkoopers wil eerst eerste kerstdag vullen: de kerstbrunch en het kerstdiner, elk met 60 gasten. Het kerstdiner op tweede kerstdag gaat pas open als het diner op eerste kerstdag is uitverkocht; de ads daarvoor liggen dan klaar. Samen nog 150 gasten (ongeveer 50 reserveringen), goed voor € 13.200 omzet, met het all-in-arrangement voorop. Met Meta-ads in twee flights, posts met de beelden van de ads, drie mailings, een landingspagina en een flyer in de winkel, van 15 oktober tot 17 december 2026.",
   "doel": {
-    "doelInEenZin": "De kerstbrunch en beide kerstdiners vol met 60 gasten per moment: nog 150 gasten te verkopen, goed voor € 10.275 omzet.",
+    "doelInEenZin": "Eerst eerste kerstdag vol: de kerstbrunch en het kerstdiner met elk 60 gasten. Tweede kerstdag gaat pas open als het diner op eerste kerstdag is uitverkocht. Samen nog 150 gasten, goed voor € 13.200 omzet.",
     "resultaatDefinitie": "Een reservering via de eventpagina in Odoo, geteld in gasten.",
     "budgetVorm": "berekend",
     "vastBudget": "",
-    "budgetToelichting": "Per ad: Ad 1 € 250 en Ad 2 € 400 (flight 1), Ad 3 € 300 (retargeting, hele looptijd), Ad 4 € 400 en Ad 5 € 550 (flight 2). De diners krijgen meer dan de brunch, omdat daar meer plaatsen en meer omzet te halen zijn. Loopt een moment achter, dan schuiven we budget.",
-    "kpiOpmerkingen": "Per moment 60 gasten, 180 in totaal. Op 26 december zijn er al 30 geboekt: die tellen niet mee in het doel van de campagne. Meer dan 60 is welkom.\nDe stand van maandag 12 oktober is het startpunt: wat er dan bij de brunch of op 25 december al geboekt is, gaat daar nog van het doel af.\nDe omzet is gerekend met de basisprijs. Arrangementen komen erbovenop: all-in is het diner € 115 per persoon.\nOp 25 november beslist Thiessen per moment of het doorgaat.\nVoorstel: Doorgaan bij minimaal 30 gasten voor de brunch en 40 per diner.\nTussenstand om op te sturen: op 1 november een kwart van wat we per moment moeten verkopen, op 15 november de helft. Voor de brunch en het diner op 25 december is dat 15 en 30 gasten, voor 26 december 8 en 15 bovenop de 30 die er al staan."
+    "budgetToelichting": "Per ad: Ad 1 € 200 en Ad 2 € 300 (flight 1), Ad 3 € 300 (retargeting, hele looptijd), Ad 4 € 300 en Ad 5 € 400 (flight 2), Ad 6 € 400 (tweede kerstdag, pas na de go). Komt de go niet, dan gaat het budget van Ad 6 naar wat op eerste kerstdag achterloopt. De diners krijgen meer dan de brunch, omdat daar de meeste omzet zit.",
+    "kpiOpmerkingen": "Per moment 60 gasten. Meer dan 60 is welkom.\nVoorrang voor eerste kerstdag: brunch en diner op 25 december. Tweede kerstdag gaat pas open als het diner op eerste kerstdag is uitverkocht; Thiessen geeft dan de go.\nOp 26 december zijn er al 30 geboekt: die tellen niet mee in het doel van de campagne.\nBij het diner sturen we op het all-in-arrangement van € 115 (diner met wijnarrangement), en daarmee is de omzet gerekend. Gasten kunnen ook kiezen voor het diner zonder arrangement (€ 82,50) of met bob-arrangement (€ 110); dan ligt de omzet lager.\nBij de brunch komen de overige dranken er op nacalculatie bij.\nDe stand van maandag 12 oktober is het startpunt: wat er dan op 25 december al geboekt is, gaat nog van het doel af.\nOp 25 november beslist Thiessen per moment of het doorgaat.\nVoorstel: Doorgaan bij minimaal 30 gasten voor de brunch en 40 per diner.\nTussenstand om op te sturen, voor de brunch en het diner op eerste kerstdag: op 1 november 15 gasten per moment, op 15 november 30."
   },
   "aanbod": {
-    "wat": "Kerstbrunch, eerste kerstdag (25 december), € 47,50 per persoon. Inloop van 11.00 tot 11.30 uur, brunch tot 14.00 uur. Voor kleine en grote groepen en voor gezinnen. Welkom met mousserende wijn, ook alcoholvrij, en een alternatief voor kinderen. Daarna een buffet met kerststol met amandelspijs, vleeswaren en kazen, huisgemaakte soep, warme quiche, petit pâté, ambachtelijke broodjes en croissants, en een zoete afsluiter. De ontvangstbubbel, koffie en thee zitten erbij; andere dranken worden achteraf afgerekend.\n\nKerstdiner, eerste en tweede kerstdag (25 en 26 december), € 82,50 per persoon. Inloop van 18.00 tot 18.30 uur. Ontvangst met een bubbel en twee amuses, daarna een viergangendiner met tafelwater en brood. Bob-arrangement € 27,50, wijnarrangement € 32,50. All-in € 115 per persoon.\n\n- Voorgerecht: knolselderij, gerookte paling, dressing van groene kruiden en karnemelk, limoen\n- Tussengerecht: Iberico wang, schorseneren, tenkasu, pompoen\n- Hoofdgerecht: hert, rode kool, stoofpeer, schuim van Cepes, Madeira-Port jus\n- Nagerecht: kerstdessert van Thiessen\n\nOp kerstavond is er geen aanbod.\n\nReserveren via de eventpagina’s: kerstbrunch (https://www.thiessen.nl/event/kerstbrunch-745/register), kerstdiner eerste kerstdag (https://www.thiessen.nl/event/kerstdiner-581/register), kerstdiner tweede kerstdag (https://www.thiessen.nl/event/kerstdiner-583/register).",
-    "boodschap": "“Vier de kerst bij Thiessen. Jij reserveert, wij zorgen voor de rest, tot en met de mooiste plek aan tafel.”",
+    "wat": "Kerstbrunch, eerste kerstdag (25 december), € 47,50 per persoon. Inloop van 11.00 tot 11.30 uur, brunch tot 14.00 uur. Voor kleine en grote groepen en voor gezinnen. Welkom met mousserende wijn, ook alcoholvrij, en een alternatief voor kinderen. Daarna een buffet met kerststol met amandelspijs, vleeswaren en kazen, huisgemaakte soep, warme quiche, petit pâté, ambachtelijke broodjes en croissants, en een zoete afsluiter. De ontvangstbubbel, koffie en thee zitten erbij; andere dranken worden achteraf afgerekend.\n\nKerstdiner all-in, eerste kerstdag (25 december), € 115 per persoon. Daar sturen we op. Inloop van 18.00 tot 18.30 uur. Ontvangst met een bubbel en twee amuses, een viergangendiner met tafelwater en brood, en het bijpassende wijnarrangement. Liever een andere samenstelling: het diner zonder arrangement is € 82,50, met het bijpassende bob-arrangement € 110.\n\n- Voorgerecht: knolselderij, gerookte paling, dressing van groene kruiden en karnemelk, limoen\n- Tussengerecht: Iberico wang, schorseneren, tenkasu, pompoen\n- Hoofdgerecht: hert, rode kool, stoofpeer, schuim van Cepes, Madeira-Port jus\n- Nagerecht: kerstdessert van Thiessen\n\nKerstdiner tweede kerstdag (26 december), hetzelfde diner en dezelfde prijzen. Gaat pas in de verkoop als het diner op eerste kerstdag is uitverkocht.\n\nOp kerstavond is er geen aanbod.\n\nReserveren via de eventpagina’s: kerstbrunch (https://www.thiessen.nl/event/kerstbrunch-745/register), kerstdiner eerste kerstdag (https://www.thiessen.nl/event/kerstdiner-581/register), en na de go kerstdiner tweede kerstdag (https://www.thiessen.nl/event/kerstdiner-583/register).",
+    "boodschap": "“Vier de kerst bij Thiessen. Jij reserveert, wij zorgen voor de rest, tot en met de wijn bij elke gang.”",
     "waaromNu": "Beperkt aantal plaatsen per moment. Reserveren zonder aanbetaling: nu boeken, eind november betalen. Vanaf november noemen we per moment hoeveel plaatsen er nog zijn.",
-    "nietBeloofd": "Een plek in de kelder of de orangerie: dat bepaalt Thiessen. Dat staat op de landingspagina en in de bevestiging. Dat een moment kan vervallen bij te weinig reserveringen, staat in de voorwaarden en de bevestiging, met een plek bij een ander restaurant in Maastricht. Niet in de advertenties."
+    "nietBeloofd": "Een plek in de kelder of de orangerie: dat bepaalt Thiessen. Dat staat op de landingspagina en in de bevestiging. Dat een moment kan vervallen bij te weinig reserveringen, staat in de voorwaarden en de bevestiging, met een plek bij een ander restaurant in Maastricht. Niet in de advertenties. Tweede kerstdag noemen we niet tot de go er is."
   },
   "doelgroep": {
     "regio": "Maastricht en 25 kilometer eromheen.",
     "uitsluitingen": "Wie al gereserveerd heeft, via de wekelijkse stand uit Odoo.",
-    "toelichting": "De brunch is er ook voor gezinnen met kinderen en voor grotere groepen; daar spelen Ad 1 en Ad 4 op in."
+    "toelichting": "De brunch is er ook voor gezinnen met kinderen en voor grotere groepen; daar spelen Ad 1 en Ad 4 op in. Het diner richt zich op wie de avond compleet wil, met de wijn erbij."
   },
   "planning": {
     "start": "2026-10-15",
     "einde": "2026-12-17",
-    "toelichting": "De briefing gaat op 7 oktober naar Thiessen; akkoord uiterlijk vrijdag 9 oktober. Dan staat alles op 15 oktober live. Komt het akkoord later, dan schuift de start even ver op.\nVoorstel: Adverteren in twee flights in plaats van elke dag: aankondigen van 15 oktober tot 1 november, en “nog X plaatsen” van 9 november tot 17 december. Retargeting loopt tussendoor door met een klein budget.\nPer moment stoppen zodra het vol is.\nVervalt een moment op 25 november, dan passen wij dezelfde dag de advertenties en de landingspagina aan.\nVoorstel: De data van de posts en mailings. Heeft Thiessen vaste dagen voor de nieuwsbrief, dan schuiven we mee.\nGeen losse organische posts: we posten de beelden van de ads ook organisch."
+    "toelichting": "De briefing gaat op 7 oktober naar Thiessen; akkoord uiterlijk vrijdag 9 oktober. Dan staat alles op 15 oktober live. Komt het akkoord later, dan schuift de start even ver op.\nVoorstel: Adverteren in twee flights in plaats van elke dag: aankondigen van 15 oktober tot 1 november, en “nog X plaatsen” van 9 november tot 17 december. Retargeting loopt tussendoor door met een klein budget.\nTweede kerstdag ligt klaar: Ad 6 en Post 4 zijn op 5 november gemaakt en goedgekeurd. Binnen een werkdag na de go van Thiessen staan ze live, staat tweede kerstdag op de landingspagina en gaat het mee in de eerstvolgende mailing.\nPer moment stoppen zodra het vol is.\nVervalt een moment op 25 november, dan passen wij dezelfde dag de advertenties en de landingspagina aan.\nVoorstel: De data van de posts en mailings. Heeft Thiessen vaste dagen voor de nieuwsbrief, dan schuiven we mee.\nGeen losse organische posts: we posten de beelden van de ads ook organisch."
   },
   "afspraken": {
-    "klantDoet": "Elke maandag de stand per moment uit Odoo naar support@jamesrobinson.nl. Odoo en de eventpagina’s actueel houden. De flyer laten drukken en in de winkel neerleggen. Gasten informeren als een moment vervalt.",
+    "klantDoet": "Elke maandag de stand per moment uit Odoo naar support@jamesrobinson.nl, en meteen laten weten als het diner op eerste kerstdag vol is: dat is de go voor tweede kerstdag. Odoo en de eventpagina’s actueel houden. De flyer laten drukken en in de winkel neerleggen. Gasten informeren als een moment vervalt.",
     "overig": "Reserveren gaat zonder aanbetaling.\nGasten krijgen vier weken voor kerst een betaallink en betalen uiterlijk een week voor kerst."
   },
   "achtergrond": {
-    "eerder": "Vorig jaar kwamen er op één dag maar acht gasten. Het personeel moest met kerst werken en had niets te doen; dat gaf veel weerstand. Daarom de afspraak: is er een maand voor kerst te weinig verkocht voor een moment, dan vervalt dat moment.",
-    "risicos": "Zonder aanbetaling valt een deel van de reserveringen af als de betaallink komt.\nDrie momenten, één budget: we sturen per moment, en schuiven budget naar wat achterloopt.\nDe brunch levert het minst op per gast: als het moet, stoppen we daar eerder met adverteren dan bij de diners.\nTussen de flights zakt het bereik. Loopt een moment op 1 november achter, dan starten we flight 2 eerder."
+    "eerder": "Vorig jaar kwamen er op één dag maar acht gasten. Het personeel moest met kerst werken en had niets te doen; dat gaf veel weerstand. Daarom de afspraak: is er een maand voor kerst te weinig verkocht voor een moment, dan vervalt dat moment. En daarom gaat tweede kerstdag pas open als eerste kerstdag vol is.",
+    "risicos": "Zonder aanbetaling valt een deel van de reserveringen af als de betaallink komt.\nKomt de go voor tweede kerstdag laat, dan is er weinig tijd om die te vullen. Daarom liggen Ad 6 en Post 4 vanaf 5 november klaar en staan ze binnen een werkdag live.\nGasten kiezen een goedkopere samenstelling dan all-in: dan ligt de omzet lager dan het doel. Het all-in-arrangement staat daarom voorop in de ads, de mailings en op de landingspagina.\nDe brunch levert het minst op per gast: als het moet, stoppen we daar eerder met adverteren dan bij de diners.\nTussen de flights zakt het bereik. Loopt een moment op 1 november achter, dan starten we flight 2 eerder."
   },
   "kpis": [
     {
@@ -40,16 +40,16 @@
       "prijs": "47,50"
     },
     {
-      "label": "Kerstdiner",
+      "label": "Kerstdiner, all-in",
       "datum": "2026-12-25",
       "aantal": 60,
-      "prijs": "82,50"
+      "prijs": "115"
     },
     {
-      "label": "Kerstdiner",
+      "label": "Kerstdiner, all-in (pas na de go)",
       "datum": "2026-12-26",
       "aantal": 30,
-      "prijs": "82,50"
+      "prijs": "115"
     }
   ],
   "deliverables": [
@@ -63,9 +63,9 @@
       "status": "maken"
     },
     {
-      "naam": "Ad 2 · Kerstdiner",
+      "naam": "Ad 2 · Kerstdiner eerste kerstdag",
       "kanaal": "Meta Ads · targeting · flight 1",
-      "inhoud": "Nieuwe gasten in de regio. Het viergangendiner op eerste en tweede kerstdag, het menu en het all-in-arrangement van € 115. Knop naar de landingspagina.",
+      "inhoud": "Nieuwe gasten in de regio. Het viergangendiner op eerste kerstdag met het menu, all-in met wijnarrangement voor € 115. Knop naar de landingspagina.",
       "formaat": "Beeld of korte video uit de beeldenbank, in 1:1, 4:5 en 9:16",
       "liveVanaf": "2026-10-15",
       "liveTot": "2026-11-01",
@@ -74,7 +74,7 @@
     {
       "naam": "Ad 3 · Vier de kerst bij Thiessen",
       "kanaal": "Meta Ads · retargeting · hele looptijd",
-      "inhoud": "Websitebezoekers, volgers en nieuwsbriefabonnees die nog niet geboekt hebben. Carrousel met de drie momenten, elk met een eigen knop naar de eventpagina.",
+      "inhoud": "Websitebezoekers, volgers en nieuwsbriefabonnees die nog niet geboekt hebben. Carrousel met de brunch en het diner op eerste kerstdag, elk met een eigen knop naar de eventpagina. Na de go komt tweede kerstdag erbij.",
       "formaat": "Carrousel, 1:1 en 4:5",
       "liveVanaf": "2026-10-15",
       "liveTot": "2026-12-17",
@@ -90,11 +90,20 @@
       "status": "maken"
     },
     {
-      "naam": "Ad 5 · Kerstdiner, nog X plaatsen",
+      "naam": "Ad 5 · Kerstdiner eerste kerstdag, nog X plaatsen",
       "kanaal": "Meta Ads · targeting · flight 2",
-      "inhoud": "Als Ad 2, met het aantal plaatsen per dag. Per dag stoppen zodra dat diner vol is.",
+      "inhoud": "Als Ad 2, met het aantal plaatsen dat er nog is. Stopt zodra het diner vol is; dan geeft Thiessen de go voor tweede kerstdag.",
       "formaat": "Beeld of korte video uit de beeldenbank, in 1:1, 4:5 en 9:16",
       "liveVanaf": "2026-11-09",
+      "liveTot": "2026-12-17",
+      "status": "maken"
+    },
+    {
+      "naam": "Ad 6 · Kerstdiner tweede kerstdag",
+      "kanaal": "Meta Ads · targeting · klaar voor de go",
+      "inhoud": "“Eerste kerstdag is vol, tweede kerstdag is open.” Hetzelfde diner, all-in voor € 115. Wordt op 5 november gemaakt en goedgekeurd, en staat live binnen een werkdag na de go van Thiessen.",
+      "formaat": "Beeld of korte video uit de beeldenbank, in 1:1, 4:5 en 9:16",
+      "liveVanaf": "",
       "liveTot": "2026-12-17",
       "status": "maken"
     },
@@ -110,7 +119,7 @@
     {
       "naam": "Post 2",
       "kanaal": "Organisch · beeld van Ad 2",
-      "inhoud": "Het kerstdiner en het menu.",
+      "inhoud": "Het kerstdiner op eerste kerstdag en het menu.",
       "formaat": "4:5 en 9:16 (verhaal)",
       "liveVanaf": "2026-10-23",
       "liveTot": "",
@@ -119,16 +128,25 @@
     {
       "naam": "Post 3",
       "kanaal": "Organisch · beeld van Ad 5",
-      "inhoud": "Nog X plaatsen, per moment.",
+      "inhoud": "Nog X plaatsen op eerste kerstdag.",
       "formaat": "4:5 en 9:16 (verhaal)",
       "liveVanaf": "2026-11-11",
       "liveTot": "",
       "status": "maken"
     },
     {
+      "naam": "Post 4",
+      "kanaal": "Organisch · beeld van Ad 6",
+      "inhoud": "Eerste kerstdag is vol, tweede kerstdag is open.",
+      "formaat": "4:5 en 9:16 (verhaal)",
+      "liveVanaf": "",
+      "liveTot": "",
+      "status": "maken"
+    },
+    {
       "naam": "Mailing 1 · Oktobernieuwsbrief",
       "kanaal": "Mailing · alle abonnees",
-      "inhoud": "Een blok Kerst bij Thiessen: de drie momenten in het kort, met een knop naar de landingspagina.",
+      "inhoud": "Een blok Kerst bij Thiessen: de brunch en het diner op eerste kerstdag, met een knop naar de landingspagina.",
       "formaat": "Blok in de nieuwsbrief",
       "liveVanaf": "2026-10-22",
       "liveTot": "",
@@ -137,7 +155,7 @@
     {
       "naam": "Mailing 2 · Kerst bij Thiessen",
       "kanaal": "Mailing · alle abonnees",
-      "inhoud": "Een aparte mailing over alleen de kerst: brunch en diner, het menu, de arrangementen, reserveren zonder aanbetaling. Per moment een knop naar de eventpagina.",
+      "inhoud": "Een aparte mailing over alleen de kerst op eerste kerstdag: de brunch, het diner all-in met het menu, reserveren zonder aanbetaling. Per moment een knop naar de eventpagina.",
       "formaat": "Losse mailing",
       "liveVanaf": "2026-11-10",
       "liveTot": "",
@@ -146,7 +164,7 @@
     {
       "naam": "Mailing 3 · Novembernieuwsbrief",
       "kanaal": "Mailing · abonnees die nog niet geboekt hebben",
-      "inhoud": "Nog X plaatsen per moment, en de datum waarop we beslissen (25 november).",
+      "inhoud": "Nog X plaatsen per moment, en de datum waarop we beslissen (25 november). Is de go voor tweede kerstdag er dan, dan staat die erin.",
       "formaat": "Blok in de nieuwsbrief",
       "liveVanaf": "2026-11-18",
       "liveTot": "",
@@ -155,7 +173,7 @@
     {
       "naam": "Landingspagina",
       "kanaal": "thiessen.nl/events/kerst-bij/thiessen",
-      "inhoud": "De drie momenten, het menu, wat erbij zit, de arrangementen, per moment hoeveel plaatsen er nog zijn, en per moment een knop naar de eventpagina om te reserveren.",
+      "inhoud": "Eerst de brunch en het diner op eerste kerstdag: het menu, wat erbij zit, het all-in-arrangement en de andere samenstellingen, per moment hoeveel plaatsen er nog zijn, en per moment een knop naar de eventpagina. Na de go komt tweede kerstdag erbij.",
       "formaat": "Pagina op de eigen website",
       "liveVanaf": "2026-10-15",
       "liveTot": "",
@@ -164,7 +182,7 @@
     {
       "naam": "Flyer",
       "kanaal": "Drukwerk in de winkel · wij ontwerpen, Thiessen drukt",
-      "inhoud": "De drie momenten in het kort, met een QR-code naar de landingspagina.",
+      "inhoud": "De brunch en het diner op eerste kerstdag, met een QR-code naar de landingspagina.",
       "formaat": "Drukklare pdf, [formaat met Thiessen afstemmen]",
       "liveVanaf": "",
       "liveTot": "",
@@ -202,7 +220,7 @@
     {
       "id": "",
       "datum": "2026-10-13",
-      "omschrijving": "Landingspagina klaar",
+      "omschrijving": "Landingspagina klaar, met eerste kerstdag",
       "wie": "Content en techniek"
     },
     {
@@ -238,7 +256,7 @@
     {
       "id": "",
       "datum": "",
-      "omschrijving": "Stand per moment, budget bijsturen (elke maandag)",
+      "omschrijving": "Stand per moment, budget bijsturen; vragen of het diner op eerste kerstdag vol is (elke maandag)",
       "wie": "Campagne"
     },
     {
@@ -262,7 +280,7 @@
     {
       "id": "",
       "datum": "2026-11-05",
-      "omschrijving": "Ad 4 en Ad 5 klaar, met merkcheck",
+      "omschrijving": "Ad 4 en Ad 5 klaar, en Ad 6 en Post 4 voor tweede kerstdag klaar voor de go; met merkcheck",
       "wie": "Content"
     },
     {
@@ -291,6 +309,12 @@
     },
     {
       "id": "",
+      "datum": "",
+      "omschrijving": "Tweede kerstdag open: Ad 6 en Post 4 live, landingspagina bijgewerkt, binnen een werkdag (na de go van Thiessen)",
+      "wie": "Campagne"
+    },
+    {
+      "id": "",
       "datum": "2026-11-25",
       "omschrijving": "Beslismoment: doorgaan of annuleren, per moment",
       "wie": "Thiessen"
@@ -310,16 +334,17 @@
   ],
   "wijzigingen": [
     "Kerstavond geschrapt; brunch op eerste kerstdag en diner op beide kerstdagen met tijden, menu, prijzen en arrangementen",
-    "Doel 60 gasten per moment; de 30 al geboekte gasten op 26 december tellen niet mee: nog 150 gasten, € 10.275 omzet",
-    "Hypothese en advertentiebudget opnieuw berekend (advies € 1.900), uitgesplitst per ad",
+    "Bij het diner sturen we op all-in (€ 115); de andere samenstellingen (€ 82,50 en € 110) staan erbij",
+    "Tweede kerstdag gaat pas open na de go van Thiessen (diner eerste kerstdag vol); Ad 6 en Post 4 liggen klaar",
+    "Doel: nog 150 gasten, € 13.200 omzet; hypothese en budget opnieuw berekend (advies € 1.900, 14,4%), per ad uitgesplitst",
     "Planning: akkoord uiterlijk 9 oktober, live 15 oktober, adverteren in twee flights",
-    "Deliverables één voor één: Ad 1 t/m 5, Post 1 t/m 3 (beelden van de ads), Mailing 1 t/m 3, landingspagina en flyer",
-    "Flyer: wij ontwerpen, Thiessen drukt"
+    "Deliverables één voor één: Ad 1 t/m 6, Post 1 t/m 4, Mailing 1 t/m 3, landingspagina en flyer"
   ],
   "openVragen": [
+    "Op 26 december staan al 30 gasten geboekt, terwijl tweede kerstdag pas open zou gaan na eerste kerstdag. Is die eventpagina nu al openbaar? Zo ja: offline tot de go, of laten staan?",
     "Formaat van de flyer afstemmen met Thiessen.",
     "Verzenddata van de mailings en posts zijn een voorstel: heeft Thiessen vaste dagen voor de nieuwsbrief?",
-    "Stand op maandag 12 oktober opvragen: wat er dan al geboekt is voor de brunch en 25 december, gaat van het doel af.",
+    "Stand op maandag 12 oktober opvragen: wat er dan al geboekt is op 25 december, gaat van het doel af.",
     "Vink in het portaal budget, kernboodschap en regio aan als voorstel."
   ],
   "aannames": {
@@ -332,6 +357,6 @@
     "bronConversie": "marktgemiddelde; eigen norm volgt",
     "bronDoorklik": "marktgemiddelde Meta; eigen norm volgt",
     "bronKosten": "inschatting; checken in Ads Manager",
-    "opmerkingen": "Eenheden per conversie: gemiddeld 3 gasten per reservering (groepsgrootte). Na de eerste tien reserveringen checken in Odoo.\nConversie: een reservering via de eventpagina in Odoo.\nDoel en omzet zonder de 30 gasten die op 26 december al geboekt zijn."
+    "opmerkingen": "3 gasten per reservering; na de eerste tien checken in Odoo. Conversie: een reservering via de eventpagina.\nZonder de 30 gasten die op 26 december al geboekt zijn; het diner met het all-in-arrangement."
   }
 }

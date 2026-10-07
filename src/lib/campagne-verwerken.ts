@@ -116,6 +116,15 @@ const Uitkomst = z.object({
 export type Uitkomst = z.infer<typeof Uitkomst>
 
 /**
+ * Per punt uit de feedback: waar het in de briefing terechtkwam. Een punt
+ * zonder plek wordt een open vraag, zodat niets stilletjes wegvalt.
+ */
+const Dekking = z.array(z.object({ punt: z.string(), verwerktIn: z.string() }))
+
+/** Wat de AI teruggeeft: de briefing, de interne lijsten en de dekking. */
+const AiUitkomst = Uitkomst.extend({ dekking: Dekking })
+
+/**
  * Een al uitgewerkte briefing om in te lezen, bijvoorbeeld gemaakt in een
  * gesprek met Claude. Dezelfde vorm als wat de AI teruggeeft, plus de
  * aannames van de hypothese: die bedenkt de AI hier nooit zelf, maar bij een
@@ -135,7 +144,7 @@ const Aannames = z
     opmerkingen: z.string(),
   })
   .partial()
-export const BriefingImport = Uitkomst.extend({ aannames: Aannames.optional() })
+export const BriefingImport = Uitkomst.extend({ aannames: Aannames.optional(), dekking: Dekking.optional() })
 export type BriefingImport = z.infer<typeof BriefingImport>
 
 /** Zoveel AI-verwerkingen per 24 uur, voor het hele portaal. Een rem op de kosten, naast de limiet in de Claude Console. */
@@ -236,9 +245,15 @@ Regels voor de briefing zelf:
 - Feiten van de klant gaan voor: prijzen, tijden, menu's, aantallen, links, wat wel en niet wordt aangeboden. Neem ze precies over, met de spelling van de klant.
 - Ideeën van de klant over de marketing zelf (kanalen, aantal posts, timing van advertenties) zijn input, geen opdracht. Het vak ligt bij ons. Neem een idee op als het klopt; kan het niet meer (de datum is voorbij) of botst het met het advies in de briefing, kies dan wat verstandig is en zet het verschil in openVragen.
 - Verzin niets. Geen cijfers, prijzen, data, namen of beloftes die niet in de briefing of de feedback staan. Is iets onduidelijk, laat het veld dan zoals het was en zet de vraag in openVragen.
-- Velden waar de feedback niets over zegt, neem je letterlijk over.
+- Velden waar de feedback niets over zegt, neem je letterlijk over, behalve waar een wijziging doorwerkt (zie hieronder).
 - Kort, concreet, Nederlands. Geen marketingtaal. Houd de schrijfstijl van de bestaande briefing aan.
 - De samenvatting is één of twee zinnen. Pas hem aan als de kern van de campagne verandert.
+
+Doorwerken, want hier gaat het het vaakst mis:
+- Maak eerst voor jezelf een lijst van elk afzonderlijk punt in de feedback: elke prijs, elk aantal, elke datum, elke voorwaarde, elke wens. Geen punt mag ontbreken.
+- Een wijziging werkt overal door. Verandert een prijs, aantal, datum of het aanbod, dan pas je elk veld aan waarin het voorkomt: samenvatting, doel, KPI's en de opmerkingen erbij, de budgettoelichting, aanbod en kernboodschap, deliverables, tijdlijn en risico's. Laat nergens een oud bedrag, oud aantal of oud totaal staan; reken totalen opnieuw uit.
+- Een voorwaarde of volgorde van de klant (iets gaat pas in de verkoop als iets anders vol is, één moment heeft voorrang) bepaalt de opzet van de campagne. Verwerk hem in het doel en de KPI's (wat eerst, wat pas later), de deliverables (wat nu live gaat en wat klaarligt tot het moment er is), de tijdlijn (wie geeft wanneer het signaal) en de budgetverdeling.
+- Zegt de klant waarop gestuurd wordt (een arrangement, een pakket, een duurdere variant), reken de KPI-prijs en de omzet dan met die prijs, zet hem voorop in het aanbod en de deliverables, en noem de andere keuzes met hun prijs in de opmerkingen bij de KPI's.
 
 Vorm:
 - Data als JJJJ-MM-DD, of "" als er geen is. Vandaag is ${formatDateInput(vandaag)}.
@@ -249,15 +264,21 @@ Vorm:
 
 De twee interne lijsten (die komen niet in de briefing, alleen als notitie in het portaal):
 - wijzigingen: wat er in de briefing veranderde, één korte regel per wijziging, hooguit vijftien.
-- openVragen: wat de marketingmanager nog moet navragen of beslissen. Bijvoorbeeld tegenstrijdigheden, ontbrekende gegevens, ideeën van de klant die we anders doen, of data die al voorbij zijn. Leeg als er niets open staat.`
+- openVragen: wat de marketingmanager nog moet navragen of beslissen. Bijvoorbeeld tegenstrijdigheden, ontbrekende gegevens, ideeën van de klant die we anders doen, of data die al voorbij zijn. Leeg als er niets open staat.
+
+En de controle:
+- dekking: elk afzonderlijk punt uit de feedback, kort, met in "verwerktIn" de velden waar het nu in de briefing staat (bijvoorbeeld "aanbod.wat, kpis, deliverables Ad 6, tijdlijn"). Bewust niet verwerkt? Laat "verwerktIn" leeg en zet de reden in openVragen.`
 }
 
 /** Woorden die in een schone briefing niet thuishoren. Een vangnet, niet de regel zelf. */
 const VERSIETAAL =
   /\((nieuw|gewijzigd|aangepast|update)\)|\bop verzoek van\b|\bzoals (de klant|jullie|u) (aangaf|aangeeft|vroeg|wil)|\bin plaats van (eerder|het eerdere)\b|\bwas eerder\b|\bvoorheen\b|\bversie \d/i
 
-export function vindVersietaal(u: Uitkomst): string[] {
-  const teksten: [string, string][] = [
+type BriefingVorm = Omit<Uitkomst, 'wijzigingen' | 'openVragen'>
+
+/** Alle lopende tekst van een briefing, per veld. */
+function tekstenVan(u: BriefingVorm): [string, string][] {
+  return [
     ['samenvatting', u.samenvatting],
     ...Object.entries(u.doel).map(([k, w]) => [`doel.${k}`, String(w)] as [string, string]),
     ...Object.entries(u.aanbod).map(([k, w]) => [`aanbod.${k}`, w] as [string, string]),
@@ -268,7 +289,78 @@ export function vindVersietaal(u: Uitkomst): string[] {
     ...u.deliverables.map((k, i) => [`deliverable ${k.naam || i + 1}`, `${k.naam} ${k.inhoud}`] as [string, string]),
     ...u.tijdlijn.map((t, i) => [`tijdlijn ${i + 1}`, t.omschrijving] as [string, string]),
   ]
-  return teksten.filter(([, w]) => VERSIETAAL.test(w)).map(([veld]) => veld)
+}
+
+export function vindVersietaal(u: Uitkomst): string[] {
+  return tekstenVan(u)
+    .filter(([, w]) => VERSIETAAL.test(w))
+    .map(([veld]) => veld)
+}
+
+const VELDNAAM: Record<string, string> = {
+  samenvatting: 'de samenvatting',
+  'doel.doelInEenZin': 'het doel in één zin',
+  'doel.budgetToelichting': 'de budgettoelichting',
+  'doel.kpiOpmerkingen': 'de opmerkingen bij de KPI’s',
+  'aanbod.wat': 'wat we verkopen',
+  'aanbod.boodschap': 'de kernboodschap',
+  'aanbod.waaromNu': 'waarom nu',
+  'planning.toelichting': 'de opmerkingen bij de planning',
+  'achtergrond.risicos': 'de risico’s',
+}
+
+/** Bedragen in een tekst, in centen: "€ 21.200" en "€ 82,50". */
+export function bedragenIn(tekst: string): number[] {
+  const uit: number[] = []
+  for (const m of tekst.matchAll(/€\s?(\d{1,3}(?:\.\d{3})+|\d+)(?:,(\d{1,2}|-))?/g)) {
+    const heel = Number(m[1]!.replace(/\./g, ''))
+    const cent = m[2] && m[2] !== '-' ? Number(m[2].padEnd(2, '0')) : 0
+    uit.push(heel * 100 + cent)
+  }
+  return uit
+}
+
+const centen = (prijs: string) => {
+  const n = parseAmountToCents(prijs)
+  return n === null ? null : n
+}
+
+/**
+ * Het vangnet voor wat in een briefing het vaakst blijft staan: een oud
+ * bedrag. Zijn de prijzen of aantallen in de KPI's veranderd, dan is elk
+ * bedrag dat al in de oude briefing stond, niet in de feedback staat en niet
+ * uit de nieuwe KPI's volgt, verdacht. Geen oordeel, wel een vraag.
+ */
+export function vindOudeBedragen(oud: BriefingVorm, nieuw: BriefingVorm, feedback: string | null): string[] {
+  const kpiSleutel = (b: BriefingVorm) => JSON.stringify(b.kpis.map((k) => [k.label.trim(), k.aantal, centen(k.prijs)]))
+  if (kpiSleutel(oud) === kpiSleutel(nieuw)) return []
+
+  const oudeBedragen = new Set(tekstenVan(oud).flatMap(([, w]) => bedragenIn(w)))
+  for (const k of oud.kpis) {
+    const p = centen(k.prijs)
+    if (p !== null) oudeBedragen.add(p)
+  }
+  const toegestaan = new Set(feedback ? bedragenIn(feedback) : [])
+  let totaal = 0
+  for (const k of nieuw.kpis) {
+    const p = centen(k.prijs)
+    if (p === null) continue
+    toegestaan.add(p)
+    toegestaan.add(p * k.aantal)
+    totaal += p * k.aantal
+  }
+  toegestaan.add(totaal)
+
+  const verdacht: string[] = []
+  for (const [veld, tekst] of tekstenVan(nieuw)) {
+    for (const b of new Set(bedragenIn(tekst))) {
+      if (oudeBedragen.has(b) && !toegestaan.has(b)) {
+        const euro = `€ ${(b / 100).toLocaleString('nl-NL', { minimumFractionDigits: b % 100 ? 2 : 0, maximumFractionDigits: 2 })}`
+        verdacht.push(`${euro} in ${VELDNAAM[veld] ?? veld}`)
+      }
+    }
+  }
+  return verdacht
 }
 
 /* ------------------------------ Het model --------------------------------- */
@@ -295,7 +387,7 @@ export const claude: Model = async ({ systeem, inhoud }) => {
       betas: ['server-side-fallback-2026-07-01'],
       fallbacks: 'default',
       thinking: { type: 'adaptive' },
-      output_config: { effort: 'high', format: betaZodOutputFormat(Uitkomst) },
+      output_config: { effort: 'high', format: betaZodOutputFormat(AiUitkomst) },
       system: systeem,
       messages: [{ role: 'user', content: inhoud }],
     })
@@ -509,10 +601,18 @@ export async function voerVerwerkingUit(id: string, model: Model = claude, vanda
     const gelezen = BriefingImport.safeParse(ruw)
     if (!gelezen.success) throw new VerwerkError('Het antwoord van de AI had niet de vorm van een briefing. Probeer het opnieuw.')
 
+    const oud = briefingAlsInvoer(v)
     const extraVragen = await pasToe(v, gelezen.data, team)
     const versietaal = vindVersietaal(gelezen.data)
     if (versietaal.length > 0) {
       extraVragen.push(`Lees ${versietaal.join(', ')} na: daar lijkt nog naar een eerdere versie verwezen te worden.`)
+    }
+    const oudeBedragen = vindOudeBedragen(oud, gelezen.data, opgepakt.invoer)
+    if (oudeBedragen.length > 0) {
+      extraVragen.push(`De prijzen of aantallen veranderden, maar deze bedragen stonden er al en staan er nog. Kloppen ze nog? ${oudeBedragen.join('; ')}.`)
+    }
+    for (const d of gelezen.data.dekking ?? []) {
+      if (d.punt.trim() && !d.verwerktIn.trim()) extraVragen.push(`Niet in de briefing verwerkt: ${d.punt.trim()}`)
     }
 
     const [klaar] = await db
