@@ -13,6 +13,7 @@ Ontwerp de nieuwe website van James Robinson, een performance-marketingbureau in
 - **Wat je oplevert:** een hifi-ontwerp, desktop én mobiel, als werkende HTML/CSS (klikbaar prototype), te beginnen met de homepage. Daarna de prijzenpagina, de check "Past het bij ons" en een dienstpagina (Google Ads) als sjabloon voor alle diensten.
 - **Het niveau:** het moet de meest toonaangevende bureauwebsite van Nederland worden. Niet de standaard bureausite. De helderheid en informatiewaarde van **apple.com, stripe.com en mollie.nl**, met de afwerking en het lef van **deptagency.com**. Maar het blijft een echte marketingwebsite die aanvragen oplevert, geen kunstproject.
 - **Het gevoel:** een arena. Een topsportbeleving en een fanbase zoals bij een voetbalclub (zie hoofdstuk 8a).
+- **De vorm:** een verhaal dat je scrollt, zoals een productpagina van apple.com. Eén gedachte per scherm, enorme typografie, veel zwart en lucht, weinig tekst. Emotie eerst, uitleg pas daarna (zie hoofdstuk 8b).
 - **Voor wie:** ondernemers en marketingverantwoordelijken in Zuid-Limburg. De site moet 100% vanuit hun belevingswereld geschreven en ontworpen zijn, niet vanuit onze interne werkwijze.
 - **Wat de site moet doen:**
   1. aanvragen opleveren, via de check "Past het bij ons";
@@ -30,7 +31,8 @@ Een eerste ontwerp werd afgekeurd. Dit waren de redenen:
 1. **Het zag eruit als een wireframe.** Overal grijze vakken met "Foto" erin en oranje labels "[in te vullen]". Een hifi-ontwerp moet er af uitzien. Los ontbrekend beeld op met typografie, met echte UI-weergaven (het portaal, advertenties op telefoons, data-visualisaties) en met vormgegeven merkelementen. Gebruik alleen een fotovlak waar het echt een foto moet zijn, en maak dat vlak dan mooi: een gestileerde, donkere duotoon met een subtiele korrel. Geen grijs vlak met een icoontje.
 2. **De copy was verkooptaal.** Er stonden secties in als "Herken je dit?" met pijnpunten van de klant en retorische vragen. Dat is precies wat ons merk niet doet (zie hoofdstuk 8).
 3. **Het was generiek.** Een standaard SaaS-sjabloon met kaartjes in rijen van drie. Het moet een eigen beeldtaal hebben die alleen bij James Robinson past.
-4. **Het was niet beter dan ons eigen eerdere concept.** Dat concept had al een donkere hero met grote typografie, een gloeiende "toren" van lagen en telefoons met advertenties. De nieuwe site moet daar ruim boven uitkomen.
+4. **Een tweede poging was te technisch.** Dashboards, tabs, schuifregelaars, tabellen en een tickend scorebord, allemaal op de homepage. Veel informatie, geen verhaal en geen emotie. De homepage vertelt. De rekentools en de details staan op de prijzenpagina en in de check.
+5. **Het was niet beter dan ons eigen eerdere concept.** Dat concept had al een donkere hero met grote typografie, een gloeiende "toren" van lagen en telefoons met advertenties. De nieuwe site moet daar ruim boven uitkomen.
 
 ---
 
@@ -559,6 +561,43 @@ De regels van hoofdstuk 8 blijven staan, met uitzondering van de sportregel:
 - niets verzinnen.
 
 Bij elke sportterm staat het gewone woord erbij, zodat niemand hoeft te raden wat er bedoeld wordt.
+
+---
+
+## 8b. Verhaal en emotie: het Apple-gevoel (leidend voor de homepage)
+
+De homepage is geen overzicht van alles wat we doen. Het is een verhaal in hoofdstukken, dat de bezoeker zelf afspeelt door te scrollen.
+
+### Principes
+- **Eén gedachte per scherm.** Eén zin, groot. Hooguit één of twee zinnen eronder.
+- **Typografie als beeld:** koppen van 80 tot 128 px op desktop, strak gespatieerd (letter-spacing rond -0,04em). Zwarte vlakken wisselen af met lichte (#F5F5F7 en wit).
+- **Beweging vertelt het verhaal.** Animaties hangen aan het scrollen, niet aan een timer. Er tikt, knippert of schuift niets vanzelf behalve kleine details, zoals flitslichten op een volle tribune.
+- **Emotie eerst, uitleg later.** De homepage laat voelen. De prijzenpagina en de check rekenen.
+- **Geen tabs, schuifregelaars of tabellen op de homepage.** Die horen op de prijzenpagina.
+
+### De verhaallijn van de homepage
+1. **Het stadion (scroll-scène).** Een stadion bij avond, getekend uit duizenden stoeltjes. Tekst in vijf stappen:
+   - "Jij bezit de arena."
+   - "Het veld ligt er strak bij. Je product klopt. Je team staat."
+   - "Nu de tribunes nog." (de lichtmasten gaan aan)
+   - "Wij spelen de wedstrijd." (de tribunes lopen vol, in blauw)
+   - "On top of your game." met de knop naar de voorbespreking
+
+   De H1 voor SEO, "Marketingbureau in Zuid-Limburg", staat klein boven de eerste zin.
+2. **Applaus is geen doelpunt.** Eén grote alinea die woord voor woord oplicht tijdens het scrollen. Bron eronder.
+3. **De voorzet (scroll-scène).** Een bal beschrijft een boog over het veld, langs advertentie, landingspagina en aanvraag. "Wij leveren de voorzet." gaat over in "Jij kopt hem in."
+4. **7×.** Eén groot getal met de bron (Oldroyd, HBR): wie binnen een uur terugbelt, krijgt bijna zeven keer zo vaak een echt gesprek.
+5. **Het scorebord.** "Je ziet wat wij zien." Een laptop die tijdens het scrollen openklapt, met het portaal als voorbeeldweergave. Daaronder drie korte feiten.
+6. **De selectie.** "Een selectie. Geen bureau." Grote spelerskaarten in een horizontale rij, met een open plek.
+7. **De opstellingen.** "Kies je opstelling." Vier kaarten naast elkaar, zoals de vergelijking op apple.com: een formatie, de naam, de prijs, drie regels en een link.
+8. **Aftrap op dag 19.** Drie grote getallen op een lijn: 0 (je tekent), 3 (alle toegangen binnen), 19 (live).
+9. **Van de tribune.** "5,0", vijf sterren en elf reviews op Google.
+10. **De club.** "Meer dan een bureau. Een club." Een bento-raster met:
+    - de playground als wedstrijdposter ("James Robinson vs Fagro");
+    - het clubblad met inschrijfveld;
+    - thuiswedstrijden;
+    - JRNXT.
+11. **Slot.** "Klaar voor de aftrap." met de knop naar de voorbespreking.
 
 ---
 
