@@ -376,6 +376,18 @@ export function describeDbError(error: unknown): string | null {
       return 'Geef de regel in de tijdlijn een omschrijving.'
     case 'channel_live_period':
       return 'De einddatum van een deliverable ligt vóór de startdatum. Controleer allebei de datums.'
+    case 'candidate_note_not_empty':
+      return 'Schrijf eerst iets op.'
+    case 'personal_document_size_reasonable':
+      return 'Een document mag hooguit 5 MB zijn. Maak een kleinere foto of scan.'
+    case 'personal_document_type_allowed':
+      return 'Alleen een pdf, jpg of png.'
+    case 'personal_record_belongs_to_someone':
+      return 'Persoonsgegevens horen bij een kandidaat of een collega.'
+    case 'personal_records_candidate_uniq':
+      return 'Deze kandidaat heeft al persoonsgegevens; vul die aan in plaats van nieuwe te maken.'
+    case 'personal_records_user_uniq':
+      return 'Deze collega heeft al persoonsgegevens; vul die aan in plaats van nieuwe te maken.'
     case 'client_forms_uitkomst_geldig':
       return 'De uitkomst van een vragenlijst is groen, oranje, later of rood.'
     case 'verwerking_bron_geldig':

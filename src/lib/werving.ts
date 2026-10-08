@@ -1,7 +1,7 @@
 import { and, asc, count, desc, eq, inArray, isNull, lt, lte, or, sql } from 'drizzle-orm'
 import { db } from '@/db'
-import { candidates, vacancies, users } from '@/db/schema'
-import type { Candidate, Vacancy } from '@/db/schema'
+import { candidates, vacancies, users, generatedContracts, candidateNotes, candidateDocuments } from '@/db/schema'
+import type { Candidate, Vacancy, CandidateNote } from '@/db/schema'
 import { volledigeNaam } from './namen'
 
 /* -------------------------------------------------------------------------
@@ -53,7 +53,8 @@ export const KANDIDAAT_STATUS_LABELS = {
   nieuw: 'Nieuw',
   in_gesprek: 'In gesprek',
   tweede_gesprek: 'Tweede gesprek',
-  aanbod: 'Aanbod',
+  aanbod: 'Pro-formavoorstel',
+  contract: 'Contract ter ondertekening',
   aangenomen: 'Aangenomen',
   afgewezen: 'Afgewezen',
   afgehaakt: 'Afgehaakt',
@@ -76,7 +77,11 @@ export const LOPENDE_STATUSSEN = [
   'in_gesprek',
   'tweede_gesprek',
   'aanbod',
+  'contract',
 ] as const
+
+/** Vanaf deze fasen zijn de persoonsgegevens voor het contract aan de orde. */
+export const GEGEVENS_STATUSSEN = ['contract', 'aangenomen'] as const
 
 /** De statussen waarbij de procedure voorbij is. */
 export const AFGESLOTEN_STATUSSEN = ['aangenomen', 'afgewezen', 'afgehaakt'] as const
@@ -241,9 +246,9 @@ export async function listVacatures(
   const tellingen = await db
     .select({
       vacancyId: candidates.vacancyId,
-      lopend: sql<string>`COUNT(*) FILTER (WHERE ${candidates.status} IN ('nieuw', 'in_gesprek', 'tweede_gesprek', 'aanbod'))`,
+      lopend: sql<string>`COUNT(*) FILTER (WHERE ${candidates.status} IN ('nieuw', 'in_gesprek', 'tweede_gesprek', 'aanbod', 'contract'))`,
       aangenomen: sql<string>`COUNT(*) FILTER (WHERE ${candidates.status} = 'aangenomen')`,
-      wachten: sql<string>`COUNT(*) FILTER (WHERE ${candidates.respondedOn} IS NULL AND ${candidates.status} IN ('nieuw', 'in_gesprek', 'tweede_gesprek', 'aanbod') AND ${candidates.appliedOn} < ${grens}::timestamptz)`,
+      wachten: sql<string>`COUNT(*) FILTER (WHERE ${candidates.respondedOn} IS NULL AND ${candidates.status} IN ('nieuw', 'in_gesprek', 'tweede_gesprek', 'aanbod', 'contract') AND ${candidates.appliedOn} < ${grens}::timestamptz)`,
     })
     .from(candidates)
     .groupBy(candidates.vacancyId)
@@ -430,6 +435,8 @@ export type NieuweKandidaat = {
   notes?: string | null
   nextAction?: string | null
   nextActionOn?: Date | null
+  /** Wie hem toevoegde, voor de eerste notitie. */
+  doorUserId?: string | null
 }
 
 export async function maakKandidaat(input: NieuweKandidaat): Promise<Candidate> {
@@ -463,14 +470,132 @@ export async function maakKandidaat(input: NieuweKandidaat): Promise<Candidate> 
       school: input.school?.trim() || null,
       study: input.study?.trim() || null,
       appliedOn: input.appliedOn ?? new Date(),
-      notes: input.notes?.trim() || null,
       nextAction: input.nextAction?.trim() || null,
       nextActionOn: input.nextActionOn ?? null,
     })
     .returning()
 
   if (!kandidaat) throw new WervingError('De kandidaat kon niet worden opgeslagen.')
+  if (input.notes?.trim()) {
+    await db.insert(candidateNotes).values({ candidateId: kandidaat.id, kind: 'notitie', body: input.notes.trim(), createdByUserId: input.doorUserId ?? null })
+  }
   return kandidaat
+}
+
+/* --- Een kandidaat bijwerken ---------------------------------------------- */
+
+export type KandidaatGegevens = {
+  firstName: string | null
+  infix: string | null
+  lastName: string | null
+  officialFirstNames: string | null
+  email: string | null
+  phone: string | null
+  linkedinUrl: string | null
+  vacancyId: string | null
+  source: keyof typeof BRON_LABELS
+  referredByUserId: string | null
+  school: string | null
+  study: string | null
+  appliedOn: Date
+}
+
+/** Alles van een kandidaat wijzigen, behalve status en bewaartermijn: die hebben hun eigen regels. */
+export async function bewerkKandidaat(id: string, g: KandidaatGegevens): Promise<void> {
+  const t = (s: string | null) => s?.trim() || null
+  const naam = volledigeNaam({ firstName: t(g.firstName), infix: t(g.infix), lastName: t(g.lastName) })
+  if (!naam || naam.trim() === '') throw new WervingError('Geef de kandidaat een naam.')
+  const [huidig] = await db.select({ appliedOn: candidates.appliedOn, respondedOn: candidates.respondedOn }).from(candidates).where(eq(candidates.id, id)).limit(1)
+  if (!huidig) throw new WervingError('Deze kandidaat bestaat niet meer.')
+  if (huidig.respondedOn && g.appliedOn > huidig.respondedOn) {
+    throw new WervingError('De sollicitatiedatum ligt na de datum waarop we reageerden.')
+  }
+  await db
+    .update(candidates)
+    .set({
+      name: naam.trim(),
+      firstName: t(g.firstName),
+      infix: t(g.infix),
+      lastName: t(g.lastName),
+      officialFirstNames: t(g.officialFirstNames),
+      email: t(g.email),
+      phone: t(g.phone),
+      linkedinUrl: t(g.linkedinUrl),
+      vacancyId: g.vacancyId || null,
+      source: g.source,
+      referredByUserId: g.referredByUserId || null,
+      school: t(g.school),
+      study: t(g.study),
+      appliedOn: g.appliedOn,
+      updatedAt: new Date(),
+    })
+    .where(eq(candidates.id, id))
+}
+
+/* --- De tijdlijn ---------------------------------------------------------- */
+
+export type Notitie = CandidateNote & { door: string | null }
+
+export async function listNotities(candidateId: string): Promise<Notitie[]> {
+  const rijen = await db
+    .select({ n: candidateNotes, door: users.name })
+    .from(candidateNotes)
+    .leftJoin(users, eq(users.id, candidateNotes.createdByUserId))
+    .where(eq(candidateNotes.candidateId, candidateId))
+    .orderBy(desc(candidateNotes.createdAt))
+  return rijen.map((r) => ({ ...r.n, door: r.door }))
+}
+
+export async function voegNotitieToe(candidateId: string, body: string, kind: 'notitie' | 'gesprek', userId: string | null): Promise<void> {
+  const tekst = body.trim()
+  if (tekst === '') throw new WervingError('Schrijf eerst iets op.')
+  await db.insert(candidateNotes).values({ candidateId, kind, body: tekst.slice(0, 10_000), createdByUserId: userId })
+  await db.update(candidates).set({ updatedAt: new Date() }).where(eq(candidates.id, candidateId))
+}
+
+export async function wisNotitie(id: string): Promise<void> {
+  await db.delete(candidateNotes).where(and(eq(candidateNotes.id, id), sql`${candidateNotes.kind} <> 'status'`))
+}
+
+/* --- Documenten (cv, motivatie) ------------------------------------------- */
+
+export const CV_TYPES = [
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+] as const
+
+export async function voegKandidaatDocumentToe(
+  candidateId: string,
+  d: { kind: 'cv' | 'motivatie' | 'overig'; contentType: string; filename: string | null; data: Buffer },
+): Promise<void> {
+  if (!(CV_TYPES as readonly string[]).includes(d.contentType)) throw new WervingError('Alleen een pdf of Word-bestand.')
+  if (d.data.length === 0) throw new WervingError('Het bestand is leeg.')
+  if (d.data.length > 4 * 1024 * 1024) throw new WervingError('Het bestand is groter dan 4 MB.')
+  await db.insert(candidateDocuments).values({
+    candidateId,
+    kind: d.kind,
+    contentType: d.contentType,
+    bytes: d.data.length,
+    data: d.data.toString('base64'),
+    filename: d.filename?.slice(0, 120) ?? null,
+  })
+}
+
+export async function wisKandidaatDocument(id: string): Promise<void> {
+  await db.delete(candidateDocuments).where(eq(candidateDocuments.id, id))
+}
+
+/** Eén kandidaat met wat er bij hoort, voor zijn eigen pagina. */
+export async function getKandidaat(id: string, nu: Date = new Date()): Promise<KandidaatKaart | null> {
+  const [rij] = await db
+    .select({ kandidaat: candidates, vacatureTitel: vacancies.title, vacatureId: vacancies.id, doorverwezenDoor: users.name })
+    .from(candidates)
+    .leftJoin(vacancies, eq(candidates.vacancyId, vacancies.id))
+    .leftJoin(users, eq(candidates.referredByUserId, users.id))
+    .where(eq(candidates.id, id))
+    .limit(1)
+  return rij ? maakKaart(rij, nu) : null
 }
 
 function controleerVervolgstap(actie: string | null, opDatum: Date | null): void {
@@ -542,6 +667,7 @@ export async function zetKandidaatStatus(
   status: KandidaatStatus,
   reden: string | null = null,
   nu: Date = new Date(),
+  doorUserId: string | null = null,
 ): Promise<void> {
   const [huidig] = await db
     .select({
@@ -584,6 +710,17 @@ export async function zetKandidaatStatus(
       updatedAt: nu,
     })
     .where(eq(candidates.id, kandidaatId))
+
+  // Elke statuswijziging op de tijdlijn: zo zie je later hoe de procedure liep.
+  if (huidig.status !== status) {
+    await db.insert(candidateNotes).values({
+      candidateId: kandidaatId,
+      kind: 'status',
+      body: `${KANDIDAAT_STATUS_LABELS[huidig.status]} → ${KANDIDAAT_STATUS_LABELS[status]}${schoneReden ? `: ${schoneReden}` : ''}`,
+      createdByUserId: doorUserId,
+      createdAt: nu,
+    })
+  }
 }
 
 /** Aangenomen, en gekoppeld aan de medewerker die hij geworden is. */
@@ -630,9 +767,24 @@ export async function zetBewaartoestemming(
     .where(eq(candidates.id, kandidaatId))
 }
 
+/**
+ * Kandidaten wissen, met wat er aan hen hangt. Een contract dat nog niet aan
+ * een collega hangt (een concept, een pro forma), gaat mee: dat zijn
+ * persoonsgegevens van iemand die niet bij ons werkt. Een contract van een
+ * collega blijft staan; de verwijzing naar de kandidaat valt weg. De enige
+ * plek waar kandidaten verdwijnen, zodat geen pad dit vergeet.
+ */
+export async function wisKandidaten(ids: string[]): Promise<void> {
+  if (ids.length === 0) return
+  await db.transaction(async (tx) => {
+    await tx.delete(generatedContracts).where(and(inArray(generatedContracts.candidateId, ids), isNull(generatedContracts.userId)))
+    await tx.delete(candidates).where(inArray(candidates.id, ids))
+  })
+}
+
 /** Een kandidaat nu meteen wissen, op verzoek of omdat het klaar is. */
 export async function wisKandidaat(kandidaatId: string): Promise<void> {
-  await db.delete(candidates).where(eq(candidates.id, kandidaatId))
+  await wisKandidaten([kandidaatId])
 }
 
 /**
@@ -654,12 +806,7 @@ export async function wisVerlopenKandidaten(
 
   if (verlopen.length === 0) return { gewist: 0, namen: [] }
 
-  await db.delete(candidates).where(
-    inArray(
-      candidates.id,
-      verlopen.map((v) => v.id),
-    ),
-  )
+  await wisKandidaten(verlopen.map((v) => v.id))
 
   return { gewist: verlopen.length, namen: verlopen.map((v) => v.name) }
 }
@@ -690,10 +837,10 @@ export async function getCijfers(nu: Date = new Date()): Promise<WervingCijfers>
       (SELECT COUNT(*) FROM vacancies WHERE status = 'open') AS open_vacatures,
       (SELECT COALESCE(SUM(positions), 0) FROM vacancies WHERE status = 'open') AS open_plekken,
       (SELECT COUNT(*) FROM candidates
-        WHERE status IN ('nieuw', 'in_gesprek', 'tweede_gesprek', 'aanbod')) AS lopend,
+        WHERE status IN ('nieuw', 'in_gesprek', 'tweede_gesprek', 'aanbod', 'contract')) AS lopend,
       (SELECT COUNT(*) FROM candidates
         WHERE responded_on IS NULL
-          AND status IN ('nieuw', 'in_gesprek', 'tweede_gesprek', 'aanbod')
+          AND status IN ('nieuw', 'in_gesprek', 'tweede_gesprek', 'aanbod', 'contract')
           AND applied_on < ${grens}::timestamptz) AS wachten,
       (SELECT AVG(EXTRACT(EPOCH FROM (responded_on - applied_on)) / 86400)
         FROM candidates WHERE responded_on IS NOT NULL) AS reactiedagen

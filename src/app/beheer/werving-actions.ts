@@ -1,7 +1,8 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { requireStaff } from '@/lib/auth'
+import { redirect } from 'next/navigation'
+import { requireStaff, alsBeheerder } from '@/lib/auth'
 import { describeDbError } from '@/lib/db-errors'
 import { vergeet } from '@/lib/cache'
 import {
@@ -13,9 +14,27 @@ import {
   zetKandidaatStatus,
   zetBewaartoestemming,
   wisKandidaat,
+  bewerkKandidaat,
+  voegNotitieToe,
+  wisNotitie,
+  voegKandidaatDocumentToe,
+  wisKandidaatDocument,
+  BRON_LABELS,
   WervingError,
   type KandidaatStatus,
 } from '@/lib/werving'
+import {
+  zorgVoorGegevens,
+  slaGegevensOp,
+  voegDocumentToe,
+  wisDocument,
+  maakGegevenslink,
+  markeerDoorgegeven,
+  GegevensError,
+  DOCUMENT_LABELS,
+  type DocumentSoort,
+} from '@/lib/persoonsgegevens'
+import { SleutelError } from '@/lib/versleuteling'
 import type { ActionResult } from './actions'
 
 /* Acties voor werving. Elke actie begint met requireStaff(): een server
@@ -31,7 +50,9 @@ async function veilig(fn: () => Promise<void>, ook: string[] = []): Promise<Acti
     for (const pad of ook) revalidatePath(pad)
     return { ok: true }
   } catch (error) {
-    if (error instanceof WervingError) return { ok: false, error: error.message }
+    if (error instanceof WervingError || error instanceof GegevensError || error instanceof SleutelError) {
+      return { ok: false, error: error.message }
+    }
     const melding = describeDbError(error)
     if (melding) return { ok: false, error: melding }
     if (error instanceof Error && error.message === 'NEXT_REDIRECT') throw error
@@ -121,7 +142,7 @@ export async function vacatureStatus(formData: FormData): Promise<ActionResult> 
 /* --- Kandidaten ----------------------------------------------------------- */
 
 export async function nieuweKandidaat(formData: FormData): Promise<ActionResult> {
-  await requireStaff()
+  const user = await requireStaff()
 
   const vacatureId = tekst(formData, 'vacatureId') || null
   const bron = tekst(formData, 'bron')
@@ -156,6 +177,7 @@ export async function nieuweKandidaat(formData: FormData): Promise<ActionResult>
         notes: tekst(formData, 'notities') || null,
         nextAction: tekst(formData, 'actie') || null,
         nextActionOn: datum(formData, 'actiedatum'),
+        doorUserId: user.id,
       })
     },
     vacatureId ? [`/beheer/werving/${vacatureId}`] : [],
@@ -184,7 +206,7 @@ export async function kandidaatVervolgstap(formData: FormData): Promise<ActionRe
 }
 
 export async function kandidaatStatus(formData: FormData): Promise<ActionResult> {
-  await requireStaff()
+  const user = await requireStaff()
   const id = tekst(formData, 'kandidaatId')
   const status = tekst(formData, 'status')
   if (!id) return { ok: false, error: 'Onbekende kandidaat.' }
@@ -194,6 +216,7 @@ export async function kandidaatStatus(formData: FormData): Promise<ActionResult>
     'in_gesprek',
     'tweede_gesprek',
     'aanbod',
+    'contract',
     'aangenomen',
     'afgewezen',
     'afgehaakt',
@@ -204,8 +227,8 @@ export async function kandidaatStatus(formData: FormData): Promise<ActionResult>
 
   const vacatureId = tekst(formData, 'vacatureId')
   return veilig(
-    () => zetKandidaatStatus(id, status as KandidaatStatus, tekst(formData, 'reden') || null),
-    vacatureId ? [`/beheer/werving/${vacatureId}`] : [],
+    () => zetKandidaatStatus(id, status as KandidaatStatus, tekst(formData, 'reden') || null, new Date(), user.id),
+    [`/beheer/werving/kandidaten/${id}`, ...(vacatureId ? [`/beheer/werving/${vacatureId}`] : [])],
   )
 }
 
@@ -227,5 +250,140 @@ export async function kandidaatWissen(formData: FormData): Promise<ActionResult>
   if (!id) return { ok: false, error: 'Onbekende kandidaat.' }
 
   const vacatureId = tekst(formData, 'vacatureId')
-  return veilig(() => wisKandidaat(id), vacatureId ? [`/beheer/werving/${vacatureId}`] : [])
+  const r = await veilig(() => wisKandidaat(id), vacatureId ? [`/beheer/werving/${vacatureId}`] : [])
+  // Vanaf zijn eigen pagina: die bestaat niet meer, dus terug naar de lijst.
+  if (r.ok && tekst(formData, 'terug') === '1') redirect('/beheer/werving/kandidaten')
+  return r
+}
+
+/* --- Het kandidaatprofiel ------------------------------------------------- */
+
+const pad = (id: string) => `/beheer/werving/kandidaten/${id}`
+
+export async function kandidaatBewerken(formData: FormData): Promise<ActionResult> {
+  await requireStaff()
+  const id = tekst(formData, 'kandidaatId')
+  if (!id) return { ok: false, error: 'Onbekende kandidaat.' }
+  const bron = tekst(formData, 'bron')
+  const vacatureId = tekst(formData, 'vacatureId') || null
+  return veilig(
+    () =>
+      bewerkKandidaat(id, {
+        firstName: tekst(formData, 'voornaam') || null,
+        infix: tekst(formData, 'tussenvoegsel') || null,
+        lastName: tekst(formData, 'achternaam') || null,
+        officialFirstNames: tekst(formData, 'officieleVoornamen') || null,
+        email: tekst(formData, 'email') || null,
+        phone: tekst(formData, 'telefoon') || null,
+        linkedinUrl: tekst(formData, 'linkedin') || null,
+        vacancyId: vacatureId,
+        source: bron in BRON_LABELS ? (bron as keyof typeof BRON_LABELS) : 'anders',
+        referredByUserId: tekst(formData, 'doorverwezenDoor') || null,
+        school: tekst(formData, 'school') || null,
+        study: tekst(formData, 'opleiding') || null,
+        appliedOn: datum(formData, 'sollicitatiedatum') ?? new Date(),
+      }),
+    [pad(id), ...(vacatureId ? [`/beheer/werving/${vacatureId}`] : [])],
+  )
+}
+
+export async function kandidaatNotitie(formData: FormData): Promise<ActionResult> {
+  const user = await requireStaff()
+  const id = tekst(formData, 'kandidaatId')
+  if (!id) return { ok: false, error: 'Onbekende kandidaat.' }
+  const soort = tekst(formData, 'soort') === 'gesprek' ? 'gesprek' : 'notitie'
+  return veilig(() => voegNotitieToe(id, tekst(formData, 'tekst'), soort, user.id), [pad(id)])
+}
+
+export async function kandidaatNotitieWissen(formData: FormData): Promise<ActionResult> {
+  await requireStaff()
+  const id = tekst(formData, 'kandidaatId')
+  return veilig(() => wisNotitie(tekst(formData, 'notitieId')), [pad(id)])
+}
+
+/** Een bestand uit het formulier, of null als er niets gekozen is. */
+async function bestandUit(formData: FormData, naam: string): Promise<{ contentType: string; filename: string | null; data: Buffer } | null> {
+  const f = formData.get(naam)
+  if (!(f instanceof File) || f.size === 0) return null
+  return { contentType: f.type, filename: f.name || null, data: Buffer.from(await f.arrayBuffer()) }
+}
+
+export async function kandidaatDocument(formData: FormData): Promise<ActionResult> {
+  await requireStaff()
+  const id = tekst(formData, 'kandidaatId')
+  if (!id) return { ok: false, error: 'Onbekende kandidaat.' }
+  const bestand = await bestandUit(formData, 'bestand')
+  if (!bestand) return { ok: false, error: 'Kies een bestand.' }
+  const soort = tekst(formData, 'soort') === 'motivatie' ? 'motivatie' : tekst(formData, 'soort') === 'overig' ? 'overig' : 'cv'
+  return veilig(() => voegKandidaatDocumentToe(id, { kind: soort, ...bestand }), [pad(id)])
+}
+
+export async function kandidaatDocumentWissen(formData: FormData): Promise<ActionResult> {
+  await requireStaff()
+  const id = tekst(formData, 'kandidaatId')
+  return veilig(() => wisKandidaatDocument(tekst(formData, 'documentId')), [pad(id)])
+}
+
+/* --- Persoonsgegevens: alleen een beheerder ------------------------------- */
+
+const GEEN_BEHEERDER: ActionResult = { ok: false, error: 'Alleen een beheerder kan persoonsgegevens zien en bijwerken.' }
+
+export async function gegevensOpslaan(formData: FormData): Promise<ActionResult> {
+  if (!(await alsBeheerder())) return GEEN_BEHEERDER
+  const id = tekst(formData, 'kandidaatId')
+  if (!id) return { ok: false, error: 'Onbekende kandidaat.' }
+  return veilig(async () => {
+    const r = await zorgVoorGegevens(id)
+    await slaGegevensOp(r.id, {
+      officialFirstNames: tekst(formData, 'officieleVoornamen'),
+      infix: tekst(formData, 'tussenvoegsel'),
+      lastName: tekst(formData, 'achternaam'),
+      birthDate: datum(formData, 'geboortedatum'),
+      birthPlace: tekst(formData, 'geboorteplaats'),
+      addressLine: tekst(formData, 'adres'),
+      postalCode: tekst(formData, 'postcode'),
+      city: tekst(formData, 'woonplaats'),
+      iban: tekst(formData, 'iban'),
+      accountHolder: tekst(formData, 'tenaamstelling'),
+    })
+  }, [pad(id)])
+}
+
+export async function gegevensDocument(formData: FormData): Promise<ActionResult> {
+  const user = await alsBeheerder()
+  if (!user) return GEEN_BEHEERDER
+  const id = tekst(formData, 'kandidaatId')
+  const bestand = await bestandUit(formData, 'bestand')
+  if (!bestand) return { ok: false, error: 'Kies een bestand.' }
+  const soort = tekst(formData, 'soort')
+  const kind: DocumentSoort = soort in DOCUMENT_LABELS ? (soort as DocumentSoort) : 'overig'
+  return veilig(async () => {
+    const r = await zorgVoorGegevens(id)
+    await voegDocumentToe(r.id, { kind, ...bestand }, user.id)
+  }, [pad(id)])
+}
+
+export async function gegevensDocumentWissen(formData: FormData): Promise<ActionResult> {
+  if (!(await alsBeheerder())) return GEEN_BEHEERDER
+  const id = tekst(formData, 'kandidaatId')
+  return veilig(() => wisDocument(tekst(formData, 'documentId')), [pad(id)])
+}
+
+export async function gegevenslink(formData: FormData): Promise<ActionResult> {
+  if (!(await alsBeheerder())) return GEEN_BEHEERDER
+  const id = tekst(formData, 'kandidaatId')
+  return veilig(async () => {
+    const r = await zorgVoorGegevens(id)
+    await maakGegevenslink(r.id, tekst(formData, 'opnieuw') === '1')
+  }, [pad(id)])
+}
+
+export async function gegevensDoorgegeven(formData: FormData): Promise<ActionResult> {
+  const user = await alsBeheerder()
+  if (!user) return GEEN_BEHEERDER
+  const id = tekst(formData, 'kandidaatId')
+  return veilig(async () => {
+    const r = await zorgVoorGegevens(id)
+    await markeerDoorgegeven(r.id, user.id, tekst(formData, 'terug') !== '1')
+  }, [pad(id)])
 }
