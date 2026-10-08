@@ -1,5 +1,5 @@
 {
-  "samenvatting": "Kerst bij Thiessen is op tweede kerstdag (26 december): de kerstbrunch voor 70 gasten en het kerstdiner in de wijnkelder, waar nog 37 plaatsen open zijn. Eerste kerstdag gaat pas open als tweede kerstdag vol is en het rendabel is voor de personeelsplanning. Op kerstavond is er niets. Met twee Meta-ads in twee periodes, een organische post, de nieuwsbrief en een flyer met QR-code in de winkel.",
+  "samenvatting": "Kerst bij Thiessen is op tweede kerstdag (26 december): de kerstbrunch voor 70 gasten en het kerstdiner in de wijnkelder, waar nog 37 plaatsen open zijn. Eerste kerstdag gaat pas open als tweede kerstdag vol is en het rendabel is voor de personeelsplanning. Op kerstavond is er niets. Met Meta-ads in twee periodes plus retargeting, drie organische posts, drie mailings en een flyer met QR-code in de winkel.",
   "doel": {
     "doelInEenZin": "Tweede kerstdag vol: 70 gasten voor de brunch en de 37 open plaatsen voor het diner.",
     "resultaatDefinitie": "Een reservering via de eventpagina op thiessen.nl, geteld in gasten.",
@@ -49,37 +49,100 @@
   "deliverables": [
     {
       "naam": "Ad 1 · Kerstbrunch",
-      "kanaal": "Meta Ads · periode 1 en 2",
-      "inhoud": "De brunch op tweede kerstdag, € 47,50. In periode 2 met nog X plaatsen. Knop naar de eventpagina van de brunch.",
+      "kanaal": "Meta Ads · targeting · periode 1",
+      "inhoud": "Nieuwe gasten in de regio, vooral families en gezelschappen. De brunch op tweede kerstdag, € 47,50. Knop naar de eventpagina van de brunch.",
       "formaat": "Beeld uit Kive, 1:1, 4:5 en 9:16",
       "liveVanaf": "2026-10-15",
-      "liveTot": "2026-12-20",
+      "liveTot": "2026-11-08",
       "status": "maken"
     },
     {
       "naam": "Ad 2 · Kerstdiner",
-      "kanaal": "Meta Ads · periode 1 en 2",
-      "inhoud": "Het diner in de wijnkelder op tweede kerstdag, all-in € 115, met het menu. In periode 2 met nog X plaatsen. Knop naar de eventpagina van het diner.",
+      "kanaal": "Meta Ads · targeting · periode 1",
+      "inhoud": "Nieuwe gasten in de regio. Het diner in de wijnkelder op tweede kerstdag, all-in € 115, met het menu. Knop naar de eventpagina van het diner.",
       "formaat": "Beeld uit Kive, 1:1, 4:5 en 9:16",
+      "liveVanaf": "2026-10-15",
+      "liveTot": "2026-11-08",
+      "status": "maken"
+    },
+    {
+      "naam": "Ad 3 · Vier de kerst bij Thiessen",
+      "kanaal": "Meta Ads · retargeting · hele looptijd",
+      "inhoud": "Websitebezoekers, volgers en nieuwsbriefabonnees die nog niet geboekt hebben. Carrousel met brunch en diner, elk met een eigen knop naar de eventpagina.",
+      "formaat": "Carrousel, 1:1 en 4:5",
       "liveVanaf": "2026-10-15",
       "liveTot": "2026-12-20",
       "status": "maken"
     },
     {
-      "naam": "Post · Vier de kerst bij Thiessen",
-      "kanaal": "Organisch · Instagram en Facebook",
-      "inhoud": "Brunch en diner op tweede kerstdag, met de links naar de eventpagina's.",
+      "naam": "Ad 4 · Kerstbrunch, nog X plaatsen",
+      "kanaal": "Meta Ads · targeting · periode 2",
+      "inhoud": "Als Ad 1, met het aantal plaatsen dat er nog is. Stopt zodra de brunch vol is.",
+      "formaat": "Beeld uit Kive, 1:1, 4:5 en 9:16",
+      "liveVanaf": "2026-11-16",
+      "liveTot": "2026-12-20",
+      "status": "maken"
+    },
+    {
+      "naam": "Ad 5 · Kerstdiner, nog X plaatsen",
+      "kanaal": "Meta Ads · targeting · periode 2",
+      "inhoud": "Als Ad 2, met het aantal plaatsen dat er nog is. Stopt zodra het diner vol is.",
+      "formaat": "Beeld uit Kive, 1:1, 4:5 en 9:16",
+      "liveVanaf": "2026-11-16",
+      "liveTot": "2026-12-20",
+      "status": "maken"
+    },
+    {
+      "naam": "Post 1 · Kerstbrunch",
+      "kanaal": "Organisch · beeld van Ad 1",
+      "inhoud": "De brunch op tweede kerstdag, met de link naar de eventpagina in de bio en het verhaal.",
       "formaat": "4:5 en 9:16 (verhaal)",
-      "liveVanaf": "2026-10-15",
+      "liveVanaf": "2026-10-16",
       "liveTot": "",
       "status": "maken"
     },
     {
-      "naam": "Nieuwsbrief",
+      "naam": "Post 2 · Kerstdiner",
+      "kanaal": "Organisch · beeld van Ad 2",
+      "inhoud": "Het diner in de wijnkelder en het menu.",
+      "formaat": "4:5 en 9:16 (verhaal)",
+      "liveVanaf": "2026-10-23",
+      "liveTot": "",
+      "status": "maken"
+    },
+    {
+      "naam": "Post 3 · Nog X plaatsen",
+      "kanaal": "Organisch · beeld van Ad 4 en 5",
+      "inhoud": "Nog X plaatsen voor de brunch en het diner op tweede kerstdag.",
+      "formaat": "4:5 en 9:16 (verhaal)",
+      "liveVanaf": "2026-11-18",
+      "liveTot": "",
+      "status": "maken"
+    },
+    {
+      "naam": "Mailing 1 · Oktobernieuwsbrief",
       "kanaal": "Mailing · alle abonnees",
       "inhoud": "Een blok Kerst bij Thiessen: brunch en diner, met de links naar de eventpagina's.",
       "formaat": "Blok in de nieuwsbrief",
-      "liveVanaf": "",
+      "liveVanaf": "2026-10-22",
+      "liveTot": "",
+      "status": "maken"
+    },
+    {
+      "naam": "Mailing 2 · Kerst bij Thiessen",
+      "kanaal": "Mailing · alle abonnees",
+      "inhoud": "Een losse mailing over alleen Kerst bij Thiessen: de brunch, het diner all-in met het menu, per moment een knop naar de eventpagina.",
+      "formaat": "Losse mailing",
+      "liveVanaf": "2026-11-10",
+      "liveTot": "",
+      "status": "maken"
+    },
+    {
+      "naam": "Mailing 3 · Novembernieuwsbrief",
+      "kanaal": "Mailing · abonnees die nog niet geboekt hebben",
+      "inhoud": "Nog X plaatsen voor de brunch en het diner.",
+      "formaat": "Blok in de nieuwsbrief",
+      "liveVanaf": "2026-11-18",
       "liveTot": "",
       "status": "maken"
     },
@@ -103,14 +166,20 @@
     {
       "id": "",
       "datum": "2026-10-14",
-      "omschrijving": "Ads, post en flyer klaar, met merkcheck",
+      "omschrijving": "Ad 1, 2 en 3 en de flyer klaar, met merkcheck",
       "wie": "Content"
     },
     {
       "id": "",
       "datum": "2026-10-15",
-      "omschrijving": "Live: periode 1 en de post",
+      "omschrijving": "Live: periode 1 (Ad 1 en 2) en retargeting (Ad 3)",
       "wie": "Campagne"
+    },
+    {
+      "id": "",
+      "datum": "2026-10-16",
+      "omschrijving": "Post 1 online",
+      "wie": "Content"
     },
     {
       "id": "",
@@ -120,15 +189,45 @@
     },
     {
       "id": "",
+      "datum": "2026-10-22",
+      "omschrijving": "Mailing 1 verstuurd: oktobernieuwsbrief",
+      "wie": "Marketingmanager"
+    },
+    {
+      "id": "",
+      "datum": "2026-10-23",
+      "omschrijving": "Post 2 online",
+      "wie": "Content"
+    },
+    {
+      "id": "",
       "datum": "2026-11-08",
-      "omschrijving": "Einde periode 1, tussenstand naar Thiessen",
+      "omschrijving": "Einde periode 1, tussenstand naar Thiessen; retargeting loopt door",
       "wie": "Campagne"
     },
     {
       "id": "",
+      "datum": "2026-11-10",
+      "omschrijving": "Mailing 2 verstuurd: Kerst bij Thiessen",
+      "wie": "Marketingmanager"
+    },
+    {
+      "id": "",
+      "datum": "2026-11-12",
+      "omschrijving": "Ad 4 en 5 klaar, met merkcheck",
+      "wie": "Content"
+    },
+    {
+      "id": "",
       "datum": "2026-11-16",
-      "omschrijving": "Live: periode 2, nog X plaatsen",
+      "omschrijving": "Live: periode 2 (Ad 4 en 5)",
       "wie": "Campagne"
+    },
+    {
+      "id": "",
+      "datum": "2026-11-18",
+      "omschrijving": "Mailing 3 verstuurd: novembernieuwsbrief, en Post 3 online",
+      "wie": "Marketingmanager"
     },
     {
       "id": "",
@@ -142,10 +241,10 @@
     "Doel: brunch 70 gasten, diner de 37 open plaatsen in de wijnkelder",
     "Betalen: brunch direct volledig, diner met een aanbetaling van € 25 p.p.",
     "Juiste reserveringslinks; de ads gaan rechtstreeks naar de eventpagina's, zonder aparte landingspagina",
-    "Ingekort: twee ads in twee periodes, een post, de nieuwsbrief en een flyer"
+    "Ad 6 en Post 4 voor de go van tweede kerstdag vervallen"
   ],
   "openVragen": [
-    "De nieuwsbrief van september is al verstuurd. Gaat het blok mee in de nieuwsbrief van oktober, en op welke datum?",
+    "Verzenddata van de mailings zijn een voorstel: heeft Thiessen vaste dagen voor de nieuwsbrief?",
     "Flyer: formaat en oplage.",
     "Regio Maastricht plus 25 kilometer: akkoord?"
   ],
