@@ -949,22 +949,589 @@ a.v-tegel:hover{transform:scale(1.01)}
   .sb{font-size:8px}
 }
 @media (prefers-reduced-motion:reduce){.v-scroll span{animation:none}}
+
+/* ---------- Home: aanvullingen ---------- */
+.v-more{font-size:19px;color:var(--blue-link)}
+.v-arena~section .v-more,.v-systeem .v-more,.v-analyse .v-more{color:var(--blue-dm)}
+.v-dim2{color:#86868B;margin-top:10px}
+
+/* Branches */
+.v-marquee{background:#000;color:#F5F5F7;padding:24px 0 72px;overflow:hidden;border-top:1px solid rgba(255,255,255,.06)}
+.v-mq{overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)}
+.v-mq-in{display:flex;align-items:center;gap:36px;width:max-content;animation:v-mq 60s linear infinite}
+.v-mq-in a{font:700 clamp(36px,5vw,72px)/1.2 var(--display);letter-spacing:-.04em;color:transparent;-webkit-text-stroke:1.2px rgba(255,255,255,.45);white-space:nowrap;transition:color .3s,-webkit-text-stroke-color .3s}
+.v-mq-in a:hover{color:#fff;-webkit-text-stroke-color:#fff}
+.v-mq-in i{font-style:normal;color:#2997FF;font-size:32px}
+.v-mq:hover .v-mq-in{animation-play-state:paused}
+@keyframes v-mq{to{transform:translateX(-50%)}}
+.v-mq-noot{text-align:center;margin-top:20px;font-size:13px;color:#6E6E73}
+
+/* Keten: honderd stippen */
+.v-keten{background:#fff;color:#1D1D1F;padding:clamp(100px,14vh,160px) 0}
+.v-keten .v-eyebrow{color:var(--blue-action)}
+.v-keten-in{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:clamp(40px,7vw,120px);align-items:center}
+.v-dots{display:grid;grid-template-columns:repeat(10,1fr);gap:clamp(8px,1.2vw,16px);max-width:520px}
+.v-dots i{aspect-ratio:1;border-radius:50%;background:#E5E5E9;transition:background .5s,transform .6s var(--ease)}
+.v-dots.on i.hit{background:#C4F000;transform:scale(1.25);box-shadow:0 0 0 6px rgba(196,240,0,.18)}
+.v-dots.on i:not(.hit){background:#D2D2D7}
+.v-lead--l{margin-left:0;color:#6E6E73}
+
+/* Systeem */
+.v-systeem{background:#000;color:#F5F5F7;padding:clamp(100px,14vh,160px) 0}
+.v-flow{list-style:none;margin:72px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:16px;position:relative;counter-reset:f}
+.v-flow::before{content:"";position:absolute;left:4%;right:4%;top:46px;height:2px;background:rgba(255,255,255,.1)}
+.v-flow::after{content:"";position:absolute;left:4%;top:46px;height:2px;width:calc(var(--flow,0)*92%);background:linear-gradient(90deg,#2997FF,#C4F000);transition:width .2s linear}
+.v-flow li{position:relative;padding:76px 28px 32px;border-radius:28px;background:#111113;border:1px solid rgba(255,255,255,.06)}
+.v-flow-n{position:absolute;top:30px;left:28px;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font:600 13px/1 var(--text);background:#000;border:2px solid #3A3A3C;color:#A1A1A6;z-index:1;transition:border-color .4s,color .4s,background .4s}
+.v-flow li.on .v-flow-n{border-color:#2997FF;color:#fff;background:#0857C3}
+.v-flow li.v-flow-doel.on .v-flow-n{border-color:#C4F000;background:#C4F000;color:#1D1D1F}
+.v-flow small{display:block;font-size:13px;font-weight:600;color:var(--blue-dm)}
+.v-flow b{display:block;margin-top:4px;font:700 30px/1.1 var(--display);letter-spacing:-.03em}
+.v-flow p{margin-top:12px;font-size:15px;color:#A1A1A6;line-height:1.45}
+.v-versn{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px 32px;margin-top:20px;padding:28px 32px;border-radius:28px;background:linear-gradient(120deg,rgba(41,151,255,.14),rgba(41,151,255,.04));border:1px solid rgba(41,151,255,.2)}
+.v-versn p{color:#A1A1A6;max-width:460px}.v-versn p b{color:#fff}
+.v-versn ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:10px}
+.v-versn a{display:inline-block;padding:9px 16px;border-radius:99px;background:rgba(255,255,255,.08);color:#fff;font-size:15px;font-weight:500;transition:background .2s}
+.v-versn a:hover{background:rgba(255,255,255,.16)}
+.v-voet--d{color:#86868B}.v-voet--d a{color:var(--blue-dm)}
+
+/* Eén verhaal, op elk scherm */
+.v-schermen{background:#F5F5F7;color:#1D1D1F;padding:clamp(100px,14vh,160px) 0 clamp(80px,10vh,120px);overflow:hidden}
+.v-schermen .v-eyebrow{color:var(--blue-action)}.v-schermen .v-lead{color:#6E6E73}
+.v-phones{display:flex;gap:28px;justify-content:center;margin-top:72px;padding:0 var(--gutter) 24px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.v-phones::-webkit-scrollbar{display:none}
+.ph{flex:none;margin:0;scroll-snap-align:center;text-align:center}
+.ph:nth-child(2),.ph:nth-child(4){margin-top:48px}
+.ph:nth-child(3){margin-top:96px}
+.ph-s{width:224px;height:460px;border-radius:40px;background:#fff;border:9px solid #1D1D1F;box-shadow:0 30px 60px rgba(0,0,0,.14);overflow:hidden;position:relative;text-align:left;font-size:11px;line-height:1.4;padding:34px 14px 14px}
+.ph-s::before{content:"";position:absolute;top:8px;left:50%;width:70px;height:20px;margin-left:-35px;border-radius:12px;background:#1D1D1F}
+.ph figcaption{margin-top:18px;font:600 15px/1.3 var(--display);color:#1D1D1F}
+.g-bar{border-radius:99px;border:1px solid #E5E5E9;padding:9px 14px;font-size:12px;color:#1D1D1F;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.g-ad{margin-top:16px}
+.g-ad small{font-weight:700;font-size:10px}
+.g-url{display:block;color:#1D1D1F;font-size:10px;margin-top:4px}
+.g-ad b{display:block;margin-top:4px;color:#1a0dab;font-size:14px;line-height:1.25;font-weight:500}
+.g-ad p{margin-top:4px;color:#4d5156}
+.g-links{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}.g-links span{color:#1a0dab;border:1px solid #E5E5E9;border-radius:99px;padding:3px 9px;font-size:10px}
+.g-org{margin-top:18px;display:grid;gap:6px}.g-org i{height:7px;border-radius:4px;background:#EEF0F2;width:90%}.g-org i.k{width:60%}.g-org i:first-child{width:40%;background:#E3E7EE}
+.ph-insta{padding:34px 0 0}
+.i-top{display:flex;align-items:center;gap:8px;padding:0 12px 10px}.i-top i{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#0857C3,#2997FF)}.i-top span{display:grid}.i-top small{color:#6E6E73;font-size:9px}
+.i-img{height:230px;background:radial-gradient(80% 70% at 30% 20%,#2997FF,#0857C3 55%,#061531);display:flex;align-items:flex-end;padding:16px}
+.i-img span{color:#fff;font:700 22px/1.05 var(--display);letter-spacing:-.03em}
+.i-cta{display:flex;justify-content:space-between;padding:10px 12px;font-weight:600;border-bottom:1px solid #E5E5E9;color:#0857C3}
+.i-tekst{padding:8px 12px;color:#1D1D1F}
+.l-merk{display:block;font-weight:700;color:#6E6E73;font-size:10px;margin-bottom:14px}
+.l-kop{display:block;font:700 19px/1.1 var(--display);letter-spacing:-.025em}
+.ph-land p{margin:8px 0 14px;color:#6E6E73}
+.l-veld{border:1px solid #D2D2D7;border-radius:10px;padding:9px 10px;color:#86868B;margin-bottom:8px}
+.l-knop{margin-top:12px;border-radius:99px;background:#0857C3;color:#fff;text-align:center;padding:11px;font-weight:600}
+.ph-mail{background:linear-gradient(180deg,#E2EBF3,#fff 40%)}
+.m-not{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.9);border-radius:16px;padding:10px;box-shadow:0 6px 16px rgba(0,0,0,.08)}
+.m-not i{width:28px;height:28px;border-radius:8px;background:#0857C3;flex:none}.m-not span{display:grid;flex:1}.m-not small{color:#6E6E73;font-size:10px}.m-not em{font-style:normal;color:#86868B;font-size:9px;align-self:flex-start}
+.m-body{margin-top:18px;background:#fff;border-radius:16px;padding:14px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.m-body b{font:700 15px/1.2 var(--display)}.m-body p{margin-top:6px;color:#424245}.m-body ul{margin:8px 0 0;padding-left:16px;color:#424245;display:grid;gap:4px}
+.ph-portaal{background:#0b0b0d;color:#F5F5F7}
+.ph-portaal>small{color:#86868B}
+.p-n{display:block;font:700 20px/1.1 var(--display);margin:6px 0 14px}
+.p-k{background:#1C1C1E;border-radius:14px;padding:12px;display:grid;gap:2px}.p-k small{color:#86868B}
+.ph-portaal p{margin:18px 0 8px;color:#A1A1A6}
+.p-o{display:flex;gap:6px}.p-o span{flex:1;text-align:center;padding:8px 0;border-radius:99px;background:#2C2C2E;color:#A1A1A6;font-weight:600}.p-o span.on{background:rgba(52,199,89,.2);color:#30D158}
+.p-v{position:absolute;bottom:16px;left:14px;color:#6E6E73;font-size:9px}
+
+/* Fasen onder dag 19 */
+.v-fasen{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:72px}
+.v-fasen a{display:flex;flex-direction:column;gap:6px;padding:28px;border-radius:24px;background:#F5F5F7;color:#1D1D1F;transition:transform .3s var(--ease)}
+.v-fasen a:hover{transform:translateY(-4px)}
+.v-fasen small{font-size:13px;color:var(--blue-action);font-weight:600}
+.v-fasen b{font:700 24px/1.15 var(--display);letter-spacing:-.02em}
+.v-fasen span{color:#6E6E73;font-size:15px}
+
+/* Eerlijk */
+.v-eerlijk{background:#F5F5F7;color:#1D1D1F;padding:clamp(100px,14vh,160px) 0}
+.v-eerlijk .v-eyebrow{color:var(--blue-action)}.v-eerlijk .v-lead{color:#6E6E73}
+.v-twee{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:64px}
+.v-kol{padding:36px;border-radius:28px;background:#fff}
+.v-kol h3{margin:0 0 20px;font:700 24px/1.15 var(--display);letter-spacing:-.02em}
+.v-kol ul{list-style:none;margin:0;padding:0;display:grid;gap:14px;font-size:17px}
+.v-kol li{position:relative;padding-left:34px}
+.v-kol li::before{position:absolute;left:0;top:1px;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700}
+.v-kol--ja li::before{content:"✓";background:rgba(52,199,89,.15);color:#1D7D3F}
+.v-kol--nee li::before{content:"✕";background:#F2F2F7;color:#6E6E73}
+
+/* Analyse */
+.v-analyse{background:#000;color:#F5F5F7;padding:clamp(100px,14vh,160px) 0 0}
+.v-art3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:56px}
+.v-art{display:flex;flex-direction:column;min-height:380px;padding:32px;border-radius:28px;background:#1D1D1F;color:#F5F5F7;transition:transform .4s var(--ease)}
+.v-art:hover{transform:translateY(-6px)}
+.v-art--b{background:linear-gradient(160deg,#0857C3,#062a66)}
+.v-art-n{font:700 clamp(64px,7vw,104px)/1 var(--display);letter-spacing:-.05em}
+.v-art small{margin-top:auto;color:#A1A1A6;font-size:13px;font-weight:600}
+.v-art--b small{color:rgba(255,255,255,.75)}
+.v-art h3{margin:8px 0 0;font:700 22px/1.2 var(--display);letter-spacing:-.02em}
+.v-club{padding-top:clamp(100px,14vh,160px)}
+
+/* Magazine-tegel */
+.v-bento .v-magazine{grid-column:1/3;flex-direction:row;align-items:center;gap:40px;min-height:0;background:#F5F5F7;color:#1D1D1F}
+.v-magazine small{color:var(--blue-action)}.v-magazine p{color:#6E6E73;max-width:520px}
+.v-cover{flex:none;width:150px;aspect-ratio:3/4;border-radius:6px;background:#1C1C1E;color:#fff;padding:14px;display:flex;flex-direction:column;justify-content:space-between;transform:rotate(-4deg);box-shadow:0 24px 48px rgba(0,0,0,.25)}
+.v-cover small{color:#A1A1A6!important;font-size:8px;letter-spacing:.12em;text-transform:uppercase}
+.v-cover b{font:800 22px/.95 var(--display);letter-spacing:-.03em}.v-cover em{font-style:normal;color:#D9FF33}
+.v-kaart h3 a{color:inherit}
+
+@media (max-width:1068px){
+  .v-keten-in{grid-template-columns:1fr}.v-dots{max-width:420px}
+  .v-flow{grid-template-columns:1fr 1fr}.v-flow::before,.v-flow::after{display:none}
+  .v-phones{justify-content:flex-start}
+  .v-art3{grid-template-columns:1fr}.v-art{min-height:260px}
+  .v-bento .v-magazine{grid-column:auto}
+}
+@media (max-width:734px){
+  .v-flow{grid-template-columns:1fr}
+  .v-fasen,.v-twee{grid-template-columns:1fr}
+  .v-kol{padding:28px}
+  .ph:nth-child(n){margin-top:0}
+  .v-bento .v-magazine{flex-direction:column;align-items:flex-start;gap:28px}
+  .v-versn{padding:24px}
+}
+@media (prefers-reduced-motion:reduce){.v-mq-in{animation:none}}
+
+/* ======================= SITE: navigatie, subpagina's, footer ======================= */
+[data-page="sub"]{border-top:53px solid #000}
+
+/* Mega-menu */
+.v-nav{z-index:200}
+.v-nav .nav-links{display:flex;gap:4px;margin:0;padding:0;list-style:none}
+.v-nav .nav-links>li>a,.v-nav .nav-links>li>button{display:block;padding:8px 12px;font:400 13px/1 var(--text);color:rgba(255,255,255,.8);background:none;border:0;cursor:pointer;border-radius:8px}
+.v-nav .nav-links>li>a:hover,.v-nav .nav-links>li>button:hover,.v-nav .nav-links>li.open>button{color:#fff}
+.mega{position:fixed;left:0;right:0;top:53px;background:rgba(10,10,12,.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.08);padding:40px 0 48px;opacity:0;visibility:hidden;transform:translateY(-8px);transition:opacity .25s var(--ease),transform .35s var(--ease),visibility 0s .25s}
+.nav-links>li.open .mega{opacity:1;visibility:visible;transform:none;transition:opacity .25s var(--ease),transform .35s var(--ease)}
+.mega .wrap{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:32px;max-width:1080px}
+.mega h6{margin:0 0 14px;font:600 12px/1.3 var(--text);color:#86868B}
+.mega ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.mega a{color:#F5F5F7;font:600 17px/1.25 var(--display);letter-spacing:-.01em}
+.mega a:hover{color:var(--blue-dm)}
+.mega .mega-klein a{font:400 14px/1.3 var(--text);color:#D2D2D7}
+.mega-uit{grid-column:4;border-left:1px solid rgba(255,255,255,.08);padding-left:32px}
+.mega-uit p{color:#A1A1A6;font-size:14px;margin:8px 0 16px}
+.nav-dim{position:fixed;inset:53px 0 0;background:rgba(0,0,0,.4);backdrop-filter:blur(4px);opacity:0;visibility:hidden;transition:opacity .25s;z-index:150}
+.nav-dim.on{opacity:1;visibility:visible}
+.burger{display:none}
+@media (max-width:1068px){
+  .v-nav .nav-links{display:none}
+  .burger{display:flex;flex-direction:column;gap:5px;justify-content:center;width:40px;height:40px;background:none;border:0;cursor:pointer;padding:8px}
+  .burger span{display:block;height:1.5px;background:#fff;border-radius:2px;transition:transform .3s var(--ease),opacity .2s}
+  .menu-open .burger span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+  .menu-open .burger span:nth-child(2){opacity:0}
+  .menu-open .burger span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+}
+.mmenu{position:fixed;inset:53px 0 0;z-index:190;background:#000;color:#F5F5F7;overflow-y:auto;padding:16px var(--gutter) 48px;opacity:0;visibility:hidden;transition:opacity .25s,visibility 0s .25s}
+.menu-open .mmenu{opacity:1;visibility:visible;transition:opacity .25s}
+.mmenu details{border-bottom:1px solid rgba(255,255,255,.1)}
+.mmenu summary,.mmenu>a{display:flex;justify-content:space-between;align-items:center;padding:16px 0;font:700 28px/1.1 var(--display);letter-spacing:-.03em;cursor:pointer;list-style:none;color:#F5F5F7}
+.mmenu summary::-webkit-details-marker{display:none}
+.mmenu summary::after{content:"+";font-weight:400;color:#86868B;transition:transform .3s}
+.mmenu details[open] summary::after{transform:rotate(45deg)}
+.mmenu>a{border-bottom:1px solid rgba(255,255,255,.1)}
+.mmenu ul{list-style:none;margin:0 0 16px;padding:0;display:grid;gap:12px}
+.mmenu ul a{color:#D2D2D7;font-size:17px}
+.mmenu .btn{margin-top:28px;width:100%}
+
+/* Subpagina: bouwstenen */
+.pg-hero{position:relative;background:#000;color:#F5F5F7;padding:clamp(72px,10vh,120px) 0 clamp(80px,12vh,140px);overflow:hidden}
+.pg-hero--glow::before{content:"";position:absolute;inset:-20% -10% auto;height:120%;background:radial-gradient(40% 50% at 20% 0%,rgba(41,151,255,.25),transparent 70%),radial-gradient(40% 50% at 80% 0%,rgba(41,151,255,.18),transparent 70%);pointer-events:none}
+.pg-hero .wrap{position:relative}
+.pg-crumbs{display:flex;flex-wrap:wrap;gap:8px;font-size:13px;color:#86868B;margin-bottom:40px}
+.pg-crumbs a{color:#A1A1A6}.pg-crumbs a:hover{color:#fff}
+.pg-crumbs span[aria-hidden]{color:#48484A}
+.pg-h1{margin:0;font:700 clamp(44px,7.4vw,104px)/1 var(--display);letter-spacing:-.045em;text-wrap:balance}
+.pg-merk{margin:20px 0 0;font:600 clamp(26px,3.4vw,44px)/1.12 var(--display);letter-spacing:-.03em;color:#86868B;text-wrap:balance;max-width:900px}
+.pg-merk b{color:#F5F5F7;font-weight:600}
+.pg-lead{margin:28px 0 0;max-width:640px;font:500 clamp(18px,1.6vw,22px)/1.45 var(--display);letter-spacing:-.01em;color:#A1A1A6}
+.pg-split{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(40px,6vw,96px);align-items:center}
+.pg-hero .v-btns{margin-top:36px}
+.pg-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
+.pg-tag{display:inline-block;padding:6px 12px;border-radius:99px;background:rgba(255,255,255,.08);color:#D2D2D7;font-size:13px;font-weight:500}
+.pg-tag--l{background:#F2F2F7;color:#424245}
+.pg-tag--blauw{background:rgba(41,151,255,.16);color:#2997FF}
+
+.pg-sec{padding:clamp(88px,12vh,140px) 0;background:#fff;color:#1D1D1F}
+.pg-sec--sub{background:#F5F5F7}
+.pg-sec--dark{background:#000;color:#F5F5F7}
+.pg-sec--deep{background:#0b0b0d;color:#F5F5F7}
+.pg-sec .v-eyebrow{color:var(--blue-action)}
+.pg-sec--dark .v-eyebrow,.pg-sec--deep .v-eyebrow{color:var(--blue-dm)}
+.pg-h2{margin:0;font:700 clamp(34px,4.6vw,64px)/1.04 var(--display);letter-spacing:-.04em;text-wrap:balance}
+.pg-h3{margin:0;font:700 clamp(22px,2vw,28px)/1.15 var(--display);letter-spacing:-.02em}
+.pg-intro{margin:20px 0 0;max-width:640px;font:500 clamp(18px,1.5vw,21px)/1.45 var(--display);color:#6E6E73;letter-spacing:-.01em}
+.pg-sec--dark .pg-intro,.pg-sec--deep .pg-intro{color:#A1A1A6}
+.pg-head{margin-bottom:56px}
+.pg-head--c{text-align:center}.pg-head--c .pg-intro{margin-inline:auto}
+.pg-head-rij{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:48px;flex-wrap:wrap}
+
+.pg-grid{display:grid;gap:20px}
+.pg-grid--2{grid-template-columns:repeat(2,1fr)}
+.pg-grid--3{grid-template-columns:repeat(3,1fr)}
+.pg-grid--4{grid-template-columns:repeat(4,1fr)}
+.pg-card{position:relative;display:flex;flex-direction:column;gap:10px;padding:32px;border-radius:28px;background:#F5F5F7;color:#1D1D1F;transition:transform .4s var(--ease),box-shadow .4s var(--ease)}
+.pg-sec--sub .pg-card{background:#fff}
+.pg-sec--dark .pg-card,.pg-sec--deep .pg-card{background:#1D1D1F;color:#F5F5F7}
+a.pg-card:hover{transform:translateY(-4px);box-shadow:0 20px 50px rgba(0,0,0,.08)}
+.pg-card small{font-size:13px;font-weight:600;color:var(--blue-action)}
+.pg-sec--dark .pg-card small,.pg-sec--deep .pg-card small{color:var(--blue-dm)}
+.pg-card h3{margin:0;font:700 24px/1.15 var(--display);letter-spacing:-.02em}
+.pg-card p{color:#6E6E73;font-size:16px;line-height:1.5}
+.pg-sec--dark .pg-card p,.pg-sec--deep .pg-card p{color:#A1A1A6}
+.pg-card .pg-pijl{margin-top:auto;padding-top:12px;color:var(--blue-link);font-size:15px;font-weight:500}
+.pg-sec--dark .pg-card .pg-pijl,.pg-sec--deep .pg-card .pg-pijl{color:var(--blue-dm)}
+.pg-card-n{font:700 56px/1 var(--display);letter-spacing:-.05em;color:var(--blue)}
+.pg-card--blauw{background:linear-gradient(160deg,#0857C3,#062a66)!important;color:#fff!important}
+.pg-card--blauw p{color:rgba(255,255,255,.75)!important}.pg-card--blauw small{color:#D9FF33!important}
+
+/* Stappen */
+.pg-steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;counter-reset:s}
+.pg-steps li{counter-increment:s;padding:28px;border-radius:24px;background:#F5F5F7}
+.pg-sec--sub .pg-steps li{background:#fff}
+.pg-sec--dark .pg-steps li{background:#1D1D1F}
+.pg-steps li::before{content:counter(s,decimal-leading-zero);display:block;font:700 44px/1 var(--display);letter-spacing:-.04em;color:#D2D2D7;margin-bottom:20px}
+.pg-sec--dark .pg-steps li::before{color:#3A3A3C}
+.pg-steps b{display:block;font:700 21px/1.2 var(--display);letter-spacing:-.015em}
+.pg-steps span{display:block;margin-top:8px;color:#6E6E73;font-size:15px;line-height:1.5}
+.pg-sec--dark .pg-steps span{color:#A1A1A6}
+.pg-steps small{display:inline-block;margin-top:12px;font-size:12px;color:var(--blue-action);font-weight:600}
+
+/* Klantreis tijdlijn */
+.pg-reis{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.pg-fase{border-radius:28px;padding:32px;background:#1D1D1F}
+.pg-fase>small{display:block;font-size:13px;font-weight:600;color:var(--blue-dm)}
+.pg-fase>b{display:block;margin-top:4px;font:700 28px/1.1 var(--display);letter-spacing:-.03em}
+.pg-fase>span{display:block;margin-top:6px;color:#86868B;font-size:14px}
+.pg-fase ol{list-style:none;margin:24px 0 0;padding:0;display:grid;gap:14px}
+.pg-fase li{display:grid;grid-template-columns:44px 1fr;gap:4px 12px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08)}
+.pg-fase li em{grid-row:1/3;font-style:normal;font:700 22px/1 var(--display);color:#48484A}
+.pg-fase li b{font-weight:600}
+.pg-fase li span{color:#A1A1A6;font-size:14px}
+.pg-fase--live{background:linear-gradient(160deg,#0857C3,#062a66)}
+.pg-fase--live>small{color:#D9FF33}.pg-fase--live li em{color:rgba(255,255,255,.4)}.pg-fase--live li span{color:rgba(255,255,255,.75)}
+
+/* Tabel */
+.pg-tabel{width:100%;border-collapse:collapse;font-size:16px}
+.pg-tabel th,.pg-tabel td{text-align:left;padding:16px 12px;border-bottom:1px solid #E5E5E9;vertical-align:top}
+.pg-tabel th{font-size:13px;color:#6E6E73;font-weight:600}
+.pg-tabel td:first-child{font-weight:600}
+.pg-sec--dark .pg-tabel th,.pg-sec--dark .pg-tabel td{border-color:rgba(255,255,255,.1)}
+.pg-tabel-wrap{overflow-x:auto}
+
+/* Lange tekst (SEO) */
+.pg-prose{max-width:720px;font-size:18px;line-height:1.65;color:#424245}
+.pg-prose h2{margin:56px 0 16px;font:700 clamp(28px,3vw,36px)/1.15 var(--display);letter-spacing:-.025em;color:#1D1D1F}
+.pg-prose h2:first-child{margin-top:0}
+.pg-prose h3{margin:36px 0 10px;font:700 22px/1.25 var(--display);letter-spacing:-.015em;color:#1D1D1F}
+.pg-prose p{margin:0 0 18px}
+.pg-prose ul,.pg-prose ol{margin:0 0 18px;padding-left:22px;display:grid;gap:8px}
+.pg-prose a{color:var(--blue-link)}
+.pg-prose blockquote{margin:32px 0;padding:0 0 0 24px;border-left:3px solid var(--blue);font:600 24px/1.3 var(--display);letter-spacing:-.02em;color:#1D1D1F}
+.pg-prose .pg-bron{font-size:14px;color:#86868B}
+.pg-prose abbr{text-decoration:none;border-bottom:1px dotted var(--blue);cursor:help}
+.pg-lees{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:clamp(40px,6vw,96px);align-items:start}
+.pg-aside{position:sticky;top:90px;display:grid;gap:16px}
+.pg-aside-blok{padding:24px;border-radius:20px;background:#F5F5F7}
+.pg-aside-blok h6{margin:0 0 10px;font:600 13px/1.3 var(--text);color:#6E6E73}
+.pg-aside-blok ul{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:15px}
+.pg-aside-blok a{color:var(--blue-link)}
+
+/* FAQ */
+.pg-faq{max-width:860px;margin:0 auto;border-top:1px solid #D2D2D7}
+.pg-faq details{border-bottom:1px solid #D2D2D7}
+.pg-faq summary{display:flex;justify-content:space-between;gap:24px;padding:24px 0;font:600 clamp(19px,1.6vw,22px)/1.3 var(--display);letter-spacing:-.015em;cursor:pointer;list-style:none}
+.pg-faq summary::-webkit-details-marker{display:none}
+.pg-faq summary::after{content:"+";flex:none;font-size:28px;font-weight:300;line-height:.9;color:var(--blue-action);transition:transform .3s var(--ease)}
+.pg-faq details[open] summary::after{transform:rotate(45deg)}
+.pg-faq details p{padding:0 48px 24px 0;color:#424245;font-size:17px;line-height:1.6}
+.pg-sec--dark .pg-faq,.pg-sec--dark .pg-faq details{border-color:rgba(255,255,255,.12)}
+.pg-sec--dark .pg-faq details p{color:#A1A1A6}
+
+/* Contactpersoon */
+.pg-persoon{display:grid;grid-template-columns:auto 1fr auto;gap:28px;align-items:center;padding:32px;border-radius:28px;background:#1D1D1F;color:#F5F5F7}
+.pg-sec--dark .pg-persoon{background:#1D1D1F}
+.pg-avatar{width:96px;height:96px;border-radius:50%;background:radial-gradient(circle at 50% 38%,#48484A 0 22%,transparent 23%),radial-gradient(ellipse 60% 44% at 50% 100%,#48484A 0 99%,transparent 100%),linear-gradient(160deg,#2C2C2E,#161618);flex:none}
+.pg-persoon small{color:var(--blue-dm);font-weight:600;font-size:13px}
+.pg-persoon h3{margin:4px 0 0;font:700 26px/1.1 var(--display);letter-spacing:-.025em}
+.pg-persoon p{color:#A1A1A6;margin-top:6px;font-size:15px}
+.pg-persoon .v-btns{margin:0;flex-direction:column;align-items:stretch;gap:10px}
+
+/* Statistieken */
+.pg-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.pg-stat b{display:block;font:700 clamp(48px,5.4vw,80px)/1 var(--display);letter-spacing:-.05em}
+.pg-stat span{display:block;margin-top:8px;color:#6E6E73;font-size:15px}
+.pg-sec--dark .pg-stat span,.pg-hero .pg-stat span{color:#A1A1A6}
+.pg-stat--blauw b{color:var(--blue)}
+
+/* Lijst-rijen */
+.pg-rijen{border-top:1px solid #D2D2D7}
+.pg-rij{display:grid;grid-template-columns:120px 1fr auto;gap:24px;align-items:center;padding:24px 0;border-bottom:1px solid #D2D2D7;color:#1D1D1F}
+.pg-rij:hover h3{color:var(--blue-link)}
+.pg-rij small{color:#6E6E73;font-size:13px;font-weight:600}
+.pg-rij h3{margin:0;font:700 22px/1.25 var(--display);letter-spacing:-.015em;transition:color .2s}
+.pg-rij p{color:#6E6E73;font-size:15px;margin-top:4px}
+.pg-rij>span:last-child{color:var(--blue-link);font-size:22px}
+.pg-sec--dark .pg-rijen,.pg-sec--dark .pg-rij{border-color:rgba(255,255,255,.12);color:#F5F5F7}
+
+/* Filters */
+.pg-filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:40px}
+.pg-filters button{padding:9px 18px;border-radius:99px;border:1px solid #D2D2D7;background:#fff;color:#1D1D1F;font:500 15px/1 var(--text);cursor:pointer;transition:all .2s}
+.pg-filters button.on{background:#1D1D1F;color:#fff;border-color:#1D1D1F}
+.pg-sec--dark .pg-filters button{background:transparent;border-color:#3A3A3C;color:#D2D2D7}
+.pg-sec--dark .pg-filters button.on{background:#F5F5F7;color:#1D1D1F;border-color:#F5F5F7}
+[data-f-item][hidden]{display:none!important}
+
+/* Zoeken */
+.pg-zoek{position:relative;max-width:640px;margin-top:36px}
+.pg-zoek input{width:100%;min-height:60px;padding:0 24px 0 56px;border-radius:99px;border:1px solid #3A3A3C;background:#1D1D1F;color:#fff;font:400 18px var(--text)}
+.pg-zoek input:focus{outline:none;border-color:var(--blue-dm)}
+.pg-zoek::before{content:"";position:absolute;left:22px;top:50%;width:16px;height:16px;margin-top:-10px;border:2px solid #86868B;border-radius:50%}
+.pg-zoek::after{content:"";position:absolute;left:37px;top:50%;width:8px;height:2px;margin-top:5px;background:#86868B;transform:rotate(45deg)}
+
+/* A-Z */
+.pg-az{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:40px}
+.pg-az a,.pg-az span{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;background:#F5F5F7;color:#1D1D1F;font-weight:600}
+.pg-az span{color:#C8C8CD;background:transparent}
+.pg-az a:hover{background:#1D1D1F;color:#fff}
+.pg-term-groep{display:grid;grid-template-columns:80px 1fr;gap:24px;padding:28px 0;border-top:1px solid #E5E5E9}
+.pg-term-groep>b{font:700 44px/1 var(--display);color:#D2D2D7}
+.pg-term-groep ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px 24px}
+.pg-term-groep a{color:#1D1D1F;font-weight:600}.pg-term-groep a:hover{color:var(--blue-link)}
+.pg-term-groep li span{display:block;color:#6E6E73;font-size:14px;font-weight:400}
+
+/* Spelersprofiel */
+.pg-profiel{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:clamp(40px,6vw,96px);align-items:end}
+.pg-profiel .v-kaart{width:100%;max-width:440px}
+.pg-rugnr{font:800 clamp(120px,16vw,220px)/.85 var(--display);letter-spacing:-.06em;color:transparent;-webkit-text-stroke:2px rgba(41,151,255,.6)}
+.pg-pstats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;margin-top:40px;border-radius:20px;overflow:hidden;background:rgba(255,255,255,.08)}
+.pg-pstats div{background:#111113;padding:20px}
+.pg-pstats b{display:block;font:700 34px/1 var(--display);letter-spacing:-.03em}
+.pg-pstats span{display:block;margin-top:6px;font-size:13px;color:#86868B}
+.pg-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:99px;background:rgba(196,240,0,.14);color:#D9FF33;font-size:13px;font-weight:600}
+
+/* Kalender */
+.pg-cal{display:grid;gap:12px}
+.pg-ev{display:grid;grid-template-columns:96px 1fr auto;gap:28px;align-items:center;padding:24px 28px;border-radius:24px;background:#F5F5F7;color:#1D1D1F;transition:transform .3s var(--ease)}
+.pg-ev:hover{transform:translateX(4px)}
+.pg-ev-d{text-align:center}
+.pg-ev-d b{display:block;font:700 44px/1 var(--display);letter-spacing:-.04em;color:var(--blue)}
+.pg-ev-d span{display:block;font-size:13px;font-weight:600;color:#6E6E73;text-transform:uppercase;margin-top:4px}
+.pg-ev h3{margin:6px 0 0;font:700 22px/1.2 var(--display);letter-spacing:-.015em}
+.pg-ev p{color:#6E6E73;font-size:15px;margin-top:4px}
+.pg-ev--voorbij{opacity:.6}
+
+/* Formulier */
+.pg-form{display:grid;gap:16px}
+.pg-form label{display:grid;gap:6px;font-size:14px;font-weight:600;color:#424245}
+.pg-form input,.pg-form textarea,.pg-form select{min-height:52px;padding:14px 16px;border-radius:14px;border:1px solid #D2D2D7;background:#fff;font:400 17px var(--text);color:#1D1D1F}
+.pg-form textarea{min-height:140px;resize:vertical}
+.pg-form input:focus,.pg-form textarea:focus,.pg-form select:focus{outline:none;border-color:var(--blue-action);box-shadow:0 0 0 4px rgba(0,122,255,.15)}
+.pg-form .pg-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.pg-form small{color:#6E6E73;font-weight:400}
+.pg-ok{display:none;padding:24px;border-radius:20px;background:rgba(52,199,89,.12);color:#1D7D3F;font-weight:600}
+.pg-form.klaar>*{display:none}.pg-form.klaar .pg-ok{display:block}
+
+/* Mockups in hero's */
+.mk{position:relative;border-radius:28px;background:#111113;border:1px solid rgba(255,255,255,.08);padding:28px;color:#F5F5F7;box-shadow:0 40px 100px rgba(0,0,0,.5)}
+.mk-label{position:absolute;top:16px;right:18px;font-size:11px;color:#6E6E73}
+.mk-google{background:#fff;color:#1D1D1F;font-size:14px}
+.mk-google .g-bar{font-size:15px;padding:12px 18px}
+.mk-google .g-ad b{font-size:20px}.mk-google .g-ad small{font-size:12px}.mk-google .g-url{font-size:13px}.mk-google .g-links span{font-size:12px}
+.mk-google .mk-label{color:#86868B}
+.mk-zoeker{display:flex;gap:10px;align-items:center;margin-bottom:6px}
+.mk-zoeker i{width:28px;height:28px;border-radius:50%;background:conic-gradient(#4285F4 0 25%,#EA4335 0 50%,#FBBC05 0 75%,#34A853 0)}
+.mk-phone{display:flex;justify-content:center;background:none;border:0;box-shadow:none;padding:0}
+.mk-phone .ph-s{width:260px;height:530px;font-size:12px}
+.mk-phone .i-img{height:280px}
+.mk-zoeker-bing i{background:linear-gradient(135deg,#0857C3,#2997FF)}
+.mk-foto{aspect-ratio:4/5;max-width:420px;margin-left:auto;padding:0;overflow:hidden;background:radial-gradient(70% 60% at 60% 30%,#2C3A52,#0b0b0d 70%)}
+.mk-foto::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 33.2%,rgba(255,255,255,.18) 33.3%,rgba(255,255,255,.18) 33.5%,transparent 33.6%,transparent 66.5%,rgba(255,255,255,.18) 66.6%,rgba(255,255,255,.18) 66.8%,transparent 66.9%),linear-gradient(180deg,transparent 33.2%,rgba(255,255,255,.18) 33.3%,rgba(255,255,255,.18) 33.5%,transparent 33.6%,transparent 66.5%,rgba(255,255,255,.18) 66.6%,rgba(255,255,255,.18) 66.8%,transparent 66.9%)}
+.mk-focus{position:absolute;left:50%;top:44%;width:120px;height:120px;margin:-60px 0 0 -60px;border:2px solid #D9FF33;border-radius:6px;animation:mk-focus 2.4s var(--ease) infinite}
+@keyframes mk-focus{0%,100%{transform:scale(1)}50%{transform:scale(.88)}}
+.mk-exif{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;padding:16px 20px;font:500 13px var(--mono);color:#D2D2D7;background:linear-gradient(transparent,rgba(0,0,0,.7))}
+.mk-video .mk-frames{display:flex;gap:12px;align-items:flex-end;justify-content:center;margin-bottom:28px}
+.mk-video .mk-frames span{border-radius:10px;background:radial-gradient(80% 70% at 40% 30%,#2997FF,#0857C3 60%,#061531);display:grid;place-items:center;font:600 12px var(--text);color:#fff}
+.mk-tijd{position:relative;height:56px;border-radius:12px;background:#1D1D1F;display:flex;gap:3px;padding:6px;overflow:hidden}
+.mk-tijd i{flex:1;border-radius:6px;background:linear-gradient(180deg,#2997FF,#0857C3)}
+.mk-tijd i:nth-child(3n){background:linear-gradient(180deg,#5AC8FA,#2997FF)}
+.mk-tijd b{position:absolute;top:0;bottom:0;width:2px;background:#D9FF33;animation:mk-kop 5s linear infinite}
+@keyframes mk-kop{from{left:0}to{left:100%}}
+.mk-tc{display:flex;justify-content:space-between;margin-top:10px;font:500 13px var(--mono);color:#86868B}
+.mk-anim svg{width:100%;height:auto;display:block}
+.mk-anim .mk-curve{stroke-dasharray:600;stroke-dashoffset:600;animation:mk-draw 3s var(--ease) infinite alternate}
+@keyframes mk-draw{to{stroke-dashoffset:0}}
+.mk-anim .mk-bol{animation:mk-bol 3s var(--ease) infinite alternate}
+@keyframes mk-bol{from{transform:translate(0,0)}to{transform:translate(300px,-120px)}}
+.mk-copy{font:700 clamp(28px,3vw,40px)/1.15 var(--display);letter-spacing:-.03em;min-height:260px}
+.mk-copy s{color:#48484A;text-decoration-thickness:3px}
+.mk-copy span{color:#F5F5F7}
+.mk-copy em{font-style:normal;display:inline-block;width:3px;height:1em;background:#2997FF;vertical-align:-.12em;margin-left:4px;animation:mk-caret 1s steps(1) infinite}
+@keyframes mk-caret{50%{opacity:0}}
+.mk-ab{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.mk-ab div{border-radius:18px;background:#1D1D1F;padding:20px}
+.mk-ab small{color:#86868B;font-size:12px;font-weight:600}
+.mk-ab b{display:block;font:700 44px/1 var(--display);letter-spacing:-.04em;margin-top:10px}
+.mk-ab span{display:block;color:#86868B;font-size:13px;margin-top:6px}
+.mk-ab div.win{background:linear-gradient(160deg,#0857C3,#062a66)}
+.mk-ab div.win b{color:#D9FF33}
+.mk-ab-balk{grid-column:1/3;height:8px;border-radius:4px;background:#1D1D1F;overflow:hidden}.mk-ab-balk i{display:block;height:100%;width:62%;background:linear-gradient(90deg,#2997FF,#C4F000)}
+.mk-mail{display:grid;gap:10px}
+.mk-mail .m-not{background:#1D1D1F;color:#F5F5F7;box-shadow:none}
+.mk-mail .m-not small{color:#A1A1A6}
+.mk-mail .m-not:nth-child(2){opacity:.75}.mk-mail .m-not:nth-child(3){opacity:.5}
+.mk-mail .m-flow{margin-top:14px;display:flex;align-items:center;gap:8px;font-size:13px;color:#A1A1A6;flex-wrap:wrap}
+.mk-mail .m-flow span{padding:8px 12px;border-radius:99px;background:#1D1D1F;color:#F5F5F7}
+.mk-seo svg{width:100%;height:auto;display:block}
+.mk-host{text-align:left}
+.mk-host svg{width:100%;height:90px;display:block;margin:12px 0 20px}
+.mk-host .mk-puls{stroke-dasharray:900;stroke-dashoffset:900;animation:mk-draw2 4s linear infinite}
+@keyframes mk-draw2{to{stroke-dashoffset:0}}
+.mk-host ul{list-style:none;margin:0;padding:0;display:grid;gap:10px;font-size:15px}
+.mk-host li{display:flex;justify-content:space-between;padding:12px 14px;border-radius:12px;background:#1D1D1F}
+.mk-host li span{color:#30D158}
+.mk-emblem{display:grid;place-items:center;aspect-ratio:1;max-width:420px;margin-left:auto;border-radius:50%;background:radial-gradient(circle,rgba(41,151,255,.25),transparent 70%);font:800 clamp(80px,10vw,140px)/1 var(--display);letter-spacing:-.06em;color:transparent;-webkit-text-stroke:2px rgba(41,151,255,.7);border:0;box-shadow:none}
+.mk-kaart{aspect-ratio:1;max-width:460px;margin-left:auto;padding:0;overflow:hidden;background:#0b0b0d}
+.mk-kaart svg{width:100%;height:100%;display:block}
+
+/* Portaal-demo */
+.demo{display:grid;grid-template-columns:220px 1fr;min-height:560px;border-radius:24px;overflow:hidden;background:#0b0b0d;color:#F5F5F7;border:1px solid rgba(255,255,255,.08);box-shadow:0 40px 100px rgba(0,0,0,.35)}
+.demo-zij{background:#111113;padding:24px 14px;display:flex;flex-direction:column;gap:4px;border-right:1px solid rgba(255,255,255,.06)}
+.demo-zij b{font:700 16px var(--display);padding:0 10px 18px}
+.demo-zij button{all:unset;cursor:pointer;padding:10px;border-radius:10px;font-size:14px;color:#A1A1A6}
+.demo-zij button.on{background:#2C2C2E;color:#fff}
+.demo-zij small{margin-top:auto;padding:10px;color:#6E6E73;font-size:11px}
+.demo-in{padding:28px;display:grid;gap:16px;align-content:start}
+.demo-in h4{margin:0;font:700 26px/1.1 var(--display);letter-spacing:-.02em}
+.demo-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.demo-kpi{background:#1C1C1E;border-radius:14px;padding:16px}
+.demo-kpi small{color:#86868B;font-size:12px}.demo-kpi b{display:block;font:700 30px/1.1 var(--display);margin-top:6px}.demo-kpi span{font-size:12px;color:#30D158}
+.demo-chart{background:#1C1C1E;border-radius:14px;padding:18px}
+.demo-chart svg{width:100%;height:160px;display:block}
+.demo-rij{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;background:#1C1C1E;border-radius:14px;padding:14px 16px}
+.demo-rij small{display:block;color:#86868B;font-size:12px}
+.demo-oo{display:flex;gap:6px}
+.demo-oo button{all:unset;cursor:pointer;padding:7px 12px;border-radius:99px;background:#2C2C2E;color:#A1A1A6;font-size:12px;font-weight:600}
+.demo-oo button.g.on{background:rgba(52,199,89,.2);color:#30D158}
+.demo-oo button.t.on{background:rgba(246,160,39,.2);color:#F6A027}
+.demo-oo button.s.on{background:rgba(255,59,48,.2);color:#FF6961}
+.demo-bar{height:10px;border-radius:5px;background:#2C2C2E;overflow:hidden}.demo-bar i{display:block;height:100%;background:linear-gradient(90deg,#2997FF,#0857C3)}
+.demo-pane[hidden]{display:none}
+.demo-merk{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.demo-merk div{aspect-ratio:1;border-radius:14px;display:grid;place-items:end start;padding:12px;font-size:12px;font-weight:600}
+
+/* Login */
+.pg-login{max-width:420px;margin:0 auto;padding:40px;border-radius:28px;background:#1D1D1F;color:#F5F5F7;text-align:center}
+.pg-login .pg-form label{color:#A1A1A6;text-align:left}
+.pg-login .pg-form input{background:#000;border-color:#3A3A3C;color:#fff}
+
+/* Playground-poster */
+.pg-poster{position:relative;border-radius:32px;overflow:hidden;padding:clamp(40px,6vw,80px);background:radial-gradient(90% 60% at 50% 0%,rgba(41,151,255,.45),transparent 70%),linear-gradient(180deg,#0A2A5E,#061531 55%,#020611);color:#fff;text-align:center}
+.pg-poster .v-vs span{font-size:clamp(44px,8vw,120px)}
+.pg-poster .v-vs b{font-size:clamp(32px,4vw,56px)}
+.pg-uitslag{display:flex;justify-content:center;align-items:center;gap:24px;margin-top:32px;font:700 clamp(56px,8vw,120px)/1 var(--display);letter-spacing:-.05em}
+.pg-uitslag span{color:rgba(255,255,255,.35)}
+
+/* Melding [in te vullen] */
+.pg-vul{display:inline-block;padding:1px 8px;border-radius:6px;background:rgba(41,151,255,.12);color:var(--blue-action);font-size:.85em;font-weight:500}
+.pg-sec--dark .pg-vul,.pg-hero .pg-vul,.pg-sec--deep .pg-vul{background:rgba(41,151,255,.18);color:#5AC8FA}
+.pg-noot{margin-top:24px;font-size:13px;color:#86868B}
+
+/* Case-sjabloon */
+.pg-score{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:24px;padding:40px;border-radius:28px;background:#111113;border:1px solid rgba(255,255,255,.08);text-align:center}
+.pg-score small{display:block;color:#86868B;font-size:13px;font-weight:600}
+.pg-score b{display:block;font:700 clamp(56px,7vw,96px)/1 var(--display);letter-spacing:-.05em;margin-top:8px}
+.pg-score i{font-style:normal;font:300 48px/1 var(--display);color:#48484A}
+.pg-score .na b{color:#D9FF33}
+
+/* Sitemap */
+.pg-sitemap{columns:4 220px;column-gap:40px}
+.pg-sitemap div{break-inside:avoid;margin-bottom:32px}
+.pg-sitemap h3{margin:0 0 12px;font:700 19px/1.2 var(--display)}
+.pg-sitemap ul{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:15px}
+.pg-sitemap a{color:var(--blue-link)}
+
+/* Footer nieuw */
+.v-foot{background:#F5F5F7;color:#6E6E73;font-size:12px;line-height:1.5;padding:40px 0 24px}
+.v-foot .wrap{max-width:1080px}
+.v-foot-top{padding-bottom:16px;border-bottom:1px solid #D2D2D7}
+.v-foot-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:24px;padding:24px 0;border-bottom:1px solid #D2D2D7}
+.v-foot h6{margin:0 0 10px;font:600 12px/1.3 var(--text);color:#1D1D1F}
+.v-foot ul{list-style:none;margin:0 0 20px;padding:0;display:grid;gap:8px}
+.v-foot a{color:#424245}.v-foot a:hover{color:#1D1D1F;text-decoration:underline}
+.v-foot-onder{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;padding-top:16px}
+.v-foot-onder nav{display:flex;flex-wrap:wrap;gap:4px 16px}
+footer:not(.v-foot){display:none}
+
+/* Chat */
+.chat{display:none!important}
+.vchat-knop{position:fixed;right:20px;bottom:20px;z-index:180;display:flex;align-items:center;gap:10px;padding:8px 18px 8px 8px;border-radius:99px;border:0;background:#fff;color:#1D1D1F;font:600 14px var(--text);box-shadow:0 8px 30px rgba(0,0,0,.18);cursor:pointer}
+.vchat-knop i{position:relative;width:36px;height:36px;border-radius:50%;background:#0857C3;display:grid;place-items:center;color:#fff}
+.vchat-knop i::after{content:"";position:absolute;right:-1px;top:-1px;width:10px;height:10px;border-radius:50%;background:#34C759;border:2px solid #fff}
+.vchat-knop.uit i::after{background:#C8C8CD}
+.vchat{position:fixed;right:20px;bottom:84px;z-index:181;width:min(380px,calc(100vw - 40px));border-radius:24px;background:#fff;color:#1D1D1F;box-shadow:0 24px 80px rgba(0,0,0,.28);overflow:hidden;opacity:0;visibility:hidden;transform:translateY(12px) scale(.98);transform-origin:100% 100%;transition:opacity .25s,transform .35s var(--ease),visibility 0s .25s}
+.vchat.open{opacity:1;visibility:visible;transform:none;transition:opacity .25s,transform .35s var(--ease)}
+.vchat-kop{padding:20px;background:#000;color:#fff}
+.vchat-kop b{display:block;font:700 19px var(--display)}
+.vchat-kop small{color:#A1A1A6}
+.vchat-kop .vchat-st{display:inline-flex;align-items:center;gap:6px;margin-top:8px;font-size:12px;color:#30D158}
+.vchat-kop .vchat-st::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor}
+.vchat-kop .vchat-st.uit{color:#A1A1A6}
+.vchat-tabs{display:flex;gap:4px;padding:10px 20px 0;font-size:11px;color:#86868B}
+.vchat-tabs button{all:unset;cursor:pointer;padding:4px 8px;border-radius:6px}
+.vchat-tabs button.on{background:#F2F2F7;color:#1D1D1F}
+.vchat-body{padding:16px 20px 20px;display:grid;gap:10px}
+.vchat-msg{max-width:85%;padding:10px 14px;border-radius:18px;background:#F2F2F7;font-size:14px}
+.vchat-msg--ik{justify-self:end;background:#0857C3;color:#fff}
+.vchat-body textarea,.vchat-body input{width:100%;padding:12px 14px;border-radius:14px;border:1px solid #D2D2D7;font:400 15px var(--text);resize:none}
+.vchat-body .btn{width:100%}
+.vchat-ok{text-align:center;padding:12px 0}
+.vchat-ok b{display:block;font:700 20px var(--display);margin:10px 0 4px}
+.vchat-ok i{display:inline-grid;place-items:center;width:48px;height:48px;border-radius:50%;background:rgba(52,199,89,.15);color:#1D7D3F;font-style:normal;font-size:22px}
+.vchat-ok p{color:#6E6E73;font-size:14px}
+
+/* Responsief */
+@media (max-width:1068px){
+  .pg-split,.pg-lees,.pg-profiel{grid-template-columns:1fr}
+  .pg-aside{position:static}
+  .pg-grid--4{grid-template-columns:repeat(2,1fr)}
+  .pg-grid--3{grid-template-columns:repeat(2,1fr)}
+  .pg-reis{grid-template-columns:1fr}
+  .pg-stats{grid-template-columns:repeat(2,1fr);gap:32px}
+  .demo{grid-template-columns:1fr}.demo-zij{flex-direction:row;overflow-x:auto;padding:12px}.demo-zij b,.demo-zij small{display:none}
+  .demo-kpis{grid-template-columns:repeat(2,1fr)}
+  .mk-foto,.mk-emblem,.mk-kaart{margin:0 auto}
+  .v-foot-grid{grid-template-columns:repeat(3,1fr)}
+  .mega .wrap{grid-template-columns:repeat(3,1fr)}
+}
+@media (max-width:734px){
+  .pg-grid--2,.pg-grid--3,.pg-grid--4{grid-template-columns:1fr}
+  .pg-card{padding:26px}
+  .pg-persoon{grid-template-columns:1fr;text-align:left}
+  .pg-rij{grid-template-columns:1fr auto}.pg-rij>small{grid-column:1/3}
+  .pg-ev{grid-template-columns:64px 1fr;gap:16px;padding:20px}.pg-ev>span:last-child{display:none}
+  .pg-ev-d b{font-size:32px}
+  .pg-term-groep{grid-template-columns:1fr;gap:8px}
+  .pg-form .pg-2{grid-template-columns:1fr}
+  .pg-pstats{grid-template-columns:repeat(2,1fr)}
+  .pg-score{grid-template-columns:1fr;padding:28px}.pg-score i{display:none}
+  .v-foot-grid{grid-template-columns:1fr 1fr}
+  .demo-merk{grid-template-columns:repeat(2,1fr)}
+  .pg-faq details p{padding-right:0}
+  .vchat-knop span{display:none}.vchat-knop{padding:8px}
+}
+@media (prefers-reduced-motion:reduce){.mk-focus,.mk-tijd b,.mk-anim .mk-curve,.mk-anim .mk-bol,.mk-copy em,.mk-host .mk-puls{animation:none}.mk-anim .mk-curve,.mk-host .mk-puls{stroke-dashoffset:0}}
+.pg-form input,.pg-form textarea,.pg-form select{min-width:0;max-width:100%;width:100%}.pg-form .pg-2>*{min-width:0}
 </style>
 
 <header class="nav v-nav">
   <div class="wrap">
     <a class="mark" href="#home" aria-label="James Robinson, naar de homepage"><span class="crest" aria-hidden="true" style="width:20px;height:24px"></span>James Robinson</a>
-    <nav aria-label="Hoofdmenu">
-      <ul class="nav-links">
-        <li><a href="#voorzet">Hoe we spelen</a></li>
-        <li><a href="#scorebord">Scorebord</a></li>
-        <li><a href="#selectie">Selectie</a></li>
-        <li><a href="#prijzen">Opstellingen</a></li>
-        <li><a href="#club">De club</a></li>
-      </ul>
-    </nav>
+    <nav aria-label="Hoofdmenu"><ul class="nav-links" id="navl"></ul></nav>
     <div class="nav-right">
-      <a class="login" href="#portaal">Inloggen</a>
+      <a class="login" href="#/inloggen">Inloggen</a>
       <a class="btn btn--sm btn--lime" href="#check">Voorbespreking</a>
       <button class="burger" type="button" aria-label="Menu openen"><span></span><span></span><span></span></button>
     </div>
@@ -1004,6 +1571,15 @@ a.v-tegel:hover{transform:scale(1.01)}
     </div>
     <div class="v-scroll" aria-hidden="true"><span></span></div>
   </div>
+</section>
+
+<!-- 1b. BRANCHES -->
+<section class="v-marquee" aria-label="Branches">
+  <div class="v-mq"><div class="v-mq-in">
+    <a href="#/branches/horeca">Horeca</a><i>·</i><a href="#/branches/makelaardij">Makelaardij</a><i>·</i><a href="#/branches/automotive">Automotive</a><i>·</i><a href="#/branches/retail">Retail</a><i>·</i><a href="#/branches/zakelijke-dienstverlening">Zakelijke dienstverlening</a><i>·</i><a href="#/branches/zorg">Zorg</a><i>·</i><a href="#/branches/overheid">Overheid</a><i>·</i><a href="#/branches/sport-en-vrije-tijd">Sport en vrije tijd</a><i>·</i>
+    <a href="#/branches/horeca" aria-hidden="true" tabindex="-1">Horeca</a><i>·</i><a href="#/branches/makelaardij" aria-hidden="true" tabindex="-1">Makelaardij</a><i>·</i><a href="#/branches/automotive" aria-hidden="true" tabindex="-1">Automotive</a><i>·</i><a href="#/branches/retail" aria-hidden="true" tabindex="-1">Retail</a><i>·</i><a href="#/branches/zakelijke-dienstverlening" aria-hidden="true" tabindex="-1">Zakelijke dienstverlening</a><i>·</i><a href="#/branches/zorg" aria-hidden="true" tabindex="-1">Zorg</a><i>·</i><a href="#/branches/overheid" aria-hidden="true" tabindex="-1">Overheid</a><i>·</i><a href="#/branches/sport-en-vrije-tijd" aria-hidden="true" tabindex="-1">Sport en vrije tijd</a><i>·</i>
+  </div></div>
+  <p class="v-mq-noot">Klantlogo's volgen. Tot die tijd: de acht branches waarin we spelen.</p>
 </section>
 
 <!-- 2. APPLAUS IS GEEN DOELPUNT -->
@@ -1061,12 +1637,89 @@ a.v-tegel:hover{transform:scale(1.01)}
   </div>
 </section>
 
+<!-- 5b. TWEE VAN DE HONDERD -->
+<section class="v-keten" aria-labelledby="v-twee">
+  <div class="wrap v-keten-in">
+    <div class="v-dots" aria-hidden="true"></div>
+    <div>
+      <p class="v-eyebrow">De keten</p>
+      <h2 id="v-twee" class="v-mega v-mega--s">Twee van de honderd doen iets.</h2>
+      <p class="v-big v-dim2">De andere achtennegentig waren er ook.</p>
+      <p class="v-lead v-lead--l">Eén procentpunt conversie is meer waard dan veel extra budget. Daarom krijgt elke campagne één pagina, met één boodschap en één actie.</p>
+      <a class="btn btn--text v-more" href="#/werkwijze">Zo werkt de keten</a>
+    </div>
+  </div>
+</section>
+
+<!-- 5c. HET SYSTEEM -->
+<section class="v-systeem" id="systeem" aria-labelledby="v-sys">
+  <div class="wrap v-center">
+    <p class="v-eyebrow">Het systeem</p>
+    <h2 id="v-sys" class="v-mega v-mega--s">Eén motor.<br>Vier versnellers.</h2>
+    <p class="v-lead">Adverteren is de motor. Content is de brandstof. Je website is waar het landt. Ons werk houdt op bij de voordeur.</p>
+  </div>
+  <div class="wrap">
+    <ol class="v-flow">
+      <li><span class="v-flow-n">01</span><small>De motor</small><b>Adverteren</b><p>Google, Meta, LinkedIn en TikTok. Vandaag aan, morgen gemeten.</p></li>
+      <li><span class="v-flow-n">02</span><small>De brandstof</small><b>Content</b><p>Een draaidag op locatie. Foto, video en copy in drie formaten.</p></li>
+      <li><span class="v-flow-n">03</span><small>De landing</small><b>Je website</b><p>Eén pagina per campagne. Eén boodschap, één actie.</p></li>
+      <li class="v-flow-doel"><span class="v-flow-n">04</span><small>De voordeur</small><b>Een aanvraag</b><p>Daar eindigt ons werk. Daarna ben jij aan zet.</p></li>
+    </ol>
+    <div class="v-versn">
+      <p><b>De versnellers.</b> Ingezet als de motor draait, in de volgorde die de cijfers aanwijzen.</p>
+      <ul><li><a href="#/diensten/conversie-optimalisatie">Conversie</a></li><li><a href="#/diensten/e-mailmarketing">E-mail en automation</a></li><li><a href="#/diensten/seo">SEO</a></li><li><a href="#/diensten/conversie-optimalisatie">Landingspagina's</a></li></ul>
+    </div>
+    <p class="v-voet v-voet--d">Elke ochtend om 7.00 uur een controle op alles wat buiten de drempels valt. <a href="#/werkwijze">Bekijk de werkwijze ›</a></p>
+  </div>
+</section>
+
+<!-- 5d. EÉN VERHAAL, OP ELK SCHERM -->
+<section class="v-schermen" aria-labelledby="v-sch">
+  <div class="wrap v-center">
+    <p class="v-eyebrow">Van advertentie tot voordeur</p>
+    <h2 id="v-sch" class="v-mega v-mega--s">Eén verhaal.<br>Op elk scherm.</h2>
+    <p class="v-lead">Dezelfde boodschap in de advertentie, op de pagina, in de mail en op het scorebord. Wie klikt, landt waar hij verwacht te landen.</p>
+  </div>
+  <div class="v-phones" tabindex="0" aria-label="Voorbeeldweergaven">
+    <figure class="ph"><div class="ph-s ph-google">
+      <div class="g-bar">kozijnen vervangen prijs</div>
+      <div class="g-ad"><small>Gesponsord</small><span class="g-url">[jouwbedrijf].nl</span><b>Kozijnen vervangen in Zuid-Limburg</b><p>Vaste prijs per kozijn. Inmeten binnen een week. Vraag een offerte aan.</p><div class="g-links"><span>Prijzen</span><span>Offerte</span><span>Werkwijze</span></div></div>
+      <div class="g-org"><i></i><i></i><i class="k"></i></div><div class="g-org"><i></i><i></i><i class="k"></i></div>
+    </div><figcaption>De zoekadvertentie</figcaption></figure>
+    <figure class="ph"><div class="ph-s ph-insta">
+      <div class="i-top"><i></i><span><b>[jouwbedrijf]</b><small>Gesponsord</small></span></div>
+      <div class="i-img"><span>Nieuwe kozijnen.<br>Vaste prijs.</span></div>
+      <div class="i-cta">Meer informatie<span>›</span></div>
+      <p class="i-tekst"><b>[jouwbedrijf]</b> Binnen een week ingemeten. Bekijk de prijzen per kozijn.</p>
+    </div><figcaption>De social advertentie</figcaption></figure>
+    <figure class="ph"><div class="ph-s ph-land">
+      <small class="l-merk">[Jouw bedrijf]</small>
+      <b class="l-kop">Kozijnen vervangen. Vaste prijs per kozijn.</b>
+      <p>Inmeten binnen een week. Plaatsen in één dag.</p>
+      <div class="l-veld">Naam</div><div class="l-veld">Telefoon</div><div class="l-veld">Aantal kozijnen</div>
+      <div class="l-knop">Offerte aanvragen</div>
+    </div><figcaption>De landingspagina</figcaption></figure>
+    <figure class="ph"><div class="ph-s ph-mail">
+      <div class="m-not"><i></i><span><b>[Jouw bedrijf]</b><small>Bedankt voor je aanvraag</small></span><em>nu</em></div>
+      <div class="m-body"><b>Bedankt voor je aanvraag.</b><p>We bellen je vandaag nog. Dit kun je alvast verwachten:</p><ul><li>Inmeten bij je thuis</li><li>Offerte binnen twee dagen</li><li>Plaatsen in één dag</li></ul></div>
+    </div><figcaption>De bevestiging</figcaption></figure>
+    <figure class="ph"><div class="ph-s ph-portaal">
+      <small>Scorebord</small><b class="p-n">Nieuwe aanvraag</b>
+      <div class="p-k"><span>Offerteaanvraag</span><small>Google · zojuist</small></div>
+      <p>Hoe beoordeel je deze aanvraag</p>
+      <div class="p-o"><span class="on">Goed</span><span>Twijfel</span><span>Slecht</span></div>
+      <small class="p-v">Voorbeeldweergave</small>
+    </div><figcaption>Het scorebord</figcaption></figure>
+  </div>
+</section>
+
 <!-- 5. HET SCOREBORD -->
 <section class="v-score" id="scorebord" aria-labelledby="v-sb">
   <div class="wrap wrap--std v-center">
     <p class="v-eyebrow">Het scorebord</p>
     <h2 id="v-sb" class="v-mega v-mega--s">Je ziet wat<br>wij zien.</h2>
     <p class="v-lead">Google, Meta, LinkedIn, TikTok, je website en Search Console. Op één scherm, elk uur bijgewerkt.</p>
+    <div class="v-btns v-btns--c"><a class="btn btn--text v-more" href="#/portaal">Bekijk het scorebord</a></div>
   </div>
   <div class="v-laptop-wrap">
     <div class="v-laptop">
@@ -1113,15 +1766,15 @@ a.v-tegel:hover{transform:scale(1.01)}
     </div>
   </div>
   <div class="v-rail" tabindex="0" aria-label="Spelers">
-    <article class="v-kaart"><span class="v-nr">01</span><div class="v-portret" aria-hidden="true"></div><div class="v-kaart-tekst"><small>Oprichter</small><h3>Jim Coumans</h3><p>Merk, marketing en groei</p></div></article>
-    <article class="v-kaart"><span class="v-nr">02</span><div class="v-portret" aria-hidden="true"></div><div class="v-kaart-tekst"><small>Mede-eigenaar</small><h3>Jim Kikken</h3><p>Data-gedreven performance marketing</p></div></article>
-    <article class="v-kaart"><span class="v-nr">03</span><div class="v-portret" aria-hidden="true"></div><div class="v-kaart-tekst"><small>Medeoprichter</small><h3>Robin Jacobs</h3><p>[Rol]</p></div></article>
+    <article class="v-kaart"><span class="v-nr">01</span><div class="v-portret" aria-hidden="true"></div><div class="v-kaart-tekst"><small>Oprichter</small><h3><a href="#/team/jim-coumans">Jim Coumans</a></h3><p>Merk, marketing en groei</p></div></article>
+    <article class="v-kaart"><span class="v-nr">02</span><div class="v-portret" aria-hidden="true"></div><div class="v-kaart-tekst"><small>Mede-eigenaar</small><h3><a href="#/team/jim-kikken">Jim Kikken</a></h3><p>Data-gedreven performance marketing</p></div></article>
+    <article class="v-kaart"><span class="v-nr">03</span><div class="v-portret" aria-hidden="true"></div><div class="v-kaart-tekst"><small>Medeoprichter</small><h3><a href="#/team/robin-jacobs">Robin Jacobs</a></h3><p>[Rol]</p></div></article>
     <article class="v-kaart"><span class="v-nr">07</span><div class="v-portret" aria-hidden="true"></div><div class="v-kaart-tekst"><small>Uit de jeugd · [positie]</small><h3>[Naam]</h3><p>[Specialisme]</p></div></article>
     <article class="v-kaart"><span class="v-nr">10</span><div class="v-portret" aria-hidden="true"></div><div class="v-kaart-tekst"><small>Uit de jeugd · [positie]</small><h3>[Naam]</h3><p>[Specialisme]</p></div></article>
     <article class="v-kaart"><span class="v-nr">23</span><div class="v-portret" aria-hidden="true"></div><div class="v-kaart-tekst"><small>JRNXT · stagiair</small><h3>[Naam]</h3><p>[Opleiding]</p></div></article>
-    <article class="v-kaart v-kaart--open"><span class="v-nr">?</span><div class="v-kaart-tekst"><small>Open plek</small><h3>Jouw naam hier</h3><p>Stage, afstuderen of een vaste plek.</p><a class="btn btn--text" href="#team">Bekijk de vacatures</a></div></article>
+    <article class="v-kaart v-kaart--open"><span class="v-nr">?</span><div class="v-kaart-tekst"><small>Open plek</small><h3>Jouw naam hier</h3><p>Stage, afstuderen of een vaste plek.</p><a class="btn btn--text" href="#/werken-bij">Bekijk de vacatures</a></div></article>
   </div>
-  <p class="wrap v-noot">Portretten volgen. Eigen fotografie, geen stockbeeld.</p>
+  <p class="wrap v-noot">Portretten volgen. Eigen fotografie, geen stockbeeld. <a href="#/team">De hele selectie ›</a></p>
 </section>
 
 <!-- 7. DE OPSTELLINGEN -->
@@ -1154,7 +1807,27 @@ a.v-tegel:hover{transform:scale(1.01)}
       <li><b>3</b><span>Alle toegangen binnen.</span></li>
       <li class="v-tijd--live"><b>19</b><span>Je eerste campagne live.</span></li>
     </ol>
-    <p class="v-lead v-center-t">Daarvoor een voorbespreking van ongeveer twee weken. Die kost niets. Daarna speel je een seizoen dat je elke maand kunt opzeggen.</p>
+    <div class="v-fasen">
+      <a href="#/werkwijze#klantreis"><small>Verkopen · ±2 weken</small><b>De voorbespreking</b><span>De check, de scouting, het intakegesprek en je gameplan. Kost niets.</span></a>
+      <a href="#/werkwijze#klantreis"><small>Starten · de opstartmaand</small><b>De voorbereiding</b><span>Tekenen, toegangen, het fundament. Aftrap rond dag 19.</span></a>
+      <a href="#/werkwijze#klantreis"><small>Samenwerken · maandelijks opzegbaar</small><b>Het seizoen</b><span>Elke ochtend een controle. Elke maand een update. Nabesprekingen volgens je opstelling.</span></a>
+    </div>
+    <p class="v-voet"><a href="#/werkwijze#klantreis">Bekijk de klantreis in acht stappen ›</a></p>
+  </div>
+</section>
+
+<!-- 8b. EERLIJK VOORAF -->
+<section class="v-eerlijk" aria-labelledby="v-eer">
+  <div class="wrap wrap--std">
+    <div class="v-center">
+      <p class="v-eyebrow">Eerlijk vooraf</p>
+      <h2 id="v-eer" class="v-mega v-mega--s">Niet elke club<br>past bij ons.</h2>
+      <p class="v-lead">We gaan alleen het veld op als we erin geloven. Liever nu duidelijk dan na drie maanden.</p>
+    </div>
+    <div class="v-twee">
+      <div class="v-kol v-kol--ja"><h3>We spelen samen als je</h3><ul><li>een bedrijf hebt dat draait en verder wil</li><li>meer klanten aankunt dan je nu hebt</li><li>een aanvraag binnen de afgesproken tijd opvolgt</li><li>de cijfers laat zien, ook als ze tegenvallen</li></ul></div>
+      <div class="v-kol v-kol--nee"><h3>We passen niet als je</h3><ul><li>iemand zoekt die je feed vult</li><li>één losse campagne wilt</li><li>vooral via een webshop verkoopt</li><li>personeel zoekt</li></ul></div>
+    </div>
   </div>
 </section>
 
@@ -1165,6 +1838,22 @@ a.v-tegel:hover{transform:scale(1.01)}
     <p id="v-vijf" class="v-giga">5,0</p>
     <p class="v-sterren" aria-label="Vijf sterren">★★★★★</p>
     <p class="v-big v-dim">Elf reviews op Google.<br>Allemaal vijf sterren.</p>
+    <div class="v-btns v-btns--c"><a class="btn btn--text v-link" href="#/resultaten">Bekijk de uitslagen</a><a class="btn btn--text v-link" href="#/cases">Wedstrijdverslagen</a></div>
+  </div>
+</section>
+
+<!-- 9b. DE ANALYSE -->
+<section class="v-analyse" aria-labelledby="v-an">
+  <div class="wrap">
+    <div class="v-kop-rij">
+      <div><p class="v-eyebrow">De analyse</p><h2 id="v-an" class="v-mega v-mega--s">Wat we leren,<br>delen we.</h2></div>
+      <a class="btn btn--text v-more" href="#/kennis">Alle analyses</a>
+    </div>
+    <div class="v-art3">
+      <a class="v-art" href="#/kennis/tot-aan-de-voordeur"><span class="v-art-n">7×</span><small>Gids · 6 min</small><h3>Tot aan de voordeur: waarom snel inkoppen meer oplevert dan extra budget</h3></a>
+      <a class="v-art v-art--b" href="#/kennis/applaus-is-geen-doelpunt"><span class="v-art-n">1–3%</span><small>Analyse · 4 min</small><h3>Applaus is geen doelpunt: posten of adverteren</h3></a>
+      <a class="v-art" href="#/kennis/tijd-plus-geld-is-data"><span class="v-art-n">3 mnd</span><small>Gids · 5 min</small><h3>Tijd plus geld is data: wat er in de eerste maanden gebeurt</h3></a>
+    </div>
   </div>
 </section>
 
@@ -1177,7 +1866,7 @@ a.v-tegel:hover{transform:scale(1.01)}
   </div>
   <div class="wrap">
     <div class="v-bento">
-      <a class="v-tegel v-poster" href="#playground">
+      <a class="v-tegel v-poster" href="#/playground/james-robinson-vs-fagro">
         <small>De playground</small>
         <div class="v-vs"><span>James Robinson</span><b>vs</b><span>Fagro</span></div>
         <p>Padel. Bedrijven uit de regio tegen ons team.</p>
@@ -1193,17 +1882,21 @@ a.v-tegel:hover{transform:scale(1.01)}
           <p class="v-dank">Welkom bij de club.</p>
         </form>
       </div>
-      <a class="v-tegel v-thuis" href="#events">
+      <a class="v-tegel v-thuis" href="#/events">
         <small>Thuiswedstrijden</small>
         <div class="v-datum"><b>[dd]</b><span>[mnd]</span></div>
         <h3>Padel met klanten en team.</h3>
         <p>Ondernemers die ons willen leren kennen, zijn welkom.</p>
       </a>
-      <a class="v-tegel v-jrnxt" href="#team">
+      <a class="v-tegel v-jrnxt" href="#/werken-bij">
         <small>De jeugdopleiding</small>
         <h3>JRNXT</h3>
         <p>Zeven van de tien begonnen hier.</p>
       </a>
+      <div class="v-tegel v-magazine">
+        <div class="v-cover" aria-hidden="true"><small>James Robinson</small><b>The Perfor&shy;mance <em>Issue</em></b></div>
+        <div><small>Het wedstrijdprogramma</small><h3>Op papier. Aan tafel.</h3><p>Hoe we spelen, wat het kost en wat je van ons mag verwachten. Je krijgt het bij het intakegesprek. Het staat niet online.</p></div>
+      </div>
     </div>
   </div>
 </section>
@@ -1222,6 +1915,7 @@ a.v-tegel:hover{transform:scale(1.01)}
 
 </div>
 
+<div data-page="sub" hidden><div id="sub"></div></div>
 <div data-page="prijzen" hidden>
 <section class="hero" style="padding-bottom:96px">
   <div class="wrap">
@@ -1538,25 +2232,21 @@ a.v-tegel:hover{transform:scale(1.01)}
     document.querySelectorAll('.rv').forEach(function(el){var r=el.getBoundingClientRect();if(r.top>innerHeight){el.classList.add('wait');io.observe(el)}});
   }
 })();
+
+/* ======================= VERHAAL: aanvullingen ======================= */
+(function(){
+  var clamp=function(v,a,b){return Math.max(a,Math.min(b,v))};
+  var dots=document.querySelector('.v-dots');
+  if(dots){var h='';for(var i=0;i<100;i++)h+='<i'+(i==43||i==67?' class="hit"':'')+'></i>';dots.innerHTML=h;}
+  var flow=document.querySelector('.v-flow'),stappen=flow?[].slice.call(flow.children):[];
+  function rol(){
+    if(dots&&dots.offsetParent){var r=dots.getBoundingClientRect();if(r.top<innerHeight*.7)dots.classList.add('on')}
+    if(flow&&flow.offsetParent){var f=flow.getBoundingClientRect(),v=clamp((innerHeight*.85-f.top)/(innerHeight*.5),0,1);flow.style.setProperty('--flow',v);stappen.forEach(function(li,i){li.classList.toggle('on',v>=i/3-.01)})}
+  }
+  addEventListener('scroll',function(){requestAnimationFrame(rol)},{passive:true});addEventListener('hashchange',function(){setTimeout(rol,60)});rol();
+})();
 </script>
 <script>
-/* ======================= Router: home, prijzen, check ======================= */
-(function(){
-  var pages={prijzen:'prijzen',rekenhulp:'prijzen',check:'check'};
-  function toon(){
-    var h=(location.hash||'').replace('#','');
-    var p=pages[h]||'home';
-    document.querySelectorAll('[data-page]').forEach(function(el){el.hidden=el.getAttribute('data-page')!==p});
-    if(p==='home'){ var t=h&&h!=='home'&&document.getElementById(h); if(t){t.scrollIntoView()} else {window.scrollTo(0,0)} }
-    else if(h==='rekenhulp'){ document.getElementById('rekenhulp').scrollIntoView() }
-    else window.scrollTo(0,0);
-    if(p==='check') check.render();
-  }
-  window.addEventListener('hashchange',toon);
-  document.addEventListener('DOMContentLoaded',toon);
-  window.__toon=toon;
-})();
-
 /* ======================= Rekenhulp ======================= */
 (function(){
   var P=[{n:'Starter',p:1000,v:0},{n:'Playmaker',p:1500,v:2500},{n:'Captain',p:2000,v:5000},{n:'Champion',p:2500,v:7500}];
@@ -1679,5 +2369,545 @@ var check=(function(){
     render(); var k=root.querySelector('.ck-kaart'); if(k&&k.getBoundingClientRect().top<0)root.scrollIntoView({behavior:'smooth'});
   });
   return {render:render};
+})();
+</script>
+<script>
+/* ======================= SITE: inhoud ======================= */
+var JR={};
+
+JR.menu=[
+  {k:'Werkwijze',href:'#/werkwijze'},
+  {k:'Diensten',groepen:[
+    {t:'Adverteren',items:[['Google Ads','#/diensten/google-ads'],['Social advertising','#/diensten/social-advertising'],['Microsoft Ads','#/diensten/microsoft-ads']]},
+    {t:'Content',items:[['Fotografie','#/diensten/fotografie'],['Videografie','#/diensten/videografie'],['Animatie','#/diensten/animatie'],['Copywriting','#/diensten/copywriting']]},
+    {t:'Versnellers',items:[['Conversie-optimalisatie','#/diensten/conversie-optimalisatie'],['E-mailmarketing','#/diensten/e-mailmarketing'],['SEO','#/diensten/seo'],['Hosting en techniek','#/diensten/hosting']]},
+  ],uit:{t:'Alle diensten',p:'Eén systeem. Alles met één doel: meer klanten voor jou.',href:'#/diensten'}},
+  {k:'Prijzen',href:'#prijzen'},
+  {k:'Voor jou',groepen:[
+    {t:'Branches',items:[['Horeca','#/branches/horeca'],['Makelaardij','#/branches/makelaardij'],['Automotive','#/branches/automotive'],['Retail','#/branches/retail'],['Zakelijke dienstverlening','#/branches/zakelijke-dienstverlening'],['Zorg','#/branches/zorg'],['Overheid','#/branches/overheid'],['Sport en vrije tijd','#/branches/sport-en-vrije-tijd']],klein:1},
+    {t:'Regio',items:[['Maastricht','#/regio/maastricht'],['Heerlen','#/regio/heerlen'],['Sittard-Geleen','#/regio/sittard-geleen'],['Parkstad','#/regio/parkstad'],['Valkenburg','#/regio/valkenburg']],klein:1},
+    {t:'Bewijs',items:[['Wedstrijdverslagen','#/cases'],['Uitslagen','#/resultaten'],['Het scorebord','#/portaal']]},
+  ],uit:{t:'De voorbespreking',p:'Vijftien vragen. Dan weet je of we samen het veld op gaan.',href:'#check'}},
+  {k:'Kennis',groepen:[
+    {t:'De analyse',items:[['Artikelen en gidsen','#/kennis'],['Begrippen','#/begrippen'],['Tools','#/tools']]},
+    {t:'Limburg',items:[['Marketing in Limburg','#/marketing-in-limburg'],['Partners','#/partners']]},
+    {t:'Hulp',items:[['Helpdesk','#/helpdesk'],['Portaal-updates','#/portaal/updates']]},
+  ],uit:{t:'Het clubblad',p:'Eén keer per maand de beste analyses in je inbox.',href:'#club'}},
+  {k:'Over ons',groepen:[
+    {t:'De club',items:[['Over James Robinson','#/over-ons'],['De selectie','#/team'],['Werken bij','#/werken-bij']]},
+    {t:'Op het veld',items:[['Events','#/events'],['De playground','#/playground']]},
+    {t:'Contact',items:[['Contact','#/contact'],['Inloggen','#/inloggen']],klein:1},
+  ],uit:{t:'Bel ons',p:'045 792 0009. Maandag tot en met vrijdag, 8.00 tot 18.00 uur.',href:'#/contact'}},
+];
+
+/* ---------- Diensten ---------- */
+JR.diensten={
+'google-ads':{groep:'Adverteren',naam:'Google Ads',merk:'Zichtbaar vanaf dag één. <b>Weg op de dag dat je stopt.</b>',sub:'Iemand die "kozijnen vervangen prijs" typt is verder dan iemand die "kozijnen" typt. Het verschil zit in die twee woorden.',vis:'google',spec:'Google Ads',
+ title:'Google Ads-bureau Limburg | James Robinson',
+ wat:[['Zoekadvertenties','Bovenaan bij de zoekopdracht. Je betaalt per klik.','zoekadvertenties'],['Performance Max','Eén campagne over alle kanalen van Google. Stuurt op aanvragen.','performance-max'],['Display','Beeld op websites en apps. Vooral voor retargeting.','display'],['YouTube','Video voor en tijdens het kijken.','youtube'],['Demand Gen','Beeld en video in Discover, Gmail en YouTube.','demand-gen'],['Lokaal adverteren','Zichtbaar in Maps en voor zoekopdrachten in de buurt.','lokaal-adverteren']],
+ aanpak:[['Zoekwoorden','Op de woorden van wie al wil kopen. Niet op wie zich oriënteert.','Week 1'],['Structuur','Per aanbod een campagne. Per campagne één landingspagina.','Week 2'],['Advertenties','Drie varianten per groep. De cijfers kiezen.','Week 3'],['Live en bijsturen','Elke ochtend om 7.00 uur een controle. Elke maand een update.','Vanaf dag 19']],
+ eerlijk:['Stopt het budget, dan stopt het verkeer. Direct.','De eerste maanden zijn leren. Rond maand drie trekken we de eerste voorzichtige conclusies.','Werkt alleen als er al vraag is. Niemand zoekt op iets wat hij nog niet kent.'],
+ faq:[['Wat kost adverteren in Google?','Twee bedragen. Het advertentiebudget gaat rechtstreeks naar Google, op jouw naam. Ons pakket begint bij € 1.000 per maand, met een advertentiebudget vanaf € 1.000. Plus eenmalig het fundament van € 4.500. Alle bedragen exclusief btw.'],['Hoe snel staat mijn campagne live?','Rond dag 19 na het tekenen. Daarvoor zetten we de meting, de accounts, de zoekwoorden en een landingspagina neer.'],['Staat het account op mijn naam?','Ja. Het account, de data en de betaalgegevens zijn van jou. Wij zijn beheerder, nooit eigenaar.'],['SEO of Google Ads?','Allebei, in deze volgorde. Google Ads levert vanaf dag één data op over welke woorden een aanvraag opleveren. Daarna werken we met SEO op precies die woorden.'],['Kan ik maandelijks opzeggen?','Ja. Voor allebei. Het fundament krijg je na de start niet terug.']],
+ rel:['social-advertising','conversie-optimalisatie','seo'],
+ seo:`<h2>Wat is Google Ads?</h2><p>Google Ads is het advertentieplatform van Google. Je advertentie verschijnt bij een zoekopdracht, in Maps, op YouTube en op websites die met Google samenwerken. Je betaalt per klik, niet per vertoning. Wie niet klikt, kost niets.</p><p>Het verschil met bijna elke andere vorm van marketing: de vraag is er al. Iemand typt wat hij zoekt, en op dat moment sta je er. Daarom is Google Ads bij ons de motor van het systeem. Het enige wat je vandaag aanzet en morgen meet.</p>
+<h2>Wat kost adverteren in Google?</h2><p>Wat een klik kost, hangt af van drie dingen: de branche, de concurrentie op het woord en de kwaliteit van je advertentie en landingspagina. Google beloont een goede pagina met een lagere prijs per klik. Een slechte pagina maakt elke klik duurder.</p><p>Bij ons betaal je twee dingen. Het advertentiebudget betaal je rechtstreeks aan Google, op jouw naam, zonder marge van ons erbovenop. Daarnaast betaal je een vast bedrag per maand voor ons pakket. Voor één campagne is dat € 1.000 per maand, met een advertentiebudget tussen € 1.000 en € 2.500. Ons pakket is nooit meer dan de helft van wat je samen uitgeeft. Met de <a href="#rekenhulp">rekenhulp</a> zie je wat jouw ambitie vraagt.</p>
+<h2>Zoekwoorden: op de vraag, niet op het onderwerp</h2><p>De meeste budgetten lekken weg op woorden die te breed zijn. "Kozijnen" trekt iedereen die ooit over kozijnen heeft nagedacht. "Kozijnen vervangen prijs" trekt iemand die een offerte wil. We beginnen smal, op de woorden met de meeste koopintentie, en verbreden pas als de cijfers dat rechtvaardigen.</p><p>Uitsluitingswoorden zijn net zo belangrijk. Wie zoekt op "kozijnen zelf plaatsen" of "vacature kozijnenmonteur", wil geen offerte. Die klikken sluiten we vanaf dag één uit.</p>
+<h2>SEO of Google Ads?</h2><p>De vraag stelt een verkeerde keuze. Google Ads levert direct, en stopt direct. SEO kost maanden, en blijft daarna staan. De beste volgorde: eerst adverteren, zodat je binnen weken weet welke woorden een aanvraag opleveren. Daarna met SEO investeren in precies die woorden. Zo bouw je geen posities op woorden die niets opleveren.</p>
+<h2>Van klik tot aanvraag</h2><p>Een klik is geen klant. Tussen de advertentie en de aanvraag zit je landingspagina. Daarom krijgt elke campagne bij ons één eigen pagina, met één boodschap en één actie. Twee van de honderd bezoekers doen iets. De andere achtennegentig waren er ook.</p><p>Na de aanvraag ben jij aan zet. Bedrijven die binnen een uur reageren, hebben bijna zeven keer zo vaak een serieus gesprek als bedrijven die later reageren <span class="pg-bron">(Oldroyd e.a., Harvard Business Review, 2011)</span>. Daarom spreken we vooraf af hoe snel je opvolgt, en geef je in het portaal per aanvraag een oordeel. Zo leert de campagne wat een goede klant is.</p>
+<h2>Wat je elke maand ziet</h2><p>In het portaal zie je dezelfde cijfers als wij, elk uur bijgewerkt: vertoningen, klikken, aanvragen, kosten per aanvraag en wat er klant werd. Geen rapport dat een maand oud is. Wat tegenvalt, zie je net zo snel als wat meevalt.</p>`},
+'social-advertising':{groep:'Adverteren',naam:'Social advertising',merk:'Bereik <b>vóór de vraag.</b>',sub:'Niemand zoekt op een keuken tot hij er een wil. Wat daarvoor gebeurt, gebeurt hier.',vis:'social',spec:'Social advertising',
+ wat:[['Facebook en Instagram','Het grootste bereik in de regio. Stuurt op aanvragen.','facebook-en-instagram'],['LinkedIn','Op functie, branche en bedrijfsgrootte. Minimaal € 1.000 per campagne.','linkedin'],['TikTok','Bereik bij wie nog niet zoekt. Vraagt om eigen video.','tiktok']],
+ aanpak:[['Doelgroep','Mensen die lijken op wie al bij je koopt.','Week 1'],['Draaidag','Een dagdeel filmen op locatie. Montage in 9:16, 4:5 en 1:1.','Week 2'],['Varianten','Meerdere beelden en boodschappen tegelijk. De cijfers kiezen.','Week 3'],['Contentrondes','Advertenties slijten. Volgens je opstelling maken we nieuwe.','Elk seizoen']],
+ eerlijk:['Mensen scrollen. Een advertentie heeft twee seconden.','Advertenties slijten. Zonder nieuwe content stijgen de kosten.','Organisch posten is iets anders. Een bericht bereikt 1 tot 3% van je volgers.'],
+ faq:[['Wat is het verschil met posten?','Een organisch bericht bereikt gemiddeld 1 tot 3% van je eigen volgers (Socialinsider 2026). Een advertentie bereikt wie jij kiest, ook mensen die je nog niet volgen.'],['Welk platform past bij mij?','Standaard starten we met Meta: Facebook en Instagram. LinkedIn bij zakelijke klanten, TikTok als je doelgroep daar zit en er video is. Wij kiezen op de cijfers.'],['Moet ik zelf op beeld?','Iemand moet het werk doen op beeld. Dat hoeft niet de eigenaar te zijn.'],['Wat kost het?','Minimaal € 500 per kanaal per campagne per maand aan advertentiebudget. Op LinkedIn € 1.000. Daarnaast ons pakket vanaf € 1.000 per maand.']],
+ rel:['google-ads','videografie','fotografie']},
+'microsoft-ads':{groep:'Adverteren',naam:'Microsoft Ads',merk:'Kleiner bereik. <b>Vaak goedkopere klikken.</b>',sub:'Bing, Edge en zoeken in Windows. Dezelfde zoekopdrachten, een ander publiek.',vis:'bing',spec:'Google Ads',
+ wat:[['Zoekadvertenties in Bing','Overgenomen uit Google Ads en apart bijgestuurd.',''],['Audience Network','Beeld op sites en apps van Microsoft.','']],
+ aanpak:[['Overnemen','De bewezen campagnes uit Google Ads als basis.','Na de aftrap'],['Bijsturen','Eigen biedingen en uitsluitingen.','Maandelijks']],
+ eerlijk:['Het volume is een fractie van Google.','Pas zinvol als Google Ads al draait en werkt.'],
+ faq:[['Moet ik met Microsoft Ads beginnen?','Nee. We beginnen met Google en Meta. Microsoft Ads komt erbij als de cijfers daar ruimte voor laten zien.'],['Telt het als aparte campagne?','Nee. Hetzelfde aanbod in Google en Microsoft telt als één campagne.']],
+ rel:['google-ads','seo']},
+'fotografie':{groep:'Content',naam:'Fotografie',merk:'De eerste <b>twee seconden.</b>',sub:'Mensen kijken voordat ze lezen. Dat is geen voorkeur, dat is volgorde.',vis:'foto',spec:'Fotografie',content:1,
+ wat:[['Brandshoot','Je bedrijf, je mensen en je werk, in één stijl.','brandshoot'],['Portret','Voor de site, LinkedIn en de pers.','portret'],['Event','Wat er gebeurde, voor wie er niet was.','event'],['Product','Vrijstaand en in gebruik.','product'],['Interieur','Ruimtes zoals ze voelen.','interieur']],
+ aanpak:[['Contentplan','Welke beelden de campagnes nodig hebben.','Vooraf'],['Draaidag','Op locatie, met iemand die het werk doet.','Volgens opstelling'],['Selectie en bewerking','In de huisstijl van je merk.','Binnen een week'],['In de merkkluis','Alles terug te vinden in het portaal.','Direct']],
+ eerlijk:['Een mooie foto zonder plan levert niets op.','Het werk moet op beeld. Iemand moet het doen.'],
+ faq:[['Alleen een fotograaf nodig?','Dan bellen we je eerst om te kijken of een abonnement past. Past het niet, dan verwijzen we je door naar een partner.'],['Van wie zijn de foto\'s?','Van jou. Alles komt in je merkkluis in het portaal.'],['Hoeveel draaidagen krijg ik?','Volgens je opstelling: van één per jaar bij Starter tot vier per jaar bij Champion. Extra dagen kunnen als apart voorstel.']],
+ rel:['videografie','social-advertising','copywriting']},
+'videografie':{groep:'Content',naam:'Videografie',merk:'Twintig seconden. <b>Drie alinea\'s minder.</b>',sub:'Sommige vakken zijn lastig uit te leggen en eenvoudig te laten zien.',vis:'video',spec:'Videografie',content:1,
+ wat:[['Video-ads','Kort, voor social en YouTube. In drie formaten.','video-ads'],['Reels','Verticaal, voor het eerste moment van aandacht.','reels'],['Bedrijfsvideo','Maken we niet. We verwijzen je door naar een partner.','bedrijfsvideo']],
+ aanpak:[['Script','Haak, boodschap, actie. In de eerste twee seconden.','Vooraf'],['Opnames','Een dagdeel op locatie.','Draaidag'],['Montage','9:16, 4:5 en 1:1, met ondertitels.','Binnen een week'],['Testen','Meerdere openingen tegelijk live.','Na livegang']],
+ eerlijk:['De meeste mensen kijken zonder geluid.','Een video slijt sneller dan een foto.'],
+ faq:[['Maken jullie bedrijfsvideo\'s?','Nee. Daar verwijzen we door naar een partner. Wij maken video voor advertenties.'],['Hoe lang is een video-ad?','Meestal tussen de zes en twintig seconden.']],
+ rel:['fotografie','animatie','social-advertising']},
+'animatie':{groep:'Content',naam:'Animatie',merk:'Beweegt <b>zonder camera.</b>',sub:'Een proces, een getal of een product dat nog niet bestaat. Wat niet te filmen is, is te tekenen.',vis:'anim',spec:'Animatie',content:1,
+ wat:[['Motion graphics','Tekst en vormen in beweging, in je huisstijl.',''],['Uitleganimatie','Hoe iets werkt, in twintig seconden.',''],['Logo-animatie','Voor het begin of eind van elke video.','']],
+ aanpak:[['Storyboard','Elk beeld vooraf op papier.','Week 1'],['Animatie','In de drie formaten.','Week 2'],['Varianten','Openingen testen.','Na livegang']],
+ eerlijk:['Duurder per seconde dan filmen.','Te veel beweging leidt af van de boodschap.'],
+ faq:[['Wanneer animatie en wanneer video?','Video als het werk te zien is. Animatie als het werk onzichtbaar is, zoals een dienst, een proces of software.']],
+ rel:['videografie','copywriting']},
+'copywriting':{groep:'Content',naam:'Copywriting',merk:'Elk woord <b>gewogen.</b>',sub:'Een advertentie heeft dertig tekens voor een kop. Een landingspagina een paar seconden. Wat overblijft na het schrappen, staat er.',vis:'copy',spec:'Copywriting',content:1,
+ wat:[['Advertentieteksten','Koppen en beschrijvingen, in varianten.',''],['Landingspagina\'s','Eén boodschap, één actie.',''],['E-mails','Van bevestiging tot automation.',''],['Webteksten','Met de H2\'s in zoektaal.','']],
+ aanpak:[['Boodschap','Eén zin die klopt met het merk.','Fundament'],['Varianten','Meerdere koppen tegelijk live.','Per campagne'],['Bijschaven','De cijfers kiezen de woorden.','Maandelijks']],
+ eerlijk:['De beste tekst wint niet. De tekst die het meest oplevert wint.','Merktaal bepaalt de grenzen. Binnen die grenzen kiest de data.'],
+ faq:[['Schrijven jullie ook blogs?','Voor SEO, op woorden die al bewezen hebben dat ze converteren. Niet om de site te vullen.']],
+ rel:['conversie-optimalisatie','seo','e-mailmarketing']},
+'conversie-optimalisatie':{groep:'Versnellers',naam:'Conversie-optimalisatie',merk:'Hetzelfde verkeer. <b>Ander resultaat.</b>',sub:'Twee van de honderd doen iets. De andere achtennegentig waren er ook.',vis:'ab',spec:'Conversie-optimalisatie',
+ wat:[['Landingspagina\'s','Eén per campagne. Gebouwd op je eigen website.',''],['A/B-testen','Twee versies tegelijk. De cijfers kiezen.',''],['Formulieren','Minder velden, minder afhakers.',''],['Snelheid','Via Webmix: elke seconde telt.','']],
+ aanpak:[['Meten','Waar haken bezoekers af.','Fundament'],['Hypothese','Eén verandering, met een reden.','Maandelijks'],['Testen','Lang genoeg voor een conclusie.','Per test'],['Doorvoeren','Wat wint, blijft.','Na de test']],
+ eerlijk:['Bij Google verbetert maar 10 tot 20% van de geteste ideeën het resultaat (Kohavi & Thomke, HBR 2017).','Testen vraagt verkeer. Met weinig bezoekers duurt een conclusie lang.','We bouwen geen nieuwe websites.'],
+ faq:[['Bouwen jullie een nieuwe website?','Nee. We bouwen landingspagina\'s op je bestaande website. Voor een nieuwe website verwijzen we je naar Webmix.'],['Wat is een goede conversieratio?','Dat verschilt per branche en per aanbod. We meten het vanaf de nulmeting en sturen op verbetering, niet op een gemiddelde.']],
+ rel:['google-ads','copywriting','hosting']},
+'e-mailmarketing':{groep:'Versnellers',naam:'E-mailmarketing',merk:'Van jou. <b>Niet geleend.</b>',sub:'Volgers staan bij Meta. Posities staan bij Google. Een adressenlijst staat bij jou.',vis:'mail',spec:'E-mailmarketing',
+ wat:[['Nieuwsbrieven','Elke maand, met iets wat de moeite waard is.',''],['Campagnemailings','Bij een actie of seizoen.',''],['Automation','Werkt door na vijven. Van bevestiging tot opvolging.','']],
+ aanpak:[['MailerLite','Op jouw naam. Vanaf € 9,90 per maand.','Fundament'],['De lijst','Wie aanvroeg, kocht of zich aanmeldde.','Doorlopend'],['Flows','Bevestiging, herinnering, opvolging.','Na de aftrap'],['Mailings','Volgens planning.','Maandelijks']],
+ eerlijk:['Een lijst groeit langzaam.','Zonder toestemming geen mail. Dat houdt de lijst klein en goed.'],
+ faq:[['Welk systeem gebruiken jullie?','MailerLite, op jouw naam. Je betaalt rechtstreeks aan MailerLite, € 9,90 tot € 73 per maand afhankelijk van de lijst. Krijgen wij een doorverwijsvergoeding, dan melden we dat.'],['Wat gebeurt er met de lijst als ik stop?','Die blijft van jou. Net als alles.']],
+ rel:['conversie-optimalisatie','copywriting']},
+'seo':{groep:'Versnellers',naam:'SEO',merk:'Maanden werk. <b>Daarna stopt het niet meer.</b>',sub:'Zoekmachines belonen wat er al lang staat. Dat is de reden dat het traag begint, en de reden dat het blijft.',vis:'seo',spec:'SEO',
+ wat:[['On-page','Titels, koppen en tekst op de woorden die converteren.',''],['Off-page','Verwijzingen van sites die ertoe doen.',''],['Google Bedrijfsprofiel','Zichtbaar in Maps en de lokale resultaten.','']],
+ aanpak:[['Woorden uit Ads','Alleen woorden die al bewezen hebben dat ze een aanvraag opleveren.','Na de eerste maanden'],['Pagina\'s','Per woord één pagina die het antwoord geeft.','Doorlopend'],['Techniek','Snelheid, redirects, structuur.','Via Webmix'],['Meten','Search Console in het portaal.','Elk uur']],
+ eerlijk:['Levert de eerste maanden weinig op.','Posities zijn nooit gegarandeerd.','Werkt pas goed als de site technisch op orde is.'],
+ faq:[['Hoe lang duurt het?','Maanden. De eerste beweging zie je vaak na een paar maanden, de echte resultaten later. Daarom beginnen we met adverteren.'],['Garanderen jullie een eerste plek?','Nee. Niemand kan dat eerlijk beloven.']],
+ rel:['google-ads','copywriting','hosting']},
+'hosting':{groep:'Versnellers',naam:'Hosting en techniek',merk:'Merkbaar <b>alleen als het misgaat.</b>',sub:'Elke nacht een back-up. Elke minuut een controle. Verder niets te melden.',vis:'host',spec:'Hosting',
+ wat:[['Hosting via Webmix','€ 85 per maand, rechtstreeks gefactureerd.',''],['Snelheid','Eenmalig € 750.',''],['Redirects','Eenmalig € 500.',''],['E-mailauthenticatie','Eenmalig € 250.','']],
+ aanpak:[['Audit','Wat de site trager of kwetsbaarder maakt.','Fundament'],['Herstel','Via Webmix, met een prijs vooraf.','Voor de aftrap'],['Monitoring','Elke minuut een controle.','Doorlopend']],
+ eerlijk:['Wij hosten niet zelf. Webmix doet het, wij regelen het.','Herstel kost geld. Een trage site kost meer.'],
+ faq:[['Waarom via een partner?','Webmix is daar beter in dan wij. We nemen geen marge op hun werk.']],
+ rel:['conversie-optimalisatie','seo']},
+};
+JR.subdiensten={
+ 'zoekadvertenties':['google-ads','Zoekadvertenties','Bovenaan, op het moment dat iemand zoekt.'],
+ 'performance-max':['google-ads','Performance Max','Eén campagne over Zoeken, YouTube, Display, Gmail en Maps.'],
+ 'display':['google-ads','Display','Beeld op miljoenen websites. Vooral om terug te halen wie er al was.'],
+ 'youtube':['google-ads','YouTube','Video voor en tijdens het kijken.'],
+ 'demand-gen':['google-ads','Demand Gen','Beeld en video in Discover, Gmail en YouTube.'],
+ 'lokaal-adverteren':['google-ads','Lokaal adverteren','Zichtbaar in Maps, voor wie in de buurt zoekt.'],
+ 'facebook-en-instagram':['social-advertising','Facebook en Instagram','Het grootste bereik in Zuid-Limburg.'],
+ 'linkedin':['social-advertising','LinkedIn','Op functie, branche en bedrijfsgrootte.'],
+ 'tiktok':['social-advertising','TikTok','Bereik bij wie nog niet zoekt.'],
+ 'brandshoot':['fotografie','Brandshoot','Je bedrijf, je mensen en je werk, in één stijl.'],
+ 'portret':['fotografie','Portret','Voor de site, LinkedIn en de pers.'],
+ 'event':['fotografie','Eventfotografie','Wat er gebeurde, voor wie er niet was.'],
+ 'product':['fotografie','Productfotografie','Vrijstaand en in gebruik.'],
+ 'interieur':['fotografie','Interieurfotografie','Ruimtes zoals ze voelen.'],
+ 'video-ads':['videografie','Video-ads','Zes tot twintig seconden. In drie formaten.'],
+ 'reels':['videografie','Reels','Verticaal. De eerste seconde beslist.'],
+ 'bedrijfsvideo':['videografie','Bedrijfsvideo','Maken we niet. Een partner wel.'],
+};
+
+/* ---------- Branches ---------- */
+JR.branches={
+ 'horeca':{n:'Horeca',r:'Een tafel die leeg blijft, komt niet terug.',w:['Google Bedrijfsprofiel en Maps','Reserveringen via Google Ads','Social ads met beeld van gerecht en zaak','E-mail rond feestdagen en arrangementen'],doel:'reserveringen, arrangementen en events'},
+ 'makelaardij':{n:'Makelaardij',r:'Elke verkoper kiest één makelaar.',w:['Google Ads op waardebepaling','Social ads in de eigen wijk','Landingspagina per dienst','Opvolging binnen het uur'],doel:'waardebepalingen en verkoopopdrachten'},
+ 'automotive':{n:'Automotive',r:'Een proefrit begint online.',w:['Google Ads op merk en model','Social ads met voorraad','Werkplaats en onderhoud lokaal','Leads direct naar verkoop'],doel:'proefritten, offertes en werkplaatsafspraken'},
+ 'retail':{n:'Retail',r:'De winkel is open. Online is hij dat ook.',w:['Lokale campagnes naar de winkel','Social ads rond seizoenen','E-mail naar vaste klanten','Google Bedrijfsprofiel'],doel:'winkelbezoek en afspraken. Geen webshops.'},
+ 'zakelijke-dienstverlening':{n:'Zakelijke dienstverlening',r:'Een lange beslissing begint met één aanvraag.',w:['Google Ads op specifieke diensten','LinkedIn op functie en branche','Leadinfo voor bezoekende bedrijven','Automation voor lange trajecten'],doel:'kennismakingen en offerteaanvragen'},
+ 'zorg':{n:'Zorg',r:'Vertrouwen voor de eerste afspraak.',w:['Google Ads op behandeling en klacht','Duidelijke landingspagina\'s','Bedrijfsprofiel en reviews','Zorgvuldig met gegevens'],doel:'intakes en afspraken'},
+ 'overheid':{n:'Overheid',r:'Bereik iedereen die het aangaat.',w:['Social ads per gemeente en doelgroep','Campagnes rond deadlines','Landingspagina met één actie','Meetbaar per kanaal'],doel:'aanmeldingen, deelname en bereik'},
+ 'sport-en-vrije-tijd':{n:'Sport en vrije tijd',r:'Een vrije middag wordt online gepland.',w:['Social ads met beeld van de beleving','Google Ads op activiteit en regio','E-mail naar wie eerder kwam','Events en arrangementen'],doel:'boekingen, leden en tickets'},
+};
+JR.regio={
+ 'maastricht':{n:'Maastricht',p:'Stad, studenten, toerisme en een sterke horeca.'},
+ 'heerlen':{n:'Heerlen',p:'Het hart van Parkstad, met zorg, onderwijs en zakelijke dienstverlening.'},
+ 'sittard-geleen':{n:'Sittard-Geleen',p:'Chemelot, industrie en een groeiende zakelijke markt.'},
+ 'parkstad':{n:'Parkstad',p:'Heerlen, Kerkrade, Landgraaf, Brunssum en omstreken.'},
+ 'valkenburg':{n:'Valkenburg',p:'Toerisme, horeca en vrije tijd. Drukte in het seizoen.'},
+};
+
+/* ---------- Team ---------- */
+JR.team={
+ 'jim-coumans':{nr:'01',n:'Jim Coumans',rol:'Oprichter',g:'staf',spec:'Merk, marketing en groei',sinds:'2018',jrnxt:0},
+ 'jim-kikken':{nr:'02',n:'Jim Kikken',rol:'Mede-eigenaar',g:'staf',spec:'Data-gedreven performance marketing',sinds:'2022 eigenaar',jrnxt:0},
+ 'robin-jacobs':{nr:'03',n:'Robin Jacobs',rol:'Medeoprichter',g:'staf',spec:'[Rol]',sinds:'2018',jrnxt:0},
+ 'speler-07':{nr:'07',n:'[Naam]',rol:'[Positie]',g:'selectie',spec:'Google Ads',sinds:'[jaar]',jrnxt:1},
+ 'speler-10':{nr:'10',n:'[Naam]',rol:'[Positie]',g:'selectie',spec:'Social advertising',sinds:'[jaar]',jrnxt:1},
+ 'speler-11':{nr:'11',n:'[Naam]',rol:'[Positie]',g:'selectie',spec:'Content',sinds:'[jaar]',jrnxt:1},
+ 'speler-14':{nr:'14',n:'[Naam]',rol:'[Positie]',g:'selectie',spec:'SEO',sinds:'[jaar]',jrnxt:0},
+ 'speler-17':{nr:'17',n:'[Naam]',rol:'[Positie]',g:'selectie',spec:'E-mailmarketing',sinds:'[jaar]',jrnxt:1},
+ 'speler-23':{nr:'23',n:'[Naam]',rol:'Stagiair',g:'jeugd',spec:'[Opleiding]',sinds:'[jaar]',jrnxt:1},
+ 'speler-24':{nr:'24',n:'[Naam]',rol:'Afstudeerder',g:'jeugd',spec:'[Opleiding]',sinds:'[jaar]',jrnxt:1},
+};
+
+/* ---------- Kennis ---------- */
+JR.artikelen={
+ 'tot-aan-de-voordeur':{t:'Tot aan de voordeur: waarom snel inkoppen meer oplevert dan extra budget',s:'Gids',min:6,n:'7×',b:1,
+  body:`<p>Ruud was een nieuwe speler in een nichemarkt. Zijn Google Ads-campagne werkte boven verwachting: de aanvragen kwamen binnen, de kosten per aanvraag lagen onder de doelstelling. Na een paar maanden zegde hij op. "Het levert geen klanten op."</p><p>Toen we de cijfers naast elkaar legden, bleek iets anders. De aanvragen kwamen binnen. Ruud belde ze gemiddeld na zeven dagen terug.</p><blockquote>Bedrijven die binnen een uur reageren, hebben bijna zeven keer zo vaak een serieus gesprek als bedrijven die een uur later reageren.</blockquote><p class="pg-bron">Oldroyd e.a., Harvard Business Review, 2011.</p><h2>Waar ons werk ophoudt</h2><p>Ons werk houdt op bij de voordeur. We leveren een kwalitatieve aanvraag af, van iemand die klaar is om te kopen. Wat daarna gebeurt, gebeurt bij jou. Daarom zit in elke samenwerking een afspraak over de opvolging: binnen de afgesproken tijd, elke keer.</p><h2>Wat het kost om te wachten</h2><p>Een aanvraag is geen voorraad. Wie een offerte aanvraagt, vraagt er vaak meer aan. De eerste die belt, voert het eerste gesprek. Extra budget levert meer aanvragen op. Sneller bellen levert meer gesprekken op uit dezelfde aanvragen.</p><h2>Wat wij doen</h2><ul><li>Elke aanvraag komt direct binnen, met een melding.</li><li>In het portaal geef je per aanvraag een oordeel.</li><li>Zo zien we samen waar het lekt: voor de voordeur, of erachter.</li></ul><p>Ruud heet in werkelijkheid anders. Het bedrijf noemen we niet.</p>`},
+ 'applaus-is-geen-doelpunt':{t:'Applaus is geen doelpunt: posten of adverteren',s:'Analyse',min:4,n:'1–3%',
+  body:`<p>Een organisch bericht op Facebook of Instagram bereikt gemiddeld 1 tot 3 procent van je eigen volgers <span class="pg-bron">(Socialinsider, 2026)</span>. Bij duizend volgers zijn dat tien tot dertig mensen. Die kenden je al.</p><h2>Waarom we niet posten voor klanten</h2><p>Social presence is goed voor je merk. Een verzorgd profiel hoort erbij. Maar organisch posten is geen voorspelbare manier om nieuwe klanten te vinden. Gokken doe je in het casino, niet bij James Robinson.</p><h2>Wat wel voorspelbaar is</h2><p>Een advertentie bereikt wie jij kiest: in de regio, op leeftijd, op gedrag, en mensen die lijken op wie al bij je koopt. Je ziet per euro wat het opleverde.</p><h2>Likes don't pay the bills</h2><p>Likes en volgers zijn mooi meegenomen. Wij spelen voor aanvragen, klanten en omzet.</p>`},
+ 'tijd-plus-geld-is-data':{t:'Tijd plus geld is data: wat er in de eerste maanden gebeurt',s:'Gids',min:5,n:'3 mnd',
+  body:`<p>Advertentieplatformen leren door te meten. In de eerste weken probeert een campagne doelgroepen, boodschappen en beelden uit. Pas als er genoeg data is, weet het systeem waar de aanvragen zitten.</p><h2>De eerste maand</h2><p>De campagne staat live rond dag 19. We laten ballonnetjes op: verschillende doelgroepen, koppen en beelden. Elke ochtend om 7.00 uur controleren we wat buiten de drempels valt.</p><h2>Maand twee</h2><p>Wat werkt, krijgt meer budget. Wat niet werkt, stopt. Jouw oordeel per aanvraag in het portaal stuurt mee.</p><h2>Maand drie</h2><p>Rond maand drie trekken we de eerste voorzichtige conclusies. Na honderd dagen volgt de 100-dagenreview.</p>`},
+ 'een-procentpunt':{t:'Eén procentpunt conversie is meer waard dan veel extra budget',s:'Analyse',min:5,n:'+1%'},
+ 'likes-dont-pay-the-bills':{t:'Waarom we geen social feeds beheren',s:'Analyse',min:3,n:'0'},
+ 'de-50-procent-regel':{t:'De 50%-regel: waarom ons pakket nooit meer is dan de helft',s:'Gids',min:4,n:'50%'},
+ 'kohavi':{t:'Data beats opinion: waarom 80% van de ideeën niet werkt',s:'Analyse',min:6,n:'10–20%'},
+};
+JR.begrippen={
+ 'ctr':['CTR','Doorklikratio. Het deel van de mensen dat een advertentie zag en erop klikte.'],
+ 'conversieratio':['Conversieratio','Het deel van de bezoekers dat een aanvraag doet.'],
+ 'scoringsratio':['Scoringsratio','Het deel van de aanvragen dat klant wordt.'],
+ 'cpc':['CPC','Kosten per klik.'],
+ 'cpa':['Kosten per aanvraag','Advertentiebudget gedeeld door het aantal aanvragen.'],
+ 'cpm':['CPM','Kosten per duizend vertoningen.'],
+ 'roas':['ROAS','Omzet per euro advertentiebudget.'],
+ 'landingspagina':['Landingspagina','Eén pagina per campagne, met één boodschap en één actie.'],
+ 'retargeting':['Retargeting','Advertenties voor mensen die je site al bezochten.'],
+ 'performance-max':['Performance Max','Een campagnetype van Google dat over alle kanalen tegelijk adverteert.'],
+ 'zoekwoord':['Zoekwoord','Het woord of de zin waarop een advertentie verschijnt.'],
+ 'uitsluitingswoord':['Uitsluitingswoord','Een zoekwoord waarop je advertentie juist níet verschijnt.'],
+ 'impressie':['Impressie','Eén keer dat een advertentie in beeld kwam.'],
+ 'a-b-test':['A/B-test','Twee versies tegelijk laten zien en meten welke beter werkt.'],
+ 'automation':['Automation','E-mails die vanzelf verstuurd worden na een actie.'],
+ 'nulmeting':['Nulmeting','De cijfers voordat we beginnen. Het vertrekpunt.'],
+ 'google-bedrijfsprofiel':['Google Bedrijfsprofiel','Je vermelding in Google Maps en de lokale zoekresultaten.'],
+ 'search-console':['Search Console','Gratis tool van Google die laat zien waarop je site gevonden wordt.'],
+ 'core-web-vitals':['Core Web Vitals','Drie metingen van Google voor snelheid en stabiliteit van een pagina.'],
+ 'kwaliteitsscore':['Kwaliteitsscore','Het oordeel van Google over je advertentie en landingspagina. Bepaalt mee wat een klik kost.'],
+};
+JR.tools={
+ 'portaal':['Portaal','Je cijfers, elk uur bijgewerkt.','€ 25 p/m','Altijd'],
+ 'mailerlite':['MailerLite','E-mail en automation.','€ 9,90 – 73 p/m','Altijd'],
+ 'cookiescript':['Cookiescript','Cookiemelding volgens de regels.','€ 150 p/j','Altijd'],
+ 'webmix':['Webmix','Hosting en techniek.','€ 85 p/m','Altijd'],
+ 'leadinfo':['Leadinfo','Ziet welke bedrijven je site bezoeken.','€ 69 – 179 p/m','Optioneel, alleen B2B'],
+ 'clickcease':['ClickCease','Filtert ongeldige klikken.','vanaf $ 99 p/m','Optioneel'],
+ 'calendly':['Calendly','Afspraken inplannen zonder heen en weer.','€ 15 p/m','Optioneel'],
+ 'chatgpt':['ChatGPT','AI-assistent.','[prijs]','Wat wij gebruiken'],
+ 'claude':['Claude','AI-assistent.','[prijs]','Wat wij gebruiken'],
+ 'gemini':['Gemini','AI-assistent van Google.','[prijs]','Wat wij gebruiken'],
+ 'kive':['Kive','Beeldbeheer en inspiratie.','[prijs]','Wat wij gebruiken'],
+};
+
+/* ---------- Events, vacatures, helpdesk ---------- */
+JR.events=[
+ {s:'padel-met-klanten',d:'[dd]',m:'[mnd]',soort:'eigen',t:'Padel met klanten en team',p:'Ondernemers die ons willen leren kennen, zijn welkom.',plek:'[Locatie]'},
+ {s:'james-robinson-vs-fagro',d:'[dd]',m:'[mnd]',soort:'team',t:'James Robinson vs Fagro',p:'Padel. Een duel op de playground.',plek:'[Locatie]'},
+ {s:'spreker',d:'[dd]',m:'[mnd]',soort:'extern',t:'[Event waar we spreken]',p:'[Omschrijving]',plek:'[Locatie]'},
+ {s:'teamdag',d:'[dd]',m:'[mnd]',soort:'team',t:'[Teamevent]',p:'[Omschrijving]',plek:'[Locatie]'},
+];
+JR.vacatures={
+ 'stage-jrnxt':['Stage via JRNXT','Stage','Een stage lang meespelen in de selectie. Zeven van de tien begonnen zo.'],
+ 'afstuderen':['Afstuderen','Afstuderen','Een onderzoek dat we echt gebruiken.'],
+ 'open-sollicitatie':['Open sollicitatie','Vast','Geen vacature die past. Wel een speler die past.'],
+};
+JR.helpdesk={
+ 'imap-instellen':['E-mail','IMAP instellen op je telefoon','Je mail op je telefoon, synchroon met je computer.'],
+ 'toegang-google-ads':['Toegangen','Ons toegang geven tot Google Ads','In vier stappen, zonder je wachtwoord te delen.'],
+ 'toegang-meta':['Toegangen','Ons toegang geven tot Meta Business Suite','Als partner, niet als persoon.'],
+ 'portaal-oordeel':['Portaal','Een aanvraag beoordelen in het portaal','Waarom je oordeel de campagne slimmer maakt.'],
+ 'merkkluis':['Portaal','Bestanden vinden in de merkkluis','Logo\'s, foto\'s en video\'s op één plek.'],
+ 'dns-records':['Techniek','SPF, DKIM en DMARC uitgelegd','Waarom je mail in de spam belandt.'],
+};
+
+/* ======================= SITE: sjablonen, router, navigatie ======================= */
+(function(){
+  var D=JR, $=function(s,c){return (c||document).querySelector(s)}, $$=function(s,c){return [].slice.call((c||document).querySelectorAll(s))};
+  var V=function(t){return '<span class="pg-vul">'+t+'</span>'};
+  var vul=function(t){return String(t).replace(/\[([^\]]+)\]/g,function(m){return V(m)})};
+
+  /* ---------- Bouwstenen ---------- */
+  function crumbs(c){return '<nav class="pg-crumbs" aria-label="Kruimelpad"><a href="#home">Home</a>'+c.map(function(x,i){return '<span aria-hidden="true">›</span>'+(i<c.length-1&&x[1]?'<a href="'+x[1]+'">'+x[0]+'</a>':'<span aria-current="page">'+x[0]+'</span>')}).join('')+'</nav>'}
+  function hero(o){
+    var tekst=crumbs(o.c||[])+(o.eb?'<p class="v-eyebrow">'+o.eb+'</p>':'')+'<h1 class="pg-h1">'+o.h1+'</h1>'+(o.merk?'<p class="pg-merk">'+o.merk+'</p>':'')+(o.lead?'<p class="pg-lead">'+vul(o.lead)+'</p>':'')+(o.tags?'<div class="pg-tags">'+o.tags.map(function(t){return '<span class="pg-tag">'+t+'</span>'}).join('')+'</div>':'')+(o.btns?'<div class="v-btns">'+o.btns+'</div>':'');
+    return '<section class="pg-hero'+(o.glow!==0?' pg-hero--glow':'')+'"><div class="wrap">'+(o.vis?'<div class="pg-split"><div>'+tekst+'</div><div>'+o.vis+'</div></div>':tekst)+'</div></section>';
+  }
+  function sec(k,inner,id){return '<section class="pg-sec'+(k?' pg-sec--'+k:'')+'"'+(id?' id="'+id+'"':'')+'><div class="wrap">'+inner+'</div></section>'}
+  function head(eb,h,intro,c){return '<div class="pg-head'+(c?' pg-head--c':'')+'">'+(eb?'<p class="v-eyebrow">'+eb+'</p>':'')+'<h2 class="pg-h2">'+h+'</h2>'+(intro?'<p class="pg-intro">'+vul(intro)+'</p>':'')+'</div>'}
+  function card(o){var tag=o.href?'a':'div';return '<'+tag+' class="pg-card'+(o.k?' '+o.k:'')+'"'+(o.href?' href="'+o.href+'"':'')+(o.f?' data-f-item="'+o.f+'"':'')+'>'+(o.n?'<span class="pg-card-n">'+o.n+'</span>':'')+(o.s?'<small>'+o.s+'</small>':'')+'<h3>'+vul(o.h)+'</h3>'+(o.p?'<p>'+vul(o.p)+'</p>':'')+(o.href&&o.pijl!==0?'<span class="pg-pijl">'+(o.pijl||'Meer')+' ›</span>':'')+'</'+tag+'>'}
+  function grid(n,items){return '<div class="pg-grid pg-grid--'+n+'">'+items.join('')+'</div>'}
+  function steps(l){return '<ol class="pg-steps">'+l.map(function(s){return '<li><b>'+s[0]+'</b><span>'+vul(s[1])+'</span>'+(s[2]?'<small>'+s[2]+'</small>':'')+'</li>'}).join('')+'</ol>'}
+  function faq(l){return '<div class="pg-faq">'+l.map(function(q){return '<details><summary>'+q[0]+'</summary><p>'+vul(q[1])+'</p></details>'}).join('')+'</div>'}
+  function cta(h,p,knop,href){return '<section class="v-slot"><div class="v-licht" aria-hidden="true"></div><div class="wrap wrap--text v-center"><p class="v-eyebrow">De voorbespreking</p><h2 class="v-mega v-mega--s">'+(h||'Klaar voor<br>de aftrap.')+'</h2><p class="v-lead">'+(p||'Vijftien vragen. Dan weet je of we samen het veld op gaan. Past het niet, dan zeggen we dat ook.')+'</p><div class="v-btns v-btns--c"><a class="btn btn--lg btn--lime" href="'+(href||'#check')+'">'+(knop||'Start de voorbespreking')+'</a></div><p class="v-contact">Of bel 045 792 0009</p></div></section>'}
+  function persoon(spec,tekst){return '<div class="pg-persoon"><div class="pg-avatar" aria-hidden="true"></div><div><small>Jouw aanspeelpunt voor '+spec.toLowerCase()+'</small><h3>'+V('[Naam]')+'</h3><p>'+(tekst||'Specialisme: '+spec+'. Verschijnt automatisch op elke pagina met dit specialisme.')+'</p></div><div class="v-btns"><a class="btn btn--primary" href="#/contact">Stuur een bericht</a><a class="btn btn--text v-link" href="#/team">Bekijk de selectie</a></div></div>'}
+  function rij(o){return '<a class="pg-rij" href="'+o.href+'"'+(o.f?' data-f-item="'+o.f+'"':'')+'><small>'+o.s+'</small><div><h3>'+vul(o.h)+'</h3>'+(o.p?'<p>'+vul(o.p)+'</p>':'')+'</div><span aria-hidden="true">›</span></a>'}
+  function filters(l){return '<div class="pg-filters" role="toolbar">'+l.map(function(f,i){return '<button type="button" data-f="'+f[0]+'"'+(i?'':' class="on"')+'>'+f[1]+'</button>'}).join('')+'</div>'}
+  var k=function(s){return s.charAt(0).toUpperCase()+s.slice(1)};
+
+  /* ---------- Beeld in de hero ---------- */
+  var VIS={
+    google:function(){return '<div class="mk mk-google"><span class="mk-label">Voorbeeld</span><div class="mk-zoeker"><i></i><div class="g-bar" style="flex:1">kozijnen vervangen prijs</div></div><div class="g-ad"><small>Gesponsord</small><span class="g-url">[jouwbedrijf].nl › kozijnen</span><b>Kozijnen vervangen in Zuid-Limburg</b><p>Vaste prijs per kozijn. Inmeten binnen een week. Vraag een offerte aan.</p><div class="g-links"><span>Prijzen</span><span>Offerte</span><span>Werkwijze</span></div></div><div class="g-org"><i></i><i></i><i class="k"></i></div><div class="g-org"><i></i><i></i><i class="k"></i></div></div>'},
+    bing:function(){return VIS.google().replace('<div class="mk-zoeker">','<div class="mk-zoeker mk-zoeker-bing">')},
+    social:function(){return '<div class="mk mk-phone"><div class="ph-s ph-insta"><div class="i-top"><i></i><span><b>[jouwbedrijf]</b><small>Gesponsord</small></span></div><div class="i-img"><span>Nieuwe kozijnen.<br>Vaste prijs.</span></div><div class="i-cta">Meer informatie<span>›</span></div><p class="i-tekst"><b>[jouwbedrijf]</b> Binnen een week ingemeten. Bekijk de prijzen per kozijn.</p></div></div>'},
+    foto:function(){return '<div class="mk mk-foto"><span class="mk-focus"></span><div class="mk-exif"><span>1/250</span><span>f/2.8</span><span>ISO 400</span><span>35 mm</span></div></div>'},
+    video:function(){return '<div class="mk mk-video"><span class="mk-label">Een video-ad, drie formaten</span><div class="mk-frames"><span style="width:90px;height:160px">9:16</span><span style="width:110px;height:137px">4:5</span><span style="width:120px;height:120px">1:1</span></div><div class="mk-tijd"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b></div><div class="mk-tc"><span>0:00</span><span>0:02 de haak</span><span>0:20</span></div></div>'},
+    anim:function(){return '<div class="mk mk-anim"><svg viewBox="0 0 420 260"><path class="mk-curve" d="M40 220 C 140 220, 160 60, 380 60" fill="none" stroke="#2997FF" stroke-width="4" stroke-linecap="round"/><path d="M40 220 L380 220 M40 40 L40 220" stroke="rgba(255,255,255,.12)" stroke-width="2"/><g class="mk-bol"><circle cx="70" cy="190" r="18" fill="#D9FF33"/></g></svg></div>'},
+    copy:function(){return '<div class="mk mk-copy"><s>Wij bieden innovatieve oplossingen op maat.</s><br><span>Kozijnen vervangen. Vaste prijs per kozijn.</span><em></em></div>'},
+    ab:function(){return '<div class="mk"><span class="mk-label">Voorbeeld van een test</span><div class="mk-ab"><div><small>Versie A</small><b>2,0%</b><span>Formulier met 7 velden</span></div><div class="win"><small>Versie B</small><b>3,1%</b><span>Formulier met 3 velden</span></div><div class="mk-ab-balk"><i></i></div></div></div>'},
+    mail:function(){return '<div class="mk mk-mail"><span class="mk-label">Voorbeeld van een flow</span><div class="m-not"><i></i><span><b>[Jouw bedrijf]</b><small>Bedankt voor je aanvraag</small></span><em>nu</em></div><div class="m-not"><i></i><span><b>[Jouw bedrijf]</b><small>Je afspraak is morgen</small></span><em>1 d</em></div><div class="m-not"><i></i><span><b>[Jouw bedrijf]</b><small>Hoe was het?</small></span><em>2 w</em></div><div class="m-flow"><span>Aanvraag</span>›<span>Bevestiging</span>›<span>Herinnering</span>›<span>Review</span></div></div>'},
+    seo:function(){return '<div class="mk mk-seo"><span class="mk-label">Illustratie, geen klantdata</span><svg viewBox="0 0 420 240"><g stroke="rgba(255,255,255,.08)"><path d="M30 40H400M30 100H400M30 160H400M30 220H400"/></g><path d="M30 210 C 120 208, 160 200, 200 180 S 300 80, 400 50" fill="none" stroke="#2997FF" stroke-width="4" stroke-linecap="round"/><circle cx="400" cy="50" r="7" fill="#D9FF33"/><text x="30" y="236" fill="#6E6E73" font-size="12">Maand 1</text><text x="350" y="236" fill="#6E6E73" font-size="12">Maand 12</text></svg></div>'},
+    host:function(){return '<div class="mk mk-host"><span class="mk-label">Status</span><b style="font:700 28px var(--display)">Alles in orde.</b><svg viewBox="0 0 420 90"><path class="mk-puls" d="M0 45 H120 L135 15 L150 75 L165 45 H280 L295 25 L310 65 L325 45 H420" fill="none" stroke="#30D158" stroke-width="3"/></svg><ul><li>Back-up vannacht<span>Gelukt</span></li><li>Controle elke minuut<span>Online</span></li><li>SPF, DKIM, DMARC<span>Ingesteld</span></li></ul></div>'},
+    embleem:function(t){return '<div class="mk mk-emblem">'+t+'</div>'},
+    kaart:function(n){return '<div class="mk mk-kaart"><svg viewBox="0 0 460 460"><defs><radialGradient id="kg"><stop offset="0" stop-color="#2997FF" stop-opacity=".35"/><stop offset="1" stop-color="#2997FF" stop-opacity="0"/></radialGradient></defs><rect width="460" height="460" fill="#0b0b0d"/><circle cx="230" cy="230" r="200" fill="url(#kg)"/>'+[60,110,160,210].map(function(r){return '<circle cx="230" cy="230" r="'+r+'" fill="none" stroke="rgba(255,255,255,.08)" stroke-dasharray="3 6"/>'}).join('')+'<circle cx="230" cy="230" r="8" fill="#D9FF33"/><text x="230" y="260" fill="#fff" font-size="16" text-anchor="middle" font-family="Inter Tight,Inter,sans-serif" font-weight="700">'+(n||'Hulsberg')+'</text><text x="230" y="282" fill="#86868B" font-size="12" text-anchor="middle" font-family="Inter,sans-serif">30 km: onze focus</text></svg></div>'}
+  };
+
+  /* ---------- Pagina's ---------- */
+  var P={};
+
+  P.werkwijze=function(){
+    return hero({c:[['Werkwijze']],eb:'Werkwijze',h1:'Zo spelen we.',merk:'Adverteren is de motor. <b>Ons werk houdt op bij de voordeur.</b>',lead:'We zorgen dat er voorspelbaar nieuwe aanvragen binnenkomen, en dat die steeds minder kosten. Alles meetbaar. Je ziet dezelfde cijfers als wij.',btns:'<a class="btn btn--lg btn--lime" href="#check">Start de voorbespreking</a><a class="btn btn--text v-link" href="#klantreis">De klantreis</a>'})
+    +sec('',head('Het systeem','Eén motor. Vier versnellers.','Elke klant krijgt hetzelfde systeem. Wat verschilt, is hoe groot de motor is.')+steps([['De motor: adverteren','Google Ads, Meta, LinkedIn, TikTok en Microsoft Ads. Standaard Google en Meta.'],['De brandstof: content','Eerst een contentplan, dan een draaidag op locatie. Foto, video, animatie en copy in 9:16, 4:5 en 1:1.'],['De landing: je website','Eén pagina per campagne, met één boodschap en één actie.'],['De voordeur: een aanvraag','Daar eindigt ons werk. Daarna ben jij aan zet.']])+'<div style="margin-top:20px">'+grid(4,[card({s:'Versneller',h:'Conversie',p:'Meer aanvragen uit hetzelfde verkeer.',href:'#/diensten/conversie-optimalisatie'}),card({s:'Versneller',h:'E-mail en automation',p:'Terughalen wie er al was.',href:'#/diensten/e-mailmarketing'}),card({s:'Versneller',h:'SEO',p:'Verkeer zonder kosten per klik, op woorden die al converteren.',href:'#/diensten/seo'}),card({s:'Versneller',h:'Landingspagina\'s',p:'Verbeteren of toevoegen, op de cijfers.',href:'#/diensten/conversie-optimalisatie'})])+'</div>')
+    +sec('dark','<div class="pg-split"><div>'+head('De keten','Van vertoning tot klant.','Impressies, bezoekers, aanvragen, klanten. Daartussen zitten drie getallen. De eerste drie schakels zijn van ons. De laatste is van jou.')+'</div><div><div class="pg-stats" style="grid-template-columns:1fr 1fr"><div class="pg-stat"><b>CTR</b><span>Kansen creëren. Wie de advertentie ziet en klikt.</span></div><div class="pg-stat"><b>CVR</b><span>Afwerken. Wie op de pagina een aanvraag doet.</span></div><div class="pg-stat pg-stat--blauw"><b>Score</b><span>Scoren. Welke aanvraag klant wordt. Dat ben jij.</span></div><div class="pg-stat"><b>+1%</b><span>Eén procentpunt conversie is meer waard dan veel extra budget.</span></div></div></div></div>')
+    +sec('sub','<div class="pg-split"><div>'+head('Tijd plus geld is data','We laten ballonnetjes op.','Platformen leren door te meten. We testen doelgroepen, boodschappen en beelden, geven meer budget aan wat werkt en stoppen met wat niet werkt. De eerste maanden zijn leren. Rond maand drie trekken we de eerste voorzichtige conclusies.')+'</div><div>'+grid(2,[card({n:'7.00',h:'Elke ochtend',p:'Een controle van alles wat buiten de drempels valt.'}),card({n:'1×',h:'Elke maand',p:'Een update in het portaal.'}),card({n:'100',h:'Na honderd dagen',p:'De 100-dagenreview.'}),card({n:'1',h:'Elk jaar',p:'Het jaargesprek. Een nieuw seizoen.'})])+'</div></div>')
+    +sec('dark',head('De klantreis','Acht stappen. Drie fasen.','Van eerste aanvraag tot seizoen. De voorbespreking kost niets.',1)+'<div class="pg-reis">'
+      +'<div class="pg-fase"><small>Verkopen</small><b>De voorbespreking</b><span>±2 weken · kost niets</span><ol><li><em>01</em><b>Van aanvraag tot afspraak</b><span>Video, de check met 15 vragen, direct een uitkomst.</span></li><li><em>02</em><b>De scouting</b><span>Wij bekijken je site en markt. Een half uur.</span></li><li><em>03</em><b>Het intakegesprek</b><span>Een uur aan tafel. Met het wedstrijdprogramma.</span></li><li><em>04</em><b>Het gameplan</b><span>Binnen 3 werkdagen een voorstel, dan 45 minuten samen.</span></li></ol></div>'
+      +'<div class="pg-fase"><small>Starten</small><b>De voorbereiding</b><span>De opstartmaand</span><ol><li><em>05</em><b>Tekenen en betalen</b><span>Dezelfde dag.</span></li><li><em>06</em><b>De onboarding</b><span>Formulier en toegangen binnen 3 werkdagen. Een toegangensessie van 45 minuten.</span></li><li><em>07</em><b>Het fundament</b><span>Set-up en content, ongeveer vier weken. Aftrap rond dag 19.</span></li></ol></div>'
+      +'<div class="pg-fase pg-fase--live"><small>Samenwerken</small><b>Het seizoen</b><span>Maandelijks opzegbaar</span><ol><li><em>08</em><b>Live en het maandritme</b><span>Dagelijkse controle, maandupdate, Performance Review volgens je opstelling, 100-dagenreview en jaargesprek.</span></li></ol></div>'
+      +'</div>','klantreis')
+    +sec('',head('De spelregels','Wat je van ons krijgt. Wat we van jou vragen.','',0)+'<div class="pg-grid pg-grid--2"><div class="pg-card"><small>Van ons</small><h3>Negen spelregels</h3><ol class="pg-prose" style="font-size:16px;margin-top:8px"><li>Resultaat staat op één. Werkt iets niet, dan zeggen we het zelf.</li><li>Maandelijks opzegbaar, voor allebei.</li><li>We beginnen alleen als we erin geloven.</li><li>De 50%-regel.</li><li>Nooit marge erbovenop.</li><li>Niets gratis erbij. Wel een prijs vooraf.</li><li>Altijd on-brand.</li><li>Data beats opinion.</li><li>Alles op jouw naam. Wij zijn beheerder, nooit eigenaar.</li></ol></div><div class="pg-card pg-card--blauw"><small>Van jou</small><h3>Vijf afspraken</h3><ol class="pg-prose" style="font-size:16px;margin-top:8px;color:rgba(255,255,255,.85)"><li>Alle toegangen binnen 3 werkdagen.</li><li>Eén beslisser die binnen 2 werkdagen reageert.</li><li>Elke aanvraag opvolgen binnen de afgesproken tijd.</li><li>Per aanvraag een oordeel in het portaal.</li><li>Dagdelen om te filmen, en iemand die op beeld het werk doet.</li></ol></div></div><p class="pg-noot">Wat we niet oplossen, maar wel meten: je merk, je aanbod en prijs, je opvolging en je capaciteit.</p>')
+    +sec('sub',head('Wat we doen, en wat niet','Alles met één doel: meer klanten voor jou.')+'<div class="pg-tabel-wrap"><table class="pg-tabel"><thead><tr><th>Altijd, in elk pakket</th><th>Per vraag, zonder opslag</th><th>Nooit</th></tr></thead><tbody><tr><td>Adverteren in zoekmachines en op social</td><td>Webdevelopment</td><td>Losse campagnes</td></tr><tr><td>Content: foto, video, animatie</td><td>Design en branding</td><td>E-commerce als propositie</td></tr><tr><td>Landingspagina\'s en conversie</td><td>Extra draaidagen</td><td>Social feeds vullen</td></tr><tr><td>E-mail en automation</td><td>Koppelingen met jouw systemen</td><td>Leads opvolgen</td></tr><tr><td>SEO op woorden die converteren</td><td>Contentsessies</td><td>Marge op werk van een ander</td></tr></tbody></table></div>')
+    +cta();
+  };
+
+  P.portaal=function(){
+    return hero({c:[['Het scorebord']],eb:'Het scorebord',h1:'Je ziet wat<br>wij zien.',merk:'Elk uur bijgewerkt. <b>Van jou, ook als je stopt.</b>',lead:'Google, Meta, LinkedIn, TikTok, je website en Search Console op één scherm. Per aanvraag jouw oordeel. € 25 per maand, rechtstreeks op jouw naam.',btns:'<a class="btn btn--lg btn--lime" href="#demo">Probeer de demo</a><a class="btn btn--text v-link" href="#/inloggen">Inloggen</a>'})
+    +sec('deep',head('Klikbare demo','Speel zelf.','Voorbeeldcijfers. Klik door de onderdelen en beoordeel een aanvraag.',1)+demo(),'demo')
+    +sec('',head('Wat erin zit','Alles op één plek.')+grid(3,[card({s:'Live',h:'Alle bronnen',p:'Google, Meta, LinkedIn, TikTok, GA4 en Search Console. Elk uur bijgewerkt.'}),card({s:'Jouw oordeel',h:'Per aanvraag',p:'Goed, twijfel of slecht. Later: werd het een klant. Zo leren de campagnes wat een goede klant is.'}),card({s:'Budget',h:'Wat er uitgaat',p:'Per kanaal en per campagne. Zonder marge erbovenop.'}),card({s:'Merkkluis',h:'Logo\'s, foto\'s en video',p:'Alles wat we maakten, terug te vinden.'}),card({s:'Campagnes',h:'Wat er loopt',p:'Elke campagne met haar landingspagina en planning.'}),card({s:'Van jou',h:'Ook als je stopt',p:'Accounts, data en het portaal blijven op jouw naam.'})]))
+    +sec('sub','<div class="pg-split"><div>'+head('Updates','Het portaal wordt elke maand beter.','Wat er nieuw is, staat in de updates.')+'<a class="btn btn--text v-more" href="#/portaal/updates">Bekijk de updates</a></div><div class="pg-rijen">'+[['[datum]','Feedback verwerken per campagne'],['[datum]','Prestaties per bron, met GA4 en Search Console'],['[datum]','De merkkluis per klant']].map(function(u){return rij({s:u[0],h:u[1],href:'#/portaal/updates'})}).join('')+'</div></div>')
+    +cta();
+  };
+  function demo(){
+    return '<div class="demo" id="demo-app"><div class="demo-zij" role="tablist"><b>Scorebord</b><button class="on" data-d="0">Overzicht</button><button data-d="1">Aanvragen</button><button data-d="2">Campagnes</button><button data-d="3">Budget</button><button data-d="4">Merkkluis</button><small>Voorbeeldweergave</small></div><div class="demo-in">'
+     +'<div class="demo-pane" data-p="0"><h4>Oktober</h4><div class="demo-kpis" style="margin-top:16px"><div class="demo-kpi"><small>Aanvragen</small><b>38</b><span>+6 t.o.v. september</span></div><div class="demo-kpi"><small>Nieuwe klanten</small><b>9</b><span>+2</span></div><div class="demo-kpi"><small>Kosten per aanvraag</small><b>€ 52</b><span>−€ 8</span></div><div class="demo-kpi"><small>Advertentiebudget</small><b>€ 1.976</b><span style="color:#86868B">van € 2.000</span></div></div><div class="demo-chart" style="margin-top:12px"><small style="color:#86868B">Aanvragen per week</small><svg viewBox="0 0 600 160" preserveAspectRatio="none"><path d="M0 130 L60 120 L120 125 L180 100 L240 105 L300 80 L360 85 L420 60 L480 55 L540 40 L600 35" fill="none" stroke="#2997FF" stroke-width="3"/><path d="M0 130 L60 120 L120 125 L180 100 L240 105 L300 80 L360 85 L420 60 L480 55 L540 40 L600 35 V160 H0Z" fill="rgba(41,151,255,.15)"/></svg></div></div>'
+     +'<div class="demo-pane" data-p="1" hidden><h4>Aanvragen</h4>'+[['Offerteaanvraag','Google · vandaag 09:12','g'],['Belverzoek','Instagram · vandaag 08:47','g'],['Afspraak','Facebook · gisteren','t'],['Offerteaanvraag','Google · gisteren',''],['Contactformulier','Website · 2 dagen','']].map(function(a){return '<div class="demo-rij"><div>'+a[0]+'<small>'+a[1]+'</small></div><div class="demo-oo"><button class="g'+(a[2]=='g'?' on':'')+'">Goed</button><button class="t'+(a[2]=='t'?' on':'')+'">Twijfel</button><button class="s">Slecht</button></div></div>'}).join('')+'</div>'
+     +'<div class="demo-pane" data-p="2" hidden><h4>Campagnes</h4>'+[['Kozijnen vervangen','Google + Meta · live sinds dag 19',72],['Voordeuren','Google · live',45]].map(function(c){return '<div class="demo-rij" style="grid-template-columns:1fr 200px"><div>'+c[0]+'<small>'+c[1]+'</small></div><div class="demo-bar"><i style="width:'+c[2]+'%"></i></div></div>'}).join('')+'</div>'
+     +'<div class="demo-pane" data-p="3" hidden><h4>Budget</h4>'+[['Google Ads','€ 1.180 van € 1.200',98],['Meta','€ 796 van € 800',99]].map(function(c){return '<div class="demo-rij" style="grid-template-columns:1fr 200px"><div>'+c[0]+'<small>'+c[1]+'</small></div><div class="demo-bar"><i style="width:'+c[2]+'%"></i></div></div>'}).join('')+'<p style="color:#86868B;font-size:13px">Rechtstreeks betaald aan de platformen, op jouw naam.</p></div>'
+     +'<div class="demo-pane" data-p="4" hidden><h4>Merkkluis</h4><div class="demo-merk"><div style="background:#0857C3">Logo</div><div style="background:#1C1C1E;border:1px solid #2C2C2E">Huisstijl</div><div style="background:linear-gradient(135deg,#2997FF,#062a66)">Foto\'s</div><div style="background:#2C2C2E">Video</div></div></div>'
+     +'</div></div>';
+  }
+  P['portaal/updates']=function(){return hero({c:[['Het scorebord','#/portaal'],['Updates']],eb:'Portaal',h1:'Updates.',lead:'Wat er nieuw is in het portaal. Elke maand.'})+sec('','<div class="pg-rijen">'+[['[datum]','Feedback verwerken per campagne','Opmerkingen van de klant per deliverable.'],['[datum]','Prestaties per bron','GA4 en Search Console, elke nacht bijgewerkt.'],['[datum]','De merkkluis','Logo\'s, huisstijl, foto\'s en video per klant.'],['[datum]','Formulieren','Vragenlijst, scouting en intake op één plek.']].map(function(u){return rij({s:u[0],h:u[1],p:u[2],href:'#/portaal'})}).join('')+'</div>')};
+
+  P.inloggen=function(){return '<section class="pg-hero pg-hero--glow" style="min-height:80vh"><div class="wrap"><div class="pg-login"><span class="crest" aria-hidden="true" style="width:32px;height:38px;display:inline-block"></span><h1 class="pg-h3" style="margin:16px 0 6px;font-size:28px">Inloggen</h1><p style="color:#A1A1A6;margin-bottom:24px">Het scorebord van jouw bedrijf.</p><form class="pg-form" onsubmit="event.preventDefault();this.classList.add(\'klaar\')"><label>E-mailadres<input type="email" required></label><button class="btn btn--primary" type="submit">Stuur een inloglink</button><div class="pg-ok">Check je mail. De link is 15 minuten geldig.</div></form><p style="margin-top:20px;font-size:13px;color:#86868B">Nog geen klant. <a href="#/portaal" style="color:var(--blue-dm)">Bekijk de demo ›</a></p></div></div></section>'};
+
+  /* Diensten */
+  P.diensten=function(){
+    var g={};Object.keys(D.diensten).forEach(function(s){var d=D.diensten[s];(g[d.groep]=g[d.groep]||[]).push(card({s:d.groep,h:d.naam,p:d.merk.replace(/<[^>]+>/g,''),href:'#/diensten/'+s,pijl:'Bekijk'}))});
+    return hero({c:[['Diensten']],eb:'Diensten',h1:'Eén systeem.<br>Elf onderdelen.',merk:'Alles met één doel: <b>meer klanten voor jou.</b>',lead:'Je kiest geen diensten. Je kiest een opstelling. Wij zetten in wat de cijfers aanwijzen.',btns:'<a class="btn btn--lg btn--lime" href="#prijzen">Bekijk de opstellingen</a>'})
+    +sec('',head('De motor','Adverteren.','Het enige wat je vandaag aanzet en morgen meet.')+grid(3,g.Adverteren))
+    +sec('sub',head('De brandstof','Content.','Een draaidag op locatie. Advertenties slijten, dus we maken steeds nieuwe.')+grid(4,g.Content))
+    +sec('',head('De versnellers','Elke volgende klant goedkoper.','Ingezet als de motor draait, in de volgorde die de cijfers aanwijzen.')+grid(4,g.Versnellers))
+    +sec('dark',head('Per vraag','Wat we niet zelf doen, regelen we.','Webdevelopment, design en branding, extra draaidagen en koppelingen. Als eigen project of via een partner. Zonder opslag.')+grid(3,[card({h:'Websites',p:'Via Webmix.',href:'#/partners'}),card({h:'Bedrijfsvideo',p:'Via een vaste partner.',href:'#/diensten/videografie'}),card({h:'Alleen een fotograaf nodig',p:'We bellen eerst om te kijken of een abonnement past. Anders verwijzen we door.',href:'#/contact'})]))
+    +cta();
+  };
+  function dienst(s){
+    var d=D.diensten[s];if(!d)return null;
+    var wat=d.wat.map(function(w){return card({h:w[0],p:w[1],href:w[2]?'#/diensten/'+s+'/'+w[2]:null})});
+    return hero({c:[['Diensten','#/diensten'],[d.groep,'#/diensten'],[d.naam]],eb:d.groep,h1:d.naam,merk:d.merk,lead:d.sub,vis:VIS[d.vis](),btns:'<a class="btn btn--lg btn--lime" href="#check">Start de voorbespreking</a><a class="btn btn--text v-link" href="#prijzen">Prijzen</a>'})
+    +sec('',head('Wat erin zit',d.naam+(d.wat.length>3?' in '+d.wat.length+' vormen.':'.'),'')+grid(d.wat.length>=4?3:d.wat.length==1?2:d.wat.length,wat))
+    +sec('dark',head('Hoe we spelen','Van voorbereiding tot seizoen.')+steps(d.aanpak))
+    +sec('sub','<div class="pg-split" style="align-items:start"><div>'+head('Eerlijk vooraf','Wat het niet doet.','Het enige signaal op een website dat niet te koop is.')+'</div><div class="pg-grid">'+d.eerlijk.map(function(e){return '<div class="pg-card"><h3 style="font-size:21px">'+e+'</h3></div>'}).join('')+'</div></div>')
+    +(d.content?sec('',grid(2,[card({k:'pg-card--blauw',s:'Uitgang 1',h:'Als deel van een opstelling',p:'Content hoort bij elke opstelling. Draaidagen en contentrondes volgens je pakket.',href:'#check',pijl:'Start de voorbespreking'}),card({s:'Uitgang 2',h:'Alleen een '+(s=='fotografie'?'fotograaf':s=='videografie'?'videograaf':'specialist')+' nodig',p:'Dan bellen we eerst om een abonnement te proberen. Anders verwijzen we je door naar een partner.',href:'#/contact',pijl:'Laat je bellen'})])):'')
+    +(d.seo?sec('','<div class="pg-lees"><div class="pg-prose">'+d.seo+'</div><aside class="pg-aside"><div class="pg-aside-blok"><h6>Op deze pagina</h6><ul>'+(d.seo.match(/<h2>[^<]+<\/h2>/g)||[]).map(function(h){return '<li>'+h.replace(/<\/?h2>/g,'')+'</li>'}).join('')+'</ul></div><div class="pg-aside-blok"><h6>Begrippen</h6><ul><li><a href="#/begrippen/ctr">CTR</a></li><li><a href="#/begrippen/kwaliteitsscore">Kwaliteitsscore</a></li><li><a href="#/begrippen/uitsluitingswoord">Uitsluitingswoord</a></li></ul></div></aside></div>'):'')
+    +sec('sub',head('Veelgestelde vragen','Over '+(d.naam=='SEO'?'SEO':d.naam.charAt(0).toLowerCase()==d.naam.charAt(0)?d.naam:/^[A-Z][a-z]/.test(d.naam)&&!/Ads$/.test(d.naam)?d.naam.toLowerCase():d.naam)+'.','',1)+faq(d.faq))
+    +sec('dark',persoon(d.spec))
+    +sec('',head('Speelt samen met','Gerelateerde diensten.')+grid(3,d.rel.map(function(r){var x=D.diensten[r];return card({s:x.groep,h:x.naam,p:x.merk.replace(/<[^>]+>/g,''),href:'#/diensten/'+r})})))
+    +cta();
+  }
+  function subdienst(s,sub){
+    var x=D.subdiensten[sub],d=D.diensten[s];if(!x||x[0]!==s)return null;
+    var zus=Object.keys(D.subdiensten).filter(function(k){return D.subdiensten[k][0]==s&&k!=sub});
+    return hero({c:[['Diensten','#/diensten'],[d.naam,'#/diensten/'+s],[x[1]]],eb:d.naam,h1:x[1],merk:x[2],lead:'Onderdeel van '+d.naam+'. We zetten het in als de cijfers erom vragen, binnen je opstelling.',vis:VIS[d.vis](),btns:'<a class="btn btn--lg btn--lime" href="#check">Start de voorbespreking</a>'})
+    +sec('','<div class="pg-lees"><div class="pg-prose"><h2>Wat is '+x[1]+'?</h2><p>'+V('[Uitleg, 150 tot 250 woorden, in zoektaal]')+'</p><h2>Wanneer zetten we het in?</h2><p>'+V('[Wanneer het werkt en wanneer niet]')+'</p><h2>Wat kost het?</h2><p>Het valt binnen je opstelling. Het advertentiebudget betaal je rechtstreeks aan het platform, op jouw naam. <a href="#prijzen">Bekijk de prijzen</a>.</p></div><aside class="pg-aside"><div class="pg-aside-blok"><h6>Ook binnen '+d.naam+'</h6><ul>'+zus.map(function(z){return '<li><a href="#/diensten/'+s+'/'+z+'">'+D.subdiensten[z][1]+'</a></li>'}).join('')+'</ul></div></aside></div>')
+    +sec('sub',faq([['Moet ik dit los afnemen?','Nee. Het valt binnen je opstelling.'],['Wie bepaalt of het ingezet wordt?','De cijfers. We bespreken het in de Performance Review.']]))
+    +sec('dark',persoon(d.spec))+cta();
+  }
+
+  /* Branches en regio */
+  P.branches=function(){return hero({c:[['Branches']],eb:'Voor jou',h1:'Acht branches.<br>Eén regio.',lead:'Ondernemers binnen ongeveer 30 km van Hulsberg. Online is ons vak, maar de beste gesprekken voer je aan tafel.'})+sec('',grid(4,Object.keys(D.branches).map(function(b){var x=D.branches[b];return card({h:x.n,p:x.r,href:'#/branches/'+b})})))+sec('dark',head('Regio','Zuid-Limburg.')+grid(3,Object.keys(D.regio).map(function(r){return card({s:'Marketingbureau',h:D.regio[r].n,p:D.regio[r].p,href:'#/regio/'+r})})))+cta()};
+  function branche(s){var x=D.branches[s];if(!x)return null;
+    return hero({c:[['Branches','#/branches'],[x.n]],eb:'Marketing voor '+x.n.toLowerCase(),h1:x.n+'.',merk:x.r,lead:'Wat we sturen: '+x.doel,vis:VIS.embleem(x.n.charAt(0)),btns:'<a class="btn btn--lg btn--lime" href="#check">Start de voorbespreking</a>'})
+    +sec('',head('Wat meestal werkt','In '+x.n.toLowerCase()+'.','De volgorde bepalen de cijfers. Dit is waar we meestal beginnen.')+grid(4,x.w.map(function(w,i){return card({n:'0'+(i+1),h:w})})))
+    +sec('dark',head('Wedstrijdverslagen','Uit '+x.n.toLowerCase()+'.','Cases volgen. Elke uitslag met bron en periode, uit het scorebord.')+grid(2,[1,2].map(function(){return card({s:'Wedstrijdverslag · '+x.n,h:'[Klant]: [aanvragen per maand, voor en na]',p:'[Periode] · cijfers uit het scorebord, met toestemming.',href:'#/cases/voorbeeld'})})))
+    +sec('sub',faq([['Werken jullie voor meerdere bedrijven in '+x.n.toLowerCase()+'?','[Beleid: concurrenten in dezelfde plaats]'],['Wat kost het?','Vanaf € 1.000 per maand plus advertentiebudget en eenmalig het fundament. Alle prijzen staan op de prijzenpagina.'],['Hoe snel staat het live?','Rond dag 19 na het tekenen.']]))
+    +cta();
+  }
+  function regio(s){var x=D.regio[s];if(!x)return null;
+    return hero({c:[['Regio','#/branches'],[x.n]],eb:'Marketingbureau '+x.n,h1:'Marketing&shy;bureau in '+x.n+'.',merk:'Vanuit Hulsberg. <b>Aan tafel in '+x.n+'.</b>',lead:x.p,vis:VIS.kaart(x.n)})
+    +sec('','<div class="pg-lees"><div class="pg-prose"><h2>Marketing in '+x.n+'</h2><p>'+V('[Echte lokale inhoud: de markt, de zoekvraag, wat er speelt. Geen kopie met een andere plaatsnaam.]')+'</p><h2>Wat we doen voor ondernemers in '+x.n+'</h2><p>Hetzelfde systeem als overal: adverteren als motor, content als brandstof, je website als landing. Lokaal betekent: campagnes op de regio, en de gesprekken aan tafel.</p><h2>Branches in '+x.n+'</h2><p>'+V('[Welke branches hier sterk zijn]')+'</p></div><aside class="pg-aside"><div class="pg-aside-blok"><h6>Andere regio\'s</h6><ul>'+Object.keys(D.regio).filter(function(r){return r!=s}).map(function(r){return '<li><a href="#/regio/'+r+'">'+D.regio[r].n+'</a></li>'}).join('')+'</ul></div></aside></div>')
+    +sec('dark',grid(3,Object.keys(D.diensten).slice(0,6).map(function(k){var d=D.diensten[k];return card({s:d.groep,h:d.naam+' in '+x.n,href:'#/diensten/'+k})})))+cta()}
+
+  /* Cases en resultaten */
+  P.cases=function(){return hero({c:[['Wedstrijdverslagen']],eb:'Wedstrijdverslagen',h1:'Elke uitslag<br>is gemeten.',lead:'Wat we niet kunnen aantonen, staat er niet. Bij elk verslag de bron en de periode, uit het scorebord.'})+sec('',filters([['alle','Alle'],['horeca','Horeca'],['makelaardij','Makelaardij'],['automotive','Automotive'],['zakelijk','Zakelijk']])+grid(3,['horeca','makelaardij','automotive','zakelijk','horeca','makelaardij'].map(function(b){return card({f:b,s:'Wedstrijdverslag · '+k(b),h:'[Klant]',p:'[Kopcijfer, voor en na]',href:'#/cases/voorbeeld'})}))+'<p class="pg-noot">Cases zijn prioriteit 1. Alle cijfers zijn beschikbaar; de verslagen worden geschreven.</p>')+cta()};
+  P['cases/voorbeeld']=function(){return hero({c:[['Wedstrijdverslagen','#/cases'],['[Klant]']],eb:'Wedstrijdverslag · [branche]',h1:'[Klant]',merk:'[Eén zin: wat er veranderde.]',tags:['[Periode]','[Opstelling]','Google Ads','Meta']})
+    +sec('deep','<div class="pg-score"><div><small>Voor</small><b>[ ]</b><small>aanvragen per maand</small></div><i>→</i><div class="na"><small>Na</small><b>[ ]</b><small>aanvragen per maand</small></div></div><p class="pg-noot" style="text-align:center">Bron: het scorebord. Periode: [periode]. Gepubliceerd met toestemming. Veld "cijfer geverifieerd" verplicht.</p>')
+    +sec('','<div class="pg-lees"><div class="pg-prose"><h2>De situatie</h2><p>'+V('[Situatie]')+'</p><h2>De aanpak</h2><p>'+V('[Aanpak]')+'</p><h2>De uitslag</h2><p>'+V('[Resultaat, met cijfers en bron]')+'</p><blockquote>'+V('[Quote van de klant, alleen echt]')+'</blockquote></div><aside class="pg-aside"><div class="pg-aside-blok"><h6>Gespeeld door</h6><ul><li><a href="#/team">[Speler]</a></li><li><a href="#/team">[Speler]</a></li></ul></div><div class="pg-aside-blok"><h6>Diensten</h6><ul><li><a href="#/diensten/google-ads">Google Ads</a></li><li><a href="#/diensten/social-advertising">Social advertising</a></li></ul></div></aside></div>')+cta()};
+  P.resultaten=function(){return hero({c:[['Uitslagen']],eb:'Uitslagen',h1:'Uitslagen.',merk:'Geanonimiseerd. <b>Wel gemeten.</b>',lead:'Resultaten zonder klantnaam, met branche, periode en bron.'})
+    +sec('dark','<div class="pg-stats"><div class="pg-stat"><b>[ ]</b><span>aanvragen voor klanten, afgelopen 100 dagen</span></div><div class="pg-stat"><b>[ ]</b><span>gemiddelde kosten per aanvraag</span></div><div class="pg-stat pg-stat--blauw"><b>5,0</b><span>uit 11 Google-reviews</span></div><div class="pg-stat"><b>[ ]</b><span>klanten in Zuid-Limburg</span></div></div><p class="pg-noot">De teller "afgelopen 100 dagen" komt live uit het portaal in versie 2.</p>')
+    +sec('','<div class="pg-rijen">'+['Horeca','Makelaardij','Automotive','Zakelijke dienstverlening'].map(function(b){return rij({s:b,h:'[Resultaat]',p:'[Periode] · bron: het scorebord',href:'#/cases'})}).join('')+'</div>')+cta()};
+
+  /* Kennis */
+  P.kennis=function(){var a=Object.keys(D.artikelen);
+    return hero({c:[['Kennis']],eb:'De analyse',h1:'Wat we leren,<br>delen we.',lead:'Gidsen, analyses en een kennisbank met elk begrip uit het vak. Elke maand drie nieuwe stukken.',btns:'<a class="btn btn--text v-link" href="#/begrippen">Begrippen</a><a class="btn btn--text v-link" href="#/tools">Tools</a><a class="btn btn--text v-link" href="#/marketing-in-limburg">Marketing in Limburg</a>'})
+    +sec('',filters([['alle','Alles'],['Gids','Gidsen'],['Analyse','Analyses']])+'<div class="v-art3" style="margin-top:0">'+a.slice(0,3).map(function(s){var x=D.artikelen[s];return '<a class="v-art'+(x.b?' v-art--b':'')+'" data-f-item="'+x.s+'" href="#/kennis/'+s+'"><span class="v-art-n">'+x.n+'</span><small>'+x.s+' · '+x.min+' min</small><h3>'+x.t+'</h3></a>'}).join('')+'</div><div class="pg-rijen" style="margin-top:48px">'+a.slice(3).map(function(s){var x=D.artikelen[s];return rij({f:x.s,s:x.s+' · '+x.min+' min',h:x.t,href:'#/kennis/'+s})}).join('')+'</div>')
+    +sec('sub','<div class="pg-split"><div>'+head('Het clubblad','Eén keer per maand.','De beste analyses in je inbox. Geen aanbiedingen.')+'</div><form class="pg-form" onsubmit="event.preventDefault();this.classList.add(\'klaar\')"><label>E-mailadres<input type="email" required></label><button class="btn btn--primary" type="submit">Aanmelden</button><div class="pg-ok">Welkom bij de club.</div></form></div>')+cta()};
+  function artikel(s){var x=D.artikelen[s];if(!x)return null;
+    return hero({c:[['Kennis','#/kennis'],[x.s]],eb:x.s+' · '+x.min+' minuten',h1:x.t,glow:1,tags:['Door '+'[auteur]','[datum]']})
+    +sec('','<div class="pg-lees"><div class="pg-prose">'+(x.body||'<p>'+V('[Artikel volgt]')+'</p>')+'</div><aside class="pg-aside"><div class="pg-aside-blok"><h6>Geschreven door</h6><p style="font-weight:600">[Speler]</p><a href="#/team" style="color:var(--blue-link);font-size:14px">Spelersprofiel ›</a></div><div class="pg-aside-blok"><h6>Begrippen</h6><ul><li><a href="#/begrippen/conversieratio">Conversieratio</a></li><li><a href="#/begrippen/scoringsratio">Scoringsratio</a></li></ul></div></aside></div>')
+    +sec('sub',head('Verder lezen','Meer analyses.')+grid(3,Object.keys(D.artikelen).filter(function(k){return k!=s}).slice(0,3).map(function(k){var y=D.artikelen[k];return card({s:y.s+' · '+y.min+' min',h:y.t,href:'#/kennis/'+k})})))+cta()}
+  P.begrippen=function(){var g={};Object.keys(D.begrippen).forEach(function(s){var l=D.begrippen[s][0].charAt(0).toUpperCase();(g[l]=g[l]||[]).push(s)});
+    var abc='ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+    return hero({c:[['Kennis','#/kennis'],['Begrippen']],eb:'Kennisbank',h1:'Elk begrip<br>uit het vak.',lead:'Kort uitgelegd. Dezelfde uitleg verschijnt als tooltip op de hele site.',btns:'<div class="pg-zoek" style="margin:0;width:100%"><input type="search" placeholder="Zoek een begrip" data-zoek=".pg-term-groep li"></div>'})
+    +sec('','<nav class="pg-az">'+abc.map(function(l){return g[l]?'<a href="#az-'+l+'" data-anker="az-'+l+'">'+l+'</a>':'<span>'+l+'</span>'}).join('')+'</nav>'+abc.filter(function(l){return g[l]}).map(function(l){return '<div class="pg-term-groep" id="az-'+l+'"><b>'+l+'</b><ul>'+g[l].map(function(s){return '<li><a href="#/begrippen/'+s+'">'+D.begrippen[s][0]+'</a><span>'+D.begrippen[s][1]+'</span></li>'}).join('')+'</ul></div>'}).join(''))+cta()};
+  function begrip(s){var x=D.begrippen[s];if(!x)return null;
+    return hero({c:[['Kennis','#/kennis'],['Begrippen','#/begrippen'],[x[0]]],eb:'Begrip',h1:x[0],merk:x[1]})
+    +sec('','<div class="pg-lees"><div class="pg-prose"><h2>Uitgelegd</h2><p>'+V('[Langere uitleg, met een voorbeeld uit Zuid-Limburg]')+'</p><h2>Zo meten we het</h2><p>In het portaal, elk uur bijgewerkt.</p></div><aside class="pg-aside"><div class="pg-aside-blok"><h6>Gerelateerd</h6><ul>'+Object.keys(D.begrippen).filter(function(k){return k!=s}).slice(0,5).map(function(k){return '<li><a href="#/begrippen/'+k+'">'+D.begrippen[k][0]+'</a></li>'}).join('')+'</ul></div></aside></div>')+cta()}
+  P.tools=function(){return hero({c:[['Kennis','#/kennis'],['Tools']],eb:'Tools',h1:'Op jouw naam.<br>Rechtstreeks betaald.',lead:'De leverancier factureert aan jou. Krijgen wij een doorverwijsvergoeding, dan melden we dat.'})
+    +sec('',filters([['alle','Alle'],['Altijd','Altijd'],['Optioneel','Optioneel'],['Wat wij gebruiken','Wat wij gebruiken']])+grid(3,Object.keys(D.tools).map(function(s){var t=D.tools[s];return card({f:t[3].indexOf('Optioneel')===0?'Optioneel':t[3],s:t[3],h:t[0],p:t[1]+' <b style="color:#1D1D1F">'+t[2]+'</b>',href:'#/tools/'+s})})))+cta()};
+  function tool(s){var t=D.tools[s];if(!t)return null;return hero({c:[['Kennis','#/kennis'],['Tools','#/tools'],[t[0]]],eb:'Tool · '+t[3],h1:t[0],merk:t[1],tags:[t[2],'Op jouw naam']})+sec('','<div class="pg-lees"><div class="pg-prose"><h2>Wat het doet</h2><p>'+V('[Uitleg]')+'</p><h2>Wanneer we het inzetten</h2><p>'+V('[Wanneer]')+'</p><h2>Doorverwijsvergoeding</h2><p>'+V('[Ja/nee, en hoeveel]')+'</p></div></div>')+cta()}
+  P['marketing-in-limburg']=function(){return hero({c:[['Kennis','#/kennis'],['Marketing in Limburg']],eb:'Gids',h1:'Marketing<br>in Limburg.',merk:'Een neutrale gids. <b>Zonder verkoophaak.</b>',lead:'Bureaus, opleidingen, events en organisaties in de provincie. Feitelijk beschreven.',vis:VIS.kaart('Limburg')})
+    +sec('',grid(3,[['Bureaus','Wie er werkt, en waarin.'],['Opleidingen','Waar het vak geleerd wordt.'],['Events','Waar de sector samenkomt.'],['Organisaties','Netwerken en verenigingen.'],['Media','Regionale kanalen.'],['Cijfers','De regio in data, met bron.']].map(function(x){return card({h:x[0],p:x[1]+' '+V('[in te vullen]')})})))+cta()};
+  P.partners=function(){return hero({c:[['Partners']],eb:'Partners',h1:'Wat we niet zelf doen,<br>doet een specialist.',lead:'Zonder opslag. Krijgen we een doorverwijsvergoeding, dan melden we dat.'})+sec('',grid(3,[card({s:'Websites en hosting',h:'Webmix',p:'Websites, hosting en technisch herstel.',href:'#/diensten/hosting'}),card({s:'Fotografie',h:'[Partner]',p:'[Specialisme]'}),card({s:'Video',h:'[Partner]',p:'Bedrijfsvideo\'s.'}),card({s:'Animatie',h:'[Partner]',p:'[Specialisme]'})]))+cta()};
+
+  /* Over ons */
+  P['over-ons']=function(){return hero({c:[['Over ons']],eb:'Over James Robinson',h1:'Bedacht in 2017.<br>Opgericht in 2018.',merk:'Een marketingafdeling. <b>Zonder de afdeling.</b>',lead:'Een performance-marketingbureau in Hulsberg. We werken als externe marketingafdeling, met een vast bedrag per maand. Geen losse projecten.'})
+    +sec('dark','<div class="pg-stats"><div class="pg-stat"><b>2018</b><span>opgericht</span></div><div class="pg-stat"><b>±10</b><span>spelers in Hulsberg</span></div><div class="pg-stat pg-stat--blauw"><b>7/10</b><span>begon als stagiair</span></div><div class="pg-stat"><b>8</b><span>branches</span></div></div>')
+    +sec('',head('Waar we in geloven','Zeven principes.')+'<div class="pg-tabel-wrap"><table class="pg-tabel"><tbody>'+[['Resultaat staat op één','Marketing moet geld opleveren. Anders is het een hobby.'],['Numbers don\'t lie','De cijfers wegen zwaarder dan onze mening of die van de klant. Bij Google verbetert maar 10 tot 20% van de geteste ideeën het resultaat (Kohavi & Thomke, HBR 2017).'],['Altijd on-brand','Het merk bepaalt de grenzen. Binnen die grenzen kiest de data.'],['Science + Art = High Performance','Data vindt de juiste persoon. Het merk zorgt dat die blijft kijken (IPA, Binet & Field).'],['Radicale transparantie','Een realtime portaal. Alles op jouw naam. Nooit marge erbovenop.'],['Eerlijk nee','We beginnen alleen als we erin geloven.'],['Slimmer werken','AI en automatisering waar het iets oplevert. Mensen beslissen over budget, doelgroep en merk.']].map(function(r){return '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>'}).join('')+'</tbody></table></div>')
+    +sec('sub','<div class="pg-split"><div>'+head('Het kantoor','Ingericht om te presteren.','Plekken voor stilte. Ruimte voor grote ideeën. Binnenkomen moet voelen als binnenkomen bij een meesterchef.')+'</div><div class="mk mk-foto" style="max-width:none;aspect-ratio:3/2"><div class="mk-exif"><span>Foto: het kantoor in Hulsberg</span><span>3:2</span></div></div></div>')
+    +sec('dark',head('Ons succes is jullie succes','Over tien jaar nog voor je werken.','Onze winst zit niet in een zo hoog mogelijke maandfactuur. Hij zit in je doelen halen, keer op keer.')+grid(3,[card({h:'De selectie',p:'Tien spelers, staf en jeugd.',href:'#/team'}),card({h:'Werken bij',p:'Cultuur, kantoor en vacatures.',href:'#/werken-bij'}),card({h:'Contact',p:'045 792 0009 · support@jamesrobinson.nl',href:'#/contact'})]))+cta()};
+  P.team=function(){var t=Object.keys(D.team);
+    return hero({c:[['De selectie']],eb:'De selectie',h1:'Een selectie.<br>Geen bureau.',lead:'Tien spelers in Hulsberg. Zeven van hen begonnen hier als stagiair. Voor fotografie, video, animatie en techniek werken we met vaste specialisten.'})
+    +sec('dark',filters([['alle','Iedereen'],['staf','Staf'],['selectie','Selectie'],['jeugd','JRNXT · jeugd']])+'<div class="pg-grid pg-grid--4">'+t.map(function(s){var p=D.team[s];return '<a class="v-kaart" style="width:auto" data-f-item="'+p.g+'" href="#/team/'+s+'"><span class="v-nr">'+p.nr+'</span><div class="v-portret" aria-hidden="true"></div><div class="v-kaart-tekst"><small>'+vul(p.rol)+'</small><h3>'+vul(p.n)+'</h3><p>'+vul(p.spec)+'</p></div></a>'}).join('')+'<a class="v-kaart v-kaart--open" style="width:auto" data-f-item="jeugd" href="#/werken-bij"><span class="v-nr">?</span><div class="v-kaart-tekst"><small>Open plek</small><h3>Jouw naam hier</h3><p>Stage, afstuderen of een vaste plek.</p></div></a></div><p class="pg-noot">Portretten volgen. Eigen fotografie, 4:5.</p>')+cta()};
+  function speler(s){var p=D.team[s];if(!p)return null;
+    return '<section class="pg-hero pg-hero--glow"><div class="wrap">'+crumbs([['De selectie','#/team'],[p.n.replace(/[\[\]]/g,'')]])+'<div class="pg-profiel"><div class="v-kaart"><span class="v-nr">'+p.nr+'</span><div class="v-portret" aria-hidden="true"></div><div class="v-kaart-tekst"><small>Portret volgt · 4:5</small></div></div><div><span class="pg-rugnr">'+p.nr+'</span><p class="v-eyebrow" style="margin-top:12px">'+vul(p.rol)+'</p><h1 class="pg-h1">'+vul(p.n)+'</h1><p class="pg-merk">'+vul(p.spec)+'</p>'+(p.jrnxt?'<p style="margin-top:20px"><span class="pg-badge">JRNXT · begon als stagiair</span></p>':'')+'<div class="pg-pstats"><div><b>'+vul(p.sinds)+'</b><span>bij James Robinson</span></div><div><b>'+V('[ ]')+'</b><span>cases</span></div><div><b>'+V('[ ]')+'</b><span>analyses</span></div><div><b>'+V('[ ]')+'</b><span>leeftijd, met toestemming</span></div></div></div></div></div></section>'
+    +sec('','<div class="pg-lees"><div class="pg-prose"><h2>Over '+p.n.split(' ')[0].replace(/[\[\]]/g,'')+'</h2><p>'+V('[Bio]')+'</p><h3>Trots op</h3><p>'+V('[Trots op]')+'</p><h3>Volgens een collega</h3><blockquote>'+V('[Quote van een collega]')+'</blockquote></div><aside class="pg-aside"><div class="pg-aside-blok"><h6>Specialismen</h6><ul><li>'+vul(p.spec)+'</li></ul></div><div class="pg-aside-blok"><h6>Tools</h6><ul><li>'+V('[Tools]')+'</li></ul></div><div class="pg-aside-blok"><h6>Geschreven</h6><ul><li><a href="#/kennis/tot-aan-de-voordeur">Tot aan de voordeur</a></li></ul></div></aside></div>')
+    +sec('dark',head('Ook in de selectie','Teamgenoten.')+'<div class="pg-grid pg-grid--4">'+Object.keys(D.team).filter(function(k){return k!=s}).slice(0,4).map(function(k){var q=D.team[k];return '<a class="v-kaart" style="width:auto" href="#/team/'+k+'"><span class="v-nr">'+q.nr+'</span><div class="v-portret"></div><div class="v-kaart-tekst"><small>'+vul(q.rol)+'</small><h3>'+vul(q.n)+'</h3></div></a>'}).join('')+'</div>')}
+  P['werken-bij']=function(){return hero({c:[['Werken bij']],eb:'Werken bij',h1:'Speel mee<br>in de selectie.',merk:'Zeven van de tien <b>begonnen als stagiair.</b>',lead:'Een kantoor in Hulsberg, ingericht om te presteren. Een team dat elke week beter wil worden.',btns:'<a class="btn btn--lg btn--lime" href="#vacatures">Bekijk de vacatures</a>'})
+    +sec('',head('Onze manier van doen','Hoe we spelen.')+grid(3,[card({h:'Resultaat staat op één',p:'Ook intern. We kijken naar wat het oplevert.'}),card({h:'Eerlijk, ook als het tegenvalt',p:'Tegen klanten en tegen elkaar.'}),card({h:'Leren van de cijfers',p:'Niet van wie het hardst praat.'})]))
+    +sec('dark','<div class="pg-split"><div>'+head('JRNXT','De jeugdopleiding.','Stage, afstuderen of een eerste baan. Je speelt vanaf week één mee in de selectie, met echte klanten en echte cijfers.')+'</div>'+VIS.embleem('NXT')+'</div>')
+    +sec('sub',head('Vacatures','Open plekken.')+'<div class="pg-rijen">'+Object.keys(D.vacatures).map(function(v){var x=D.vacatures[v];return rij({s:x[1],h:x[0],p:x[2],href:'#/vacatures/'+v})}).join('')+'</div>','vacatures')
+    +sec('',head('Buiten kantoor','Events en de playground.')+grid(2,[card({k:'pg-card--blauw',s:'De playground',h:'James Robinson vs Fagro',p:'Padel. Bedrijven uit de regio tegen ons team.',href:'#/playground'}),card({s:'Eventkalender',h:'Wat er gepland staat',p:'Teamevents, klantevents en waar we spreken.',href:'#/events'})]))};
+  function vacature(s){var x=D.vacatures[s];if(!x)return null;
+    return hero({c:[['Werken bij','#/werken-bij'],[x[0]]],eb:x[1],h1:x[0],merk:x[2],tags:['Hulsberg',x[1],'[uren]']})
+    +sec('','<div class="pg-lees"><div class="pg-prose"><h2>Wat je doet</h2><p>'+V('[Taken]')+'</p><h2>Wat je meebrengt</h2><p>'+V('[Profiel]')+'</p><h2>Wat je krijgt</h2><p>'+V('[Voorwaarden]')+'</p></div><aside class="pg-aside"><div class="pg-aside-blok"><h6>Je aanspeelpunt</h6><p style="font-weight:600">[Naam]</p></div></aside></div>')
+    +sec('sub','<div class="pg-split" style="align-items:start"><div>'+head('Solliciteren','Stuur je gegevens.','Het formulier gaat rechtstreeks naar ons portaal.')+'</div><form class="pg-form" onsubmit="event.preventDefault();this.classList.add(\'klaar\')"><div class="pg-2"><label>Voornaam<input required></label><label>Achternaam<input required></label></div><label>E-mailadres<input type="email" required></label><label>Telefoon<input type="tel"></label><label>Waarom deze plek<textarea></textarea></label><label>Cv<input type="file"></label><button class="btn btn--primary" type="submit">Verstuur</button><div class="pg-ok">Ontvangen. We reageren binnen vijf werkdagen.</div></form></div>')}
+
+  /* Playground en events */
+  P.playground=function(){return hero({c:[['De playground']],eb:'De playground',h1:'Daag ons uit.',merk:'Padel, darts of iets anders. <b>Bedrijven uit de regio tegen ons team.</b>',btns:'<a class="btn btn--lg btn--lime" href="#uitdagen">Daag ons uit</a>'})
+    +sec('dark','<a href="#/playground/james-robinson-vs-fagro" class="pg-poster" style="display:block"><small style="color:rgba(255,255,255,.7)">Duel 01 · Padel</small><div class="v-vs" style="margin:32px 0"><span>James Robinson</span><b>vs</b><span>Fagro</span></div><p style="color:rgba(255,255,255,.75)">Bekijk het verslag ›</p></a>')
+    +sec('sub','<div class="pg-split" style="align-items:start"><div>'+head('Uitdagen','Jouw bedrijf tegen het onze.','Kies een sport. Wij komen.')+'</div><form class="pg-form" onsubmit="event.preventDefault();this.classList.add(\'klaar\')"><label>Bedrijf<input required></label><label>Sport<select><option>Padel</option><option>Darts</option><option>Iets anders</option></select></label><label>E-mailadres<input type="email" required></label><button class="btn btn--primary" type="submit">Daag ons uit</button><div class="pg-ok">Uitdaging ontvangen. We nemen contact op.</div></form></div>','uitdagen')};
+  P['playground/james-robinson-vs-fagro']=function(){return '<section class="pg-hero pg-hero--glow"><div class="wrap">'+crumbs([['De playground','#/playground'],['James Robinson vs Fagro']])+'<div class="pg-poster"><small style="color:rgba(255,255,255,.7)">Duel 01 · Padel · [datum]</small><div class="v-vs" style="margin:32px 0 0"><span>James Robinson</span><b>vs</b><span>Fagro</span></div><div class="pg-uitslag">'+V('[ ]')+'<span>–</span>'+V('[ ]')+'</div></div></div></section>'
+    +sec('','<div class="pg-lees"><div class="pg-prose"><h2>Het verslag</h2><p>'+V('[Verslag van het duel]')+'</p><h2>De opstellingen</h2><p>'+V('[Spelers van beide kanten]')+'</p></div></div>')
+    +sec('sub','<div class="pg-grid pg-grid--3">'+[1,2,3].map(function(){return '<div class="mk mk-foto" style="max-width:none;aspect-ratio:3/2;margin:0"><div class="mk-exif"><span>Foto van het duel</span><span>3:2</span></div></div>'}).join('')+'</div>')+cta('Jouw bedrijf<br>tegen het onze.','Padel, darts of iets anders.','Daag ons uit','#/playground')};
+  P.events=function(){return hero({c:[['Events']],eb:'Thuiswedstrijden',h1:'Events.',lead:'Eén kalender. Onze eigen events, teamevents en events waar we spreken, sponsoren of aanwezig zijn. De exacte data volgen.'})
+    +sec('',filters([['alle','Alles'],['eigen','Voor klanten en prospects'],['team','Team'],['extern','Waar we spreken']])+'<div class="pg-cal">'+D.events.map(function(e){return '<a class="pg-ev" data-f-item="'+e.soort+'" href="#/events/'+e.s+'"><div class="pg-ev-d"><b>'+vul(e.d)+'</b><span>'+vul(e.m)+'</span></div><div><small class="pg-tag pg-tag--l">'+({eigen:'Voor klanten en prospects',team:'Team',extern:'Waar we spreken'})[e.soort]+'</small><h3>'+vul(e.t)+'</h3><p>'+vul(e.p)+' · '+vul(e.plek)+'</p></div><span class="btn btn--sm btn--secondary">Aanmelden</span></a>'}).join('')+'</div>')
+    +sec('sub',head('Terugblik','Voorbije events.')+grid(3,[1,2,3].map(function(){return '<div class="mk mk-foto" style="max-width:none;aspect-ratio:3/2;margin:0"><div class="mk-exif"><span>[Event]</span><span>[datum]</span></div></div>'})))};
+  function eventPg(s){var e=D.events.filter(function(x){return x.s==s})[0];if(!e)return null;
+    return hero({c:[['Events','#/events'],[e.t.replace(/[\[\]]/g,'')]],eb:'Event · '+e.d+' '+e.m,h1:vul(e.t),merk:vul(e.p),tags:[e.d+' '+e.m,e.plek,'[tijd]']})
+    +sec('sub','<div class="pg-split" style="align-items:start"><div class="pg-prose"><h2>Het programma</h2><p>'+V('[Programma]')+'</p></div><form class="pg-form" onsubmit="event.preventDefault();this.classList.add(\'klaar\')"><label>Naam<input required></label><label>Bedrijf<input></label><label>E-mailadres<input type="email" required></label><button class="btn btn--primary" type="submit">Aanmelden</button><div class="pg-ok">Je staat op de lijst. De details volgen per mail.</div></form></div>')}
+
+  /* Service */
+  P.helpdesk=function(){var h=Object.keys(D.helpdesk);return hero({c:[['Helpdesk']],eb:'Helpdesk',h1:'Hoe werkt het.',lead:'Handleidingen voor klanten, en een paar algemene.',btns:'<div class="pg-zoek" style="margin:0;width:100%"><input type="search" placeholder="Zoek in de helpdesk" data-zoek=".pg-rij"></div>'})
+    +sec('','<div class="pg-rijen">'+h.map(function(s){var x=D.helpdesk[s];return rij({s:x[0],h:x[1],p:x[2],href:'#/helpdesk/'+s})}).join('')+'</div><p class="pg-noot">Staat het er niet bij. Mail support@jamesrobinson.nl, antwoord binnen één werkdag.</p>')};
+  function hulp(s){var x=D.helpdesk[s];if(!x)return null;return hero({c:[['Helpdesk','#/helpdesk'],[x[1]]],eb:x[0],h1:x[1],merk:x[2]})+sec('','<div class="pg-lees"><div class="pg-prose"><ol><li>'+V('[Stap 1]')+'</li><li>'+V('[Stap 2]')+'</li><li>'+V('[Stap 3]')+'</li></ol><p>Lukt het niet. Mail support@jamesrobinson.nl.</p></div></div>')}
+  P.contact=function(){return hero({c:[['Contact']],eb:'Contact',h1:'Bel, mail<br>of kom langs.',lead:'Eén adres, antwoord binnen één werkdag. Maandag tot en met vrijdag 8.00 tot 18.00 uur.'})
+    +sec('',grid(3,[card({s:'Bellen',h:'045 792 0009',p:'Ma–vr 8.00–18.00 uur.'}),card({s:'Mailen',h:'support@jamesrobinson.nl',p:'Antwoord binnen één werkdag.'}),card({s:'Chatten',h:'Met een mens',p:'Ma–vr 8.00–18.00 uur. Daarna wordt het een bericht.'})]))
+    +sec('sub','<div class="pg-split" style="align-items:start"><div>'+head('Een bericht','Wat kunnen we doen.','Voor een nieuwe samenwerking is de voorbespreking sneller.')+'<a class="btn btn--text v-more" href="#check">Start de voorbespreking</a><div style="margin-top:40px">'+VIS.kaart('Hulsberg')+'</div><p class="pg-noot">[Adres], Hulsberg · KvK [nummer]</p></div><form class="pg-form" onsubmit="event.preventDefault();this.classList.add(\'klaar\')"><div class="pg-2"><label>Naam<input required></label><label>Bedrijf<input></label></div><label>E-mailadres<input type="email" required></label><label>Telefoon <small>optioneel</small><input type="tel"></label><label>Bericht<textarea required></textarea></label><button class="btn btn--primary" type="submit">Verstuur</button><div class="pg-ok">Ontvangen. Antwoord binnen één werkdag.</div></form></div>')};
+  function juridisch(t){return function(){return hero({c:[[t]],eb:'Juridisch',h1:t+'.',glow:0})+sec('','<div class="pg-prose"><p>'+V('[Juridische tekst. Hier mag "u" in plaats van "je".]')+'</p><p class="pg-bron">Laatst bijgewerkt: [datum]</p></div>')}}
+  P.privacy=juridisch('Privacy');P.cookies=juridisch('Cookies');P.voorwaarden=juridisch('Algemene voorwaarden');P.toegankelijkheid=juridisch('Toegankelijkheid');
+  P.sitemap=function(){var l=[['Kern',[['Home','#home'],['De voorbespreking','#check'],['Werkwijze','#/werkwijze'],['Prijzen','#prijzen'],['Het scorebord','#/portaal'],['Portaal-updates','#/portaal/updates'],['Inloggen','#/inloggen']]],['Diensten',[['Alle diensten','#/diensten']].concat(Object.keys(D.diensten).map(function(s){return [D.diensten[s].naam,'#/diensten/'+s]}))],['Subdiensten',Object.keys(D.subdiensten).map(function(s){var x=D.subdiensten[s];return [x[1],'#/diensten/'+x[0]+'/'+s]})],['Branches',Object.keys(D.branches).map(function(s){return [D.branches[s].n,'#/branches/'+s]})],['Regio',Object.keys(D.regio).map(function(s){return ['Marketingbureau '+D.regio[s].n,'#/regio/'+s]})],['Bewijs',[['Wedstrijdverslagen','#/cases'],['Case-sjabloon','#/cases/voorbeeld'],['Uitslagen','#/resultaten']]],['Kennis',[['Kennis','#/kennis']].concat(Object.keys(D.artikelen).map(function(s){return [D.artikelen[s].t.split(':')[0],'#/kennis/'+s]}))],['Kennisbank',[['Begrippen','#/begrippen'],['Begrip: CTR','#/begrippen/ctr'],['Tools','#/tools'],['Tool: Leadinfo','#/tools/leadinfo'],['Marketing in Limburg','#/marketing-in-limburg'],['Partners','#/partners']]],['Over ons',[['Over James Robinson','#/over-ons'],['De selectie','#/team'],['Spelersprofiel','#/team/jim-coumans'],['Werken bij','#/werken-bij']].concat(Object.keys(D.vacatures).map(function(s){return ['Vacature: '+D.vacatures[s][0],'#/vacatures/'+s]}))],['Op het veld',[['De playground','#/playground'],['James Robinson vs Fagro','#/playground/james-robinson-vs-fagro'],['Events','#/events'],['Event','#/events/padel-met-klanten']]],['Service',[['Helpdesk','#/helpdesk'],['Handleiding','#/helpdesk/imap-instellen'],['Contact','#/contact'],['Privacy','#/privacy'],['Cookies','#/cookies'],['Voorwaarden','#/voorwaarden'],['Toegankelijkheid','#/toegankelijkheid'],['404','#/bestaat-niet']]]];
+    return hero({c:[['Alle pagina\'s']],eb:'Sitemap',h1:'Alle pagina\'s.',lead:'Elke pagina van het ontwerp, om door te klikken en feedback te geven.'})+sec('','<div class="pg-sitemap">'+l.map(function(g){return '<div><h3>'+g[0]+'</h3><ul>'+g[1].map(function(x){return '<li><a href="'+x[1]+'">'+x[0]+'</a></li>'}).join('')+'</ul></div>'}).join('')+'</div>')};
+  function vierNulVier(){return '<section class="pg-hero pg-hero--glow" style="min-height:80vh;text-align:center"><div class="wrap"><p class="pg-rugnr" style="display:block">404</p><h1 class="pg-h1" style="margin-top:24px">Buitenspel.</h1><p class="pg-lead" style="margin-inline:auto">Deze pagina bestaat niet, of niet meer.</p><div class="v-btns v-btns--c"><a class="btn btn--lg btn--lime" href="#home">Terug naar de aftrap</a><a class="btn btn--text v-link" href="#/sitemap">Alle pagina\'s</a></div></div></section>'}
+
+  /* ---------- Router ---------- */
+  function route(pad){
+    var d=pad.split('/');
+    if(P[pad])return P[pad]();
+    if(d[0]=='diensten'&&d.length==2)return dienst(d[1]);
+    if(d[0]=='diensten'&&d.length==3)return subdienst(d[1],d[2]);
+    if(d[0]=='branches')return branche(d[1]);
+    if(d[0]=='regio')return regio(d[1]);
+    if(d[0]=='kennis')return artikel(d[1]);
+    if(d[0]=='begrippen')return begrip(d[1]);
+    if(d[0]=='tools')return tool(d[1]);
+    if(d[0]=='team')return speler(d[1]);
+    if(d[0]=='vacatures')return vacature(d[1]);
+    if(d[0]=='events')return eventPg(d[1]);
+    if(d[0]=='helpdesk')return hulp(d[1]);
+    return null;
+  }
+  var ALIAS={'prijzen':'prijzen','rekenhulp':'prijzen','check':'check','past-het':'check','/prijzen':'prijzen','/past-het':'check'};
+  var vorige='';
+  function toon(){
+    var h=decodeURIComponent((location.hash||'').slice(1)),pagina='home',anker=null;
+    if(h.charAt(0)=='/'){
+      var pad=h.slice(1),hash=pad.split('#');pad=hash[0].replace(/\/$/,'');anker=hash[1];
+      if(ALIAS['/'+pad]){pagina=ALIAS['/'+pad]}
+      else{pagina='sub';var html=route(pad)||vierNulVier();if(pad!==vorige){$('#sub').innerHTML=html;init($('#sub'))}vorige=pad}
+    } else if(ALIAS[h]){pagina=ALIAS[h];if(h=='rekenhulp')anker='rekenhulp'}
+    else {anker=h&&h!='home'?h:null}
+    $$('[data-page]').forEach(function(el){el.hidden=el.getAttribute('data-page')!==pagina});
+    sluitMenus();
+    var t=anker&&document.getElementById(anker);
+    if(t){setTimeout(function(){t.scrollIntoView()},0)}else{window.scrollTo(0,0)}
+    if(pagina=='check'&&window.check&&check.render)check.render();
+    document.title=(pagina=='home'?'Marketingbureau Zuid-Limburg | James Robinson':(($('#sub h1')&&pagina=='sub')?$('#sub h1').innerHTML.replace(/<br>/g,' ').replace(/<[^>]+>|&shy;/g,'').replace(/\s+/g,' ').trim()+' | James Robinson':'James Robinson'));
+    $$('.nav-links a').forEach(function(a){a.classList.toggle('actief',a.getAttribute('href')==location.hash)});
+  }
+  window.__toon=toon;
+  addEventListener('hashchange',toon);
+
+  /* ---------- Gedrag in een pagina ---------- */
+  function init(root){
+    $$('.pg-filters',root).forEach(function(f){f.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;$$('button',f).forEach(function(x){x.classList.toggle('on',x===b)});var w=b.dataset.f;var scope=f.parentNode;$$('[data-f-item]',scope).forEach(function(it){it.hidden=w!='alle'&&it.dataset.fItem!=w})})});
+    $$('[data-zoek]',root).forEach(function(inp){inp.addEventListener('input',function(){var q=inp.value.toLowerCase();$$(inp.dataset.zoek,root).forEach(function(el){el.style.display=el.textContent.toLowerCase().indexOf(q)>-1?'':'none'})})});
+    $$('[data-anker]',root).forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();document.getElementById(a.dataset.anker).scrollIntoView({behavior:'smooth'})})});
+    $$('a[href^="#"]:not([href^="#/"])',root).forEach(function(a){var id=a.getAttribute('href').slice(1);if(id&&!ALIAS[id]&&id!='home'&&root.querySelector('#'+CSS.escape(id))){a.addEventListener('click',function(e){e.preventDefault();root.querySelector('#'+CSS.escape(id)).scrollIntoView({behavior:'smooth'})})}});
+    var d=$('#demo-app',root);
+    if(d){d.addEventListener('click',function(e){var b=e.target.closest('[data-d]');if(b){$$('[data-d]',d).forEach(function(x){x.classList.toggle('on',x===b)});$$('.demo-pane',d).forEach(function(p){p.hidden=p.dataset.p!=b.dataset.d})}var o=e.target.closest('.demo-oo button');if(o){$$('button',o.parentNode).forEach(function(x){x.classList.toggle('on',x===o)})}})}
+  }
+
+  /* ---------- Navigatie ---------- */
+  function bouwNav(){
+    var ul=$('#navl');if(!ul)return;
+    ul.innerHTML=D.menu.map(function(m,i){
+      if(m.href)return '<li><a href="'+m.href+'">'+m.k+'</a></li>';
+      return '<li><button type="button" aria-expanded="false">'+m.k+'</button><div class="mega"><div class="wrap">'+m.groepen.map(function(g){return '<div class="'+(g.klein?'mega-klein':'')+'"><h6>'+g.t+'</h6><ul>'+g.items.map(function(x){return '<li><a href="'+x[1]+'">'+x[0]+'</a></li>'}).join('')+'</ul></div>'}).join('')+'<div class="mega-uit"><h6>'+m.uit.t+'</h6><p>'+m.uit.p+'</p><a class="btn btn--sm btn--light-outline" href="'+m.uit.href+'">Bekijk</a></div></div></div></li>';
+    }).join('');
+    var dim=document.createElement('div');dim.className='nav-dim';document.body.appendChild(dim);
+    var timer;
+    $$('#navl>li').forEach(function(li){
+      var b=$('button',li);if(!b)return;
+      var open=function(){clearTimeout(timer);$$('#navl>li').forEach(function(x){x.classList.toggle('open',x===li)});b.setAttribute('aria-expanded','true');dim.classList.add('on')};
+      var dicht=function(){timer=setTimeout(function(){li.classList.remove('open');b.setAttribute('aria-expanded','false');if(!$('#navl>li.open'))dim.classList.remove('on')},180)};
+      li.addEventListener('mouseenter',open);li.addEventListener('mouseleave',dicht);
+      b.addEventListener('click',function(){li.classList.contains('open')?(li.classList.remove('open'),dim.classList.remove('on')):open()});
+    });
+    dim.addEventListener('click',sluitMenus);
+    addEventListener('keydown',function(e){if(e.key=='Escape')sluitMenus()});
+    /* mobiel */
+    var mm=document.createElement('nav');mm.className='mmenu';mm.setAttribute('aria-label','Menu');
+    mm.innerHTML=D.menu.map(function(m){if(m.href)return '<a href="'+m.href+'">'+m.k+'</a>';return '<details><summary>'+m.k+'</summary>'+m.groepen.map(function(g){return '<ul>'+g.items.map(function(x){return '<li><a href="'+x[1]+'">'+x[0]+'</a></li>'}).join('')+'</ul>'}).join('')+'</details>'}).join('')+'<a class="btn btn--lg btn--lime" href="#check">Start de voorbespreking</a><a class="btn btn--lg btn--light-outline" href="#/inloggen" style="margin-top:12px">Inloggen</a>';
+    document.body.appendChild(mm);
+    var burger=$('.burger');if(burger)burger.addEventListener('click',function(){document.documentElement.classList.toggle('menu-open');burger.setAttribute('aria-label',document.documentElement.classList.contains('menu-open')?'Menu sluiten':'Menu openen')});
+  }
+  function sluitMenus(){var c=$('.vchat');if(c)c.classList.remove('open');$$('#navl>li.open').forEach(function(x){x.classList.remove('open')});var d=$('.nav-dim');if(d)d.classList.remove('on');document.documentElement.classList.remove('menu-open')}
+
+  /* ---------- Footer ---------- */
+  function bouwFooter(){
+    var f=document.createElement('footer');f.className='v-foot';
+    var kol=[['Werkwijze',[['Werkwijze','#/werkwijze'],['De klantreis','#/werkwijze#klantreis'],['Prijzen','#prijzen'],['De voorbespreking','#check'],['Het scorebord','#/portaal']]],['Diensten',Object.keys(D.diensten).map(function(s){return [D.diensten[s].naam,'#/diensten/'+s]})],['Voor jou',Object.keys(D.branches).map(function(s){return [D.branches[s].n,'#/branches/'+s]}).concat([['Wedstrijdverslagen','#/cases'],['Uitslagen','#/resultaten']])],['Kennis',[['Artikelen en gidsen','#/kennis'],['Begrippen','#/begrippen'],['Tools','#/tools'],['Marketing in Limburg','#/marketing-in-limburg'],['Partners','#/partners'],['Helpdesk','#/helpdesk']]],['James Robinson',[['Over ons','#/over-ons'],['De selectie','#/team'],['Werken bij','#/werken-bij'],['Events','#/events'],['De playground','#/playground'],['Contact','#/contact'],['Inloggen','#/inloggen']]]];
+    f.innerHTML='<div class="wrap"><p class="v-foot-top">Alle prijzen exclusief btw. Bronnen: Oldroyd e.a. (HBR 2011), Socialinsider (2026), Kohavi & Thomke (HBR 2017). Regio: '+Object.keys(D.regio).map(function(s){return '<a href="#/regio/'+s+'">'+D.regio[s].n+'</a>'}).join(', ')+'.</p><div class="v-foot-grid">'+kol.map(function(k){return '<div><h6>'+k[0]+'</h6><ul>'+k[1].map(function(x){return '<li><a href="'+x[1]+'">'+x[0]+'</a></li>'}).join('')+'</ul></div>'}).join('')+'</div><div class="v-foot-onder"><span>© 2026 James Robinson BV · Hulsberg · 045 792 0009 · support@jamesrobinson.nl</span><nav aria-label="Juridisch"><a href="#/privacy">Privacy</a><a href="#/cookies">Cookies</a><a href="#/voorwaarden">Voorwaarden</a><a href="#/toegankelijkheid">Toegankelijkheid</a><a href="#/sitemap">Alle pagina\'s</a></nav></div></div>';
+    var oud=document.querySelector('footer');oud.parentNode.insertBefore(f,oud);
+  }
+
+  /* ---------- Chat: drie toestanden ---------- */
+  function bouwChat(){
+    var u=new Date().getHours(),dag=new Date().getDay(),open=dag>0&&dag<6&&u>=8&&u<18;
+    var k=document.createElement('button');k.className='vchat-knop'+(open?'':' uit');k.type='button';k.innerHTML='<i><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg></i><span>Chat met de selectie</span>';
+    var p=document.createElement('div');p.className='vchat';p.setAttribute('role','dialog');p.setAttribute('aria-label','Chat');
+    function teken(st){
+      var kop='<div class="vchat-kop"><b>De selectie</b><small>Mensen, geen bot.</small><br><span class="vchat-st'+(st=='open'?'':' uit')+'">'+(st=='open'?'Bemand · ma–vr 8.00–18.00':'Buiten kantoortijd · antwoord binnen één werkdag')+'</span></div><div class="vchat-tabs">Voorbeeld:<button data-st="open"'+(st=='open'?' class="on"':'')+'>bemand</button><button data-st="dicht"'+(st=='dicht'?' class="on"':'')+'>buiten kantoortijd</button><button data-st="ok"'+(st=='ok'?' class="on"':'')+'>verstuurd</button></div>';
+      var body=st=='ok'?'<div class="vchat-ok"><i>✓</i><b>Bericht verstuurd.</b><p>Je krijgt antwoord via support@jamesrobinson.nl, binnen één werkdag.</p></div>'
+        :st=='open'?'<div class="vchat-msg">Hoi. Je spreekt met [Naam] uit Hulsberg. Waar kan ik mee helpen.</div><textarea rows="2" placeholder="Typ je bericht"></textarea><button class="btn btn--primary" data-st="ok">Verstuur</button>'
+        :'<div class="vchat-msg">We zijn er weer maandag tot en met vrijdag vanaf 8.00 uur. Laat een bericht achter.</div><input type="email" placeholder="E-mailadres"><textarea rows="3" placeholder="Je bericht"></textarea><button class="btn btn--primary" data-st="ok">Verstuur</button>';
+      p.innerHTML=kop+'<div class="vchat-body">'+body+'</div>';
+    }
+    teken(open?'open':'dicht');
+    p.addEventListener('click',function(e){var b=e.target.closest('[data-st]');if(b)teken(b.dataset.st)});
+    k.addEventListener('click',function(){p.classList.toggle('open')});
+    document.body.appendChild(p);document.body.appendChild(k);
+  }
+
+  bouwNav();bouwFooter();bouwChat();
+  if(document.readyState!='loading')toon();else document.addEventListener('DOMContentLoaded',toon);
 })();
 </script>
