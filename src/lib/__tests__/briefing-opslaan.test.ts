@@ -252,3 +252,20 @@ test('opslaan: feedback die intussen is verwerkt, wordt niet stilletjes overschr
   // Wie na de verwerking laadde, kan gewoon opslaan.
   await slaConceptOp(campaignId, c, new Date(Date.now() + 1000).toISOString())
 })
+
+test('opslaan: na een ingelezen briefing blijft opslaan werken', async () => {
+  // Een verwerking schrijft de briefing weg en wordt een tel later "klaar".
+  // Het scherm laadt de briefing met de tijd van dat wegschrijven.
+  const weggeschreven = new Date(Date.now() + 5_000)
+  await db.update(campaigns).set({ updatedAt: weggeschreven }).where(eq(campaigns.id, campaignId))
+  await db.insert(campaignVerwerkingen).values({
+    campaignId,
+    bron: 'import',
+    status: 'klaar',
+    invoer: 'Uitgewerkte briefing ingelezen.',
+    klaarOp: new Date(weggeschreven.getTime() + 40),
+  })
+  const c = conceptVan((await getCampagne(campaignId))!)
+  const uit = await slaConceptOp(campaignId, c, weggeschreven.toISOString())
+  assert.ok(uit.stempel)
+})

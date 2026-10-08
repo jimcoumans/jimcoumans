@@ -99,19 +99,35 @@ export function BriefingEditor(p: EditorProps) {
   const sinds = useRef(p.stempel)
   const loopt = useRef<Promise<boolean> | null>(null)
 
-  // Nieuwe gegevens van de server (na opslaan, na verwerkte feedback): overnemen
-  // zolang er hier niets openstaat. Met openstaande wijzigingen blijven die staan.
+  // Nieuwe gegevens van de server (na opslaan, na verwerkte feedback of een
+  // import): overnemen zolang er hier niets openstaat. Met openstaande
+  // wijzigingen blijven die staan, en zeggen we dat er een nieuwe versie is.
+  const server = useRef({ concept: p.concept, stempel: p.stempel })
+  const [nieuwer, setNieuwer] = useState(false)
   const vorigeStempel = useRef(p.stempel)
   useEffect(() => {
     if (p.stempel === vorigeStempel.current) return
     vorigeStempel.current = p.stempel
-    if (vuilRef.current) return
+    server.current = { concept: p.concept, stempel: p.stempel }
+    if (vuilRef.current) {
+      setNieuwer(true)
+      return
+    }
     sinds.current = p.stempel
     if (inhoudVan(p.concept) !== inhoudVan(staatRef.current)) {
       setStaat(p.concept)
       setBasis(p.concept)
     }
   }, [p.stempel, p.concept])
+
+  /** De versie van de server laden; wat hier openstond, vervalt. */
+  const laadNieuweVersie = useCallback(() => {
+    sinds.current = server.current.stempel
+    setStaat(server.current.concept)
+    setBasis(server.current.concept)
+    setNieuwer(false)
+    setFout(null)
+  }, [])
 
   const opslaan = useCallback(async (): Promise<boolean> => {
     if (loopt.current) return loopt.current
@@ -838,6 +854,11 @@ export function BriefingEditor(p: EditorProps) {
           <p className="flex min-w-0 items-center gap-2 text-sm">
             {fout ? (
               <span className="text-[#C02A22]">{fout}</span>
+            ) : vuil && nieuwer ? (
+              <>
+                <span className="bg-jr-orange h-2 w-2 shrink-0 rounded-full" aria-hidden="true" />
+                <span>Er staat een nieuwe versie van de briefing klaar, uit verwerkte feedback of een import. Laad die; wat je hier wijzigde, vervalt dan.</span>
+              </>
             ) : vuil ? (
               <>
                 <span className="bg-jr-orange h-2 w-2 shrink-0 rounded-full" aria-hidden="true" />
@@ -853,7 +874,16 @@ export function BriefingEditor(p: EditorProps) {
             )}
           </p>
           <div className="flex items-center gap-2">
-            {vuil && !bezig && (
+            {vuil && !bezig && nieuwer && (
+              <button
+                type="button"
+                onClick={laadNieuweVersie}
+                className="bg-jr-btn hover:bg-jr-btnhover min-h-10 rounded-lg px-4 py-2 text-sm font-medium text-white"
+              >
+                Nieuwe versie laden
+              </button>
+            )}
+            {vuil && !bezig && !nieuwer && (
               <button
                 type="button"
                 onClick={() => {
@@ -874,6 +904,7 @@ export function BriefingEditor(p: EditorProps) {
               type="button"
               onClick={() => void opslaan()}
               disabled={!vuil || bezig}
+              hidden={vuil && nieuwer}
               className="bg-jr-btn hover:bg-jr-btnhover min-h-10 rounded-lg px-5 py-2 text-sm font-medium text-white disabled:opacity-40"
             >
               {bezig ? 'Opslaan…' : 'Opslaan'}

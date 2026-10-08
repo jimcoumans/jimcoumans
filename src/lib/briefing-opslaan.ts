@@ -101,11 +101,15 @@ export async function slaConceptOp(campaignId: string, invoer: unknown, sinds: s
   }
   const voorstel = g.voorstel.filter((v) => v in VOORSTEL_VELDEN)
 
-  const [c] = await db.select({ id: campaigns.id }).from(campaigns).where(eq(campaigns.id, campaignId)).limit(1)
+  const [c] = await db.select({ id: campaigns.id, updatedAt: campaigns.updatedAt }).from(campaigns).where(eq(campaigns.id, campaignId)).limit(1)
   if (!c) throw new CampagneError('Deze campagne bestaat niet meer.')
 
+  // Alleen een verwerking die de briefing veranderde nadat dit scherm hem
+  // laadde, telt. Een verwerking zet de briefing om en wordt een tel later
+  // "klaar"; wie de briefing daarna laadde, heeft die versie al en mag dus
+  // gewoon opslaan.
   const vanaf = new Date(sinds)
-  if (!Number.isNaN(vanaf.getTime())) {
+  if (!Number.isNaN(vanaf.getTime()) && c.updatedAt > vanaf) {
     const [verwerkt] = await db
       .select({ id: campaignVerwerkingen.id })
       .from(campaignVerwerkingen)
