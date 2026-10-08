@@ -12,6 +12,7 @@ Ontwerp de nieuwe website van James Robinson, een performance-marketingbureau in
 
 - **Wat je oplevert:** een hifi-ontwerp, desktop én mobiel, als werkende HTML/CSS (klikbaar prototype), te beginnen met de homepage. Daarna de prijzenpagina, de check "Past het bij ons" en een dienstpagina (Google Ads) als sjabloon voor alle diensten.
 - **Het niveau:** het moet de meest toonaangevende bureauwebsite van Nederland worden. Niet de standaard bureausite. De helderheid en informatiewaarde van **apple.com, stripe.com en mollie.nl**, met de afwerking en het lef van **deptagency.com**. Maar het blijft een echte marketingwebsite die aanvragen oplevert, geen kunstproject.
+- **Het gevoel:** een arena. Een topsportbeleving en een fanbase zoals bij een voetbalclub (zie hoofdstuk 8a).
 - **Voor wie:** ondernemers en marketingverantwoordelijken in Zuid-Limburg. De site moet 100% vanuit hun belevingswereld geschreven en ontworpen zijn, niet vanuit onze interne werkwijze.
 - **Wat de site moet doen:**
   1. aanvragen opleveren, via de check "Past het bij ons";
@@ -427,7 +428,7 @@ Voorbije events worden een terugblik met foto's.
 - **Aanspreekvorm:** "je" en "jouw" naar de klant, "we" en "ons" over onszelf. Nooit "u", behalve in juridische teksten.
 - **Nul uitroeptekens.** Ook niet in een succesmelding.
 - **Sentence case.** Bedragen als "€ 1.000", exclusief btw. Geen gedachtestreepjes als tussenzin.
-- **Sportmetafoor maximaal één keer per pagina**, en alleen als die iets verklaart. Pakketnamen (Starter, Playmaker, Captain, Champion), "gameplan" en *On top of your game* als tagline mogen.
+- **Sportmetaforen zijn juist gewenst** (zie hoofdstuk 8a). De oude regel "maximaal één sportbeeld per pagina" vervalt voor de website. Wel moet elke metafoor iets verklaren; de feitelijke betekenis staat er altijd bij (bijvoorbeeld "Op doel · aanvragen").
 - **Cijfers alleen met bron.** Betrouwbare bronnen:
   - Kohavi & Thomke, HBR 2017;
   - Oldroyd e.a., HBR 2011;
@@ -489,6 +490,75 @@ ontzorgen, oplossingen op maat, uw partner in, wij denken graag met u mee, innov
 | Hosting | Merkbaar alleen als het misgaat. |
 | Fotografie | De eerste twee seconden. (Mensen kijken voordat ze lezen.) |
 | Videografie | Twintig seconden. Drie alinea's minder. |
+
+---
+
+## 8a. De arena: topsportbeleving en een fanbase (leidend concept)
+
+Jim wil een **arena-gevoel**: een topsportbeleving, en een fanbase zoals een voetbalclub die heeft. De site voelt als het stadion van een topclub op een wedstrijdavond, en blijft tegelijk een heldere, professionele marketingwebsite. Het concept komt uit ons eigen model, de ARENA-methode: "**Jij bezit de arena. Wij spelen de wedstrijd.**" De klant bezit alles: accounts, data en budget. Wij spelen het spel.
+
+### Woordenboek: de vertaling van ons vak naar het veld
+
+| Ons vak | Op de site |
+|---|---|
+| Je website / landingspagina | **Het veld.** Daar wordt gescoord. |
+| Kanalen (Google Ads, social ads, e-mail, SEO) | **De tribunes** die publiek naar binnen brengen |
+| Het portaal | **Het scorebord**, live |
+| Vertoningen, klikken, aanvragen, klanten | **Balbezit, kansen, op doel, doelpunten** |
+| Doorklikratio, conversieratio, scoringsratio | **Kansen creëren, afwerken, scoren** |
+| "Tot aan de voordeur" | **Wij leveren de voorzet. Jij kopt hem in.** |
+| De pakketten Starter, Playmaker, Captain en Champion | **De opstellingen.** Het aantal campagnes staat als spelers op het veld. |
+| Fundament (€ 4.500, de opstartmaand) | **De voorbereiding.** Live gaan is **de aftrap**, rond dag 19. |
+| Retainer / samenwerking | **Het seizoen**, maandelijks opzegbaar |
+| De check met 15 vragen | **De voorbespreking** |
+| Quickscan | **De scouting** |
+| Voorstel | **Het gameplan** |
+| Performance Review, 100-dagenreview, jaargesprek | **Nabespreking**, tussenstand, nieuw seizoen |
+| Team | **De selectie**, met staf, selectie en jeugd |
+| JRNXT (stage en afstuderen) | **De jeugdopleiding**. Zeven van de tien begonnen hier. |
+| Cases | **Wedstrijdverslagen**, met de uitslag voor en na |
+| Google-reviews | **Van de tribune** |
+| Kennis en blog | **De analyse** |
+| Nieuwsbrief | **Het clubblad** |
+| Events (padel met klanten en team) | **Thuiswedstrijden** |
+| Playground (duels tegen andere bedrijven) | **De playground**, met "Daag ons uit" |
+| Organisch posten | **Applaus is geen doelpunt.** (Likes don't pay the bills) |
+| Het magazine | **Het wedstrijdprogramma** |
+
+### Beeldtaal van de arena
+- **Het stadion bij avond:**
+  - diep nachtblauw en zwart;
+  - lichtbundels van floodlights;
+  - de lijnen van een voetbalveld, in perspectief.
+- **Een LED-scorebord als signatuur:**
+  - grote cijfers met gloed;
+  - een rood LIVE-label;
+  - een lopende wedstrijdklok;
+  - een live verslag, bijvoorbeeld "64' Aanvraag via Google" en "51' Doelpunt · aanvraag werd klant", gemarkeerd als voorbeeld.
+- **De arena-plattegrond:** het veld in het midden (je website), vier tribunes (Google Ads, social ads, e-mail en SEO) en het scorebord (het portaal). Interactief: tik een tribune aan en je ziet wat die doet.
+- **Opstellingen** op een veld, met de campagnes als spelers.
+- **Spelerskaarten** zoals bij een topclub: rugnummer in outline, positie, naam en statistieken, met tabs voor staf, selectie en jeugd.
+- **Accenten:** lime voor doelpunten en de belangrijkste actie; blauw voor het spel. Groen gras alleen subtiel, in het veld zelf.
+- **Het blijft professioneel:** geen cartoons, geen clipart en geen stockfoto's van stadions.
+
+### Fanbase-onderdelen
+Een club heeft fans, ook buiten de klanten om. Daarom krijgt de site een blok **"De club"**, waar je bij kunt horen zonder klant te zijn:
+- het clubblad (nieuwsbrief);
+- thuiswedstrijden (events, aanmelden);
+- de playground (een bedrijf daagt ons uit);
+- de jeugdopleiding (JRNXT, vacatures).
+
+Elke bezoeker kan zo fan worden voordat hij klant wordt.
+
+### Wat blijft gelden
+De regels van hoofdstuk 8 blijven staan, met uitzondering van de sportregel:
+- feiten in plaats van verkooptaal;
+- geen vragen aan de lezer;
+- geen uitroeptekens;
+- cijfers alleen met bron;
+- niets verzinnen.
+
+Bij elke sportterm staat het gewone woord erbij, zodat niemand hoeft te raden wat er bedoeld wordt.
 
 ---
 
