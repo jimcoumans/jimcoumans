@@ -55,10 +55,18 @@ export default async function MedewerkersPage() {
     <AppShell user={user} actief="medewerkers" breed>
       <div className="mb-8 flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
         <div>
-          <h1 className="text-[28px] sm:text-[32px]">Team</h1>
+          <h1 className="text-[28px] sm:text-[32px]">Medewerkers</h1>
           <p className="text-sm text-gray-600">
             Klik op een naam voor het volledige profiel: contactgegevens, contract, verjaardag
             en notities.
+            {isBeheerder && (
+              <>
+                {' '}
+                <a href="/beheer/contracten" className="text-jr-link font-medium hover:underline">
+                  Alle contracten
+                </a>
+              </>
+            )}
           </p>
         </div>
 

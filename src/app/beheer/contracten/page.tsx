@@ -54,7 +54,7 @@ export default async function ContractenPage() {
     .limit(25)
 
   return (
-    <AppShell user={user} actief="contracten" breed>
+    <AppShell user={user} actief="medewerkers" breed>
       <div className="mb-8">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <h1 className="text-[28px] sm:text-[32px]">Contracten</h1>

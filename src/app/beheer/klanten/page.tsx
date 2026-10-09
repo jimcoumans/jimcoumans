@@ -71,18 +71,18 @@ export default async function BeheerPage({
   return (
     <AppShell user={user} actief="klanten">
         <PaginaKop
-          titel="Klanten"
+          titel="Bedrijven"
           uitleg={
             <>
-              {klanten.length} {klanten.length === 1 ? 'klant' : 'klanten'}
+              {klanten.length} {klanten.length === 1 ? 'bedrijf' : 'bedrijven'}
               {filtert && ` van ${alle.length}`} &middot; totaal openstaand budget{' '}
               <span className="tabular">{formatCents(totaal)}</span>
             </>
           }
           acties={
             <Paneel
-              knop="+ Klant toevoegen"
-              titel="Klant toevoegen"
+              knop="+ Bedrijf toevoegen"
+              titel="Bedrijf toevoegen"
               uitleg="Alleen de naam is verplicht. Wat je nu al weet kun je meteen kwijt; de rest vul je aan op de klantpagina."
             >
               <ActionForm action={nieuweKlant} submitLabel="Klant aanmaken" className="grid gap-4 sm:grid-cols-2">

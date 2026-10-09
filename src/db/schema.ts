@@ -549,6 +549,11 @@ export const contacts = pgTable(
       onDelete: 'cascade',
     }),
     partnerId: uuid('partner_id').references(() => partners.id, { onDelete: 'cascade' }),
+    /**
+     * Waar iemand werkt, als tekst. Voor een los contact in het adresboek:
+     * "Jan, Rabobank" zonder dat de Rabobank een klant in het portaal wordt.
+     */
+    companyName: text('company_name'),
 
     /**
      * De volledige naam zoals je hem toont.
@@ -615,12 +620,12 @@ export const contacts = pgTable(
   (t) => [
     index('contacts_org_idx').on(t.organizationId),
     index('contacts_partner_idx').on(t.partnerId),
-    // Een contactpersoon hangt aan een klant of aan een partner. Zonder deze
-    // check kan er een persoon ontstaan die nergens bij hoort, en die vind je
-    // nooit meer terug omdat elk overzicht via een van beide binnenkomt.
+    // Een contactpersoon hangt aan een klant, aan een partner of aan niets:
+    // het adresboek (Contacten) is voor iedereen die we kennen, ook zonder
+    // bedrijf. Wel nooit aan allebei, anders weet niemand waar hij hoort.
     check(
-      'contact_hoort_bij_een',
-      sql`(${t.organizationId} IS NULL) != (${t.partnerId} IS NULL)`,
+      'contact_niet_bij_allebei',
+      sql`${t.organizationId} IS NULL OR ${t.partnerId} IS NULL`,
     ),
     // Om "wie is er deze maand jarig" te kunnen vragen.
     index('contacts_birthday_idx').on(t.birthMonth, t.birthDay),

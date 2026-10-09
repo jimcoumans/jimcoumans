@@ -107,7 +107,8 @@ export function MerkKop({ merk, rechts }: { merk: Merk; rechts: string[] }) {
 export const KOP_RUIMTE = 92
 
 const d = StyleSheet.create({
-  kop: { position: 'absolute', top: 40, left: 56, right: 56, borderBottomWidth: 0.75, borderBottomColor: LIJN, paddingBottom: 10, paddingRight: 48 },
+  plek: { position: 'absolute', top: 40, left: 56, right: 56 },
+  kop: { borderBottomWidth: 0.75, borderBottomColor: LIJN, paddingBottom: 10, paddingRight: 48 },
   soort: { fontFamily: 'Inter', fontSize: 8, color: GRIJS },
   wie: { fontFamily: 'Inter', fontSize: 8, color: ZWART, fontWeight: 500 },
   nr: { position: 'absolute', top: 40, right: 56, width: 48, fontFamily: 'Inter', fontSize: 8, color: GRIJS, textAlign: 'right' },
@@ -115,17 +116,26 @@ const d = StyleSheet.create({
 
 /**
  * "Arbeidsovereenkomst voor bepaalde tijd · Daan Voncken × James Robinson"
- * met rechts "1/9". Het nummer staat los van het blok: een render-tekst in
+ * met rechts "1/9", vanaf pagina 2; op pagina 1 alleen het nummer. Het nummer staat los van het blok: een render-tekst in
  * een vast blok laat react-pdf overslaan.
  */
 export function DocumentKop({ soort, wie, merk }: { soort: string; wie: string; merk: Merk }) {
   return (
     <>
-      <View style={d.kop} fixed>
-        <Text style={d.soort}>
-          {soort} · <Text style={d.wie}>{wie} × {merk.naam}</Text>
-        </Text>
-      </View>
+      {/* Op de eerste pagina staat de titel al groot: daar alleen het nummer. */}
+      <View
+        style={d.plek}
+        fixed
+        render={({ pageNumber }) =>
+          pageNumber > 1 ? (
+            <View style={d.kop}>
+              <Text style={d.soort}>
+                {soort} · <Text style={d.wie}>{wie} × {merk.naam}</Text>
+              </Text>
+            </View>
+          ) : null
+        }
+      />
       <Text style={d.nr} fixed render={({ pageNumber, totalPages }) => `${pageNumber}/${totalPages}`} />
     </>
   )

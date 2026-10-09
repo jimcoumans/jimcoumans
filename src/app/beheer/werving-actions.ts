@@ -15,6 +15,7 @@ import {
   zetBewaartoestemming,
   wisKandidaat,
   bewerkKandidaat,
+  zetKandidaatEmail,
   voegNotitieToe,
   wisNotitie,
   voegKandidaatDocumentToe,
@@ -278,6 +279,13 @@ export async function kandidaatBewerken(formData: FormData): Promise<ActionResul
       }),
     [pad(id), ...(vacatureId ? [`/beheer/werving/${vacatureId}`] : [])],
   )
+}
+
+export async function kandidaatEmail(formData: FormData): Promise<ActionResult> {
+  await requireStaff()
+  const id = tekst(formData, 'kandidaatId')
+  if (!id) return { ok: false, error: 'Onbekende kandidaat.' }
+  return veilig(() => zetKandidaatEmail(id, tekst(formData, 'email')), [pad(id), `${pad(id)}/indiensttreding`])
 }
 
 export async function kandidaatNotitie(formData: FormData): Promise<ActionResult> {

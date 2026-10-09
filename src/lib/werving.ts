@@ -502,6 +502,13 @@ export type KandidaatGegevens = {
 }
 
 /** Alles van een kandidaat wijzigen, behalve status en bewaartermijn: die hebben hun eigen regels. */
+/** Alleen het e-mailadres, bijvoorbeeld vlak voor het mailen van het contract. */
+export async function zetKandidaatEmail(id: string, email: string): Promise<void> {
+  const e = email.trim().toLowerCase()
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) throw new WervingError('Dit e-mailadres klopt niet.')
+  await db.update(candidates).set({ email: e, updatedAt: new Date() }).where(eq(candidates.id, id))
+}
+
 export async function bewerkKandidaat(id: string, g: KandidaatGegevens): Promise<void> {
   const t = (s: string | null | undefined) => s?.trim() || null
   const [huidig] = await db.select().from(candidates).where(eq(candidates.id, id)).limit(1)

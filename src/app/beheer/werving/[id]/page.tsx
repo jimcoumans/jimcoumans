@@ -88,7 +88,7 @@ export default async function VacaturePagina({
   return (
     <AppShell user={user} actief="werving" breed>
       <a href="/beheer/werving" className="hover:text-jr-blue mb-3 block text-xs text-gray-500">
-        &larr; Werving
+        &larr; Vacatures
       </a>
 
       <div className="mb-5 flex flex-wrap items-end justify-between gap-x-6 gap-y-3">

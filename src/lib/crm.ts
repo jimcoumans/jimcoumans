@@ -118,8 +118,10 @@ export async function listContacts(organizationId: string): Promise<Contact[]> {
 export type NewContact = {
   /** Bij een klant. Vul dit of partnerId in, nooit allebei. */
   organizationId?: string | null
-  /** Bij een partner of leverancier. Vul dit of organizationId in. */
+  /** Bij een partner of leverancier. Vul dit of organizationId in. Geen van beide: een los contact. */
   partnerId?: string | null
+  /** Waar een los contact werkt, als tekst. */
+  companyName?: string | null
   /** De volledige naam; stel hem samen met volledigeNaam() uit de delen. */
   name: string
   firstName?: string | null
@@ -159,10 +161,8 @@ export async function createContact(input: NewContact): Promise<Contact> {
 
   // De database houdt dit ook tegen, maar een melding uit de app leest beter
   // dan een constraintfout, en dit is een programmeerfout, geen invoerfout.
-  if ((organizationId === null) === (partnerId === null)) {
-    throw new CrmError(
-      'Een contactpersoon hoort bij een klant of bij een partner, niet bij allebei en niet bij geen van beide.',
-    )
+  if (organizationId !== null && partnerId !== null) {
+    throw new CrmError('Een contactpersoon hoort bij een klant of bij een partner, niet bij allebei.')
   }
 
   return db.transaction(async (tx) => {
@@ -183,6 +183,7 @@ export async function createContact(input: NewContact): Promise<Contact> {
       .values({
         organizationId,
         partnerId,
+        companyName: input.companyName?.trim() || null,
         name: input.name.trim(),
         firstName: input.firstName?.trim() || null,
         infix: input.infix?.trim() || null,
@@ -307,6 +308,92 @@ export async function updateContact(
     if (!contact) throw new Error('Contactpersoon kon niet worden opgeslagen.')
     return contact
   })
+}
+
+/* --------------------------- Het adresboek ------------------------------ */
+
+export type ContactKaart = {
+  contact: Contact
+  organisatie: { id: string; naam: string; slug: string } | null
+  partner: { id: string; naam: string } | null
+}
+
+/** Een contactpersoon met waar hij bij hoort, voor zijn eigen kaart. */
+export async function getContactKaart(contactId: string): Promise<ContactKaart | null> {
+  const [r] = await db
+    .select({
+      contact: contacts,
+      orgId: organizations.id,
+      orgNaam: organizations.name,
+      orgSlug: organizations.slug,
+      partnerId: partners.id,
+      partnerNaam: partners.name,
+    })
+    .from(contacts)
+    .leftJoin(organizations, eq(organizations.id, contacts.organizationId))
+    .leftJoin(partners, eq(partners.id, contacts.partnerId))
+    .where(eq(contacts.id, contactId))
+    .limit(1)
+  if (!r) return null
+  return {
+    contact: r.contact,
+    organisatie: r.orgId ? { id: r.orgId, naam: r.orgNaam!, slug: r.orgSlug! } : null,
+    partner: r.partnerId ? { id: r.partnerId, naam: r.partnerNaam! } : null,
+  }
+}
+
+export type ContactBasis = {
+  name: string
+  firstName: string | null
+  infix: string | null
+  lastName: string | null
+  jobTitle: string | null
+  companyName: string | null
+  email: string | null
+  phone: string | null
+  mobile: string | null
+  linkedinUrl: string | null
+  notes: string | null
+  /**
+   * Bij welke klant hij hoort. null: los contact. undefined: laten staan.
+   * Een partnercontact verhuist niet naar een klant; dat doe je bij de partner.
+   */
+  organizationId?: string | null
+}
+
+/**
+ * De basisgegevens wijzigen vanuit het adresboek: naam, functie, bedrijf en
+ * hoe je iemand bereikt. Alleen deze velden: wat op de klantkaart staat
+ * (DISC, verjaardag, drinken) blijft zoals het is.
+ */
+export async function wijzigContactBasis(contactId: string, b: ContactBasis): Promise<void> {
+  const [bestaand] = await db
+    .select({ organizationId: contacts.organizationId, partnerId: contacts.partnerId })
+    .from(contacts)
+    .where(eq(contacts.id, contactId))
+    .limit(1)
+  if (!bestaand) throw new CrmError('Contactpersoon niet gevonden.')
+  const naarAnder = b.organizationId !== undefined && b.organizationId !== bestaand.organizationId
+  if (naarAnder && bestaand.partnerId) throw new CrmError('Dit is een contactpersoon van een partner. Wijzig hem bij de partner.')
+  await db
+    .update(contacts)
+    .set({
+      name: b.name.trim(),
+      firstName: b.firstName?.trim() || null,
+      infix: b.infix?.trim() || null,
+      lastName: b.lastName?.trim() || null,
+      jobTitle: b.jobTitle?.trim() || null,
+      companyName: b.companyName?.trim() || null,
+      email: b.email?.trim().toLowerCase() || null,
+      phone: b.phone?.trim() || null,
+      mobile: b.mobile?.trim() || null,
+      linkedinUrl: b.linkedinUrl?.trim() || null,
+      notes: b.notes?.trim() || null,
+      // Bij een ander bedrijf is hij daar (nog) niet het vaste aanspreekpunt.
+      ...(naarAnder ? { organizationId: b.organizationId, isPrimary: false } : {}),
+      updatedAt: new Date(),
+    })
+    .where(eq(contacts.id, contactId))
 }
 
 export async function deleteContact(contactId: string): Promise<void> {
@@ -770,7 +857,7 @@ function zelfdeEigenaar(eigenaar: {
     ? eq(contacts.organizationId, eigenaar.organizationId)
     : eigenaar.partnerId !== null
       ? eq(contacts.partnerId, eigenaar.partnerId)
-      : // Kan niet voorkomen: de check contact_hoort_bij_een sluit het uit.
+      : // Een los contact heeft geen bedrijf, dus ook geen vaste contactpersoon.
         sql`false`
 }
 

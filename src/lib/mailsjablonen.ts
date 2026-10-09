@@ -31,9 +31,11 @@ export type MailContext = {
   handboekLink?: string | null
   /** De naam van het bedrijf zoals we hem voeren. */
   merk?: string | null
+  /** Het contract in het kort, een regel per punt. */
+  samenvatting?: string | null
 }
 
-export type MailSleutel = 'mail_contract' | 'mail_gegevens' | 'mail_welkom'
+export type MailSleutel = 'mail_contract' | 'mail_afschrift' | 'mail_gegevens' | 'mail_welkom'
 
 export const MAIL_PLAATSHOUDERS: Record<string, string> = {
   roepnaam: 'Roepnaam van de ontvanger',
@@ -47,6 +49,7 @@ export const MAIL_PLAATSHOUDERS: Record<string, string> = {
   werkadres: 'Adres van de hoofdvestiging',
   werk_email: 'Het nieuwe werkadres (e-mail)',
   inlog_url: 'Adres van de inlogpagina van het portaal',
+  samenvatting: 'Het contract in het kort: functie, periode, uren, salaris en standplaats',
 }
 
 export const MAIL_VOORWAARDEN: Record<string, string> = {
@@ -56,6 +59,7 @@ export const MAIL_VOORWAARDEN: Record<string, string> = {
   werkadres: 'Er is een hoofdvestiging',
   werk_email: 'Er is een werkadres (e-mail)',
   inlog_url: 'Het adres van het portaal is bekend',
+  samenvatting: 'Er is een contract om samen te vatten',
 }
 
 const GEGEVENS_ALINEA = `{{#als gegevenslink}}Voor de salarisadministratie hebben we nog een paar gegevens nodig: je adres, je IBAN, een kopie van je ID en het loonheffingsformulier. Die vul je in via deze persoonlijke link, zonder inloggen:
@@ -79,10 +83,32 @@ export const MAIL_SJABLONEN: Record<MailSleutel, { label: string; uitleg: string
 
 Zoals besproken: in de bijlage vind je je arbeidsovereenkomst als {{functie}}{{#als startdatum}}, met ingang van {{startdatum}}{{/als}}, en de AVG-verklaring die erbij hoort. Lees ze rustig door. Klopt alles, dan tekenen we samen; parafeer je elke pagina van het contract en vul je de AVG-verklaring in.
 
+{{#als samenvatting}}In het kort:
+{{samenvatting}}
+
+{{/als}}
 {{#als handboek}}Bij het contract hoort ons personeelshandboek. Lees het voordat je tekent:
 {{handboek_link}}
 
 {{/als}}${GEGEVENS_ALINEA}Is er iets niet duidelijk, bel of app me gerust. Liever nu een vraag dan later een misverstand.
+
+${GROET}`,
+  },
+  mail_afschrift: {
+    label: 'Afschrift na het tekenen',
+    uitleg: 'Na de ondertekening: het getekende contract en de AVG-verklaring voeg je zelf als bijlage toe.',
+    onderwerp: 'Je getekende contract bij {{merk}}',
+    tekst: `Beste {{roepnaam}},
+
+Fijn dat we getekend hebben. In de bijlage vind je je afschrift van de getekende arbeidsovereenkomst als {{functie}} en de getekende AVG-verklaring. Bewaar ze goed.
+
+{{#als samenvatting}}In het kort:
+{{samenvatting}}
+
+{{/als}}{{#als handboek}}Het personeelshandboek lees je altijd terug via deze link:
+{{handboek_link}}
+
+{{/als}}Vragen? Bel of app me gerust.
 
 ${GROET}`,
   },
@@ -125,6 +151,7 @@ function maak(sleutel: MailSleutel, c: MailContext, eigen?: MailTeksten): Mail {
     werkadres: !!c.werkadres,
     werk_email: !!c.werkEmail,
     inlog_url: !!c.inlogUrl,
+    samenvatting: !!c.samenvatting,
   }
   const waarden: Record<string, string> = {
     roepnaam: c.roepnaam,
@@ -138,6 +165,7 @@ function maak(sleutel: MailSleutel, c: MailContext, eigen?: MailTeksten): Mail {
     werkadres: c.werkadres ?? '',
     werk_email: c.werkEmail ?? '',
     inlog_url: c.inlogUrl ?? '',
+    samenvatting: c.samenvatting ?? '',
   }
   const vul = (bron: string) => vulIn(pasVoorwaardenToe(bron, geldt).tekst, waarden).tekst.replace(/\n{3,}/g, '\n\n').trim()
   return { aan: c.aan, onderwerp: vul(versie?.subject || standaard.onderwerp), tekst: vul(versie?.body || standaard.tekst) }
@@ -146,6 +174,11 @@ function maak(sleutel: MailSleutel, c: MailContext, eigen?: MailTeksten): Mail {
 /** Het contract ter ondertekening, met de invullink erbij. */
 export function contractMail(c: MailContext, eigen?: MailTeksten): Mail {
   return maak('mail_contract', c, eigen)
+}
+
+/** Na het tekenen: het afschrift van het getekende contract. */
+export function afschriftMail(c: MailContext, eigen?: MailTeksten): Mail {
+  return maak('mail_afschrift', c, eigen)
 }
 
 /** Alleen de invullink, als het contract al onderweg is. */

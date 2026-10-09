@@ -14,6 +14,10 @@ import { Avatar } from '@/components/Avatar'
 import { MAANDNAMEN } from '@/lib/dates'
 import { leeftijd } from '@/lib/leeftijd'
 import { metGeheugen } from '@/lib/cache'
+import { listBedrijfsnamen } from '@/lib/pijplijn'
+import { Paneel } from '@/components/Paneel'
+import { ActionForm, Field, Select, TextArea } from '@/components/ActionForm'
+import { nieuwContact } from '../crm-actions'
 
 /**
  * Netlify kapt een functie standaard na tien seconden af. Deze pagina haalt
@@ -53,7 +57,7 @@ export default async function CrmPage({
   // niet meer terug naar de rest.
   // Onthouden per zoekterm. Wie een lijst filtert of terugklikt krijgt hem
   // uit het geheugen in plaats van opnieuw over de oceaan.
-  const alle = await metGeheugen(`crm:${zoek}`, () => listCrmPersonen({ zoek }))
+  const [alle, bedrijven] = await Promise.all([metGeheugen(`crm:${zoek}`, () => listCrmPersonen({ zoek })), listBedrijfsnamen()])
   const telling = telPerSoort(alle)
   const mensen = soort === '' ? alle : alle.filter((m) => m.soort === soort)
 
@@ -72,8 +76,38 @@ export default async function CrmPage({
   return (
     <AppShell user={user} actief="crm" breed>
       <PaginaKop
-        titel="CRM"
-        uitleg="Iedereen die we kennen: klanten, partners en collega’s. Op achternaam. Toevoegen en wijzigen doe je waar iemand thuishoort: op de klantkaart, bij de partner of in het teamprofiel."
+        titel="Contacten"
+        uitleg="Ons adresboek: iedereen die we kennen, met of zonder bedrijf. Klanten, partners, netwerk en collega’s, op achternaam. Klik op een naam voor de kaart."
+        acties={
+          <Paneel knop="+ Contact toevoegen" titel="Contact toevoegen" uitleg="Een bedrijf kiezen mag, hoeft niet. Werkt iemand ergens dat (nog) geen klant is, vul het dan als tekst in.">
+            <ActionForm action={nieuwContact} submitLabel="Toevoegen">
+              <div className="grid gap-3 sm:grid-cols-[1.4fr_0.8fr_1.4fr]">
+                <Field label="Voornaam" name="voornaam" />
+                <Field label="Tussenv." name="tussenvoegsel" />
+                <Field label="Achternaam" name="achternaam" />
+              </div>
+              <Field label="Functie" name="functie" />
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Select
+                  label="Bij klant of prospect"
+                  name="organizationId"
+                  defaultValue=""
+                  options={[{ value: '', label: 'Geen: los contact' }, ...bedrijven.map((b) => ({ value: b.id, label: b.naam }))]}
+                />
+                <Field label="Of: werkt bij" name="bedrijfsnaam" placeholder="Bijvoorbeeld Rabobank" hint="Alleen als je hiernaast geen klant kiest." />
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Field label="E-mail" name="email" type="email" />
+                <Field label="Mobiel" name="mobiel" />
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Field label="Telefoon" name="telefoon" />
+                <Field label="LinkedIn" name="linkedin" placeholder="https://www.linkedin.com/in/…" />
+              </div>
+              <TextArea label="Notities" name="notities" rows={3} />
+            </ActionForm>
+          </Paneel>
+        }
         cijfers={[
           { label: 'Mensen', waarde: mensen.length, hint: soort !== '' ? `van ${alle.length}` : undefined },
           { label: 'Verjaardag bekend', waarde: metVerjaardag.length, hint: `van ${mensen.length}` },
@@ -116,7 +150,7 @@ export default async function CrmPage({
         <div className="rounded-xl bg-white p-8 text-center shadow-sm">
           <p className="text-sm text-gray-600">
             {zoek === '' && soort === ''
-              ? 'Nog niemand in het CRM. Voeg contactpersonen toe op een klantpagina of bij een partner.'
+              ? 'Nog niemand in het adresboek. Voeg iemand toe met de knop rechtsboven.'
               : 'Niets gevonden. Probeer een andere zoekterm of een ander label.'}
           </p>
         </div>
@@ -137,9 +171,13 @@ export default async function CrmPage({
                 </p>
                 <p className="truncate text-[13px] text-gray-600">
                   {m.functie ? `${m.functie} bij ` : ''}
-                  <a href={m.href} className="hover:text-jr-link">
-                    {m.bijNaam}
-                  </a>
+                  {m.bijHref ? (
+                    <a href={m.bijHref} className="hover:text-jr-link">
+                      {m.bijNaam}
+                    </a>
+                  ) : (
+                    m.bijNaam
+                  )}
                   {m.birthDay !== null && m.birthMonth !== null && (
                     <span className="text-gray-500">
                       {' '}

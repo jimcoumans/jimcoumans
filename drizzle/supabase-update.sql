@@ -2920,3 +2920,39 @@ BEGIN
   END IF;
 END $jr_0043_loonheffingsformulier$;
 
+-- ---------------------------------------------------------------------------
+-- 0044_losse_contacten
+-- ---------------------------------------------------------------------------
+
+DO $jr_0044_losse_contacten$
+BEGIN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = '7cc9eba57c7d902280466c0a5a7112683caebd1f845b8a611b0d1af04e7d7411') THEN
+    RAISE NOTICE 'Overgeslagen: 0044_losse_contacten stond er al.';
+  ELSE
+    ALTER TABLE "contacts" DROP CONSTRAINT "contact_hoort_bij_een";
+
+    ALTER TABLE "contacts" ADD CONSTRAINT "contact_niet_bij_allebei" CHECK ("contacts"."organization_id" IS NULL OR "contacts"."partner_id" IS NULL);
+
+    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+    VALUES ('7cc9eba57c7d902280466c0a5a7112683caebd1f845b8a611b0d1af04e7d7411', 1791553449670);
+    RAISE NOTICE 'Toegepast: 0044_losse_contacten.';
+  END IF;
+END $jr_0044_losse_contacten$;
+
+-- ---------------------------------------------------------------------------
+-- 0045_contact_bedrijfsnaam
+-- ---------------------------------------------------------------------------
+
+DO $jr_0045_contact_bedrijfsnaam$
+BEGIN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = '2986eec5dc102622e44ecee746673a2ac7b48f17979a17507107a50bac47448f') THEN
+    RAISE NOTICE 'Overgeslagen: 0045_contact_bedrijfsnaam stond er al.';
+  ELSE
+    ALTER TABLE "contacts" ADD COLUMN "company_name" text;
+
+    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+    VALUES ('2986eec5dc102622e44ecee746673a2ac7b48f17979a17507107a50bac47448f', 1791553513903);
+    RAISE NOTICE 'Toegepast: 0045_contact_bedrijfsnaam.';
+  END IF;
+END $jr_0045_contact_bedrijfsnaam$;
+

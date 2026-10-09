@@ -228,10 +228,10 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
   const KNOP_MAIL = 'inline-flex items-center rounded-full border border-gray-300 bg-white px-3.5 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50'
 
   return (
-    <AppShell user={user} actief="werving">
+    <AppShell user={user} actief="kandidaten">
       <div className="mb-4 flex flex-wrap gap-3 text-sm">
         <a href="/beheer/werving" className="text-jr-link hover:underline">
-          &larr; Werving
+          &larr; Vacatures
         </a>
         <a href="/beheer/werving/kandidaten" className="text-jr-link hover:underline">
           Alle kandidaten
@@ -299,7 +299,7 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
         )}
       </header>
 
-      <div className="grid items-start gap-6 xl:grid-cols-[1.45fr_1fr]">
+      <div className={flowEerst ? 'mx-auto grid max-w-4xl gap-6' : 'grid items-start gap-6 xl:grid-cols-[1.45fr_1fr]'}>
         <div className="space-y-6">
           {!flowEerst && statusBlok}
 
@@ -519,7 +519,8 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
           </section>
         </div>
 
-        <div className="space-y-6">
+        {/* In de indiensttreding is de sollicitatie bijzaak: ingeklapt onderaan. */}
+        <Inklappen aan={flowEerst}>
           {/* ------------------------------ Gegevens ------------------------------ */}
           <section className="rounded-xl bg-white p-6 shadow-sm">
             <h2 className="mb-4 text-base">{dossierZichtbaar ? 'Contact en sollicitatie' : 'Gegevens'}</h2>
@@ -644,8 +645,22 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
               </ActionForm>
             </div>
           </section>
-        </div>
+        </Inklappen>
       </div>
     </AppShell>
+  )
+}
+
+/** De kolom met de sollicitatie: gewoon, of ingeklapt als de indiensttreding loopt. */
+function Inklappen({ aan, children }: { aan: boolean; children: React.ReactNode }) {
+  if (!aan) return <div className="space-y-6">{children}</div>
+  return (
+    <details className="rounded-xl bg-white shadow-sm">
+      <summary className="cursor-pointer p-5 text-sm">
+        <span className="font-semibold">Sollicitatie</span>
+        <span className="text-gray-500"> · contact, vacature, cv en bewaartermijn</span>
+      </summary>
+      <div className="space-y-6 border-t border-gray-100 bg-gray-50 p-4">{children}</div>
+    </details>
   )
 }

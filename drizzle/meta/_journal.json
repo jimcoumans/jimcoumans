@@ -309,6 +309,20 @@
       "when": 1791548327684,
       "tag": "0043_loonheffingsformulier",
       "breakpoints": true
+    },
+    {
+      "idx": 44,
+      "version": "7",
+      "when": 1791553449670,
+      "tag": "0044_losse_contacten",
+      "breakpoints": true
+    },
+    {
+      "idx": 45,
+      "version": "7",
+      "when": 1791553513903,
+      "tag": "0045_contact_bedrijfsnaam",
+      "breakpoints": true
     }
   ]
 }
