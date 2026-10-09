@@ -44,9 +44,9 @@ export default async function KandidatenPagina({
   const filtert = zoek !== '' || vacature !== '' || fase !== 'lopend'
 
   return (
-    <AppShell user={user} actief="werving">
+    <AppShell user={user} actief="kandidaten">
       <a href="/beheer/werving" className="text-jr-link text-sm hover:underline">
-        &larr; Werving
+        &larr; Vacatures
       </a>
       <PaginaKop
         titel="Alle kandidaten"

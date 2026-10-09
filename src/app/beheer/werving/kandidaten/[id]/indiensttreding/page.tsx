@@ -78,12 +78,15 @@ export default async function IndiensttredingPagina({ params }: { params: Promis
   // Na de aanname staat het dossier bij de collega.
   const van: DossierVan = stand.aangenomen && k.hiredUserId ? { userId: k.hiredUserId } : { kandidaatId: k.id }
 
+  const getekendBinnen = stukken.filter((s) => !s.voorEersteWerkdag)
+  const voorWerkdag = stukken.filter((s) => s.voorEersteWerkdag)
+
   /* Alles wat er nog mist, over alle stappen heen: het lijstje voor vandaag. */
   const mist = [
     ...stand.gegevensMist.map((m) => `Persoonsgegevens: ${m}`),
     ...(!contract ? ['Contract opstellen'] : contract.soort !== 'definitief' ? ['Contract definitief maken'] : stand.contractVerouderd ? ['Contract bijwerken met de nieuwe gegevens'] : []),
     ...(contract?.soort === 'definitief' && !contract.signedOn ? ['Datum van ondertekening vastleggen'] : []),
-    ...stukken.filter((s) => !s.klaar).map((s) => s.titel),
+    ...stukken.filter((s) => !s.klaar).map((s) => (s.voorEersteWerkdag ? `${s.titel} (voor de eerste werkdag)` : s.titel)),
     ...(stand.aangenomen ? [] : ['In dienst nemen']),
   ]
 
@@ -161,7 +164,7 @@ export default async function IndiensttredingPagina({ params }: { params: Promis
   const getekend = (kind: 'contract' | 'avg_verklaring') => gegevens?.documenten.filter((d) => d.kind === kind).at(-1) ?? null
 
   return (
-    <AppShell user={user} actief="werving">
+    <AppShell user={user} actief="kandidaten">
       <a href={`/beheer/werving/kandidaten/${k.id}`} className="hover:text-jr-blue mb-3 block text-xs text-gray-500">
         &larr; {k.name}
       </a>
@@ -389,16 +392,23 @@ export default async function IndiensttredingPagina({ params }: { params: Promis
         </Stap>
 
         {/* ------------------------------ 4. Getekende stukken ------------------------------ */}
-        <Stap id="stukken" nummer={4} titel="Getekende stukken" klaar={klaar('stukken')} open={open('stukken')} samenvatting={`${stukken.filter((s) => s.klaar).length} van ${stukken.length} binnen`}>
+        <Stap id="stukken" nummer={4} titel="Getekende stukken" klaar={klaar('stukken')} open={open('stukken')} samenvatting={`${getekendBinnen.filter((s) => s.klaar).length} van ${getekendBinnen.length} getekend terug${voorWerkdag.some((s) => !s.klaar) ? ` · nog ${voorWerkdag.filter((s) => !s.klaar).length} voor de eerste werkdag` : ''}`}>
           {!contract || contract.soort !== 'definitief' ? (
             <p className="text-sm text-gray-600">Kan zodra het contract definitief is (stap 2).</p>
           ) : (
             <>
               <p className="mb-1 text-sm text-gray-600">
-                Per stuk uploaden, zodra je het hebt. Wat ontbreekt, vul je later aan: hier, op de pagina van {k.firstName ?? 'de kandidaat'} of straks bij de collega.
+                Upload de scans van wat getekend is. Daarmee is deze stap klaar en kun je {k.firstName ?? 'de kandidaat'} in dienst nemen.
               </p>
               <ul className="divide-y divide-gray-100">
-                <DossierDocumenten van={van} gegevens={gegevens} soorten={['contract', 'avg_verklaring', 'loonheffing', 'id_kopie']} />
+                <DossierDocumenten van={van} gegevens={gegevens} soorten={['contract', 'avg_verklaring']} />
+              </ul>
+              <h3 className="mt-5 text-sm font-semibold">Vóór de eerste werkdag</h3>
+              <p className="text-xs text-gray-600">
+                Hoeft niet bij het tekenen en houdt de aanname niet op. Wat hier nog open staat, zie je na de aanname als actie bij de collega.
+              </p>
+              <ul className="divide-y divide-gray-100">
+                <DossierDocumenten van={van} gegevens={gegevens} soorten={['id_kopie', 'loonheffing']} />
                 <IbanRegel van={van} gegevens={gegevens} iban={iban} />
                 <DossierRegel
                   klaar={!!contract.handbookGivenOn}
@@ -460,7 +470,7 @@ export default async function IndiensttredingPagina({ params }: { params: Promis
               </p>
               {stukken.some((s) => !s.klaar) && (
                 <p className="text-jr-orange mb-3 text-sm">
-                  Er mist nog: {stukken.filter((s) => !s.klaar).map((s) => s.titel.toLowerCase()).join(', ')}. Dat kan ook na de aanname, in het dossier.
+                  Nog voor de eerste werkdag: {stukken.filter((s) => !s.klaar).map((s) => s.titel.toLowerCase()).join(', ')}. Dat kan ook na de aanname; het staat dan als actie bij de collega.
                 </p>
               )}
               <ActionForm action={kandidaatAannemen} submitLabel="In dienst nemen" bevestig>

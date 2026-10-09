@@ -169,8 +169,8 @@ export default async function WervingPage() {
   return (
     <AppShell user={user} actief="werving" breed>
       <PaginaKop
-        titel="Werving"
-        uitleg="Vacatures, stages en kandidaten. Bovenaan wie er op ons wacht."
+        titel="Vacatures"
+        uitleg="Vacatures, stages en wie erop gesolliciteerd heeft. Bovenaan wie er op ons wacht."
         acties={
           <>
             <a href="/beheer/werving/kandidaten" className="text-jr-text rounded-full border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium hover:bg-gray-50">

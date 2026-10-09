@@ -115,7 +115,7 @@ export default async function ContractPagina({
     })
 
   return (
-    <AppShell user={user} actief="contracten">
+    <AppShell user={user} actief="medewerkers">
       <div className="print:hidden">
         <a
           href="/beheer/contracten"

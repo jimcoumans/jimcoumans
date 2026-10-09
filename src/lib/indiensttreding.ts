@@ -27,6 +27,11 @@ export type Stuk = {
   titel: string
   klaar: boolean
   toelichting?: string
+  /**
+   * Hoeft niet bij het tekenen en houdt de aanname niet op: wel geregeld
+   * voor de eerste werkdag. Staat daarna als open actie bij de collega.
+   */
+  voorEersteWerkdag?: boolean
 }
 
 export type Indiensttreding = {
@@ -80,13 +85,14 @@ export async function getIndiensttreding(k: Candidate): Promise<Indiensttreding>
   const stukken: Stuk[] = [
     { sleutel: 'contract', titel: 'Getekend contract', klaar: heeft('contract'), toelichting: 'De scan met alle handtekeningen en parafen.' },
     { sleutel: 'avg_verklaring', titel: 'Getekende AVG-verklaring', klaar: heeft('avg_verklaring') },
-    { sleutel: 'loonheffing', titel: 'Getekend loonheffingsformulier', klaar: heeft('loonheffing'), toelichting: 'Opgaaf gegevens voor de loonheffingen: met BSN en de keuze voor de loonheffingskorting.' },
-    { sleutel: 'id_kopie', titel: 'Kopie identiteitsbewijs', klaar: heeft('id_kopie'), toelichting: 'Bekijk het origineel bij het tekenen.' },
-    { sleutel: 'iban', titel: 'Bankrekening (IBAN)', klaar: !!r?.ibanEnc, toelichting: r?.ibanEnc ? `Eindigt op ${r.ibanLast4 ?? '…'}.` : undefined },
+    { sleutel: 'loonheffing', titel: 'Getekend loonheffingsformulier', klaar: heeft('loonheffing'), voorEersteWerkdag: true, toelichting: 'Opgaaf gegevens voor de loonheffingen: met BSN en de keuze voor de loonheffingskorting.' },
+    { sleutel: 'id_kopie', titel: 'Kopie identiteitsbewijs', klaar: heeft('id_kopie'), voorEersteWerkdag: true, toelichting: 'Bekijk het origineel bij het tekenen.' },
+    { sleutel: 'iban', titel: 'Bankrekening (IBAN)', klaar: !!r?.ibanEnc, voorEersteWerkdag: true, toelichting: r?.ibanEnc ? `Eindigt op ${r.ibanLast4 ?? '…'}.` : undefined },
     {
       sleutel: 'handboek',
       titel: 'Personeelshandboek ontvangen',
       klaar: !!contract?.handbookGivenOn,
+      voorEersteWerkdag: true,
       toelichting: contract?.handbookDocumentId ? undefined : 'Er hoort nog geen handboek bij dit contract.',
     },
   ]
@@ -95,7 +101,7 @@ export async function getIndiensttreding(k: Candidate): Promise<Indiensttreding>
     { sleutel: 'gegevens', nummer: 1, titel: 'Persoonsgegevens', klaar: gegevensMist.length === 0 },
     { sleutel: 'contract', nummer: 2, titel: 'Contract', klaar: contract?.soort === 'definitief' && !contractVerouderd },
     { sleutel: 'printen', nummer: 3, titel: 'Printen en tekenen', klaar: !!contract?.signedOn },
-    { sleutel: 'stukken', nummer: 4, titel: 'Getekende stukken', klaar: stukken.every((s) => s.klaar) },
+    { sleutel: 'stukken', nummer: 4, titel: 'Getekende stukken', klaar: stukken.filter((s) => !s.voorEersteWerkdag).every((s) => s.klaar) },
     { sleutel: 'aanname', nummer: 5, titel: 'In dienst nemen', klaar: aangenomen },
   ]
   return {

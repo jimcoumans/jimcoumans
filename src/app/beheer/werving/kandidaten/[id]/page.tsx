@@ -228,10 +228,10 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
   const KNOP_MAIL = 'inline-flex items-center rounded-full border border-gray-300 bg-white px-3.5 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50'
 
   return (
-    <AppShell user={user} actief="werving">
+    <AppShell user={user} actief="kandidaten">
       <div className="mb-4 flex flex-wrap gap-3 text-sm">
         <a href="/beheer/werving" className="text-jr-link hover:underline">
-          &larr; Werving
+          &larr; Vacatures
         </a>
         <a href="/beheer/werving/kandidaten" className="text-jr-link hover:underline">
           Alle kandidaten

@@ -193,35 +193,40 @@ const TEAM_GROEPEN: NavGroep[] = [
       { href: '/beheer/offertes', label: 'Offertes', key: 'offertes', icon: icons.quotes },
     ],
   },
+  /* HR gaat over mensen: wie er werkt en wie er komt. Contracten horen bij
+     een medewerker of kandidaat en staan daar; het overzicht van alle
+     contracten zit onder Medewerkers. */
   {
-    label: 'Bureau',
-    key: 'g-bureau',
-    icon: icons.finance,
-    items: [
-      { href: '/beheer/diensten', label: 'Diensten', key: 'diensten', icon: icons.services },
-      { href: '/beheer/partners', label: 'Partners', key: 'partners', icon: icons.partners },
-      { href: '/beheer/portfolio', label: 'Portfolio', key: 'portfolio', icon: icons.portfolio },
-      { href: '/beheer/financieel', label: 'Financieel', key: 'financieel', icon: icons.finance },
-    ],
-  },
-  {
-    label: 'Team',
-    key: 'g-team',
+    label: 'HR',
+    key: 'g-hr',
     icon: icons.team,
     items: [
       { href: '/beheer/medewerkers', label: 'Medewerkers', key: 'medewerkers', icon: icons.team },
-      { href: '/beheer/werving', label: 'Werving', key: 'werving', icon: icons.werving },
-      /* Contracten en salarishuis alleen voor beheerders: daar staan salarissen.
-         De pagina's controleren dat zelf ook nog; een link weglaten is geen beveiliging. */
-      { href: '/beheer/contracten', label: 'Contracten', key: 'contracten', icon: icons.contracten },
-      { href: '/beheer/salarishuis', label: 'Salarishuis', key: 'salarishuis', icon: icons.salarishuis },
+      { href: '/beheer/werving', label: 'Vacatures', key: 'werving', icon: icons.werving },
+      { href: '/beheer/werving/kandidaten', label: 'Kandidaten', key: 'kandidaten', icon: icons.werving },
+    ],
+  },
+  /* Wat voor het hele bedrijf geldt: gegevens en logo, wat we verkopen,
+     geld, het salarishuis en de standaardteksten (contracten, mails). */
+  {
+    label: 'Bedrijf',
+    key: 'g-bedrijf',
+    icon: icons.bedrijf,
+    items: [
       { href: '/beheer/bedrijf', label: 'Bedrijfsgegevens', key: 'bedrijf', icon: icons.bedrijf },
+      { href: '/beheer/diensten', label: 'Diensten', key: 'diensten', icon: icons.services },
+      { href: '/beheer/portfolio', label: 'Portfolio', key: 'portfolio', icon: icons.portfolio },
+      { href: '/beheer/partners', label: 'Partners', key: 'partners', icon: icons.partners },
+      { href: '/beheer/financieel', label: 'Financieel', key: 'financieel', icon: icons.finance },
+      /* Salarishuis alleen voor beheerders: daar staan salarissen. De pagina's
+         controleren dat zelf ook nog; een link weglaten is geen beveiliging. */
+      { href: '/beheer/salarishuis', label: 'Salarishuis', key: 'salarishuis', icon: icons.salarishuis },
       { href: '/beheer/sjablonen', label: 'Standaardteksten', key: 'sjablonen', icon: icons.contracten },
     ],
   },
 ]
 
-const ALLEEN_ADMIN = new Set(['contracten', 'salarishuis', 'bedrijf', 'sjablonen'])
+const ALLEEN_ADMIN = new Set(['salarishuis', 'bedrijf', 'sjablonen'])
 
 const CLIENT_NAV: NavItem[] = [
   { href: '/', label: 'Mijn wallet', key: 'wallet', icon: icons.wallet },
