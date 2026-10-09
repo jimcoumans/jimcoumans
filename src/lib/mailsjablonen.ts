@@ -23,10 +23,14 @@ export type MailContext = {
   werkadres?: string | null
   werkEmail?: string | null
   inlogUrl?: string | null
+  /** De link naar de versie van het personeelshandboek die bij het contract hoort. */
+  handboekLink?: string | null
+  /** De naam van het bedrijf zoals we hem voeren. */
+  merk?: string | null
 }
 
 function groet(c: MailContext): string {
-  return `Met vriendelijke groet,\n${c.afzender}\nJames Robinson`
+  return `Met vriendelijke groet,\n${c.afzender}\n${c.merk ?? 'James Robinson'}`
 }
 
 function gegevensAlinea(c: MailContext): string {
@@ -38,10 +42,11 @@ function gegevensAlinea(c: MailContext): string {
 export function contractMail(c: MailContext): Mail {
   return {
     aan: c.aan,
-    onderwerp: 'Je contract bij James Robinson',
+    onderwerp: `Je contract bij ${c.merk ?? 'James Robinson'}`,
     tekst:
       `Beste ${c.roepnaam},\n\n` +
-      `Zoals besproken: in de bijlage vind je je arbeidsovereenkomst als ${c.functie}${c.startdatum ? `, met ingang van ${formatDateLong(c.startdatum)}` : ''}. Lees hem rustig door. Klopt alles, teken hem dan en stuur de getekende versie terug naar dit adres.\n\n` +
+      `Zoals besproken: in de bijlage vind je je arbeidsovereenkomst als ${c.functie}${c.startdatum ? `, met ingang van ${formatDateLong(c.startdatum)}` : ''}, en de AVG-verklaring die erbij hoort. Lees ze rustig door. Klopt alles, dan tekenen we samen; parafeer je elke pagina van het contract en vul je de AVG-verklaring in.\n\n` +
+      (c.handboekLink ? `Bij het contract hoort ons personeelshandboek. Lees het voordat je tekent:\n${c.handboekLink}\n\n` : '') +
       gegevensAlinea(c) +
       `Is er iets niet duidelijk, bel of app me gerust. Liever nu een vraag dan later een misverstand.\n\n` +
       groet(c),

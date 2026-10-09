@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { consumeLoginToken, createSession } from '@/lib/auth'
 import { Logo } from '@/components/Logo'
+import { merkTekst } from '@/lib/bedrijf'
 
 /**
  * Wisselt de inloglink in voor een sessie.
@@ -20,6 +21,7 @@ async function login(formData: FormData) {
 
   const token = String(formData.get('token') ?? '')
   if (!token) redirect('/login?fout=ongeldig')
+  const merk = await merkTekst()
 
   const result = await consumeLoginToken(token)
 
@@ -43,6 +45,7 @@ export default async function VerifyPage({
 }) {
   const { token } = await searchParams
   if (!token) redirect('/login?fout=ongeldig')
+  const merk = await merkTekst()
 
   return (
     <main className="flex min-h-screen items-center justify-center px-4 py-12">
@@ -69,7 +72,8 @@ export default async function VerifyPage({
         </div>
 
         <p className="mt-6 text-center text-xs text-gray-600">
-          James Robinson &mdash; Marketing &amp; Branding
+          {merk.naam}
+          {merk.ondertitel ? <> &mdash; {merk.ondertitel}</> : null}
         </p>
       </div>
     </main>

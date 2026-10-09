@@ -1,8 +1,8 @@
 import { getSessionUser } from '@/lib/auth'
 import { getContract } from '@/lib/contracten'
-import { maakContractPdf, contractPdfNaam } from '@/lib/pdf/ContractPdf'
+import { maakAvgPdf, avgPdfNaam } from '@/lib/pdf/AvgPdf'
 
-/** Een contract als pdf. Alleen voor beheerders: er staan salaris en adres in. */
+/** De AVG-verklaring bij een contract, met de naam van de werknemer erin. Alleen voor beheerders. */
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   const user = await getSessionUser()
   if (!user || user.role !== 'admin') return new Response('Geen toegang.', { status: 401 })
@@ -12,11 +12,11 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
   const contract = await getContract(id)
   if (!contract) return new Response('Dit contract bestaat niet.', { status: 404 })
 
-  const pdf = await maakContractPdf(contract)
+  const pdf = await maakAvgPdf(contract)
   return new Response(new Uint8Array(pdf), {
     headers: {
       'Content-Type': 'application/pdf',
-      'Content-Disposition': `attachment; filename="${contractPdfNaam(contract).replace(/"/g, '')}"`,
+      'Content-Disposition': `attachment; filename="${avgPdfNaam(contract).replace(/"/g, '')}"`,
       'Cache-Control': 'private, no-store',
     },
   })

@@ -5,6 +5,7 @@ import { getCampagne } from '@/lib/campagnes'
 import { CampagneBriefing, versieLabel } from '@/components/CampagneBriefing'
 import { PrintKnop } from '@/components/PrintKnop'
 import { PdfDownload } from '@/components/PdfDownload'
+import { merkTekst } from '@/lib/bedrijf'
 
 export const maxDuration = 26
 
@@ -42,7 +43,7 @@ export default async function BriefingPage({ params }: { params: Promise<{ id: s
         </div>
       </div>
       <div className="shadow-sm print:shadow-none">
-        <CampagneBriefing v={v} />
+        <CampagneBriefing v={v} merk={await merkTekst()} />
       </div>
     </div>
   )

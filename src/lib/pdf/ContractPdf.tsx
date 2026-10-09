@@ -1,8 +1,10 @@
 import { Document, Page, View, Text, StyleSheet, renderToBuffer } from '@react-pdf/renderer'
-import type { GeneratedContract, EmployerSettings } from '@/db/schema'
+import type { GeneratedContract } from '@/db/schema'
 import { formatDate, formatDateLong } from '@/lib/dates'
-import { ondertekenaarsVan, namenZin } from '@/lib/contracten'
+import { ondertekenaarsVan, namenZin, kopVanContract, tekennaamVan } from '@/lib/contracten'
+import { getBedrijf, haalLogo, type WerkgeverKop } from '@/lib/bedrijf'
 import { registreerFonts } from './fonts'
+import { MerkKop, merkUit, merkRegel, type Merk, ZWART, GRIJS, BLAUW, LIJN, VLAK, RAND } from './huisstijl'
 
 /* -------------------------------------------------------------------------
    Een contract als pdf: om te downloaden, mee te sturen en te tekenen.
@@ -17,55 +19,51 @@ import { registreerFonts } from './fonts'
    paraafvak voor iedereen die tekent.
    ------------------------------------------------------------------------- */
 
-const ZWART = '#1C1C1E'
-const GRIJS = '#636466'
-const BLAUW = '#007AFF'
-const LIJN = '#E5E5E9'
-const VLAK = '#F2F2F7'
 const ORANJE = '#94590A'
 
 /* Designsysteem v3.0: Inter Tight voor koppen, Inter voor tekst, JR Blue als
-   accent, rustige grijze vlakken. Onderaan elke pagina een paraafvak voor
-   iedereen die tekent; daar is de ruimte onderaan voor gereserveerd. */
+   accent, rustige grijze vlakken. Ruim boven en onder: de kop en de
+   paraafregel staan vast op elke pagina, daar is de ruimte voor. */
 const s = StyleSheet.create({
-  pagina: { fontFamily: 'Inter', fontSize: 9.5, color: ZWART, paddingTop: 70, paddingBottom: 112, paddingHorizontal: 50 },
+  pagina: { fontFamily: 'Inter', fontSize: 9.5, color: ZWART, paddingTop: 112, paddingBottom: 132, paddingHorizontal: 56 },
   /* De regelafstand per tekst en niet op de pagina: op de pagina laat
      react-pdf het paginanummer (een render-tekst) stilletjes weg, en via een
      omringend blok rekent het de afstand ruim twee keer zo groot. Met de
      korps erbij, anders rekent react-pdf met zijn eigen standaardkorps. */
-  regel: { fontSize: 9.5, lineHeight: 1.45 },
-  kop: { position: 'absolute', top: 28, left: 50, right: 50, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end', borderBottomWidth: 0.75, borderBottomColor: LIJN, paddingBottom: 8 },
-  merk: { fontFamily: 'InterTight', fontWeight: 700, fontSize: 11 },
-  merkSub: { fontSize: 7.5, color: BLAUW },
-  kopRechts: { fontSize: 7.5, color: GRIJS, textAlign: 'right' },
-  proforma: { fontSize: 8, color: ORANJE, fontWeight: 500, marginBottom: 10, backgroundColor: '#FEF7EE', borderRadius: 6, padding: 8 },
+  regel: { fontSize: 9.5, lineHeight: 1.5 },
+  proforma: { fontSize: 8.5, color: ORANJE, fontWeight: 500, marginBottom: 14, backgroundColor: '#FEF7EE', borderRadius: 6, padding: 9 },
   watermerk: { position: 'absolute', top: 360, left: 40, right: 40, textAlign: 'center', fontFamily: 'InterTight', fontWeight: 700, fontSize: 96, color: '#F6A027', opacity: 0.08, transform: 'rotate(-30deg)' },
-  eyebrow: { fontSize: 8.5, color: BLAUW, fontWeight: 500, marginBottom: 4 },
-  titel: { fontFamily: 'InterTight', fontWeight: 700, fontSize: 22, lineHeight: 1.1, marginBottom: 4 },
-  ondertitel: { fontSize: 10, color: GRIJS, marginBottom: 18 },
-  partijen: { flexDirection: 'row', marginBottom: 10 },
-  partij: { flex: 1, backgroundColor: VLAK, borderRadius: 6, padding: 11 },
-  partijLabel: { fontSize: 7.5, color: GRIJS, marginBottom: 3 },
-  partijNaam: { fontFamily: 'InterTight', fontWeight: 700, fontSize: 11, marginBottom: 3 },
-  verklaring: { marginBottom: 16 },
-  artikel: { marginBottom: 11 },
-  artikelKop: { flexDirection: 'row', marginBottom: 4 },
-  artikelNr: { fontFamily: 'InterTight', fontWeight: 700, fontSize: 10.5, color: BLAUW, width: 26 },
+  eyebrow: { fontSize: 8.5, color: BLAUW, fontWeight: 500, marginBottom: 6 },
+  titel: { fontFamily: 'InterTight', fontWeight: 700, fontSize: 24, lineHeight: 1.15, marginBottom: 6 },
+  ondertitel: { fontSize: 10, color: GRIJS, marginBottom: 26 },
+  ondergetekenden: { fontSize: 9.5, marginBottom: 8 },
+  partijen: { flexDirection: 'row', alignItems: 'stretch', marginBottom: 16 },
+  partij: { flex: 1, flexDirection: 'column', backgroundColor: VLAK, borderRadius: 8, paddingVertical: 14, paddingHorizontal: 14 },
+  partijLabel: { fontSize: 7.5, color: GRIJS, marginBottom: 5 },
+  partijNaam: { fontFamily: 'InterTight', fontWeight: 700, fontSize: 11.5, lineHeight: 1.3, marginBottom: 5 },
+  /* De "hierna te noemen" staat onderaan het vlak, in beide vlakken op
+     dezelfde hoogte, met een witregel erboven. */
+  vuller: { flexGrow: 1 },
+  hierna: { fontSize: 9.5, lineHeight: 1.5, color: GRIJS, marginTop: 14 },
+  verklaring: { marginBottom: 22 },
+  artikel: { marginBottom: 13 },
+  artikelKop: { flexDirection: 'row', marginBottom: 5 },
+  artikelNr: { fontFamily: 'InterTight', fontWeight: 700, fontSize: 10.5, color: BLAUW, width: 28 },
   artikelTitel: { fontFamily: 'InterTight', fontWeight: 700, fontSize: 10.5, flex: 1 },
-  lid: { flexDirection: 'row', marginBottom: 3.5 },
-  lidNr: { width: 26, color: GRIJS, fontSize: 8.5, paddingTop: 0.8 },
-  slot: { marginTop: 18, borderTopWidth: 0.75, borderTopColor: LIJN, paddingTop: 14 },
-  handtekeningen: { flexDirection: 'row', flexWrap: 'wrap', marginTop: 12 },
-  handtekening: { width: '48%', marginRight: '2%', marginBottom: 16, backgroundColor: VLAK, borderRadius: 6, padding: 10 },
-  tekenruimte: { height: 46, borderBottomWidth: 0.75, borderBottomColor: GRIJS, marginBottom: 5 },
+  lid: { flexDirection: 'row', marginBottom: 4 },
+  lidNr: { width: 28, color: GRIJS, fontSize: 8.5, paddingTop: 1 },
+  slot: { marginTop: 22, borderTopWidth: 0.75, borderTopColor: LIJN, paddingTop: 18 },
+  handtekeningen: { flexDirection: 'row', flexWrap: 'wrap', marginTop: 16 },
+  handtekening: { width: '48%', marginRight: '2%', marginBottom: 14, backgroundColor: VLAK, borderRadius: 8, padding: 12 },
+  tekenruimte: { height: 52, borderBottomWidth: 0.75, borderBottomColor: GRIJS, marginBottom: 6 },
   rol: { fontSize: 7.5, color: GRIJS, marginBottom: 2 },
-  voet: { position: 'absolute', bottom: 24, left: 50, right: 50 },
-  parafen: { flexDirection: 'row', borderTopWidth: 0.75, borderTopColor: LIJN, paddingTop: 7 },
-  paraaf: { flex: 1, marginRight: 8 },
-  paraafVak: { height: 26, borderWidth: 0.75, borderColor: '#C8C8CD', borderRadius: 4, marginTop: 3 },
+  voet: { position: 'absolute', bottom: 40, left: 56, right: 56 },
+  parafen: { flexDirection: 'row', borderTopWidth: 0.75, borderTopColor: LIJN, paddingTop: 12 },
+  paraaf: { flex: 1, marginRight: 10 },
+  paraafVak: { height: 30, borderWidth: 0.75, borderColor: RAND, borderRadius: 5, marginTop: 4 },
   paraafNaam: { fontSize: 6.5, color: GRIJS },
-  voetRegel: { flexDirection: 'row', justifyContent: 'space-between', fontSize: 7, color: GRIJS, marginTop: 7 },
-  paginaNr: { position: 'absolute', bottom: 24, right: 50, fontSize: 7, color: BLAUW },
+  voetMerk: { position: 'absolute', bottom: 20, left: 56, fontSize: 7, color: GRIJS },
+  paginaNr: { position: 'absolute', bottom: 20, right: 56, fontSize: 7, color: BLAUW },
 })
 
 export function artikelenUit(body: string): { kop: string; leden: string[] }[] {
@@ -92,14 +90,15 @@ function splitsKop(kop: string): { nr: string; titel: string } {
   return m ? { nr: m[1]!, titel: m[2]! } : { nr: '', titel: kop }
 }
 
-/** Een lid tot een regel of zes breekt niet over twee pagina's. */
-function kort(tekst: string | undefined): boolean {
-  return (tekst ?? '').length <= 600
-}
+/* Een lid breekt nooit over twee pagina's: react-pdf zet dan het nummer
+   onderaan de ene pagina en de hele tekst op de volgende. Het langste lid is
+   een regel of twaalf; dat past altijd. Alleen een uitzonderlijk lang lid
+   (een flinke extra afspraak) mag breken, anders valt het van de pagina. */
+const PAST_OP_PAGINA = 3500
 
 function Lid({ nr, tekst }: { nr: string; tekst: string }) {
   return (
-    <View style={s.lid} wrap={!kort(tekst)}>
+    <View style={s.lid} wrap={tekst.length > PAST_OP_PAGINA}>
       <Text style={s.lidNr}>{nr}</Text>
       <Text style={[s.regel, { flex: 1 }]}>{tekst}</Text>
     </View>
@@ -121,26 +120,19 @@ function aanhef(c: GeneratedContract): string {
   return c.employeeAanhef === 'heer' ? 'Dhr. ' : c.employeeAanhef === 'mevrouw' ? 'Mevr. ' : ''
 }
 
-export function ContractPdf({ c, werkgever }: { c: GeneratedContract; werkgever: EmployerSettings | null }) {
+const PUNTJES = '……………………'
+
+export function ContractPdf({ c, kop, tekenaars, merk }: { c: GeneratedContract; kop: WerkgeverKop | null; tekenaars: string[]; merk: Merk }) {
   const proforma = c.soort === 'proforma'
-  const tekenaars = ondertekenaarsVan(c, werkgever)
-  const werknemer = `${aanhef(c)}${c.employeeName}`
-  const iedereen = [...tekenaars, c.employeeName]
+  const tekennaam = tekennaamVan(c)
+  const iedereen = [...tekenaars, tekennaam]
   const artikelen = artikelenUit(c.body)
+  const plaats = c.signPlace?.trim() || PUNTJES
+  const datum = c.signDate ? formatDateLong(c.signDate) : PUNTJES
   return (
-    <Document title={`${c.employeeName} - ${titelVan(c).toLowerCase()}`} author="James Robinson">
+    <Document title={`${tekennaam} - ${titelVan(c).toLowerCase()}`} author={merkRegel(merk)}>
       <Page size="A4" style={s.pagina}>
-        <View style={s.kop} fixed>
-          <View>
-            <Text style={s.merk}>James Robinson</Text>
-            <Text style={s.merkSub}>Marketing &amp; Branding</Text>
-          </View>
-          <Text style={s.kopRechts}>
-            {titelVan(c)}
-            {'\n'}
-            {c.employeeName}
-          </Text>
-        </View>
+        <MerkKop merk={merk} rechts={[titelVan(c), tekennaam]} />
         {proforma && (
           <Text style={s.watermerk} fixed>
             PRO FORMA
@@ -155,25 +147,30 @@ export function ContractPdf({ c, werkgever }: { c: GeneratedContract; werkgever:
           {c.endsOn ? ` tot en met ${formatDateLong(c.endsOn)}` : ''}
         </Text>
 
-        <Text style={{ marginBottom: 6 }}>De ondergetekenden:</Text>
+        <Text style={s.ondergetekenden}>De ondergetekenden:</Text>
         <View style={s.partijen} wrap={false}>
-          <View style={[s.partij, { marginRight: 8 }]}>
+          <View style={[s.partij, { marginRight: 10 }]}>
             <Text style={s.partijLabel}>1. De werkgever</Text>
-            <Text style={s.partijNaam}>{werkgever?.legalName ?? 'James Robinson B.V.'}</Text>
-            {werkgever && (
+            <Text style={s.partijNaam}>{kop?.legalName ?? merk.naam}</Text>
+            {kop && kop.addressLine ? (
               <>
+                <Text style={s.regel}>{kop.addressLine}</Text>
                 <Text style={s.regel}>
-                  Gevestigd te {werkgever.registeredCity} aan de {werkgever.registeredAddress}, {werkgever.registeredPostalCode} {werkgever.registeredCity}
+                  {kop.postalCode} {kop.city}
                 </Text>
-                {werkgever.kvkNumber ? <Text style={s.regel}>KvK {werkgever.kvkNumber}</Text> : null}
               </>
-            )}
-            <Text style={[s.regel, { marginTop: 4 }]}>Hierbij rechtsgeldig vertegenwoordigd door {namenZin(tekenaars)}</Text>
-            <Text style={[s.regel, { marginTop: 4, color: GRIJS }]}>Hierna te noemen: “de werkgever”;</Text>
+            ) : null}
+            {kop?.kvkNumber ? <Text style={s.regel}>KvK {kop.kvkNumber}</Text> : null}
+            <Text style={[s.regel, { marginTop: 8 }]}>Hierbij rechtsgeldig vertegenwoordigd door {namenZin(tekenaars)}</Text>
+            <View style={s.vuller} />
+            <Text style={s.hierna}>Hierna te noemen: “de werkgever”;</Text>
           </View>
           <View style={s.partij}>
             <Text style={s.partijLabel}>2. De werknemer</Text>
-            <Text style={s.partijNaam}>{werknemer}</Text>
+            <Text style={s.partijNaam}>
+              {aanhef(c)}
+              {c.employeeName}
+            </Text>
             {c.employeeAddress ? <Text style={s.regel}>{c.employeeAddress}</Text> : null}
             {c.employeePostalCode || c.employeeCity ? (
               <Text style={s.regel}>
@@ -181,7 +178,8 @@ export function ContractPdf({ c, werkgever }: { c: GeneratedContract; werkgever:
               </Text>
             ) : null}
             {c.employeeBirthDate ? <Text style={s.regel}>Geboren op {formatDateLong(c.employeeBirthDate)}</Text> : null}
-            <Text style={[s.regel, { marginTop: 4, color: GRIJS }]}>Hierna te noemen: “de werknemer”;</Text>
+            <View style={s.vuller} />
+            <Text style={s.hierna}>Hierna te noemen: “de werknemer”;</Text>
           </View>
         </View>
         <Text style={[s.regel, s.verklaring]}>Verklaren een arbeidsovereenkomst te zijn aangegaan onder de navolgende bepalingen:</Text>
@@ -193,7 +191,7 @@ export function ContractPdf({ c, werkgever }: { c: GeneratedContract; werkgever:
               {/* De kop gaat samen met het eerste lid naar de volgende pagina,
                   en een kort lid breekt niet: anders blijft een kop of een
                   lidnummer los onderaan een pagina staan. */}
-              <View wrap={!kort(a.leden[0])}>
+              <View wrap={(a.leden[0] ?? '').length > PAST_OP_PAGINA}>
                 <View style={s.artikelKop}>
                   <Text style={s.artikelNr}>{nr || i + 1}</Text>
                   <Text style={s.artikelTitel}>{titel}</Text>
@@ -208,7 +206,9 @@ export function ContractPdf({ c, werkgever }: { c: GeneratedContract; werkgever:
         })}
 
         <View wrap={false} style={s.slot}>
-          <Text style={s.regel}>Aldus overeengekomen, opgemaakt in tweevoud en ondertekend te {werkgever?.registeredCity ?? 'Hulsberg'} op ………………………</Text>
+          <Text style={s.regel}>
+            Aldus overeengekomen, in tweevoud opgemaakt en ondertekend te {plaats} op {datum}.
+          </Text>
           <View style={s.handtekeningen}>
             {tekenaars.map((naam) => (
               <View key={naam} style={s.handtekening}>
@@ -220,7 +220,7 @@ export function ContractPdf({ c, werkgever }: { c: GeneratedContract; werkgever:
             <View style={s.handtekening}>
               <Text style={s.rol}>De werknemer</Text>
               <View style={s.tekenruimte} />
-              <Text style={{ fontWeight: 500 }}>{c.employeeName}</Text>
+              <Text style={{ fontWeight: 500 }}>{tekennaam}</Text>
             </View>
           </View>
         </View>
@@ -234,33 +234,46 @@ export function ContractPdf({ c, werkgever }: { c: GeneratedContract; werkgever:
               </View>
             ))}
           </View>
-          <View style={s.voetRegel}>
-            <Text>
-              {c.employeeName} · {proforma ? 'pro forma, niet tekenen' : 'ter ondertekening'}
-            </Text>
-          </View>
         </View>
         {/* Los van de paraafregel: een render-tekst binnen een vast blok laat
             react-pdf het hele blok overslaan. */}
+        <Text style={s.voetMerk} fixed>
+          {[merkRegel(merk), merk.website].filter(Boolean).join(' · ')}
+        </Text>
         <Text style={s.paginaNr} fixed render={({ pageNumber, totalPages }) => `Pagina ${pageNumber} van ${totalPages}`} />
       </Page>
     </Document>
   )
 }
 
-export async function maakContractPdf(c: GeneratedContract, werkgever: EmployerSettings | null): Promise<Buffer> {
+/** Het contract als pdf, met de kop zoals hij bij het opstellen was en het logo van nu. */
+export async function maakContractPdf(c: GeneratedContract): Promise<Buffer> {
   registreerFonts()
-  return renderToBuffer(<ContractPdf c={c} werkgever={werkgever} />)
+  const bedrijf = await getBedrijf()
+  const logo = await haalLogo(bedrijf?.werkgever ?? null)
+  const merk = merkUit(bedrijf?.werkgever ?? null, logo)
+  const kop = kopVanContract(c, bedrijf)
+  // Een bewaarde kop heeft een eigen merknaam: die hoort bij het contract.
+  if (kop) {
+    merk.naam = kop.tradeName || merk.naam
+    merk.ondertitel = kop.tagline ?? merk.ondertitel
+  }
+  const tekenaars = ondertekenaarsVan(c, bedrijf?.werkgever ?? null)
+  return renderToBuffer(<ContractPdf c={c} kop={kop} tekenaars={tekenaars} merk={merk} />)
 }
 
 /** Alleen gewone tekens: met een accent noemt een deel van de browsers het bestand "download". */
-export function contractPdfNaam(c: GeneratedContract): string {
-  const naam = c.employeeName
+export function bestandsnaam(naam: string): string {
+  return naam
     .normalize('NFKD')
     .replace(/[̀-ͯ]/g, '')
     .replace(/[^\x20-\x7E]/g, '-')
     .replace(/[\\/:*?"<>|]+/g, ' ')
     .replace(/\s+/g, ' ')
     .trim()
+}
+
+export function contractPdfNaam(c: GeneratedContract): string {
+  const naam = bestandsnaam(tekennaamVan(c))
   return `${naam || 'Contract'} - ${c.soort === 'proforma' ? 'pro forma contract' : 'contract'} ${formatDate(c.startedOn).replace(/\s/g, ' ')}.pdf`
 }

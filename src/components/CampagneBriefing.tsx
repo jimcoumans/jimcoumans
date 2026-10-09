@@ -3,6 +3,7 @@ import { STATUS_LABELS, livePeriode } from '@/lib/campagnes'
 import { verdeelPerMaand, formatBp, formatHonderdsten, formatAantal, type Hypothese } from '@/lib/hypothese'
 import { formatDateLong } from '@/lib/dates'
 import { leesPunten, groepeerPunten } from '@/lib/punten'
+import type { MerkTekst } from '@/lib/bedrijf'
 
 /* -------------------------------------------------------------------------
    De campagnebriefing zoals de klant hem ziet: dezelfde versie als wij,
@@ -168,7 +169,7 @@ function Sectie({ nummer, titel, children }: { nummer: number; titel: string; ch
 }
 
 /** De hele briefing, voor op het scherm, als link of geprint. */
-export function CampagneBriefing({ v }: { v: CampagneVolledig }) {
+export function CampagneBriefing({ v, merk }: { v: CampagneVolledig; merk: MerkTekst }) {
   const c = v.campagne
   const kpiTotaal = v.kpis.reduce((a, k) => a + k.targetQuantity, 0)
   const versieDatum = v.versies[0]?.createdAt ?? c.updatedAt
@@ -177,8 +178,8 @@ export function CampagneBriefing({ v }: { v: CampagneVolledig }) {
     <article className="mx-auto max-w-[800px] bg-white px-6 py-8 sm:px-12 sm:py-12 print:max-w-none print:p-0">
       <header className="flex flex-wrap items-start justify-between gap-4 border-b border-gray-200 pb-5">
         <div>
-          <p className="text-sm font-bold">James Robinson</p>
-          <p className="text-jr-blue text-xs">Marketing &amp; Branding</p>
+          <p className="text-sm font-bold">{merk.naam}</p>
+          {merk.ondertitel && <p className="text-jr-blue text-xs">{merk.ondertitel}</p>}
         </div>
         <div className="text-right text-xs text-gray-600">
           <p>
@@ -438,7 +439,7 @@ export function CampagneBriefing({ v }: { v: CampagneVolledig }) {
       </div>
 
       <footer className="mt-10 border-t border-gray-200 pt-3 text-[11px] text-gray-500">
-        James Robinson — Marketing &amp; Branding | www.jamesrobinson.nl
+        {merk.regel} | {merk.website}
       </footer>
     </article>
   )

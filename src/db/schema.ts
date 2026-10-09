@@ -2725,7 +2725,7 @@ export const candidateNotes = pgTable(
    sleutel in GEGEVENS_SLEUTEL). Wie een document opent, wordt vastgelegd.
    ------------------------------------------------------------------------- */
 
-export const personalDocumentKindEnum = pgEnum('personal_document_kind', ['id_kopie', 'loonheffing', 'overig', 'contract'])
+export const personalDocumentKindEnum = pgEnum('personal_document_kind', ['id_kopie', 'loonheffing', 'overig', 'contract', 'avg_verklaring'])
 
 export const personalRecords = pgTable(
   'personal_records',
@@ -2835,23 +2835,100 @@ export const employerSettings = pgTable(
   'employer_settings',
   {
     id: uuid('id').primaryKey().defaultRandom(),
+    /** De juridische naam, zoals in de KvK: James Robinson B.V. */
     legalName: text('legal_name').notNull(),
-    /** Statutaire vestiging: wat er in de kop van het contract staat. */
-    registeredAddress: text('registered_address').notNull(),
-    registeredPostalCode: text('registered_postal_code').notNull(),
-    registeredCity: text('registered_city').notNull(),
-    /** Waar het werk gedaan wordt. Mag hetzelfde zijn, maar is een eigen veld. */
-    workAddress: text('work_address').notNull(),
-    workPostalCode: text('work_postal_code').notNull(),
-    workCity: text('work_city').notNull(),
-    /** Wie tekent, zoals het onder het contract komt te staan. */
+    /** De naam in de kop van elk document: James Robinson. */
+    tradeName: text('trade_name').notNull().default('James Robinson'),
+    /** De regel onder de naam: Performance Agency. */
+    tagline: text('tagline'),
+    /*
+     * Verouderd: het adres staat sinds 0041 bij de vestigingen (de
+     * hoofdvestiging). Deze kolommen worden niet meer gelezen en gaan er in
+     * een latere migratie uit.
+     */
+    registeredAddress: text('registered_address'),
+    registeredPostalCode: text('registered_postal_code'),
+    registeredCity: text('registered_city'),
+    workAddress: text('work_address'),
+    workPostalCode: text('work_postal_code'),
+    workCity: text('work_city'),
+    /** Wie tekent als er niets gekozen is, zoals het onder het contract komt te staan. */
     signatories: text('signatories').notNull(),
     kvkNumber: text('kvk_number'),
+    vatNumber: text('vat_number'),
+    email: text('email'),
+    phone: text('phone'),
+    website: text('website'),
+    /** Het logo in de bestandsopslag (png of jpg: dat kan een pdf tonen). */
+    logoKey: text('logo_key'),
+    logoContentType: text('logo_content_type'),
+    /** De tekst van de AVG-verklaring voor medewerkers, met {{plaatshouders}}. */
+    avgText: text('avg_text'),
     updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [
     check('employer_name_not_empty', sql`length(trim(${t.legalName})) > 0`),
     check('employer_signatories_not_empty', sql`length(trim(${t.signatories})) > 0`),
+  ],
+)
+
+/**
+ * Een vestiging: de hoofdvestiging staat in de kop van elk contract, en elke
+ * actieve vestiging kan een standplaats zijn.
+ */
+export const companyLocations = pgTable(
+  'company_locations',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    /** Hoe je hem noemt: Hulsberg. */
+    name: text('name').notNull(),
+    addressLine: text('address_line').notNull(),
+    postalCode: text('postal_code').notNull(),
+    city: text('city').notNull(),
+    phone: text('phone'),
+    email: text('email'),
+    /** Bijvoorbeeld 09.00 tot 17.30 uur. Komt in een contract met bereikbaarheid. */
+    officeHours: text('office_hours'),
+    isMain: boolean('is_main').notNull().default(false),
+    active: boolean('active').notNull().default(true),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    check('location_name_not_empty', sql`length(trim(${t.name})) > 0`),
+    check('location_address_not_empty', sql`length(trim(${t.addressLine})) > 0 AND length(trim(${t.city})) > 0`),
+    // Er is precies een hoofdvestiging; twee zou betekenen dat de kop van een contract afhangt van toeval.
+    uniqueIndex('company_locations_one_main').on(t.isMain).where(sql`${t.isMain}`),
+  ],
+)
+
+/**
+ * Documenten van het bedrijf zelf, zoals het personeelshandboek. Elke upload
+ * is een nieuwe versie; de laatste geldt. Een contract onthoudt welke versie
+ * erbij hoorde, want dat is de versie die de werknemer heeft ontvangen.
+ */
+export const companyDocuments = pgTable(
+  'company_documents',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    kind: text('kind').notNull(),
+    filename: text('filename').notNull(),
+    contentType: text('content_type').notNull(),
+    bytes: integer('bytes').notNull(),
+    /** Waar de bytes staan in de bestandsopslag. */
+    storageKey: text('storage_key').notNull(),
+    /** Het geheime deel van de deelbare link. Wie hem heeft, kan alleen deze versie lezen. */
+    token: text('token').notNull(),
+    /** Bijvoorbeeld "versie oktober 2026". */
+    note: text('note'),
+    uploadedByUserId: uuid('uploaded_by_user_id').references(() => users.id, { onDelete: 'set null' }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('company_documents_kind_idx').on(t.kind, t.createdAt),
+    uniqueIndex('company_documents_token_idx').on(t.token),
+    check('company_document_kind_valid', sql`${t.kind} IN ('personeelshandboek')`),
+    check('company_document_size_reasonable', sql`${t.bytes} > 0 AND ${t.bytes} <= 15728640`),
   ],
 )
 
@@ -3035,6 +3112,21 @@ export const generatedContracts = pgTable(
      * gekozen; leeg bij oude contracten, dan gelden de werkgevergegevens.
      */
     employerSigners: text('employer_signers'),
+    /** Roepnaam met achternaam: in de kop, bij de paraaf en onder de handtekening. */
+    employeeShortName: text('employee_short_name'),
+    /** De standplaats: de vestiging in het artikel over de standplaats. */
+    locationId: uuid('location_id').references(() => companyLocations.id, { onDelete: 'set null' }),
+    /** Waar en wanneer er getekend wordt, zoals het boven de handtekeningen staat. Leeg: puntjes. */
+    signPlace: text('sign_place'),
+    signDate: timestamp('sign_date', { withTimezone: true }),
+    /** De werkgever zoals hij in de kop stond toen het contract werd opgesteld. */
+    employerSnapshot: jsonb('employer_snapshot'),
+    /** Alles wat er bij het opstellen is ingevuld: om het contract later te kunnen wijzigen. */
+    invoer: jsonb('invoer'),
+    /** De versie van het personeelshandboek die bij dit contract hoort. */
+    handbookDocumentId: uuid('handbook_document_id').references(() => companyDocuments.id, { onDelete: 'set null' }),
+    /** Wanneer de werknemer het handboek heeft ontvangen. */
+    handbookGivenOn: timestamp('handbook_given_on', { withTimezone: true }),
 
     /* --- Het document --- */
     /** De uitgeschreven artikelen. */
@@ -3539,6 +3631,8 @@ export type CandidateNote = typeof candidateNotes.$inferSelect
 export type PersonalRecord = typeof personalRecords.$inferSelect
 export type PersonalDocument = typeof personalDocuments.$inferSelect
 export type EmployerSettings = typeof employerSettings.$inferSelect
+export type CompanyLocation = typeof companyLocations.$inferSelect
+export type CompanyDocument = typeof companyDocuments.$inferSelect
 export type JobProfile = typeof jobProfiles.$inferSelect
 export type ContractTemplate = typeof contractTemplates.$inferSelect
 export type ContractTemplateArticle = typeof contractTemplateArticles.$inferSelect

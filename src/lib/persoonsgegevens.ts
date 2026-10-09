@@ -28,6 +28,7 @@ export const DOCUMENT_LABELS = {
   id_kopie: 'Kopie ID',
   loonheffing: 'Loonheffingsformulier',
   contract: 'Getekend contract',
+  avg_verklaring: 'Getekende AVG-verklaring',
   overig: 'Overig',
 } as const
 export type DocumentSoort = keyof typeof DOCUMENT_LABELS

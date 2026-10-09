@@ -9,6 +9,8 @@
  * in plaats van verstuurd, zodat je kunt ontwikkelen zonder mailkoppeling.
  */
 
+import { merkTekst, type MerkTekst } from './bedrijf'
+
 const RESEND_ENDPOINT = 'https://api.resend.com/emails'
 
 const JR_BLUE = '#007AFF'
@@ -30,6 +32,7 @@ export async function sendLoginEmail(email: string, loginUrl: string): Promise<M
     return { delivered: false, loggedToConsole: true }
   }
 
+  const merk = await merkTekst()
   const response = await fetch(RESEND_ENDPOINT, {
     method: 'POST',
     headers: {
@@ -49,10 +52,10 @@ export async function sendLoginEmail(email: string, loginUrl: string): Promise<M
         'De link is 15 minuten geldig en werkt een keer.',
         'Heb je hem niet zelf aangevraagd? Dan kun je deze mail negeren.',
         '',
-        'James Robinson - Marketing & Branding',
-        'www.jamesrobinson.nl',
+        merk.regel,
+        merk.website,
       ].join('\n'),
-      html: loginEmailHtml(loginUrl),
+      html: loginEmailHtml(loginUrl, merk),
     }),
   })
 
@@ -66,7 +69,7 @@ export async function sendLoginEmail(email: string, loginUrl: string): Promise<M
   return { delivered: true, loggedToConsole: false }
 }
 
-function loginEmailHtml(loginUrl: string): string {
+function loginEmailHtml(loginUrl: string, merk: MerkTekst): string {
   return `<!doctype html>
 <html lang="nl">
   <body style="margin:0;padding:32px 16px;background:#F2F2F7;font-family:${FONT};color:${JR_BLACK};line-height:1.4;font-weight:300;">
@@ -96,10 +99,14 @@ function loginEmailHtml(loginUrl: string): string {
       </tr>
       <tr>
         <td style="padding:16px 32px 24px;border-top:1px solid #E5E5E9;font-size:12px;color:#636466;">
-          James Robinson &mdash; Marketing &amp; Branding | www.jamesrobinson.nl
+          ${escapeHtml(merk.regel)} | ${escapeHtml(merk.website)}
         </td>
       </tr>
     </table>
   </body>
 </html>`
+}
+
+function escapeHtml(s: string): string {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 }

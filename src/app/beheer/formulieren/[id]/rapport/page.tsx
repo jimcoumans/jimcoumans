@@ -6,6 +6,7 @@ import { PUNTEN, standVanScan } from '@/lib/formulieren/quickscan'
 import { Logo } from '@/components/Logo'
 import { PrintKnop } from '@/components/PrintKnop'
 import { formatDateLong } from '@/lib/dates'
+import { merkTekst } from '@/lib/bedrijf'
 
 export const maxDuration = 26
 
@@ -24,6 +25,7 @@ const KLEURNAAM: Record<string, string> = { groen: 'Groen', oranje: 'Oranje', ro
  * herstel vóór de start kost. Bewaren als pdf via afdrukken.
  */
 export default async function ScanrapportPagina({ params }: { params: Promise<{ id: string }> }) {
+  const merk = await merkTekst()
   const user = await getSessionUser()
   if (!user) redirect('/login')
   if (user.role !== 'staff' && user.role !== 'admin') redirect('/')
@@ -58,7 +60,7 @@ export default async function ScanrapportPagina({ params }: { params: Promise<{ 
             </p>
           </div>
           <div className="shrink-0 whitespace-nowrap">
-            <Logo onderschrift="Marketing &amp; Branding" />
+            <Logo onderschrift={merk.ondertitel} />
           </div>
         </header>
 
@@ -147,7 +149,7 @@ export default async function ScanrapportPagina({ params }: { params: Promise<{ 
         </div>
 
         <p className="mt-8 border-t border-gray-200 pt-3 text-xs text-gray-500">
-          Dit rapport is van jou, ook als je niet met ons verdergaat. Vragen? support@jamesrobinson.nl of 045 792 0009. James Robinson · Marketing &amp; Branding · www.jamesrobinson.nl
+          Dit rapport is van jou, ook als je niet met ons verdergaat. Vragen? support@jamesrobinson.nl of 045 792 0009. {merk.regel} · {merk.website}
         </p>
       </article>
     </div>

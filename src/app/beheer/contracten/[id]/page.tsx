@@ -1,9 +1,30 @@
 import { redirect, notFound } from 'next/navigation'
 import { getSessionUser } from '@/lib/auth'
 import { AppShell } from '@/components/AppShell'
-import { ActionForm, Field, Select } from '@/components/ActionForm'
+import { ActionForm, Check, Field, Select } from '@/components/ActionForm'
+import { Paneel } from '@/components/Paneel'
+import { KopieerKnop } from '@/components/formulieren/KopieerKnop'
+import { ContractFormulier, startUitInvoer } from '@/components/ContractFormulier'
 import { contractGetekend } from '../../aanname-actions'
-import { getContract, getWerkgever, ketenVoor, ondertekenaarsVan, namenZin } from '@/lib/contracten'
+import {
+  getContract,
+  ketenVoor,
+  ondertekenaarsVan,
+  namenZin,
+  kopVanContract,
+  tekennaamVan,
+  invoerUit,
+  waaromNietWijzigen,
+  listFunctieprofielen,
+  listMogelijkeOndertekenaars,
+} from '@/lib/contracten'
+import { getBedrijf, getBedrijfsdocument, handboekPad } from '@/lib/bedrijf'
+import { getHuis, schaalNamen } from '@/lib/salarishuis'
+import { getGegevens } from '@/lib/persoonsgegevens'
+import { mailtoLink } from '@/lib/mailsjablonen'
+import { db } from '@/db'
+import { candidates } from '@/db/schema'
+import { eq } from 'drizzle-orm'
 import { listTeam } from '@/lib/team'
 import { contractDefinitief, contractAangezegd } from '../../contract-actions'
 import { formatDate, formatDateInput, formatDateLong } from '@/lib/dates'
@@ -36,8 +57,34 @@ export default async function ContractPagina({
   const contract = await getContract(id)
   if (!contract) notFound()
 
-  const werkgever = await getWerkgever()
-  const tekenaars = ondertekenaarsVan(contract, werkgever)
+  const bedrijf = await getBedrijf()
+  const kop = kopVanContract(contract, bedrijf)
+  const tekenaars = ondertekenaarsVan(contract, bedrijf?.werkgever ?? null)
+  const tekennaam = tekennaamVan(contract)
+  const nietWijzigen = waaromNietWijzigen(contract)
+  const [handboek, kandidaat] = await Promise.all([
+    contract.handbookDocumentId ? getBedrijfsdocument(contract.handbookDocumentId) : Promise.resolve(null),
+    contract.candidateId
+      ? db.select({ email: candidates.email }).from(candidates).where(eq(candidates.id, contract.candidateId)).limit(1).then((r) => r[0] ?? null)
+      : Promise.resolve(null),
+  ])
+  /* Wat het wijzigformulier nodig heeft: alleen ophalen als wijzigen kan. */
+  const [profielen, huis, tekenaarsKeuze, gegevens] = nietWijzigen
+    ? [[], null, [], null]
+    : await Promise.all([
+        listFunctieprofielen(),
+        getHuis(contract.startedOn),
+        listMogelijkeOndertekenaars(),
+        getGegevens(contract.candidateId ? { candidateId: contract.candidateId } : { userId: contract.userId! }),
+      ])
+  const start = startUitInvoer(invoerUit(contract), contract.soort === 'definitief' ? 'definitief' : 'proforma', {
+    voornamen: gegevens?.record.officialFirstNames,
+    tussenvoegsel: gegevens?.record.infix,
+    achternaam: gegevens?.record.lastName,
+  })
+  const mail = contract.summary
+    ? mailtoLink({ aan: kandidaat?.email ?? '', onderwerp: `Je contract bij ${kop?.tradeName ?? 'James Robinson'}`, tekst: contract.summary })
+    : null
   const team = contract.soort === 'proforma' && !contract.candidateId ? await listTeam() : []
   const keten =
     contract.userId && contract.contractType === 'bepaalde_tijd'
@@ -140,8 +187,29 @@ export default async function ContractPagina({
 
         <div className="mb-5 flex flex-wrap items-center gap-3 rounded-xl bg-white p-4 text-sm shadow-sm">
           <a href={`/api/contracten/${contract.id}/pdf`} className="bg-jr-btn hover:bg-jr-btnhover rounded-full px-4 py-2 text-sm font-medium text-white">
-            Download pdf
+            Download contract
           </a>
+          <a href={`/api/contracten/${contract.id}/avg`} className="rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+            AVG-verklaring
+          </a>
+          {mail && (
+            <a href={mail} className="rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+              Mail het contract
+            </a>
+          )}
+          {!nietWijzigen && (
+            <Paneel knop="Wijzigen" stijl="rustig" titel={`Contract van ${tekennaam} wijzigen`} breed uitleg="Het contract wordt opnieuw opgesteld met wat je hier invult, onder hetzelfde nummer. Kan tot het getekend is.">
+              <ContractFormulier
+                start={start}
+                voor="vast"
+                contractId={contract.id}
+                profielen={profielen}
+                schalen={huis ? schaalNamen(huis) : []}
+                tekenaars={tekenaarsKeuze}
+                vestigingen={bedrijf?.vestigingen ?? []}
+              />
+            </Paneel>
+          )}
           {contract.soort === 'definitief' &&
             (contract.signedOn ? (
               <span className="bg-jr-green/15 rounded-full px-3 py-1 text-xs text-[#1d7a36]">Getekend op {formatDateLong(contract.signedOn)}</span>
@@ -163,16 +231,35 @@ export default async function ContractPagina({
         {contract.soort === 'definitief' && !contract.signedOn && (
           <section className="mb-5 rounded-xl bg-white p-6 shadow-sm">
             <h2 className="mb-1 text-base">Getekend vastleggen</h2>
-            <p className="mb-3 text-xs text-gray-600">De datum waarop beide partijen getekend hebben, en het getekende exemplaar. Dat wordt versleuteld bewaard bij de persoonsgegevens.</p>
-            <ActionForm action={contractGetekend} submitLabel="Vastleggen" className="grid items-end gap-3 sm:grid-cols-[1fr_1.6fr_auto]" knopInRij>
+            <p className="mb-3 text-xs text-gray-600">
+              Alles van het moment van tekenen in een keer: de datum, het getekende contract, de getekende AVG-verklaring en het personeelshandboek. De
+              bestanden worden versleuteld bewaard bij de persoonsgegevens. Wat nog ontbreekt, staat daarna in de vervolgstappen bij de kandidaat.
+            </p>
+            <ActionForm action={contractGetekend} submitLabel="Vastleggen">
               <input type="hidden" name="contractId" value={contract.id} />
-              <Field label="Getekend op" name="getekendOp" type="date" required defaultValue={formatDateInput(new Date())} />
-              <div>
-                <label className="text-jr-text mb-1.5 block text-[13px] font-medium" htmlFor="getekend-bestand">
-                  Getekend exemplaar <span className="font-normal text-gray-500">(optioneel)</span>
-                </label>
-                <input id="getekend-bestand" type="file" name="bestand" accept="application/pdf,image/jpeg,image/png" className="block w-full text-sm" />
+              <Field label="Getekend op" name="getekendOp" type="date" required defaultValue={formatDateInput(contract.signDate && contract.signDate.getTime() <= Date.now() ? contract.signDate : new Date())} />
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div>
+                  <label className="text-jr-text mb-1.5 block text-[13px] font-medium" htmlFor="getekend-bestand">
+                    Getekend contract <span className="font-normal text-gray-500">(pdf, jpg of png)</span>
+                  </label>
+                  <input id="getekend-bestand" type="file" name="bestand" accept="application/pdf,image/jpeg,image/png" className="block w-full text-sm" />
+                </div>
+                <div>
+                  <label className="text-jr-text mb-1.5 block text-[13px] font-medium" htmlFor="getekend-avg">
+                    Getekende AVG-verklaring
+                  </label>
+                  <input id="getekend-avg" type="file" name="avg" accept="application/pdf,image/jpeg,image/png" className="block w-full text-sm" />
+                </div>
               </div>
+              {!contract.handbookGivenOn && (
+                <Check
+                  label="Het personeelshandboek is ontvangen"
+                  name="handboek"
+                  defaultChecked={!!handboek}
+                  hint={handboek ? `${handboek.note || handboek.filename}, de versie die bij dit contract hoort.` : 'Er hoort nog geen handboek bij dit contract. Upload het bij Bedrijfsgegevens en wijzig het contract.'}
+                />
+              )}
             </ActionForm>
           </section>
         )}
@@ -210,10 +297,35 @@ export default async function ContractPagina({
         </p>
       </div>
 
+      <section className="mx-auto mb-5 grid max-w-[46rem] gap-3 text-sm sm:grid-cols-2 print:hidden">
+        <div className="rounded-xl bg-white p-4 shadow-sm">
+          <p className="text-xs text-gray-500">Personeelshandboek</p>
+          {handboek ? (
+            <p>
+              <a href={handboekPad(handboek)} target="_blank" rel="noopener" className="text-jr-link hover:underline">
+                {handboek.note || handboek.filename}
+              </a>
+              {contract.handbookGivenOn ? <span className="text-gray-600"> · ontvangen op {formatDate(contract.handbookGivenOn)}</span> : <span className="text-gray-600"> · nog niet als ontvangen vastgelegd</span>}
+            </p>
+          ) : (
+            <p className="text-jr-orange">Geen handboek bij dit contract.</p>
+          )}
+        </div>
+        <div className="rounded-xl bg-white p-4 shadow-sm">
+          <p className="text-xs text-gray-500">Ondertekening</p>
+          <p>
+            Te {contract.signPlace || '…'} op {contract.signDate ? formatDateLong(contract.signDate) : '…'}
+          </p>
+        </div>
+      </section>
+
       {contract.summary && (
         <details className="mx-auto mb-5 max-w-[46rem] rounded-xl bg-white p-5 text-sm shadow-sm print:hidden">
           <summary className="cursor-pointer font-medium">Begeleidende tekst voor de mail</summary>
-          <p className="mt-1 text-xs text-gray-500">Staat niet in het contract en niet in de pdf.</p>
+          <div className="mt-1 flex flex-wrap items-center justify-between gap-2">
+            <p className="text-xs text-gray-500">Staat niet in het contract en niet in de pdf.</p>
+            <KopieerKnop tekst={contract.summary} label="Kopieer tekst" />
+          </div>
           <p className="mt-3 whitespace-pre-wrap text-gray-700">{contract.summary}</p>
         </details>
       )}
@@ -228,62 +340,49 @@ export default async function ContractPagina({
             : 'ARBEIDSOVEREENKOMST VOOR ONBEPAALDE TIJD'}
         </h2>
 
-        {werkgever && (
-          <section className="mb-6 text-sm">
-            <p className="mb-2">De ondergetekenden:</p>
-            <p className="mb-3">
-              1. Naam: {werkgever.legalName}
-              <br />
-              Gevestigd te: {werkgever.registeredCity} ({werkgever.registeredPostalCode})
-              <br />
-              Aan de: {werkgever.registeredAddress}
-              <br />
-              Hierbij rechtsgeldig vertegenwoordigd door {namenZin(tekenaars)}
-              <br />
-              Hierna te noemen: &ldquo;de werkgever&rdquo;;
-            </p>
-            <p className="mb-2">en</p>
-            <p>
-              2. Naam:{' '}
-              {contract.employeeAanhef === 'heer'
-                ? 'Dhr. '
-                : contract.employeeAanhef === 'mevrouw'
-                  ? 'Mevr. '
-                  : ''}
-              {contract.employeeName}
-              {contract.employeeAddress && (
-                <>
-                  <br />
-                  Adres: {contract.employeeAddress}
-                </>
-              )}
-              {contract.employeePostalCode && (
-                <>
-                  <br />
-                  Postcode: {contract.employeePostalCode}
-                </>
-              )}
-              {contract.employeeCity && (
-                <>
-                  <br />
-                  Woonplaats: {contract.employeeCity}
-                </>
-              )}
-              {contract.employeeBirthDate && (
-                <>
-                  <br />
-                  Geboren op: {formatDate(contract.employeeBirthDate)}
-                </>
-              )}
-              <br />
-              Hierna te noemen &ldquo;de werknemer&rdquo;;
-            </p>
-            <p className="mt-3">
-              Verklaren een arbeidsovereenkomst te zijn aangegaan onder de navolgende
-              bepalingen:
-            </p>
-          </section>
-        )}
+        <section className="mb-6 text-sm">
+          <p className="mb-2">De ondergetekenden:</p>
+          <p className="mb-3">
+            1. {kop?.legalName ?? 'De werkgever'}
+            {kop?.addressLine && (
+              <>
+                <br />
+                {kop.addressLine}, {kop.postalCode} {kop.city}
+              </>
+            )}
+            {kop?.kvkNumber && (
+              <>
+                <br />
+                KvK {kop.kvkNumber}
+              </>
+            )}
+            <br />
+            Hierbij rechtsgeldig vertegenwoordigd door {namenZin(tekenaars)}
+            <br />
+            Hierna te noemen: &ldquo;de werkgever&rdquo;;
+          </p>
+          <p className="mb-2">en</p>
+          <p>
+            2.{' '}
+            {contract.employeeAanhef === 'heer' ? 'Dhr. ' : contract.employeeAanhef === 'mevrouw' ? 'Mevr. ' : ''}
+            {contract.employeeName}
+            {contract.employeeAddress && (
+              <>
+                <br />
+                {contract.employeeAddress}, {contract.employeePostalCode} {contract.employeeCity}
+              </>
+            )}
+            {contract.employeeBirthDate && (
+              <>
+                <br />
+                Geboren op {formatDateLong(contract.employeeBirthDate)}
+              </>
+            )}
+            <br />
+            Hierna te noemen: &ldquo;de werknemer&rdquo;;
+          </p>
+          <p className="mt-3">Verklaren een arbeidsovereenkomst te zijn aangegaan onder de navolgende bepalingen:</p>
+        </section>
 
         <div className="space-y-5 text-sm">
           {artikelen.map((artikel, i) => (
@@ -302,9 +401,9 @@ export default async function ContractPagina({
         </div>
 
         <section className="mt-10 text-sm">
-          <p className="mb-6">Aldus overeengekomen, opgemaakt in tweevoud en ondertekend</p>
           <p className="mb-8">
-            te: {werkgever?.registeredCity ?? ''}, dd. &nbsp;&hellip;&hellip;&hellip;&hellip;
+            Aldus overeengekomen, in tweevoud opgemaakt en ondertekend te {contract.signPlace || '……………'} op{' '}
+            {contract.signDate ? formatDateLong(contract.signDate) : '……………'}.
           </p>
           <div className="grid gap-8 sm:grid-cols-2">
             {tekenaars.map((naam) => (
@@ -315,7 +414,7 @@ export default async function ContractPagina({
             ))}
             <div>
               <p className="mb-10 text-xs text-gray-500">De werknemer</p>
-              <p className="border-t border-gray-400 pt-1">{contract.employeeName}</p>
+              <p className="border-t border-gray-400 pt-1">{tekennaam}</p>
             </div>
           </div>
         </section>

@@ -41,13 +41,14 @@ import {
   gegevenslink,
   gegevensDoorgegeven,
 } from '../../../werving-actions'
-import { nieuwContract } from '../../../contract-actions'
+import { ContractFormulier, LEGE_START, type ContractStart } from '@/components/ContractFormulier'
 import { kandidaatAannemen, contractGetekend } from '../../../aanname-actions'
 import { vervolgstappen, werkadresVoorstel } from '@/lib/aanname'
 import { Vervolgstappen } from '@/components/Vervolgstappen'
 import { contractMail, gegevensMail, welkomMail, mailtoLink } from '@/lib/mailsjablonen'
 import { AFDELINGEN } from '@/lib/team'
-import { getWerkgever, listMogelijkeOndertekenaars } from '@/lib/contracten'
+import { listMogelijkeOndertekenaars } from '@/lib/contracten'
+import { getBedrijf, adresRegel, getBedrijfsdocument, handboekPad } from '@/lib/bedrijf'
 
 export const maxDuration = 26
 
@@ -96,14 +97,14 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
   /* Na de aanname staan de persoonsgegevens bij de collega, niet meer bij de
      kandidaat: anders zouden ze met zijn bewaartermijn worden gewist. */
   const aangenomen = k.status === 'aangenomen' && k.hiredUserId !== null
-  const [contracten, gegevens, huis, profielen, vacature, werkgever, tekenaars] = beheerder
+  const [contracten, gegevens, huis, profielen, vacature, bedrijf, tekenaars] = beheerder
     ? await Promise.all([
         listContracten({ candidateId: id }),
         getGegevens(aangenomen ? { userId: k.hiredUserId! } : { candidateId: id }),
         getHuis(),
         listFunctieprofielen(),
         k.vacancyId ? getVacature(k.vacancyId) : Promise.resolve(null),
-        getWerkgever(),
+        getBedrijf(),
         listMogelijkeOndertekenaars(),
       ])
     : [[], null, null, [], null, null, []]
@@ -129,12 +130,37 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
   const v = vacature?.vacature ?? null
   const verborgen = <input type="hidden" name="kandidaatId" value={k.id} />
 
+  /* Het contractformulier begint met wat we al weten: de persoonsgegevens,
+     de kandidaat en de vacature. De voornamen alleen als ze er voluit staan:
+     de roepnaam is geen paspoortnaam. */
+  const profielBijVacature = profielen.find((p) => p.title === v?.title)
+  const contractStart: ContractStart = {
+    ...LEGE_START,
+    contractSoort: k.status === 'aanbod' || k.status === 'contract' ? 'definitief' : 'proforma',
+    voornamen: gegevens?.record.officialFirstNames ?? k.officialFirstNames ?? '',
+    tussenvoegsel: gegevens?.record.infix ?? k.infix ?? '',
+    achternaam: gegevens?.record.lastName ?? k.lastName ?? '',
+    roepnaam: k.firstName ?? '',
+    functieprofiel: profielBijVacature?.id ?? '',
+    functie: v?.title ?? '',
+    uren: v?.hoursPerWeekQuarters ? String(v.hoursPerWeekQuarters / 100).replace('.', ',') : '',
+    schaal: v?.salaryScaleName ?? '',
+    trede: v?.salaryStepMin ? String(v.salaryStepMin) : '',
+    relatiebeding: profielBijVacature?.hasRelationClause ?? false,
+    adres: gegevens?.record.addressLine ?? '',
+    postcode: gegevens?.record.postalCode ?? '',
+    woonplaats: gegevens?.record.city ?? '',
+    geboortedatum: gegevens?.record.birthDate ? formatDateInput(gegevens.record.birthDate) : '',
+  }
+
   /* Wat er klaarligt om in dienst te nemen: een definitief, getekend contract
      dat nog bij niemand in het dossier staat. */
   const definitief = contracten.filter((c) => c.soort === 'definitief' && !c.userId)
   const getekend = definitief.filter((c) => c.signedOn)
   const laatsteDefinitief = definitief[0] ?? null
   const roepnaam = k.firstName ?? k.name.split(' ')[0] ?? ''
+  const mailContract = laatsteDefinitief ?? contracten[0] ?? null
+  const mailHandboek = mailContract?.handbookDocumentId ? await getBedrijfsdocument(mailContract.handbookDocumentId) : null
   const mailBasis = {
     aan: k.email ?? '',
     roepnaam,
@@ -143,8 +169,10 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
     afzender: user.name ?? 'James Robinson',
     gegevenslink: link,
     linkDagen: LINK_DAGEN,
-    werkadres: werkgever ? `${werkgever.workAddress}, ${werkgever.workPostalCode} ${werkgever.workCity}` : null,
+    werkadres: bedrijf?.hoofdvestiging ? adresRegel(bedrijf.hoofdvestiging) : null,
     inlogUrl: `${basis}/login`,
+    handboekLink: mailHandboek ? `${basis}${handboekPad(mailHandboek)}` : null,
+    merk: bedrijf?.werkgever.tradeName ?? null,
   }
   const KNOP_MAIL = 'inline-flex items-center rounded-full border border-gray-300 bg-white px-3.5 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50'
 
@@ -280,134 +308,14 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
               <div className="mb-1 flex flex-wrap items-start justify-between gap-3">
                 <h2 className="text-base">Contract</h2>
                 <Paneel knop="+ Contract opstellen" titel={`Contract voor ${k.name}`} breed uitleg="Pro forma om te bespreken, of definitief ter ondertekening. Het salaris komt uit het salarishuis.">
-                  <ActionForm action={nieuwContract} submitLabel="Contract opstellen">
-                    <input type="hidden" name="kandidaatId" value={k.id} />
-                    <fieldset>
-                      <legend className="text-jr-text mb-2 text-[13px] font-medium">Wat stel je voor?</legend>
-                      <div className="grid gap-2 sm:grid-cols-2">
-                        <label className="flex items-start gap-2.5 rounded-lg border border-gray-200 px-3.5 py-2.5 text-[15px] has-[:checked]:border-jr-blue">
-                          <input type="radio" name="contractSoort" value="proforma" defaultChecked={k.status !== 'aanbod' && k.status !== 'contract'} className="mt-1" />
-                          <span>
-                            Pro forma
-                            <span className="block text-xs text-gray-600">Een voorstel om te bespreken. Staat als “pro forma, niet tekenen” op elke pagina.</span>
-                          </span>
-                        </label>
-                        <label className="flex items-start gap-2.5 rounded-lg border border-gray-200 px-3.5 py-2.5 text-[15px] has-[:checked]:border-jr-blue">
-                          <input type="radio" name="contractSoort" value="definitief" defaultChecked={k.status === 'aanbod' || k.status === 'contract'} className="mt-1" />
-                          <span>
-                            Definitief
-                            <span className="block text-xs text-gray-600">Ter ondertekening. Zet de kandidaat in de fase “contract”.</span>
-                          </span>
-                        </label>
-                      </div>
-                    </fieldset>
-                    <input type="hidden" name="roepnaam" value={k.firstName ?? ''} />
-                    <div className="grid gap-3 sm:grid-cols-[2fr_0.9fr_1.5fr]">
-                      <Field label="Voornamen (paspoort)" name="officieleVoornamen" required defaultValue={gegevens?.record.officialFirstNames ?? k.officialFirstNames ?? k.firstName ?? ''} />
-                      <Field label="Tussenvoegsel" name="tussenvoegsel" defaultValue={gegevens?.record.infix ?? k.infix ?? ''} />
-                      <Field label="Achternaam" name="achternaam" required defaultValue={gegevens?.record.lastName ?? k.lastName ?? ''} />
-                    </div>
-                    <div className="grid gap-3 sm:grid-cols-[1fr_2fr]">
-                      <Select
-                        label="Aanhef"
-                        name="aanhef"
-                        defaultValue="neutraal"
-                        options={[
-                          { value: 'neutraal', label: 'Geen aanhef' },
-                          { value: 'heer', label: 'Dhr.' },
-                          { value: 'mevrouw', label: 'Mevr.' },
-                        ]}
-                      />
-                      <p className="self-end pb-2 text-xs text-gray-600">
-                        Naam, adres en geboortedatum komen uit de persoonsgegevens. Wat je hier aanvult of verbetert, wordt daar ook opgeslagen.
-                      </p>
-                    </div>
-                    <div className="grid gap-3 sm:grid-cols-2">
-                      <Select
-                        label="Functieprofiel"
-                        name="functieprofiel"
-                        defaultValue={profielen.find((p) => p.title === v?.title)?.id ?? ''}
-                        options={[{ value: '', label: 'Geen profiel' }, ...profielen.map((p) => ({ value: p.id, label: p.title }))]}
-                        hint="Bepaalt de motivering van het relatiebeding."
-                      />
-                      <Field label="Functie" name="functie" required defaultValue={v?.title ?? ''} placeholder="Marketing Manager" />
-                    </div>
-                    <div className="grid gap-3 sm:grid-cols-4">
-                      <Select
-                        label="Soort contract"
-                        name="soort"
-                        defaultValue="bepaalde_tijd"
-                        options={[
-                          { value: 'bepaalde_tijd', label: 'Bepaalde tijd' },
-                          { value: 'onbepaalde_tijd', label: 'Onbepaalde tijd' },
-                        ]}
-                      />
-                      <Field label="Ingangsdatum" name="ingangsdatum" type="date" required />
-                      <Field label="Looptijd (maanden)" name="looptijd" placeholder="7" hint="Bij bepaalde tijd." />
-                      <Field label="Proeftijd (maanden)" name="proeftijd" defaultValue="0" hint="Wordt teruggebracht tot wat mag." />
-                    </div>
-                    <div className="grid gap-3 sm:grid-cols-3">
-                      <Field label="Uren per week" name="uren" required defaultValue={v?.hoursPerWeekQuarters ? String(v.hoursPerWeekQuarters / 100).replace('.', ',') : ''} placeholder="32" />
-                      {huis ? (
-                        <>
-                          <Select
-                            label="Schaal"
-                            name="schaal"
-                            defaultValue={v?.salaryScaleName ?? ''}
-                            options={[{ value: '', label: 'Buiten schaal' }, ...schaalNamen(huis).map((n) => ({ value: n, label: n }))]}
-                          />
-                          <Field label="Trede" name="trede" defaultValue={v?.salaryStepMin ? String(v.salaryStepMin) : ''} placeholder="5" />
-                        </>
-                      ) : (
-                        <p className="text-jr-orange text-xs sm:col-span-2">Er is nog geen salarishuis. Vul hieronder zelf een bedrag in.</p>
-                      )}
-                    </div>
-                    <Field label="Of: bruto per maand" name="bedrag" placeholder="2.750" hint="Alleen buiten de schaal. Met schaal en trede komt het bedrag uit het salarishuis." />
-
-                    <fieldset className="rounded-lg border border-gray-200 p-3">
-                      <legend className="text-jr-text px-1 text-[13px] font-medium">Wat er nog meer in komt</legend>
-                      <div className="space-y-2.5">
-                        <input type="hidden" name="relatiebedingKeuze" value="1" />
-                        <Check
-                          label="Relatiebeding"
-                          name="relatiebeding"
-                          defaultChecked={profielen.find((p) => p.title === v?.title)?.hasRelationClause ?? false}
-                          hint="Alleen met een functieprofiel dat een motivering heeft; zonder motivering is het beding niet geldig."
-                        />
-                        <input type="hidden" name="opToeslagKeuze" value="1" />
-                        <Check label="OP-toeslag in plaats van een pensioenregeling" name="opToeslagAan" defaultChecked hint="Uit: geen OP-toeslag in het salaris en het contract." />
-                        <Check label="Vrijetijdsbudget van € 100 per jaar" name="vrijetijdsbudget" defaultChecked />
-                      </div>
-                      <div className="mt-3">
-                        <TextArea label="Extra afspraken" name="extraAfspraken" rows={2} hint="Bijvoorbeeld een studiekostenregeling of thuiswerken. Leeg: wat er bij het functieprofiel staat." />
-                      </div>
-                    </fieldset>
-
-                    <div className="grid gap-3 sm:grid-cols-[2fr_1fr_1.5fr]">
-                      <Field label="Adres" name="adres" defaultValue={gegevens?.record.addressLine ?? ''} />
-                      <Field label="Postcode" name="postcode" defaultValue={gegevens?.record.postalCode ?? ''} />
-                      <Field label="Woonplaats" name="woonplaats" defaultValue={gegevens?.record.city ?? ''} />
-                    </div>
-                    <Field label="Geboortedatum" name="geboortedatum" type="date" defaultValue={gegevens?.record.birthDate ? formatDateInput(gegevens.record.birthDate) : ''} />
-                    <fieldset className="rounded-lg border border-gray-200 p-3">
-                      <legend className="text-jr-text px-1 text-[13px] font-medium">Wie tekent</legend>
-                      <input type="hidden" name="ondertekenaarsKeuze" value="1" />
-                      <p className="mb-2 text-xs text-gray-600">Namens James Robinson. Eigenaren staan standaard aan. De werknemer tekent altijd mee, en iedereen parafeert elke pagina.</p>
-                      <div className="grid gap-1.5 sm:grid-cols-2">
-                        {tekenaars.map((t) => (
-                          <label key={t.id} className="flex items-center gap-2 text-sm">
-                            <input type="checkbox" name="ondertekenaar" value={t.naam} defaultChecked={t.eigenaar} />
-                            {t.naam}
-                            {t.eigenaar && <span className="text-xs text-gray-500">eigenaar</span>}
-                          </label>
-                        ))}
-                        <label className="flex items-center gap-2 text-sm text-gray-600">
-                          <input type="checkbox" checked disabled readOnly />
-                          De werknemer zelf
-                        </label>
-                      </div>
-                    </fieldset>
-                  </ActionForm>
+                  <ContractFormulier
+                    start={contractStart}
+                    voor={{ kandidaatId: k.id }}
+                    profielen={profielen}
+                    schalen={huis ? schaalNamen(huis) : []}
+                    tekenaars={tekenaars}
+                    vestigingen={bedrijf?.vestigingen ?? []}
+                  />
                 </Paneel>
               </div>
               {contracten.length > 0 && k.email && !aangenomen && (
@@ -441,18 +349,28 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
                           <Paneel knop="Getekend vastleggen" stijl="klein" titel="Contract getekend" uitleg="De datum waarop beide partijen getekend hebben. Upload meteen het getekende exemplaar; dat wordt versleuteld bewaard bij de persoonsgegevens.">
                             <ActionForm action={contractGetekend} submitLabel="Vastleggen">
                               <input type="hidden" name="contractId" value={c.id} />
-                              <Field label="Getekend op" name="getekendOp" type="date" required defaultValue={formatDateInput(new Date())} />
+                              <Field label="Getekend op" name="getekendOp" type="date" required defaultValue={formatDateInput(c.signDate && c.signDate.getTime() <= Date.now() ? c.signDate : new Date())} />
                               <div>
                                 <label className="text-jr-text mb-1.5 block text-[13px] font-medium" htmlFor={`getekend-${c.id}`}>
                                   Getekend exemplaar (pdf, jpg of png, max. 4 MB) <span className="font-normal text-gray-500">(optioneel)</span>
                                 </label>
                                 <input id={`getekend-${c.id}`} type="file" name="bestand" accept="application/pdf,image/jpeg,image/png" className="block w-full text-sm" />
                               </div>
+                              <div>
+                                <label className="text-jr-text mb-1.5 block text-[13px] font-medium" htmlFor={`avg-${c.id}`}>
+                                  Getekende AVG-verklaring <span className="font-normal text-gray-500">(optioneel)</span>
+                                </label>
+                                <input id={`avg-${c.id}`} type="file" name="avg" accept="application/pdf,image/jpeg,image/png" className="block w-full text-sm" />
+                              </div>
+                              {!c.handbookGivenOn && <Check label="Het personeelshandboek is ontvangen" name="handboek" defaultChecked={!!c.handbookDocumentId} />}
                             </ActionForm>
                           </Paneel>
                         )}
                         <a href={`/api/contracten/${c.id}/pdf`} className="text-jr-link text-xs font-medium hover:underline">
-                          Download pdf
+                          Contract
+                        </a>
+                        <a href={`/api/contracten/${c.id}/avg`} className="text-jr-link text-xs font-medium hover:underline">
+                          AVG-verklaring
                         </a>
                       </span>
                     </li>
@@ -530,7 +448,7 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
             </section>
           )}
 
-          {toonStappen && stappen.length > 0 && <Vervolgstappen stappen={stappen} />}
+          {toonStappen && stappen.length > 0 && <Vervolgstappen stappen={stappen} eigenaar={aangenomen ? { userId: k.hiredUserId! } : { kandidaatId: k.id }} />}
 
           {/* ------------------------------ Persoonsgegevens ------------------------------ */}
           {beheerder && (

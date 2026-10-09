@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation'
 import { alsBeheerder } from '@/lib/auth'
 import { describeDbError } from '@/lib/db-errors'
 import { vergeet } from '@/lib/cache'
-import { neemAan, markeerGetekend, AannameError } from '@/lib/aanname'
+import { neemAan, markeerGetekend, markeerHandboekOntvangen, AannameError } from '@/lib/aanname'
 import {
   zorgVoorGegevens,
   zorgVoorGegevensVanCollega,
@@ -100,22 +100,64 @@ export async function contractGetekend(formData: FormData): Promise<ActionResult
   const op = terug ? null : datum(formData, 'getekendOp')
   if (!terug && !op) return { ok: false, error: 'Vul de datum van ondertekening in.' }
   const bestand = terug ? null : await bestandUit(formData, 'bestand')
+  const avg = terug ? null : await bestandUit(formData, 'avg')
+  const handboek = !terug && formData.has('handboek')
 
   return veilig(
     async () => {
       await markeerGetekend(contractId, op)
-      if (bestand) {
+      if (bestand || avg) {
         const record = contract.userId
           ? await zorgVoorGegevensVanCollega(contract.userId)
           : await zorgVoorGegevens(contract.candidateId!)
-        await voegDocumentToe(record.id, { kind: 'contract', ...bestand }, gebruiker.id)
+        if (bestand) await voegDocumentToe(record.id, { kind: 'contract', ...bestand }, gebruiker.id)
+        if (avg) await voegDocumentToe(record.id, { kind: 'avg_verklaring', ...avg }, gebruiker.id)
       }
+      if (handboek && !contract.handbookGivenOn) await markeerHandboekOntvangen(contractId, op)
     },
     [
       `/beheer/contracten/${contractId}`,
       ...(contract.candidateId ? [`/beheer/werving/kandidaten/${contract.candidateId}`] : []),
       ...(contract.userId ? [`/beheer/medewerkers/${contract.userId}`] : []),
     ],
+  )
+}
+
+/** Vastleggen dat het personeelshandboek is ontvangen, vanuit de vervolgstappen. */
+export async function handboekOntvangen(formData: FormData): Promise<ActionResult> {
+  if (!(await alsBeheerder())) return GEEN_RECHT
+  const contractId = tekst(formData, 'contractId')
+  const contract = contractId ? await getContract(contractId) : null
+  if (!contract) return { ok: false, error: 'Onbekend contract.' }
+  const op = datum(formData, 'op') ?? new Date()
+  return veilig(() => markeerHandboekOntvangen(contractId, op), [
+    `/beheer/contracten/${contractId}`,
+    ...(contract.candidateId ? [`/beheer/werving/kandidaten/${contract.candidateId}`] : []),
+    ...(contract.userId ? [`/beheer/medewerkers/${contract.userId}`] : []),
+  ])
+}
+
+/**
+ * Een document uploaden vanuit de vervolgstappen: de getekende AVG-verklaring,
+ * een kopie ID of de loonheffingsverklaring. Het gaat naar de persoonsgegevens
+ * van de kandidaat of de collega, versleuteld.
+ */
+export async function stapDocument(formData: FormData): Promise<ActionResult> {
+  const gebruiker = await alsBeheerder()
+  if (!gebruiker) return GEEN_RECHT
+  const kandidaatId = tekst(formData, 'kandidaatId') || null
+  const userId = tekst(formData, 'userId') || null
+  if (!kandidaatId && !userId) return { ok: false, error: 'Onbekend bij wie dit hoort.' }
+  const bestand = await bestandUit(formData, 'bestand')
+  if (!bestand) return { ok: false, error: 'Kies een bestand.' }
+  const soort = tekst(formData, 'soort')
+  const kind: DocumentSoort = soort in DOCUMENT_LABELS ? (soort as DocumentSoort) : 'overig'
+  return veilig(
+    async () => {
+      const r = userId ? await zorgVoorGegevensVanCollega(userId) : await zorgVoorGegevens(kandidaatId!)
+      await voegDocumentToe(r.id, { kind, ...bestand }, gebruiker.id)
+    },
+    [...(kandidaatId ? [`/beheer/werving/kandidaten/${kandidaatId}`] : []), ...(userId ? [`/beheer/medewerkers/${userId}`] : []), '/beheer/contracten'],
   )
 }
 

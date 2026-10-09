@@ -14,10 +14,12 @@ import {
 import type {
   ContractTemplate,
   ContractTemplateArticle,
+  CompanyLocation,
   EmployerSettings,
   JobProfile,
   GeneratedContract,
 } from '@/db/schema'
+import { werkgeverKop, type Bedrijf, type WerkgeverKop } from './bedrijf'
 import { formatCents } from './money'
 import { formatDateLong } from './dates'
 import {
@@ -88,6 +90,8 @@ export type ContractInvoer = {
   naam: string
   /** De roepnaam, voor de aanhef in de begeleidende tekst. Leeg: de eerste voornaam. */
   roepnaam?: string | null
+  /** Roepnaam met achternaam, voor de kop, de paraaf en de handtekening. Leeg: de volledige naam. */
+  korteNaam?: string | null
   aanhef?: 'heer' | 'mevrouw' | 'neutraal' | null
   /**
    * Wie namens de werkgever tekent, met volledige naam. Leeg: wat er bij de
@@ -122,6 +126,67 @@ export type ContractInvoer = {
   relatiebeding?: boolean
   /** Extra afspraken voor dit contract. Leeg: die van het functieprofiel. */
   extraAfspraken?: string | null
+
+  /** De vestiging waar het werk gewoonlijk gebeurt. Leeg: de hoofdvestiging. */
+  standplaatsId?: string | null
+  /**
+   * Parttime, maar op werkdagen tijdens kantoortijden bereikbaar. Maatwerk:
+   * komt als extra lid in het artikel over de arbeidstijd.
+   */
+  bereikbaarOpWerkdagen?: boolean
+  /**
+   * Nevenwerkzaamheden: alleen met toestemming (de standaard), of vrij
+   * behalve voor klanten van de werkgever en hun groepsmaatschappijen.
+   */
+  nevenwerk?: 'toestemming' | 'vrij_behalve_klanten'
+  /** Waar en wanneer er getekend gaat worden. Leeg: puntjes om in te vullen. */
+  tekenplaats?: string | null
+  tekendatum?: Date | null
+}
+
+/**
+ * Alles over de werkgever wat een contract nodig heeft: de gegevens, de
+ * hoofdvestiging voor de kop, de standplaats voor het werk, en de link naar
+ * het personeelshandboek voor de begeleidende tekst.
+ */
+export type ContractWerkgever = {
+  werkgever: EmployerSettings
+  hoofdvestiging: CompanyLocation | null
+  standplaats: CompanyLocation | null
+  handboekUrl?: string | null
+}
+
+/** Uit de bedrijfsgegevens: de standplaats is de gekozen vestiging, anders de hoofdvestiging. */
+export function contractWerkgever(bedrijf: Bedrijf, standplaatsId?: string | null, handboekUrl?: string | null): ContractWerkgever {
+  const standplaats = (standplaatsId ? bedrijf.vestigingen.find((v) => v.id === standplaatsId) : null) ?? bedrijf.hoofdvestiging
+  return { werkgever: bedrijf.werkgever, hoofdvestiging: bedrijf.hoofdvestiging, standplaats, handboekUrl: handboekUrl ?? null }
+}
+
+/** "Daan Voncken": de roepnaam met de achternaam, voor de kop en de paraaf. */
+export function korteNaam(roepnaam: string | null | undefined, tussenvoegsel: string | null | undefined, achternaam: string | null | undefined): string {
+  return [roepnaam, tussenvoegsel, achternaam].map((d) => (d ?? '').trim()).filter(Boolean).join(' ')
+}
+
+/**
+ * Voorwaardelijke stukken binnen een artikel: {{#als naam}}...{{/als}} blijft
+ * staan als de voorwaarde geldt, {{#alsniet naam}}...{{/alsniet}} als hij
+ * niet geldt. Zo kan een enkel lid maatwerk zijn zonder dat het hele artikel
+ * een tweede versie nodig heeft. Niet genest: dat leest niemand nog na.
+ */
+export function pasVoorwaardenToe(tekst: string, geldt: Record<string, boolean>): { tekst: string; onbekend: string[] } {
+  const onbekend: string[] = []
+  const vervang = (blok: RegExp, wel: boolean) =>
+    (bron: string) =>
+      bron.replace(blok, (_heel, naam: string, inhoud: string) => {
+        if (!(naam in geldt)) {
+          if (!onbekend.includes(naam)) onbekend.push(naam)
+          return inhoud
+        }
+        return geldt[naam] === wel ? inhoud : ''
+      })
+  let uit = vervang(/\{\{#als\s+([a-z0-9_]+)\s*\}\}([\s\S]*?)\{\{\/als\}\}/gi, true)(tekst)
+  uit = vervang(/\{\{#alsniet\s+([a-z0-9_]+)\s*\}\}([\s\S]*?)\{\{\/alsniet\}\}/gi, false)(uit)
+  return { tekst: uit, onbekend }
 }
 
 export type Artikel = { nummer: number; titel: string; leden: string[] }
@@ -204,10 +269,15 @@ export function urenTekst(kwartieren: number): string {
 export function stelContractOp(
   invoer: ContractInvoer,
   sjabloon: { template: ContractTemplate; artikelen: ContractTemplateArticle[] },
-  werkgever: EmployerSettings,
+  context: ContractWerkgever,
   profiel: JobProfile | null,
 ): ContractConcept {
   const opmerkingen: string[] = []
+  const { werkgever, hoofdvestiging, standplaats } = context
+  if (!hoofdvestiging) {
+    throw new ContractError('Er is nog geen hoofdvestiging. Vul die in bij Bedrijfsgegevens.')
+  }
+  const werkplek = standplaats ?? hoofdvestiging
 
   const looptijd = invoer.soort === 'bepaalde_tijd' ? (invoer.looptijdMaanden ?? null) : null
   if (invoer.soort === 'bepaalde_tijd' && (looptijd === null || looptijd <= 0)) {
@@ -251,15 +321,25 @@ export function stelContractOp(
   const aanhefTekst =
     invoer.aanhef === 'heer' ? 'Dhr. ' : invoer.aanhef === 'mevrouw' ? 'Mevr. ' : ''
 
+  const bereikbaar = invoer.bereikbaarOpWerkdagen === true
+  if (bereikbaar && !werkplek.officeHours) {
+    opmerkingen.push(`Bij ${werkplek.name} staan geen kantoortijden. In het contract staat nu alleen "tijdens kantoortijden". Vul ze in bij Bedrijfsgegevens en wijzig het contract.`)
+  }
+  if (!context.handboekUrl) {
+    opmerkingen.push('Er is nog geen personeelshandboek geupload. Het contract zegt dat de werknemer het voor de ondertekening ontvangt. Upload het bij Bedrijfsgegevens en wijzig het contract, dan staat de link in de begeleidende tekst.')
+  }
+
   const waarden: Record<string, string> = {
     werkgever_naam: werkgever.legalName,
-    werkgever_adres: werkgever.registeredAddress,
-    werkgever_postcode: werkgever.registeredPostalCode,
-    werkgever_vestigingsplaats: werkgever.registeredCity,
+    werkgever_merk: werkgever.tradeName,
+    werkgever_adres: hoofdvestiging.addressLine,
+    werkgever_postcode: hoofdvestiging.postalCode,
+    werkgever_vestigingsplaats: hoofdvestiging.city,
     werkgever_ondertekenaars: invoer.ondertekenaars && invoer.ondertekenaars.length > 0 ? namenZin(invoer.ondertekenaars) : werkgever.signatories,
-    werkplek_adres: werkgever.workAddress,
-    werkplek_postcode: werkgever.workPostalCode,
-    werkplek_plaats: werkgever.workCity,
+    werkplek_adres: werkplek.addressLine,
+    werkplek_postcode: werkplek.postalCode,
+    werkplek_plaats: werkplek.city,
+    kantoortijden: werkplek.officeHours ? ` (${werkplek.officeHours})` : '',
 
     werknemer_aanhef: aanhefTekst,
     werknemer_naam: invoer.naam,
@@ -279,8 +359,9 @@ export function stelContractOp(
     salaris: formatCents(invoer.brutoMaandCents),
     schaal_trede:
       invoer.schaalNaam && invoer.trede
-        ? `Schaal ${invoer.schaalNaam} ${invoer.trede}`
+        ? `schaal ${invoer.schaalNaam}, trede ${invoer.trede}`
         : (invoer.schaalNaam ?? 'buiten schaal'),
+    salaris_peildatum: formatDateLong(invoer.ingangsdatum),
     vakantietoeslag_percent: String(vakantietoeslagBp / 100),
     vakantiedagen_fulltime: String(Math.round(vakantieUrenFulltime / 8)),
     vakantie_uren_fulltime: String(vakantieUrenFulltime),
@@ -309,6 +390,10 @@ export function stelContractOp(
     pensioenregeling: false,
     vrijetijdsbudget: invoer.vrijetijdsbudget === true,
     extra_afspraken: extraAfspraken !== '',
+    schaal: !!invoer.schaalNaam && !!invoer.trede,
+    bereikbaar,
+    nevenwerk_toestemming: (invoer.nevenwerk ?? 'toestemming') === 'toestemming',
+    nevenwerk_vrij: invoer.nevenwerk === 'vrij_behalve_klanten',
   }
 
   const ontbrekend: string[] = []
@@ -317,7 +402,11 @@ export function stelContractOp(
   for (const artikel of [...sjabloon.artikelen].sort((a, b) => a.sortOrder - b.sortOrder)) {
     if (!geldt[artikel.voorwaarde]) continue
 
-    const ingevuld = vulIn(artikel.body, waarden)
+    const metVoorwaarden = pasVoorwaardenToe(artikel.body, geldt)
+    for (const naam of metVoorwaarden.onbekend) {
+      if (!ontbrekend.includes(`voorwaarde ${naam}`)) ontbrekend.push(`voorwaarde ${naam}`)
+    }
+    const ingevuld = vulIn(metVoorwaarden.tekst, waarden)
     for (const naam of ingevuld.ontbrekend) {
       if (!ontbrekend.includes(naam)) ontbrekend.push(naam)
     }
@@ -353,11 +442,14 @@ export function stelContractOp(
       proeftijd.maanden > 0
         ? `- Er geldt een proeftijd van ${maandenInWoorden(proeftijd.maanden)}.\n`
         : '- Er geldt geen proeftijd.\n',
+    handboek_zin: context.handboekUrl
+      ? `Bij het contract hoort ons personeelshandboek. Lees het voordat je tekent:\n${context.handboekUrl}\n\nOok de AVG-verklaring hoort erbij. Die vul je in en teken je voor je eerste werkdag.\n\n`
+      : 'Bij het contract horen ons personeelshandboek en de AVG-verklaring. Die krijg je van ons voordat je tekent.\n\n',
     relatiebeding_zin: heeftRelatiebeding
       ? `- Er zit een relatiebeding in: na afloop mag je ${profiel?.relationClauseMonths ?? 12} maanden lang niet zakelijk met onze klanten werken. In het contract staat waarom.\n`
       : '',
   }
-  const intro = vulIn(introBron, introWaarden)
+  const intro = vulIn(pasVoorwaardenToe(introBron, geldt).tekst, introWaarden)
 
   const body = artikelen
     .map((a) => `## Artikel ${a.nummer}: ${a.titel}\n\n${a.leden.join('\n\n')}`)
@@ -406,37 +498,6 @@ export async function getSjabloon(
   return { template, artikelen }
 }
 
-export type WerkgeverInvoer = Pick<
-  EmployerSettings,
-  'legalName' | 'registeredAddress' | 'registeredPostalCode' | 'registeredCity' | 'workAddress' | 'workPostalCode' | 'workCity' | 'signatories' | 'kvkNumber'
->
-
-/**
- * De werkgevergegevens bijwerken. Eén rij; is die er nog niet, dan komt hij erbij.
- *
- * Oude contracten veranderen hierdoor niet: die bewaren hun eigen tekst. Alleen
- * de kop van een contract dat later wordt opgesteld, neemt dit over.
- */
-export async function slaWerkgeverOp(w: WerkgeverInvoer): Promise<void> {
-  const verplicht: [string, string][] = [
-    [w.legalName, 'de naam'],
-    [w.registeredAddress, 'het adres van de vestiging'],
-    [w.registeredPostalCode, 'de postcode van de vestiging'],
-    [w.registeredCity, 'de plaats van de vestiging'],
-    [w.workAddress, 'het adres van de werkplek'],
-    [w.workPostalCode, 'de postcode van de werkplek'],
-    [w.workCity, 'de plaats van de werkplek'],
-    [w.signatories, 'wie er standaard tekent'],
-  ]
-  const leeg = verplicht.filter(([v]) => !v.trim()).map(([, n]) => n)
-  if (leeg.length > 0) throw new ContractError(`Vul ${leeg.join(', ')} in.`)
-  const [bestaand] = await db.select({ id: employerSettings.id }).from(employerSettings).limit(1)
-  if (bestaand) {
-    await db.update(employerSettings).set({ ...w, updatedAt: new Date() }).where(eq(employerSettings.id, bestaand.id))
-  } else {
-    await db.insert(employerSettings).values(w)
-  }
-}
 
 /** "A", "A en B", "A, B en C". */
 export function namenZin(namen: string[]): string {
@@ -486,6 +547,22 @@ export async function listMogelijkeOndertekenaars(): Promise<{ id: string; naam:
   return lijst.sort((a, b) => Number(b.eigenaar) - Number(a.eigenaar) || a.naam.localeCompare(b.naam, 'nl'))
 }
 
+/**
+ * De werkgever zoals hij in de kop van dit contract hoort: zoals hij was toen
+ * het contract werd opgesteld. Een oud contract zonder die kopie krijgt de
+ * huidige gegevens.
+ */
+export function kopVanContract(c: Pick<GeneratedContract, 'employerSnapshot'>, bedrijf: Bedrijf | null): WerkgeverKop | null {
+  const bewaard = c.employerSnapshot as Partial<WerkgeverKop> | null
+  if (bewaard && typeof bewaard.legalName === 'string' && typeof bewaard.addressLine === 'string') return bewaard as WerkgeverKop
+  return bedrijf ? werkgeverKop(bedrijf) : null
+}
+
+/** De naam in de kop, bij de paraaf en onder de handtekening: de roepnaam, anders de volledige naam. */
+export function tekennaamVan(c: Pick<GeneratedContract, 'employeeShortName' | 'employeeName'>): string {
+  return c.employeeShortName?.trim() || c.employeeName
+}
+
 export async function getWerkgever(): Promise<EmployerSettings | null> {
   const [rij] = await db.select().from(employerSettings).limit(1)
   return rij ?? null
@@ -533,12 +610,135 @@ export async function getContract(id: string): Promise<GeneratedContract | null>
  * Zo is een jaar later nog na te gaan wat er is afgesproken, ook als het
  * sjabloon inmiddels anders is.
  */
+/** Wat er naast de invoer bij een contract wordt bewaard. */
+export type ContractBijlagen = {
+  /** De werkgever zoals hij nu in de kop staat. */
+  kop: WerkgeverKop | null
+  /** De versie van het personeelshandboek die bij dit contract hoort. */
+  handboekId: string | null
+}
+
+/** De velden van een contractrij die uit de invoer en het concept komen. */
+function contractVelden(invoer: ContractInvoer, concept: ContractConcept, sjabloon: { template: ContractTemplate }, bijlagen: ContractBijlagen) {
+  return {
+    templateId: sjabloon.template.id,
+    jobProfileId: invoer.jobProfileId ?? null,
+
+    employeeName: invoer.naam,
+    employeeShortName: invoer.korteNaam?.trim() || null,
+    employerSigners: invoer.ondertekenaars && invoer.ondertekenaars.length > 0 ? invoer.ondertekenaars.join('\n') : null,
+    employeeAanhef: invoer.aanhef ?? null,
+    employeeAddress: invoer.adres ?? null,
+    employeePostalCode: invoer.postcode ?? null,
+    employeeCity: invoer.woonplaats ?? null,
+    employeeBirthDate: invoer.geboortedatum ?? null,
+
+    jobTitle: invoer.functie,
+    contractType: invoer.soort,
+    startedOn: invoer.ingangsdatum,
+    endsOn: concept.einddatum,
+    durationMonths: invoer.looptijdMaanden ?? null,
+    probationMonths: concept.proeftijdMaanden,
+    hoursWeekQuarters: invoer.urenPerWeekKwartier,
+
+    salaryScaleName: invoer.schaalNaam ?? null,
+    salaryStep: invoer.trede ?? null,
+    grossMonthlyCents: invoer.brutoMaandCents,
+    opAllowanceCents: invoer.opToeslagCents ?? 0,
+    holidayAllowanceBp: invoer.vakantietoeslagBp ?? 800,
+    holidayHoursPerYear: invoer.vakantieUren ?? null,
+
+    locationId: invoer.standplaatsId ?? null,
+    signPlace: invoer.tekenplaats?.trim() || null,
+    signDate: invoer.tekendatum ?? null,
+    employerSnapshot: bijlagen.kop,
+    handbookDocumentId: bijlagen.handboekId,
+    invoer: invoerNaarJson(invoer),
+
+    aanzeggenVoor: concept.aanzeggenVoor,
+    body: concept.body,
+    summary: concept.intro,
+    remarks: concept.opmerkingen.length > 0 ? concept.opmerkingen.join('\n') : null,
+  }
+}
+
+/** De invoer als json: datums als jjjj-mm-dd, zodat ze bij het terugzetten niet verschuiven. */
+function invoerNaarJson(invoer: ContractInvoer): Record<string, unknown> {
+  const dag = (d: Date | null | undefined) =>
+    d ? `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}` : null
+  return { ...invoer, ingangsdatum: dag(invoer.ingangsdatum), geboortedatum: dag(invoer.geboortedatum), tekendatum: dag(invoer.tekendatum) }
+}
+
+function dagUit(waarde: unknown): Date | null {
+  if (typeof waarde !== 'string' || !/^\d{4}-\d{2}-\d{2}/.test(waarde)) return null
+  const d = new Date(`${waarde.slice(0, 10)}T12:00:00`)
+  return Number.isNaN(d.getTime()) ? null : d
+}
+
+/**
+ * De invoer van een bewaard contract, om het te kunnen wijzigen.
+ *
+ * Een contract van voor deze kolom heeft geen bewaarde invoer; dan wordt hij
+ * zo goed mogelijk uit het contract zelf opgebouwd. Wat er niet in staat
+ * (zoals het relatiebeding), valt terug op wat het functieprofiel zegt.
+ */
+export function invoerUit(c: GeneratedContract): ContractInvoer {
+  const j = (c.invoer ?? null) as Record<string, unknown> | null
+  if (j && typeof j.naam === 'string') {
+    return {
+      ...(j as unknown as ContractInvoer),
+      ingangsdatum: dagUit(j.ingangsdatum) ?? c.startedOn,
+      geboortedatum: dagUit(j.geboortedatum),
+      tekendatum: dagUit(j.tekendatum),
+    }
+  }
+  const oudeTekst = c.body
+  return {
+    candidateId: c.candidateId,
+    userId: c.userId,
+    naam: c.employeeName,
+    korteNaam: c.employeeShortName,
+    aanhef: c.employeeAanhef,
+    ondertekenaars: c.employerSigners ? c.employerSigners.split('\n').filter(Boolean) : undefined,
+    adres: c.employeeAddress,
+    postcode: c.employeePostalCode,
+    woonplaats: c.employeeCity,
+    geboortedatum: c.employeeBirthDate,
+    jobProfileId: c.jobProfileId,
+    functie: c.jobTitle,
+    soort: c.contractType as ContractSoort,
+    ingangsdatum: c.startedOn,
+    looptijdMaanden: c.durationMonths,
+    proeftijdMaanden: c.probationMonths,
+    urenPerWeekKwartier: c.hoursWeekQuarters,
+    schaalNaam: c.salaryScaleName,
+    trede: c.salaryStep,
+    brutoMaandCents: c.grossMonthlyCents,
+    opToeslagCents: c.opAllowanceCents,
+    vakantietoeslagBp: c.holidayAllowanceBp,
+    vakantieUren: c.holidayHoursPerYear ?? undefined,
+    vrijetijdsbudget: oudeTekst.includes('vrijetijdsbesteding'),
+    relatiebeding: oudeTekst.includes('Relatiebeding'),
+    standplaatsId: c.locationId,
+    tekenplaats: c.signPlace,
+    tekendatum: c.signDate,
+  }
+}
+
+/**
+ * Slaat een opgesteld contract op.
+ *
+ * Bewaart de uitgeschreven tekst en alle waarden waarmee hij is gemaakt.
+ * Zo is een jaar later nog na te gaan wat er is afgesproken, ook als het
+ * sjabloon inmiddels anders is.
+ */
 export async function bewaarContract(
   invoer: ContractInvoer,
   concept: ContractConcept,
   sjabloon: { template: ContractTemplate },
   soort: 'proforma' | 'definitief',
   doorUserId: string | null,
+  bijlagen: ContractBijlagen = { kop: null, handboekId: null },
 ): Promise<GeneratedContract> {
   if (!invoer.candidateId && !invoer.userId) {
     throw new ContractError(
@@ -550,42 +750,48 @@ export async function bewaarContract(
     .insert(generatedContracts)
     .values({
       soort,
-      templateId: sjabloon.template.id,
-      jobProfileId: invoer.jobProfileId ?? null,
       candidateId: invoer.candidateId ?? null,
       userId: invoer.userId ?? null,
-
-      employeeName: invoer.naam,
-      employerSigners: invoer.ondertekenaars && invoer.ondertekenaars.length > 0 ? invoer.ondertekenaars.join('\n') : null,
-      employeeAanhef: invoer.aanhef ?? null,
-      employeeAddress: invoer.adres ?? null,
-      employeePostalCode: invoer.postcode ?? null,
-      employeeCity: invoer.woonplaats ?? null,
-      employeeBirthDate: invoer.geboortedatum ?? null,
-
-      jobTitle: invoer.functie,
-      contractType: invoer.soort,
-      startedOn: invoer.ingangsdatum,
-      endsOn: concept.einddatum,
-      durationMonths: invoer.looptijdMaanden ?? null,
-      probationMonths: concept.proeftijdMaanden,
-      hoursWeekQuarters: invoer.urenPerWeekKwartier,
-
-      salaryScaleName: invoer.schaalNaam ?? null,
-      salaryStep: invoer.trede ?? null,
-      grossMonthlyCents: invoer.brutoMaandCents,
-      opAllowanceCents: invoer.opToeslagCents ?? 0,
-      holidayAllowanceBp: invoer.vakantietoeslagBp ?? 800,
-      holidayHoursPerYear: invoer.vakantieUren ?? null,
-
-      aanzeggenVoor: concept.aanzeggenVoor,
-      body: concept.body,
-      summary: concept.intro,
-      remarks: concept.opmerkingen.length > 0 ? concept.opmerkingen.join('\n') : null,
+      ...contractVelden(invoer, concept, sjabloon, bijlagen),
       createdByUserId: doorUserId,
     })
     .returning()
 
+  if (!contract) throw new ContractError('Het contract kon niet worden opgeslagen.')
+  return contract
+}
+
+/** Kan dit contract nog gewijzigd worden? Zo nee: waarom niet. */
+export function waaromNietWijzigen(c: Pick<GeneratedContract, 'signedOn' | 'soort' | 'userId' | 'candidateId'>): string | null {
+  if (c.signedOn) return 'Dit contract is getekend. Wat getekend is, verander je niet: stel een nieuw contract op.'
+  if (c.soort === 'definitief' && c.userId && c.candidateId === null) {
+    return 'Dit contract staat in het dossier van een collega. Stel een nieuw contract op.'
+  }
+  return null
+}
+
+/**
+ * Een contract wijzigen dat nog niet getekend is: opnieuw opstellen met de
+ * nieuwe invoer, onder hetzelfde nummer. Zo blijft er geen verouderde versie
+ * rondzweven die per ongeluk wordt verstuurd.
+ */
+export async function wijzigContract(
+  id: string,
+  invoer: ContractInvoer,
+  concept: ContractConcept,
+  sjabloon: { template: ContractTemplate },
+  soort: 'proforma' | 'definitief',
+  bijlagen: ContractBijlagen,
+): Promise<GeneratedContract> {
+  const oud = await getContract(id)
+  if (!oud) throw new ContractError('Dit contract bestaat niet meer.')
+  const nee = waaromNietWijzigen(oud)
+  if (nee) throw new ContractError(nee)
+  const [contract] = await db
+    .update(generatedContracts)
+    .set({ soort, ...contractVelden(invoer, concept, sjabloon, bijlagen) })
+    .where(eq(generatedContracts.id, id))
+    .returning()
   if (!contract) throw new ContractError('Het contract kon niet worden opgeslagen.')
   return contract
 }
