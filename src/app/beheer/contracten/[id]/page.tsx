@@ -240,7 +240,7 @@ export default async function ContractPagina({
             <h2 className="mb-1 text-base">Getekend vastleggen</h2>
             <p className="mb-3 text-xs text-gray-600">
               Alles van het moment van tekenen in een keer: de datum, het getekende contract, de getekende AVG-verklaring en het personeelshandboek. De
-              bestanden worden versleuteld bewaard bij de persoonsgegevens. Wat nog ontbreekt, staat daarna in de vervolgstappen bij de kandidaat.
+              bestanden worden versleuteld bewaard bij de persoonsgegevens. Wat nog ontbreekt, zie je daarna in het dossier bij de kandidaat of de collega.
             </p>
             <ActionForm action={contractGetekend} submitLabel="Vastleggen">
               <input type="hidden" name="contractId" value={contract.id} />

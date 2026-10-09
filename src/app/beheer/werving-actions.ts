@@ -23,17 +23,7 @@ import {
   WervingError,
   type KandidaatStatus,
 } from '@/lib/werving'
-import {
-  zorgVoorGegevens,
-  slaGegevensOp,
-  voegDocumentToe,
-  wisDocument,
-  maakGegevenslink,
-  markeerDoorgegeven,
-  GegevensError,
-  DOCUMENT_LABELS,
-  type DocumentSoort,
-} from '@/lib/persoonsgegevens'
+import { zorgVoorGegevens, maakGegevenslink, GegevensError } from '@/lib/persoonsgegevens'
 import { SleutelError } from '@/lib/versleuteling'
 import type { ActionResult } from './actions'
 
@@ -332,47 +322,6 @@ export async function kandidaatDocumentWissen(formData: FormData): Promise<Actio
 
 const GEEN_BEHEERDER: ActionResult = { ok: false, error: 'Alleen een beheerder kan persoonsgegevens zien en bijwerken.' }
 
-export async function gegevensOpslaan(formData: FormData): Promise<ActionResult> {
-  if (!(await alsBeheerder())) return GEEN_BEHEERDER
-  const id = tekst(formData, 'kandidaatId')
-  if (!id) return { ok: false, error: 'Onbekende kandidaat.' }
-  return veilig(async () => {
-    const r = await zorgVoorGegevens(id)
-    await slaGegevensOp(r.id, {
-      officialFirstNames: tekst(formData, 'officieleVoornamen'),
-      infix: tekst(formData, 'tussenvoegsel'),
-      lastName: tekst(formData, 'achternaam'),
-      birthDate: datum(formData, 'geboortedatum'),
-      birthPlace: tekst(formData, 'geboorteplaats'),
-      addressLine: tekst(formData, 'adres'),
-      postalCode: tekst(formData, 'postcode'),
-      city: tekst(formData, 'woonplaats'),
-      iban: tekst(formData, 'iban'),
-      accountHolder: tekst(formData, 'tenaamstelling'),
-    })
-  }, [pad(id)])
-}
-
-export async function gegevensDocument(formData: FormData): Promise<ActionResult> {
-  const user = await alsBeheerder()
-  if (!user) return GEEN_BEHEERDER
-  const id = tekst(formData, 'kandidaatId')
-  const bestand = await bestandUit(formData, 'bestand')
-  if (!bestand) return { ok: false, error: 'Kies een bestand.' }
-  const soort = tekst(formData, 'soort')
-  const kind: DocumentSoort = soort in DOCUMENT_LABELS ? (soort as DocumentSoort) : 'overig'
-  return veilig(async () => {
-    const r = await zorgVoorGegevens(id)
-    await voegDocumentToe(r.id, { kind, ...bestand }, user.id)
-  }, [pad(id)])
-}
-
-export async function gegevensDocumentWissen(formData: FormData): Promise<ActionResult> {
-  if (!(await alsBeheerder())) return GEEN_BEHEERDER
-  const id = tekst(formData, 'kandidaatId')
-  return veilig(() => wisDocument(tekst(formData, 'documentId')), [pad(id)])
-}
-
 export async function gegevenslink(formData: FormData): Promise<ActionResult> {
   if (!(await alsBeheerder())) return GEEN_BEHEERDER
   const id = tekst(formData, 'kandidaatId')
@@ -382,12 +331,3 @@ export async function gegevenslink(formData: FormData): Promise<ActionResult> {
   }, [pad(id)])
 }
 
-export async function gegevensDoorgegeven(formData: FormData): Promise<ActionResult> {
-  const user = await alsBeheerder()
-  if (!user) return GEEN_BEHEERDER
-  const id = tekst(formData, 'kandidaatId')
-  return veilig(async () => {
-    const r = await zorgVoorGegevens(id)
-    await markeerDoorgegeven(r.id, user.id, tekst(formData, 'terug') !== '1')
-  }, [pad(id)])
-}

@@ -23,7 +23,7 @@ import {
   Bedrijfsmiddelen,
 } from '@/components/Personeelsdossier'
 import { Avatar } from '@/components/Avatar'
-import { CollegaGegevens } from '@/components/CollegaGegevens'
+import { Persoonsdossier } from '@/components/Persoonsdossier'
 import { Vervolgstappen } from '@/components/Vervolgstappen'
 import { vervolgstappen } from '@/lib/aanname'
 import { getGegevens, leesIban } from '@/lib/persoonsgegevens'
@@ -153,7 +153,7 @@ export default async function MedewerkerPage({
 
       {toonStappen && (
         <div className="mb-6">
-          <Vervolgstappen stappen={stappen} titel="Onboarding" eigenaar={{ userId: lid.id }} />
+          <Vervolgstappen stappen={stappen} titel="Onboarding" />
         </div>
       )}
 
@@ -520,6 +520,8 @@ export default async function MedewerkerPage({
 
       {dossierGegevens && (
         <div className="mt-6 space-y-6">
+          <Persoonsdossier van={{ userId: lid.id }} gegevens={persoonlijk} iban={iban} ibanFout={ibanFout} sleutel={heeftSleutel()} />
+
           <Contracten
             userId={lid.id}
             contracten={dossierGegevens[0]}
@@ -534,8 +536,6 @@ export default async function MedewerkerPage({
             />
             <Bedrijfsmiddelen userId={lid.id} middelen={dossierGegevens[4]} />
           </div>
-
-          <CollegaGegevens userId={lid.id} gegevens={persoonlijk} iban={iban} ibanFout={ibanFout} sleutel={heeftSleutel()} />
 
           <Dossier userId={lid.id} regels={dossierGegevens[3]} />
         </div>

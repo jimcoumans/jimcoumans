@@ -3,27 +3,28 @@ import { headers } from 'next/headers'
 import { getSessionUser } from '@/lib/auth'
 import { AppShell } from '@/components/AppShell'
 import { Paneel } from '@/components/Paneel'
-import { ActionForm, Check, Field, Select } from '@/components/ActionForm'
+import { ActionForm, Field, Select } from '@/components/ActionForm'
 import { ContractFormulier, LEGE_START, startUitInvoer, type ContractStart } from '@/components/ContractFormulier'
 import { getKandidaat, getVacature } from '@/lib/werving'
 import { getIndiensttreding, type StapSleutel } from '@/lib/indiensttreding'
 import { listFunctieprofielen, listMogelijkeOndertekenaars, invoerUit, ondertekenaarsVan, namenZin, tekennaamVan, korteNaam } from '@/lib/contracten'
 import { getHuis, schaalNamen } from '@/lib/salarishuis'
 import { getBedrijf, getBedrijfsdocument, huidigBedrijfsdocument, handboekPad } from '@/lib/bedrijf'
-import { leesIban, DOCUMENT_LABELS } from '@/lib/persoonsgegevens'
+import { leesIban } from '@/lib/persoonsgegevens'
 import { werkadresVoorstel } from '@/lib/aanname'
 import { AFDELINGEN } from '@/lib/team'
 import { contractMail, mailtoLink } from '@/lib/mailsjablonen'
 import { getTekstOverrides } from '@/lib/sjablonen'
-import { formatDate, formatDateInput, formatDateLong } from '@/lib/dates'
+import { formatDateInput, formatDateLong } from '@/lib/dates'
 import { formatCents } from '@/lib/money'
-import { gegevensOpslaan } from '../../../../werving-actions'
 import { contractBijwerken } from '../../../../contract-actions'
-import { getekendeStukken, kandidaatAannemen } from '../../../../aanname-actions'
+import { contractGetekend, handboekOntvangen, kandidaatAannemen } from '../../../../aanname-actions'
+import { DossierGegevens, DossierDocumenten, DossierRegel, IbanRegel, type DossierVan } from '@/components/Persoonsdossier'
 
 export const maxDuration = 26
 
 const KNOP = 'bg-jr-btn hover:bg-jr-btnhover inline-flex items-center rounded-full px-5 py-2.5 text-sm font-medium text-white'
+const KNOP_KLEIN = 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 !px-3 !py-1 !text-xs !min-h-0'
 const KNOP_RUSTIG = 'inline-flex items-center rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50'
 
 /**
@@ -73,11 +74,14 @@ export default async function IndiensttredingPagina({ params }: { params: Promis
   const open = (s: StapSleutel) => s === huidige
   const klaar = (s: StapSleutel) => stappen.find((x) => x.sleutel === s)!.klaar
   const verborgen = <input type="hidden" name="kandidaatId" value={k.id} />
+  // Na de aanname staat het dossier bij de collega.
+  const van: DossierVan = stand.aangenomen && k.hiredUserId ? { userId: k.hiredUserId } : { kandidaatId: k.id }
 
   /* Alles wat er nog mist, over alle stappen heen: het lijstje voor vandaag. */
   const mist = [
     ...stand.gegevensMist.map((m) => `Persoonsgegevens: ${m}`),
     ...(!contract ? ['Contract opstellen'] : contract.soort !== 'definitief' ? ['Contract definitief maken'] : stand.contractVerouderd ? ['Contract bijwerken met de nieuwe gegevens'] : []),
+    ...(contract?.soort === 'definitief' && !contract.signedOn ? ['Datum van ondertekening vastleggen'] : []),
     ...stukken.filter((s) => !s.klaar).map((s) => s.titel),
     ...(stand.aangenomen ? [] : ['In dienst nemen']),
   ]
@@ -188,43 +192,11 @@ export default async function IndiensttredingPagina({ params }: { params: Promis
       <div className="space-y-3">
         {/* ------------------------------ 1. Persoonsgegevens ------------------------------ */}
         <Stap id="gegevens" nummer={1} titel="Persoonsgegevens" klaar={klaar('gegevens')} open={open('gegevens')} samenvatting={r ? `${r.officialFirstNames ?? ''} ${r.infix ?? ''} ${r.lastName ?? ''}`.replace(/\s+/g, ' ').trim() : 'Nog niets ingevuld'}>
-          <p className="mb-3 text-sm text-gray-600">Wat er in het contract komt. Eén plek: wat je hier wijzigt, staat ook bij de kandidaat en straks in het dossier.</p>
-          <dl className="mb-4 grid gap-x-8 gap-y-2 text-sm sm:grid-cols-2">
-            <Regel label="Voornamen (paspoort)">{r?.officialFirstNames}</Regel>
-            <Regel label="Achternaam">{[r?.infix, r?.lastName].filter(Boolean).join(' ') || null}</Regel>
-            <Regel label="Roepnaam">{k.firstName}</Regel>
-            <Regel label="Geboortedatum">{r?.birthDate ? formatDateLong(r.birthDate) : null}</Regel>
-            <Regel label="Adres">{r?.addressLine ? `${r.addressLine}, ${r.postalCode ?? ''} ${r.city ?? ''}` : null}</Regel>
-            <Regel label="IBAN">{iban}</Regel>
-            <Regel label="E-mail">{k.email}</Regel>
-            <Regel label="Telefoon">{k.phone}</Regel>
-          </dl>
-          <details className="rounded-lg border border-gray-200 p-4" open={stand.gegevensMist.length > 0}>
-            <summary className="cursor-pointer text-sm font-semibold">Gegevens wijzigen</summary>
-            <div className="mt-4">
-              <ActionForm action={gegevensOpslaan} submitLabel="Opslaan" resetOnSuccess={false}>
-                {verborgen}
-                <div className="grid gap-3 sm:grid-cols-[2fr_1fr_1.5fr]">
-                  <Field label="Voornamen (paspoort)" name="officieleVoornamen" defaultValue={r?.officialFirstNames ?? k.officialFirstNames ?? ''} />
-                  <Field label="Tussenvoegsel" name="tussenvoegsel" defaultValue={r?.infix ?? k.infix ?? ''} />
-                  <Field label="Achternaam" name="achternaam" defaultValue={r?.lastName ?? k.lastName ?? ''} />
-                </div>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <Field label="Geboortedatum" name="geboortedatum" type="date" defaultValue={r?.birthDate ? formatDateInput(r.birthDate) : ''} />
-                  <Field label="Geboorteplaats" name="geboorteplaats" defaultValue={r?.birthPlace ?? ''} />
-                </div>
-                <div className="grid gap-3 sm:grid-cols-[2fr_1fr_1.5fr]">
-                  <Field label="Adres" name="adres" defaultValue={r?.addressLine ?? ''} />
-                  <Field label="Postcode" name="postcode" defaultValue={r?.postalCode ?? ''} />
-                  <Field label="Woonplaats" name="woonplaats" defaultValue={r?.city ?? ''} />
-                </div>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <Field label="IBAN" name="iban" placeholder={iban ? `Nu: ${iban}` : 'NL00 BANK 0123 4567 89'} hint={iban ? 'Leeg laten om het huidige te houden.' : 'Mag ook bij het tekenen.'} />
-                  <Field label="Ten name van" name="tenaamstelling" defaultValue={r?.accountHolder ?? ''} />
-                </div>
-              </ActionForm>
-            </div>
-          </details>
+          <p className="mb-4 text-sm text-gray-600">
+            Wat er in het contract komt. Het is hetzelfde dossier als op de pagina van {k.firstName ?? 'de kandidaat'}: wat je hier opslaat, staat daar ook.
+            {k.email || k.phone ? ` Contact: ${[k.email, k.phone].filter(Boolean).join(' · ')}.` : ''}
+          </p>
+          <DossierGegevens van={van} gegevens={gegevens} iban={iban} start={{ voornamen: k.officialFirstNames, tussenvoegsel: k.infix, achternaam: k.lastName }} />
         </Stap>
 
         {/* ------------------------------ 2. Contract ------------------------------ */}
@@ -364,7 +336,30 @@ export default async function IndiensttredingPagina({ params }: { params: Promis
                 <li>Het identiteitsbewijs bekijken en een kopie maken (paspoort of ID-kaart, geen rijbewijs).</li>
                 <li>Het personeelshandboek meegeven of de link sturen.</li>
               </ol>
-              <p className="mt-3 text-xs text-gray-500">Daarna scan je alles in en zet je het bij stap 4 in het portaal.</p>
+              <div className="mt-4 rounded-lg border border-gray-200 p-4">
+                {contract.signedOn ? (
+                  <p className="text-sm">
+                    <span className="text-jr-green" aria-hidden="true">
+                      ✓{' '}
+                    </span>
+                    Getekend op {formatDateLong(contract.signedOn)}. Scan alles in en zet het bij stap 4 in het portaal.
+                  </p>
+                ) : (
+                  <>
+                    <h3 className="mb-1 text-sm font-semibold">Getekend? Leg de datum vast</h3>
+                    <p className="mb-3 text-xs text-gray-600">Daarna scan je alles in en zet je het bij stap 4 in het portaal.</p>
+                    <ActionForm action={contractGetekend} submitLabel="Getekend" className="flex flex-wrap items-end gap-3" knopInRij>
+                      <input type="hidden" name="contractId" value={contract.id} />
+                      <Field
+                        label="Getekend op"
+                        name="getekendOp"
+                        type="date"
+                        defaultValue={formatDateInput(contract.signDate && contract.signDate.getTime() <= Date.now() ? contract.signDate : new Date())}
+                      />
+                    </ActionForm>
+                  </>
+                )}
+              </div>
             </>
           )}
         </Stap>
@@ -375,67 +370,32 @@ export default async function IndiensttredingPagina({ params }: { params: Promis
             <p className="text-sm text-gray-600">Kan zodra het contract definitief is (stap 2).</p>
           ) : (
             <>
-              <ul className="mb-4 divide-y divide-gray-100 text-sm">
-                {stukken.map((s) => {
-                  const doc = gegevens?.documenten.filter((d) => d.kind === s.sleutel).at(-1)
-                  return (
-                    <li key={s.sleutel} className="flex flex-wrap items-baseline justify-between gap-2 py-2">
-                      <span className="flex gap-2.5">
-                        <span className={s.klaar ? 'text-jr-green' : 'text-gray-400'} aria-hidden="true">
-                          {s.klaar ? '✓' : '○'}
-                        </span>
-                        <span>
-                          <span className={s.klaar ? 'text-gray-600' : 'font-medium'}>{s.titel}</span>
-                          {s.toelichting && <span className="block text-xs text-gray-500">{s.toelichting}</span>}
-                        </span>
-                      </span>
-                      {doc && (
-                        <a href={`/api/persoonsgegevens/${doc.id}`} target="_blank" rel="noopener" className="text-jr-link text-xs hover:underline">
-                          {DOCUMENT_LABELS[doc.kind]} bekijken · {formatDate(doc.createdAt)}
-                        </a>
-                      )}
-                    </li>
-                  )
-                })}
+              <p className="mb-1 text-sm text-gray-600">
+                Per stuk uploaden, zodra je het hebt. Wat ontbreekt, vul je later aan: hier, op de pagina van {k.firstName ?? 'de kandidaat'} of straks bij de collega.
+              </p>
+              <ul className="divide-y divide-gray-100">
+                <DossierDocumenten van={van} gegevens={gegevens} soorten={['contract', 'avg_verklaring', 'loonheffing', 'id_kopie']} />
+                <IbanRegel van={van} gegevens={gegevens} iban={iban} />
+                <DossierRegel
+                  klaar={!!contract.handbookGivenOn}
+                  titel="Personeelshandboek ontvangen"
+                  uitleg={
+                    contract.handbookGivenOn
+                      ? `Op ${formatDateLong(contract.handbookGivenOn)}.`
+                      : handboek
+                        ? `${handboek.note || handboek.filename}, de versie die bij dit contract hoort.`
+                        : 'Er hoort nog geen handboek bij dit contract. Zet het bij de bedrijfsgegevens.'
+                  }
+                  actie={
+                    !contract.handbookGivenOn && (
+                      <ActionForm action={handboekOntvangen} submitLabel="Vastleggen" submitClassName={KNOP_KLEIN} meldGelukt={false} className="flex flex-wrap items-center gap-2" knopInRij>
+                        <input type="hidden" name="contractId" value={contract.id} />
+                        <input type="date" name="op" defaultValue={formatDateInput(contract.signedOn ?? new Date())} className="min-h-9 rounded-lg border border-gray-300 px-2 text-xs" aria-label="Ontvangen op" />
+                      </ActionForm>
+                    )
+                  }
+                />
               </ul>
-
-              {!klaar('stukken') && (
-                <div className="rounded-lg border border-gray-200 p-4">
-                  <h3 className="mb-1 text-sm font-semibold">Vastleggen wat er binnen is</h3>
-                  <p className="mb-3 text-xs text-gray-600">Upload wat je hebt; wat ontbreekt, vul je later met hetzelfde formulier aan. Alles wordt versleuteld bewaard.</p>
-                  <ActionForm action={getekendeStukken} submitLabel="Vastleggen">
-                    <input type="hidden" name="contractId" value={contract.id} />
-                    {!contract.signedOn && (
-                      <Field
-                        label="Getekend op"
-                        name="getekendOp"
-                        type="date"
-                        defaultValue={formatDateInput(contract.signDate && contract.signDate.getTime() <= Date.now() ? contract.signDate : new Date())}
-                      />
-                    )}
-                    <div className="grid gap-3 sm:grid-cols-2">
-                      {!stukken.find((s) => s.sleutel === 'contract')!.klaar && <Bestand naam="contract" label="Getekend contract" />}
-                      {!stukken.find((s) => s.sleutel === 'avg_verklaring')!.klaar && <Bestand naam="avg" label="Getekende AVG-verklaring" />}
-                      {!stukken.find((s) => s.sleutel === 'loonheffing')!.klaar && <Bestand naam="loonheffing" label="Getekend loonheffingsformulier" />}
-                      {!stukken.find((s) => s.sleutel === 'id_kopie')!.klaar && <Bestand naam="idkopie" label="Kopie identiteitsbewijs" />}
-                    </div>
-                    {!iban && (
-                      <div className="grid gap-3 sm:grid-cols-2">
-                        <Field label="IBAN" name="iban" placeholder="NL00 BANK 0123 4567 89" />
-                        <Field label="Ten name van" name="tenaamstelling" defaultValue={r?.accountHolder ?? ''} />
-                      </div>
-                    )}
-                    {!contract.handbookGivenOn && (
-                      <Check
-                        label="Het personeelshandboek is ontvangen"
-                        name="handboek"
-                        defaultChecked={!!handboek}
-                        hint={handboek ? `${handboek.note || handboek.filename}, de versie die bij dit contract hoort.` : 'Er hoort nog geen handboek bij dit contract.'}
-                      />
-                    )}
-                  </ActionForm>
-                </div>
-              )}
             </>
           )}
         </Stap>
@@ -532,17 +492,6 @@ function Regel({ label, children }: { label: string; children: React.ReactNode }
     <div>
       <dt className="text-xs text-gray-500">{label}</dt>
       <dd>{leeg ? <span className="text-jr-orange">nog niet ingevuld</span> : children}</dd>
-    </div>
-  )
-}
-
-function Bestand({ naam, label }: { naam: string; label: string }) {
-  return (
-    <div>
-      <label className="text-jr-text mb-1.5 block text-[13px] font-medium" htmlFor={`stuk-${naam}`}>
-        {label}
-      </label>
-      <input id={`stuk-${naam}`} type="file" name={naam} accept="application/pdf,image/jpeg,image/png" className="block w-full text-sm" />
     </div>
   )
 }

@@ -23,7 +23,7 @@ export type Stap = { sleutel: StapSleutel; nummer: number; titel: string; klaar:
 
 /** Een ding dat bij het tekenen terug moet komen. */
 export type Stuk = {
-  sleutel: 'getekend' | 'contract' | 'avg_verklaring' | 'loonheffing' | 'id_kopie' | 'iban' | 'handboek'
+  sleutel: 'contract' | 'avg_verklaring' | 'loonheffing' | 'id_kopie' | 'iban' | 'handboek'
   titel: string
   klaar: boolean
   toelichting?: string
@@ -77,12 +77,6 @@ export async function getIndiensttreding(k: Candidate): Promise<Indiensttreding>
       (contract.employeeBirthDate?.toDateString() ?? '') !== (r.birthDate?.toDateString() ?? ''))
 
   const stukken: Stuk[] = [
-    {
-      sleutel: 'getekend',
-      titel: 'Datum van ondertekening',
-      klaar: !!contract?.signedOn,
-      toelichting: contract?.signedOn ? `Getekend op ${contract.signedOn.toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' })}.` : undefined,
-    },
     { sleutel: 'contract', titel: 'Getekend contract', klaar: heeft('contract'), toelichting: 'De scan met alle handtekeningen en parafen.' },
     { sleutel: 'avg_verklaring', titel: 'Getekende AVG-verklaring', klaar: heeft('avg_verklaring') },
     { sleutel: 'loonheffing', titel: 'Getekend loonheffingsformulier', klaar: heeft('loonheffing'), toelichting: 'Opgaaf gegevens voor de loonheffingen: met BSN en de keuze voor de loonheffingskorting.' },
