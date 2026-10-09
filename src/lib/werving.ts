@@ -485,10 +485,11 @@ export async function maakKandidaat(input: NieuweKandidaat): Promise<Candidate> 
 /* --- Een kandidaat bijwerken ---------------------------------------------- */
 
 export type KandidaatGegevens = {
-  firstName: string | null
-  infix: string | null
-  lastName: string | null
-  officialFirstNames: string | null
+  /** Namen weglaten (undefined) = laten staan: vanaf het dossier wijzig je ze daar. */
+  firstName?: string | null
+  infix?: string | null
+  lastName?: string | null
+  officialFirstNames?: string | null
   email: string | null
   phone: string | null
   linkedinUrl: string | null
@@ -502,11 +503,15 @@ export type KandidaatGegevens = {
 
 /** Alles van een kandidaat wijzigen, behalve status en bewaartermijn: die hebben hun eigen regels. */
 export async function bewerkKandidaat(id: string, g: KandidaatGegevens): Promise<void> {
-  const t = (s: string | null) => s?.trim() || null
-  const naam = volledigeNaam({ firstName: t(g.firstName), infix: t(g.infix), lastName: t(g.lastName) })
-  if (!naam || naam.trim() === '') throw new WervingError('Geef de kandidaat een naam.')
-  const [huidig] = await db.select({ appliedOn: candidates.appliedOn, respondedOn: candidates.respondedOn }).from(candidates).where(eq(candidates.id, id)).limit(1)
+  const t = (s: string | null | undefined) => s?.trim() || null
+  const [huidig] = await db.select().from(candidates).where(eq(candidates.id, id)).limit(1)
   if (!huidig) throw new WervingError('Deze kandidaat bestaat niet meer.')
+  const metNamen = g.firstName !== undefined || g.lastName !== undefined
+  const namen = metNamen
+    ? { firstName: t(g.firstName), infix: t(g.infix), lastName: t(g.lastName), officialFirstNames: g.officialFirstNames === undefined ? huidig.officialFirstNames : t(g.officialFirstNames) }
+    : { firstName: huidig.firstName, infix: huidig.infix, lastName: huidig.lastName, officialFirstNames: huidig.officialFirstNames }
+  const naam = volledigeNaam(namen)
+  if (!naam || naam.trim() === '') throw new WervingError('Geef de kandidaat een naam.')
   if (huidig.respondedOn && g.appliedOn > huidig.respondedOn) {
     throw new WervingError('De sollicitatiedatum ligt na de datum waarop we reageerden.')
   }
@@ -514,10 +519,7 @@ export async function bewerkKandidaat(id: string, g: KandidaatGegevens): Promise
     .update(candidates)
     .set({
       name: naam.trim(),
-      firstName: t(g.firstName),
-      infix: t(g.infix),
-      lastName: t(g.lastName),
-      officialFirstNames: t(g.officialFirstNames),
+      ...namen,
       email: t(g.email),
       phone: t(g.phone),
       linkedinUrl: t(g.linkedinUrl),

@@ -279,6 +279,29 @@ export async function werkContractgegevensBij(
   await db.update(personalRecords).set(patch).where(eq(personalRecords.id, recordId))
 }
 
+/**
+ * De naam in het dossier is de naam van de persoon: de roepnaam, het
+ * tussenvoegsel en de achternaam gaan mee naar de kandidaat of de collega,
+ * zodat er nergens een andere naam staat. De volledige voornamen staan
+ * alleen bovenaan het contract; overal elders roepnaam en achternaam.
+ */
+export async function werkNaamBij(recordId: string, roepnaam: string | null | undefined): Promise<void> {
+  const [r] = await db.select().from(personalRecords).where(eq(personalRecords.id, recordId)).limit(1)
+  if (!r) return
+  const roep = kort(roepnaam) ?? kort(r.officialFirstNames?.split(/\s+/)[0])
+  if (!roep || !r.lastName) return
+  const naam = [roep, r.infix, r.lastName].filter(Boolean).join(' ')
+  if (r.candidateId) {
+    await db
+      .update(candidates)
+      .set({ name: naam, firstName: roep, infix: r.infix, lastName: r.lastName, officialFirstNames: r.officialFirstNames, updatedAt: new Date() })
+      .where(eq(candidates.id, r.candidateId))
+  }
+  if (r.userId) {
+    await db.update(users).set({ name: naam, firstName: roep, infix: r.infix, lastName: r.lastName }).where(eq(users.id, r.userId))
+  }
+}
+
 /** Alleen het IBAN (en de tenaamstelling) bijwerken, bijvoorbeeld bij het tekenen. De rest blijft staan. */
 export async function werkIbanBij(recordId: string, iban: string, tenaamstelling?: string | null): Promise<void> {
   const schoon = schoonIban(iban)

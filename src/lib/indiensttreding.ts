@@ -71,6 +71,7 @@ export async function getIndiensttreding(k: Candidate): Promise<Indiensttreding>
     !!r &&
     gegevensMist.length === 0 &&
     (contract.employeeName !== naamNu ||
+      (!!k.firstName?.trim() && !!contract.employeeShortName && contract.employeeShortName !== [k.firstName.trim(), r.infix, r.lastName].filter(Boolean).join(' ')) ||
       (contract.employeeAddress ?? '') !== (r.addressLine ?? '') ||
       (contract.employeePostalCode ?? '') !== (r.postalCode ?? '') ||
       (contract.employeeCity ?? '') !== (r.city ?? '') ||

@@ -29,7 +29,7 @@ import { zetKandidaatStatus } from '@/lib/werving'
 import { zorgVoorGegevens, zorgVoorGegevensVanCollega, werkContractgegevensBij, getGegevens, GegevensError } from '@/lib/persoonsgegevens'
 import { volledigeNaam } from '@/lib/namen'
 import { db } from '@/db'
-import { candidates, candidateNotes } from '@/db/schema'
+import { candidates, candidateNotes, users } from '@/db/schema'
 import { eq } from 'drizzle-orm'
 import type { ActionResult } from './actions'
 
@@ -350,6 +350,19 @@ export async function contractAangezegd(formData: FormData): Promise<ActionResul
   return veilig(() => markeerAangezegd(contractId), [`/beheer/contracten/${contractId}`])
 }
 
+/** De roepnaam die nu bij de kandidaat of de collega van dit contract staat. */
+async function huidigeRoepnaam(c: { candidateId: string | null; userId: string | null }): Promise<string | null> {
+  if (c.candidateId) {
+    const [k] = await db.select({ v: candidates.firstName }).from(candidates).where(eq(candidates.id, c.candidateId)).limit(1)
+    if (k?.v?.trim()) return k.v.trim()
+  }
+  if (c.userId) {
+    const [u] = await db.select({ v: users.firstName }).from(users).where(eq(users.id, c.userId)).limit(1)
+    if (u?.v?.trim()) return u.v.trim()
+  }
+  return null
+}
+
 /**
  * Een contract opnieuw opstellen met wat er nu bekend is: de persoonsgegevens
  * zoals ze nu zijn en de standaardteksten van nu. Met "definitief" wordt een
@@ -366,6 +379,8 @@ export async function contractBijwerken(formData: FormData): Promise<ActionResul
   const gegevens = await getGegevens(oud.candidateId ? { candidateId: oud.candidateId } : { userId: oud.userId! })
   const r = gegevens?.record
   const invoer = invoerUit(oud)
+  // De roepnaam zoals die nu bij de kandidaat of de collega staat.
+  const roepnaam = (await huidigeRoepnaam(oud)) ?? invoer.roepnaam
   const voornamen = r?.officialFirstNames?.trim() || invoer.naam
   const achternaam = r?.lastName?.trim() || ''
   const naam = r ? volledigeNaam({ firstName: r.officialFirstNames, infix: r.infix, lastName: r.lastName }) || invoer.naam : invoer.naam
@@ -373,7 +388,8 @@ export async function contractBijwerken(formData: FormData): Promise<ActionResul
     invoer: {
       ...invoer,
       naam,
-      korteNaam: r ? korteNaam(invoer.roepnaam || voornamen.split(/\s+/)[0], r.infix, r.lastName) || invoer.korteNaam : invoer.korteNaam,
+      roepnaam,
+      korteNaam: r ? korteNaam(roepnaam || voornamen.split(/\s+/)[0], r.infix, r.lastName) || invoer.korteNaam : invoer.korteNaam,
       adres: r?.addressLine ?? invoer.adres,
       postcode: r?.postalCode ?? invoer.postcode,
       woonplaats: r?.city ?? invoer.woonplaats,

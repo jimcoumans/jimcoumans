@@ -520,7 +520,7 @@ export default async function MedewerkerPage({
 
       {dossierGegevens && (
         <div className="mt-6 space-y-6">
-          <Persoonsdossier van={{ userId: lid.id }} gegevens={persoonlijk} iban={iban} ibanFout={ibanFout} sleutel={heeftSleutel()} />
+          <Persoonsdossier van={{ userId: lid.id }} start={{ roepnaam: lid.firstName }} gegevens={persoonlijk} iban={iban} ibanFout={ibanFout} sleutel={heeftSleutel()} />
 
           <Contracten
             userId={lid.id}
