@@ -2,6 +2,7 @@ import { ActionForm, Field } from './ActionForm'
 import { dossierDocument, dossierDocumentWissen, dossierDoorgegeven, dossierGegevensOpslaan, dossierIban } from '@/app/beheer/aanname-actions'
 import { dossierPunten, type DocumentInfo, type DocumentSoort, type Gegevens } from '@/lib/persoonsgegevens'
 import { formatDate, formatDateInput, formatDateLong } from '@/lib/dates'
+import { sleutelProbleem } from '@/lib/versleuteling'
 
 /* -------------------------------------------------------------------------
    Het dossier van een persoon: alles wat er voor het contract en de
@@ -263,7 +264,7 @@ export function Persoonsdossier({
 
       {!sleutel && (
         <p className="border-jr-orange bg-jr-orange/10 mb-4 rounded border-l-4 p-3 text-sm">
-          De sleutel voor persoonsgegevens (GEGEVENS_SLEUTEL) staat nog niet in Netlify. Zonder die sleutel kan het portaal geen IBAN of documenten opslaan.
+          <strong>Het portaal kan nog geen IBAN of documenten opslaan.</strong> {sleutelProbleem()}
         </p>
       )}
       {ibanFout && <p className="mb-4 text-sm text-[#C02A22]">Het IBAN is niet te lezen met de huidige sleutel.</p>}
