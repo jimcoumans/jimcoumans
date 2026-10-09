@@ -15,6 +15,7 @@ import {
   bewaarContract,
   wijzigContract,
   waaromNietWijzigen,
+  invoerUit,
   contractWerkgever,
   korteNaam,
   maakDefinitief,
@@ -25,7 +26,7 @@ import {
 import { getBedrijf, huidigHandboek, handboekPad, werkgeverKop } from '@/lib/bedrijf'
 import { berekenBeloning, getHuis } from '@/lib/salarishuis'
 import { zetKandidaatStatus } from '@/lib/werving'
-import { zorgVoorGegevens, zorgVoorGegevensVanCollega, werkContractgegevensBij, GegevensError } from '@/lib/persoonsgegevens'
+import { zorgVoorGegevens, zorgVoorGegevensVanCollega, werkContractgegevensBij, getGegevens, GegevensError } from '@/lib/persoonsgegevens'
 import { volledigeNaam } from '@/lib/namen'
 import { db } from '@/db'
 import { candidates, candidateNotes } from '@/db/schema'
@@ -253,6 +254,9 @@ async function stelOp(f: Formulier) {
   return { concept, sjabloon, bijlagen: { kop: werkgeverKop(bedrijf), handboekId: handboek?.id ?? null } }
 }
 
+/** De stappen van de indiensttreding van een kandidaat: daar hoort een contract van een kandidaat thuis. */
+const stappenPad = (kandidaatId: string) => `/beheer/werving/kandidaten/${kandidaatId}/indiensttreding`
+
 /** Stelt een contract op en bewaart het. */
 export async function nieuwContract(formData: FormData): Promise<ActionResult> {
   const gebruiker = await alsBeheerder()
@@ -269,7 +273,7 @@ export async function nieuwContract(formData: FormData): Promise<ActionResult> {
     if (f.kandidaatId) await kandidaatNaarFase(f.kandidaatId, f.contractSoort, gebruiker.id)
   }, f.kandidaatId ? [`/beheer/werving/kandidaten/${f.kandidaatId}`] : [])
 
-  if (resultaat.ok && nieuwId) redirect(`/beheer/contracten/${nieuwId}`)
+  if (resultaat.ok && nieuwId) redirect(f.kandidaatId ? stappenPad(f.kandidaatId) : `/beheer/contracten/${nieuwId}`)
   return resultaat
 }
 
@@ -296,7 +300,7 @@ export async function contractWijzigen(formData: FormData): Promise<ActionResult
     if (f.kandidaatId && f.contractSoort !== oud.soort) await kandidaatNaarFase(f.kandidaatId, f.contractSoort, gebruiker.id)
   }, [`/beheer/contracten/${oud.id}`, ...(oud.candidateId ? [`/beheer/werving/kandidaten/${oud.candidateId}`] : [])])
 
-  if (resultaat.ok) redirect(`/beheer/contracten/${oud.id}`)
+  if (resultaat.ok) redirect(oud.candidateId && !oud.signedOn ? stappenPad(oud.candidateId) : `/beheer/contracten/${oud.id}`)
   return resultaat
 }
 
@@ -344,4 +348,45 @@ export async function contractAangezegd(formData: FormData): Promise<ActionResul
   if (!contractId) return { ok: false, error: 'Onbekend contract.' }
 
   return veilig(() => markeerAangezegd(contractId), [`/beheer/contracten/${contractId}`])
+}
+
+/**
+ * Een contract opnieuw opstellen met wat er nu bekend is: de persoonsgegevens
+ * zoals ze nu zijn en de standaardteksten van nu. Met "definitief" wordt een
+ * pro forma meteen het contract ter ondertekening. Kan tot het getekend is.
+ */
+export async function contractBijwerken(formData: FormData): Promise<ActionResult> {
+  const gebruiker = await alsBeheerder()
+  if (!gebruiker) return GEEN_RECHT
+  const oud = await getContract(tekst(formData, 'contractId'))
+  if (!oud) return { ok: false, error: 'Dit contract bestaat niet meer.' }
+  const nee = waaromNietWijzigen(oud)
+  if (nee) return { ok: false, error: nee }
+
+  const gegevens = await getGegevens(oud.candidateId ? { candidateId: oud.candidateId } : { userId: oud.userId! })
+  const r = gegevens?.record
+  const invoer = invoerUit(oud)
+  const voornamen = r?.officialFirstNames?.trim() || invoer.naam
+  const achternaam = r?.lastName?.trim() || ''
+  const naam = r ? volledigeNaam({ firstName: r.officialFirstNames, infix: r.infix, lastName: r.lastName }) || invoer.naam : invoer.naam
+  const f: Formulier = {
+    invoer: {
+      ...invoer,
+      naam,
+      korteNaam: r ? korteNaam(invoer.roepnaam || voornamen.split(/\s+/)[0], r.infix, r.lastName) || invoer.korteNaam : invoer.korteNaam,
+      adres: r?.addressLine ?? invoer.adres,
+      postcode: r?.postalCode ?? invoer.postcode,
+      woonplaats: r?.city ?? invoer.woonplaats,
+      geboortedatum: r?.birthDate ?? invoer.geboortedatum,
+    },
+    kandidaatId: oud.candidateId,
+    collegaId: oud.candidateId ? null : oud.userId,
+    contractSoort: formData.has('definitief') ? 'definitief' : oud.soort === 'definitief' ? 'definitief' : 'proforma',
+    naamDelen: { voornamen, tussenvoegsel: r?.infix ?? null, achternaam },
+  }
+  return veilig(async () => {
+    const { concept, sjabloon, bijlagen } = await stelOp(f)
+    await wijzigContract(oud.id, f.invoer, concept, sjabloon, f.contractSoort, bijlagen)
+    if (f.kandidaatId && f.contractSoort !== oud.soort) await kandidaatNaarFase(f.kandidaatId, f.contractSoort, gebruiker.id)
+  }, [`/beheer/contracten/${oud.id}`, ...(oud.candidateId ? [stappenPad(oud.candidateId), `/beheer/werving/kandidaten/${oud.candidateId}`] : [])])
 }

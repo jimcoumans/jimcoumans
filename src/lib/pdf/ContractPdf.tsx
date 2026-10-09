@@ -21,7 +21,7 @@ import { MerkKop, merkUit, merkRegel, type Merk, ZWART, GRIJS, BLAUW, LIJN, VLAK
 
 const ORANJE = '#94590A'
 
-/* Designsysteem v3.0: Inter Tight voor koppen, Inter voor tekst, JR Blue als
+/* Designsysteem: Figtree voor titels en subkoppen, Inter voor tekst, JR Blue als
    accent, rustige grijze vlakken. Ruim boven en onder: de kop en de
    paraafregel staan vast op elke pagina, daar is de ruimte voor. */
 const s = StyleSheet.create({
@@ -32,15 +32,15 @@ const s = StyleSheet.create({
      korps erbij, anders rekent react-pdf met zijn eigen standaardkorps. */
   regel: { fontSize: 9.5, lineHeight: 1.5 },
   proforma: { fontSize: 8.5, color: ORANJE, fontWeight: 500, marginBottom: 14, backgroundColor: '#FEF7EE', borderRadius: 6, padding: 9 },
-  watermerk: { position: 'absolute', top: 360, left: 40, right: 40, textAlign: 'center', fontFamily: 'InterTight', fontWeight: 700, fontSize: 96, color: '#F6A027', opacity: 0.08, transform: 'rotate(-30deg)' },
+  watermerk: { position: 'absolute', top: 360, left: 40, right: 40, textAlign: 'center', fontFamily: 'Figtree', fontWeight: 700, fontSize: 96, color: '#F6A027', opacity: 0.08, transform: 'rotate(-30deg)' },
   eyebrow: { fontSize: 8.5, color: BLAUW, fontWeight: 500, marginBottom: 6 },
-  titel: { fontFamily: 'InterTight', fontWeight: 700, fontSize: 24, lineHeight: 1.15, marginBottom: 6 },
+  titel: { fontFamily: 'Figtree', fontWeight: 700, fontSize: 24, lineHeight: 1.15, marginBottom: 6 },
   ondertitel: { fontSize: 10, color: GRIJS, marginBottom: 26 },
   ondergetekenden: { fontSize: 9.5, marginBottom: 8 },
   partijen: { flexDirection: 'row', alignItems: 'stretch', marginBottom: 16 },
   partij: { flex: 1, flexDirection: 'column', backgroundColor: VLAK, borderRadius: 8, paddingVertical: 14, paddingHorizontal: 14 },
   partijLabel: { fontSize: 7.5, color: GRIJS, marginBottom: 5 },
-  partijNaam: { fontFamily: 'InterTight', fontWeight: 700, fontSize: 11.5, lineHeight: 1.3, marginBottom: 5 },
+  partijNaam: { fontFamily: 'Figtree', fontWeight: 700, fontSize: 11.5, lineHeight: 1.3, marginBottom: 5 },
   /* De "hierna te noemen" staat onderaan het vlak, in beide vlakken op
      dezelfde hoogte, met een witregel erboven. */
   vuller: { flexGrow: 1 },
@@ -48,8 +48,8 @@ const s = StyleSheet.create({
   verklaring: { marginBottom: 22 },
   artikel: { marginBottom: 13 },
   artikelKop: { flexDirection: 'row', marginBottom: 5 },
-  artikelNr: { fontFamily: 'InterTight', fontWeight: 700, fontSize: 10.5, color: BLAUW, width: 28 },
-  artikelTitel: { fontFamily: 'InterTight', fontWeight: 700, fontSize: 10.5, flex: 1 },
+  artikelNr: { fontFamily: 'Figtree', fontWeight: 700, fontSize: 10.5, color: BLAUW, width: 28 },
+  artikelTitel: { fontFamily: 'Figtree', fontWeight: 700, fontSize: 10.5, flex: 1 },
   lid: { flexDirection: 'row', marginBottom: 4 },
   lidNr: { width: 28, color: GRIJS, fontSize: 8.5, paddingTop: 1 },
   slot: { marginTop: 22, borderTopWidth: 0.75, borderTopColor: LIJN, paddingTop: 18 },

@@ -131,17 +131,17 @@ Apple gebruikt twee **optische varianten van hetzelfde lettertype**. Wij doen ex
 
 | Apple | Wij | Vanaf | Waarom |
 |---|---|---|---|
-| SF Pro Display | **Inter Tight** | 21 px en groter | strakker, smallere letters |
+| SF Pro Display | **Figtree** | 21 px en groter | titels, citaten en subkoppen: eigen karakter naast Inter |
 | SF Pro Text | **Inter** | onder 21 px | ruimer, beter leesbaar klein |
 
-Beide staan in Google Fonts. Laad **Inter Tight in 600 en 700** en **Inter in 400, 500 en 600**. Verder niets — elk extra gewicht kost laadtijd.
+Beide staan in Google Fonts. Laad **Figtree in 600 en 700** en **Inter in 400, 500 en 600**. Verder niets — elk extra gewicht kost laadtijd.
 
 ### Global Fonts
 
 | Slot | Naam | Familie | Gewicht |
 |---|---|---|---|
-| Primary | JR Display | Inter Tight | 700 |
-| Secondary | JR Heading | Inter Tight | 600 |
+| Primary | JR Display | Figtree | 700 |
+| Secondary | JR Heading | Figtree | 600 |
 | Text | JR Body | Inter | 400 |
 | Accent | JR Action | Inter | 500 |
 
@@ -149,7 +149,7 @@ Custom fonts toevoegen: **JR Lead** (Inter 400, 21px) · **JR Caption** (Inter 4
 
 ### Afwijking van het brandbook
 
-Het brandbook schrijft Helvetica Neue voor. Dat is een print-lettertype dat als webfont niet vrij te gebruiken is. **Web = Inter Tight + Inter. Print en drukwerk = Helvetica Neue, ongewijzigd.**
+Het brandbook schrijft Helvetica Neue voor. Dat is een print-lettertype dat als webfont niet vrij te gebruiken is. **Web = Figtree + Inter. Print en drukwerk = Helvetica Neue, ongewijzigd.**
 
 Het brandbook schrijft Light (300) voor bodytekst. Op scherm is dat op 16–17px te dun. Body staat op Regular (400).
 
@@ -834,8 +834,8 @@ De stylesheet overschrijft deze widgets zodat ze binnen het systeem blijven. Zon
 | **Popup** | radius 24, schaduw xl, sluitknop wordt een grijze ronde knop |
 | **Lightbox** | beeld krijgt radius 18 |
 | **Loop Grid / Posts** | gap 24, kaart zonder rand, tilt 4px op bij hover |
-| **Icon Box / Image Box** | titel in Inter Tight met de juiste letterafstand, beeld radius 18 |
-| **Counter** | Inter Tight bold, uitlijnende cijfers, blauw |
+| **Icon Box / Image Box** | titel in Figtree met de juiste letterafstand, beeld radius 18 |
+| **Counter** | Figtree bold, uitlijnende cijfers, blauw |
 | **Progress Bar** | 6px hoog, pill, blauw |
 | **Tabs / Accordion** | eigen typografie, 2px actieve onderstreping, geen kaders |
 | **Breadcrumbs** | 14px, grijs, chevron-scheiding |
@@ -1009,7 +1009,7 @@ Eén schaal, zodat niets ooit onverwacht onder iets anders valt.
 - [ ] Breakpoints op 734 / 1068 / 1440
 - [ ] Content Width op 1024
 - [ ] Flexbox Container, Grid Container, Improved CSS Loading, Optimized Markup aan
-- [ ] Inter Tight (600, 700) en Inter (400, 500, 600) geladen, verder niets
+- [ ] Figtree (600, 700) en Inter (400, 500, 600) geladen, verder niets
 - [ ] Global Colors, Global Fonts en Theme Style ingevuld
 - [ ] `jr-elementor-globals.css` in Custom CSS
 - [ ] Beide snippets in Custom Code → footer

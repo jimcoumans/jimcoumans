@@ -77,6 +77,36 @@ export async function merkTekst(): Promise<MerkTekst> {
   }
 }
 
+/**
+ * Wie er standaard namens de werkgever tekent, als losse namen. Bewaard als
+ * een naam per regel; een oudere waarde als "A en B" of "A, B" werkt ook.
+ */
+export function standaardTekenaars(w: Pick<EmployerSettings, 'signatories'> | null): string[] {
+  const bron = w?.signatories ?? ''
+  const delen = bron.includes('\n') ? bron.split('\n') : bron.split(/,| en /)
+  return delen.map((x) => x.trim()).filter(Boolean)
+}
+
+/**
+ * Iemand wordt eigenaar of is het niet meer: dan tekent die standaard mee,
+ * of niet meer. Zo staat een nieuwe eigenaar meteen aangevinkt bij een
+ * contract. De laatste die standaard tekent, blijft staan: zonder
+ * ondertekenaar kan er geen contract worden opgesteld.
+ */
+export async function zetStandaardTekenaar(naam: string, aan: boolean): Promise<void> {
+  const schoon = naam.trim()
+  if (!schoon) return
+  const [w] = await db.select().from(employerSettings).limit(1)
+  if (!w) return
+  const nu = standaardTekenaars(w)
+  const heeft = nu.some((n) => n.toLowerCase() === schoon.toLowerCase())
+  let nieuw = nu
+  if (aan && !heeft) nieuw = [...nu, schoon]
+  if (!aan && heeft) nieuw = nu.filter((n) => n.toLowerCase() !== schoon.toLowerCase())
+  if (nieuw === nu || nieuw.length === 0) return
+  await db.update(employerSettings).set({ signatories: nieuw.join('\n'), updatedAt: new Date() }).where(eq(employerSettings.id, w.id))
+}
+
 /** "James Robinson Performance Agency": de naam zoals we hem voeren. */
 export function merknaam(w: Pick<EmployerSettings, 'tradeName' | 'tagline'>): string {
   return [w.tradeName, w.tagline].filter((x) => x && x.trim()).join(' ')
@@ -105,7 +135,7 @@ export async function slaBedrijfOp(b: BedrijfInvoer): Promise<void> {
   const leeg: string[] = []
   if (!b.legalName.trim()) leeg.push('de juridische naam')
   if (!b.tradeName.trim()) leeg.push('de naam in de kop')
-  if (!b.signatories.trim()) leeg.push('wie er standaard tekent')
+  if (!b.signatories.trim()) leeg.push('wie er standaard tekent (vink minstens een eigenaar aan)')
   if (leeg.length > 0) throw new BedrijfError(`Vul ${leeg.join(', ')} in.`)
   if (b.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(b.email.trim())) throw new BedrijfError('Het e-mailadres klopt niet.')
   if (b.kvkNumber && !/^\d{8}$/.test(b.kvkNumber.replace(/\s/g, ''))) throw new BedrijfError('Een KvK-nummer heeft acht cijfers.')
@@ -234,25 +264,43 @@ export async function haalLogo(w: Pick<EmployerSettings, 'logoKey'> | null): Pro
   }
 }
 
-/* --- Personeelshandboek ------------------------------------------------------ */
+/* --- Bedrijfsdocumenten: personeelshandboek en loonheffingsformulier -------- */
+
+/**
+ * De documenten van het bedrijf zelf. Elke upload is een nieuwe versie; de
+ * laatste geldt. Het personeelshandboek hoort bij een contract (de versie
+ * die de werknemer ontving); het loonheffingsformulier is het model van de
+ * Belastingdienst, dat elk jaar een nieuwe versie krijgt.
+ */
+export const BEDRIJFSDOCUMENTEN = {
+  personeelshandboek: { label: 'Personeelshandboek', bestandsnaam: 'Personeelshandboek.pdf' },
+  loonheffingsformulier: { label: 'Opgaaf gegevens voor de loonheffingen', bestandsnaam: 'Opgaaf gegevens voor de loonheffingen.pdf' },
+} as const
+export type BedrijfsdocumentSoort = keyof typeof BEDRIJFSDOCUMENTEN
 
 export const HANDBOEK_MAX_BYTES = 5 * 1024 * 1024
 
-export async function voegHandboekToe(bestand: { data: Buffer; contentType: string; filename: string | null }, note: string | null, doorUserId: string | null): Promise<CompanyDocument> {
-  if (bestand.contentType !== 'application/pdf') throw new BedrijfError('Het personeelshandboek moet een pdf zijn.')
+export async function voegBedrijfsdocumentToe(
+  kind: BedrijfsdocumentSoort,
+  bestand: { data: Buffer; contentType: string; filename: string | null },
+  note: string | null,
+  doorUserId: string | null,
+): Promise<CompanyDocument> {
+  const { label, bestandsnaam } = BEDRIJFSDOCUMENTEN[kind]
+  if (bestand.contentType !== 'application/pdf') throw new BedrijfError(`${label}: alleen een pdf.`)
   if (bestand.data.length === 0) throw new BedrijfError('Het bestand is leeg.')
   if (bestand.data.length > HANDBOEK_MAX_BYTES) {
-    throw new BedrijfError('Het handboek is groter dan 5 MB. Exporteer de pdf met kleinere afbeeldingen ("geoptimaliseerd voor web").')
+    throw new BedrijfError(`${label}: het bestand is groter dan 5 MB. Exporteer de pdf met kleinere afbeeldingen ("geoptimaliseerd voor web").`)
   }
   const id = randomUUID()
-  const sleutel = `bedrijf/handboek/${id}.pdf`
+  const sleutel = `bedrijf/${kind === 'personeelshandboek' ? 'handboek' : kind}/${id}.pdf`
   await bewaar(sleutel, bestand.data, 'application/pdf')
   const [doc] = await db
     .insert(companyDocuments)
     .values({
       id,
-      kind: 'personeelshandboek',
-      filename: kort(bestand.filename, 160) ?? 'Personeelshandboek.pdf',
+      kind,
+      filename: kort(bestand.filename, 160) ?? bestandsnaam,
       contentType: 'application/pdf',
       bytes: bestand.data.length,
       storageKey: sleutel,
@@ -264,19 +312,26 @@ export async function voegHandboekToe(bestand: { data: Buffer; contentType: stri
   return doc!
 }
 
+export async function voegHandboekToe(bestand: { data: Buffer; contentType: string; filename: string | null }, note: string | null, doorUserId: string | null): Promise<CompanyDocument> {
+  return voegBedrijfsdocumentToe('personeelshandboek', bestand, note, doorUserId)
+}
+
 /** De geldende versie: de laatst geuploade. */
-export async function huidigHandboek(): Promise<CompanyDocument | null> {
-  const [doc] = await db
-    .select()
-    .from(companyDocuments)
-    .where(eq(companyDocuments.kind, 'personeelshandboek'))
-    .orderBy(desc(companyDocuments.createdAt))
-    .limit(1)
+export async function huidigBedrijfsdocument(kind: BedrijfsdocumentSoort): Promise<CompanyDocument | null> {
+  const [doc] = await db.select().from(companyDocuments).where(eq(companyDocuments.kind, kind)).orderBy(desc(companyDocuments.createdAt)).limit(1)
   return doc ?? null
 }
 
+export async function huidigHandboek(): Promise<CompanyDocument | null> {
+  return huidigBedrijfsdocument('personeelshandboek')
+}
+
+export async function listBedrijfsdocumenten(kind: BedrijfsdocumentSoort): Promise<CompanyDocument[]> {
+  return db.select().from(companyDocuments).where(eq(companyDocuments.kind, kind)).orderBy(desc(companyDocuments.createdAt))
+}
+
 export async function listHandboeken(): Promise<CompanyDocument[]> {
-  return db.select().from(companyDocuments).where(eq(companyDocuments.kind, 'personeelshandboek')).orderBy(desc(companyDocuments.createdAt))
+  return listBedrijfsdocumenten('personeelshandboek')
 }
 
 export async function getBedrijfsdocument(id: string): Promise<CompanyDocument | null> {
@@ -295,8 +350,9 @@ export async function haalBedrijfsdocument(doc: CompanyDocument): Promise<Bestan
   return haal(doc.storageKey)
 }
 
-export function handboekPad(doc: Pick<CompanyDocument, 'token'>): string {
-  return `/personeelshandboek/${doc.token}`
+/** De deelbare link: voor het handboek de vertrouwde link, voor de rest een algemene. */
+export function handboekPad(doc: Pick<CompanyDocument, 'token' | 'kind'> | Pick<CompanyDocument, 'token'>): string {
+  return 'kind' in doc && doc.kind !== 'personeelshandboek' ? `/document/${doc.token}` : `/personeelshandboek/${doc.token}`
 }
 
 /* --- De kop van een contract, bewaard bij het contract ---------------------- */

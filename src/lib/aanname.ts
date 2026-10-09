@@ -270,10 +270,10 @@ export type Stap = {
   /** Waar je het regelt. */
   href?: string
   /**
-   * Wat je meteen in de lijst kunt doen: een document uploaden, of vastleggen
-   * dat het handboek is ontvangen. Zo hoef je er niet voor te zoeken.
+   * Wat je meteen in de lijst kunt doen: vastleggen dat het handboek is
+   * ontvangen. Documenten en gegevens regel je in het dossier.
    */
-  actie?: { soort: 'document'; kind: 'avg_verklaring' | 'id_kopie' | 'loonheffing' | 'contract' } | { soort: 'handboek'; contractId: string }
+  actie?: { soort: 'handboek'; contractId: string }
 }
 
 /**
@@ -335,6 +335,8 @@ export async function vervolgstappen(van: { kandidaatId?: string; userId?: strin
   const kandidaatPad = kandidaat ? `/beheer/werving/kandidaten/${kandidaat.id}` : undefined
   const collegaPad = userId ? `/beheer/medewerkers/${userId}` : undefined
   const startdag = contract ? formatDateLong(contract.startedOn) : null
+  // Gegevens en documenten vul je aan in het dossier: bij de collega als die er is, anders bij de kandidaat.
+  const dossierPad = collegaPad ? `${collegaPad}#dossier` : kandidaatPad ? `${kandidaatPad}#dossier` : undefined
 
   const stappen: Stap[] = [
     {
@@ -355,9 +357,8 @@ export async function vervolgstappen(van: { kandidaatId?: string; userId?: strin
       sleutel: 'exemplaar',
       titel: 'Getekend exemplaar in het dossier',
       klaar: heeft('contract'),
-      toelichting: 'De scan of de pdf met alle handtekeningen en parafen. Wordt versleuteld bewaard.',
-      href: kandidaatPad ?? collegaPad,
-      actie: { soort: 'document', kind: 'contract' },
+      toelichting: heeft('contract') ? undefined : 'De scan met alle handtekeningen en parafen. Upload hem in het dossier.',
+      href: dossierPad,
     },
     {
       sleutel: 'handboek',
@@ -373,46 +374,43 @@ export async function vervolgstappen(van: { kandidaatId?: string; userId?: strin
       sleutel: 'avg',
       titel: 'AVG-verklaring getekend',
       klaar: heeft('avg_verklaring'),
-      toelichting: heeft('avg_verklaring') ? undefined : 'De bijlage bij het contract, ingevuld en getekend. Download hem bij het contract.',
-      href: contract ? `/beheer/contracten/${contract.id}` : kandidaatPad,
-      actie: { soort: 'document', kind: 'avg_verklaring' },
+      toelichting: heeft('avg_verklaring') ? undefined : 'De bijlage bij het contract, ingevuld en getekend. Upload hem in het dossier.',
+      href: dossierPad,
     },
     {
       sleutel: 'gegevens',
       titel: 'Naam, adres en geboortedatum',
       klaar: nawCompleet,
-      toelichting: nawCompleet ? undefined : 'Voornamen zoals in het paspoort, adres en geboortedatum. Via de invullink, of zelf bij de persoonsgegevens.',
-      href: kandidaatPad ?? collegaPad,
+      toelichting: nawCompleet ? undefined : 'Voornamen zoals in het paspoort, adres en geboortedatum. Vul ze in het dossier in.',
+      href: dossierPad,
     },
     {
       sleutel: 'iban',
       titel: 'Bankrekening (IBAN)',
       klaar: !!record?.ibanEnc,
-      toelichting: record?.ibanEnc ? `Eindigt op ${record.ibanLast4 ?? '…'}.` : 'Via de invullink, of zelf bij de persoonsgegevens.',
-      href: kandidaatPad ?? collegaPad,
+      toelichting: record?.ibanEnc ? `Eindigt op ${record.ibanLast4 ?? '…'}.` : 'Vul het in het dossier in.',
+      href: dossierPad,
     },
     {
       sleutel: 'id',
       titel: 'Kopie identiteitsbewijs',
       klaar: heeft('id_kopie'),
-      toelichting: heeft('id_kopie') ? undefined : 'Verplicht voor de loonadministratie. Via de invullink, of upload hem hier.',
-      href: kandidaatPad ?? collegaPad,
-      actie: { soort: 'document', kind: 'id_kopie' },
+      toelichting: heeft('id_kopie') ? undefined : 'Verplicht voor de loonadministratie. Upload hem in het dossier.',
+      href: dossierPad,
     },
     {
       sleutel: 'loonheffing',
-      titel: 'Loonheffingsverklaring',
+      titel: 'Getekend loonheffingsformulier',
       klaar: heeft('loonheffing'),
-      toelichting: heeft('loonheffing') ? undefined : 'Of de loonheffingskorting moet worden toegepast. Via de invullink, of upload hem hier.',
-      href: kandidaatPad ?? collegaPad,
-      actie: { soort: 'document', kind: 'loonheffing' },
+      toelichting: heeft('loonheffing') ? undefined : 'Met BSN en de keuze voor de loonheffingskorting. Upload het in het dossier.',
+      href: dossierPad,
     },
     {
       sleutel: 'salarisadministratie',
       titel: 'Doorgegeven aan de salarisadministratie',
       klaar: !!record?.doorgegevenOp,
-      toelichting: record?.doorgegevenOp ? `Op ${formatDateLong(record.doorgegevenOp)}.` : 'Stuur de gegevens en het contract naar Euregio Habets Royen, en leg het hier vast.',
-      href: kandidaatPad ?? collegaPad,
+      toelichting: record?.doorgegevenOp ? `Op ${formatDateLong(record.doorgegevenOp)}.` : 'Stuur de gegevens en het contract naar Euregio Habets Royen, en leg het onderaan het dossier vast.',
+      href: dossierPad,
     },
     {
       sleutel: 'aangenomen',

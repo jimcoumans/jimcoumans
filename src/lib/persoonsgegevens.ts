@@ -103,6 +103,32 @@ export function watOntbreekt(r: PersonalRecord, documenten: Pick<DocumentInfo, '
   return uit
 }
 
+/** Een punt van het dossier: iets wat er moet zijn voor contract en salarisadministratie. */
+export type DossierPunt = {
+  sleutel: 'naam' | 'geboortedatum' | 'adres' | 'iban' | 'id_kopie' | 'loonheffing' | 'contract' | 'avg_verklaring'
+  titel: string
+  klaar: boolean
+}
+
+/**
+ * Wat er in een compleet dossier hoort, en wat er al is. De gegevens voor
+ * het contract, het IBAN en de vier documenten die terugkomen na het tekenen.
+ */
+export function dossierPunten(g: Pick<Gegevens, 'record' | 'documenten'> | null): DossierPunt[] {
+  const r = g?.record ?? null
+  const heeft = (kind: DocumentSoort) => !!g?.documenten.some((d) => d.kind === kind)
+  return [
+    { sleutel: 'naam', titel: 'Naam volgens paspoort', klaar: !!r?.officialFirstNames?.trim() && !!r?.lastName?.trim() },
+    { sleutel: 'geboortedatum', titel: 'Geboortedatum', klaar: !!r?.birthDate },
+    { sleutel: 'adres', titel: 'Adres', klaar: !!r?.addressLine?.trim() && !!r?.postalCode?.trim() && !!r?.city?.trim() },
+    { sleutel: 'iban', titel: 'IBAN', klaar: !!r?.ibanEnc },
+    { sleutel: 'id_kopie', titel: 'Kopie ID', klaar: heeft('id_kopie') },
+    { sleutel: 'loonheffing', titel: 'Loonheffingsformulier', klaar: heeft('loonheffing') },
+    { sleutel: 'contract', titel: 'Getekend contract', klaar: heeft('contract') },
+    { sleutel: 'avg_verklaring', titel: 'AVG-verklaring', klaar: heeft('avg_verklaring') },
+  ]
+}
+
 async function documentenVan(recordId: string): Promise<DocumentInfo[]> {
   const rijen = await db
     .select({
@@ -253,6 +279,15 @@ export async function werkContractgegevensBij(
   await db.update(personalRecords).set(patch).where(eq(personalRecords.id, recordId))
 }
 
+/** Alleen het IBAN (en de tenaamstelling) bijwerken, bijvoorbeeld bij het tekenen. De rest blijft staan. */
+export async function werkIbanBij(recordId: string, iban: string, tenaamstelling?: string | null): Promise<void> {
+  const schoon = schoonIban(iban)
+  if (!ibanKlopt(schoon)) throw new GegevensError('Dit IBAN klopt niet. Controleer het nummer op de bankpas.')
+  const patch: Partial<typeof personalRecords.$inferInsert> = { ibanEnc: versleutel(schoon), ibanLast4: schoon.slice(-4), updatedAt: new Date() }
+  if (kort(tenaamstelling)) patch.accountHolder = kort(tenaamstelling)
+  await db.update(personalRecords).set(patch).where(eq(personalRecords.id, recordId))
+}
+
 export type NieuwDocument = { kind: DocumentSoort; contentType: string; filename: string | null; data: Buffer }
 
 export function controleerDocument(d: NieuwDocument): void {
@@ -285,8 +320,13 @@ export async function leesDocument(documentId: string, userId: string): Promise<
   return { data: ontsleutel(d.dataEnc), contentType: d.contentType, filename: d.filename }
 }
 
-export async function wisDocument(documentId: string): Promise<void> {
-  await db.delete(personalDocuments).where(eq(personalDocuments.id, documentId))
+/** Een document weghalen, alleen als het bij deze persoonsgegevens hoort. */
+export async function wisDocument(documentId: string, recordId: string): Promise<void> {
+  const weg = await db
+    .delete(personalDocuments)
+    .where(and(eq(personalDocuments.id, documentId), eq(personalDocuments.recordId, recordId)))
+    .returning({ id: personalDocuments.id })
+  if (weg.length === 0) throw new GegevensError('Dit document bestaat niet (meer) bij deze persoon.')
 }
 
 /** Vastleggen dat het is doorgegeven aan de salarisadministratie, of dat terugdraaien. */

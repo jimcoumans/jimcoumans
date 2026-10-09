@@ -302,6 +302,13 @@
       "when": 1791540491448,
       "tag": "0042_standaardteksten",
       "breakpoints": true
+    },
+    {
+      "idx": 43,
+      "version": "7",
+      "when": 1791548327684,
+      "tag": "0043_loonheffingsformulier",
+      "breakpoints": true
     }
   ]
 }

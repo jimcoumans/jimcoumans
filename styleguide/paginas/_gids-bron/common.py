@@ -17,7 +17,7 @@ CSS = r"""
   --p1:#0857c3; --p1b:#e0efff;
   --p2:#4f6300; --p2b:#f2fccc;
   --p3:#1d7d3f; --p3b:#e6f7eb;
-  --fd:"Inter Tight","Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --fd:"Figtree","Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
   --ft:"Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
   --fm:"Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
   --g:32px;

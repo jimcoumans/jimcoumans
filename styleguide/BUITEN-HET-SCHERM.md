@@ -232,9 +232,9 @@ De dingen die niemand benoemt maar iedereen voelt:
 | 120px sectie-padding | ruimte tussen meubels, niet volzetten |
 | Twee lagen schaduw | indirect licht, geen harde slagschaduw |
 | Eén gevulde knop per scherm | één blikvanger per ruimte |
-| Inter Tight op signing | bewegwijzering in hetzelfde lettertype |
+| Figtree op signing | bewegwijzering in hetzelfde lettertype |
 
-Die laatste is concreet en goedkoop: **de bewegwijzering in het pand in Inter Tight**, in dezelfde gewichten als de website. Dat is het soort detail waar niemand naar vraagt en iedereen op reageert.
+Die laatste is concreet en goedkoop: **de bewegwijzering in het pand in Figtree**, in dezelfde gewichten als de website. Dat is het soort detail waar niemand naar vraagt en iedereen op reageert.
 
 ---
 

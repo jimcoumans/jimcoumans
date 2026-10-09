@@ -50,7 +50,7 @@ export default {
       },
       fontFamily: {
         sans: ['var(--font-inter)', 'Inter', '-apple-system', 'BlinkMacSystemFont', '"Helvetica Neue"', 'Helvetica', 'Arial', 'sans-serif'],
-        display: ['var(--font-inter-tight)', '"Inter Tight"', 'Inter', '-apple-system', 'BlinkMacSystemFont', '"Helvetica Neue"', 'Arial', 'sans-serif'],
+        display: ['var(--font-figtree)', 'Figtree', 'Inter', '-apple-system', 'BlinkMacSystemFont', '"Helvetica Neue"', 'Arial', 'sans-serif'],
       },
       fontWeight: { light: '300', normal: '400', medium: '500', semibold: '600', bold: '700' },
       borderRadius: {

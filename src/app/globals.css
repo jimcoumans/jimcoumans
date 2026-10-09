@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 /* Huisstijl James Robinson, volgens het designsysteem (styleguide/).
-   Inter voor tekst en bediening, Inter Tight voor koppen: één familie in
-   twee optische maten. Tekst is regular, niet light: light leest op een
+   Inter voor tekst en bediening, Figtree voor titels, citaten en
+   subkoppen. Tekst is regular, niet light: light leest op een
    scherm vol cijfers en velden te dun. */
 @layer base {
   html {
@@ -30,8 +30,8 @@
   }
   h1 {
     @apply font-bold;
-    line-height: 1.08;
-    letter-spacing: -0.022em;
+    line-height: 1.1;
+    letter-spacing: -0.015em;
   }
   h2,
   h3,
@@ -39,10 +39,14 @@
   h5 {
     @apply font-semibold;
     line-height: 1.2;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.005em;
   }
   h6 {
     @apply font-semibold;
+  }
+  /* Citaten in de koppenletter: ze staan los van de lopende tekst. */
+  blockquote {
+    @apply font-display;
   }
   strong,
   b {

@@ -10,6 +10,10 @@ import { volledigeNaam, type Aanhef } from '@/lib/namen'
 const AANHEF_WAARDEN: readonly Aanhef[] = ['heer', 'mevrouw', 'neutraal']
 import type { ActionResult } from './actions'
 import { vergeet } from '@/lib/cache'
+import { zetStandaardTekenaar } from '@/lib/bedrijf'
+import { db } from '@/db'
+import { users } from '@/db/schema'
+import { eq } from 'drizzle-orm'
 
 /* -------------------------------------------------------------------------
    Acties op het medewerkerprofiel.
@@ -92,6 +96,9 @@ export async function bewerkMedewerkerprofiel(formData: FormData): Promise<Actio
     }
     const aanhefWaarde = tekst(formData, 'aanhef')
 
+    const eigenaarNu = beheerder && formData.has('eigenaarKeuze') ? ['on', 'ja', 'true'].includes(tekst(formData, 'eigenaar')) : null
+    const [voor] = eigenaarNu === null ? [] : await db.select({ isOwner: users.isOwner, name: users.name }).from(users).where(eq(users.id, userId)).limit(1)
+
     await updateTeamlid(userId, {
       name: volledigeNaam(delen) || null,
       ...delen,
@@ -117,6 +124,12 @@ export async function bewerkMedewerkerprofiel(formData: FormData): Promise<Actio
           }
         : {}),
     })
+
+    // Eigenaar geworden of niet meer: dan tekent die standaard mee, of niet meer.
+    if (voor && eigenaarNu !== null && voor.isOwner !== eigenaarNu) {
+      await zetStandaardTekenaar(volledigeNaam(delen) || voor.name || '', eigenaarNu)
+      revalidatePath('/beheer/bedrijf')
+    }
 
     revalidatePath('/beheer/medewerkers')
     revalidatePath(`/beheer/medewerkers/${userId}`)

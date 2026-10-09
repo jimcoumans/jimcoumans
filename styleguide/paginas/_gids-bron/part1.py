@@ -351,7 +351,7 @@ MERK = """
 </div>
 <p style="margin-top:14px">Elke kleur heeft acht vaste stappen, zodat niemand zelf tinten mengt. Eén accent per pagina, nooit twee.</p>
 """ + grid(2, [
- kaart('Typografie en opbouw', ul(['Inter Tight voor koppen (700 en 600), Inter voor tekst (400). Body 17 px, regelafstand 1,55.', 'Altijd sentence case. Geen hoofdletters in labels, geen cursief, geen onderstreping behalve links in lopende tekst.', 'Secties lopen van rand tot rand, content nooit. Container maximaal 1024 px, lopende tekst maximaal 692 px.', 'Logo: witruimte van één keer de hoogte van het beeldmerk; minimaal 20 mm in print, 70 px op scherm. Nooit kantelen, geen schaduw, geen extra kleuren.'], ''), 'VORM'),
+ kaart('Typografie en opbouw', ul(['Figtree voor koppen (700 en 600), Inter voor tekst (400). Body 17 px, regelafstand 1,55.', 'Altijd sentence case. Geen hoofdletters in labels, geen cursief, geen onderstreping behalve links in lopende tekst.', 'Secties lopen van rand tot rand, content nooit. Container maximaal 1024 px, lopende tekst maximaal 692 px.', 'Logo: witruimte van één keer de hoogte van het beeldmerk; minimaal 20 mm in print, 70 px op scherm. Nooit kantelen, geen schaduw, geen extra kleuren.'], ''), 'VORM'),
  kaart('Beeld en ruimte', ul(['De website is wit omdat een scherm licht uitzendt; het kantoor is donker omdat een ruimte licht weerkaatst.', 'Beide terughoudend, eerlijk in materiaal, obsessief in detail, met één accent.', 'Foto’s: donker en warm op een witte pagina. Echte mensen, geen stock.'], ''), 'BEELD'),
 ]) + """
 <h3>Tone of voice</h3>

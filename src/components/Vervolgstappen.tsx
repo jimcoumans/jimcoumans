@@ -1,6 +1,6 @@
 import type { Stap } from '@/lib/aanname'
 import { ActionForm } from '@/components/ActionForm'
-import { stapDocument, handboekOntvangen } from '@/app/beheer/aanname-actions'
+import { handboekOntvangen } from '@/app/beheer/aanname-actions'
 import { formatDateInput } from '@/lib/dates'
 
 const KLEIN = 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 !px-3 !py-1 !text-xs !min-h-0'
@@ -11,17 +11,15 @@ const KLEIN = 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 !p
  * Niets om zomaar af te vinken: elke stap is klaar als het portaal ziet dat
  * hij gedaan is, aan een geupload document of een vastgelegde datum. Zo kan
  * een lijst niet groen staan terwijl het contract nog in iemands tas zit.
- * Waar het kan, regel je het meteen in de lijst.
+ * Een klik op een stap brengt je naar de plek waar je het regelt; gegevens
+ * en documenten staan in het dossier.
  */
 export function Vervolgstappen({
   stappen,
   titel = 'Vervolgstappen',
-  eigenaar,
 }: {
   stappen: Stap[]
   titel?: string
-  /** Bij wie geuploade documenten horen. Zonder: geen knoppen in de lijst. */
-  eigenaar?: { kandidaatId: string } | { userId: string }
 }) {
   const klaar = stappen.filter((s) => s.klaar).length
   return (
@@ -49,8 +47,8 @@ export function Vervolgstappen({
             <div className="min-w-0 text-sm">
               <p className={s.klaar ? 'text-gray-600' : 'font-medium'}>
                 {s.href && !s.klaar ? (
-                  <a href={s.href} className="hover:text-jr-blue">
-                    {s.titel}
+                  <a href={s.href} className="text-jr-link hover:underline">
+                    {s.titel} <span aria-hidden="true">→</span>
                   </a>
                 ) : (
                   s.titel
@@ -58,13 +56,6 @@ export function Vervolgstappen({
                 <span className="sr-only">{s.klaar ? ' (klaar)' : ' (nog te doen)'}</span>
               </p>
               {s.toelichting && <p className="text-xs text-gray-500">{s.toelichting}</p>}
-              {!s.klaar && eigenaar && s.actie?.soort === 'document' && (
-                <ActionForm action={stapDocument} submitLabel="Uploaden" submitClassName={KLEIN} className="mt-1.5 flex flex-wrap items-center gap-2" knopInRij>
-                  {'kandidaatId' in eigenaar ? <input type="hidden" name="kandidaatId" value={eigenaar.kandidaatId} /> : <input type="hidden" name="userId" value={eigenaar.userId} />}
-                  <input type="hidden" name="soort" value={s.actie.kind} />
-                  <input type="file" name="bestand" accept="application/pdf,image/jpeg,image/png" required className="max-w-[16rem] text-xs" aria-label={`${s.titel} uploaden`} />
-                </ActionForm>
-              )}
               {!s.klaar && s.actie?.soort === 'handboek' && (
                 <ActionForm action={handboekOntvangen} submitLabel="Vastleggen" submitClassName={KLEIN} className="mt-1.5 flex flex-wrap items-center gap-2" knopInRij>
                   <input type="hidden" name="contractId" value={s.actie.contractId} />

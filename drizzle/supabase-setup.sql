@@ -3494,3 +3494,22 @@ BEGIN
   END IF;
 END $jr_0042_standaardteksten$;
 
+-- ---------------------------------------------------------------------------
+-- 0043_loonheffingsformulier
+-- ---------------------------------------------------------------------------
+
+DO $jr_0043_loonheffingsformulier$
+BEGIN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = '8f496686dafdc30ae40489f62e22afc2b3fe16438fb7f692ddf191b8f54de07f') THEN
+    RAISE NOTICE 'Overgeslagen: 0043_loonheffingsformulier stond er al.';
+  ELSE
+    ALTER TABLE "company_documents" DROP CONSTRAINT "company_document_kind_valid";
+
+    ALTER TABLE "company_documents" ADD CONSTRAINT "company_document_kind_valid" CHECK ("company_documents"."kind" IN ('personeelshandboek', 'loonheffingsformulier'));
+
+    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+    VALUES ('8f496686dafdc30ae40489f62e22afc2b3fe16438fb7f692ddf191b8f54de07f', 1791548327684);
+    RAISE NOTICE 'Toegepast: 0043_loonheffingsformulier.';
+  END IF;
+END $jr_0043_loonheffingsformulier$;
+

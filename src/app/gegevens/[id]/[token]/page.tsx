@@ -3,7 +3,7 @@ import { gegevensViaLink, getGegevens } from '@/lib/persoonsgegevens'
 import { formatDateInput } from '@/lib/dates'
 import { Logo } from '@/components/Logo'
 import { GegevensFormulier } from '../../GegevensFormulier'
-import { merkTekst } from '@/lib/bedrijf'
+import { merkTekst, huidigBedrijfsdocument, handboekPad } from '@/lib/bedrijf'
 
 export const metadata: Metadata = { title: 'Je gegevens voor het contract · James Robinson', robots: { index: false, follow: false } }
 export const dynamic = 'force-dynamic'
@@ -18,6 +18,7 @@ export const dynamic = 'force-dynamic'
  */
 export default async function GegevensPagina({ params }: { params: Promise<{ id: string; token: string }> }) {
   const merk = await merkTekst()
+  const loonheffing = await huidigBedrijfsdocument('loonheffingsformulier').catch(() => null)
   const { id, token } = await params
   const r = await gegevensViaLink(id, token)
   const g = r ? await getGegevens(r.candidateId ? { candidateId: r.candidateId } : { userId: r.userId! }) : null
@@ -43,6 +44,7 @@ export default async function GegevensPagina({ params }: { params: Promise<{ id:
               </p>
             </header>
             <GegevensFormulier
+              formulierLink={loonheffing ? handboekPad(loonheffing) : null}
               id={id}
               token={token}
               voornaam={r.voornaam}

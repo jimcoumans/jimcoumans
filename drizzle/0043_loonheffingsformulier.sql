@@ -1,0 +1,2 @@
+ALTER TABLE "company_documents" DROP CONSTRAINT "company_document_kind_valid";--> statement-breakpoint
+ALTER TABLE "company_documents" ADD CONSTRAINT "company_document_kind_valid" CHECK ("company_documents"."kind" IN ('personeelshandboek', 'loonheffingsformulier'));

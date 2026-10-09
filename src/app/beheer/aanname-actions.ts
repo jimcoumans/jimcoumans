@@ -12,6 +12,8 @@ import {
   voegDocumentToe,
   slaGegevensOp,
   markeerDoorgegeven,
+  werkIbanBij,
+  wisDocument,
   GegevensError,
   DOCUMENT_LABELS,
   type DocumentSoort,
@@ -117,7 +119,7 @@ export async function contractGetekend(formData: FormData): Promise<ActionResult
     },
     [
       `/beheer/contracten/${contractId}`,
-      ...(contract.candidateId ? [`/beheer/werving/kandidaten/${contract.candidateId}`] : []),
+      ...(contract.candidateId ? [`/beheer/werving/kandidaten/${contract.candidateId}`, `/beheer/werving/kandidaten/${contract.candidateId}/indiensttreding`] : []),
       ...(contract.userId ? [`/beheer/medewerkers/${contract.userId}`] : []),
     ],
   )
@@ -132,61 +134,48 @@ export async function handboekOntvangen(formData: FormData): Promise<ActionResul
   const op = datum(formData, 'op') ?? new Date()
   return veilig(() => markeerHandboekOntvangen(contractId, op), [
     `/beheer/contracten/${contractId}`,
-    ...(contract.candidateId ? [`/beheer/werving/kandidaten/${contract.candidateId}`] : []),
+    ...(contract.candidateId ? [`/beheer/werving/kandidaten/${contract.candidateId}`, `/beheer/werving/kandidaten/${contract.candidateId}/indiensttreding`] : []),
     ...(contract.userId ? [`/beheer/medewerkers/${contract.userId}`] : []),
   ])
 }
 
-/**
- * Een document uploaden vanuit de vervolgstappen: de getekende AVG-verklaring,
- * een kopie ID of de loonheffingsverklaring. Het gaat naar de persoonsgegevens
- * van de kandidaat of de collega, versleuteld.
- */
-export async function stapDocument(formData: FormData): Promise<ActionResult> {
-  const gebruiker = await alsBeheerder()
-  if (!gebruiker) return GEEN_RECHT
-  const kandidaatId = tekst(formData, 'kandidaatId') || null
-  const userId = tekst(formData, 'userId') || null
-  if (!kandidaatId && !userId) return { ok: false, error: 'Onbekend bij wie dit hoort.' }
-  const bestand = await bestandUit(formData, 'bestand')
-  if (!bestand) return { ok: false, error: 'Kies een bestand.' }
-  const soort = tekst(formData, 'soort')
-  const kind: DocumentSoort = soort in DOCUMENT_LABELS ? (soort as DocumentSoort) : 'overig'
-  return veilig(
-    async () => {
-      const r = userId ? await zorgVoorGegevensVanCollega(userId) : await zorgVoorGegevens(kandidaatId!)
-      await voegDocumentToe(r.id, { kind, ...bestand }, gebruiker.id)
-    },
-    [...(kandidaatId ? [`/beheer/werving/kandidaten/${kandidaatId}`] : []), ...(userId ? [`/beheer/medewerkers/${userId}`] : []), '/beheer/contracten'],
+/* --- Het dossier: persoonsgegevens en documenten ------------------------- */
+
+/* Een set acties voor een kandidaat en een collega: het formulier stuurt
+   kandidaatId of userId mee. Zo werkt het dossierblok overal hetzelfde. */
+
+type Van = { kandidaatId: string } | { userId: string }
+
+function vanUit(formData: FormData): Van | null {
+  const userId = tekst(formData, 'userId')
+  if (userId) return { userId }
+  const kandidaatId = tekst(formData, 'kandidaatId')
+  return kandidaatId ? { kandidaatId } : null
+}
+
+const ONBEKEND: ActionResult = { ok: false, error: 'Onbekend bij wie dit hoort.' }
+
+const recordVan = (v: Van) => ('userId' in v ? zorgVoorGegevensVanCollega(v.userId) : zorgVoorGegevens(v.kandidaatId))
+
+async function inDossier(v: Van, fn: (recordId: string) => Promise<void>): Promise<ActionResult> {
+  const r = await veilig(
+    async () => fn((await recordVan(v)).id),
+    'userId' in v ? [`/beheer/medewerkers/${v.userId}`] : [`/beheer/werving/kandidaten/${v.kandidaatId}`, `/beheer/werving/kandidaten/${v.kandidaatId}/indiensttreding`],
   )
+  // Een collega die via werving kwam, staat ook nog bij de kandidaat: die pagina's mee verversen.
+  if (r.ok) {
+    revalidatePath('/beheer/werving/kandidaten/[id]', 'page')
+    revalidatePath('/beheer/werving/kandidaten/[id]/indiensttreding', 'page')
+  }
+  return r
 }
 
-/* --- Persoonsgegevens van een collega ------------------------------------- */
-
-const collegaPad = (id: string) => `/beheer/medewerkers/${id}`
-
-export async function collegaDocument(formData: FormData): Promise<ActionResult> {
-  const gebruiker = await alsBeheerder()
-  if (!gebruiker) return GEEN_RECHT
-  const userId = tekst(formData, 'userId')
-  if (!userId) return { ok: false, error: 'Onbekende collega.' }
-  const bestand = await bestandUit(formData, 'bestand')
-  if (!bestand) return { ok: false, error: 'Kies een bestand.' }
-  const soort = tekst(formData, 'soort')
-  const kind: DocumentSoort = soort in DOCUMENT_LABELS ? (soort as DocumentSoort) : 'overig'
-  return veilig(async () => {
-    const r = await zorgVoorGegevensVanCollega(userId)
-    await voegDocumentToe(r.id, { kind, ...bestand }, gebruiker.id)
-  }, [collegaPad(userId)])
-}
-
-export async function collegaGegevensOpslaan(formData: FormData): Promise<ActionResult> {
+export async function dossierGegevensOpslaan(formData: FormData): Promise<ActionResult> {
   if (!(await alsBeheerder())) return GEEN_RECHT
-  const userId = tekst(formData, 'userId')
-  if (!userId) return { ok: false, error: 'Onbekende collega.' }
-  return veilig(async () => {
-    const r = await zorgVoorGegevensVanCollega(userId)
-    await slaGegevensOp(r.id, {
+  const v = vanUit(formData)
+  if (!v) return ONBEKEND
+  return inDossier(v, (id) =>
+    slaGegevensOp(id, {
       officialFirstNames: tekst(formData, 'officieleVoornamen'),
       infix: tekst(formData, 'tussenvoegsel'),
       lastName: tekst(formData, 'achternaam'),
@@ -197,17 +186,44 @@ export async function collegaGegevensOpslaan(formData: FormData): Promise<Action
       city: tekst(formData, 'woonplaats'),
       iban: tekst(formData, 'iban'),
       accountHolder: tekst(formData, 'tenaamstelling'),
-    })
-  }, [collegaPad(userId)])
+    }),
+  )
 }
 
-export async function collegaDoorgegeven(formData: FormData): Promise<ActionResult> {
+/** Alleen het IBAN, voor de regel bij de getekende stukken. */
+export async function dossierIban(formData: FormData): Promise<ActionResult> {
+  if (!(await alsBeheerder())) return GEEN_RECHT
+  const v = vanUit(formData)
+  if (!v) return ONBEKEND
+  const iban = tekst(formData, 'iban')
+  if (!iban) return { ok: false, error: 'Vul het IBAN in.' }
+  return inDossier(v, (id) => werkIbanBij(id, iban, tekst(formData, 'tenaamstelling') || null))
+}
+
+export async function dossierDocument(formData: FormData): Promise<ActionResult> {
   const gebruiker = await alsBeheerder()
   if (!gebruiker) return GEEN_RECHT
-  const userId = tekst(formData, 'userId')
-  if (!userId) return { ok: false, error: 'Onbekende collega.' }
-  return veilig(async () => {
-    const r = await zorgVoorGegevensVanCollega(userId)
-    await markeerDoorgegeven(r.id, gebruiker.id, tekst(formData, 'terug') !== '1')
-  }, [collegaPad(userId)])
+  const v = vanUit(formData)
+  if (!v) return ONBEKEND
+  const bestand = await bestandUit(formData, 'bestand')
+  if (!bestand) return { ok: false, error: 'Kies eerst een bestand.' }
+  const soort = tekst(formData, 'soort')
+  const kind: DocumentSoort = soort in DOCUMENT_LABELS ? (soort as DocumentSoort) : 'overig'
+  return inDossier(v, (id) => voegDocumentToe(id, { kind, ...bestand }, gebruiker.id))
+}
+
+export async function dossierDocumentWissen(formData: FormData): Promise<ActionResult> {
+  if (!(await alsBeheerder())) return GEEN_RECHT
+  const v = vanUit(formData)
+  if (!v) return ONBEKEND
+  const documentId = tekst(formData, 'documentId')
+  return inDossier(v, (id) => wisDocument(documentId, id))
+}
+
+export async function dossierDoorgegeven(formData: FormData): Promise<ActionResult> {
+  const gebruiker = await alsBeheerder()
+  if (!gebruiker) return GEEN_RECHT
+  const v = vanUit(formData)
+  if (!v) return ONBEKEND
+  return inDossier(v, (id) => markeerDoorgegeven(id, gebruiker.id, tekst(formData, 'terug') !== '1'))
 }
