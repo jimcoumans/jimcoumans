@@ -23,6 +23,11 @@ import {
   Bedrijfsmiddelen,
 } from '@/components/Personeelsdossier'
 import { Avatar } from '@/components/Avatar'
+import { CollegaGegevens } from '@/components/CollegaGegevens'
+import { Vervolgstappen } from '@/components/Vervolgstappen'
+import { vervolgstappen } from '@/lib/aanname'
+import { getGegevens, leesIban } from '@/lib/persoonsgegevens'
+import { heeftSleutel } from '@/lib/versleuteling'
 import { AfbeeldingKiezer } from '@/components/AfbeeldingKiezer'
 import { heeftWachtwoord } from '@/lib/wachtwoord'
 import {
@@ -39,9 +44,12 @@ import {
  */
 export default async function MedewerkerPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>
+  searchParams: Promise<{ welkom?: string }>
 }) {
+  const { welkom } = await searchParams
   const user = await getSessionUser()
   if (!user) redirect('/login')
   if (user.role !== 'staff' && user.role !== 'admin') redirect('/')
@@ -70,6 +78,23 @@ export default async function MedewerkerPage({
         listMiddelen(lid.id),
       ])
     : null
+
+  /* Persoonsgegevens en de vervolgstappen van een nieuwe collega: alleen voor
+     een beheerder. De stappen tonen we de eerste drie maanden na de start,
+     of zolang er nog iets openstaat. */
+  const persoonlijk = isBeheerder ? await getGegevens({ userId: lid.id }) : null
+  let iban: string | null = null
+  let ibanFout = false
+  if (persoonlijk) {
+    try {
+      iban = leesIban(persoonlijk.record)
+    } catch {
+      ibanFout = true
+    }
+  }
+  const stappen = isBeheerder ? await vervolgstappen({ userId: lid.id }) : []
+  const nieuw = lid.startedOn !== null && lid.startedOn.getTime() > Date.now() - 90 * 24 * 60 * 60 * 1000
+  const toonStappen = isBeheerder && (nieuw || welkom === '1') && stappen.some((st) => !st.klaar)
 
   const uren = formatContractUren(lid.contractHoursPerWeekQuarters)
   const doelCents = lid.monthlyTargetCents
@@ -114,6 +139,18 @@ export default async function MedewerkerPage({
           </a>
         </p>
       </div>
+
+      {isBeheerder && welkom === '1' && (
+        <div className="border-jr-green/30 bg-jr-green/10 mb-5 rounded-xl border p-4 text-sm text-[#1d7a36]">
+          In dienst gezet. Account, contract, salaris en persoonsgegevens staan hieronder. Hij logt in via de inlogpagina met {lid.email}.
+        </div>
+      )}
+
+      {toonStappen && (
+        <div className="mb-6">
+          <Vervolgstappen stappen={stappen} titel="Onboarding" />
+        </div>
+      )}
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
         {/* ---------------------------------------------------------------
@@ -484,6 +521,8 @@ export default async function MedewerkerPage({
             />
             <Bedrijfsmiddelen userId={lid.id} middelen={dossierGegevens[4]} />
           </div>
+
+          <CollegaGegevens userId={lid.id} gegevens={persoonlijk} iban={iban} ibanFout={ibanFout} sleutel={heeftSleutel()} />
 
           <Dossier userId={lid.id} regels={dossierGegevens[3]} />
         </div>

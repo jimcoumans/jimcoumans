@@ -542,6 +542,7 @@ export async function maakDefinitief(
     await tx.insert(salaryRecords).values({
       userId,
       grossMonthlyCents: contract.grossMonthlyCents,
+      opAllowanceCents: contract.opAllowanceCents,
       basedOnHoursQuarters: contract.hoursWeekQuarters,
       holidayAllowancePercent: Math.round(contract.holidayAllowanceBp / 100),
       effectiveFrom: contract.startedOn,

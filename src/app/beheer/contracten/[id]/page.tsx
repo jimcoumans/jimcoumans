@@ -1,11 +1,12 @@
 import { redirect, notFound } from 'next/navigation'
 import { getSessionUser } from '@/lib/auth'
 import { AppShell } from '@/components/AppShell'
-import { ActionForm, Select } from '@/components/ActionForm'
+import { ActionForm, Field, Select } from '@/components/ActionForm'
+import { contractGetekend } from '../../aanname-actions'
 import { getContract, getWerkgever, ketenVoor } from '@/lib/contracten'
 import { listTeam } from '@/lib/team'
 import { contractDefinitief, contractAangezegd } from '../../contract-actions'
-import { formatDate, formatDateLong } from '@/lib/dates'
+import { formatDate, formatDateInput, formatDateLong } from '@/lib/dates'
 import { formatCents } from '@/lib/money'
 
 export const maxDuration = 26
@@ -18,10 +19,9 @@ export const maxDuration = 26
  * partijen; die verandert niet omdat iemand later een zin in een sjabloon
  * heeft bijgewerkt.
  *
- * Er is geen knop "download als PDF". De pagina is zo opgemaakt dat hij
- * netjes afdrukt, en in elke browser zit "opslaan als PDF" in het
- * afdrukvenster. Een eigen PDF-generator zou een zwaar onderdeel toevoegen
- * aan een omgeving die al traag is, voor iets wat de browser al kan.
+ * De pdf om te versturen en te laten tekenen komt van /api/contracten/[id]/pdf.
+ * De pagina drukt daarnaast netjes af, voor wie liever het afdrukvenster
+ * gebruikt.
  */
 export default async function ContractPagina({
   params,
@@ -37,7 +37,7 @@ export default async function ContractPagina({
   if (!contract) notFound()
 
   const werkgever = await getWerkgever()
-  const team = contract.soort === 'proforma' ? await listTeam() : []
+  const team = contract.soort === 'proforma' && !contract.candidateId ? await listTeam() : []
   const keten =
     contract.userId && contract.contractType === 'bepaalde_tijd'
       ? await ketenVoor(contract.userId, contract.durationMonths)
@@ -137,7 +137,46 @@ export default async function ContractPagina({
           </div>
         )}
 
-        {contract.soort === 'proforma' && (
+        <div className="mb-5 flex flex-wrap items-center gap-3 rounded-xl bg-white p-4 text-sm shadow-sm">
+          <a href={`/api/contracten/${contract.id}/pdf`} className="bg-jr-btn hover:bg-jr-btnhover rounded-full px-4 py-2 text-sm font-medium text-white">
+            Download pdf
+          </a>
+          {contract.soort === 'definitief' &&
+            (contract.signedOn ? (
+              <span className="bg-jr-green/15 rounded-full px-3 py-1 text-xs text-[#1d7a36]">Getekend op {formatDateLong(contract.signedOn)}</span>
+            ) : (
+              <span className="text-gray-600">Nog niet getekend.</span>
+            ))}
+          {contract.candidateId && !contract.userId && (
+            <a href={`/beheer/werving/kandidaten/${contract.candidateId}`} className="text-jr-link hover:underline">
+              {contract.soort === 'definitief' ? 'In dienst nemen gaat via de kandidaat' : 'Naar de kandidaat'} &rarr;
+            </a>
+          )}
+          {contract.userId && (
+            <a href={`/beheer/medewerkers/${contract.userId}`} className="text-jr-link hover:underline">
+              Naar het dossier &rarr;
+            </a>
+          )}
+        </div>
+
+        {contract.soort === 'definitief' && !contract.signedOn && (
+          <section className="mb-5 rounded-xl bg-white p-6 shadow-sm">
+            <h2 className="mb-1 text-base">Getekend vastleggen</h2>
+            <p className="mb-3 text-xs text-gray-600">De datum waarop beide partijen getekend hebben, en het getekende exemplaar. Dat wordt versleuteld bewaard bij de persoonsgegevens.</p>
+            <ActionForm action={contractGetekend} submitLabel="Vastleggen" className="grid items-end gap-3 sm:grid-cols-[1fr_1.6fr_auto]" knopInRij>
+              <input type="hidden" name="contractId" value={contract.id} />
+              <Field label="Getekend op" name="getekendOp" type="date" required defaultValue={formatDateInput(new Date())} />
+              <div>
+                <label className="text-jr-text mb-1.5 block text-[13px] font-medium" htmlFor="getekend-bestand">
+                  Getekend exemplaar <span className="font-normal text-gray-500">(optioneel)</span>
+                </label>
+                <input id="getekend-bestand" type="file" name="bestand" accept="application/pdf,image/jpeg,image/png" className="block w-full text-sm" />
+              </div>
+            </ActionForm>
+          </section>
+        )}
+
+        {contract.soort === 'proforma' && !contract.candidateId && (
           <section className="mb-5 rounded-xl bg-white p-6 shadow-sm">
             <h2 className="mb-1 text-base">Definitief maken</h2>
             <p className="mb-3 text-xs text-gray-600">

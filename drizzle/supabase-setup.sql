@@ -3164,3 +3164,42 @@ BEGIN
   END IF;
 END $jr_0038_werving_contractfase$;
 
+-- ---------------------------------------------------------------------------
+-- 0039_hr_aanname
+-- ---------------------------------------------------------------------------
+
+DO $jr_0039_hr_aanname$
+BEGIN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = '8f904a558095f6e824d89cce4ae7ee5c073131977a872edb779a90ee182a97b1') THEN
+    RAISE NOTICE 'Overgeslagen: 0039_hr_aanname stond er al.';
+  ELSE
+    -- Aannemen in één stap.
+    --
+    -- 1. Een getekend contract is een eigen documentsoort bij de persoonsgegevens,
+    --    versleuteld net als de kopie ID.
+    -- 2. De OP-toeslag krijgt een eigen veld in de salarishistorie. Zonder dat veld
+    --    viel hij weg zodra een contract in het dossier kwam, en rekende het
+    --    portaal elke collega zonder pensioenregeling tien procent te goedkoop.
+    ALTER TYPE "public"."personal_document_kind" ADD VALUE IF NOT EXISTS 'contract';
+
+    ALTER TABLE "salary_records" ADD COLUMN "op_allowance_cents" integer DEFAULT 0 NOT NULL;
+
+    ALTER TABLE "salary_records" ADD CONSTRAINT "salary_op_allowance_valid" CHECK ("salary_records"."op_allowance_cents" >= 0);
+
+    -- Salarisregels die uit een contract zijn ontstaan, krijgen de OP-toeslag van
+    -- dat contract alsnog mee.
+    UPDATE "salary_records" sr
+    SET "op_allowance_cents" = gc."op_allowance_cents"
+    FROM "generated_contracts" gc
+    WHERE gc."user_id" = sr."user_id"
+      AND gc."soort" = 'definitief'
+      AND gc."started_on" = sr."effective_from"
+      AND gc."gross_monthly_cents" = sr."gross_monthly_cents"
+      AND sr."op_allowance_cents" = 0;
+
+    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+    VALUES ('8f904a558095f6e824d89cce4ae7ee5c073131977a872edb779a90ee182a97b1', 1791528410773);
+    RAISE NOTICE 'Toegepast: 0039_hr_aanname.';
+  END IF;
+END $jr_0039_hr_aanname$;
+

@@ -124,6 +124,7 @@ export async function huidigSalaris(
 export type NieuwSalaris = {
   userId: string
   grossMonthlyCents: number
+  opAllowanceCents?: number
   soort?: SalaryRecord['soort']
   employerCostPercent?: number
   basedOnHoursQuarters: number | null
@@ -143,6 +144,7 @@ export async function addSalaris(input: NieuwSalaris): Promise<SalaryRecord> {
     .values({
       userId: input.userId,
       grossMonthlyCents: input.grossMonthlyCents,
+      opAllowanceCents: input.opAllowanceCents ?? 0,
       soort: input.soort ?? 'loondienst',
       basedOnHoursQuarters: input.basedOnHoursQuarters,
       holidayAllowancePercent: input.holidayAllowancePercent,

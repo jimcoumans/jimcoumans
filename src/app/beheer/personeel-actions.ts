@@ -139,6 +139,12 @@ export async function nieuwSalaris(formData: FormData): Promise<ActionResult> {
   const ingang = datum(formData, 'ingangsdatum')
   if (ingang === null) return { ok: false, error: 'Vul een ingangsdatum in.' }
 
+  const opTekst = tekst(formData, 'opToeslag')
+  const opToeslag = opTekst === '' ? 0 : parseAmountToCents(opTekst)
+  if (opToeslag === null || opToeslag < 0) {
+    return { ok: false, error: 'De OP-toeslag is niet te lezen. Schrijf hem als 209,56, of laat hem leeg.' }
+  }
+
   const soort = tekst(formData, 'soort') === 'management_fee' ? 'management_fee' : 'loondienst'
   const isFee = soort === 'management_fee'
 
@@ -170,6 +176,7 @@ export async function nieuwSalaris(formData: FormData): Promise<ActionResult> {
     await addSalaris({
       userId,
       grossMonthlyCents: bedrag,
+      opAllowanceCents: isFee ? 0 : opToeslag,
       soort,
       basedOnHoursQuarters: urenQuarters,
       holidayAllowancePercent: vakantiegeld,

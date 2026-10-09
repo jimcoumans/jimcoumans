@@ -2027,6 +2027,16 @@ export const salaryRecords = pgTable(
     /** Vakantiegeld in procenten; wettelijk minimaal 8. Nul bij een fee. */
     holidayAllowancePercent: integer('holiday_allowance_percent').notNull().default(8),
     /**
+     * OP-toeslag per maand in centen: compensatie omdat er geen
+     * pensioenregeling is. Wordt maandelijks uitbetaald bovenop het bruto,
+     * zonder vakantiegeld erover.
+     *
+     * Een eigen veld en niet opgeteld bij het bruto: dan zou het vakantiegeld
+     * er ten onrechte overheen worden gerekend, en zou het bedrag niet meer
+     * overeenkomen met de schaal waar het uit komt.
+     */
+    opAllowanceCents: integer('op_allowance_cents').notNull().default(0),
+    /**
      * Werkgeverslasten in procenten bovenop het brutoloon inclusief
      * vakantiegeld: sociale premies, pensioen, verzekeringen.
      *
@@ -2051,6 +2061,7 @@ export const salaryRecords = pgTable(
     // willekeurig kiest.
     uniqueIndex('salary_records_user_date_idx').on(t.userId, t.effectiveFrom),
     check('salary_positive', sql`${t.grossMonthlyCents} > 0`),
+    check('salary_op_allowance_valid', sql`${t.opAllowanceCents} >= 0`),
     check(
       'salary_holiday_allowance_valid',
       sql`${t.holidayAllowancePercent} >= 0 AND ${t.holidayAllowancePercent} <= 100`,
@@ -2709,7 +2720,7 @@ export const candidateNotes = pgTable(
    sleutel in GEGEVENS_SLEUTEL). Wie een document opent, wordt vastgelegd.
    ------------------------------------------------------------------------- */
 
-export const personalDocumentKindEnum = pgEnum('personal_document_kind', ['id_kopie', 'loonheffing', 'overig'])
+export const personalDocumentKindEnum = pgEnum('personal_document_kind', ['id_kopie', 'loonheffing', 'overig', 'contract'])
 
 export const personalRecords = pgTable(
   'personal_records',
