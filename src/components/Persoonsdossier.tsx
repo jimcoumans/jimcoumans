@@ -1,4 +1,5 @@
 import { ActionForm, Field, Select } from './ActionForm'
+import { BestandVeld } from './BestandVeld'
 import { dossierDocument, dossierDocumentWissen, dossierDoorgegeven, dossierGegevensOpslaan, dossierIban } from '@/app/beheer/aanname-actions'
 import { dossierPunten, GESLACHTEN, type DocumentInfo, type DocumentSoort, type Gegevens } from '@/lib/persoonsgegevens'
 import { formatDate, formatDateInput, formatDateLong } from '@/lib/dates'
@@ -123,7 +124,7 @@ function Uploaden({ van, kind, titel, heeftAl }: { van: DossierVan; kind: Docume
     >
       <Verborgen van={van} />
       <input type="hidden" name="soort" value={kind} />
-      <input type="file" name="bestand" required accept="application/pdf,image/jpeg,image/png" className="max-w-[15rem] text-xs" aria-label={`${titel} uploaden`} />
+      <BestandVeld label={`${titel} uploaden`} />
     </ActionForm>
   )
 }
