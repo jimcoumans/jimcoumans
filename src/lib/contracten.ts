@@ -19,7 +19,7 @@ import type {
   JobProfile,
   GeneratedContract,
 } from '@/db/schema'
-import { werkgeverKop, type Bedrijf, type WerkgeverKop } from './bedrijf'
+import { werkgeverKop, standaardTekenaars, type Bedrijf, type WerkgeverKop } from './bedrijf'
 import { REGELINGEN, verzekeringenZin } from './sjablonen'
 import { vulIn, pasVoorwaardenToe } from './invullen'
 import { formatCents } from './money'
@@ -290,7 +290,7 @@ export function stelContractOp(
     werkgever_adres: hoofdvestiging.addressLine,
     werkgever_postcode: hoofdvestiging.postalCode,
     werkgever_vestigingsplaats: hoofdvestiging.city,
-    werkgever_ondertekenaars: invoer.ondertekenaars && invoer.ondertekenaars.length > 0 ? namenZin(invoer.ondertekenaars) : werkgever.signatories,
+    werkgever_ondertekenaars: invoer.ondertekenaars && invoer.ondertekenaars.length > 0 ? namenZin(invoer.ondertekenaars) : namenZin(standaardTekenaars(werkgever)),
     werkplek_adres: werkplek.addressLine,
     werkplek_postcode: werkplek.postalCode,
     werkplek_plaats: werkplek.city,
@@ -477,20 +477,28 @@ export function namenZin(namen: string[]): string {
  */
 export function ondertekenaarsVan(c: Pick<GeneratedContract, 'employerSigners'>, werkgever: Pick<EmployerSettings, 'signatories'> | null): string[] {
   if (c.employerSigners?.trim()) return c.employerSigners.split('\n').map((x) => x.trim()).filter(Boolean)
-  return (werkgever?.signatories ?? '')
-    .split(/,| en /)
-    .map((x) => x.trim())
-    .filter(Boolean)
+  return standaardTekenaars(werkgever)
+}
+
+export type MogelijkeOndertekenaar = {
+  id: string
+  naam: string
+  /** Eigenaar van het bedrijf: alleen eigenaren tekenen standaard. */
+  eigenaar: boolean
+  /** Staat bij de bedrijfsgegevens als standaard-ondertekenaar: aangevinkt bij een nieuw contract. */
+  standaard: boolean
+  /** Staat als standaard-ondertekenaar ingevuld, maar heeft geen account in het portaal. */
+  zonderAccount?: boolean
 }
 
 /**
  * Wie er namens de werkgever kan tekenen: de collega's, eigenaren eerst.
  *
- * Wie bij de werkgevergegevens als ondertekenaar staat maar (nog) geen account
- * heeft, staat er ook bij en is aangevinkt: anders valt een eigenaar zonder
- * account stilletjes van het contract af.
+ * Wie standaard tekent, staat bij de bedrijfsgegevens en is bij een nieuw
+ * contract aangevinkt. Zo iemand zonder account staat er ook bij, zodat een
+ * eigenaar niet stilletjes van het contract afvalt.
  */
-export async function listMogelijkeOndertekenaars(): Promise<{ id: string; naam: string; eigenaar: boolean }[]> {
+export async function listMogelijkeOndertekenaars(): Promise<MogelijkeOndertekenaar[]> {
   const [rijen, werkgever] = await Promise.all([
     db
       .select({ id: users.id, name: users.name, email: users.email, isOwner: users.isOwner, firstName: users.firstName, infix: users.infix, lastName: users.lastName })
@@ -498,16 +506,17 @@ export async function listMogelijkeOndertekenaars(): Promise<{ id: string; naam:
       .where(and(isNull(users.organizationId), isNull(users.disabledAt), isNull(users.endedOn), or(eq(users.role, 'admin'), eq(users.role, 'staff')))),
     getWerkgever(),
   ])
-  const lijst = rijen.map((r) => ({
-    id: r.id,
-    naam: [r.firstName, r.infix, r.lastName].filter(Boolean).join(' ') || r.name || r.email,
-    eigenaar: r.isOwner,
-  }))
+  const standaard = standaardTekenaars(werkgever)
+  const isStandaard = (naam: string) => standaard.some((n) => n.toLowerCase() === naam.toLowerCase())
+  const lijst: MogelijkeOndertekenaar[] = rijen.map((r) => {
+    const naam = [r.firstName, r.infix, r.lastName].filter(Boolean).join(' ') || r.name || r.email
+    return { id: r.id, naam, eigenaar: r.isOwner, standaard: isStandaard(naam) }
+  })
   const bekend = new Set(lijst.map((x) => x.naam.toLowerCase()))
-  for (const naam of ondertekenaarsVan({ employerSigners: null }, werkgever)) {
-    if (!bekend.has(naam.toLowerCase())) lijst.push({ id: `werkgever:${naam}`, naam, eigenaar: true })
+  for (const naam of standaard) {
+    if (!bekend.has(naam.toLowerCase())) lijst.push({ id: `werkgever:${naam}`, naam, eigenaar: false, standaard: true, zonderAccount: true })
   }
-  return lijst.sort((a, b) => Number(b.eigenaar) - Number(a.eigenaar) || a.naam.localeCompare(b.naam, 'nl'))
+  return lijst.sort((a, b) => Number(b.standaard) - Number(a.standaard) || Number(b.eigenaar) - Number(a.eigenaar) || a.naam.localeCompare(b.naam, 'nl'))
 }
 
 /**

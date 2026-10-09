@@ -2,7 +2,7 @@ import { ActionForm, Check, Field, Select, TextArea } from '@/components/ActionF
 import { nieuwContract, contractWijzigen } from '@/app/beheer/contract-actions'
 import { formatDateInput } from '@/lib/dates'
 import type { CompanyLocation, JobProfile } from '@/db/schema'
-import type { ContractInvoer } from '@/lib/contracten'
+import type { ContractInvoer, MogelijkeOndertekenaar } from '@/lib/contracten'
 
 /* -------------------------------------------------------------------------
    Het contractformulier: hetzelfde bij een kandidaat, bij Contracten en bij
@@ -144,12 +144,16 @@ export function ContractFormulier({
   profielen: JobProfile[]
   /** De schalen uit het salarishuis; leeg als er geen is. */
   schalen: string[]
-  tekenaars: { id: string; naam: string; eigenaar: boolean }[]
+  tekenaars: MogelijkeOndertekenaar[]
   vestigingen: CompanyLocation[]
   kandidaten?: Keuze[]
   collegas?: Keuze[]
 }) {
-  const gekozen = (naam: string, eigenaar: boolean) => (start.ondertekenaars ? start.ondertekenaars.includes(naam) : eigenaar)
+  /* Bij een nieuw contract staat aan wie standaard tekent (bedrijfsgegevens);
+     is daar niemand gekozen, dan de eigenaren. Bij wijzigen: wie er tekende. */
+  const iemandStandaard = tekenaars.some((t) => t.standaard)
+  const gekozen = (t: MogelijkeOndertekenaar) =>
+    start.ondertekenaars ? start.ondertekenaars.includes(t.naam) : iemandStandaard ? t.standaard : t.eigenaar
   // Een ondertekenaar uit een oud contract die niet meer in de lijst staat, blijft zichtbaar.
   const extraTekenaars = (start.ondertekenaars ?? []).filter((n) => !tekenaars.some((t) => t.naam === n))
   const profiel = profielen.find((p) => p.id === start.functieprofiel)
@@ -298,13 +302,14 @@ export function ContractFormulier({
       <fieldset className="rounded-lg border border-gray-200 p-3">
         <legend className="text-jr-text px-1 text-[13px] font-medium">Wie tekent</legend>
         <input type="hidden" name="ondertekenaarsKeuze" value="1" />
-        <p className="mb-2 text-xs text-gray-600">Namens de werkgever. Eigenaren staan standaard aan. De werknemer tekent altijd mee, en iedereen parafeert elke pagina.</p>
+        <p className="mb-2 text-xs text-gray-600">Namens de werkgever. Aangevinkt staat wie bij Bedrijfsgegevens standaard tekent. De werknemer tekent altijd mee, en iedereen parafeert elke pagina.</p>
         <div className="grid gap-1.5 sm:grid-cols-2">
           {tekenaars.map((t) => (
             <label key={t.id} className="flex items-center gap-2 text-sm">
-              <input type="checkbox" name="ondertekenaar" value={t.naam} defaultChecked={gekozen(t.naam, t.eigenaar)} />
+              <input type="checkbox" name="ondertekenaar" value={t.naam} defaultChecked={gekozen(t)} />
               {t.naam}
               {t.eigenaar && <span className="text-xs text-gray-500">eigenaar</span>}
+              {t.zonderAccount && <span className="text-xs text-gray-500">geen account</span>}
             </label>
           ))}
           {extraTekenaars.map((n) => (

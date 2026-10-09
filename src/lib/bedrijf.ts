@@ -77,6 +77,36 @@ export async function merkTekst(): Promise<MerkTekst> {
   }
 }
 
+/**
+ * Wie er standaard namens de werkgever tekent, als losse namen. Bewaard als
+ * een naam per regel; een oudere waarde als "A en B" of "A, B" werkt ook.
+ */
+export function standaardTekenaars(w: Pick<EmployerSettings, 'signatories'> | null): string[] {
+  const bron = w?.signatories ?? ''
+  const delen = bron.includes('\n') ? bron.split('\n') : bron.split(/,| en /)
+  return delen.map((x) => x.trim()).filter(Boolean)
+}
+
+/**
+ * Iemand wordt eigenaar of is het niet meer: dan tekent die standaard mee,
+ * of niet meer. Zo staat een nieuwe eigenaar meteen aangevinkt bij een
+ * contract. De laatste die standaard tekent, blijft staan: zonder
+ * ondertekenaar kan er geen contract worden opgesteld.
+ */
+export async function zetStandaardTekenaar(naam: string, aan: boolean): Promise<void> {
+  const schoon = naam.trim()
+  if (!schoon) return
+  const [w] = await db.select().from(employerSettings).limit(1)
+  if (!w) return
+  const nu = standaardTekenaars(w)
+  const heeft = nu.some((n) => n.toLowerCase() === schoon.toLowerCase())
+  let nieuw = nu
+  if (aan && !heeft) nieuw = [...nu, schoon]
+  if (!aan && heeft) nieuw = nu.filter((n) => n.toLowerCase() !== schoon.toLowerCase())
+  if (nieuw === nu || nieuw.length === 0) return
+  await db.update(employerSettings).set({ signatories: nieuw.join('\n'), updatedAt: new Date() }).where(eq(employerSettings.id, w.id))
+}
+
 /** "James Robinson Performance Agency": de naam zoals we hem voeren. */
 export function merknaam(w: Pick<EmployerSettings, 'tradeName' | 'tagline'>): string {
   return [w.tradeName, w.tagline].filter((x) => x && x.trim()).join(' ')
@@ -105,7 +135,7 @@ export async function slaBedrijfOp(b: BedrijfInvoer): Promise<void> {
   const leeg: string[] = []
   if (!b.legalName.trim()) leeg.push('de juridische naam')
   if (!b.tradeName.trim()) leeg.push('de naam in de kop')
-  if (!b.signatories.trim()) leeg.push('wie er standaard tekent')
+  if (!b.signatories.trim()) leeg.push('wie er standaard tekent (vink minstens een eigenaar aan)')
   if (leeg.length > 0) throw new BedrijfError(`Vul ${leeg.join(', ')} in.`)
   if (b.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(b.email.trim())) throw new BedrijfError('Het e-mailadres klopt niet.')
   if (b.kvkNumber && !/^\d{8}$/.test(b.kvkNumber.replace(/\s/g, ''))) throw new BedrijfError('Een KvK-nummer heeft acht cijfers.')

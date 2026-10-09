@@ -58,7 +58,8 @@ export async function bedrijfOpslaan(formData: FormData): Promise<ActionResult> 
       email: tekst(formData, 'email'),
       phone: tekst(formData, 'telefoon'),
       website: tekst(formData, 'website'),
-      signatories: tekst(formData, 'ondertekenaars'),
+      // Een naam per regel: wie standaard tekent, aangevinkt uit de eigenaren.
+      signatories: [...new Set(formData.getAll('ondertekenaar').map((v) => String(v).trim()).filter(Boolean))].join('\n'),
     }),
   )
 }

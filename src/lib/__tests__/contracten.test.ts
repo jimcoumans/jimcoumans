@@ -21,6 +21,7 @@ import {
   generatedContracts,
   employmentContracts,
   salaryRecords,
+  employerSettings,
 } from '../../db/schema'
 import {
   vulIn,
@@ -622,12 +623,12 @@ test('een eigenaar staat bovenaan de mogelijke ondertekenaars en is aangevinkt',
   const c = lijst.find((x) => x.id === collega!.id)
   assert.equal(e?.eigenaar, true)
   assert.equal(c?.eigenaar, false)
-  const laatsteEigenaar = lijst.map((x) => x.eigenaar).lastIndexOf(true)
-  const eersteGeenEigenaar = lijst.map((x) => x.eigenaar).indexOf(false)
-  assert.ok(eersteGeenEigenaar === -1 || laatsteEigenaar < eersteGeenEigenaar, 'eigenaren eerst')
-  // Wie bij de werkgever als ondertekenaar staat, staat er altijd bij, ook zonder account.
+  // Wie standaard tekent, staat bovenaan en is aangevinkt, ook zonder account.
+  const laatsteStandaard = lijst.map((x) => x.standaard).lastIndexOf(true)
+  const eersteNiet = lijst.map((x) => x.standaard).indexOf(false)
+  assert.ok(eersteNiet === -1 || laatsteStandaard < eersteNiet, 'standaard-ondertekenaars eerst')
   for (const naam of ondertekenaarsVan({ employerSigners: null }, werkgever)) {
-    assert.ok(lijst.some((x) => x.naam === naam && x.eigenaar), `${naam} staat aangevinkt`)
+    assert.ok(lijst.some((x) => x.naam === naam && x.standaard), `${naam} staat aangevinkt`)
   }
 })
 
@@ -727,4 +728,27 @@ test('een opgesteld contract is te wijzigen tot het getekend is', async () => {
   const getekend = (await db.select().from(generatedContracts).where(eq(generatedContracts.id, c.id)))[0]!
   assert.ok(waaromNietWijzigen(getekend))
   await assert.rejects(wijzigContract(c.id, nieuw, stelContractOp(nieuw, sjabloon, context, managerProfiel), sjabloon, 'definitief', { kop: null, handboekId: null }), ContractError)
+})
+
+test('wie standaard tekent: een naam per regel, en de oude schrijfwijze werkt ook', async () => {
+  const { standaardTekenaars } = await import('../bedrijf')
+  assert.deepEqual(standaardTekenaars({ signatories: 'Jim Coumans\nJim Kikken' }), ['Jim Coumans', 'Jim Kikken'])
+  assert.deepEqual(standaardTekenaars({ signatories: 'Jim Coumans en Jim Kikken' }), ['Jim Coumans', 'Jim Kikken'])
+  assert.deepEqual(ondertekenaarsVan({ employerSigners: null }, { signatories: 'A\nB\nC' }), ['A', 'B', 'C'])
+  // In de begeleidende tekst leest het als een zin, niet als losse regels.
+  const ctx = { ...context, werkgever: { ...werkgever, signatories: 'Jim Coumans\nJim Kikken\nStan Doyen' } }
+  assert.ok(stelContractOp(voncken(), sjabloon, ctx, managerProfiel).intro.trimEnd().endsWith('Jim Coumans, Jim Kikken en Stan Doyen'))
+})
+
+test('een nieuwe eigenaar tekent standaard mee, wie geen eigenaar meer is niet', async () => {
+  const { zetStandaardTekenaar, standaardTekenaars } = await import('../bedrijf')
+  const voor = (await getWerkgever())!.signatories
+  try {
+    await zetStandaardTekenaar(`${merk} Stan Doyen`, true)
+    assert.ok(standaardTekenaars(await getWerkgever()).includes(`${merk} Stan Doyen`))
+    await zetStandaardTekenaar(`${merk} Stan Doyen`, false)
+    assert.ok(!standaardTekenaars(await getWerkgever()).includes(`${merk} Stan Doyen`))
+  } finally {
+    await db.update(employerSettings).set({ signatories: voor })
+  }
 })

@@ -3,8 +3,9 @@ import { getSessionUser } from '@/lib/auth'
 import { AppShell } from '@/components/AppShell'
 import { Paneel } from '@/components/Paneel'
 import { ActionForm, Check, Field, TextArea } from '@/components/ActionForm'
-import { getBedrijf, listVestigingen, listHandboeken, handboekPad, adresRegel, merknaam, LOGO_MAX_BYTES } from '@/lib/bedrijf'
+import { getBedrijf, standaardTekenaars, listVestigingen, listHandboeken, handboekPad, adresRegel, merknaam, LOGO_MAX_BYTES } from '@/lib/bedrijf'
 import { formatDate } from '@/lib/dates'
+import { listMogelijkeOndertekenaars, namenZin } from '@/lib/contracten'
 import type { CompanyLocation } from '@/db/schema'
 import {
   bedrijfOpslaan,
@@ -31,7 +32,14 @@ export default async function BedrijfPagina() {
   if (!user) redirect('/login')
   if (user.role !== 'admin') redirect('/beheer')
 
-  const [bedrijf, alleVestigingen, handboeken] = await Promise.all([getBedrijf(), listVestigingen({ inactief: true }), listHandboeken()])
+  const [bedrijf, alleVestigingen, handboeken, tekenaars] = await Promise.all([
+    getBedrijf(),
+    listVestigingen({ inactief: true }),
+    listHandboeken(),
+    listMogelijkeOndertekenaars(),
+  ])
+  // Alleen eigenaren kunnen standaard tekenen; wie er nu al staat zonder eigenaar te zijn, blijft zichtbaar om uit te vinken.
+  const eigenaren = tekenaars.filter((t) => t.eigenaar || t.standaard)
   const w = bedrijf?.werkgever ?? null
   const huidig = handboeken[0] ?? null
 
@@ -68,13 +76,26 @@ export default async function BedrijfPagina() {
                 <Field label="Telefoon" name="telefoon" defaultValue={w?.phone ?? ''} />
                 <Field label="Website" name="website" defaultValue={w?.website ?? ''} />
               </div>
-              <Field
-                label="Wie standaard tekent"
-                name="ondertekenaars"
-                required
-                defaultValue={w?.signatories ?? ''}
-                hint="Alleen als er bij een contract niemand gekozen is. Bij het opstellen kies je per contract; eigenaren staan dan standaard aan."
-              />
+              <fieldset className="rounded-lg border border-gray-200 p-3">
+                <legend className="text-jr-text px-1 text-[13px] font-medium">Wie standaard tekent</legend>
+                <p className="mb-2 text-xs text-gray-600">
+                  Alleen eigenaren. Wie je aanvinkt, staat bij een nieuw contract aangevinkt; per contract kun je dat nog aanpassen. Iemand eigenaar maken doe je
+                  bij Medewerkers; die tekent dan vanzelf standaard mee.
+                </p>
+                {eigenaren.length === 0 ? (
+                  <p className="text-jr-orange text-xs">Er staat nog niemand als eigenaar. Vink bij Medewerkers &ldquo;Eigenaar van James Robinson&rdquo; aan.</p>
+                ) : (
+                  <div className="grid gap-1.5 sm:grid-cols-2">
+                    {eigenaren.map((e) => (
+                      <label key={e.id} className="flex items-center gap-2 text-sm">
+                        <input type="checkbox" name="ondertekenaar" value={e.naam} defaultChecked={e.standaard} />
+                        {e.naam}
+                        {e.zonderAccount && <span className="text-xs text-gray-500">geen account</span>}
+                      </label>
+                    ))}
+                  </div>
+                )}
+              </fieldset>
             </ActionForm>
           </Paneel>
         </div>
@@ -85,7 +106,7 @@ export default async function BedrijfPagina() {
             <Regel label="KvK">{w.kvkNumber ?? <Leeg />}</Regel>
             <Regel label="Btw">{w.vatNumber ?? <Leeg />}</Regel>
             <Regel label="Contact">{[w.email, w.phone, w.website].filter(Boolean).join(' · ') || <Leeg />}</Regel>
-            <Regel label="Tekent standaard">{w.signatories}</Regel>
+            <Regel label="Tekent standaard">{namenZin(standaardTekenaars(w))}</Regel>
           </dl>
         ) : (
           <p className="text-sm text-gray-600">Nog niets ingevuld. Zonder bedrijfsgegevens kan er geen contract worden opgesteld.</p>
