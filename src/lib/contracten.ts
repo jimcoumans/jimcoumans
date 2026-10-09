@@ -96,6 +96,10 @@ export type ContractInvoer = {
   vakantietoeslagBp?: number
   vakantieUrenFulltime?: number
   vakantieUren?: number
+  /** Bruto per maand bij een volledige werkweek, uit het salarishuis. */
+  fulltimeMaandCents?: number | null
+  /** Wat een volledige werkweek is, in kwartieren: 4000 is 40 uur. */
+  fulltimeUrenKwartier?: number | null
   /** Krijgt deze medewerker het vrijetijdsbudget? */
   vrijetijdsbudget?: boolean
   /** Relatiebeding aan of uit. Leeg: wat het functieprofiel zegt. */
@@ -214,6 +218,12 @@ export function urenTekst(kwartieren: number): string {
   return Number.isInteger(uren) ? String(uren) : uren.toFixed(2).replace(/0$/, '').replace('.', ',')
 }
 
+/** "0,6": het deel van een volledige werkweek, zoals de salarisadministratie het schrijft. */
+export function deeltijdfactor(urenKwartier: number, fulltimeKwartier: number): string {
+  const f = Math.round((urenKwartier / fulltimeKwartier) * 10000) / 10000
+  return String(f).replace('.', ',')
+}
+
 /**
  * Stelt het contract samen.
  *
@@ -321,6 +331,9 @@ export function stelContractOp(
     vakantiedagen_fulltime: String(Math.round(vakantieUrenFulltime / 8)),
     vakantie_uren_fulltime: String(vakantieUrenFulltime),
     vakantie_uren: String(invoer.vakantieUren ?? vakantieUrenFulltime),
+    salaris_fulltime: invoer.fulltimeMaandCents ? formatCents(invoer.fulltimeMaandCents) : '',
+    uren_fulltime: invoer.fulltimeUrenKwartier ? urenTekst(invoer.fulltimeUrenKwartier) : '',
+    deeltijdfactor: invoer.fulltimeUrenKwartier ? deeltijdfactor(invoer.urenPerWeekKwartier, invoer.fulltimeUrenKwartier) : '',
 
     op_toeslag_percent: String(
       invoer.brutoMaandCents > 0 ? Math.round((opToeslag / invoer.brutoMaandCents) * 100) : 0,
@@ -347,6 +360,7 @@ export function stelContractOp(
     vrijetijdsbudget: invoer.vrijetijdsbudget === true,
     extra_afspraken: extraAfspraken !== '',
     schaal: !!invoer.schaalNaam && !!invoer.trede,
+    deeltijd: !!invoer.fulltimeMaandCents && !!invoer.fulltimeUrenKwartier && invoer.urenPerWeekKwartier < invoer.fulltimeUrenKwartier,
     bereikbaar,
     nevenwerk_toestemming: (invoer.nevenwerk ?? 'toestemming') === 'toestemming',
     nevenwerk_vrij: invoer.nevenwerk === 'vrij_behalve_klanten',

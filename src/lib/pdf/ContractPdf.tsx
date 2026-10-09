@@ -1,4 +1,7 @@
 import { Document, Page, View, Text, StyleSheet, renderToBuffer } from '@react-pdf/renderer'
+import { inArray } from 'drizzle-orm'
+import { db } from '@/db'
+import { users } from '@/db/schema'
 import type { GeneratedContract } from '@/db/schema'
 import { formatDate, formatDateLong } from '@/lib/dates'
 import { ondertekenaarsVan, namenZin, kopVanContract, tekennaamVan } from '@/lib/contracten'
@@ -52,10 +55,14 @@ const s = StyleSheet.create({
   artikelTitel: { fontFamily: 'Figtree', fontWeight: 700, fontSize: 10.5, flex: 1 },
   lid: { flexDirection: 'row', marginBottom: 4 },
   lidNr: { width: 28, color: GRIJS, fontSize: 8.5, paddingTop: 1 },
-  slot: { marginTop: 22, borderTopWidth: 0.75, borderTopColor: LIJN, paddingTop: 18 },
-  handtekeningen: { flexDirection: 'row', flexWrap: 'wrap', marginTop: 16 },
-  handtekening: { width: '48%', marginRight: '2%', marginBottom: 14, backgroundColor: VLAK, borderRadius: 8, padding: 12 },
-  tekenruimte: { height: 52, borderBottomWidth: 0.75, borderBottomColor: GRIJS, marginBottom: 6 },
+  slot: { marginTop: 28 },
+  /* Alle handtekeningen naast elkaar, even breed, met dezelfde tussenruimte
+     als de parafen: dan lijnt alles uit over de breedte van de pagina. */
+  handtekeningen: { flexDirection: 'row', marginTop: 16 },
+  handtekening: { flex: 1, backgroundColor: VLAK, borderRadius: 8, padding: 12 },
+  handtekeningTussen: { marginLeft: 12 },
+  tekenruimte: { height: 64, borderBottomWidth: 0.75, borderBottomColor: GRIJS, marginBottom: 6 },
+  tekenFunctie: { fontSize: 8, color: GRIJS, marginTop: 1 },
   rol: { fontSize: 7.5, color: GRIJS, marginBottom: 2 },
   voet: { position: 'absolute', bottom: 36, left: 56, right: 56 },
   parafen: { flexDirection: 'row', borderTopWidth: 0.75, borderTopColor: LIJN, paddingTop: 12 },
@@ -121,7 +128,20 @@ function aanhef(c: GeneratedContract): string {
 
 const PUNTJES = '……………………'
 
-export function ContractPdf({ c, kop, tekenaars, merk }: { c: GeneratedContract; kop: WerkgeverKop | null; tekenaars: string[]; merk: Merk }) {
+export function ContractPdf({
+  c,
+  kop,
+  tekenaars,
+  merk,
+  functies,
+}: {
+  c: GeneratedContract
+  kop: WerkgeverKop | null
+  tekenaars: string[]
+  merk: Merk
+  /** Functietitel per ondertekenaar namens de werkgever, uit het profiel van de collega. */
+  functies?: Record<string, string | null>
+}) {
   const proforma = c.soort === 'proforma'
   const tekennaam = tekennaamVan(c)
   const iedereen = [...tekenaars, tekennaam]
@@ -209,14 +229,15 @@ export function ContractPdf({ c, kop, tekenaars, merk }: { c: GeneratedContract;
             Aldus overeengekomen, in tweevoud opgemaakt en ondertekend te {plaats} op {datum}.
           </Text>
           <View style={s.handtekeningen}>
-            {tekenaars.map((naam) => (
-              <View key={naam} style={s.handtekening}>
+            {tekenaars.map((naam, i) => (
+              <View key={naam} style={i > 0 ? [s.handtekening, s.handtekeningTussen] : s.handtekening}>
                 <Text style={s.rol}>Namens de werkgever</Text>
                 <View style={s.tekenruimte} />
                 <Text style={{ fontWeight: 500 }}>{naam}</Text>
+                {functies?.[naam] ? <Text style={s.tekenFunctie}>{functies[naam]}</Text> : null}
               </View>
             ))}
-            <View style={s.handtekening}>
+            <View style={tekenaars.length > 0 ? [s.handtekening, s.handtekeningTussen] : s.handtekening}>
               <Text style={s.rol}>De werknemer</Text>
               <View style={s.tekenruimte} />
               <Text style={{ fontWeight: 500 }}>{tekennaam}</Text>
@@ -224,6 +245,7 @@ export function ContractPdf({ c, kop, tekenaars, merk }: { c: GeneratedContract;
           </View>
         </View>
 
+        {/* Parafen op elke pagina, in dezelfde kolommen als de handtekeningen. */}
         <View style={s.voet} fixed>
           <View style={s.parafen}>
             {iedereen.map((naam, i) => (
@@ -252,7 +274,19 @@ export async function maakContractPdf(c: GeneratedContract): Promise<Buffer> {
     merk.ondertitel = kop.tagline ?? merk.ondertitel
   }
   const tekenaars = ondertekenaarsVan(c, bedrijf?.werkgever ?? null)
-  return renderToBuffer(<ContractPdf c={c} kop={kop} tekenaars={tekenaars} merk={merk} />)
+  return renderToBuffer(<ContractPdf c={c} kop={kop} tekenaars={tekenaars} merk={merk} functies={await functiesVan(tekenaars)} />)
+}
+
+/**
+ * De functietitel van wie namens de werkgever tekent, zoals die nu in het
+ * profiel van de collega staat (Medewerkers, Gegevens). Op naam, want zo
+ * staan de ondertekenaars in het contract. Geen collega met die naam: geen
+ * titel.
+ */
+async function functiesVan(namen: string[]): Promise<Record<string, string | null>> {
+  if (namen.length === 0) return {}
+  const rijen = await db.select({ naam: users.name, functie: users.jobTitle }).from(users).where(inArray(users.name, namen))
+  return Object.fromEntries(rijen.filter((r) => r.naam).map((r) => [r.naam!, r.functie?.trim() || null]))
 }
 
 /** Alleen gewone tekens: met een accent noemt een deel van de browsers het bestand "download". */

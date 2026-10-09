@@ -116,6 +116,8 @@ async function leesFormulier(formData: FormData): Promise<Formulier | string> {
   let vakantieUren: number | null = null
   let vakantieUrenFulltime = 200
   let vakantietoeslagBp = 800
+  let fulltimeMaandCents: number | null = null
+  let fulltimeUrenKwartier: number | null = null
 
   if (schaal && trede !== null) {
     const huis = await getHuis(ingangsdatum)
@@ -129,6 +131,8 @@ async function leesFormulier(formData: FormData): Promise<Formulier | string> {
       vakantieUren = beloning.vakantieUren
       vakantieUrenFulltime = huis.huis.holidayHoursFulltime
       vakantietoeslagBp = huis.huis.holidayAllowanceBp
+      fulltimeMaandCents = beloning.fulltimeCents
+      fulltimeUrenKwartier = huis.huis.fulltimeHoursWeekQuarters
       if (beloning.onderMinimumloon === true) return 'Dit komt uit op een uurloon onder het wettelijk minimum. Verhoog de trede of pas het salarishuis aan.'
     } catch (fout) {
       return fout instanceof Error ? fout.message : 'De schaal of trede klopt niet.'
@@ -187,6 +191,8 @@ async function leesFormulier(formData: FormData): Promise<Formulier | string> {
     opToeslagCents,
     vakantietoeslagBp,
     vakantieUrenFulltime,
+    fulltimeMaandCents,
+    fulltimeUrenKwartier,
     vakantieUren: vakantieUren ?? undefined,
     vrijetijdsbudget: aan(formData, 'vrijetijdsbudget'),
     // Alleen als het formulier de keuze aanbiedt; anders beslist het functieprofiel.
@@ -350,6 +356,24 @@ export async function contractAangezegd(formData: FormData): Promise<ActionResul
   return veilig(() => markeerAangezegd(contractId), [`/beheer/contracten/${contractId}`])
 }
 
+/**
+ * Het fulltime salaris erbij, voor een contract dat werd opgesteld voordat
+ * we dat bewaarden. Uit hetzelfde salarishuis (dat van de ingangsdatum),
+ * dus het klopt met het bedrag dat er al staat.
+ */
+async function metFulltime(invoer: ContractInvoer): Promise<ContractInvoer> {
+  if (invoer.fulltimeMaandCents || !invoer.schaalNaam || !invoer.trede) return invoer
+  const huis = await getHuis(invoer.ingangsdatum)
+  if (!huis) return invoer
+  try {
+    const b = berekenBeloning(huis, invoer.schaalNaam, invoer.trede, invoer.urenPerWeekKwartier)
+    if (b.maandCents !== invoer.brutoMaandCents) return invoer
+    return { ...invoer, fulltimeMaandCents: b.fulltimeCents, fulltimeUrenKwartier: huis.huis.fulltimeHoursWeekQuarters }
+  } catch {
+    return invoer
+  }
+}
+
 /** De roepnaam die nu bij de kandidaat of de collega van dit contract staat. */
 async function huidigeRoepnaam(c: { candidateId: string | null; userId: string | null }): Promise<string | null> {
   if (c.candidateId) {
@@ -378,7 +402,7 @@ export async function contractBijwerken(formData: FormData): Promise<ActionResul
 
   const gegevens = await getGegevens(oud.candidateId ? { candidateId: oud.candidateId } : { userId: oud.userId! })
   const r = gegevens?.record
-  const invoer = invoerUit(oud)
+  const invoer = await metFulltime(invoerUit(oud))
   // De roepnaam zoals die nu bij de kandidaat of de collega staat.
   const roepnaam = (await huidigeRoepnaam(oud)) ?? invoer.roepnaam
   const voornamen = r?.officialFirstNames?.trim() || invoer.naam
