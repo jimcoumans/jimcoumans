@@ -13,11 +13,12 @@ import { getBedrijf, getBedrijfsdocument, huidigBedrijfsdocument, handboekPad } 
 import { leesIban } from '@/lib/persoonsgegevens'
 import { werkadresVoorstel } from '@/lib/aanname'
 import { AFDELINGEN } from '@/lib/team'
-import { contractMail, mailtoLink } from '@/lib/mailsjablonen'
+import { contractMail, afschriftMail, mailtoLink } from '@/lib/mailsjablonen'
 import { getTekstOverrides } from '@/lib/sjablonen'
 import { formatDateInput, formatDateLong } from '@/lib/dates'
 import { formatCents } from '@/lib/money'
 import { contractBijwerken } from '../../../../contract-actions'
+import { kandidaatEmail } from '../../../../werving-actions'
 import { contractGetekend, handboekOntvangen, kandidaatAannemen } from '../../../../aanname-actions'
 import { DossierGegevens, DossierDocumenten, DossierRegel, IbanRegel, type DossierVan } from '@/components/Persoonsdossier'
 
@@ -127,23 +128,37 @@ export default async function IndiensttredingPagina({ params }: { params: Promis
   const opmerkingen = (contract?.remarks ?? '').split('\n').filter((o) => o && !/aangezegd/.test(o))
   const standplaats = contract?.locationId ? bedrijf?.vestigingen.find((x) => x.id === contract.locationId) : bedrijf?.hoofdvestiging
   const invoer = contract ? invoerUit(contract) : null
-  const mail =
+  /* Mailen aan de kandidaat: vooraf het contract, na het tekenen het
+     afschrift. Met het contract in het kort en de link naar het handboek;
+     de pdf's voeg je zelf als bijlage toe. */
+  const samenvatting = contract
+    ? [
+        `- Functie: ${contract.jobTitle}`,
+        `- Periode: ${formatDateLong(contract.startedOn)}${contract.endsOn ? ` tot en met ${formatDateLong(contract.endsOn)}` : ', voor onbepaalde tijd'}`,
+        `- Uren: ${String(contract.hoursWeekQuarters / 100).replace('.', ',')} per week`,
+        `- Salaris: ${formatCents(contract.grossMonthlyCents)} bruto per maand`,
+        contract.probationMonths > 0 ? `- Proeftijd: ${contract.probationMonths} maand${contract.probationMonths > 1 ? 'en' : ''}` : null,
+        standplaats ? `- Standplaats: ${standplaats.name}` : null,
+      ]
+        .filter(Boolean)
+        .join('\n')
+    : null
+  const mailBasis =
     contract && k.email
-      ? mailtoLink(
-          contractMail(
-            {
-              aan: k.email,
-              roepnaam: k.firstName ?? naam,
-              functie: contract.jobTitle,
-              startdatum: contract.startedOn,
-              afzender: user.name ?? 'James Robinson',
-              merk: bedrijf?.werkgever.tradeName ?? null,
-              handboekLink: handboek ? `${basis}${handboekPad(handboek)}` : null,
-            },
-            mailTeksten,
-          ),
-        )
+      ? {
+          aan: k.email,
+          roepnaam: k.firstName ?? naam,
+          functie: contract.jobTitle,
+          startdatum: contract.startedOn,
+          afzender: user.name ?? 'James Robinson',
+          merk: bedrijf?.werkgever.tradeName ?? null,
+          handboekLink: handboek ? `${basis}${handboekPad(handboek)}` : null,
+          samenvatting,
+        }
       : null
+  const mailVooraf = mailBasis ? mailtoLink(contractMail(mailBasis, mailTeksten)) : null
+  const mailAfschrift = mailBasis ? mailtoLink(afschriftMail(mailBasis, mailTeksten)) : null
+  const getekend = (kind: 'contract' | 'avg_verklaring') => gegevens?.documenten.filter((d) => d.kind === kind).at(-1) ?? null
 
   return (
     <AppShell user={user} actief="werving">
@@ -318,12 +333,21 @@ export default async function IndiensttredingPagina({ params }: { params: Promis
                 ) : (
                   <span className="text-jr-orange">Geen personeelshandboek bij dit contract</span>
                 )}
-                {mail && (
-                  <a href={mail} className="text-jr-link hover:underline">
-                    Vooraf mailen
-                  </a>
-                )}
               </div>
+              {!contract.signedOn && (
+                <MailBlok
+                  titel={`Vooraf mailen aan ${k.firstName ?? naam}`}
+                  uitleg="Het contract, de AVG-verklaring en de link naar het personeelshandboek, met het contract in het kort. Zo kan hij het rustig lezen voordat jullie tekenen."
+                  kandidaatId={k.id}
+                  naam={k.firstName ?? naam}
+                  email={k.email}
+                  mailto={mailVooraf}
+                  bijlagen={[
+                    { label: 'Contract (pdf)', href: `/api/contracten/${contract.id}/pdf` },
+                    { label: 'AVG-verklaring (pdf)', href: `/api/contracten/${contract.id}/avg` },
+                  ]}
+                />
+              )}
               <h3 className="mb-2 text-sm font-semibold">Bij het tekenen</h3>
               <ol className="list-decimal space-y-1 pl-5 text-sm text-gray-700">
                 <li>Beide exemplaren van het contract tekenen, en elke pagina parafen. Een exemplaar is voor {k.firstName ?? 'de werknemer'}.</li>
@@ -396,6 +420,23 @@ export default async function IndiensttredingPagina({ params }: { params: Promis
                   }
                 />
               </ul>
+              {contract.signedOn && (
+                <div className="mt-4">
+                  <MailBlok
+                    titel={`Afschrift mailen aan ${k.firstName ?? naam}`}
+                    uitleg="Het getekende contract en de getekende AVG-verklaring, met het contract in het kort en de link naar het personeelshandboek."
+                    kandidaatId={k.id}
+                    naam={k.firstName ?? naam}
+                    email={k.email}
+                    mailto={mailAfschrift}
+                    bijlagen={[
+                      getekend('contract') ? { label: 'Getekend contract', href: `/api/persoonsgegevens/${getekend('contract')!.id}` } : null,
+                      getekend('avg_verklaring') ? { label: 'Getekende AVG-verklaring', href: `/api/persoonsgegevens/${getekend('avg_verklaring')!.id}` } : null,
+                    ].filter((b): b is { label: string; href: string } => b !== null)}
+                    zonderBijlagen="Upload eerst hieronder de scans van het getekende contract en de AVG-verklaring; die stuur je mee."
+                  />
+                </div>
+              )}
             </>
           )}
         </Stap>
@@ -492,6 +533,69 @@ function Regel({ label, children }: { label: string; children: React.ReactNode }
     <div>
       <dt className="text-xs text-gray-500">{label}</dt>
       <dd>{leeg ? <span className="text-jr-orange">nog niet ingevuld</span> : children}</dd>
+    </div>
+  )
+}
+
+/**
+ * Mailen aan de kandidaat in twee stappen: de bijlagen downloaden, dan de
+ * mail openen in je eigen mailprogramma. Zonder e-mailadres eerst dat.
+ */
+function MailBlok({
+  titel,
+  uitleg,
+  kandidaatId,
+  naam,
+  email,
+  mailto,
+  bijlagen,
+  zonderBijlagen,
+}: {
+  titel: string
+  uitleg: string
+  kandidaatId: string
+  naam: string
+  email: string | null
+  mailto: string | null
+  bijlagen: { label: string; href: string }[]
+  zonderBijlagen?: string
+}) {
+  return (
+    <div className="border-jr-blue/30 bg-jr-blue/5 mb-4 rounded-lg border p-4">
+      <h3 className="mb-1 text-sm font-semibold">{titel}</h3>
+      <p className="mb-3 text-xs text-gray-600">{uitleg}</p>
+      {!email || !mailto ? (
+        <ActionForm action={kandidaatEmail} submitLabel="Opslaan" resetOnSuccess={false} className="flex flex-wrap items-end gap-2" knopInRij>
+          <input type="hidden" name="kandidaatId" value={kandidaatId} />
+          <Field label={`E-mailadres van ${naam}`} name="email" type="email" required placeholder="naam@voorbeeld.nl" />
+        </ActionForm>
+      ) : (
+        <ol className="space-y-3 text-sm">
+          <li>
+            <span className="font-medium">1. Download de bijlagen</span>
+            {bijlagen.length > 0 ? (
+              <span className="mt-1.5 flex flex-wrap gap-2">
+                {bijlagen.map((b) => (
+                  <a key={b.href} href={b.href} target="_blank" rel="noopener" className={KNOP_RUSTIG}>
+                    {b.label}
+                  </a>
+                ))}
+              </span>
+            ) : (
+              <span className="text-jr-orange block text-xs">{zonderBijlagen}</span>
+            )}
+          </li>
+          <li>
+            <span className="font-medium">2. Open de mail</span>
+            <span className="mt-1.5 flex flex-wrap items-center gap-3">
+              <a href={mailto} className={KNOP}>
+                Mail aan {email}
+              </a>
+              <span className="text-xs text-gray-600">Tekst, samenvatting en handboeklink staan erin. Voeg de bijlagen toe en verstuur.</span>
+            </span>
+          </li>
+        </ol>
+      )}
     </div>
   )
 }
