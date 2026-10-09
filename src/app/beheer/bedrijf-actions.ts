@@ -11,9 +11,9 @@ import {
   slaLogoOp,
   wisLogo,
   voegHandboekToe,
-  slaAvgTekstOp,
   BedrijfError,
 } from '@/lib/bedrijf'
+import { slaRegelingenOp, SjabloonError } from '@/lib/sjablonen'
 import type { ActionResult } from './actions'
 
 /* Bedrijfsgegevens beheren: naam, logo, vestigingen en het personeelshandboek.
@@ -30,7 +30,7 @@ async function veilig(fn: () => Promise<void>): Promise<ActionResult> {
     revalidatePath('/beheer/contracten')
     return { ok: true }
   } catch (error) {
-    if (error instanceof BedrijfError) return { ok: false, error: error.message }
+    if (error instanceof BedrijfError || error instanceof SjabloonError) return { ok: false, error: error.message }
     const melding = describeDbError(error)
     if (melding) return { ok: false, error: melding }
     console.error('[bedrijf] onverwachte fout:', error)
@@ -107,7 +107,9 @@ export async function handboekUploaden(formData: FormData): Promise<ActionResult
   })
 }
 
-export async function avgTekstOpslaan(formData: FormData): Promise<ActionResult> {
+
+/** Wat bedrijfsbreed geregeld is: verzekeringen, arbodienst, pensioen. Bepaalt wat het contract daarover zegt. */
+export async function regelingenOpslaan(formData: FormData): Promise<ActionResult> {
   if (!(await alsBeheerder())) return GEEN_RECHT
-  return veilig(() => slaAvgTekstOp(formData.has('standaard') ? null : tekst(formData, 'tekst')))
+  return veilig(() => slaRegelingenOp(formData.getAll('regeling').map(String)))
 }

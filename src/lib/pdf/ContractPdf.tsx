@@ -277,3 +277,67 @@ export function contractPdfNaam(c: GeneratedContract): string {
   const naam = bestandsnaam(tekennaamVan(c))
   return `${naam || 'Contract'} - ${c.soort === 'proforma' ? 'pro forma contract' : 'contract'} ${formatDate(c.startedOn).replace(/\s/g, ' ')}.pdf`
 }
+
+/**
+ * Een voorbeeldcontract van een sjabloon, met verzonnen gegevens: om een
+ * gewijzigde tekst na te lezen zoals hij in een contract komt. Met maatwerk
+ * staan alle keuzes aan (bereikbaarheid, vrij nevenwerk, relatiebeding).
+ */
+export async function maakVoorbeeldContractPdf(soort: 'bepaalde_tijd' | 'onbepaalde_tijd', maatwerk: boolean): Promise<Buffer | null> {
+  const [{ getSjabloon, stelContractOp, contractWerkgever, listFunctieprofielen }, { getHuis, berekenBeloning }] = await Promise.all([
+    import('@/lib/contracten'),
+    import('@/lib/salarishuis'),
+  ])
+  const ingang = new Date()
+  ingang.setHours(12, 0, 0, 0)
+  const sjabloon = await getSjabloon(soort, ingang)
+  const bedrijf = await getBedrijf()
+  if (!sjabloon || !bedrijf) return null
+  const huis = await getHuis(ingang)
+  const beloning = huis ? (() => { try { return berekenBeloning(huis, 'Medior', 20, 2400) } catch { return null } })() : null
+  const profiel = (await listFunctieprofielen()).find((p) => p.hasRelationClause && p.relationClauseMotivation) ?? null
+  const invoer = {
+    candidateId: 'voorbeeld',
+    naam: 'Voorbeeld Maria Medewerker',
+    roepnaam: 'Maria',
+    korteNaam: 'Maria Medewerker',
+    aanhef: 'neutraal' as const,
+    adres: 'Voorbeeldstraat 1',
+    postcode: '1234 AB',
+    woonplaats: 'Voorbeeldstad',
+    geboortedatum: new Date(1995, 0, 1, 12),
+    jobProfileId: profiel?.id ?? null,
+    functie: profiel?.title ?? 'Marketing Manager',
+    soort,
+    ingangsdatum: ingang,
+    looptijdMaanden: soort === 'bepaalde_tijd' ? 12 : null,
+    proeftijdMaanden: 1,
+    urenPerWeekKwartier: 2400,
+    schaalNaam: beloning ? 'Medior' : null,
+    trede: beloning ? 20 : null,
+    brutoMaandCents: beloning?.maandCents ?? 250_000,
+    opToeslagCents: beloning?.opToeslagCents ?? 25_000,
+    vakantietoeslagBp: huis?.huis.holidayAllowanceBp ?? 800,
+    vakantieUrenFulltime: huis?.huis.holidayHoursFulltime ?? 200,
+    vakantieUren: beloning?.vakantieUren ?? 120,
+    vrijetijdsbudget: true,
+    relatiebeding: maatwerk && !!profiel,
+    bereikbaarOpWerkdagen: maatwerk,
+    nevenwerk: maatwerk ? ('vrij_behalve_klanten' as const) : ('toestemming' as const),
+    tekenplaats: bedrijf.hoofdvestiging?.city ?? null,
+    tekendatum: null,
+  }
+  const concept = stelContractOp(invoer, sjabloon, contractWerkgever(bedrijf, null, 'https://voorbeeld/personeelshandboek'), profiel)
+  const nu = new Date()
+  const c = {
+    id: 'voorbeeld', soort: 'proforma', templateId: sjabloon.template.id, jobProfileId: invoer.jobProfileId, candidateId: null, userId: null,
+    employeeName: invoer.naam, employeeAanhef: null, employeeAddress: invoer.adres, employeePostalCode: invoer.postcode, employeeCity: invoer.woonplaats,
+    employeeBirthDate: invoer.geboortedatum, jobTitle: invoer.functie, contractType: soort, startedOn: ingang, endsOn: concept.einddatum,
+    durationMonths: invoer.looptijdMaanden, probationMonths: concept.proeftijdMaanden, hoursWeekQuarters: 2400, salaryScaleName: invoer.schaalNaam,
+    salaryStep: invoer.trede, grossMonthlyCents: invoer.brutoMaandCents, opAllowanceCents: invoer.opToeslagCents, holidayAllowanceBp: invoer.vakantietoeslagBp,
+    holidayHoursPerYear: invoer.vakantieUren, aanzeggenVoor: concept.aanzeggenVoor, aangezegdOp: null, employerSigners: null, employeeShortName: invoer.korteNaam,
+    locationId: null, signPlace: invoer.tekenplaats, signDate: null, employerSnapshot: null, invoer: null, handbookDocumentId: null, handbookGivenOn: null,
+    body: concept.body, summary: concept.intro, remarks: null, signedOn: null, createdAt: nu, createdByUserId: null,
+  } as GeneratedContract
+  return maakContractPdf(c)
+}

@@ -216,11 +216,12 @@ const TEAM_GROEPEN: NavGroep[] = [
       { href: '/beheer/contracten', label: 'Contracten', key: 'contracten', icon: icons.contracten },
       { href: '/beheer/salarishuis', label: 'Salarishuis', key: 'salarishuis', icon: icons.salarishuis },
       { href: '/beheer/bedrijf', label: 'Bedrijfsgegevens', key: 'bedrijf', icon: icons.bedrijf },
+      { href: '/beheer/sjablonen', label: 'Standaardteksten', key: 'sjablonen', icon: icons.contracten },
     ],
   },
 ]
 
-const ALLEEN_ADMIN = new Set(['contracten', 'salarishuis', 'bedrijf'])
+const ALLEEN_ADMIN = new Set(['contracten', 'salarishuis', 'bedrijf', 'sjablonen'])
 
 const CLIENT_NAV: NavItem[] = [
   { href: '/', label: 'Mijn wallet', key: 'wallet', icon: icons.wallet },

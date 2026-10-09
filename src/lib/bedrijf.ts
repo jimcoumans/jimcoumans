@@ -5,6 +5,7 @@ import { companyDocuments, companyLocations, employerSettings } from '@/db/schem
 import type { CompanyDocument, CompanyLocation, EmployerSettings } from '@/db/schema'
 import { bewaar, haal, wis, type Bestand } from './bestandsopslag'
 import { metGeheugen } from './cache'
+import { controleerTekst } from './sjablonen'
 
 /* -------------------------------------------------------------------------
    Bedrijfsgegevens: de enige plek voor wie we zijn en waar we zitten.
@@ -376,6 +377,14 @@ De werkgever laat graag zien wie er bij {{werkgever_merk}} werkt, bijvoorbeeld m
 ## Ondertekening
 De werknemer verklaart deze verklaring te hebben ontvangen en gelezen.`
 
+/** Wat er in de AVG-verklaring tussen {{ }} kan staan. */
+export const AVG_PLAATSHOUDERS: Record<string, string> = {
+  werknemer_naam: 'Volledige naam van de werknemer',
+  werkgever_naam: 'Juridische naam: James Robinson B.V.',
+  werkgever_merk: 'Naam zoals we hem voeren: James Robinson',
+  werkgever_email: 'E-mailadres uit de bedrijfsgegevens',
+}
+
 export function avgTekst(w: Pick<EmployerSettings, 'avgText'> | null): string {
   return w?.avgText?.trim() || STANDAARD_AVG_TEKST
 }
@@ -383,7 +392,9 @@ export function avgTekst(w: Pick<EmployerSettings, 'avgText'> | null): string {
 export async function slaAvgTekstOp(tekst: string | null): Promise<void> {
   const [w] = await db.select({ id: employerSettings.id }).from(employerSettings).limit(1)
   if (!w) throw new BedrijfError('Vul eerst de bedrijfsgegevens in.')
-  const schoon = (tekst ?? '').trim()
+  const schoon = (tekst ?? '').replace(/\r\n/g, '\n').trim()
+  const fouten = controleerTekst(schoon, { plaatshouders: AVG_PLAATSHOUDERS, voorwaarden: {} })
+  if (fouten.length > 0) throw new BedrijfError(fouten.join(' '))
   // De standaardtekst bewaren we niet als eigen tekst: dan krijg je verbeteringen in de standaard vanzelf mee.
   await db
     .update(employerSettings)

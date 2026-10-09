@@ -20,6 +20,8 @@ import type {
   GeneratedContract,
 } from '@/db/schema'
 import { werkgeverKop, type Bedrijf, type WerkgeverKop } from './bedrijf'
+import { REGELINGEN, verzekeringenZin } from './sjablonen'
+import { vulIn, pasVoorwaardenToe } from './invullen'
 import { formatCents } from './money'
 import { formatDateLong } from './dates'
 import {
@@ -52,33 +54,7 @@ export class ContractError extends Error {}
 
 /* --- Invullen ------------------------------------------------------------- */
 
-/** Een plaatshouder die niet is ingevuld valt op in plaats van weg te vallen. */
-const ONBEKEND = (naam: string) => `[ONBEKEND: ${naam}]`
-
-/**
- * Vervangt {{plaatshouders}} door waarden.
- *
- * Een ontbrekende waarde wordt zichtbaar gemarkeerd en niet stilletjes leeg
- * gelaten. In een juridisch document is een lege plek erger dan een lelijke:
- * een lege plek lees je over, [ONBEKEND: salaris] niet.
- */
-export function vulIn(
-  sjabloon: string,
-  waarden: Record<string, string>,
-): { tekst: string; ontbrekend: string[] } {
-  const ontbrekend: string[] = []
-
-  const tekst = sjabloon.replace(/\{\{\s*([a-z0-9_]+)\s*\}\}/gi, (_heel, naam: string) => {
-    const waarde = waarden[naam]
-    if (waarde === undefined) {
-      if (!ontbrekend.includes(naam)) ontbrekend.push(naam)
-      return ONBEKEND(naam)
-    }
-    return waarde
-  })
-
-  return { tekst, ontbrekend }
-}
+export { vulIn, pasVoorwaardenToe } from './invullen'
 
 /* --- Wat er in een contract komt ------------------------------------------ */
 
@@ -167,27 +143,6 @@ export function korteNaam(roepnaam: string | null | undefined, tussenvoegsel: st
   return [roepnaam, tussenvoegsel, achternaam].map((d) => (d ?? '').trim()).filter(Boolean).join(' ')
 }
 
-/**
- * Voorwaardelijke stukken binnen een artikel: {{#als naam}}...{{/als}} blijft
- * staan als de voorwaarde geldt, {{#alsniet naam}}...{{/alsniet}} als hij
- * niet geldt. Zo kan een enkel lid maatwerk zijn zonder dat het hele artikel
- * een tweede versie nodig heeft. Niet genest: dat leest niemand nog na.
- */
-export function pasVoorwaardenToe(tekst: string, geldt: Record<string, boolean>): { tekst: string; onbekend: string[] } {
-  const onbekend: string[] = []
-  const vervang = (blok: RegExp, wel: boolean) =>
-    (bron: string) =>
-      bron.replace(blok, (_heel, naam: string, inhoud: string) => {
-        if (!(naam in geldt)) {
-          if (!onbekend.includes(naam)) onbekend.push(naam)
-          return inhoud
-        }
-        return geldt[naam] === wel ? inhoud : ''
-      })
-  let uit = vervang(/\{\{#als\s+([a-z0-9_]+)\s*\}\}([\s\S]*?)\{\{\/als\}\}/gi, true)(tekst)
-  uit = vervang(/\{\{#alsniet\s+([a-z0-9_]+)\s*\}\}([\s\S]*?)\{\{\/alsniet\}\}/gi, false)(uit)
-  return { tekst: uit, onbekend }
-}
 
 export type Artikel = { nummer: number; titel: string; leden: string[] }
 
@@ -375,6 +330,7 @@ export function stelContractOp(
     relatiebeding_maanden: String(profiel?.relationClauseMonths ?? 12),
     relatiebeding_motivering: profiel?.relationClauseMotivation ?? '',
     extra_afspraken: extraAfspraken,
+    verzekeringen_zin: verzekeringenZin(werkgever.regelingen ?? []),
   }
 
   /* De voorwaarden. Vaste namen en geen uitdrukking die in de database
@@ -387,13 +343,16 @@ export function stelContractOp(
     proeftijd: proeftijd.maanden > 0,
     relatiebeding: heeftRelatiebeding,
     op_toeslag: opToeslag > 0,
-    pensioenregeling: false,
+    pensioenregeling: (werkgever.regelingen ?? []).includes('pensioenregeling'),
     vrijetijdsbudget: invoer.vrijetijdsbudget === true,
     extra_afspraken: extraAfspraken !== '',
     schaal: !!invoer.schaalNaam && !!invoer.trede,
     bereikbaar,
     nevenwerk_toestemming: (invoer.nevenwerk ?? 'toestemming') === 'toestemming',
     nevenwerk_vrij: invoer.nevenwerk === 'vrij_behalve_klanten',
+    verzekeringen: verzekeringenZin(werkgever.regelingen ?? []) !== '',
+    // Wat bedrijfsbreed geregeld is; pensioenregeling staat hierboven al.
+    ...Object.fromEntries(REGELINGEN.filter((r) => r.sleutel !== 'pensioenregeling').map((r) => [r.sleutel, (werkgever.regelingen ?? []).includes(r.sleutel)])),
   }
 
   const ontbrekend: string[] = []
@@ -411,15 +370,19 @@ export function stelContractOp(
       if (!ontbrekend.includes(naam)) ontbrekend.push(naam)
     }
 
+    const leden = ingevuld.tekst
+      .split(/\n\s*\n/)
+      .map((l) => l.trim())
+      .filter((l) => l !== '')
+    // Een artikel waarvan alles in {{#als}}-blokken stond die niet gelden, valt weg.
+    if (leden.length === 0) continue
+
     artikelen.push({
       // Nummeren bij het uitschrijven: valt een artikel weg, dan schuift de
       // rest op en klopt de nummering nog steeds.
       nummer: artikelen.length + 1,
       titel: artikel.title,
-      leden: ingevuld.tekst
-        .split(/\n\s*\n/)
-        .map((l) => l.trim())
-        .filter((l) => l !== ''),
+      leden,
     })
   }
 

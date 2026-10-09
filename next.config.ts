@@ -15,6 +15,7 @@ const nextConfig: NextConfig = {
     '/api/contracten/*/pdf': ['./src/fonts/pdf/**/*'],
     '/api/contracten/*/avg': ['./src/fonts/pdf/**/*'],
     '/api/bedrijf/avg-voorbeeld': ['./src/fonts/pdf/**/*'],
+    '/api/sjablonen/*/voorbeeld': ['./src/fonts/pdf/**/*'],
   },
   async headers() {
     return [

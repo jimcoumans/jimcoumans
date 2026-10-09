@@ -1,4 +1,5 @@
 import { formatDateLong } from './dates'
+import { vulIn, pasVoorwaardenToe } from './invullen'
 
 /* -------------------------------------------------------------------------
    Mails aan een kandidaat of nieuwe collega, als sjabloon.
@@ -7,6 +8,9 @@ import { formatDateLong } from './dates'
    mailprogramma, ingevuld, zodat ze uit je eigen postvak komen, in je eigen
    toon, en je de pdf van het contract als bijlage kunt meesturen. Wat tussen
    [haken] staat, vul je zelf in voordat je verstuurt.
+
+   De teksten zijn te wijzigen bij Standaardteksten. Zonder eigen versie
+   geldt de standaardtekst hieronder.
    ------------------------------------------------------------------------- */
 
 export type Mail = { aan: string; onderwerp: string; tekst: string }
@@ -29,54 +33,129 @@ export type MailContext = {
   merk?: string | null
 }
 
-function groet(c: MailContext): string {
-  return `Met vriendelijke groet,\n${c.afzender}\n${c.merk ?? 'James Robinson'}`
+export type MailSleutel = 'mail_contract' | 'mail_gegevens' | 'mail_welkom'
+
+export const MAIL_PLAATSHOUDERS: Record<string, string> = {
+  roepnaam: 'Roepnaam van de ontvanger',
+  functie: 'Functie',
+  startdatum: 'Eerste werkdag, voluit',
+  afzender: 'Jouw naam',
+  merk: 'Naam van het bedrijf: James Robinson',
+  gegevenslink: 'Persoonlijke link om gegevens aan te leveren',
+  link_dagen: 'Hoeveel dagen die link geldig is',
+  handboek_link: 'Link naar het personeelshandboek bij dit contract',
+  werkadres: 'Adres van de hoofdvestiging',
+  werk_email: 'Het nieuwe werkadres (e-mail)',
+  inlog_url: 'Adres van de inlogpagina van het portaal',
 }
 
-function gegevensAlinea(c: MailContext): string {
-  if (!c.gegevenslink) return ''
-  return `Voor de salarisadministratie hebben we nog een paar gegevens nodig: je adres, je IBAN, een kopie van je ID en het loonheffingsformulier. Die vul je in via deze persoonlijke link, zonder inloggen:\n\n${c.gegevenslink}\n\nDe link is ${c.linkDagen ?? 14} dagen geldig. Alles wordt versleuteld opgeslagen.\n\n`
+export const MAIL_VOORWAARDEN: Record<string, string> = {
+  startdatum: 'De startdatum is bekend',
+  gegevenslink: 'Er is een geldige invullink',
+  handboek: 'Er hoort een personeelshandboek bij het contract',
+  werkadres: 'Er is een hoofdvestiging',
+  werk_email: 'Er is een werkadres (e-mail)',
+  inlog_url: 'Het adres van het portaal is bekend',
+}
+
+const GEGEVENS_ALINEA = `{{#als gegevenslink}}Voor de salarisadministratie hebben we nog een paar gegevens nodig: je adres, je IBAN, een kopie van je ID en het loonheffingsformulier. Die vul je in via deze persoonlijke link, zonder inloggen:
+
+{{gegevenslink}}
+
+De link is {{link_dagen}} dagen geldig. Alles wordt versleuteld opgeslagen.
+
+{{/als}}`
+
+const GROET = `Met vriendelijke groet,
+{{afzender}}
+{{merk}}`
+
+export const MAIL_SJABLONEN: Record<MailSleutel, { label: string; uitleg: string; onderwerp: string; tekst: string }> = {
+  mail_contract: {
+    label: 'Contract versturen',
+    uitleg: 'De knop "Mail het contract" bij een kandidaat. De pdf van het contract en de AVG-verklaring voeg je zelf als bijlage toe.',
+    onderwerp: 'Je contract bij {{merk}}',
+    tekst: `Beste {{roepnaam}},
+
+Zoals besproken: in de bijlage vind je je arbeidsovereenkomst als {{functie}}{{#als startdatum}}, met ingang van {{startdatum}}{{/als}}, en de AVG-verklaring die erbij hoort. Lees ze rustig door. Klopt alles, dan tekenen we samen; parafeer je elke pagina van het contract en vul je de AVG-verklaring in.
+
+{{#als handboek}}Bij het contract hoort ons personeelshandboek. Lees het voordat je tekent:
+{{handboek_link}}
+
+{{/als}}${GEGEVENS_ALINEA}Is er iets niet duidelijk, bel of app me gerust. Liever nu een vraag dan later een misverstand.
+
+${GROET}`,
+  },
+  mail_gegevens: {
+    label: 'Gegevens opvragen',
+    uitleg: 'Alleen de invullink, als het contract al onderweg is.',
+    onderwerp: 'Je gegevens voor de salarisadministratie',
+    tekst: `Beste {{roepnaam}},
+
+${GEGEVENS_ALINEA}${GROET}`,
+  },
+  mail_welkom: {
+    label: 'Welkom, voor de eerste werkdag',
+    uitleg: 'Na de aanname, met het werkadres en hoe je inlogt.',
+    onderwerp: 'Welkom bij {{merk}}',
+    tekst: `Beste {{roepnaam}},
+
+Welkom in de selectie. {{#als startdatum}}Op {{startdatum}}{{/als}}{{#alsniet startdatum}}Op je eerste werkdag{{/alsniet}} begin je bij ons als {{functie}}. We verwachten je om [tijd]{{#als werkadres}} op {{werkadres}}{{/als}}.
+
+{{#als werk_email}}Je werkadres is {{werk_email}}. Daarmee log je in op ons portaal{{#als inlog_url}} via {{inlog_url}}{{/als}}: je vult je adres in en krijgt een inloglink per mail.
+
+{{/als}}De eerste dag: [programma, wie je ontvangt, wat je meeneemt].
+
+Tot dan.
+
+${GROET}`,
+  },
+}
+
+/** Eigen versies uit het portaal, per sleutel. */
+export type MailTeksten = Map<string, { subject: string | null; body: string }>
+
+function maak(sleutel: MailSleutel, c: MailContext, eigen?: MailTeksten): Mail {
+  const standaard = MAIL_SJABLONEN[sleutel]
+  const versie = eigen?.get(sleutel)
+  const geldt = {
+    startdatum: !!c.startdatum,
+    gegevenslink: !!c.gegevenslink,
+    handboek: !!c.handboekLink,
+    werkadres: !!c.werkadres,
+    werk_email: !!c.werkEmail,
+    inlog_url: !!c.inlogUrl,
+  }
+  const waarden: Record<string, string> = {
+    roepnaam: c.roepnaam,
+    functie: c.functie,
+    startdatum: c.startdatum ? formatDateLong(c.startdatum) : '',
+    afzender: c.afzender,
+    merk: c.merk ?? 'James Robinson',
+    gegevenslink: c.gegevenslink ?? '',
+    link_dagen: String(c.linkDagen ?? 14),
+    handboek_link: c.handboekLink ?? '',
+    werkadres: c.werkadres ?? '',
+    werk_email: c.werkEmail ?? '',
+    inlog_url: c.inlogUrl ?? '',
+  }
+  const vul = (bron: string) => vulIn(pasVoorwaardenToe(bron, geldt).tekst, waarden).tekst.replace(/\n{3,}/g, '\n\n').trim()
+  return { aan: c.aan, onderwerp: vul(versie?.subject || standaard.onderwerp), tekst: vul(versie?.body || standaard.tekst) }
 }
 
 /** Het contract ter ondertekening, met de invullink erbij. */
-export function contractMail(c: MailContext): Mail {
-  return {
-    aan: c.aan,
-    onderwerp: `Je contract bij ${c.merk ?? 'James Robinson'}`,
-    tekst:
-      `Beste ${c.roepnaam},\n\n` +
-      `Zoals besproken: in de bijlage vind je je arbeidsovereenkomst als ${c.functie}${c.startdatum ? `, met ingang van ${formatDateLong(c.startdatum)}` : ''}, en de AVG-verklaring die erbij hoort. Lees ze rustig door. Klopt alles, dan tekenen we samen; parafeer je elke pagina van het contract en vul je de AVG-verklaring in.\n\n` +
-      (c.handboekLink ? `Bij het contract hoort ons personeelshandboek. Lees het voordat je tekent:\n${c.handboekLink}\n\n` : '') +
-      gegevensAlinea(c) +
-      `Is er iets niet duidelijk, bel of app me gerust. Liever nu een vraag dan later een misverstand.\n\n` +
-      groet(c),
-  }
+export function contractMail(c: MailContext, eigen?: MailTeksten): Mail {
+  return maak('mail_contract', c, eigen)
 }
 
 /** Alleen de invullink, als het contract al onderweg is. */
-export function gegevensMail(c: MailContext): Mail {
-  return {
-    aan: c.aan,
-    onderwerp: 'Je gegevens voor de salarisadministratie',
-    tekst: `Beste ${c.roepnaam},\n\n` + (gegevensAlinea(c) || 'De link volgt.\n\n') + groet(c),
-  }
+export function gegevensMail(c: MailContext, eigen?: MailTeksten): Mail {
+  return maak('mail_gegevens', c, eigen)
 }
 
 /** Welkom, voor de eerste werkdag. */
-export function welkomMail(c: MailContext): Mail {
-  return {
-    aan: c.aan,
-    onderwerp: 'Welkom bij James Robinson',
-    tekst:
-      `Beste ${c.roepnaam},\n\n` +
-      `Welkom in de selectie. ${c.startdatum ? `Op ${formatDateLong(c.startdatum)}` : 'Op je eerste werkdag'} begin je bij ons als ${c.functie}. We verwachten je om [tijd]${c.werkadres ? ` op ${c.werkadres}` : ''}.\n\n` +
-      (c.werkEmail
-        ? `Je werkadres is ${c.werkEmail}. Daarmee log je in op ons portaal${c.inlogUrl ? ` via ${c.inlogUrl}` : ''}: je vult je adres in en krijgt een inloglink per mail.\n\n`
-        : '') +
-      `De eerste dag: [programma, wie je ontvangt, wat je meeneemt].\n\n` +
-      `Tot dan.\n\n` +
-      groet(c),
-  }
+export function welkomMail(c: MailContext, eigen?: MailTeksten): Mail {
+  return maak('mail_welkom', c, eigen)
 }
 
 /** Een mailto-link die het mailprogramma opent met alles ingevuld. */

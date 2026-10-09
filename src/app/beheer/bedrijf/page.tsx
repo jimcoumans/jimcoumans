@@ -3,7 +3,7 @@ import { getSessionUser } from '@/lib/auth'
 import { AppShell } from '@/components/AppShell'
 import { Paneel } from '@/components/Paneel'
 import { ActionForm, Check, Field, TextArea } from '@/components/ActionForm'
-import { getBedrijf, listVestigingen, listHandboeken, handboekPad, adresRegel, merknaam, avgTekst, LOGO_MAX_BYTES } from '@/lib/bedrijf'
+import { getBedrijf, listVestigingen, listHandboeken, handboekPad, adresRegel, merknaam, LOGO_MAX_BYTES } from '@/lib/bedrijf'
 import { formatDate } from '@/lib/dates'
 import type { CompanyLocation } from '@/db/schema'
 import {
@@ -13,8 +13,9 @@ import {
   logoUploaden,
   logoWissen,
   handboekUploaden,
-  avgTekstOpslaan,
+  regelingenOpslaan,
 } from '../bedrijf-actions'
+import { REGELINGEN, verzekeringenZin } from '@/lib/sjablonen'
 
 export const maxDuration = 26
 
@@ -33,7 +34,6 @@ export default async function BedrijfPagina() {
   const [bedrijf, alleVestigingen, handboeken] = await Promise.all([getBedrijf(), listVestigingen({ inactief: true }), listHandboeken()])
   const w = bedrijf?.werkgever ?? null
   const huidig = handboeken[0] ?? null
-  const eigenAvg = !!w?.avgText
 
   return (
     <AppShell user={user} actief="bedrijf">
@@ -90,6 +90,28 @@ export default async function BedrijfPagina() {
         ) : (
           <p className="text-sm text-gray-600">Nog niets ingevuld. Zonder bedrijfsgegevens kan er geen contract worden opgesteld.</p>
         )}
+      </section>
+
+      {/* ------------------------------ Bedrijfsbreed geregeld ------------------------------ */}
+      <section className="mb-5 rounded-xl bg-white p-6 shadow-sm">
+        <h2 className="mb-1 text-base">Bedrijfsbreed geregeld</h2>
+        <p className="mb-3 text-xs text-gray-600">
+          Wat je hier aanvinkt, staat in elk nieuw contract. Zet je een verzekering uit, dan verdwijnt hij uit het artikel over verzekeringen; staat er niets aan,
+          dan valt dat lid weg.
+        </p>
+        <ActionForm action={regelingenOpslaan} submitLabel="Opslaan" resetOnSuccess={false}>
+          <div className="grid gap-2 sm:grid-cols-2">
+            {REGELINGEN.map((r) => (
+              <label key={r.sleutel} className="flex items-center gap-2 text-sm">
+                <input type="checkbox" name="regeling" value={r.sleutel} defaultChecked={w?.regelingen.includes(r.sleutel) ?? false} />
+                {r.label}
+              </label>
+            ))}
+          </div>
+          {w && verzekeringenZin(w.regelingen) && (
+            <p className="text-xs text-gray-500">In het contract: &ldquo;De werkgever heeft {verzekeringenZin(w.regelingen)} afgesloten.&rdquo;</p>
+          )}
+        </ActionForm>
       </section>
 
       {/* ------------------------------ Logo ------------------------------ */}
@@ -210,36 +232,15 @@ export default async function BedrijfPagina() {
         )}
       </section>
 
-      {/* ------------------------------ AVG-verklaring ------------------------------ */}
-      <section className="rounded-xl bg-white p-6 shadow-sm">
-        <div className="mb-3 flex flex-wrap items-start justify-between gap-3">
-          <div>
-            <h2 className="text-base">AVG-verklaring</h2>
-            <p className="text-xs text-gray-600">
-              De bijlage bij elk contract: wat we met persoonsgegevens doen, met een vakje voor toestemming voor foto&apos;s en een handtekening. Bij een contract
-              download je hem met de naam van de werknemer erin. {eigenAvg ? 'Dit is jullie eigen tekst.' : 'Dit is de standaardtekst: een opzet, laat hem nakijken.'}
-            </p>
-          </div>
-          <a href="/api/bedrijf/avg-voorbeeld" target="_blank" rel="noopener" className="text-jr-link text-sm font-medium hover:underline">
-            Voorbeeld bekijken
-          </a>
+      {/* ------------------------------ Teksten ------------------------------ */}
+      <section className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-white p-6 shadow-sm">
+        <div>
+          <h2 className="mb-1 text-base">Contractteksten, AVG-verklaring en mails</h2>
+          <p className="text-xs text-gray-600">De teksten zelf beheer je bij Standaardteksten.</p>
         </div>
-        <ActionForm action={avgTekstOpslaan} submitLabel="Tekst opslaan" resetOnSuccess={false}>
-          <TextArea
-            label="Tekst"
-            name="tekst"
-            rows={16}
-            defaultValue={avgTekst(w)}
-            hint={'"## " is een kop, een lege regel een nieuwe alinea, "- " een opsomming, "[ ] " een vakje. {{werknemer_naam}}, {{werkgever_naam}}, {{werkgever_merk}} en {{werkgever_email}} worden ingevuld.'}
-          />
-        </ActionForm>
-        {eigenAvg && (
-          <div className="mt-3">
-            <ActionForm action={avgTekstOpslaan} submitLabel="Standaardtekst terugzetten" submitClassName="text-gray-500 hover:bg-gray-100 !px-2 !py-1 !text-xs" bevestig meldGelukt={false}>
-              <input type="hidden" name="standaard" value="1" />
-            </ActionForm>
-          </div>
-        )}
+        <a href="/beheer/sjablonen" className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+          Standaardteksten
+        </a>
       </section>
     </AppShell>
   )

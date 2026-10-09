@@ -46,6 +46,7 @@ import { kandidaatAannemen, contractGetekend } from '../../../aanname-actions'
 import { vervolgstappen, werkadresVoorstel } from '@/lib/aanname'
 import { Vervolgstappen } from '@/components/Vervolgstappen'
 import { contractMail, gegevensMail, welkomMail, mailtoLink } from '@/lib/mailsjablonen'
+import { getTekstOverrides } from '@/lib/sjablonen'
 import { AFDELINGEN } from '@/lib/team'
 import { listMogelijkeOndertekenaars } from '@/lib/contracten'
 import { getBedrijf, adresRegel, getBedrijfsdocument, handboekPad } from '@/lib/bedrijf'
@@ -159,6 +160,7 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
   const getekend = definitief.filter((c) => c.signedOn)
   const laatsteDefinitief = definitief[0] ?? null
   const roepnaam = k.firstName ?? k.name.split(' ')[0] ?? ''
+  const mailTeksten = beheerder ? await getTekstOverrides() : undefined
   const mailContract = laatsteDefinitief ?? contracten[0] ?? null
   const mailHandboek = mailContract?.handbookDocumentId ? await getBedrijfsdocument(mailContract.handbookDocumentId) : null
   const mailBasis = {
@@ -320,7 +322,7 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
               </div>
               {contracten.length > 0 && k.email && !aangenomen && (
                 <div className="mb-3 flex flex-wrap items-center gap-2 rounded-lg bg-gray-50 p-3">
-                  <a href={mailtoLink(contractMail({ ...mailBasis, functie: contracten[0]!.jobTitle, startdatum: contracten[0]!.startedOn }))} className={KNOP_MAIL}>
+                  <a href={mailtoLink(contractMail({ ...mailBasis, functie: contracten[0]!.jobTitle, startdatum: contracten[0]!.startedOn }, mailTeksten))} className={KNOP_MAIL}>
                     Mail het contract
                   </a>
                   <span className="text-xs text-gray-600">Opent je mailprogramma met de tekst erin{link ? ' en de invullink voor de gegevens' : ''}. Download de pdf en voeg hem als bijlage toe.</span>
@@ -392,7 +394,7 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
               </p>
               {k.email && (
                 <div className="mt-3 flex flex-wrap items-center gap-2">
-                  <a href={mailtoLink(welkomMail({ ...mailBasis }))} className={KNOP_MAIL}>
+                  <a href={mailtoLink(welkomMail({ ...mailBasis }, mailTeksten))} className={KNOP_MAIL}>
                     Welkomstmail
                   </a>
                   <span className="text-xs text-gray-600">Met de startdatum, het adres en hoe hij inlogt. Vul de tijd en het programma zelf in.</span>
@@ -505,7 +507,7 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
                         </div>
                         <p className="text-xs text-gray-500">Geldig tot {formatDateLong(gegevens!.record.linkVerlooptOp!)}.</p>
                         {k.email && (
-                          <a href={mailtoLink(gegevensMail(mailBasis))} className={KNOP_MAIL}>
+                          <a href={mailtoLink(gegevensMail(mailBasis, mailTeksten))} className={KNOP_MAIL}>
                             Mail de link
                           </a>
                         )}

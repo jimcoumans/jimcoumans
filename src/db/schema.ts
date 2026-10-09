@@ -2864,6 +2864,12 @@ export const employerSettings = pgTable(
     logoContentType: text('logo_content_type'),
     /** De tekst van de AVG-verklaring voor medewerkers, met {{plaatshouders}}. */
     avgText: text('avg_text'),
+    /**
+     * Wat bedrijfsbreed geregeld is, als vaste sleutels (zie REGELINGEN in
+     * lib/sjablonen): verzekeringen, arbodienst, pensioenregeling. Een
+     * contractsjabloon kan er met {{#als ...}} op reageren.
+     */
+    regelingen: text('regelingen').array().notNull().default(sql`'{}'::text[]`),
     updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [
@@ -2871,6 +2877,20 @@ export const employerSettings = pgTable(
     check('employer_signatories_not_empty', sql`length(trim(${t.signatories})) > 0`),
   ],
 )
+
+/**
+ * Een standaardtekst die in het portaal te wijzigen is, zoals de mail
+ * waarmee een contract wordt verstuurd. Zonder rij geldt de tekst uit de
+ * code; zo krijg je verbeteringen in de standaard vanzelf mee tot je zelf
+ * iets aanpast.
+ */
+export const textTemplates = pgTable('text_templates', {
+  key: text('key').primaryKey(),
+  subject: text('subject'),
+  body: text('body').notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedByUserId: uuid('updated_by_user_id').references(() => users.id, { onDelete: 'set null' }),
+})
 
 /**
  * Een vestiging: de hoofdvestiging staat in de kop van elk contract, en elke
@@ -3632,6 +3652,7 @@ export type PersonalRecord = typeof personalRecords.$inferSelect
 export type PersonalDocument = typeof personalDocuments.$inferSelect
 export type EmployerSettings = typeof employerSettings.$inferSelect
 export type CompanyLocation = typeof companyLocations.$inferSelect
+export type TextTemplate = typeof textTemplates.$inferSelect
 export type CompanyDocument = typeof companyDocuments.$inferSelect
 export type JobProfile = typeof jobProfiles.$inferSelect
 export type ContractTemplate = typeof contractTemplates.$inferSelect
