@@ -9,7 +9,7 @@ import { getKandidaat, getVacature } from '@/lib/werving'
 import { getIndiensttreding, type StapSleutel } from '@/lib/indiensttreding'
 import { listFunctieprofielen, listMogelijkeOndertekenaars, invoerUit, ondertekenaarsVan, namenZin, tekennaamVan, korteNaam } from '@/lib/contracten'
 import { getHuis, schaalNamen } from '@/lib/salarishuis'
-import { getBedrijf, getBedrijfsdocument, handboekPad } from '@/lib/bedrijf'
+import { getBedrijf, getBedrijfsdocument, huidigBedrijfsdocument, handboekPad } from '@/lib/bedrijf'
 import { leesIban, DOCUMENT_LABELS } from '@/lib/persoonsgegevens'
 import { werkadresVoorstel } from '@/lib/aanname'
 import { AFDELINGEN } from '@/lib/team'
@@ -61,7 +61,10 @@ export default async function IndiensttredingPagina({ params }: { params: Promis
   } catch {
     iban = null
   }
-  const handboek = contract?.handbookDocumentId ? await getBedrijfsdocument(contract.handbookDocumentId) : null
+  const [handboek, loonheffing] = await Promise.all([
+    contract?.handbookDocumentId ? getBedrijfsdocument(contract.handbookDocumentId) : Promise.resolve(null),
+    huidigBedrijfsdocument('loonheffingsformulier'),
+  ])
   const h = await headers()
   const basis = process.env.APP_URL ?? `${h.get('x-forwarded-proto') ?? 'https'}://${h.get('host')}`
 
@@ -316,7 +319,9 @@ export default async function IndiensttredingPagina({ params }: { params: Promis
                 <a href={`/api/contracten/${contract.id}/printpakket`} target="_blank" rel="noopener" className={KNOP}>
                   Alles printen
                 </a>
-                <span className="text-sm text-gray-600">Een pdf met het contract twee keer, de AVG-verklaring en het gegevensformulier.</span>
+                <span className="text-sm text-gray-600">
+                  Een pdf met het contract twee keer, de AVG-verklaring en {loonheffing ? 'het loonheffingsformulier van de Belastingdienst' : 'het gegevensformulier'}.
+                </span>
               </div>
               <div className="mb-4 flex flex-wrap gap-x-4 gap-y-1 text-sm">
                 <a href={`/api/contracten/${contract.id}/pdf`} className="text-jr-link hover:underline">
@@ -325,9 +330,15 @@ export default async function IndiensttredingPagina({ params }: { params: Promis
                 <a href={`/api/contracten/${contract.id}/avg`} className="text-jr-link hover:underline">
                   AVG-verklaring
                 </a>
-                <a href={`/api/contracten/${contract.id}/gegevensformulier`} className="text-jr-link hover:underline">
-                  Gegevensformulier
-                </a>
+                {loonheffing ? (
+                  <a href={handboekPad(loonheffing)} target="_blank" rel="noopener" className="text-jr-link hover:underline">
+                    Loonheffingsformulier (Belastingdienst)
+                  </a>
+                ) : (
+                  <a href={`/api/contracten/${contract.id}/gegevensformulier`} className="text-jr-link hover:underline">
+                    Gegevensformulier
+                  </a>
+                )}
                 {handboek ? (
                   <a href={handboekPad(handboek)} target="_blank" rel="noopener" className="text-jr-link hover:underline">
                     Personeelshandboek
@@ -345,7 +356,11 @@ export default async function IndiensttredingPagina({ params }: { params: Promis
               <ol className="list-decimal space-y-1 pl-5 text-sm text-gray-700">
                 <li>Beide exemplaren van het contract tekenen, en elke pagina parafen. Een exemplaar is voor {k.firstName ?? 'de werknemer'}.</li>
                 <li>De AVG-verklaring laten invullen (toestemming voor foto&apos;s) en tekenen.</li>
-                <li>Het gegevensformulier laten aanvullen: BSN, IBAN en de keuze voor de loonheffingskorting. Laten tekenen.</li>
+                {loonheffing ? (
+                  <li>Het formulier &ldquo;Opgaaf gegevens voor de loonheffingen&rdquo; laten invullen (met BSN en de keuze voor de loonheffingskorting) en tekenen. Het IBAN staat daar niet op: dat vul je bij stap 4 in.</li>
+                ) : (
+                  <li>Het gegevensformulier laten aanvullen: BSN, IBAN en de keuze voor de loonheffingskorting. Laten tekenen.</li>
+                )}
                 <li>Het identiteitsbewijs bekijken en een kopie maken (paspoort of ID-kaart, geen rijbewijs).</li>
                 <li>Het personeelshandboek meegeven of de link sturen.</li>
               </ol>
@@ -401,7 +416,7 @@ export default async function IndiensttredingPagina({ params }: { params: Promis
                     <div className="grid gap-3 sm:grid-cols-2">
                       {!stukken.find((s) => s.sleutel === 'contract')!.klaar && <Bestand naam="contract" label="Getekend contract" />}
                       {!stukken.find((s) => s.sleutel === 'avg_verklaring')!.klaar && <Bestand naam="avg" label="Getekende AVG-verklaring" />}
-                      {!stukken.find((s) => s.sleutel === 'loonheffing')!.klaar && <Bestand naam="loonheffing" label="Gegevensformulier / loonheffing" />}
+                      {!stukken.find((s) => s.sleutel === 'loonheffing')!.klaar && <Bestand naam="loonheffing" label="Getekend loonheffingsformulier" />}
                       {!stukken.find((s) => s.sleutel === 'id_kopie')!.klaar && <Bestand naam="idkopie" label="Kopie identiteitsbewijs" />}
                     </div>
                     {!iban && (

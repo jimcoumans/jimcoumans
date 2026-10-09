@@ -37,10 +37,13 @@ export function GegevensFormulier({
   token,
   voornaam,
   bekend,
+  formulierLink = null,
 }: {
   id: string
   token: string
   voornaam: string
+  /** Het lege formulier van de Belastingdienst om te downloaden, als het bij de bedrijfsgegevens staat. */
+  formulierLink?: string | null
   bekend: { voornamen: string; tussenvoegsel: string; achternaam: string; adres: string; postcode: string; woonplaats: string; geboortedatum: string; geboorteplaats: string; heeftIban: boolean; heeftId: boolean; heeftLoonheffing: boolean }
 }) {
   const [state, actie, bezig] = useActionState<Aanlevering, FormData>(async (vorige, data) => {
@@ -155,7 +158,18 @@ export function GegevensFormulier({
           </span>
           <input type="file" name="loonheffing" accept="application/pdf,image/jpeg,image/png" className="block w-full text-sm" />
           <span className="mt-1 block text-xs text-gray-600">
-            Het formulier “Opgaaf gegevens voor de loonheffingen” van de Belastingdienst. Je kreeg het van ons bij de mail; geef aan of je loonheffingskorting wilt.
+            Het formulier “Opgaaf gegevens voor de loonheffingen” van de Belastingdienst
+            {formulierLink ? (
+              <>
+                {' '}
+                (
+                <a href={formulierLink} target="_blank" rel="noopener" className="text-jr-link underline">
+                  download het hier
+                </a>
+                )
+              </>
+            ) : null}
+            . Vul het in, geef aan of je loonheffingskorting wilt, teken het en upload een scan of foto.
           </span>
         </label>
       </fieldset>

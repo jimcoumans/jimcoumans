@@ -3,7 +3,7 @@ import { getSessionUser } from '@/lib/auth'
 import { AppShell } from '@/components/AppShell'
 import { Paneel } from '@/components/Paneel'
 import { ActionForm, Check, Field, TextArea } from '@/components/ActionForm'
-import { getBedrijf, standaardTekenaars, listVestigingen, listHandboeken, handboekPad, adresRegel, merknaam, LOGO_MAX_BYTES } from '@/lib/bedrijf'
+import { getBedrijf, standaardTekenaars, listVestigingen, listHandboeken, listBedrijfsdocumenten, handboekPad, adresRegel, merknaam, LOGO_MAX_BYTES } from '@/lib/bedrijf'
 import { formatDate } from '@/lib/dates'
 import { listMogelijkeOndertekenaars, namenZin } from '@/lib/contracten'
 import type { CompanyLocation } from '@/db/schema'
@@ -15,6 +15,7 @@ import {
   logoWissen,
   handboekUploaden,
   regelingenOpslaan,
+  loonheffingsformulierUploaden,
 } from '../bedrijf-actions'
 import { REGELINGEN, verzekeringenZin } from '@/lib/sjablonen'
 
@@ -32,10 +33,11 @@ export default async function BedrijfPagina() {
   if (!user) redirect('/login')
   if (user.role !== 'admin') redirect('/beheer')
 
-  const [bedrijf, alleVestigingen, handboeken, tekenaars] = await Promise.all([
+  const [bedrijf, alleVestigingen, handboeken, loonheffing, tekenaars] = await Promise.all([
     getBedrijf(),
     listVestigingen({ inactief: true }),
     listHandboeken(),
+    listBedrijfsdocumenten('loonheffingsformulier'),
     listMogelijkeOndertekenaars(),
   ])
   // Alleen eigenaren kunnen standaard tekenen; wie er nu al staat zonder eigenaar te zijn, blijft zichtbaar om uit te vinken.
@@ -250,6 +252,44 @@ export default async function BedrijfPagina() {
           </ul>
         ) : (
           <p className="text-jr-orange text-sm">Nog geen personeelshandboek. Een contract kan wel worden opgesteld, maar krijgt een waarschuwing.</p>
+        )}
+      </section>
+
+      {/* ------------------------------ Loonheffingsformulier ------------------------------ */}
+      <section className="mb-5 rounded-xl bg-white p-6 shadow-sm">
+        <div className="mb-3 flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h2 className="text-base">Loonheffingsformulier</h2>
+            <p className="text-xs text-gray-600">
+              Het model &ldquo;Opgaaf gegevens voor de loonheffingen&rdquo; van de Belastingdienst. Zit in het printpakket bij elke indiensttreding en staat bij
+              de invullink voor de kandidaat. De Belastingdienst brengt elk jaar een nieuwe versie uit: upload die dan hier.
+            </p>
+          </div>
+          <Paneel knop={loonheffing[0] ? 'Nieuwe versie' : '+ Uploaden'} titel="Loonheffingsformulier uploaden" uitleg="De lege pdf van de Belastingdienst, maximaal 5 MB.">
+            <ActionForm action={loonheffingsformulierUploaden} submitLabel="Uploaden">
+              <input type="file" name="formulier" accept="application/pdf" className="block text-sm" required />
+              <Field label="Versie" name="notitie" placeholder="Model 2026" />
+            </ActionForm>
+          </Paneel>
+        </div>
+        {loonheffing.length > 0 ? (
+          <ul className="divide-y divide-gray-100 text-sm">
+            {loonheffing.map((d, i) => (
+              <li key={d.id} className="flex flex-wrap items-center justify-between gap-2 py-2">
+                <span>
+                  <a href={handboekPad(d)} target="_blank" rel="noopener" className="hover:text-jr-blue font-medium">
+                    {d.note || d.filename}
+                  </a>{' '}
+                  <span className="text-gray-500">
+                    · {formatDate(d.createdAt)} · {Math.round(d.bytes / 1024)} kB
+                  </span>
+                </span>
+                {i === 0 ? <span className="bg-jr-green/15 rounded-full px-2.5 py-0.5 text-xs text-[#1d7a36]">Geldt nu</span> : <span className="text-xs text-gray-500">Oudere versie</span>}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-jr-orange text-sm">Nog niet geupload. Tot die tijd gebruikt het printpakket ons eigen gegevensformulier.</p>
         )}
       </section>
 

@@ -11,6 +11,7 @@ import {
   slaLogoOp,
   wisLogo,
   voegHandboekToe,
+  voegBedrijfsdocumentToe,
   BedrijfError,
 } from '@/lib/bedrijf'
 import { slaRegelingenOp, SjabloonError } from '@/lib/sjablonen'
@@ -113,4 +114,15 @@ export async function handboekUploaden(formData: FormData): Promise<ActionResult
 export async function regelingenOpslaan(formData: FormData): Promise<ActionResult> {
   if (!(await alsBeheerder())) return GEEN_RECHT
   return veilig(() => slaRegelingenOp(formData.getAll('regeling').map(String)))
+}
+
+/** Het model "Opgaaf gegevens voor de loonheffingen" van de Belastingdienst: elk jaar een nieuwe versie. */
+export async function loonheffingsformulierUploaden(formData: FormData): Promise<ActionResult> {
+  const gebruiker = await alsBeheerder()
+  if (!gebruiker) return GEEN_RECHT
+  const bestand = await bestandUit(formData, 'formulier')
+  if (!bestand) return { ok: false, error: 'Kies de pdf van de Belastingdienst.' }
+  return veilig(async () => {
+    await voegBedrijfsdocumentToe('loonheffingsformulier', bestand, tekst(formData, 'notitie') || null, gebruiker.id)
+  })
 }

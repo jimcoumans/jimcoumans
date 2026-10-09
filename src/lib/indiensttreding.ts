@@ -85,7 +85,7 @@ export async function getIndiensttreding(k: Candidate): Promise<Indiensttreding>
     },
     { sleutel: 'contract', titel: 'Getekend contract', klaar: heeft('contract'), toelichting: 'De scan met alle handtekeningen en parafen.' },
     { sleutel: 'avg_verklaring', titel: 'Getekende AVG-verklaring', klaar: heeft('avg_verklaring') },
-    { sleutel: 'loonheffing', titel: 'Gegevensformulier / loonheffingsverklaring', klaar: heeft('loonheffing'), toelichting: 'Met BSN en de keuze voor de loonheffingskorting, getekend.' },
+    { sleutel: 'loonheffing', titel: 'Getekend loonheffingsformulier', klaar: heeft('loonheffing'), toelichting: 'Opgaaf gegevens voor de loonheffingen: met BSN en de keuze voor de loonheffingskorting.' },
     { sleutel: 'id_kopie', titel: 'Kopie identiteitsbewijs', klaar: heeft('id_kopie'), toelichting: 'Bekijk het origineel bij het tekenen.' },
     { sleutel: 'iban', titel: 'Bankrekening (IBAN)', klaar: !!r?.ibanEnc, toelichting: r?.ibanEnc ? `Eindigt op ${r.ibanLast4 ?? '…'}.` : undefined },
     {

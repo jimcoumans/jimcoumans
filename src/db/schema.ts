@@ -2947,7 +2947,7 @@ export const companyDocuments = pgTable(
   (t) => [
     index('company_documents_kind_idx').on(t.kind, t.createdAt),
     uniqueIndex('company_documents_token_idx').on(t.token),
-    check('company_document_kind_valid', sql`${t.kind} IN ('personeelshandboek')`),
+    check('company_document_kind_valid', sql`${t.kind} IN ('personeelshandboek', 'loonheffingsformulier')`),
     check('company_document_size_reasonable', sql`${t.bytes} > 0 AND ${t.bytes} <= 15728640`),
   ],
 )

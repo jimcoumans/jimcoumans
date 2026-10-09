@@ -3,7 +3,7 @@ import { PDFDocument } from 'pdf-lib'
 import type { GeneratedContract } from '@/db/schema'
 import { formatDateLong } from '@/lib/dates'
 import { tekennaamVan } from '@/lib/contracten'
-import { getBedrijf, haalLogo } from '@/lib/bedrijf'
+import { getBedrijf, haalLogo, huidigBedrijfsdocument, haalBedrijfsdocument } from '@/lib/bedrijf'
 import { getGegevens, leesIban } from '@/lib/persoonsgegevens'
 import { registreerFonts } from './fonts'
 import { MerkKop, merkUit, merkRegel, type Merk, ZWART, GRIJS, BLAUW, VLAK, RAND, KOPLETTER } from './huisstijl'
@@ -190,18 +190,48 @@ export function gegevensPdfNaam(c: GeneratedContract): string {
 }
 
 /**
+ * Het loonheffingsformulier van de Belastingdienst, als het bij de
+ * bedrijfsgegevens staat. Lukt het niet om het te lezen (een beveiligde
+ * pdf, of de opslag doet het even niet), dan ons eigen gegevensformulier:
+ * liever een bruikbaar pakket dan geen pakket.
+ */
+async function loonheffingsformulier(): Promise<Uint8Array | null> {
+  try {
+    const doc = await huidigBedrijfsdocument('loonheffingsformulier')
+    if (!doc) return null
+    const bestand = await haalBedrijfsdocument(doc)
+    return bestand ? new Uint8Array(bestand.data) : null
+  } catch (fout) {
+    console.error('[printpakket] loonheffingsformulier niet te lezen:', fout)
+    return null
+  }
+}
+
+/**
  * Alles om te printen voor het tekenen, in een bestand: het contract twee
- * keer (in tweevoud), de AVG-verklaring en het gegevensformulier.
+ * keer (in tweevoud), de AVG-verklaring en het loonheffingsformulier van de
+ * Belastingdienst. Is dat er niet, dan ons eigen gegevensformulier.
  */
 export async function maakPrintpakket(c: GeneratedContract): Promise<Buffer> {
-  const [contract, avg, gegevens] = await Promise.all([maakContractPdf(c), maakAvgPdf(c), maakGegevensPdf(c)])
+  const [contract, avg, officieel] = await Promise.all([maakContractPdf(c), maakAvgPdf(c), loonheffingsformulier()])
   const pakket = await PDFDocument.create()
   pakket.setTitle(`${tekennaamVan(c)} - documenten om te tekenen`)
-  for (const bron of [contract, contract, avg, gegevens]) {
-    const doc = await PDFDocument.load(bron)
+  const voegToe = async (bron: Uint8Array) => {
+    const doc = await PDFDocument.load(bron, { ignoreEncryption: true })
     const paginas = await pakket.copyPages(doc, doc.getPageIndices())
     for (const p of paginas) pakket.addPage(p)
   }
+  for (const bron of [contract, contract, avg]) await voegToe(bron)
+  let gelukt = false
+  if (officieel) {
+    try {
+      await voegToe(officieel)
+      gelukt = true
+    } catch (fout) {
+      console.error('[printpakket] loonheffingsformulier niet toe te voegen:', fout)
+    }
+  }
+  if (!gelukt) await voegToe(await maakGegevensPdf(c))
   return Buffer.from(await pakket.save())
 }
 
