@@ -3,7 +3,7 @@ import type { GeneratedContract } from '@/db/schema'
 import { getBedrijf, haalLogo, avgTekst } from '@/lib/bedrijf'
 import { vulIn, tekennaamVan } from '@/lib/contracten'
 import { registreerFonts } from './fonts'
-import { MerkKop, merkUit, merkRegel, type Merk, ZWART, GRIJS, BLAUW, VLAK, RAND } from './huisstijl'
+import { DocumentKop, KOP_RUIMTE, merkUit, merkRegel, type Merk, ZWART, GRIJS, BLAUW, VLAK, RAND } from './huisstijl'
 import { bestandsnaam } from './ContractPdf'
 
 /* -------------------------------------------------------------------------
@@ -17,7 +17,7 @@ import { bestandsnaam } from './ContractPdf'
    ------------------------------------------------------------------------- */
 
 const s = StyleSheet.create({
-  pagina: { fontFamily: 'Inter', fontSize: 9.5, color: ZWART, paddingTop: 112, paddingBottom: 72, paddingHorizontal: 56 },
+  pagina: { fontFamily: 'Inter', fontSize: 9.5, color: ZWART, paddingTop: KOP_RUIMTE, paddingBottom: 56, paddingHorizontal: 56 },
   regel: { fontSize: 9.5, lineHeight: 1.5 },
   eyebrow: { fontSize: 8.5, color: BLAUW, fontWeight: 500, marginBottom: 6 },
   titel: { fontFamily: 'Figtree', fontWeight: 700, fontSize: 24, lineHeight: 1.15, marginBottom: 6 },
@@ -32,8 +32,6 @@ const s = StyleSheet.create({
   veld: { flex: 1, backgroundColor: VLAK, borderRadius: 8, padding: 12, marginRight: 10 },
   label: { fontSize: 7.5, color: GRIJS, marginBottom: 2 },
   lijn: { height: 40, borderBottomWidth: 0.75, borderBottomColor: GRIJS, marginBottom: 6 },
-  voetMerk: { position: 'absolute', bottom: 28, left: 56, fontSize: 7, color: GRIJS },
-  paginaNr: { position: 'absolute', bottom: 28, right: 56, fontSize: 7, color: BLAUW },
 })
 
 type Blok = { soort: 'kop' | 'alinea' | 'punt' | 'vakje'; tekst: string }
@@ -70,7 +68,7 @@ export function AvgPdf({ naam, tekst, merk }: { naam: string; tekst: string; mer
   return (
     <Document title={`${naam} - AVG-verklaring`} author={merkRegel(merk)}>
       <Page size="A4" style={s.pagina}>
-        <MerkKop merk={merk} rechts={['AVG-verklaring', naam]} />
+        <DocumentKop soort="AVG-verklaring" wie={naam} merk={merk} />
         <Text style={s.eyebrow}>Bijlage bij de arbeidsovereenkomst</Text>
         <Text style={s.titel}>AVG-verklaring</Text>
         <Text style={s.ondertitel}>Wat {merk.naam} met de persoonsgegevens van {naam} doet</Text>
@@ -124,10 +122,6 @@ export function AvgPdf({ naam, tekst, merk }: { naam: string; tekst: string; mer
           </View>
         </View>
 
-        <Text style={s.voetMerk} fixed>
-          {[merkRegel(merk), merk.website].filter(Boolean).join(' · ')}
-        </Text>
-        <Text style={s.paginaNr} fixed render={({ pageNumber, totalPages }) => `Pagina ${pageNumber} van ${totalPages}`} />
       </Page>
     </Document>
   )

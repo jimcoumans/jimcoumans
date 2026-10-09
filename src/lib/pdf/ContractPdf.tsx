@@ -4,7 +4,7 @@ import { formatDate, formatDateLong } from '@/lib/dates'
 import { ondertekenaarsVan, namenZin, kopVanContract, tekennaamVan } from '@/lib/contracten'
 import { getBedrijf, haalLogo, type WerkgeverKop } from '@/lib/bedrijf'
 import { registreerFonts } from './fonts'
-import { MerkKop, merkUit, merkRegel, type Merk, ZWART, GRIJS, BLAUW, LIJN, VLAK, RAND } from './huisstijl'
+import { DocumentKop, KOP_RUIMTE, merkUit, merkRegel, type Merk, ZWART, GRIJS, BLAUW, LIJN, VLAK, RAND } from './huisstijl'
 
 /* -------------------------------------------------------------------------
    Een contract als pdf: om te downloaden, mee te sturen en te tekenen.
@@ -25,7 +25,7 @@ const ORANJE = '#94590A'
    accent, rustige grijze vlakken. Ruim boven en onder: de kop en de
    paraafregel staan vast op elke pagina, daar is de ruimte voor. */
 const s = StyleSheet.create({
-  pagina: { fontFamily: 'Inter', fontSize: 9.5, color: ZWART, paddingTop: 112, paddingBottom: 132, paddingHorizontal: 56 },
+  pagina: { fontFamily: 'Inter', fontSize: 9.5, color: ZWART, paddingTop: KOP_RUIMTE, paddingBottom: 112, paddingHorizontal: 56 },
   /* De regelafstand per tekst en niet op de pagina: op de pagina laat
      react-pdf het paginanummer (een render-tekst) stilletjes weg, en via een
      omringend blok rekent het de afstand ruim twee keer zo groot. Met de
@@ -57,13 +57,12 @@ const s = StyleSheet.create({
   handtekening: { width: '48%', marginRight: '2%', marginBottom: 14, backgroundColor: VLAK, borderRadius: 8, padding: 12 },
   tekenruimte: { height: 52, borderBottomWidth: 0.75, borderBottomColor: GRIJS, marginBottom: 6 },
   rol: { fontSize: 7.5, color: GRIJS, marginBottom: 2 },
-  voet: { position: 'absolute', bottom: 40, left: 56, right: 56 },
+  voet: { position: 'absolute', bottom: 36, left: 56, right: 56 },
   parafen: { flexDirection: 'row', borderTopWidth: 0.75, borderTopColor: LIJN, paddingTop: 12 },
-  paraaf: { flex: 1, marginRight: 10 },
+  paraaf: { flex: 1 },
+  paraafTussen: { marginLeft: 12 },
   paraafVak: { height: 30, borderWidth: 0.75, borderColor: RAND, borderRadius: 5, marginTop: 4 },
   paraafNaam: { fontSize: 6.5, color: GRIJS },
-  voetMerk: { position: 'absolute', bottom: 20, left: 56, fontSize: 7, color: GRIJS },
-  paginaNr: { position: 'absolute', bottom: 20, right: 56, fontSize: 7, color: BLAUW },
 })
 
 export function artikelenUit(body: string): { kop: string; leden: string[] }[] {
@@ -132,7 +131,7 @@ export function ContractPdf({ c, kop, tekenaars, merk }: { c: GeneratedContract;
   return (
     <Document title={`${tekennaam} - ${titelVan(c).toLowerCase()}`} author={merkRegel(merk)}>
       <Page size="A4" style={s.pagina}>
-        <MerkKop merk={merk} rechts={[titelVan(c), tekennaam]} />
+        <DocumentKop soort={titelVan(c)} wie={tekennaam} merk={merk} />
         {proforma && (
           <Text style={s.watermerk} fixed>
             PRO FORMA
@@ -227,20 +226,14 @@ export function ContractPdf({ c, kop, tekenaars, merk }: { c: GeneratedContract;
 
         <View style={s.voet} fixed>
           <View style={s.parafen}>
-            {iedereen.map((naam) => (
-              <View key={naam} style={s.paraaf}>
+            {iedereen.map((naam, i) => (
+              <View key={naam} style={i > 0 ? [s.paraaf, s.paraafTussen] : s.paraaf}>
                 <Text style={s.paraafNaam}>Paraaf {naam}</Text>
                 <View style={s.paraafVak} />
               </View>
             ))}
           </View>
         </View>
-        {/* Los van de paraafregel: een render-tekst binnen een vast blok laat
-            react-pdf het hele blok overslaan. */}
-        <Text style={s.voetMerk} fixed>
-          {[merkRegel(merk), merk.website].filter(Boolean).join(' · ')}
-        </Text>
-        <Text style={s.paginaNr} fixed render={({ pageNumber, totalPages }) => `Pagina ${pageNumber} van ${totalPages}`} />
       </Page>
     </Document>
   )
