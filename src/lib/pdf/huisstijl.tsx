@@ -14,6 +14,8 @@ export const BLAUW = '#007AFF'
 export const LIJN = '#E5E5E9'
 export const VLAK = '#F2F2F7'
 export const RAND = '#C8C8CD'
+/** Titels, citaten en subkoppen. Lopende tekst is Inter. */
+export const KOPLETTER = 'Figtree'
 
 export type Merk = {
   naam: string
@@ -64,7 +66,7 @@ export function merkRegel(m: Merk): string {
 const k = StyleSheet.create({
   kop: { position: 'absolute', top: 34, left: 56, right: 56, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderBottomWidth: 0.75, borderBottomColor: LIJN, paddingBottom: 14 },
   links: { flexDirection: 'row', alignItems: 'center' },
-  naam: { fontFamily: 'InterTight', fontWeight: 700, fontSize: 12, color: ZWART },
+  naam: { fontFamily: 'Figtree', fontWeight: 700, fontSize: 12, color: ZWART },
   ondertitel: { fontFamily: 'Inter', fontSize: 8, color: BLAUW, marginTop: 1 },
   rechts: { fontFamily: 'Inter', fontSize: 7.5, color: GRIJS, textAlign: 'right', lineHeight: 1.5 },
 })

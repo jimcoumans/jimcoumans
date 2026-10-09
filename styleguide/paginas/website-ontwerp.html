@@ -1,7 +1,7 @@
 <title>James Robinson website</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
 <style>
 /* Layout: secties van rand tot rand, content in containers van 1024/1280 px. Donker opent en sluit, licht ertussen. Designsysteem v3.0. */
 :root{
@@ -13,7 +13,7 @@
   --line:#D2D2D7; --line-sub:#E5E5E9;
   --dark-2:#2C2D2E; --dark-3:#38383C; --inv:#F5F5F7; --inv-2:#A1A1A6; --inv-3:#86868B; --line-dark:rgba(255,255,255,.12);
   --green:#34C759; --green-text:#1D7D3F; --orange-text:#94590A;
-  --display:"Inter Tight","Inter",-apple-system,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --display:"Figtree","Inter",-apple-system,"Helvetica Neue",Helvetica,Arial,sans-serif;
   --text:"Inter",-apple-system,"Helvetica Neue",Helvetica,Arial,sans-serif;
   --mono:"SF Mono",ui-monospace,Menlo,Consolas,monospace;
   --shadow-lg:0 4px 12px rgba(0,0,0,.06),0 16px 40px rgba(0,0,0,.08);
@@ -2637,7 +2637,7 @@ JR.helpdesk={
     seo:function(){return '<div class="mk mk-seo"><span class="mk-label">Illustratie, geen klantdata</span><svg viewBox="0 0 420 240"><g stroke="rgba(255,255,255,.08)"><path d="M30 40H400M30 100H400M30 160H400M30 220H400"/></g><path d="M30 210 C 120 208, 160 200, 200 180 S 300 80, 400 50" fill="none" stroke="#2997FF" stroke-width="4" stroke-linecap="round"/><circle cx="400" cy="50" r="7" fill="#D9FF33"/><text x="30" y="236" fill="#6E6E73" font-size="12">Maand 1</text><text x="350" y="236" fill="#6E6E73" font-size="12">Maand 12</text></svg></div>'},
     host:function(){return '<div class="mk mk-host"><span class="mk-label">Status</span><b style="font:700 28px var(--display)">Alles in orde.</b><svg viewBox="0 0 420 90"><path class="mk-puls" d="M0 45 H120 L135 15 L150 75 L165 45 H280 L295 25 L310 65 L325 45 H420" fill="none" stroke="#30D158" stroke-width="3"/></svg><ul><li>Back-up vannacht<span>Gelukt</span></li><li>Controle elke minuut<span>Online</span></li><li>SPF, DKIM, DMARC<span>Ingesteld</span></li></ul></div>'},
     embleem:function(t){return '<div class="mk mk-emblem">'+t+'</div>'},
-    kaart:function(n){return '<div class="mk mk-kaart"><svg viewBox="0 0 460 460"><defs><radialGradient id="kg"><stop offset="0" stop-color="#2997FF" stop-opacity=".35"/><stop offset="1" stop-color="#2997FF" stop-opacity="0"/></radialGradient></defs><rect width="460" height="460" fill="#0b0b0d"/><circle cx="230" cy="230" r="200" fill="url(#kg)"/>'+[60,110,160,210].map(function(r){return '<circle cx="230" cy="230" r="'+r+'" fill="none" stroke="rgba(255,255,255,.08)" stroke-dasharray="3 6"/>'}).join('')+'<circle cx="230" cy="230" r="8" fill="#D9FF33"/><text x="230" y="260" fill="#fff" font-size="16" text-anchor="middle" font-family="Inter Tight,Inter,sans-serif" font-weight="700">'+(n||'Hulsberg')+'</text><text x="230" y="282" fill="#86868B" font-size="12" text-anchor="middle" font-family="Inter,sans-serif">30 km: onze focus</text></svg></div>'}
+    kaart:function(n){return '<div class="mk mk-kaart"><svg viewBox="0 0 460 460"><defs><radialGradient id="kg"><stop offset="0" stop-color="#2997FF" stop-opacity=".35"/><stop offset="1" stop-color="#2997FF" stop-opacity="0"/></radialGradient></defs><rect width="460" height="460" fill="#0b0b0d"/><circle cx="230" cy="230" r="200" fill="url(#kg)"/>'+[60,110,160,210].map(function(r){return '<circle cx="230" cy="230" r="'+r+'" fill="none" stroke="rgba(255,255,255,.08)" stroke-dasharray="3 6"/>'}).join('')+'<circle cx="230" cy="230" r="8" fill="#D9FF33"/><text x="230" y="260" fill="#fff" font-size="16" text-anchor="middle" font-family="Figtree,Inter,sans-serif" font-weight="700">'+(n||'Hulsberg')+'</text><text x="230" y="282" fill="#86868B" font-size="12" text-anchor="middle" font-family="Inter,sans-serif">30 km: onze focus</text></svg></div>'}
   };
 
   /* ---------- Pagina's ---------- */

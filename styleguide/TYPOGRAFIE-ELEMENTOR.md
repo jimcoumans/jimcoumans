@@ -1,7 +1,9 @@
 # Typografie in Elementor — invulblad
 
 Alles wat je in het Typografie-paneel invult, per stijl, per breakpoint.
-Hoort bij `jr-elementor-globals.css` v3.0.
+Hoort bij `jr-elementor-globals.css` v3.1.
+
+> **v3.1:** titels, citaten en subkoppen zijn Figtree (was Inter Tight). Lopende tekst blijft Inter. De letterafstand is ongewijzigd overgenomen; kijk de grootste koppen (Display, H1) na op het scherm en maak ze zo nodig een tikje ruimer.
 
 ---
 
@@ -44,12 +46,12 @@ Familie · Dikte · Afmeting (3×) · Regelafstand (1×) · Letterafstand (1×).
 
 | Stijl | Familie | Dikte | Afmeting D / T / M | Regelafstand (em) | Letterafstand (em) |
 |---|---|---|---|---|---|
-| **Display** | Inter Tight | 700 | 80 / 56 / 40 | 1.05 | −0.028 · mobiel −0.022 |
-| **H1** | Inter Tight | 700 | 56 / 44 / 34 | 1.08 | −0.022 · mobiel −0.018 |
-| **H2** | Inter Tight | 700 | 40 / 34 / 28 | 1.12 | −0.018 · mobiel −0.014 |
-| **H3** | Inter Tight | 600 | 28 / 26 / 22 | 1.12 | −0.014 |
-| **H4** | Inter Tight | 600 | 24 / 22 / 20 | 1.25 | −0.010 |
-| **H5** | Inter Tight | 600 | 21 / 20 / 18 | 1.25 | −0.008 |
+| **Display** | Figtree | 700 | 80 / 56 / 40 | 1.05 | −0.028 · mobiel −0.022 |
+| **H1** | Figtree | 700 | 56 / 44 / 34 | 1.08 | −0.022 · mobiel −0.018 |
+| **H2** | Figtree | 700 | 40 / 34 / 28 | 1.12 | −0.018 · mobiel −0.014 |
+| **H3** | Figtree | 600 | 28 / 26 / 22 | 1.12 | −0.014 |
+| **H4** | Figtree | 600 | 24 / 22 / 20 | 1.25 | −0.010 |
+| **H5** | Figtree | 600 | 21 / 20 / 18 | 1.25 | −0.008 |
 | **H6** | Inter | 600 | 17 / 17 / 16 | 1.25 | −0.004 |
 | **Lead** | Inter | 400 | 21 / 20 / 18 | 1.45 | 0 |
 | **Body** | Inter | 400 | 17 / 17 / 16 | 1.55 | 0 |
@@ -57,13 +59,13 @@ Familie · Dikte · Afmeting (3×) · Regelafstand (1×) · Letterafstand (1×).
 | **Caption** | Inter | 400 | 12 / 12 / 12 | 1.4 | 0.004 |
 | **Eyebrow** | Inter | 600 | 14 / 14 / 14 | 1.3 | 0 |
 | **Knop** | Inter | 500 | 17 / 17 / 16 | 1.2 | −0.008 |
-| **Quote** | Inter Tight | 600 | 32 / 28 / 22 | 1.25 | −0.014 |
-| **Kengetal** | Inter Tight | 700 | 64 / 52 / 40 | 1.0 | −0.022 |
+| **Quote** | Figtree | 600 | 32 / 28 / 22 | 1.25 | −0.014 |
+| **Kengetal** | Figtree | 700 | 64 / 52 / 40 | 1.0 | −0.022 |
 | **Nav** | Inter | 400 | 14 / 14 / 14 | 1.4 | 0 |
 | **Label** | Inter | 500 | 14 / 14 / 14 | 1.4 | 0 |
 | **Badge** | Inter | 500 | 12 / 12 / 12 | 1.0 | 0 |
 | **Tag** | Inter | 400 | 14 / 14 / 14 | 1.4 | 0 |
-| **Menu mobiel** | Inter Tight | 600 | 24 / 24 / 24 | 1.25 | −0.010 |
+| **Menu mobiel** | Figtree | 600 | 24 / 24 / 24 | 1.25 | −0.010 |
 
 **Drie stijlen hebben een afwijkende mobiele letterafstand** (Display, H1, H2). Op klein formaat werkt strakke tracking tegen je: de letters kruipen in elkaar. Zet daar op mobiel de losse waarde in.
 
@@ -77,12 +79,12 @@ Blijft de dropdown op `px` staan, vul dan dit in. Elke kolom is een breakpoint.
 
 | Stijl | Familie | Dikte | Afmeting | Regelafstand | Letterafstand |
 |---|---|---|---|---|---|
-| Display | Inter Tight | 700 | 80 | 84 | −2.2 |
-| H1 | Inter Tight | 700 | 56 | 60 | −1.2 |
-| H2 | Inter Tight | 700 | 40 | 45 | −0.7 |
-| H3 | Inter Tight | 600 | 28 | 31 | −0.4 |
-| H4 | Inter Tight | 600 | 24 | 30 | −0.2 |
-| H5 | Inter Tight | 600 | 21 | 26 | −0.2 |
+| Display | Figtree | 700 | 80 | 84 | −2.2 |
+| H1 | Figtree | 700 | 56 | 60 | −1.2 |
+| H2 | Figtree | 700 | 40 | 45 | −0.7 |
+| H3 | Figtree | 600 | 28 | 31 | −0.4 |
+| H4 | Figtree | 600 | 24 | 30 | −0.2 |
+| H5 | Figtree | 600 | 21 | 26 | −0.2 |
 | H6 | Inter | 600 | 17 | 21 | −0.1 |
 | Lead | Inter | 400 | 21 | 30 | 0 |
 | Body | Inter | 400 | 17 | 26 | 0 |
@@ -90,13 +92,13 @@ Blijft de dropdown op `px` staan, vul dan dit in. Elke kolom is een breakpoint.
 | Caption | Inter | 400 | 12 | 17 | 0 |
 | Eyebrow | Inter | 600 | 14 | 18 | 0 |
 | Knop | Inter | 500 | 17 | 20 | −0.1 |
-| Quote | Inter Tight | 600 | 32 | 40 | −0.4 |
-| Kengetal | Inter Tight | 700 | 64 | 64 | −1.4 |
+| Quote | Figtree | 600 | 32 | 40 | −0.4 |
+| Kengetal | Figtree | 700 | 64 | 64 | −1.4 |
 | Nav | Inter | 400 | 14 | 20 | 0 |
 | Label | Inter | 500 | 14 | 20 | 0 |
 | Badge | Inter | 500 | 12 | 12 | 0 |
 | Tag | Inter | 400 | 14 | 20 | 0 |
-| Menu mobiel | Inter Tight | 600 | 24 | 30 | −0.2 |
+| Menu mobiel | Figtree | 600 | 24 | 30 | −0.2 |
 
 ### Tablet (≤ 1068 px)
 
@@ -378,7 +380,7 @@ Dit is het antwoord op "welke moet ik nou kiezen". Per component, per element.
 
 ## 7. Drie regels om te onthouden
 
-**Koppen boven 20px zijn Inter Tight. Alles daaronder is Inter.**
+**Titels, citaten en subkoppen boven 20px zijn Figtree. Lopende tekst en alles daaronder is Inter.**
 Dat is de grens waarop we Apple's SF Pro Display / SF Pro Text nabootsen. H6 valt precies onder die grens en gebruikt dus Inter, ook al is het een kop.
 
 **Hoe groter de tekst, hoe strakker de letterafstand.**

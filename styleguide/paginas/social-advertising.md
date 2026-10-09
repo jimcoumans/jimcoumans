@@ -23,11 +23,11 @@ Visuele versie: `social-advertising.html` (open in een browser, met een schakela
 
 ## Boven de vouw — merkregister
 
-**H1** · Inter Tight 700 · 56 / 44 / 34
+**H1** · Figtree 700 · 56 / 44 / 34
 
 > Social advertising
 
-**Lead** · geen heading · Inter Tight 700 · 40 / 34 / 28
+**Lead** · geen heading · Figtree 700 · 40 / 34 / 28
 
 > Bereik vóór de vraag.
 

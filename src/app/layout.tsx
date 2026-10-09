@@ -2,7 +2,8 @@ import type { Metadata, Viewport } from 'next'
 import localFont from 'next/font/local'
 import './globals.css'
 
-/* Het designsysteem: Inter voor tekst en bediening, Inter Tight voor koppen.
+/* Het designsysteem: Inter voor tekst en bediening, Figtree voor titels,
+   citaten en subkoppen.
    De bestanden staan in de repo (variabele fonts, latin, OFL-licentie), zodat
    de build niet afhangt van Google en de browser niets aan Google vraagt. */
 const inter = localFont({
@@ -11,10 +12,10 @@ const inter = localFont({
   variable: '--font-inter',
   display: 'swap',
 })
-const interTight = localFont({
-  src: './fonts/InterTight-latin.woff2',
-  weight: '500 700',
-  variable: '--font-inter-tight',
+const figtree = localFont({
+  src: './fonts/Figtree-latin.woff2',
+  weight: '300 900',
+  variable: '--font-figtree',
   display: 'swap',
 })
 
@@ -32,7 +33,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="nl" className={`${inter.variable} ${interTight.variable}`}>
+    <html lang="nl" className={`${inter.variable} ${figtree.variable}`}>
       <body>{children}</body>
     </html>
   )

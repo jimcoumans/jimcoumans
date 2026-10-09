@@ -7,10 +7,10 @@
    Versie     : 2.0
    --------------------------------------------------------------------------
    LETTERTYPE
-   Inter Tight (display/koppen) + Inter (body/UI). Beide via Google Fonts.
+   Figtree (display/koppen) + Inter (body/UI). Beide via Google Fonts.
    Stel ze in via Elementor → Site Settings → Global Fonts (sneller dan een
    @import hier). Werk je zonder Elementor, zet dan bovenaan je stylesheet:
-   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&display=swap');
+   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Figtree:wght@500;600;700&display=swap');
    --------------------------------------------------------------------------
    INHOUD
    01. Design tokens
@@ -60,11 +60,11 @@
        SF Pro Display  → 20px en groter
        SF Pro Text     → onder 20px
      Wij doen exact hetzelfde met de Inter-familie:
-       Inter Tight     → 21px en groter (strakker, smaller, voor koppen)
+       Figtree         → 21px en groter (titels, citaten en subkoppen)
        Inter           → onder 21px (ruimer, voor body en UI)
      Eén familie, twee optische maten. Geen tweede lettertype. */
 
-  --jr-font-display: "Inter Tight", "Inter", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --jr-font-display: "Figtree", "Inter", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
   --jr-font-text:    "Inter", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
   --jr-font-mono:    "SF Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
@@ -589,7 +589,7 @@ body {
    03. TYPOGRAFIE
    ==========================================================================
    Twee optische maten van één familie, net als Apple:
-     Inter Tight → 21px en groter   (display, H1–H5, quote, stat)
+     Figtree → 21px en groter   (display, H1–H5, quote, stat)
      Inter       → onder 21px       (H6, lead, body, small, caption, UI)
    De marges hieronder zijn het verticale ritme uit §1.9. Pas ze daar aan,
    niet hier.

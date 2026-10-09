@@ -629,7 +629,7 @@ De homepage is geen overzicht van alles wat we doen. Het is een verhaal in hoofd
 | Status | groen `#34C759` (tekst `#1D7D3F`), oranje `#F6A027` (tekst `#94590A`), rood `#FF3B30` (tekst `#C02A22`) |
 
 ### Typografie
-**Web:** Inter Tight voor koppen vanaf 21 px, en Inter voor tekst en interface. Beide via Google Fonts. Het brandbook schrijft Helvetica Neue voor; dat blijft voor drukwerk.
+**Web:** Figtree voor koppen vanaf 21 px, en Inter voor tekst en interface. Beide via Google Fonts. Het brandbook schrijft Helvetica Neue voor; dat blijft voor drukwerk.
 
 | Stijl | Font en gewicht | Desktop / tablet / mobiel (px) | Regelhoogte | Letterafstand |
 |---|---|---|---|---|

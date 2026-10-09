@@ -17,7 +17,14 @@ export function registreerFonts() {
       { src: path.join(FONTS, 'Inter-700.ttf'), fontWeight: 700 },
     ],
   })
-  Font.register({ family: 'InterTight', src: path.join(FONTS, 'InterTight-700.ttf'), fontWeight: 700 })
+  // Figtree voor titels, citaten en subkoppen (designsysteem); Inter voor de lopende tekst.
+  Font.register({
+    family: 'Figtree',
+    fonts: [
+      { src: path.join(FONTS, 'Figtree-500.ttf'), fontWeight: 500 },
+      { src: path.join(FONTS, 'Figtree-700.ttf'), fontWeight: 700 },
+    ],
+  })
   // Geen afbreekstreepjes midden in woorden; alleen een heel lang woord (een webadres) mag breken.
   // Nooit afbreken binnen een woord: de bibliotheek zet er dan een streepje bij, ook in een webadres.
   Font.registerHyphenationCallback((woord) => [woord])
