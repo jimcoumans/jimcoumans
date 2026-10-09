@@ -4,6 +4,7 @@ import { getSessionUser, createLoginToken, createSession, normalizeEmail } from 
 import { controleerInlog } from '@/lib/wachtwoord'
 import { sendLoginEmail } from '@/lib/mail'
 import { Logo } from '@/components/Logo'
+import { merkTekst } from '@/lib/bedrijf'
 
 /* Inloggen met een e-mailadres. Geen wachtwoord, geen registratie. */
 
@@ -80,6 +81,7 @@ export default async function LoginPage({
   if (user) redirect('/')
 
   const params = await searchParams
+  const merk = await merkTekst()
   const fout = params.fout ? foutmeldingen[params.fout] : null
 
   return (
@@ -187,7 +189,8 @@ export default async function LoginPage({
         </div>
 
         <p className="mt-6 text-center text-xs text-gray-600">
-          James Robinson &mdash; Marketing &amp; Branding
+          {merk.naam}
+          {merk.ondertitel ? <> &mdash; {merk.ondertitel}</> : null}
           <br />
           <a href="https://www.jamesrobinson.nl" className="hover:text-jr-blue">
             www.jamesrobinson.nl

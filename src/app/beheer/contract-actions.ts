@@ -2,22 +2,27 @@
 
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+import { headers } from 'next/headers'
 import { alsBeheerder } from '@/lib/auth'
 import { describeDbError } from '@/lib/db-errors'
 import { parseAmountToCents } from '@/lib/money'
 import { vergeet } from '@/lib/cache'
 import {
   getSjabloon,
-  getWerkgever,
+  getContract,
   getFunctieprofiel,
   stelContractOp,
   bewaarContract,
+  wijzigContract,
+  waaromNietWijzigen,
+  contractWerkgever,
+  korteNaam,
   maakDefinitief,
   markeerAangezegd,
-  slaWerkgeverOp,
   ContractError,
   type ContractInvoer,
 } from '@/lib/contracten'
+import { getBedrijf, huidigHandboek, handboekPad, werkgeverKop } from '@/lib/bedrijf'
 import { berekenBeloning, getHuis } from '@/lib/salarishuis'
 import { zetKandidaatStatus } from '@/lib/werving'
 import { zorgVoorGegevens, zorgVoorGegevensVanCollega, werkContractgegevensBij, GegevensError } from '@/lib/persoonsgegevens'
@@ -68,37 +73,36 @@ function getal(formData: FormData, naam: string): number | null {
   return Number.isFinite(n) ? n : null
 }
 
+type Formulier = {
+  invoer: ContractInvoer
+  kandidaatId: string | null
+  collegaId: string | null
+  contractSoort: 'proforma' | 'definitief'
+  naamDelen: { voornamen: string; tussenvoegsel: string | null; achternaam: string }
+}
+
 /**
- * Stelt een contract op en bewaart het als concept.
+ * Leest het contractformulier: hetzelfde voor opstellen en wijzigen.
  *
  * Het salaris komt uit het salarishuis als er een schaal en trede zijn
  * gekozen. Dat is met opzet: een bedrag dat je met de hand intypt kan
  * afwijken van de schaal waar je zegt dat het uit komt, en dan klopt je
  * salarishuis niet meer met je contracten.
  */
-export async function nieuwContract(formData: FormData): Promise<ActionResult> {
-  const gebruiker = await alsBeheerder()
-  if (!gebruiker) return GEEN_RECHT
-
+async function leesFormulier(formData: FormData): Promise<Formulier | string> {
   const kandidaatId = tekst(formData, 'kandidaatId') || null
   const collegaId = tekst(formData, 'collegaId') || null
-  if (!kandidaatId && !collegaId) {
-    return { ok: false, error: 'Kies een kandidaat of een collega.' }
-  }
+  if (!kandidaatId && !collegaId) return 'Kies een kandidaat of een collega.'
 
   const ingangsdatum = datum(formData, 'ingangsdatum')
-  if (!ingangsdatum) return { ok: false, error: 'Vul een ingangsdatum in.' }
+  if (!ingangsdatum) return 'Vul een ingangsdatum in.'
 
   const soort = tekst(formData, 'soort') === 'onbepaalde_tijd' ? 'onbepaalde_tijd' : 'bepaalde_tijd'
   const looptijd = getal(formData, 'looptijd')
-  if (soort === 'bepaalde_tijd' && (looptijd === null || looptijd <= 0)) {
-    return { ok: false, error: 'Vul de looptijd in maanden in.' }
-  }
+  if (soort === 'bepaalde_tijd' && (looptijd === null || looptijd <= 0)) return 'Vul de looptijd in maanden in.'
 
   const uren = getal(formData, 'uren')
-  if (uren === null || uren <= 0) {
-    return { ok: false, error: 'Vul het aantal uren per week in.' }
-  }
+  if (uren === null || uren <= 0) return 'Vul het aantal uren per week in.'
   const urenKwartier = Math.round(uren * 100)
 
   const schaal = tekst(formData, 'schaal') || null
@@ -114,80 +118,57 @@ export async function nieuwContract(formData: FormData): Promise<ActionResult> {
 
   if (schaal && trede !== null) {
     const huis = await getHuis(ingangsdatum)
-    if (!huis) {
-      return {
-        ok: false,
-        error: 'Er is geen salarishuis dat geldt op de ingangsdatum. Voeg er een toe bij Salarishuis.',
-      }
-    }
+    if (!huis) return 'Er is geen salarishuis dat geldt op de ingangsdatum. Voeg er een toe bij Salarishuis.'
     try {
       const beloning = berekenBeloning(huis, schaal, Math.round(trede), urenKwartier)
       brutoCents = beloning.maandCents
       // OP-toeslag in plaats van een pensioenregeling: standaard aan, uit te zetten.
-      const opUit = formData.has('opToeslagKeuze') && !['ja', 'on', 'true'].includes(tekst(formData, 'opToeslagAan'))
+      const opUit = formData.has('opToeslagKeuze') && !aan(formData, 'opToeslagAan')
       opToeslagCents = opUit ? 0 : beloning.opToeslagCents
       vakantieUren = beloning.vakantieUren
       vakantieUrenFulltime = huis.huis.holidayHoursFulltime
       vakantietoeslagBp = huis.huis.holidayAllowanceBp
-
-      if (beloning.onderMinimumloon === true) {
-        return {
-          ok: false,
-          error: `Dit komt uit op een uurloon onder het wettelijk minimum. Verhoog de trede of pas het salarishuis aan.`,
-        }
-      }
+      if (beloning.onderMinimumloon === true) return 'Dit komt uit op een uurloon onder het wettelijk minimum. Verhoog de trede of pas het salarishuis aan.'
     } catch (fout) {
-      return {
-        ok: false,
-        error: fout instanceof Error ? fout.message : 'De schaal of trede klopt niet.',
-      }
+      return fout instanceof Error ? fout.message : 'De schaal of trede klopt niet.'
     }
   } else {
     const handmatig = tekst(formData, 'bedrag')
     const gelezen = handmatig === '' ? null : parseAmountToCents(handmatig)
-    if (gelezen === null || gelezen <= 0) {
-      return {
-        ok: false,
-        error: 'Kies een schaal en trede, of vul zelf een brutobedrag per maand in.',
-      }
-    }
+    if (gelezen === null || gelezen <= 0) return 'Kies een schaal en trede, of vul zelf een brutobedrag per maand in.'
     brutoCents = gelezen
   }
 
   const profielId = tekst(formData, 'functieprofiel') || null
   const profiel = profielId ? await getFunctieprofiel(profielId) : null
-
   const functie = tekst(formData, 'functie') || profiel?.title || ''
-  if (functie === '') return { ok: false, error: 'Vul de functie in.' }
+  if (functie === '') return 'Vul de functie in.'
 
   /* De naam zoals in het paspoort, uit losse delen: die gaan ook terug naar
-     de persoonsgegevens. Het oude formulier met één naamveld werkt nog. */
+     de persoonsgegevens. De roepnaam staat in de kop en bij de paraaf. */
   const voornamen = tekst(formData, 'officieleVoornamen')
   const tussenvoegsel = tekst(formData, 'tussenvoegsel')
   const achternaam = tekst(formData, 'achternaam')
-  const naamUitDelen = volledigeNaam({ firstName: voornamen, infix: tussenvoegsel, lastName: achternaam })
+  const roepnaam = tekst(formData, 'roepnaam')
+  if (!voornamen || !achternaam) return 'Vul de voornamen (zoals in het paspoort) en de achternaam in.'
+  const naam = volledigeNaam({ firstName: voornamen, infix: tussenvoegsel, lastName: achternaam })
 
   /* Wie namens de werkgever tekent. Alleen als het formulier de keuze biedt;
-     anders gelden de werkgevergegevens. */
+     anders gelden de bedrijfsgegevens. */
   const ondertekenaars = formData.has('ondertekenaarsKeuze')
     ? formData.getAll('ondertekenaar').map((v) => String(v).trim()).filter(Boolean)
     : undefined
-  if (ondertekenaars && ondertekenaars.length === 0) {
-    return { ok: false, error: 'Kies wie er namens James Robinson tekent.' }
-  }
+  if (ondertekenaars && ondertekenaars.length === 0) return 'Kies wie er namens de werkgever tekent.'
 
+  const aanhef = tekst(formData, 'aanhef')
   const invoer: ContractInvoer = {
     candidateId: kandidaatId,
     userId: collegaId,
-    naam: naamUitDelen || tekst(formData, 'naam'),
-    roepnaam: tekst(formData, 'roepnaam') || null,
+    naam,
+    roepnaam: roepnaam || null,
+    korteNaam: korteNaam(roepnaam || voornamen.split(/\s+/)[0], tussenvoegsel, achternaam),
     ondertekenaars,
-    aanhef:
-      tekst(formData, 'aanhef') === 'heer'
-        ? 'heer'
-        : tekst(formData, 'aanhef') === 'mevrouw'
-          ? 'mevrouw'
-          : 'neutraal',
+    aanhef: aanhef === 'heer' ? 'heer' : aanhef === 'mevrouw' ? 'mevrouw' : 'neutraal',
     adres: tekst(formData, 'adres') || null,
     postcode: tekst(formData, 'postcode') || null,
     woonplaats: tekst(formData, 'woonplaats') || null,
@@ -206,55 +187,116 @@ export async function nieuwContract(formData: FormData): Promise<ActionResult> {
     vakantietoeslagBp,
     vakantieUrenFulltime,
     vakantieUren: vakantieUren ?? undefined,
-    vrijetijdsbudget: ['ja', 'on', 'true'].includes(tekst(formData, 'vrijetijdsbudget')),
+    vrijetijdsbudget: aan(formData, 'vrijetijdsbudget'),
     // Alleen als het formulier de keuze aanbiedt; anders beslist het functieprofiel.
-    relatiebeding: formData.has('relatiebedingKeuze') ? ['ja', 'on', 'true'].includes(tekst(formData, 'relatiebeding')) : undefined,
+    relatiebeding: formData.has('relatiebedingKeuze') ? aan(formData, 'relatiebeding') : undefined,
     extraAfspraken: formData.has('extraAfspraken') ? tekst(formData, 'extraAfspraken') : undefined,
+    standplaatsId: tekst(formData, 'standplaats') || null,
+    bereikbaarOpWerkdagen: aan(formData, 'bereikbaar'),
+    nevenwerk: tekst(formData, 'nevenwerk') === 'vrij_behalve_klanten' ? 'vrij_behalve_klanten' : 'toestemming',
+    tekenplaats: tekst(formData, 'tekenplaats') || null,
+    tekendatum: datum(formData, 'tekendatum'),
   }
 
-  if (invoer.naam === '') return { ok: false, error: 'Vul de naam van de werknemer in.' }
+  return {
+    invoer,
+    kandidaatId,
+    collegaId,
+    contractSoort: tekst(formData, 'contractSoort') === 'definitief' ? 'definitief' : 'proforma',
+    naamDelen: { voornamen, tussenvoegsel: formData.has('tussenvoegsel') ? tussenvoegsel || null : null, achternaam },
+  }
+}
+
+const aan = (formData: FormData, naam: string) => ['ja', 'on', 'true', '1'].includes(tekst(formData, naam))
+
+/**
+ * Alles wat nodig is om het contract op te stellen: sjabloon, bedrijf,
+ * standplaats en het handboek. En eerst de persoonsgegevens bijwerken: wat
+ * in het contract staat, staat daarna ook daar.
+ */
+async function stelOp(f: Formulier) {
+  const { invoer } = f
+  const sjabloon = await getSjabloon(invoer.soort, invoer.ingangsdatum)
+  if (!sjabloon) {
+    throw new ContractError(`Er is nog geen sjabloon voor een contract voor ${invoer.soort === 'bepaalde_tijd' ? 'bepaalde' : 'onbepaalde'} tijd.`)
+  }
+  const bedrijf = await getBedrijf()
+  if (!bedrijf) throw new ContractError('De bedrijfsgegevens ontbreken. Vul die eerst in bij Bedrijfsgegevens.')
+  if (invoer.standplaatsId && !bedrijf.vestigingen.some((v) => v.id === invoer.standplaatsId)) {
+    throw new ContractError('Deze standplaats bestaat niet meer. Kies een andere vestiging.')
+  }
+  const handboek = await huidigHandboek()
+  const h = await headers()
+  const basis = process.env.APP_URL ?? `${h.get('x-forwarded-proto') ?? 'https'}://${h.get('x-forwarded-host') ?? h.get('host')}`
+  const context = contractWerkgever(bedrijf, invoer.standplaatsId, handboek && basis ? `${basis}${handboekPad(handboek)}` : null)
+  // Waar er getekend wordt: standaard de plaats van de standplaats.
+  if (!invoer.tekenplaats) invoer.tekenplaats = context.standplaats?.city ?? null
+
+  /* Eén plek voor naam, adres en geboortedatum: wat hier is ingevuld, gaat
+     eerst naar de persoonsgegevens. */
+  const record = f.kandidaatId ? await zorgVoorGegevens(f.kandidaatId) : await zorgVoorGegevensVanCollega(f.collegaId!)
+  await werkContractgegevensBij(record.id, {
+    officialFirstNames: f.naamDelen.voornamen,
+    infix: f.naamDelen.tussenvoegsel,
+    lastName: f.naamDelen.achternaam,
+    addressLine: invoer.adres,
+    postalCode: invoer.postcode,
+    city: invoer.woonplaats,
+    birthDate: invoer.geboortedatum,
+  })
+  if (f.kandidaatId) {
+    await db.update(candidates).set({ officialFirstNames: f.naamDelen.voornamen, updatedAt: new Date() }).where(eq(candidates.id, f.kandidaatId))
+  }
+
+  const profiel = invoer.jobProfileId ? await getFunctieprofiel(invoer.jobProfileId) : null
+  const concept = stelContractOp(invoer, sjabloon, context, profiel)
+  return { concept, sjabloon, bijlagen: { kop: werkgeverKop(bedrijf), handboekId: handboek?.id ?? null } }
+}
+
+/** Stelt een contract op en bewaart het. */
+export async function nieuwContract(formData: FormData): Promise<ActionResult> {
+  const gebruiker = await alsBeheerder()
+  if (!gebruiker) return GEEN_RECHT
+  const f = await leesFormulier(formData)
+  if (typeof f === 'string') return { ok: false, error: f }
 
   let nieuwId: string | null = null
-
   const resultaat = await veilig(async () => {
-    const sjabloon = await getSjabloon(soort, ingangsdatum)
-    if (!sjabloon) {
-      throw new ContractError(
-        `Er is nog geen sjabloon voor een contract voor ${soort === 'bepaalde_tijd' ? 'bepaalde' : 'onbepaalde'} tijd.`,
-      )
-    }
-    const werkgever = await getWerkgever()
-    if (!werkgever) {
-      throw new ContractError('De gegevens van de werkgever ontbreken. Vul die eerst in.')
-    }
-
-    /* Eén plek voor naam, adres en geboortedatum: wat hier is ingevuld, gaat
-       eerst naar de persoonsgegevens. */
-    if (kandidaatId || collegaId) {
-      const record = kandidaatId ? await zorgVoorGegevens(kandidaatId) : await zorgVoorGegevensVanCollega(collegaId!)
-      await werkContractgegevensBij(record.id, {
-        officialFirstNames: voornamen || null,
-        ...(formData.has('tussenvoegsel') ? { infix: tussenvoegsel || null } : {}),
-        lastName: achternaam || null,
-        addressLine: invoer.adres,
-        postalCode: invoer.postcode,
-        city: invoer.woonplaats,
-        birthDate: invoer.geboortedatum,
-      })
-      if (kandidaatId && voornamen) {
-        await db.update(candidates).set({ officialFirstNames: voornamen, updatedAt: new Date() }).where(eq(candidates.id, kandidaatId))
-      }
-    }
-
-    const concept = stelContractOp(invoer, sjabloon, werkgever, profiel)
+    const { concept, sjabloon, bijlagen } = await stelOp(f)
     // Pro forma: een voorstel om over te praten. Definitief: ter ondertekening.
-    const contractSoort = tekst(formData, 'contractSoort') === 'definitief' ? 'definitief' : 'proforma'
-    const bewaard = await bewaarContract(invoer, concept, sjabloon, contractSoort, gebruiker.id)
+    const bewaard = await bewaarContract(f.invoer, concept, sjabloon, f.contractSoort, gebruiker.id, bijlagen)
     nieuwId = bewaard.id
-    if (kandidaatId) await kandidaatNaarFase(kandidaatId, contractSoort, gebruiker.id)
-  }, kandidaatId ? [`/beheer/werving/kandidaten/${kandidaatId}`] : [])
+    if (f.kandidaatId) await kandidaatNaarFase(f.kandidaatId, f.contractSoort, gebruiker.id)
+  }, f.kandidaatId ? [`/beheer/werving/kandidaten/${f.kandidaatId}`] : [])
 
   if (resultaat.ok && nieuwId) redirect(`/beheer/contracten/${nieuwId}`)
+  return resultaat
+}
+
+/** Een contract dat nog niet getekend is opnieuw opstellen, onder hetzelfde nummer. */
+export async function contractWijzigen(formData: FormData): Promise<ActionResult> {
+  const gebruiker = await alsBeheerder()
+  if (!gebruiker) return GEEN_RECHT
+  const contractId = tekst(formData, 'contractId')
+  const oud = contractId ? await getContract(contractId) : null
+  if (!oud) return { ok: false, error: 'Dit contract bestaat niet meer.' }
+  const nee = waaromNietWijzigen(oud)
+  if (nee) return { ok: false, error: nee }
+
+  // Bij wie het contract hoort, verandert niet door een wijziging: dat komt uit het contract, niet uit het formulier.
+  formData.set('kandidaatId', oud.candidateId ?? '')
+  formData.set('collegaId', oud.candidateId ? '' : (oud.userId ?? ''))
+  const f = await leesFormulier(formData)
+  if (typeof f === 'string') return { ok: false, error: f }
+  f.invoer.userId = oud.userId
+
+  const resultaat = await veilig(async () => {
+    const { concept, sjabloon, bijlagen } = await stelOp(f)
+    await wijzigContract(oud.id, f.invoer, concept, sjabloon, f.contractSoort, bijlagen)
+    if (f.kandidaatId && f.contractSoort !== oud.soort) await kandidaatNaarFase(f.kandidaatId, f.contractSoort, gebruiker.id)
+  }, [`/beheer/contracten/${oud.id}`, ...(oud.candidateId ? [`/beheer/werving/kandidaten/${oud.candidateId}`] : [])])
+
+  if (resultaat.ok) redirect(`/beheer/contracten/${oud.id}`)
   return resultaat
 }
 
@@ -302,22 +344,4 @@ export async function contractAangezegd(formData: FormData): Promise<ActionResul
   if (!contractId) return { ok: false, error: 'Onbekend contract.' }
 
   return veilig(() => markeerAangezegd(contractId), [`/beheer/contracten/${contractId}`])
-}
-
-/** De werkgevergegevens zoals ze in de kop van een contract komen. */
-export async function werkgeverOpslaan(formData: FormData): Promise<ActionResult> {
-  if (!(await alsBeheerder())) return GEEN_RECHT
-  return veilig(() =>
-    slaWerkgeverOp({
-      legalName: tekst(formData, 'naam'),
-      registeredAddress: tekst(formData, 'adres'),
-      registeredPostalCode: tekst(formData, 'postcode'),
-      registeredCity: tekst(formData, 'plaats'),
-      workAddress: tekst(formData, 'werkAdres'),
-      workPostalCode: tekst(formData, 'werkPostcode'),
-      workCity: tekst(formData, 'werkPlaats'),
-      signatories: tekst(formData, 'ondertekenaars'),
-      kvkNumber: tekst(formData, 'kvk') || null,
-    }),
-  )
 }

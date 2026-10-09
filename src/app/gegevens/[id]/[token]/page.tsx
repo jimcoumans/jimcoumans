@@ -3,6 +3,7 @@ import { gegevensViaLink, getGegevens } from '@/lib/persoonsgegevens'
 import { formatDateInput } from '@/lib/dates'
 import { Logo } from '@/components/Logo'
 import { GegevensFormulier } from '../../GegevensFormulier'
+import { merkTekst } from '@/lib/bedrijf'
 
 export const metadata: Metadata = { title: 'Je gegevens voor het contract · James Robinson', robots: { index: false, follow: false } }
 export const dynamic = 'force-dynamic'
@@ -16,6 +17,7 @@ export const dynamic = 'force-dynamic'
  * nooit terug, alleen dat we ze hebben.
  */
 export default async function GegevensPagina({ params }: { params: Promise<{ id: string; token: string }> }) {
+  const merk = await merkTekst()
   const { id, token } = await params
   const r = await gegevensViaLink(id, token)
   const g = r ? await getGegevens(r.candidateId ? { candidateId: r.candidateId } : { userId: r.userId! }) : null
@@ -24,7 +26,7 @@ export default async function GegevensPagina({ params }: { params: Promise<{ id:
     <div className="min-h-screen bg-[#F2F2F7] px-4 py-8 sm:py-12">
       <div className="mx-auto max-w-2xl">
         <div className="mb-8">
-          <Logo onderschrift="Marketing &amp; Branding" />
+          <Logo onderschrift={merk.ondertitel} />
         </div>
         {!r || !g ? (
           <div className="rounded-2xl bg-white p-6 shadow-sm sm:p-8">

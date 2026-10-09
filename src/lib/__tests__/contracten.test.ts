@@ -39,8 +39,16 @@ import {
   ondertekenaarsVan,
   listMogelijkeOndertekenaars,
   ContractError,
+  contractWerkgever,
+  pasVoorwaardenToe,
+  korteNaam,
+  invoerUit,
+  waaromNietWijzigen,
+  wijzigContract,
   type ContractInvoer,
+  type ContractWerkgever,
 } from '../contracten'
+import { getBedrijf, type Bedrijf } from '../bedrijf'
 import type { ContractTemplate, ContractTemplateArticle, EmployerSettings, JobProfile } from '../../db/schema'
 
 const merk = `ct${Date.now()}`
@@ -50,6 +58,8 @@ const gemaakteProfielen: string[] = []
 
 let sjabloon: { template: ContractTemplate; artikelen: ContractTemplateArticle[] }
 let werkgever: EmployerSettings
+let context: ContractWerkgever
+let bedrijf: Bedrijf
 let managerProfiel: JobProfile
 
 const dag = (j: number, m: number, d: number) => new Date(j, m - 1, d, 12, 0, 0)
@@ -90,6 +100,10 @@ before(async () => {
   const w = await getWerkgever()
   assert.ok(w, 'de migratie hoort de werkgevergegevens neer te zetten')
   werkgever = w
+  const b = await getBedrijf()
+  assert.ok(b?.hoofdvestiging, 'de migratie hoort een hoofdvestiging neer te zetten')
+  bedrijf = b
+  context = contractWerkgever(b, null, 'https://portaal.test/personeelshandboek/abc')
 
   const profielen = await listFunctieprofielen()
   const manager = profielen.find((p) => p.title === 'Marketing Manager')
@@ -151,17 +165,17 @@ test('de aanhef telt niet mee als voornaam', () => {
 test('de artikelen worden genummerd bij het uitschrijven, niet in de tekst', () => {
   /* Valt een artikel weg omdat de voorwaarde niet geldt, dan schuift de rest
      op. Stond de nummering in de tekst, dan klopte hij niet meer. */
-  const concept = stelContractOp(voncken(), sjabloon, werkgever, managerProfiel)
+  const concept = stelContractOp(voncken(), sjabloon, context, managerProfiel)
   const nummers = concept.artikelen.map((a) => a.nummer)
   assert.deepEqual(nummers, Array.from({ length: nummers.length }, (_, i) => i + 1))
 })
 
 test('zonder proeftijd valt het proeftijdartikel weg', () => {
-  const met = stelContractOp(voncken({ proeftijdMaanden: 1 }), sjabloon, werkgever, managerProfiel)
+  const met = stelContractOp(voncken({ proeftijdMaanden: 1 }), sjabloon, context, managerProfiel)
   const zonder = stelContractOp(
     voncken({ proeftijdMaanden: 0 }),
     sjabloon,
-    werkgever,
+    context,
     managerProfiel,
   )
 
@@ -177,7 +191,7 @@ test('bij zes maanden verdwijnt de proeftijd uit het contract, ook als je hem in
   const concept = stelContractOp(
     voncken({ looptijdMaanden: 6, proeftijdMaanden: 1 }),
     sjabloon,
-    werkgever,
+    context,
     managerProfiel,
   )
 
@@ -195,24 +209,24 @@ test('zonder relatiebeding bij de functie komt dat artikel er niet in', () => {
     hasRelationClause: false,
     relationClauseMotivation: null,
   }
-  const concept = stelContractOp(voncken(), sjabloon, werkgever, zonderBeding)
+  const concept = stelContractOp(voncken(), sjabloon, context, zonderBeding)
 
   assert.ok(!concept.artikelen.some((a) => a.titel === 'Relatiebeding'))
   // Het verbod op nevenwerkzaamheden blijft wel staan: dat is iets anders.
-  assert.ok(concept.artikelen.some((a) => a.titel === 'Verbod van nevenwerkzaamheden'))
+  assert.ok(concept.artikelen.some((a) => a.titel === 'Nevenwerkzaamheden'))
   assert.ok(concept.opmerkingen.some((o) => /geen relatiebeding/.test(o)))
 })
 
 test('per contract: relatiebeding uit te zetten, aanzetten alleen met motivering, eigen extra afspraken', () => {
   // Uitzetten mag altijd, ook als het functieprofiel het wel heeft.
-  const uit = stelContractOp(voncken({ relatiebeding: false }), sjabloon, werkgever, managerProfiel)
+  const uit = stelContractOp(voncken({ relatiebeding: false }), sjabloon, context, managerProfiel)
   assert.ok(!uit.artikelen.some((a) => a.titel === 'Relatiebeding'))
 
   // Aanzetten zonder motivering is een beding dat niet geldt: weigeren in plaats van het erin zetten.
-  assert.throws(() => stelContractOp(voncken({ relatiebeding: true }), sjabloon, werkgever, null), /moet gemotiveerd zijn/)
+  assert.throws(() => stelContractOp(voncken({ relatiebeding: true }), sjabloon, context, null), /moet gemotiveerd zijn/)
 
   // Eigen extra afspraken gaan voor die van het profiel.
-  const metAfspraak = stelContractOp(voncken({ extraAfspraken: 'Twee dagen per week thuiswerken.' }), sjabloon, werkgever, managerProfiel)
+  const metAfspraak = stelContractOp(voncken({ extraAfspraken: 'Twee dagen per week thuiswerken.' }), sjabloon, context, managerProfiel)
   const tekst = metAfspraak.artikelen.map((a) => a.leden.join(' ')).join(' ')
   if (sjabloon.artikelen.some((a) => a.voorwaarde === 'extra_afspraken')) {
     assert.ok(tekst.includes('Twee dagen per week thuiswerken.'))
@@ -226,7 +240,7 @@ test('de motivering van het relatiebeding komt uit het functieprofiel', () => {
     relationClauseMotivation: 'Deze functie beheert de klantendatabase.',
     relationClauseMonths: 6,
   }
-  const concept = stelContractOp(voncken(), sjabloon, werkgever, eigen)
+  const concept = stelContractOp(voncken(), sjabloon, context, eigen)
   const artikel = concept.artikelen.find((a) => a.titel === 'Relatiebeding')
 
   assert.ok(artikel)
@@ -239,14 +253,14 @@ test('extra afspraken bij een functie komen er als eigen artikel in', () => {
     ...managerProfiel,
     extraClauses: 'De werknemer krijgt een leaseauto uit de middenklasse.',
   }
-  const concept = stelContractOp(voncken(), sjabloon, werkgever, metExtra)
+  const concept = stelContractOp(voncken(), sjabloon, context, metExtra)
   const artikel = concept.artikelen.find((a) => a.titel === 'Aanvullende afspraken bij deze functie')
 
   assert.ok(artikel)
   assert.ok(artikel.leden.join(' ').includes('leaseauto'))
 
   // En zonder extra afspraken staat dat artikel er niet.
-  const zonder = stelContractOp(voncken(), sjabloon, werkgever, managerProfiel)
+  const zonder = stelContractOp(voncken(), sjabloon, context, managerProfiel)
   assert.ok(!zonder.artikelen.some((a) => a.titel === 'Aanvullende afspraken bij deze functie'))
 })
 
@@ -254,15 +268,15 @@ test('zonder OP-toeslag valt het pensioenartikel weg', () => {
   const zonder = stelContractOp(
     voncken({ opToeslagCents: 0 }),
     sjabloon,
-    werkgever,
+    context,
     managerProfiel,
   )
   assert.ok(!zonder.artikelen.some((a) => a.titel === 'Pensioen'))
 })
 
 test('het vrijetijdsbudget is een keuze en geen vaste tekst', () => {
-  const met = stelContractOp(voncken({ vrijetijdsbudget: true }), sjabloon, werkgever, managerProfiel)
-  const zonder = stelContractOp(voncken(), sjabloon, werkgever, managerProfiel)
+  const met = stelContractOp(voncken({ vrijetijdsbudget: true }), sjabloon, context, managerProfiel)
+  const zonder = stelContractOp(voncken(), sjabloon, context, managerProfiel)
   assert.ok(met.artikelen.some((a) => a.titel === 'Overige afspraken'))
   assert.ok(!zonder.artikelen.some((a) => a.titel === 'Overige afspraken'))
 })
@@ -270,7 +284,7 @@ test('het vrijetijdsbudget is een keuze en geen vaste tekst', () => {
 /* --- Het contract van Voncken, nagerekend -------------------------------- */
 
 test('het contract van Voncken komt er weer uit zoals het erin ging', () => {
-  const concept = stelContractOp(voncken(), sjabloon, werkgever, managerProfiel)
+  const concept = stelContractOp(voncken(), sjabloon, context, managerProfiel)
   const tekst = concept.body
 
   // De einddatum uit het origineel.
@@ -280,7 +294,7 @@ test('het contract van Voncken komt er weer uit zoals het erin ging', () => {
   assert.ok(tekst.includes('één maand'), 'proeftijd in woorden')
   assert.ok(tekst.includes('Marketing Manager'), 'functie')
   assert.ok(tekst.includes('24 uur per week'), 'arbeidsduur')
-  assert.ok(tekst.includes('Schaal Medior 12'), 'schaal en trede')
+  assert.ok(tekst.includes('schaal Medior, trede 12'), 'schaal en trede')
   assert.ok(tekst.includes('120 uur vakantie'), 'vakantie-uren naar rato')
   assert.ok(tekst.includes('25 dagen'), 'vakantiedagen fulltime')
   assert.ok(tekst.includes('8% vakantietoeslag'), 'vakantietoeslag')
@@ -294,7 +308,7 @@ test('er staat geen "haar" of "zij" meer in een contract voor een man', () => {
   /* In het bestaande contract stond "onder haar verantwoordelijkheid" en
      "Zij is" bij Dhr. Voncken - een restje uit een eerder contract. In het
      sjabloon staat nu "de werknemer" en "diens", dus dat kan niet meer. */
-  const concept = stelContractOp(voncken(), sjabloon, werkgever, managerProfiel)
+  const concept = stelContractOp(voncken(), sjabloon, context, managerProfiel)
   const beding = concept.artikelen.find((a) => a.titel === 'Relatiebeding')!.leden.join(' ')
 
   assert.ok(!/\bhaar\b/.test(beding), 'geen "haar" in de motivering')
@@ -303,7 +317,7 @@ test('er staat geen "haar" of "zij" meer in een contract voor een man', () => {
 })
 
 test('er blijft geen enkele plaatshouder open staan', () => {
-  const concept = stelContractOp(voncken(), sjabloon, werkgever, managerProfiel)
+  const concept = stelContractOp(voncken(), sjabloon, context, managerProfiel)
   assert.deepEqual(concept.ontbrekend, [], 'elke plaatshouder hoort een waarde te hebben')
   assert.ok(!concept.body.includes('ONBEKEND'))
   assert.ok(!concept.intro.includes('ONBEKEND'))
@@ -311,7 +325,7 @@ test('er blijft geen enkele plaatshouder open staan', () => {
 })
 
 test('de begeleidende tekst vat de hoofdpunten samen', () => {
-  const concept = stelContractOp(voncken(), sjabloon, werkgever, managerProfiel)
+  const concept = stelContractOp(voncken(), sjabloon, context, managerProfiel)
 
   assert.ok(concept.intro.includes('Daniël'), 'aangesproken met de voornaam')
   assert.ok(concept.intro.includes('Marketing Manager'))
@@ -328,7 +342,7 @@ test('de samenvatting zegt het ook als er geen proeftijd is', () => {
   const concept = stelContractOp(
     voncken({ looptijdMaanden: 6, proeftijdMaanden: 1 }),
     sjabloon,
-    werkgever,
+    context,
     managerProfiel,
   )
   assert.ok(concept.intro.includes('geen proeftijd'))
@@ -337,7 +351,7 @@ test('de samenvatting zegt het ook als er geen proeftijd is', () => {
 /* --- De aanzegtermijn ----------------------------------------------------- */
 
 test('bij zeven maanden komt er een aanzegdatum met een waarschuwing', () => {
-  const concept = stelContractOp(voncken(), sjabloon, werkgever, managerProfiel)
+  const concept = stelContractOp(voncken(), sjabloon, context, managerProfiel)
   assert.ok(concept.aanzeggenVoor)
   assert.ok(concept.opmerkingen.some((o) => /maandsalaris verschuldigd/.test(o)))
 })
@@ -346,7 +360,7 @@ test('bij vijf maanden hoeft er niet aangezegd te worden', () => {
   const concept = stelContractOp(
     voncken({ looptijdMaanden: 5, proeftijdMaanden: 0 }),
     sjabloon,
-    werkgever,
+    context,
     managerProfiel,
   )
   assert.equal(concept.aanzeggenVoor, null)
@@ -360,7 +374,7 @@ test('bepaalde tijd zonder looptijd wordt geweigerd', () => {
       stelContractOp(
         voncken({ looptijdMaanden: null }),
         sjabloon,
-        werkgever,
+        context,
         managerProfiel,
       ),
     (f: unknown) => f instanceof ContractError,
@@ -368,7 +382,7 @@ test('bepaalde tijd zonder looptijd wordt geweigerd', () => {
 })
 
 test('een contract zonder kandidaat en zonder collega wordt geweigerd', async () => {
-  const concept = stelContractOp(voncken(), sjabloon, werkgever, managerProfiel)
+  const concept = stelContractOp(voncken(), sjabloon, context, managerProfiel)
   await assert.rejects(
     () =>
       bewaarContract(
@@ -414,7 +428,7 @@ test('de database weigert een functieprofiel met een beding zonder motivering', 
 /* --- Opslaan en definitief maken ------------------------------------------ */
 
 test('een proforma wordt bewaard met zijn eigen tekst', async () => {
-  const concept = stelContractOp(voncken(), sjabloon, werkgever, managerProfiel)
+  const concept = stelContractOp(voncken(), sjabloon, context, managerProfiel)
   const bewaard = await bewaarContract(voncken(), concept, sjabloon, 'proforma', null)
 
   assert.equal(bewaard.soort, 'proforma')
@@ -429,7 +443,7 @@ test('de waarschuwingen worden bij het contract bewaard', async () => {
      terwijl je ze juist een maand later nodig hebt: dat de proeftijd is
      teruggebracht, en wanneer er uiterlijk aangezegd moet zijn. */
   const invoer = voncken({ looptijdMaanden: 7, proeftijdMaanden: 2 })
-  const concept = stelContractOp(invoer, sjabloon, werkgever, managerProfiel)
+  const concept = stelContractOp(invoer, sjabloon, context, managerProfiel)
   assert.ok(concept.opmerkingen.length >= 2)
 
   const bewaard = await bewaarContract(invoer, concept, sjabloon, 'proforma', null)
@@ -447,7 +461,7 @@ test('definitief maken schrijft het contract en het salaris in het dossier', asy
     .returning()
   gemaakteUsers.push(collega!.id)
 
-  const concept = stelContractOp(voncken(), sjabloon, werkgever, managerProfiel)
+  const concept = stelContractOp(voncken(), sjabloon, context, managerProfiel)
   const bewaard = await bewaarContract(voncken(), concept, sjabloon, 'proforma', null)
 
   await maakDefinitief(bewaard.id, collega!.id)
@@ -477,7 +491,7 @@ test('een contract kan niet twee keer definitief gemaakt worden', async () => {
     .returning()
   gemaakteUsers.push(collega!.id)
 
-  const concept = stelContractOp(voncken(), sjabloon, werkgever, managerProfiel)
+  const concept = stelContractOp(voncken(), sjabloon, context, managerProfiel)
   const bewaard = await bewaarContract(voncken(), concept, sjabloon, 'proforma', null)
 
   await maakDefinitief(bewaard.id, collega!.id)
@@ -496,7 +510,7 @@ test('een aanzegging die eraan komt verschijnt in de bewaking', async () => {
     .returning()
   gemaakteUsers.push(collega!.id)
 
-  const concept = stelContractOp(voncken(), sjabloon, werkgever, managerProfiel)
+  const concept = stelContractOp(voncken(), sjabloon, context, managerProfiel)
   const bewaard = await bewaarContract(voncken(), concept, sjabloon, 'proforma', null)
   await maakDefinitief(bewaard.id, collega!.id)
 
@@ -521,7 +535,7 @@ test('een aanzegging die eraan komt verschijnt in de bewaking', async () => {
 
 test('een proforma staat niet in de aanzegbewaking', async () => {
   // Een concept is nog geen afspraak.
-  const concept = stelContractOp(voncken(), sjabloon, werkgever, managerProfiel)
+  const concept = stelContractOp(voncken(), sjabloon, context, managerProfiel)
   const bewaard = await bewaarContract(voncken(), concept, sjabloon, 'proforma', null)
   await db
     .update(generatedContracts)
@@ -571,8 +585,8 @@ test('de namen van wie tekent lezen als een zin', () => {
 })
 
 test('de gekozen ondertekenaars komen in het contract, anders die van de werkgever', () => {
-  const gekozen = stelContractOp(voncken({ ondertekenaars: ['Jim Kikken'] }), sjabloon, werkgever, managerProfiel)
-  const standaard = stelContractOp(voncken(), sjabloon, werkgever, managerProfiel)
+  const gekozen = stelContractOp(voncken({ ondertekenaars: ['Jim Kikken'] }), sjabloon, context, managerProfiel)
+  const standaard = stelContractOp(voncken(), sjabloon, context, managerProfiel)
   // De begeleidende tekst sluit af met wie er tekent.
   assert.ok(gekozen.intro.trimEnd().endsWith('Jim Kikken'), 'alleen wie gekozen is')
   assert.ok(!gekozen.intro.includes('Jim Coumans en Jim Kikken'))
@@ -587,7 +601,7 @@ test('in de werkgevergegevens staan voluit de namen, geen "dhr. J."', () => {
 })
 
 test('de tekst volgt de pro forma: bankrekening, UWV en de AVG-datum', () => {
-  const tekst = stelContractOp(voncken(), sjabloon, werkgever, managerProfiel).body
+  const tekst = stelContractOp(voncken(), sjabloon, context, managerProfiel).body
   assert.ok(!tekst.includes('postrekening'), 'een postrekening bestaat niet meer')
   assert.ok(tekst.includes('website van het UWV'), 'verwijzing naar UWV en Rijksoverheid bij verlof')
   assert.ok(tekst.includes('per 25 mei 2018'), 'de AVG met ingangsdatum')
@@ -615,4 +629,102 @@ test('een eigenaar staat bovenaan de mogelijke ondertekenaars en is aangevinkt',
   for (const naam of ondertekenaarsVan({ employerSigners: null }, werkgever)) {
     assert.ok(lijst.some((x) => x.naam === naam && x.eigenaar), `${naam} staat aangevinkt`)
   }
+})
+
+/* --- Maatwerk per contract ------------------------------------------------ */
+
+test('voorwaardelijke stukken blijven alleen staan als de voorwaarde geldt', () => {
+  const bron = 'Altijd.{{#als a}} Alleen bij a.{{/als}}{{#alsniet a}} Alleen zonder a.{{/alsniet}}'
+  assert.equal(pasVoorwaardenToe(bron, { a: true }).tekst, 'Altijd. Alleen bij a.')
+  assert.equal(pasVoorwaardenToe(bron, { a: false }).tekst, 'Altijd. Alleen zonder a.')
+  // Een onbekende voorwaarde valt op in plaats van stil weg te vallen.
+  assert.deepEqual(pasVoorwaardenToe('{{#als b}}x{{/als}}', {}).onbekend, ['b'])
+})
+
+test('er staat nergens meer een bedrijfsreglement in, wel het personeelshandboek', () => {
+  const tekst = stelContractOp(voncken(), sjabloon, context, managerProfiel).body
+  assert.doesNotMatch(tekst, /bedrijfsreglement/i)
+  assert.match(tekst, /Personeelshandboek van de werkgever is van toepassing/)
+  assert.doesNotMatch(tekst, /\{\{|\}\}/, 'geen losse accolades van een voorwaarde')
+})
+
+test('het salaris noemt schaal en trede op de peildatum, buiten de schaal niet', () => {
+  const met = stelContractOp(voncken(), sjabloon, context, managerProfiel).body
+  assert.match(met, /gebaseerd op schaal Medior, trede 12 van het salarishuis van de werkgever, zoals dat gold op 13 oktober 2026/)
+  const zonder = stelContractOp(voncken({ schaalNaam: null, trede: null }), sjabloon, context, managerProfiel).body
+  assert.doesNotMatch(zonder, /salarishuis/)
+})
+
+test('bereikbaar op werkdagen komt als extra lid bij de arbeidstijd, alleen als het aan staat', () => {
+  const arbeidstijd = (c: ReturnType<typeof stelContractOp>) => c.artikelen.find((a) => a.titel === 'Arbeidstijd')!
+  const zonder = arbeidstijd(stelContractOp(voncken(), sjabloon, context, managerProfiel))
+  const met = arbeidstijd(stelContractOp(voncken({ bereikbaarOpWerkdagen: true }), sjabloon, context, managerProfiel))
+  assert.equal(met.leden.length, zonder.leden.length + 1)
+  const lid = met.leden.at(-1)!
+  assert.match(lid, /24 uur per week/)
+  assert.match(lid, /maandag tot en met vrijdag/)
+  assert.match(lid, /telt mee als arbeidstijd/, 'bereikbaarheid mag geen onbetaalde extra uren worden')
+})
+
+test('kantoortijden van de standplaats komen in het lid over bereikbaarheid', () => {
+  const hoofd = { ...bedrijf.hoofdvestiging!, officeHours: '09.00 tot 17.30 uur' }
+  const metTijden = contractWerkgever({ ...bedrijf, hoofdvestiging: hoofd, vestigingen: [hoofd] }, null, null)
+  const lid = stelContractOp(voncken({ bereikbaarOpWerkdagen: true }), sjabloon, metTijden, managerProfiel).artikelen.find((a) => a.titel === 'Arbeidstijd')!.leden.at(-1)!
+  assert.match(lid, /kantoortijden \(09\.00 tot 17\.30 uur\)/)
+})
+
+test('nevenwerkzaamheden: standaard met toestemming, of vrij behalve voor klanten', () => {
+  const artikel = (c: ReturnType<typeof stelContractOp>) => c.artikelen.find((a) => a.titel === 'Nevenwerkzaamheden')!.leden.join(' ')
+  const standaard = artikel(stelContractOp(voncken(), sjabloon, context, managerProfiel))
+  assert.match(standaard, /behoudens voorafgaande schriftelijke toestemming/)
+  assert.doesNotMatch(standaard, /Het staat de werknemer vrij/)
+  const vrij = artikel(stelContractOp(voncken({ nevenwerk: 'vrij_behalve_klanten' }), sjabloon, context, managerProfiel))
+  assert.match(vrij, /Het staat de werknemer vrij/)
+  assert.match(vrij, /zustermaatschappijen/)
+  assert.doesNotMatch(vrij, /behoudens voorafgaande schriftelijke toestemming/)
+})
+
+test('de link naar het personeelshandboek staat in de begeleidende tekst; zonder handboek een waarschuwing', () => {
+  const met = stelContractOp(voncken(), sjabloon, context, managerProfiel)
+  assert.match(met.intro, /https:\/\/portaal\.test\/personeelshandboek\/abc/)
+  assert.ok(!met.opmerkingen.some((o) => /personeelshandboek/.test(o)))
+  const zonder = stelContractOp(voncken(), sjabloon, contractWerkgever(bedrijf, null, null), managerProfiel)
+  assert.ok(zonder.opmerkingen.some((o) => /nog geen personeelshandboek/.test(o)))
+})
+
+test('de standplaats komt uit de gekozen vestiging, de kop blijft de hoofdvestiging', () => {
+  const tweede = { ...bedrijf.hoofdvestiging!, id: '00000000-0000-0000-0000-000000000042', name: 'Maastricht', addressLine: 'Markt 1', postalCode: '6211 CK', city: 'Maastricht', isMain: false }
+  const ctx = contractWerkgever({ ...bedrijf, vestigingen: [...bedrijf.vestigingen, tweede] }, tweede.id, null)
+  const tekst = stelContractOp(voncken(), sjabloon, ctx, managerProfiel).body
+  assert.match(tekst, /Markt 1, 6211 CK Maastricht/)
+  assert.equal(ctx.hoofdvestiging?.isMain, true)
+})
+
+test('de korte naam is roepnaam met achternaam', () => {
+  assert.equal(korteNaam('Daan', null, 'Voncken'), 'Daan Voncken')
+  assert.equal(korteNaam('Anne', 'van der', 'Berg'), 'Anne van der Berg')
+})
+
+test('een opgesteld contract is te wijzigen tot het getekend is', async () => {
+  const invoer = voncken({ roepnaam: 'Daan', korteNaam: 'Daan Voncken', tekenplaats: 'Hulsberg', tekendatum: dag(2026, 10, 9), standplaatsId: bedrijf.hoofdvestiging!.id })
+  const concept = stelContractOp(invoer, sjabloon, context, managerProfiel)
+  const c = await bewaarContract(invoer, concept, sjabloon, 'definitief', null, { kop: null, handboekId: null })
+  assert.equal(c.employeeShortName, 'Daan Voncken')
+  assert.equal(c.signPlace, 'Hulsberg')
+
+  // De invoer komt terug zoals hij erin ging, ook de datums.
+  const terug = invoerUit(c)
+  assert.equal(terug.tekendatum?.getDate(), 9)
+  assert.equal(terug.ingangsdatum.getDate(), 13)
+  assert.equal(terug.roepnaam, 'Daan')
+
+  const nieuw = { ...terug, bereikbaarOpWerkdagen: true, nevenwerk: 'vrij_behalve_klanten' as const }
+  const gewijzigd = await wijzigContract(c.id, nieuw, stelContractOp(nieuw, sjabloon, context, managerProfiel), sjabloon, 'definitief', { kop: null, handboekId: null })
+  assert.equal(gewijzigd.id, c.id, 'zelfde nummer')
+  assert.match(gewijzigd.body, /Het staat de werknemer vrij/)
+
+  await db.update(generatedContracts).set({ signedOn: dag(2026, 10, 9) }).where(eq(generatedContracts.id, c.id))
+  const getekend = (await db.select().from(generatedContracts).where(eq(generatedContracts.id, c.id)))[0]!
+  assert.ok(waaromNietWijzigen(getekend))
+  await assert.rejects(wijzigContract(c.id, nieuw, stelContractOp(nieuw, sjabloon, context, managerProfiel), sjabloon, 'definitief', { kop: null, handboekId: null }), ContractError)
 })

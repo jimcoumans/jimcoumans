@@ -3,6 +3,7 @@ import { formulierViaLink } from '@/lib/formulieren'
 import type { Antwoorden } from '@/lib/formulieren/vragenlijst'
 import { Logo } from '@/components/Logo'
 import { PubliekeVragenlijst } from '../../PubliekeVragenlijst'
+import { merkTekst } from '@/lib/bedrijf'
 
 export const metadata: Metadata = { title: 'Een paar vragen vooraf · James Robinson', robots: { index: false, follow: false } }
 export const dynamic = 'force-dynamic'
@@ -13,6 +14,7 @@ export const dynamic = 'force-dynamic'
  * vragenlijst. Een verkeerde of verlopen link zegt niet waarom.
  */
 export default async function VragenlijstPagina({ params }: { params: Promise<{ id: string; token: string }> }) {
+  const merk = await merkTekst()
   const { id, token } = await params
   const f = await formulierViaLink(id, token)
 
@@ -20,7 +22,7 @@ export default async function VragenlijstPagina({ params }: { params: Promise<{ 
     <div className="min-h-screen bg-[#F2F2F7] px-4 py-8 sm:py-12">
       <div className="mx-auto max-w-2xl">
         <div className="mb-8">
-          <Logo onderschrift="Marketing &amp; Branding" />
+          <Logo onderschrift={merk.ondertitel} />
         </div>
         {!f ? (
           <Melding kop="Deze link werkt niet (meer)">

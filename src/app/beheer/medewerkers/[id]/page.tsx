@@ -153,7 +153,7 @@ export default async function MedewerkerPage({
 
       {toonStappen && (
         <div className="mb-6">
-          <Vervolgstappen stappen={stappen} titel="Onboarding" />
+          <Vervolgstappen stappen={stappen} titel="Onboarding" eigenaar={{ userId: lid.id }} />
         </div>
       )}
 

@@ -288,6 +288,20 @@
       "when": 1791534157611,
       "tag": "0040_contract_ondertekenaars",
       "breakpoints": true
+    },
+    {
+      "idx": 41,
+      "version": "7",
+      "when": 1791537597712,
+      "tag": "0041_bedrijfsgegevens",
+      "breakpoints": true
+    },
+    {
+      "idx": 42,
+      "version": "7",
+      "when": 1791540491448,
+      "tag": "0042_standaardteksten",
+      "breakpoints": true
     }
   ]
 }

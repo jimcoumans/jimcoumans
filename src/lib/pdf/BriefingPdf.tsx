@@ -6,6 +6,7 @@ import { formatDateLong } from '@/lib/dates'
 import { leesPunten, groepeerPunten } from '@/lib/punten'
 import { registreerFonts } from './fonts'
 import { budgetTekst, budgetBereik, omzetBereik, euro, euroPrecies, prijs, regels, versieLabel, LEEG } from '@/components/CampagneBriefing'
+import { merkTekst, type MerkTekst } from '@/lib/bedrijf'
 
 /* -------------------------------------------------------------------------
    De campagnebriefing als echte pdf, om te downloaden en mee te sturen.
@@ -161,7 +162,7 @@ function Sectie({ nummer, titel, children, nieuwePagina = false }: { nummer: num
   )
 }
 
-export function BriefingPdf({ v }: { v: CampagneVolledig }) {
+export function BriefingPdf({ v, merk }: { v: CampagneVolledig; merk: MerkTekst }) {
   const c = v.campagne
   const voorstel = (veld: string) => c.proposalFields.includes(veld)
   const versie = c.version === 0 ? 'Nog niet verstuurd' : `Versie ${versieLabel(c.version)}`
@@ -173,14 +174,16 @@ export function BriefingPdf({ v }: { v: CampagneVolledig }) {
     <Document title={`${c.title} · campagnebriefing`} author="James Robinson" subject={`Campagnebriefing voor ${v.organisatie.name}`} language="nl">
       <Page size="A4" style={s.pagina}>
         <View style={s.voet} fixed>
-          <Text>James Robinson — Marketing & Branding | www.jamesrobinson.nl</Text>
+          <Text>
+            {merk.regel} | {merk.website}
+          </Text>
           <Text render={({ pageNumber, totalPages }) => `${c.title} · ${versie.toLowerCase()} · pagina ${pageNumber} van ${totalPages}`} />
         </View>
 
         <View style={s.kop}>
           <View>
-            <Text style={s.merk}>James Robinson</Text>
-            <Text style={s.merkSub}>Marketing & Branding</Text>
+            <Text style={s.merk}>{merk.naam}</Text>
+            {merk.ondertitel ? <Text style={s.merkSub}>{merk.ondertitel}</Text> : null}
           </View>
           <View>
             <Text style={s.rechts}>
@@ -485,7 +488,7 @@ export function BriefingPdf({ v }: { v: CampagneVolledig }) {
 /** De pdf als bytes. */
 export async function maakBriefingPdf(v: CampagneVolledig): Promise<Buffer> {
   registreerFonts()
-  return renderToBuffer(<BriefingPdf v={v} />)
+  return renderToBuffer(<BriefingPdf v={v} merk={await merkTekst()} />)
 }
 
 /** De bestandsnaam: "Kerst bij Thiessen – campagnebriefing versie 2.0.pdf". */

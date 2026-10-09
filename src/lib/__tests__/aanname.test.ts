@@ -21,7 +21,8 @@ import {
   organizations,
 } from '../../db/schema'
 import { wisKandidaten } from '../werving'
-import { stelContractOp, getSjabloon, getWerkgever, listFunctieprofielen, bewaarContract, type ContractInvoer } from '../contracten'
+import { stelContractOp, getSjabloon, listFunctieprofielen, bewaarContract, contractWerkgever, type ContractInvoer } from '../contracten'
+import { getBedrijf } from '../bedrijf'
 import { neemAan, markeerGetekend, vervolgstappen, werkadresVoorstel, AannameError } from '../aanname'
 import { maandlast } from '../kosten'
 import { zorgVoorGegevens, maakGegevenslink, gegevensViaLink, werkContractgegevensBij, GegevensError } from '../persoonsgegevens'
@@ -51,7 +52,7 @@ async function kandidaatMetContract(opties: { soort?: 'proforma' | 'definitief';
   gemaakteKandidaten.push(k!.id)
 
   const sjabloon = (await getSjabloon('bepaalde_tijd'))!
-  const werkgever = (await getWerkgever())!
+  const context = contractWerkgever((await getBedrijf())!, null, null)
   const profiel = (await listFunctieprofielen()).find((p) => p.title === 'Marketing Manager')!
   const invoer: ContractInvoer = {
     candidateId: k!.id,
@@ -76,7 +77,7 @@ async function kandidaatMetContract(opties: { soort?: 'proforma' | 'definitief';
     vakantieUrenFulltime: 200,
     vakantieUren: 120,
   }
-  const concept = stelContractOp(invoer, sjabloon, werkgever, profiel)
+  const concept = stelContractOp(invoer, sjabloon, context, profiel)
   const contract = await bewaarContract(invoer, concept, sjabloon, opties.soort ?? 'definitief', null)
   return { kandidaat: k!, contract }
 }

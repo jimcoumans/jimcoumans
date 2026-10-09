@@ -269,6 +269,22 @@ export type Stap = {
   toelichting?: string
   /** Waar je het regelt. */
   href?: string
+  /**
+   * Wat je meteen in de lijst kunt doen: een document uploaden, of vastleggen
+   * dat het handboek is ontvangen. Zo hoef je er niet voor te zoeken.
+   */
+  actie?: { soort: 'document'; kind: 'avg_verklaring' | 'id_kopie' | 'loonheffing' | 'contract' } | { soort: 'handboek'; contractId: string }
+}
+
+/**
+ * Vastleggen dat de werknemer het personeelshandboek heeft ontvangen. Het
+ * contract zegt dat dat voor de ondertekening gebeurt; dit is het bewijs.
+ */
+export async function markeerHandboekOntvangen(contractId: string, op: Date | null): Promise<void> {
+  const [c] = await db.select().from(generatedContracts).where(eq(generatedContracts.id, contractId)).limit(1)
+  if (!c) throw new AannameError('Dit contract bestaat niet meer.')
+  if (op && op.getTime() > Date.now() + 36 * 60 * 60 * 1000) throw new AannameError('Die datum ligt in de toekomst.')
+  await db.update(generatedContracts).set({ handbookGivenOn: op }).where(eq(generatedContracts.id, contractId))
 }
 
 /**
@@ -313,15 +329,8 @@ export async function vervolgstappen(van: { kandidaatId?: string; userId?: strin
     ? await db.select({ n: count() }).from(companyAssets).where(and(eq(companyAssets.userId, userId), isNull(companyAssets.returnedOn)))
     : [{ n: 0 }]
 
-  const gegevensCompleet =
-    !!record &&
-    !!record.officialFirstNames?.trim() &&
-    !!record.lastName?.trim() &&
-    !!record.birthDate &&
-    !!record.addressLine?.trim() &&
-    !!record.ibanEnc &&
-    docs.some((d) => d.kind === 'id_kopie') &&
-    docs.some((d) => d.kind === 'loonheffing')
+  const heeft = (kind: string) => docs.some((d) => d.kind === kind)
+  const nawCompleet = !!record && !!record.officialFirstNames?.trim() && !!record.lastName?.trim() && !!record.birthDate && !!record.addressLine?.trim()
 
   const kandidaatPad = kandidaat ? `/beheer/werving/kandidaten/${kandidaat.id}` : undefined
   const collegaPad = userId ? `/beheer/medewerkers/${userId}` : undefined
@@ -345,16 +354,58 @@ export async function vervolgstappen(van: { kandidaatId?: string; userId?: strin
     {
       sleutel: 'exemplaar',
       titel: 'Getekend exemplaar in het dossier',
-      klaar: docs.some((d) => d.kind === 'contract'),
-      toelichting: 'Upload de scan of de pdf met beide handtekeningen. Wordt versleuteld bewaard.',
+      klaar: heeft('contract'),
+      toelichting: 'De scan of de pdf met alle handtekeningen en parafen. Wordt versleuteld bewaard.',
       href: kandidaatPad ?? collegaPad,
+      actie: { soort: 'document', kind: 'contract' },
+    },
+    {
+      sleutel: 'handboek',
+      titel: 'Personeelshandboek ontvangen',
+      klaar: !!contract?.handbookGivenOn,
+      toelichting: contract?.handbookGivenOn
+        ? `Op ${formatDateLong(contract.handbookGivenOn)}.`
+        : 'Het contract zegt dat de werknemer het handboek voor de ondertekening ontvangt. De link staat in de begeleidende tekst.',
+      href: contract ? `/beheer/contracten/${contract.id}` : kandidaatPad,
+      actie: contract && !contract.handbookGivenOn ? { soort: 'handboek', contractId: contract.id } : undefined,
+    },
+    {
+      sleutel: 'avg',
+      titel: 'AVG-verklaring getekend',
+      klaar: heeft('avg_verklaring'),
+      toelichting: heeft('avg_verklaring') ? undefined : 'De bijlage bij het contract, ingevuld en getekend. Download hem bij het contract.',
+      href: contract ? `/beheer/contracten/${contract.id}` : kandidaatPad,
+      actie: { soort: 'document', kind: 'avg_verklaring' },
     },
     {
       sleutel: 'gegevens',
-      titel: 'Persoonsgegevens compleet',
-      klaar: gegevensCompleet,
-      toelichting: gegevensCompleet ? undefined : 'Voornamen, geboortedatum, adres, IBAN, kopie ID en loonheffingsformulier. Stuur de kandidaat de invullink.',
+      titel: 'Naam, adres en geboortedatum',
+      klaar: nawCompleet,
+      toelichting: nawCompleet ? undefined : 'Voornamen zoals in het paspoort, adres en geboortedatum. Via de invullink, of zelf bij de persoonsgegevens.',
       href: kandidaatPad ?? collegaPad,
+    },
+    {
+      sleutel: 'iban',
+      titel: 'Bankrekening (IBAN)',
+      klaar: !!record?.ibanEnc,
+      toelichting: record?.ibanEnc ? `Eindigt op ${record.ibanLast4 ?? '…'}.` : 'Via de invullink, of zelf bij de persoonsgegevens.',
+      href: kandidaatPad ?? collegaPad,
+    },
+    {
+      sleutel: 'id',
+      titel: 'Kopie identiteitsbewijs',
+      klaar: heeft('id_kopie'),
+      toelichting: heeft('id_kopie') ? undefined : 'Verplicht voor de loonadministratie. Via de invullink, of upload hem hier.',
+      href: kandidaatPad ?? collegaPad,
+      actie: { soort: 'document', kind: 'id_kopie' },
+    },
+    {
+      sleutel: 'loonheffing',
+      titel: 'Loonheffingsverklaring',
+      klaar: heeft('loonheffing'),
+      toelichting: heeft('loonheffing') ? undefined : 'Of de loonheffingskorting moet worden toegepast. Via de invullink, of upload hem hier.',
+      href: kandidaatPad ?? collegaPad,
+      actie: { soort: 'document', kind: 'loonheffing' },
     },
     {
       sleutel: 'salarisadministratie',

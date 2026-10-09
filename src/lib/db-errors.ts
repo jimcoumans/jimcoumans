@@ -96,6 +96,10 @@ export function describeDbError(error: unknown): string | null {
       return 'De einddatum kan niet voor de startdatum liggen.'
     case 'subscriptions_clickup_idx':
       return 'Dit ClickUp-abonnement is al aan een ander abonnement gekoppeld.'
+    case 'company_documents_token_idx':
+      return 'Er ging iets mis bij het maken van de link. Probeer het nog eens.'
+    case 'company_locations_one_main':
+      return 'Er is al een hoofdvestiging. Maak die eerst gewone vestiging.'
     case 'contacts_one_primary_idx':
       return 'Deze klant heeft al een vaste contactpersoon. Maak eerst de ander niet-vast, of gebruik "Maak vaste contactpersoon".'
     case 'contacts_user_idx':
@@ -312,6 +316,12 @@ export function describeDbError(error: unknown): string | null {
       return 'Het aantal medewerkers kan niet negatief zijn.'
     case 'organization_revenue_not_negative':
       return 'Een jaaromzet kan niet negatief zijn. Laat het veld leeg als je het niet weet.'
+    case 'location_address_not_empty':
+      return 'Vul het adres en de plaats van de vestiging in.'
+    case 'company_document_kind_valid':
+      return 'Dit soort bedrijfsdocument kennen we niet.'
+    case 'company_document_size_reasonable':
+      return 'Het bestand is leeg of groter dan 15 MB.'
     case 'location_name_not_empty':
       return 'Geef de vestiging een naam, bijvoorbeeld "Vestiging Maastricht".'
     case 'competitor_name_not_empty':

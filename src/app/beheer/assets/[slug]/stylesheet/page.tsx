@@ -8,6 +8,7 @@ import { PdfKnop } from '@/components/stylesheet/PdfKnop'
 import { PasOpBlad } from '@/components/stylesheet/PasOpBlad'
 import { LOGO_SLOTS, TEKSTROLLEN, TOESTANDEN, gewichtNaam, knopCss, tekstCss, type Tekststijl } from '@/lib/stylesheet'
 import { formatDateLong } from '@/lib/dates'
+import { merkTekst } from '@/lib/bedrijf'
 
 export const maxDuration = 26
 
@@ -50,6 +51,7 @@ function bladGrootte(px: number): string {
  * de fonts precies zo in de pdf komen als op het scherm.
  */
 export default async function StylesheetPage({ params }: { params: Promise<{ slug: string }> }) {
+  const merk = await merkTekst()
   const user = await getSessionUser()
   if (!user) redirect('/login')
   if (user.role !== 'staff' && user.role !== 'admin') redirect('/')
@@ -225,7 +227,7 @@ export default async function StylesheetPage({ params }: { params: Promise<{ slu
         )}
 
         <footer className="mt-auto border-t border-gray-200 pt-3 text-[8px] text-gray-500">
-          James Robinson — Marketing &amp; Branding | www.jamesrobinson.nl
+          {merk.regel} | {merk.website}
         </footer>
       </PasOpBlad>
     </div>

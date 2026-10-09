@@ -118,6 +118,12 @@ const icons = {
       <path d="M14 3v4h4M9 12h6M9 16h4" strokeLinecap="round" />
     </svg>
   ),
+  bedrijf: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
+      <path d="M4 21V5l8-2v18M12 8h8v13M2 21h20" strokeLinejoin="round" />
+      <path d="M7 8h2M7 12h2M7 16h2M15 12h2M15 16h2" strokeLinecap="round" />
+    </svg>
+  ),
   salarishuis: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
       <path d="M3 20h4v-4H3zM10 20h4v-9h-4zM17 20h4V5h-4z" strokeLinejoin="round" />
@@ -209,11 +215,13 @@ const TEAM_GROEPEN: NavGroep[] = [
          De pagina's controleren dat zelf ook nog; een link weglaten is geen beveiliging. */
       { href: '/beheer/contracten', label: 'Contracten', key: 'contracten', icon: icons.contracten },
       { href: '/beheer/salarishuis', label: 'Salarishuis', key: 'salarishuis', icon: icons.salarishuis },
+      { href: '/beheer/bedrijf', label: 'Bedrijfsgegevens', key: 'bedrijf', icon: icons.bedrijf },
+      { href: '/beheer/sjablonen', label: 'Standaardteksten', key: 'sjablonen', icon: icons.contracten },
     ],
   },
 ]
 
-const ALLEEN_ADMIN = new Set(['contracten', 'salarishuis'])
+const ALLEEN_ADMIN = new Set(['contracten', 'salarishuis', 'bedrijf', 'sjablonen'])
 
 const CLIENT_NAV: NavItem[] = [
   { href: '/', label: 'Mijn wallet', key: 'wallet', icon: icons.wallet },
