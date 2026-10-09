@@ -98,20 +98,25 @@ test('een contactpersoon bij allebei wordt geweigerd', async () => {
   )
 })
 
-test('een contactpersoon bij geen van beide wordt geweigerd', async () => {
-  await assert.rejects(
-    () => createContact({ name: 'Zwevende Ziel' }),
-    (fout: unknown) => fout instanceof CrmError,
-  )
+test('een los contact, zonder klant of partner, mag: het adresboek', async () => {
+  const los = await createContact({ name: 'Losse Lotte ' + merk, firstName: 'Lotte', lastName: 'Los' + merk, companyName: 'Rabobank' })
+  assert.equal(los.organizationId, null)
+  assert.equal(los.partnerId, null)
+  const lijst = await listCrmPersonen({ zoek: 'Losse Lotte ' + merk })
+  const gevonden = lijst.find((m) => m.id === los.id)
+  assert.ok(gevonden, 'een los contact staat in de lijst')
+  assert.equal(gevonden!.soort, 'netwerk')
+  assert.equal(gevonden!.bijNaam, 'Rabobank')
+  assert.equal(gevonden!.href, `/beheer/crm/${los.id}`)
 })
 
-test('de database weigert het ook als de app het zou doorlaten', async () => {
+test('de database weigert een contact bij klant en partner tegelijk', async () => {
   // De check in de app is een nettere melding; deze regel bewijst dat het
   // slot eronder zit. Zonder die check zou een script of een handmatige
   // INSERT er alsnog langs kunnen.
   await assert.rejects(() =>
     db.execute(
-      sql`INSERT INTO contacts (name) VALUES (${'Rechtstreeks Ingevoegd ' + merk})`,
+      sql`INSERT INTO contacts (name, organization_id, partner_id) VALUES (${'Rechtstreeks Ingevoegd ' + merk}, ${orgId}, ${partnerId})`,
     ),
   )
 })

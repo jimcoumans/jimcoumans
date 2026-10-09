@@ -1,0 +1,2 @@
+ALTER TABLE "contacts" DROP CONSTRAINT "contact_hoort_bij_een";--> statement-breakpoint
+ALTER TABLE "contacts" ADD CONSTRAINT "contact_niet_bij_allebei" CHECK ("contacts"."organization_id" IS NULL OR "contacts"."partner_id" IS NULL);

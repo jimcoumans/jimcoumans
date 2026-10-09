@@ -1,4 +1,4 @@
-import { asc, eq, isNotNull, or, sql } from 'drizzle-orm'
+import { and, asc, eq, isNotNull, isNull, or, sql } from 'drizzle-orm'
 import { db } from '@/db'
 import { organizations, contacts, partners, users } from '@/db/schema'
 import type { Contact, Organization, Partner } from '@/db/schema'
@@ -19,6 +19,7 @@ type PartnerType = Partner['type']
 
      - contactpersonen met een organization_id  -> klant, prospect, lead, oud
      - contactpersonen met een partner_id       -> partner of leverancier
+     - contactpersonen zonder bedrijf of partner -> netwerk
      - gebruikers met de rol staff of admin     -> collega
 
    Waarom geen aparte "personen"-tabel waar alles in past: een collega is
@@ -29,7 +30,7 @@ type PartnerType = Partner['type']
    ------------------------------------------------------------------------- */
 
 /** Waar iemand vandaan komt. Bepaalt het label en waar je heen klikt. */
-export type PersoonSoort = 'klant' | 'prospect' | 'lead' | 'oud-klant' | 'partner' | 'collega'
+export type PersoonSoort = 'klant' | 'prospect' | 'lead' | 'oud-klant' | 'partner' | 'netwerk' | 'collega'
 
 export const SOORT_LABELS: Record<PersoonSoort, string> = {
   klant: 'Klant',
@@ -37,6 +38,7 @@ export const SOORT_LABELS: Record<PersoonSoort, string> = {
   lead: 'Lead',
   'oud-klant': 'Oud-klant',
   partner: 'Partner',
+  netwerk: 'Netwerk',
   collega: 'Collega',
 }
 
@@ -46,6 +48,7 @@ export const SOORT_STIJLEN: Record<PersoonSoort, string> = {
   lead: 'bg-amber-100 text-amber-800',
   'oud-klant': 'bg-gray-100 text-gray-600',
   partner: 'bg-emerald-100 text-emerald-800',
+  netwerk: 'bg-sky-100 text-sky-800',
   collega: 'bg-violet-100 text-violet-800',
 }
 
@@ -55,6 +58,7 @@ export const SOORTEN: PersoonSoort[] = [
   'prospect',
   'lead',
   'partner',
+  'netwerk',
   'collega',
   'oud-klant',
 ]
@@ -91,8 +95,10 @@ export type CrmPersoon = {
   telefoon: string | null
   /** Bij welk bedrijf, welke partner of welke afdeling hij hoort. */
   bijNaam: string
-  /** Waar je heen gaat als je erop klikt. */
+  /** Waar je heen gaat als je op de naam klikt. */
   href: string
+  /** Waar je heen gaat als je op het bedrijf klikt; null als er geen is. */
+  bijHref: string | null
   avatarImageId: string | null
   birthDay: number | null
   birthMonth: number | null
@@ -131,7 +137,7 @@ export async function listCrmPersonen(filter: CrmFilter = {}): Promise<CrmPersoo
   const term = (filter.zoek ?? '').trim()
   const like = `%${term}%`
 
-  const [klantRijen, partnerRijen, collegaRijen] = await Promise.all([
+  const [klantRijen, partnerRijen, losseRijen, collegaRijen] = await Promise.all([
     db
       .select({ contact: contacts, org: organizations })
       .from(contacts)
@@ -164,6 +170,24 @@ export async function listCrmPersonen(filter: CrmFilter = {}): Promise<CrmPersoo
 
     db
       .select()
+      .from(contacts)
+      .where(
+        and(
+          isNull(contacts.organizationId),
+          isNull(contacts.partnerId),
+          term === ''
+            ? undefined
+            : sql`(
+                ${contacts.name} ILIKE ${like}
+                OR ${contacts.email} ILIKE ${like}
+                OR ${contacts.jobTitle} ILIKE ${like}
+                OR ${contacts.companyName} ILIKE ${like}
+              )`,
+        ),
+      ),
+
+    db
+      .select()
       .from(users)
       .where(
         term === ''
@@ -189,7 +213,8 @@ export async function listCrmPersonen(filter: CrmFilter = {}): Promise<CrmPersoo
       email: r.contact.email,
       telefoon: r.contact.mobile ?? r.contact.phone,
       bijNaam: r.org.name,
-      href: `/beheer/klanten/${r.org.slug}`,
+      href: `/beheer/crm/${r.contact.id}`,
+      bijHref: `/beheer/klanten/${r.org.slug}`,
       avatarImageId: r.contact.avatarImageId,
       birthDay: r.contact.birthDay,
       birthMonth: r.contact.birthMonth,
@@ -211,6 +236,7 @@ export async function listCrmPersonen(filter: CrmFilter = {}): Promise<CrmPersoo
       telefoon: r.contact.mobile ?? r.contact.phone,
       bijNaam: r.partner.name,
       href: `/beheer/partners#${r.partner.id}`,
+      bijHref: `/beheer/partners#${r.partner.id}`,
       avatarImageId: r.contact.avatarImageId,
       birthDay: r.contact.birthDay,
       birthMonth: r.contact.birthMonth,
@@ -218,6 +244,29 @@ export async function listCrmPersonen(filter: CrmFilter = {}): Promise<CrmPersoo
       isPrimary: r.contact.isPrimary,
       actief: r.contact.active && r.partner.active,
       partnerType: r.partner.type,
+    })
+  }
+
+  for (const c of losseRijen) {
+    mensen.push({
+      id: c.id,
+      soort: 'netwerk',
+      naam: c.name,
+      sorteernaam: sorteernaamVan(c.lastName, c.name),
+      functie: c.jobTitle,
+      email: c.email,
+      telefoon: c.mobile ?? c.phone,
+      // Bij een los contact staat het bedrijf, als we het weten, als tekst.
+      bijNaam: c.companyName ?? 'Geen bedrijf',
+      href: `/beheer/crm/${c.id}`,
+      bijHref: null,
+      avatarImageId: c.avatarImageId,
+      birthDay: c.birthDay,
+      birthMonth: c.birthMonth,
+      birthYear: c.birthYear,
+      isPrimary: false,
+      actief: c.active,
+      partnerType: null,
     })
   }
 
@@ -233,6 +282,7 @@ export async function listCrmPersonen(filter: CrmFilter = {}): Promise<CrmPersoo
       telefoon: u.mobile ?? u.phone,
       bijNaam: u.department ?? 'James Robinson',
       href: `/beheer/medewerkers/${u.id}`,
+      bijHref: `/beheer/medewerkers/${u.id}`,
       avatarImageId: u.avatarImageId,
       birthDay: u.birthDay,
       birthMonth: u.birthMonth,
@@ -262,6 +312,7 @@ export function telPerSoort(mensen: CrmPersoon[]): Record<PersoonSoort, number> 
     lead: 0,
     'oud-klant': 0,
     partner: 0,
+    netwerk: 0,
     collega: 0,
   }
   for (const m of mensen) telling[m.soort] += 1

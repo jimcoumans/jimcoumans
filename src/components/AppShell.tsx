@@ -164,23 +164,16 @@ const DASHBOARD: NavItem = { href: '/beheer', label: 'Dashboard', key: 'dashboar
 const PERFORMANCE: NavItem = { href: '/beheer/performance', label: 'Performance', key: 'performance', icon: icons.performance }
 
 const TEAM_GROEPEN: NavGroep[] = [
+  /* Wie we kennen: bedrijven en de mensen daar, plus ons netwerk zonder
+     bedrijf, op één plek. Contacten is het adresboek voor het hele team. */
   {
-    label: 'Klanten',
-    key: 'g-klanten',
+    label: 'Relaties',
+    key: 'g-relaties',
     icon: icons.clients,
     items: [
-      { href: '/beheer/klanten', label: 'Alle klanten', key: 'klanten', icon: icons.clients },
-      { href: '/beheer/campagnes', label: 'Campagnes', key: 'campagnes', icon: icons.campagnes },
-      { href: '/beheer/abonnementen', label: 'Abonnementen', key: 'abonnementen', icon: icons.subs },
-    ],
-  },
-  {
-    label: 'Assets',
-    key: 'g-assets',
-    icon: icons.assets,
-    items: [
-      { href: '/beheer/assets', label: 'Merkkluizen', key: 'assets', icon: icons.assets },
-      { href: '/beheer/assets/beeldbank', label: 'Beeldbank', key: 'beeldbank', icon: icons.assets },
+      { href: '/beheer/klanten', label: 'Bedrijven', key: 'klanten', icon: icons.clients },
+      { href: '/beheer/crm', label: 'Contacten', key: 'crm', icon: icons.contacts },
+      { href: '/beheer/partners', label: 'Partners', key: 'partners', icon: icons.partners },
     ],
   },
   {
@@ -188,9 +181,20 @@ const TEAM_GROEPEN: NavGroep[] = [
     key: 'g-verkoop',
     icon: icons.pijplijn,
     items: [
-      { href: '/beheer/crm', label: 'CRM', key: 'crm', icon: icons.contacts },
       { href: '/beheer/pijplijn', label: 'Pijplijn', key: 'pijplijn', icon: icons.pijplijn },
       { href: '/beheer/offertes', label: 'Offertes', key: 'offertes', icon: icons.quotes },
+      { href: '/beheer/abonnementen', label: 'Abonnementen', key: 'abonnementen', icon: icons.subs },
+    ],
+  },
+  /* Het werk voor klanten: campagnes en hun merk. */
+  {
+    label: 'Uitvoering',
+    key: 'g-uitvoering',
+    icon: icons.campagnes,
+    items: [
+      { href: '/beheer/campagnes', label: 'Campagnes', key: 'campagnes', icon: icons.campagnes },
+      { href: '/beheer/assets', label: 'Merkkluizen', key: 'assets', icon: icons.assets },
+      { href: '/beheer/assets/beeldbank', label: 'Beeldbank', key: 'beeldbank', icon: icons.assets },
     ],
   },
   /* HR gaat over mensen: wie er werkt en wie er komt. Contracten horen bij
@@ -206,7 +210,7 @@ const TEAM_GROEPEN: NavGroep[] = [
       { href: '/beheer/werving/kandidaten', label: 'Kandidaten', key: 'kandidaten', icon: icons.werving },
     ],
   },
-  /* Wat voor het hele bedrijf geldt: gegevens en logo, wat we verkopen,
+  /* Wat voor het hele bedrijf geldt: gegevens en logo, wat we aanbieden,
      geld, het salarishuis en de standaardteksten (contracten, mails). */
   {
     label: 'Bedrijf',
@@ -216,7 +220,6 @@ const TEAM_GROEPEN: NavGroep[] = [
       { href: '/beheer/bedrijf', label: 'Bedrijfsgegevens', key: 'bedrijf', icon: icons.bedrijf },
       { href: '/beheer/diensten', label: 'Diensten', key: 'diensten', icon: icons.services },
       { href: '/beheer/portfolio', label: 'Portfolio', key: 'portfolio', icon: icons.portfolio },
-      { href: '/beheer/partners', label: 'Partners', key: 'partners', icon: icons.partners },
       { href: '/beheer/financieel', label: 'Financieel', key: 'financieel', icon: icons.finance },
       /* Salarishuis alleen voor beheerders: daar staan salarissen. De pagina's
          controleren dat zelf ook nog; een link weglaten is geen beveiliging. */

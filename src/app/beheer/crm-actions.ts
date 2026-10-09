@@ -1,6 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
 import { requireStaff } from '@/lib/auth'
 import { describeDbError } from '@/lib/db-errors'
 import { parseAmountToCents } from '@/lib/money'
@@ -9,7 +10,7 @@ import {
   createPartner, updatePartner, setPartnerActive, deletePartner,
   linkPartner, updatePartnerLink, unlinkPartner,
   createAccount, updateAccount, deleteAccount,
-  updateOrganizationDetails, CrmError,
+  updateOrganizationDetails, CrmError, wijzigContactBasis, getContactKaart,
 } from '@/lib/crm'
 import type { ContactPatch, NewPartner, NewAccount } from '@/lib/crm'
 import { volledigeNaam, type Aanhef } from '@/lib/namen'
@@ -755,4 +756,82 @@ export async function wisDoel(formData: FormData): Promise<ActionResult> {
     await verwijderDoel(id)
     revalidatePath(`/beheer/klanten/${slug}`)
   })
+}
+
+/* ------------------------------ Adresboek --------------------------------
+   Contacten toevoegen en wijzigen zonder eerst een klant te openen. Een
+   bedrijf kiezen mag, hoeft niet. Iedereen van het team kan dit. */
+
+function leesBasis(formData: FormData) {
+  const delen = {
+    firstName: tekst(formData, 'voornaam') || null,
+    infix: tekst(formData, 'tussenvoegsel') || null,
+    lastName: tekst(formData, 'achternaam') || null,
+  }
+  const naam = volledigeNaam(delen)
+  if (naam.length < 2) return { ok: false as const, error: 'Vul in elk geval een voor- of achternaam in.' }
+  const email = tekst(formData, 'email')
+  if (email !== '' && !email.includes('@')) return { ok: false as const, error: 'Vul een geldig e-mailadres in, of laat het leeg.' }
+  return {
+    ok: true as const,
+    basis: {
+      name: naam,
+      ...delen,
+      jobTitle: tekst(formData, 'functie') || null,
+      companyName: tekst(formData, 'bedrijfsnaam') || null,
+      email: email || null,
+      phone: tekst(formData, 'telefoon') || null,
+      mobile: tekst(formData, 'mobiel') || null,
+      linkedinUrl: tekst(formData, 'linkedin') || null,
+      notes: tekst(formData, 'notities') || null,
+    },
+    organizationId: tekst(formData, 'organizationId') || null,
+  }
+}
+
+export async function nieuwContact(formData: FormData): Promise<ActionResult> {
+  await requireStaff()
+  const g = leesBasis(formData)
+  if (!g.ok) return g
+  let id: string | null = null
+  const r = await veilig(async () => {
+    const c = await createContact({ ...g.basis, organizationId: g.organizationId, companyName: g.organizationId ? null : g.basis.companyName })
+    id = c.id
+    revalidatePath('/beheer/crm')
+  })
+  if (r.ok && id) redirect(`/beheer/crm/${id}`)
+  return r
+}
+
+export async function wijzigContact(formData: FormData): Promise<ActionResult> {
+  await requireStaff()
+  const id = tekst(formData, 'contactId')
+  if (!id) return { ok: false, error: 'Onbekende contactpersoon.' }
+  const g = leesBasis(formData)
+  if (!g.ok) return g
+  const kaart = await getContactKaart(id)
+  if (!kaart) return { ok: false, error: 'Contactpersoon niet gevonden.' }
+  return veilig(async () => {
+    await wijzigContactBasis(id, {
+      ...g.basis,
+      // Een partnercontact houdt zijn partner; de keuze staat dan niet op het scherm.
+      organizationId: kaart.partner ? undefined : g.organizationId,
+      companyName: g.organizationId ? null : g.basis.companyName,
+    })
+    revalidatePath('/beheer/crm')
+    revalidatePath(`/beheer/crm/${id}`)
+    if (kaart.organisatie) revalidatePath(`/beheer/klanten/${kaart.organisatie.slug}`)
+  })
+}
+
+export async function verwijderContact(formData: FormData): Promise<ActionResult> {
+  await requireStaff()
+  const id = tekst(formData, 'contactId')
+  if (!id) return { ok: false, error: 'Onbekende contactpersoon.' }
+  const r = await veilig(async () => {
+    await deleteContact(id)
+    revalidatePath('/beheer/crm')
+  })
+  if (r.ok) redirect('/beheer/crm')
+  return r
 }
