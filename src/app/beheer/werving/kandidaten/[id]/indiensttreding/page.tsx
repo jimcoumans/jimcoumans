@@ -10,7 +10,7 @@ import { getIndiensttreding, type StapSleutel } from '@/lib/indiensttreding'
 import { listFunctieprofielen, listMogelijkeOndertekenaars, invoerUit, ondertekenaarsVan, namenZin, tekennaamVan, korteNaam } from '@/lib/contracten'
 import { getHuis, schaalNamen } from '@/lib/salarishuis'
 import { getBedrijf, getBedrijfsdocument, huidigBedrijfsdocument, handboekPad } from '@/lib/bedrijf'
-import { leesIban } from '@/lib/persoonsgegevens'
+import { leesIban, aanhefVoor } from '@/lib/persoonsgegevens'
 import { werkadresVoorstel } from '@/lib/aanname'
 import { AFDELINGEN } from '@/lib/team'
 import { contractMail, afschriftMail, mailtoLink } from '@/lib/mailsjablonen'
@@ -93,7 +93,7 @@ export default async function IndiensttredingPagina({ params }: { params: Promis
   /* Startwaarden voor het contractformulier: uit het contract, of uit wat we van de kandidaat weten. */
   const v = vacature?.vacature ?? null
   const profielBijVacature = profielen.find((p) => p.title === v?.title)
-  const start: ContractStart = contract
+  const vanContract: ContractStart = contract
     ? startUitInvoer(invoerUit(contract), contract.soort === 'definitief' ? 'definitief' : 'proforma', {
         voornamen: r?.officialFirstNames,
         tussenvoegsel: r?.infix,
@@ -117,6 +117,22 @@ export default async function IndiensttredingPagina({ params }: { params: Promis
         woonplaats: r?.city ?? '',
         geboortedatum: r?.birthDate ? formatDateInput(r.birthDate) : '',
       }
+  /* De werknemer komt altijd uit het dossier (stap 1), ook bij wijzigen: zo
+     zet een contract nooit oude gegevens terug in de persoonsgegevens. */
+  const start: ContractStart = r
+    ? {
+        ...vanContract,
+        voornamen: r.officialFirstNames ?? vanContract.voornamen,
+        tussenvoegsel: r.infix ?? '',
+        achternaam: r.lastName ?? vanContract.achternaam,
+        roepnaam: k.firstName ?? vanContract.roepnaam,
+        aanhef: r.gender ? aanhefVoor(r.gender) : vanContract.aanhef,
+        adres: r.addressLine ?? '',
+        postcode: r.postalCode ?? '',
+        woonplaats: r.city ?? '',
+        geboortedatum: r.birthDate ? formatDateInput(r.birthDate) : '',
+      }
+    : vanContract
   const formulier = (
     <ContractFormulier
       start={start}
@@ -126,6 +142,7 @@ export default async function IndiensttredingPagina({ params }: { params: Promis
       schalen={huis ? schaalNamen(huis) : []}
       tekenaars={tekenaars}
       vestigingen={bedrijf?.vestigingen ?? []}
+      dossierHref={`/beheer/werving/kandidaten/${k.id}/indiensttreding#gegevens`}
     />
   )
   const opmerkingen = (contract?.remarks ?? '').split('\n').filter((o) => o && !/aangezegd/.test(o))
@@ -214,7 +231,7 @@ export default async function IndiensttredingPagina({ params }: { params: Promis
             Wat er in het contract komt. Het is hetzelfde dossier als op de pagina van {k.firstName ?? 'de kandidaat'}: wat je hier opslaat, staat daar ook.
             {k.email || k.phone ? ` Contact: ${[k.email, k.phone].filter(Boolean).join(' · ')}.` : ''}
           </p>
-          <DossierGegevens van={van} gegevens={gegevens} iban={iban} start={{ roepnaam: k.firstName, voornamen: k.officialFirstNames, tussenvoegsel: k.infix, achternaam: k.lastName }} />
+          <DossierGegevens van={van} gegevens={gegevens} iban={iban} start={{ roepnaam: k.firstName, voornamen: k.officialFirstNames, tussenvoegsel: k.infix, achternaam: k.lastName, email: k.email, telefoon: k.phone }} />
         </Stap>
 
         {/* ------------------------------ 2. Contract ------------------------------ */}

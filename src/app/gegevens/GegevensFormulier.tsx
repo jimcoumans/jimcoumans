@@ -44,7 +44,7 @@ export function GegevensFormulier({
   voornaam: string
   /** Het lege formulier van de Belastingdienst om te downloaden, als het bij de bedrijfsgegevens staat. */
   formulierLink?: string | null
-  bekend: { voornamen: string; tussenvoegsel: string; achternaam: string; adres: string; postcode: string; woonplaats: string; geboortedatum: string; geboorteplaats: string; heeftIban: boolean; heeftId: boolean; heeftLoonheffing: boolean }
+  bekend: { voornamen: string; tussenvoegsel: string; achternaam: string; adres: string; postcode: string; woonplaats: string; geboortedatum: string; geboorteplaats: string; geslacht: string; nationaliteit: string; email: string; telefoon: string; noodNaam: string; noodRelatie: string; noodTelefoon: string; heeftIban: boolean; heeftId: boolean; heeftLoonheffing: boolean }
 }) {
   const [state, actie, bezig] = useActionState<Aanlevering, FormData>(async (vorige, data) => {
     try {
@@ -106,7 +106,7 @@ export function GegevensFormulier({
 
       <fieldset className="space-y-3">
         <legend className="mb-1 text-[17px] font-semibold">Je naam, zoals in je paspoort of ID-kaart</legend>
-        <Veld label="Alle voornamen" name="voornamen" defaultValue={bekend.voornamen} required autoComplete="given-name" />
+        <Veld label="Alle voornamen, voluit" name="voornamen" defaultValue={bekend.voornamen} required autoComplete="given-name" hint="Zonder je achternaam: die heeft een eigen veld." />
         <div className="grid gap-3 sm:grid-cols-[1fr_2fr]">
           <Veld label="Tussenvoegsel" name="tussenvoegsel" defaultValue={bekend.tussenvoegsel} />
           <Veld label="Achternaam" name="achternaam" defaultValue={bekend.achternaam} required autoComplete="family-name" />
@@ -114,6 +114,26 @@ export function GegevensFormulier({
         <div className="grid gap-3 sm:grid-cols-2">
           <Veld label="Geboortedatum" name="geboortedatum" type="date" defaultValue={bekend.geboortedatum} required autoComplete="bday" />
           <Veld label="Geboorteplaats" name="geboorteplaats" defaultValue={bekend.geboorteplaats} />
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <label className="block">
+            <span className="text-jr-text mb-1.5 block text-[13px] font-medium">Geslacht</span>
+            <select name="geslacht" defaultValue={bekend.geslacht} className={VELD}>
+              <option value="">Kies</option>
+              <option value="man">Man</option>
+              <option value="vrouw">Vrouw</option>
+              <option value="x">X</option>
+            </select>
+          </label>
+          <Veld label="Nationaliteit" name="nationaliteit" defaultValue={bekend.nationaliteit} placeholder="Nederlandse" />
+        </div>
+      </fieldset>
+
+      <fieldset className="space-y-3">
+        <legend className="mb-1 text-[17px] font-semibold">Hoe we je bereiken</legend>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <Veld label="E-mail" name="email" type="email" defaultValue={bekend.email} autoComplete="email" />
+          <Veld label="Mobiel nummer" name="telefoon" type="tel" defaultValue={bekend.telefoon} autoComplete="tel" />
         </div>
       </fieldset>
 
@@ -137,6 +157,15 @@ export function GegevensFormulier({
           hint="Staat op je bankpas of in je bankapp."
         />
         <Veld label="Ten name van" name="tenaamstelling" autoComplete="name" />
+      </fieldset>
+
+      <fieldset className="space-y-3">
+        <legend className="mb-1 text-[17px] font-semibold">Wie we bellen als er iets is</legend>
+        <div className="grid gap-3 sm:grid-cols-3">
+          <Veld label="Naam" name="noodNaam" defaultValue={bekend.noodNaam} />
+          <Veld label="Relatie" name="noodRelatie" defaultValue={bekend.noodRelatie} placeholder="Partner, ouder…" />
+          <Veld label="Telefoon" name="noodTelefoon" type="tel" defaultValue={bekend.noodTelefoon} />
+        </div>
       </fieldset>
 
       <fieldset className="space-y-4">

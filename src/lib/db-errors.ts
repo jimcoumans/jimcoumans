@@ -153,6 +153,8 @@ export function describeDbError(error: unknown): string | null {
       return 'Dit label bestaat al. Gebruik het bestaande, anders krijg je twee halve groepen.'
     case 'organization_payment_term_positive':
       return 'De betaaltermijn moet een positief aantal dagen zijn.'
+    case 'personal_record_gender_valid':
+      return 'Kies bij geslacht man, vrouw of x.'
     case 'contact_niet_bij_allebei':
       return 'Een contactpersoon hoort bij een klant of bij een partner, niet bij allebei.'
     case 'contacts_one_primary_partner_idx':

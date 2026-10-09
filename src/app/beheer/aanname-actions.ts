@@ -187,6 +187,13 @@ export async function dossierGegevensOpslaan(formData: FormData): Promise<Action
       city: tekst(formData, 'woonplaats'),
       iban: tekst(formData, 'iban'),
       accountHolder: tekst(formData, 'tenaamstelling'),
+      gender: tekst(formData, 'geslacht'),
+      nationality: tekst(formData, 'nationaliteit'),
+      privateEmail: tekst(formData, 'email'),
+      privatePhone: tekst(formData, 'telefoon'),
+      emergencyName: tekst(formData, 'noodNaam'),
+      emergencyRelation: tekst(formData, 'noodRelatie'),
+      emergencyPhone: tekst(formData, 'noodTelefoon'),
     })
     await werkNaamBij(id, tekst(formData, 'roepnaam'))
   })

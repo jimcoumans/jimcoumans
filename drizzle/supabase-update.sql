@@ -2956,3 +2956,61 @@ BEGIN
   END IF;
 END $jr_0045_contact_bedrijfsnaam$;
 
+-- ---------------------------------------------------------------------------
+-- 0046_salaris_fulltime
+-- ---------------------------------------------------------------------------
+
+DO $jr_0046_salaris_fulltime$
+BEGIN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = '24680f99a9f8cc429b1036425cc9928af2ce927c8aba842e68305a39339524ab') THEN
+    RAISE NOTICE 'Overgeslagen: 0046_salaris_fulltime stond er al.';
+  ELSE
+    -- Artikel salaris: bij deeltijd ook het salaris bij een volledige werkweek
+    -- en de deeltijdfactor. Alleen waar de standaardzin nog staat; een eigen
+    -- tekst blijft zoals hij is.
+    UPDATE "contract_template_articles"
+    SET "body" = REPLACE(
+      "body",
+      'zoals dat gold op {{salaris_peildatum}}.{{/als}}',
+      'zoals dat gold op {{salaris_peildatum}}.{{/als}}{{#als deeltijd}} Bij een volledige werkweek van {{uren_fulltime}} uur is dat bruto {{salaris_fulltime}} per maand; de deeltijdfactor is {{deeltijdfactor}}.{{/als}}'
+    )
+    WHERE "body" LIKE '%zoals dat gold op {{salaris_peildatum}}.{{/als}}%'
+      AND "body" NOT LIKE '%{{#als deeltijd}}%';
+
+    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+    VALUES ('24680f99a9f8cc429b1036425cc9928af2ce927c8aba842e68305a39339524ab', 1791554384470);
+    RAISE NOTICE 'Toegepast: 0046_salaris_fulltime.';
+  END IF;
+END $jr_0046_salaris_fulltime$;
+
+-- ---------------------------------------------------------------------------
+-- 0047_persoonsgegevens_compleet
+-- ---------------------------------------------------------------------------
+
+DO $jr_0047_persoonsgegevens_compleet$
+BEGIN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = '6af0ca6f92486d9ba8da119e6d896a78949857ce881aa9ab8ff83a6f51b202aa') THEN
+    RAISE NOTICE 'Overgeslagen: 0047_persoonsgegevens_compleet stond er al.';
+  ELSE
+    ALTER TABLE "personal_records" ADD COLUMN "gender" text;
+
+    ALTER TABLE "personal_records" ADD COLUMN "nationality" text;
+
+    ALTER TABLE "personal_records" ADD COLUMN "private_email" text;
+
+    ALTER TABLE "personal_records" ADD COLUMN "private_phone" text;
+
+    ALTER TABLE "personal_records" ADD COLUMN "emergency_name" text;
+
+    ALTER TABLE "personal_records" ADD COLUMN "emergency_relation" text;
+
+    ALTER TABLE "personal_records" ADD COLUMN "emergency_phone" text;
+
+    ALTER TABLE "personal_records" ADD CONSTRAINT "personal_record_gender_valid" CHECK ("personal_records"."gender" IS NULL OR "personal_records"."gender" IN ('man', 'vrouw', 'x'));
+
+    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+    VALUES ('6af0ca6f92486d9ba8da119e6d896a78949857ce881aa9ab8ff83a6f51b202aa', 1791554817581);
+    RAISE NOTICE 'Toegepast: 0047_persoonsgegevens_compleet.';
+  END IF;
+END $jr_0047_persoonsgegevens_compleet$;
+

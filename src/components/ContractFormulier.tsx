@@ -135,6 +135,7 @@ export function ContractFormulier({
   vestigingen,
   kandidaten = [],
   collegas = [],
+  dossierHref,
 }: {
   start: ContractStart
   /** Bij een kandidaat of collega staat vast voor wie; bij Contracten kies je. */
@@ -148,6 +149,12 @@ export function ContractFormulier({
   vestigingen: CompanyLocation[]
   kandidaten?: Keuze[]
   collegas?: Keuze[]
+  /**
+   * Waar de persoonsgegevens staan. Gezet en de naam is bekend: dan staat de
+   * werknemer hier alleen ter controle, en wijzig je hem in het dossier. Eén
+   * plek voor naam, adres en geboortedatum.
+   */
+  dossierHref?: string
 }) {
   /* Bij een nieuw contract staat aan wie standaard tekent (bedrijfsgegevens);
      is daar niemand gekozen, dan de eigenaren. Bij wijzigen: wie er tekende. */
@@ -191,31 +198,60 @@ export function ContractFormulier({
         </div>
       )}
 
-      <Kop uitleg="Naam, adres en geboortedatum komen uit de persoonsgegevens. Wat je hier aanvult of verbetert, wordt daar ook opgeslagen.">De werknemer</Kop>
-      <div className="grid gap-3 sm:grid-cols-[2fr_0.9fr_1.5fr]">
-        <Field label="Voornamen (paspoort)" name="officieleVoornamen" required defaultValue={start.voornamen} placeholder="Daniël Matthijs" hint="Alle voornamen. Staan voluit bij de werknemer." />
-        <Field label="Tussenvoegsel" name="tussenvoegsel" defaultValue={start.tussenvoegsel} />
-        <Field label="Achternaam" name="achternaam" required defaultValue={start.achternaam} />
-      </div>
-      <div className="grid gap-3 sm:grid-cols-2">
-        <Field label="Roepnaam" name="roepnaam" defaultValue={start.roepnaam} placeholder="Daan" hint="In de kop, bij de paraaf, onder de handtekening en in de mail." />
-        <Select
-          label="Aanhef"
-          name="aanhef"
-          defaultValue={start.aanhef}
-          options={[
-            { value: 'neutraal', label: 'Geen aanhef' },
-            { value: 'heer', label: 'Dhr.' },
-            { value: 'mevrouw', label: 'Mevr.' },
-          ]}
-        />
-      </div>
-      <div className="grid gap-3 sm:grid-cols-[2fr_1fr_1.5fr]">
-        <Field label="Adres" name="adres" defaultValue={start.adres} />
-        <Field label="Postcode" name="postcode" defaultValue={start.postcode} />
-        <Field label="Woonplaats" name="woonplaats" defaultValue={start.woonplaats} />
-      </div>
-      <Field label="Geboortedatum" name="geboortedatum" type="date" defaultValue={start.geboortedatum} />
+      {dossierHref && start.voornamen && start.achternaam ? (
+        <>
+          <Kop>De werknemer</Kop>
+          <div className="flex flex-wrap items-start justify-between gap-3 rounded-lg bg-gray-50 p-4 text-sm">
+            <dl className="grid flex-1 gap-x-6 gap-y-1.5 sm:grid-cols-2">
+              <Gegeven label="Naam bovenaan het contract">{[start.voornamen, start.tussenvoegsel, start.achternaam].filter(Boolean).join(' ')}</Gegeven>
+              <Gegeven label="Overal elders">{[start.roepnaam || start.voornamen.split(/\s+/)[0], start.tussenvoegsel, start.achternaam].filter(Boolean).join(' ')}</Gegeven>
+              <Gegeven label="Adres">{start.adres ? `${start.adres}, ${start.postcode} ${start.woonplaats}` : ''}</Gegeven>
+              <Gegeven label="Geboortedatum">{start.geboortedatum ? start.geboortedatum.split('-').reverse().join('-') : ''}</Gegeven>
+              <Gegeven label="Aanhef">{start.aanhef === 'heer' ? 'Dhr.' : start.aanhef === 'mevrouw' ? 'Mevr.' : 'Geen'}</Gegeven>
+            </dl>
+            <a href={dossierHref} className="text-jr-link text-xs font-medium hover:underline">
+              Wijzigen bij de persoonsgegevens
+            </a>
+          </div>
+          <input type="hidden" name="officieleVoornamen" value={start.voornamen} />
+          <input type="hidden" name="tussenvoegsel" value={start.tussenvoegsel} />
+          <input type="hidden" name="achternaam" value={start.achternaam} />
+          <input type="hidden" name="roepnaam" value={start.roepnaam} />
+          <input type="hidden" name="aanhef" value={start.aanhef} />
+          <input type="hidden" name="adres" value={start.adres} />
+          <input type="hidden" name="postcode" value={start.postcode} />
+          <input type="hidden" name="woonplaats" value={start.woonplaats} />
+          <input type="hidden" name="geboortedatum" value={start.geboortedatum} />
+        </>
+      ) : (
+        <>
+          <Kop uitleg="Wat je hier invult, gaat ook naar de persoonsgegevens.">De werknemer</Kop>
+          <Field markeerOptioneel={false} label="Voornamen, voluit zoals in het paspoort" name="officieleVoornamen" required defaultValue={start.voornamen} placeholder="Daniël Matthijs" hint="Zonder achternaam. Staan alleen bovenaan het contract." />
+          <div className="grid gap-3 sm:grid-cols-[1.2fr_0.8fr_1.6fr]">
+            <Field markeerOptioneel={false} label="Roepnaam" name="roepnaam" defaultValue={start.roepnaam} placeholder="Daan" />
+            <Field markeerOptioneel={false} label="Tussenvoegsel" name="tussenvoegsel" defaultValue={start.tussenvoegsel} />
+            <Field markeerOptioneel={false} label="Achternaam" name="achternaam" required defaultValue={start.achternaam} />
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Select
+              label="Aanhef"
+              name="aanhef"
+              defaultValue={start.aanhef}
+              options={[
+                { value: 'neutraal', label: 'Geen aanhef' },
+                { value: 'heer', label: 'Dhr.' },
+                { value: 'mevrouw', label: 'Mevr.' },
+              ]}
+            />
+            <Field markeerOptioneel={false} label="Geboortedatum" name="geboortedatum" type="date" defaultValue={start.geboortedatum} />
+          </div>
+          <div className="grid gap-3 sm:grid-cols-[2fr_1fr_1.5fr]">
+            <Field markeerOptioneel={false} label="Straat en huisnummer" name="adres" defaultValue={start.adres} />
+            <Field markeerOptioneel={false} label="Postcode" name="postcode" defaultValue={start.postcode} />
+            <Field markeerOptioneel={false} label="Woonplaats" name="woonplaats" defaultValue={start.woonplaats} />
+          </div>
+        </>
+      )}
 
       <Kop>Functie en duur</Kop>
       <div className="grid gap-3 sm:grid-cols-2">
@@ -226,7 +262,7 @@ export function ContractFormulier({
           options={[{ value: '', label: 'Geen profiel' }, ...profielen.map((p) => ({ value: p.id, label: p.title }))]}
           hint="Bepaalt de motivering van het relatiebeding."
         />
-        <Field label="Functie" name="functie" required defaultValue={start.functie || profiel?.title || ''} placeholder="Marketing Manager" />
+        <Field markeerOptioneel={false} label="Functie" name="functie" required defaultValue={start.functie || profiel?.title || ''} placeholder="Marketing Manager" />
       </div>
       <div className="grid gap-3 sm:grid-cols-4">
         <Select
@@ -238,23 +274,23 @@ export function ContractFormulier({
             { value: 'onbepaalde_tijd', label: 'Onbepaalde tijd' },
           ]}
         />
-        <Field label="Ingangsdatum" name="ingangsdatum" type="date" required defaultValue={start.ingangsdatum} />
-        <Field label="Looptijd (maanden)" name="looptijd" defaultValue={start.looptijd} placeholder="7" hint="Bij bepaalde tijd." />
-        <Field label="Proeftijd (maanden)" name="proeftijd" defaultValue={start.proeftijd} hint="Wordt teruggebracht tot wat mag." />
+        <Field markeerOptioneel={false} label="Ingangsdatum" name="ingangsdatum" type="date" required defaultValue={start.ingangsdatum} />
+        <Field markeerOptioneel={false} label="Looptijd (maanden)" name="looptijd" defaultValue={start.looptijd} placeholder="7" hint="Bij bepaalde tijd." />
+        <Field markeerOptioneel={false} label="Proeftijd (maanden)" name="proeftijd" defaultValue={start.proeftijd} hint="Wordt teruggebracht tot wat mag." />
       </div>
 
       <Kop uitleg="Met schaal en trede komt het bedrag uit het salarishuis dat geldt op de ingangsdatum; in het contract staat die datum als peildatum.">Uren en salaris</Kop>
       <div className="grid gap-3 sm:grid-cols-4">
-        <Field label="Uren per week" name="uren" required defaultValue={start.uren} placeholder="32" />
+        <Field markeerOptioneel={false} label="Uren per week" name="uren" required defaultValue={start.uren} placeholder="32" />
         {schalen.length > 0 ? (
           <>
             <Select label="Schaal" name="schaal" defaultValue={start.schaal} options={[{ value: '', label: 'Buiten schaal' }, ...schalen.map((n) => ({ value: n, label: n }))]} />
-            <Field label="Trede" name="trede" defaultValue={start.trede} placeholder="5" />
+            <Field markeerOptioneel={false} label="Trede" name="trede" defaultValue={start.trede} placeholder="5" />
           </>
         ) : (
           <p className="text-jr-orange text-xs sm:col-span-2">Er is nog geen salarishuis. Vul zelf een bedrag in.</p>
         )}
-        <Field label="Of: bruto per maand" name="bedrag" defaultValue={start.bedrag} placeholder="2.750" hint="Alleen buiten de schaal." />
+        <Field markeerOptioneel={false} label="Of: bruto per maand" name="bedrag" defaultValue={start.bedrag} placeholder="2.750" hint="Alleen buiten de schaal." />
       </div>
 
       <Kop uitleg="Maatwerk per contract. Wat je hier aan- of uitzet, komt als artikel of lid in het contract.">Afspraken</Kop>
@@ -296,8 +332,8 @@ export function ContractFormulier({
           options={vestigingen.map((v) => ({ value: v.id, label: `${v.name} (${v.addressLine}, ${v.city})` }))}
           hint="Beheer je bij Bedrijfsgegevens."
         />
-        <Field label="Getekend te" name="tekenplaats" defaultValue={start.tekenplaats} placeholder="Leeg: de plaats van de standplaats" />
-        <Field label="Getekend op" name="tekendatum" type="date" defaultValue={start.tekendatum} hint="De dag waarop jullie tekenen." />
+        <Field markeerOptioneel={false} label="Getekend te" name="tekenplaats" defaultValue={start.tekenplaats} placeholder="Leeg: de plaats van de standplaats" />
+        <Field markeerOptioneel={false} label="Getekend op" name="tekendatum" type="date" defaultValue={start.tekendatum} hint="De dag waarop jullie tekenen." />
       </div>
       <fieldset className="rounded-lg border border-gray-200 p-3">
         <legend className="text-jr-text px-1 text-[13px] font-medium">Wie tekent</legend>
@@ -325,6 +361,16 @@ export function ContractFormulier({
         </div>
       </fieldset>
     </ActionForm>
+  )
+}
+
+function Gegeven({ label, children }: { label: string; children: React.ReactNode }) {
+  const leeg = children === '' || children === null || children === undefined
+  return (
+    <div>
+      <dt className="text-xs text-gray-500">{label}</dt>
+      <dd>{leeg ? <span className="text-jr-orange">nog niet ingevuld</span> : children}</dd>
+    </div>
   )
 }
 
