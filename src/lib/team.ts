@@ -155,6 +155,8 @@ export type TeamlidPatch = {
   endedOn?: Date | null
   contractHoursPerWeekQuarters?: number | null
   notes?: string | null
+  /** Alleen een beheerder; leeg laten = niet wijzigen. */
+  isOwner?: boolean
 }
 
 export async function updateTeamlid(userId: string, patch: TeamlidPatch): Promise<void> {
@@ -181,6 +183,7 @@ export async function updateTeamlid(userId: string, patch: TeamlidPatch): Promis
       endedOn: patch.endedOn ?? null,
       contractHoursPerWeekQuarters: patch.contractHoursPerWeekQuarters ?? null,
       notes: patch.notes?.trim() || null,
+      ...(patch.isOwner === undefined ? {} : { isOwner: patch.isOwner }),
     })
     .where(eq(users.id, userId))
 }

@@ -86,7 +86,14 @@ export type ContractInvoer = {
   userId?: string | null
 
   naam: string
+  /** De roepnaam, voor de aanhef in de begeleidende tekst. Leeg: de eerste voornaam. */
+  roepnaam?: string | null
   aanhef?: 'heer' | 'mevrouw' | 'neutraal' | null
+  /**
+   * Wie namens de werkgever tekent, met volledige naam. Leeg: wat er bij de
+   * werkgevergegevens staat.
+   */
+  ondertekenaars?: string[]
   adres?: string | null
   postcode?: string | null
   woonplaats?: string | null
@@ -249,14 +256,14 @@ export function stelContractOp(
     werkgever_adres: werkgever.registeredAddress,
     werkgever_postcode: werkgever.registeredPostalCode,
     werkgever_vestigingsplaats: werkgever.registeredCity,
-    werkgever_ondertekenaars: werkgever.signatories,
+    werkgever_ondertekenaars: invoer.ondertekenaars && invoer.ondertekenaars.length > 0 ? namenZin(invoer.ondertekenaars) : werkgever.signatories,
     werkplek_adres: werkgever.workAddress,
     werkplek_postcode: werkgever.workPostalCode,
     werkplek_plaats: werkgever.workCity,
 
     werknemer_aanhef: aanhefTekst,
     werknemer_naam: invoer.naam,
-    voornaam: voornaamUit(invoer.naam),
+    voornaam: invoer.roepnaam?.trim() || voornaamUit(invoer.naam),
     werknemer_adres: invoer.adres ?? '',
     werknemer_postcode: invoer.postcode ?? '',
     werknemer_woonplaats: invoer.woonplaats ?? '',
@@ -399,6 +406,86 @@ export async function getSjabloon(
   return { template, artikelen }
 }
 
+export type WerkgeverInvoer = Pick<
+  EmployerSettings,
+  'legalName' | 'registeredAddress' | 'registeredPostalCode' | 'registeredCity' | 'workAddress' | 'workPostalCode' | 'workCity' | 'signatories' | 'kvkNumber'
+>
+
+/**
+ * De werkgevergegevens bijwerken. Eén rij; is die er nog niet, dan komt hij erbij.
+ *
+ * Oude contracten veranderen hierdoor niet: die bewaren hun eigen tekst. Alleen
+ * de kop van een contract dat later wordt opgesteld, neemt dit over.
+ */
+export async function slaWerkgeverOp(w: WerkgeverInvoer): Promise<void> {
+  const verplicht: [string, string][] = [
+    [w.legalName, 'de naam'],
+    [w.registeredAddress, 'het adres van de vestiging'],
+    [w.registeredPostalCode, 'de postcode van de vestiging'],
+    [w.registeredCity, 'de plaats van de vestiging'],
+    [w.workAddress, 'het adres van de werkplek'],
+    [w.workPostalCode, 'de postcode van de werkplek'],
+    [w.workCity, 'de plaats van de werkplek'],
+    [w.signatories, 'wie er standaard tekent'],
+  ]
+  const leeg = verplicht.filter(([v]) => !v.trim()).map(([, n]) => n)
+  if (leeg.length > 0) throw new ContractError(`Vul ${leeg.join(', ')} in.`)
+  const [bestaand] = await db.select({ id: employerSettings.id }).from(employerSettings).limit(1)
+  if (bestaand) {
+    await db.update(employerSettings).set({ ...w, updatedAt: new Date() }).where(eq(employerSettings.id, bestaand.id))
+  } else {
+    await db.insert(employerSettings).values(w)
+  }
+}
+
+/** "A", "A en B", "A, B en C". */
+export function namenZin(namen: string[]): string {
+  const n = namen.map((x) => x.trim()).filter(Boolean)
+  if (n.length <= 1) return n[0] ?? ''
+  return `${n.slice(0, -1).join(', ')} en ${n[n.length - 1]}`
+}
+
+/**
+ * Wie er namens de werkgever tekent, als losse namen.
+ *
+ * Bij een contract van voor deze keuze staat er niets bij het contract;
+ * dan de werkgevergegevens, gesplitst op "en" en komma's.
+ */
+export function ondertekenaarsVan(c: Pick<GeneratedContract, 'employerSigners'>, werkgever: Pick<EmployerSettings, 'signatories'> | null): string[] {
+  if (c.employerSigners?.trim()) return c.employerSigners.split('\n').map((x) => x.trim()).filter(Boolean)
+  return (werkgever?.signatories ?? '')
+    .split(/,| en /)
+    .map((x) => x.trim())
+    .filter(Boolean)
+}
+
+/**
+ * Wie er namens de werkgever kan tekenen: de collega's, eigenaren eerst.
+ *
+ * Wie bij de werkgevergegevens als ondertekenaar staat maar (nog) geen account
+ * heeft, staat er ook bij en is aangevinkt: anders valt een eigenaar zonder
+ * account stilletjes van het contract af.
+ */
+export async function listMogelijkeOndertekenaars(): Promise<{ id: string; naam: string; eigenaar: boolean }[]> {
+  const [rijen, werkgever] = await Promise.all([
+    db
+      .select({ id: users.id, name: users.name, email: users.email, isOwner: users.isOwner, firstName: users.firstName, infix: users.infix, lastName: users.lastName })
+      .from(users)
+      .where(and(isNull(users.organizationId), isNull(users.disabledAt), isNull(users.endedOn), or(eq(users.role, 'admin'), eq(users.role, 'staff')))),
+    getWerkgever(),
+  ])
+  const lijst = rijen.map((r) => ({
+    id: r.id,
+    naam: [r.firstName, r.infix, r.lastName].filter(Boolean).join(' ') || r.name || r.email,
+    eigenaar: r.isOwner,
+  }))
+  const bekend = new Set(lijst.map((x) => x.naam.toLowerCase()))
+  for (const naam of ondertekenaarsVan({ employerSigners: null }, werkgever)) {
+    if (!bekend.has(naam.toLowerCase())) lijst.push({ id: `werkgever:${naam}`, naam, eigenaar: true })
+  }
+  return lijst.sort((a, b) => Number(b.eigenaar) - Number(a.eigenaar) || a.naam.localeCompare(b.naam, 'nl'))
+}
+
 export async function getWerkgever(): Promise<EmployerSettings | null> {
   const [rij] = await db.select().from(employerSettings).limit(1)
   return rij ?? null
@@ -469,6 +556,7 @@ export async function bewaarContract(
       userId: invoer.userId ?? null,
 
       employeeName: invoer.naam,
+      employerSigners: invoer.ondertekenaars && invoer.ondertekenaars.length > 0 ? invoer.ondertekenaars.join('\n') : null,
       employeeAanhef: invoer.aanhef ?? null,
       employeeAddress: invoer.adres ?? null,
       employeePostalCode: invoer.postcode ?? null,

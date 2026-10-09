@@ -12,9 +12,10 @@ import {
   listKandidatenMetAanbod,
   komendeAanzeggingen,
   getWerkgever,
+  listMogelijkeOndertekenaars,
 } from '@/lib/contracten'
 import { getHuis, schaalNamen } from '@/lib/salarishuis'
-import { nieuwContract, contractAangezegd } from '../contract-actions'
+import { nieuwContract, contractAangezegd, werkgeverOpslaan } from '../contract-actions'
 import { formatDate } from '@/lib/dates'
 import { formatCents } from '@/lib/money'
 
@@ -43,6 +44,7 @@ export default async function ContractenPage() {
   const team = await listTeam()
   const huis = await getHuis()
   const werkgever = await getWerkgever()
+  const tekenaars = await listMogelijkeOndertekenaars()
 
   const recent = await db
     .select()
@@ -81,7 +83,9 @@ export default async function ContractenPage() {
               hint="Voor een verlenging of een nieuw contract van iemand die er al werkt."
             />
 
-            <Field label="Naam zoals in het contract" name="naam" required placeholder="Daniël Matthijs Voncken" />
+            <Field label="Voornamen (paspoort)" name="officieleVoornamen" required placeholder="Daniël Matthijs" />
+            <Field label="Tussenvoegsel" name="tussenvoegsel" />
+            <Field label="Achternaam" name="achternaam" required placeholder="Voncken" />
             <Select
               label="Aanhef"
               name="aanhef"
@@ -92,6 +96,20 @@ export default async function ContractenPage() {
                 { value: 'mevrouw', label: 'Mevr.' },
               ]}
             />
+            <fieldset className="rounded-lg border border-gray-200 p-3">
+              <legend className="text-jr-text px-1 text-[13px] font-medium">Wie tekent namens James Robinson</legend>
+              <input type="hidden" name="ondertekenaarsKeuze" value="1" />
+              <div className="grid gap-1.5">
+                {tekenaars.map((t) => (
+                  <label key={t.id} className="flex items-center gap-2 text-sm">
+                    <input type="checkbox" name="ondertekenaar" value={t.naam} defaultChecked={t.eigenaar} />
+                    {t.naam}
+                    {t.eigenaar && <span className="text-xs text-gray-500">eigenaar</span>}
+                  </label>
+                ))}
+              </div>
+              <p className="mt-1.5 text-xs text-gray-500">De werknemer tekent altijd mee. Iedereen parafeert elke pagina.</p>
+            </fieldset>
 
             <Select
               label="Functieprofiel"
@@ -184,6 +202,40 @@ export default async function ContractenPage() {
           worden opgesteld.
         </div>
       )}
+
+      <section className="mb-5 flex flex-wrap items-start justify-between gap-4 rounded-xl bg-white p-5 shadow-sm">
+        <div className="text-sm">
+          <h2 className="mb-1 text-base">Werkgever</h2>
+          {werkgever ? (
+            <p className="text-gray-600">
+              {werkgever.legalName}, gevestigd {werkgever.registeredAddress}, {werkgever.registeredPostalCode} {werkgever.registeredCity}
+              {werkgever.kvkNumber ? ` · KvK ${werkgever.kvkNumber}` : ''}. Werkplek {werkgever.workAddress}, {werkgever.workPostalCode} {werkgever.workCity}.
+            </p>
+          ) : (
+            <p className="text-gray-600">Nog niet ingevuld.</p>
+          )}
+          <p className="mt-1 text-xs text-gray-500">Staat in de kop van elk nieuw contract. Bestaande contracten houden hun eigen tekst.</p>
+        </div>
+        <Paneel knop="Bewerken" stijl="rustig" titel="Werkgevergegevens" uitleg="De vestiging is wat in de KvK staat; de werkplek is waar het werk gedaan wordt. Die mogen verschillen.">
+          <ActionForm action={werkgeverOpslaan} submitLabel="Opslaan" resetOnSuccess={false}>
+            <Field label="Naam" name="naam" required defaultValue={werkgever?.legalName ?? 'James Robinson B.V.'} />
+            <Field label="KvK-nummer" name="kvk" defaultValue={werkgever?.kvkNumber ?? ''} />
+            <Field label="Vestiging (KvK): adres" name="adres" required defaultValue={werkgever?.registeredAddress ?? ''} />
+            <Field label="Vestiging: postcode" name="postcode" required defaultValue={werkgever?.registeredPostalCode ?? ''} />
+            <Field label="Vestiging: plaats" name="plaats" required defaultValue={werkgever?.registeredCity ?? ''} />
+            <Field label="Werkplek: adres" name="werkAdres" required defaultValue={werkgever?.workAddress ?? ''} />
+            <Field label="Werkplek: postcode" name="werkPostcode" required defaultValue={werkgever?.workPostalCode ?? ''} />
+            <Field label="Werkplek: plaats" name="werkPlaats" required defaultValue={werkgever?.workCity ?? ''} />
+            <Field
+              label="Wie tekent als er niets gekozen is"
+              name="ondertekenaars"
+              required
+              defaultValue={werkgever?.signatories ?? ''}
+              hint="Bij een nieuw contract kies je de ondertekenaars zelf; eigenaren staan standaard aan."
+            />
+          </ActionForm>
+        </Paneel>
+      </section>
 
       {aanzeggingen.length > 0 && (
         <section className="border-jr-orange/30 bg-jr-orange/5 mb-5 rounded-xl border p-5">

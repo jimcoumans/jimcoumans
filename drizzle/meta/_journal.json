@@ -281,6 +281,13 @@
       "when": 1791528410773,
       "tag": "0039_hr_aanname",
       "breakpoints": true
+    },
+    {
+      "idx": 40,
+      "version": "7",
+      "when": 1791534157611,
+      "tag": "0040_contract_ondertekenaars",
+      "breakpoints": true
     }
   ]
 }

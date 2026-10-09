@@ -3,7 +3,7 @@ import { getSessionUser } from '@/lib/auth'
 import { getTeamlid, formatContractUren, AFDELINGEN } from '@/lib/team'
 import { getFiguresByEmployee } from '@/lib/reports'
 import { AppShell } from '@/components/AppShell'
-import { ActionForm, Field, Select, TextArea } from '@/components/ActionForm'
+import { ActionForm, Check, Field, Select, TextArea } from '@/components/ActionForm'
 import { bewerkMedewerkerprofiel, bewerkUurkostprijs } from '../../medewerker-actions'
 import { formatEuro } from '@/lib/money'
 import { formatDate, formatDateInput, MAANDNAMEN } from '@/lib/dates'
@@ -113,6 +113,11 @@ export default async function MedewerkerPage({
           {lid.role === 'admin' && (
             <span className="bg-jr-lightblue text-jr-deepblue rounded-full px-2 py-0.5 text-xs">
               Beheerder
+            </span>
+          )}
+          {lid.isOwner && (
+            <span className="bg-jr-lightblue text-jr-deepblue rounded-full px-2 py-0.5 text-xs">
+              Eigenaar
             </span>
           )}
           {lid.isMarketingManager && (
@@ -286,6 +291,14 @@ export default async function MedewerkerPage({
                     hint="Alleen invullen als iemand vertrokken is."
                   />
                 </div>
+
+                <input type="hidden" name="eigenaarKeuze" value="1" />
+                <Check
+                  label="Eigenaar van James Robinson"
+                  name="eigenaar"
+                  defaultChecked={lid.isOwner}
+                  hint="Eigenaren tekenen standaard elk contract namens de werkgever. Bij het opstellen kun je iemand uitvinken."
+                />
 
                 <Field
                   label="Contracturen per week"

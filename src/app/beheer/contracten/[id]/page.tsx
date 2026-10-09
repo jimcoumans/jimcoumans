@@ -3,7 +3,7 @@ import { getSessionUser } from '@/lib/auth'
 import { AppShell } from '@/components/AppShell'
 import { ActionForm, Field, Select } from '@/components/ActionForm'
 import { contractGetekend } from '../../aanname-actions'
-import { getContract, getWerkgever, ketenVoor } from '@/lib/contracten'
+import { getContract, getWerkgever, ketenVoor, ondertekenaarsVan, namenZin } from '@/lib/contracten'
 import { listTeam } from '@/lib/team'
 import { contractDefinitief, contractAangezegd } from '../../contract-actions'
 import { formatDate, formatDateInput, formatDateLong } from '@/lib/dates'
@@ -37,6 +37,7 @@ export default async function ContractPagina({
   if (!contract) notFound()
 
   const werkgever = await getWerkgever()
+  const tekenaars = ondertekenaarsVan(contract, werkgever)
   const team = contract.soort === 'proforma' && !contract.candidateId ? await listTeam() : []
   const keten =
     contract.userId && contract.contractType === 'bepaalde_tijd'
@@ -209,15 +210,17 @@ export default async function ContractPagina({
         </p>
       </div>
 
+      {contract.summary && (
+        <details className="mx-auto mb-5 max-w-[46rem] rounded-xl bg-white p-5 text-sm shadow-sm print:hidden">
+          <summary className="cursor-pointer font-medium">Begeleidende tekst voor de mail</summary>
+          <p className="mt-1 text-xs text-gray-500">Staat niet in het contract en niet in de pdf.</p>
+          <p className="mt-3 whitespace-pre-wrap text-gray-700">{contract.summary}</p>
+        </details>
+      )}
+
       {/* Het document zelf. Wit, smal en zonder franje: dit gaat naar iemand
           die het moet ondertekenen. */}
       <article className="mx-auto max-w-[46rem] rounded-xl bg-white p-8 shadow-sm print:max-w-none print:rounded-none print:p-0 print:shadow-none">
-        {contract.summary && (
-          <section className="mb-8 border-b border-gray-200 pb-6 text-sm whitespace-pre-wrap">
-            {contract.summary}
-          </section>
-        )}
-
         <h2 className="mb-6 text-center text-lg font-bold">
           {contract.soort === 'proforma' && '[PROFORMA] '}
           {contract.contractType === 'bepaalde_tijd'
@@ -235,7 +238,7 @@ export default async function ContractPagina({
               <br />
               Aan de: {werkgever.registeredAddress}
               <br />
-              Hierbij rechtsgeldig vertegenwoordigd door {werkgever.signatories}
+              Hierbij rechtsgeldig vertegenwoordigd door {namenZin(tekenaars)}
               <br />
               Hierna te noemen: &ldquo;de werkgever&rdquo;;
             </p>
@@ -303,13 +306,15 @@ export default async function ContractPagina({
           <p className="mb-8">
             te: {werkgever?.registeredCity ?? ''}, dd. &nbsp;&hellip;&hellip;&hellip;&hellip;
           </p>
-          <div className="flex justify-between gap-8">
+          <div className="grid gap-8 sm:grid-cols-2">
+            {tekenaars.map((naam) => (
+              <div key={naam}>
+                <p className="mb-10 text-xs text-gray-500">Namens de werkgever</p>
+                <p className="border-t border-gray-400 pt-1">{naam}</p>
+              </div>
+            ))}
             <div>
-              <p className="mb-10">de werkgever</p>
-              <p className="border-t border-gray-400 pt-1">{werkgever?.signatories}</p>
-            </div>
-            <div>
-              <p className="mb-10">de werknemer</p>
+              <p className="mb-10 text-xs text-gray-500">De werknemer</p>
               <p className="border-t border-gray-400 pt-1">{contract.employeeName}</p>
             </div>
           </div>

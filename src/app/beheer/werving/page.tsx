@@ -210,7 +210,7 @@ export default async function WervingPage() {
               {achterstand.wachtenOpAntwoord.map((k) => (
                 <li key={k.kandidaat.id} className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-white px-4 py-3 text-sm shadow-sm">
                   <span className="min-w-0">
-                    <a href={k.vacatureId ? `/beheer/werving/${k.vacatureId}` : '/beheer/werving'} className="hover:text-jr-link font-medium">
+                    <a href={`/beheer/werving/kandidaten/${k.kandidaat.id}`} className="hover:text-jr-link font-medium">
                       {k.kandidaat.name}
                     </a>
                     <span className="block text-xs text-gray-600">
@@ -255,7 +255,9 @@ export default async function WervingPage() {
                   {achterstand.bijnaTeWissen.map((k) => (
                     <li key={k.kandidaat.id} className="flex flex-wrap items-center justify-between gap-2 py-2.5 text-sm">
                       <span>
-                        {k.kandidaat.name}
+                        <a href={`/beheer/werving/kandidaten/${k.kandidaat.id}`} className="hover:text-jr-link">
+                          {k.kandidaat.name}
+                        </a>
                         <span className="ml-2 text-xs text-gray-500">
                           {KANDIDAAT_STATUS_LABELS[k.kandidaat.status]}
                           {k.kandidaat.closedReason && ` · ${k.kandidaat.closedReason}`}
@@ -350,10 +352,7 @@ function Regel({ kaart }: { kaart: KandidaatKaart }) {
   return (
     <li className="flex flex-wrap items-center justify-between gap-2 py-2 text-sm">
       <span>
-        <a
-          href={kaart.vacatureId ? `/beheer/werving/${kaart.vacatureId}` : '/beheer/werving'}
-          className="hover:text-jr-blue font-medium"
-        >
+        <a href={`/beheer/werving/kandidaten/${kaart.kandidaat.id}`} className="hover:text-jr-blue font-medium">
           {kaart.kandidaat.name}
         </a>
         <span className="ml-2 text-xs text-gray-500">
