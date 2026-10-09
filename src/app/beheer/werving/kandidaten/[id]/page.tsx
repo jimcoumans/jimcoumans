@@ -22,7 +22,6 @@ import { listContracten, listFunctieprofielen } from '@/lib/contracten'
 import { getHuis, schaalNamen } from '@/lib/salarishuis'
 import { getGegevens, leesIban, gegevensPad, DOCUMENT_LABELS, LINK_DAGEN } from '@/lib/persoonsgegevens'
 import { heeftSleutel } from '@/lib/versleuteling'
-import { volledigeNaam } from '@/lib/namen'
 import { formatDate, formatDateInput, formatDateLong } from '@/lib/dates'
 import { formatCents } from '@/lib/money'
 import {
@@ -48,7 +47,7 @@ import { vervolgstappen, werkadresVoorstel } from '@/lib/aanname'
 import { Vervolgstappen } from '@/components/Vervolgstappen'
 import { contractMail, gegevensMail, welkomMail, mailtoLink } from '@/lib/mailsjablonen'
 import { AFDELINGEN } from '@/lib/team'
-import { getWerkgever } from '@/lib/contracten'
+import { getWerkgever, listMogelijkeOndertekenaars } from '@/lib/contracten'
 
 export const maxDuration = 26
 
@@ -97,7 +96,7 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
   /* Na de aanname staan de persoonsgegevens bij de collega, niet meer bij de
      kandidaat: anders zouden ze met zijn bewaartermijn worden gewist. */
   const aangenomen = k.status === 'aangenomen' && k.hiredUserId !== null
-  const [contracten, gegevens, huis, profielen, vacature, werkgever] = beheerder
+  const [contracten, gegevens, huis, profielen, vacature, werkgever, tekenaars] = beheerder
     ? await Promise.all([
         listContracten({ candidateId: id }),
         getGegevens(aangenomen ? { userId: k.hiredUserId! } : { candidateId: id }),
@@ -105,8 +104,9 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
         listFunctieprofielen(),
         k.vacancyId ? getVacature(k.vacancyId) : Promise.resolve(null),
         getWerkgever(),
+        listMogelijkeOndertekenaars(),
       ])
-    : [[], null, null, [], null, null]
+    : [[], null, null, [], null, null, []]
   const toonStappen = beheerder && (k.status === 'aanbod' || k.status === 'contract' || k.status === 'aangenomen')
   const stappen = toonStappen ? await vervolgstappen({ kandidaatId: id }) : []
 
@@ -126,8 +126,6 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
   const link = gegevens && linkGeldig ? `${basis}${gegevensPad(gegevens.record.id, gegevens.record.linkVersie)}` : null
 
   const faseIndex = FASEN.findIndex((f) => f.status === k.status)
-  const contractNaam =
-    volledigeNaam({ firstName: gegevens?.record.officialFirstNames ?? k.officialFirstNames ?? k.firstName, infix: gegevens?.record.infix ?? k.infix, lastName: gegevens?.record.lastName ?? k.lastName }) || k.name
   const v = vacature?.vacature ?? null
   const verborgen = <input type="hidden" name="kandidaatId" value={k.id} />
 
@@ -303,8 +301,13 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
                         </label>
                       </div>
                     </fieldset>
-                    <div className="grid gap-3 sm:grid-cols-[2fr_1fr]">
-                      <Field label="Naam zoals in het contract" name="naam" required defaultValue={contractNaam} hint="Alle voornamen zoals in het paspoort." />
+                    <input type="hidden" name="roepnaam" value={k.firstName ?? ''} />
+                    <div className="grid gap-3 sm:grid-cols-[2fr_0.9fr_1.5fr]">
+                      <Field label="Voornamen (paspoort)" name="officieleVoornamen" required defaultValue={gegevens?.record.officialFirstNames ?? k.officialFirstNames ?? k.firstName ?? ''} />
+                      <Field label="Tussenvoegsel" name="tussenvoegsel" defaultValue={gegevens?.record.infix ?? k.infix ?? ''} />
+                      <Field label="Achternaam" name="achternaam" required defaultValue={gegevens?.record.lastName ?? k.lastName ?? ''} />
+                    </div>
+                    <div className="grid gap-3 sm:grid-cols-[1fr_2fr]">
                       <Select
                         label="Aanhef"
                         name="aanhef"
@@ -315,6 +318,9 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
                           { value: 'mevrouw', label: 'Mevr.' },
                         ]}
                       />
+                      <p className="self-end pb-2 text-xs text-gray-600">
+                        Naam, adres en geboortedatum komen uit de persoonsgegevens. Wat je hier aanvult of verbetert, wordt daar ook opgeslagen.
+                      </p>
                     </div>
                     <div className="grid gap-3 sm:grid-cols-2">
                       <Select
@@ -370,7 +376,7 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
                         />
                         <input type="hidden" name="opToeslagKeuze" value="1" />
                         <Check label="OP-toeslag in plaats van een pensioenregeling" name="opToeslagAan" defaultChecked hint="Uit: geen OP-toeslag in het salaris en het contract." />
-                        <Check label="Vrijetijdsbudget van € 100 per jaar" name="vrijetijdsbudget" />
+                        <Check label="Vrijetijdsbudget van € 100 per jaar" name="vrijetijdsbudget" defaultChecked />
                       </div>
                       <div className="mt-3">
                         <TextArea label="Extra afspraken" name="extraAfspraken" rows={2} hint="Bijvoorbeeld een studiekostenregeling of thuiswerken. Leeg: wat er bij het functieprofiel staat." />
@@ -383,7 +389,24 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
                       <Field label="Woonplaats" name="woonplaats" defaultValue={gegevens?.record.city ?? ''} />
                     </div>
                     <Field label="Geboortedatum" name="geboortedatum" type="date" defaultValue={gegevens?.record.birthDate ? formatDateInput(gegevens.record.birthDate) : ''} />
-                    <p className="text-xs text-gray-500">Adres en geboortedatum komen uit de persoonsgegevens, zodra de kandidaat die heeft aangeleverd.</p>
+                    <fieldset className="rounded-lg border border-gray-200 p-3">
+                      <legend className="text-jr-text px-1 text-[13px] font-medium">Wie tekent</legend>
+                      <input type="hidden" name="ondertekenaarsKeuze" value="1" />
+                      <p className="mb-2 text-xs text-gray-600">Namens James Robinson. Eigenaren staan standaard aan. De werknemer tekent altijd mee, en iedereen parafeert elke pagina.</p>
+                      <div className="grid gap-1.5 sm:grid-cols-2">
+                        {tekenaars.map((t) => (
+                          <label key={t.id} className="flex items-center gap-2 text-sm">
+                            <input type="checkbox" name="ondertekenaar" value={t.naam} defaultChecked={t.eigenaar} />
+                            {t.naam}
+                            {t.eigenaar && <span className="text-xs text-gray-500">eigenaar</span>}
+                          </label>
+                        ))}
+                        <label className="flex items-center gap-2 text-sm text-gray-600">
+                          <input type="checkbox" checked disabled readOnly />
+                          De werknemer zelf
+                        </label>
+                      </div>
+                    </fieldset>
                   </ActionForm>
                 </Paneel>
               </div>
@@ -521,7 +544,7 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
                   </a>
                   .
                 </p>
-              ) : !gegevensFase ? (
+              ) : !gegevensFase && !gegevens ? (
                 <p className="text-sm text-gray-600">
                   Komt in beeld in de fase “contract ter ondertekening”: pas als iemand bij ons komt werken, vragen we zijn paspoort, IBAN en loonheffingsformulier.
                   Zet de status op “Contract ter ondertekening” of stel een definitief contract op.

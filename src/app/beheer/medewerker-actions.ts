@@ -113,6 +113,7 @@ export async function bewerkMedewerkerprofiel(formData: FormData): Promise<Actio
             endedOn: datum(formData, 'uitdienst'),
             contractHoursPerWeekQuarters: urenQuarters,
             notes: tekst(formData, 'notities') || null,
+            ...(formData.has('eigenaarKeuze') ? { isOwner: ['on', 'ja', 'true'].includes(tekst(formData, 'eigenaar')) } : {}),
           }
         : {}),
     })

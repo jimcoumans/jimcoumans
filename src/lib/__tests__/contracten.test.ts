@@ -35,6 +35,9 @@ import {
   markeerAangezegd,
   komendeAanzeggingen,
   ketenVoor,
+  namenZin,
+  ondertekenaarsVan,
+  listMogelijkeOndertekenaars,
   ContractError,
   type ContractInvoer,
 } from '../contracten'
@@ -556,4 +559,60 @@ test('de keten telt de bestaande contracten van deze collega', async () => {
   const stand = await ketenVoor(collega!.id, 7)
   assert.equal(stand.nummer, 3)
   assert.match(stand.uitleg!, /laatste tijdelijke contract/)
+})
+
+/* --- Wie er tekent -------------------------------------------------------- */
+
+test('de namen van wie tekent lezen als een zin', () => {
+  assert.equal(namenZin([]), '')
+  assert.equal(namenZin(['Jim Coumans']), 'Jim Coumans')
+  assert.equal(namenZin(['Jim Coumans', 'Jim Kikken']), 'Jim Coumans en Jim Kikken')
+  assert.equal(namenZin(['Jim Coumans', 'Jim Kikken', 'Stan Doyen']), 'Jim Coumans, Jim Kikken en Stan Doyen')
+})
+
+test('de gekozen ondertekenaars komen in het contract, anders die van de werkgever', () => {
+  const gekozen = stelContractOp(voncken({ ondertekenaars: ['Jim Kikken'] }), sjabloon, werkgever, managerProfiel)
+  const standaard = stelContractOp(voncken(), sjabloon, werkgever, managerProfiel)
+  // De begeleidende tekst sluit af met wie er tekent.
+  assert.ok(gekozen.intro.trimEnd().endsWith('Jim Kikken'), 'alleen wie gekozen is')
+  assert.ok(!gekozen.intro.includes('Jim Coumans en Jim Kikken'))
+  assert.ok(standaard.intro.trimEnd().endsWith(werkgever.signatories), 'zonder keuze: de werkgevergegevens')
+  assert.deepEqual(ondertekenaarsVan({ employerSigners: 'Jim Coumans\nJim Kikken' }, null), ['Jim Coumans', 'Jim Kikken'])
+  assert.deepEqual(ondertekenaarsVan({ employerSigners: null }, { signatories: 'Jim Coumans en Jim Kikken' }), ['Jim Coumans', 'Jim Kikken'])
+  assert.deepEqual(ondertekenaarsVan({ employerSigners: null }, { signatories: 'A, B en C' }), ['A', 'B', 'C'])
+})
+
+test('in de werkgevergegevens staan voluit de namen, geen "dhr. J."', () => {
+  assert.doesNotMatch(werkgever.signatories, /dhr\./i)
+})
+
+test('de tekst volgt de pro forma: bankrekening, UWV en de AVG-datum', () => {
+  const tekst = stelContractOp(voncken(), sjabloon, werkgever, managerProfiel).body
+  assert.ok(!tekst.includes('postrekening'), 'een postrekening bestaat niet meer')
+  assert.ok(tekst.includes('website van het UWV'), 'verwijzing naar UWV en Rijksoverheid bij verlof')
+  assert.ok(tekst.includes('per 25 mei 2018'), 'de AVG met ingangsdatum')
+})
+
+test('een eigenaar staat bovenaan de mogelijke ondertekenaars en is aangevinkt', async () => {
+  const [eigenaar] = await db
+    .insert(users)
+    .values({ email: `${merk}-eigenaar@jamesrobinson.nl`, name: `${merk} Stan Doyen`, role: 'staff', isOwner: true })
+    .returning()
+  const [collega] = await db
+    .insert(users)
+    .values({ email: `${merk}-collega@jamesrobinson.nl`, name: `${merk} Collega`, role: 'staff' })
+    .returning()
+  gemaakteUsers.push(eigenaar!.id, collega!.id)
+  const lijst = await listMogelijkeOndertekenaars()
+  const e = lijst.find((x) => x.id === eigenaar!.id)
+  const c = lijst.find((x) => x.id === collega!.id)
+  assert.equal(e?.eigenaar, true)
+  assert.equal(c?.eigenaar, false)
+  const laatsteEigenaar = lijst.map((x) => x.eigenaar).lastIndexOf(true)
+  const eersteGeenEigenaar = lijst.map((x) => x.eigenaar).indexOf(false)
+  assert.ok(eersteGeenEigenaar === -1 || laatsteEigenaar < eersteGeenEigenaar, 'eigenaren eerst')
+  // Wie bij de werkgever als ondertekenaar staat, staat er altijd bij, ook zonder account.
+  for (const naam of ondertekenaarsVan({ employerSigners: null }, werkgever)) {
+    assert.ok(lijst.some((x) => x.naam === naam && x.eigenaar), `${naam} staat aangevinkt`)
+  }
 })

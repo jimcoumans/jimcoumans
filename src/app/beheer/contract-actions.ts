@@ -14,11 +14,14 @@ import {
   bewaarContract,
   maakDefinitief,
   markeerAangezegd,
+  slaWerkgeverOp,
   ContractError,
   type ContractInvoer,
 } from '@/lib/contracten'
 import { berekenBeloning, getHuis } from '@/lib/salarishuis'
 import { zetKandidaatStatus } from '@/lib/werving'
+import { zorgVoorGegevens, zorgVoorGegevensVanCollega, werkContractgegevensBij, GegevensError } from '@/lib/persoonsgegevens'
+import { volledigeNaam } from '@/lib/namen'
 import { db } from '@/db'
 import { candidates, candidateNotes } from '@/db/schema'
 import { eq } from 'drizzle-orm'
@@ -39,7 +42,7 @@ async function veilig(fn: () => Promise<void>, ook: string[] = []): Promise<Acti
     for (const pad of ook) revalidatePath(pad)
     return { ok: true }
   } catch (error) {
-    if (error instanceof ContractError) return { ok: false, error: error.message }
+    if (error instanceof ContractError || error instanceof GegevensError) return { ok: false, error: error.message }
     const melding = describeDbError(error)
     if (melding) return { ok: false, error: melding }
     if (error instanceof Error && error.message === 'NEXT_REDIRECT') throw error
@@ -157,10 +160,28 @@ export async function nieuwContract(formData: FormData): Promise<ActionResult> {
   const functie = tekst(formData, 'functie') || profiel?.title || ''
   if (functie === '') return { ok: false, error: 'Vul de functie in.' }
 
+  /* De naam zoals in het paspoort, uit losse delen: die gaan ook terug naar
+     de persoonsgegevens. Het oude formulier met één naamveld werkt nog. */
+  const voornamen = tekst(formData, 'officieleVoornamen')
+  const tussenvoegsel = tekst(formData, 'tussenvoegsel')
+  const achternaam = tekst(formData, 'achternaam')
+  const naamUitDelen = volledigeNaam({ firstName: voornamen, infix: tussenvoegsel, lastName: achternaam })
+
+  /* Wie namens de werkgever tekent. Alleen als het formulier de keuze biedt;
+     anders gelden de werkgevergegevens. */
+  const ondertekenaars = formData.has('ondertekenaarsKeuze')
+    ? formData.getAll('ondertekenaar').map((v) => String(v).trim()).filter(Boolean)
+    : undefined
+  if (ondertekenaars && ondertekenaars.length === 0) {
+    return { ok: false, error: 'Kies wie er namens James Robinson tekent.' }
+  }
+
   const invoer: ContractInvoer = {
     candidateId: kandidaatId,
     userId: collegaId,
-    naam: tekst(formData, 'naam'),
+    naam: naamUitDelen || tekst(formData, 'naam'),
+    roepnaam: tekst(formData, 'roepnaam') || null,
+    ondertekenaars,
     aanhef:
       tekst(formData, 'aanhef') === 'heer'
         ? 'heer'
@@ -205,6 +226,24 @@ export async function nieuwContract(formData: FormData): Promise<ActionResult> {
     const werkgever = await getWerkgever()
     if (!werkgever) {
       throw new ContractError('De gegevens van de werkgever ontbreken. Vul die eerst in.')
+    }
+
+    /* Eén plek voor naam, adres en geboortedatum: wat hier is ingevuld, gaat
+       eerst naar de persoonsgegevens. */
+    if (kandidaatId || collegaId) {
+      const record = kandidaatId ? await zorgVoorGegevens(kandidaatId) : await zorgVoorGegevensVanCollega(collegaId!)
+      await werkContractgegevensBij(record.id, {
+        officialFirstNames: voornamen || null,
+        ...(formData.has('tussenvoegsel') ? { infix: tussenvoegsel || null } : {}),
+        lastName: achternaam || null,
+        addressLine: invoer.adres,
+        postalCode: invoer.postcode,
+        city: invoer.woonplaats,
+        birthDate: invoer.geboortedatum,
+      })
+      if (kandidaatId && voornamen) {
+        await db.update(candidates).set({ officialFirstNames: voornamen, updatedAt: new Date() }).where(eq(candidates.id, kandidaatId))
+      }
     }
 
     const concept = stelContractOp(invoer, sjabloon, werkgever, profiel)
@@ -263,4 +302,22 @@ export async function contractAangezegd(formData: FormData): Promise<ActionResul
   if (!contractId) return { ok: false, error: 'Onbekend contract.' }
 
   return veilig(() => markeerAangezegd(contractId), [`/beheer/contracten/${contractId}`])
+}
+
+/** De werkgevergegevens zoals ze in de kop van een contract komen. */
+export async function werkgeverOpslaan(formData: FormData): Promise<ActionResult> {
+  if (!(await alsBeheerder())) return GEEN_RECHT
+  return veilig(() =>
+    slaWerkgeverOp({
+      legalName: tekst(formData, 'naam'),
+      registeredAddress: tekst(formData, 'adres'),
+      registeredPostalCode: tekst(formData, 'postcode'),
+      registeredCity: tekst(formData, 'plaats'),
+      workAddress: tekst(formData, 'werkAdres'),
+      workPostalCode: tekst(formData, 'werkPostcode'),
+      workCity: tekst(formData, 'werkPlaats'),
+      signatories: tekst(formData, 'ondertekenaars'),
+      kvkNumber: tekst(formData, 'kvk') || null,
+    }),
+  )
 }

@@ -225,6 +225,33 @@ export async function slaGegevensOp(recordId: string, invoer: GegevensInvoer): P
   await db.update(personalRecords).set(patch).where(eq(personalRecords.id, recordId))
 }
 
+/**
+ * De gegevens die bij het opstellen van een contract zijn ingevuld, terug
+ * naar de persoonsgegevens. Alleen wat is ingevuld: een leeg veld in het
+ * contractformulier wist niets.
+ *
+ * Zo is er één plek waar naam, adres en geboortedatum staan. Het contract
+ * leest ze daar, en wie ze in het contractformulier verbetert, verbetert ze
+ * ook daar.
+ */
+export async function werkContractgegevensBij(
+  recordId: string,
+  g: Pick<GegevensInvoer, 'officialFirstNames' | 'infix' | 'lastName' | 'addressLine' | 'postalCode' | 'city' | 'birthDate'>,
+): Promise<void> {
+  const patch: Partial<typeof personalRecords.$inferInsert> = { updatedAt: new Date() }
+  if (kort(g.officialFirstNames)) patch.officialFirstNames = kort(g.officialFirstNames)
+  if (g.infix !== undefined) patch.infix = kort(g.infix, 40)
+  if (kort(g.lastName)) patch.lastName = kort(g.lastName)
+  if (kort(g.addressLine)) patch.addressLine = kort(g.addressLine)
+  if (schoonPostcode(g.postalCode)) patch.postalCode = schoonPostcode(g.postalCode)
+  if (kort(g.city)) patch.city = kort(g.city)
+  if (g.birthDate) {
+    if (g.birthDate.getTime() > Date.now() || g.birthDate.getFullYear() < 1920) throw new GegevensError('De geboortedatum klopt niet.')
+    patch.birthDate = g.birthDate
+  }
+  await db.update(personalRecords).set(patch).where(eq(personalRecords.id, recordId))
+}
+
 export type NieuwDocument = { kind: DocumentSoort; contentType: string; filename: string | null; data: Buffer }
 
 export function controleerDocument(d: NieuwDocument): void {

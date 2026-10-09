@@ -1081,6 +1081,11 @@ export const users = pgTable(
        een eigen kolom op het portfoliobord, met een maandelijks doel om de
        belasting tegen af te zetten. */
     isMarketingManager: boolean('is_marketing_manager').notNull().default(false),
+    /**
+     * Eigenaar van James Robinson. Eigenaren tekenen standaard elk contract
+     * namens de werkgever; bij het opstellen kun je iemand uitvinken.
+     */
+    isOwner: boolean('is_owner').notNull().default(false),
     /** Maanddoel in centen, bijv. 2000000 voor 20.000 euro. */
     monthlyTargetCents: integer('monthly_target_cents'),
 
@@ -3024,6 +3029,12 @@ export const generatedContracts = pgTable(
     aanzeggenVoor: timestamp('aanzeggen_voor', { withTimezone: true }),
     /** Of er al is aangezegd, en wanneer. */
     aangezegdOp: timestamp('aangezegd_op', { withTimezone: true }),
+
+    /**
+     * Wie namens de werkgever tekent, een naam per regel. Bij het opstellen
+     * gekozen; leeg bij oude contracten, dan gelden de werkgevergegevens.
+     */
+    employerSigners: text('employer_signers'),
 
     /* --- Het document --- */
     /** De uitgeschreven artikelen. */

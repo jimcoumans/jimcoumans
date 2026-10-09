@@ -24,7 +24,7 @@ import { wisKandidaten } from '../werving'
 import { stelContractOp, getSjabloon, getWerkgever, listFunctieprofielen, bewaarContract, type ContractInvoer } from '../contracten'
 import { neemAan, markeerGetekend, vervolgstappen, werkadresVoorstel, AannameError } from '../aanname'
 import { maandlast } from '../kosten'
-import { zorgVoorGegevens, maakGegevenslink, gegevensViaLink } from '../persoonsgegevens'
+import { zorgVoorGegevens, maakGegevenslink, gegevensViaLink, werkContractgegevensBij, GegevensError } from '../persoonsgegevens'
 import { jaarloonCents } from '../personeel-labels'
 
 const merk = `aan${Date.now()}`
@@ -224,4 +224,27 @@ test('de invullink blijft werken na de aanname', async () => {
   const via = await gegevensViaLink(id!, token!)
   assert.ok(via, 'wie nog iets moet aanleveren, kan dat na de aanname gewoon doen')
   assert.equal(via!.voornaam, 'Daan')
+})
+
+test('wat je bij het contract invult, staat daarna in de persoonsgegevens', async () => {
+  const { kandidaat } = await kandidaatMetContract()
+  const record = await zorgVoorGegevens(kandidaat.id)
+  await werkContractgegevensBij(record.id, {
+    officialFirstNames: 'Daniël Matthijs',
+    lastName: 'Voncken',
+    addressLine: 'Sint Hubertusstraat 9',
+    postalCode: '6181ez',
+    city: 'Elsloo',
+    birthDate: dag(1996, 5, 1),
+  })
+  // Een leeg veld in het contractformulier wist niets wat er al stond.
+  await werkContractgegevensBij(record.id, { addressLine: '', city: '' })
+  const [pr] = await db.select().from(personalRecords).where(eq(personalRecords.id, record.id))
+  assert.equal(pr!.candidateId, kandidaat.id)
+  assert.equal(pr!.officialFirstNames, 'Daniël Matthijs')
+  assert.equal(pr!.addressLine, 'Sint Hubertusstraat 9')
+  assert.equal(pr!.postalCode, '6181 EZ')
+  assert.equal(pr!.city, 'Elsloo')
+  assert.equal(pr!.birthDate?.getFullYear(), 1996)
+  await assert.rejects(werkContractgegevensBij(record.id, { birthDate: dag(2099, 1, 1) }), (e: unknown) => e instanceof GegevensError)
 })
