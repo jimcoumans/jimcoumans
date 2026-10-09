@@ -2747,6 +2747,16 @@ export const personalRecords = pgTable(
     addressLine: text('address_line'),
     postalCode: text('postal_code'),
     city: text('city'),
+    /** man, vrouw of x. Bepaalt de aanhef in het contract. */
+    gender: text('gender'),
+    nationality: text('nationality'),
+    /** Privé: het werkadres krijgt iemand bij de aanname. */
+    privateEmail: text('private_email'),
+    privatePhone: text('private_phone'),
+    /** Wie we bellen als er iets is. */
+    emergencyName: text('emergency_name'),
+    emergencyRelation: text('emergency_relation'),
+    emergencyPhone: text('emergency_phone'),
     /** Versleuteld. Alleen de laatste vier cijfers staan leesbaar, om te tonen. */
     ibanEnc: text('iban_enc'),
     ibanLast4: text('iban_last4'),
@@ -2769,6 +2779,7 @@ export const personalRecords = pgTable(
     uniqueIndex('personal_records_candidate_uniq').on(t.candidateId),
     uniqueIndex('personal_records_user_uniq').on(t.userId),
     check('personal_record_belongs_to_someone', sql`${t.candidateId} IS NOT NULL OR ${t.userId} IS NOT NULL`),
+    check('personal_record_gender_valid', sql`${t.gender} IS NULL OR ${t.gender} IN ('man', 'vrouw', 'x')`),
   ],
 )
 

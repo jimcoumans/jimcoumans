@@ -330,6 +330,13 @@
       "when": 1791554384470,
       "tag": "0046_salaris_fulltime",
       "breakpoints": true
+    },
+    {
+      "idx": 47,
+      "version": "7",
+      "when": 1791554817581,
+      "tag": "0047_persoonsgegevens_compleet",
+      "breakpoints": true
     }
   ]
 }

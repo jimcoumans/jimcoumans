@@ -2983,3 +2983,34 @@ BEGIN
   END IF;
 END $jr_0046_salaris_fulltime$;
 
+-- ---------------------------------------------------------------------------
+-- 0047_persoonsgegevens_compleet
+-- ---------------------------------------------------------------------------
+
+DO $jr_0047_persoonsgegevens_compleet$
+BEGIN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = '6af0ca6f92486d9ba8da119e6d896a78949857ce881aa9ab8ff83a6f51b202aa') THEN
+    RAISE NOTICE 'Overgeslagen: 0047_persoonsgegevens_compleet stond er al.';
+  ELSE
+    ALTER TABLE "personal_records" ADD COLUMN "gender" text;
+
+    ALTER TABLE "personal_records" ADD COLUMN "nationality" text;
+
+    ALTER TABLE "personal_records" ADD COLUMN "private_email" text;
+
+    ALTER TABLE "personal_records" ADD COLUMN "private_phone" text;
+
+    ALTER TABLE "personal_records" ADD COLUMN "emergency_name" text;
+
+    ALTER TABLE "personal_records" ADD COLUMN "emergency_relation" text;
+
+    ALTER TABLE "personal_records" ADD COLUMN "emergency_phone" text;
+
+    ALTER TABLE "personal_records" ADD CONSTRAINT "personal_record_gender_valid" CHECK ("personal_records"."gender" IS NULL OR "personal_records"."gender" IN ('man', 'vrouw', 'x'));
+
+    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+    VALUES ('6af0ca6f92486d9ba8da119e6d896a78949857ce881aa9ab8ff83a6f51b202aa', 1791554817581);
+    RAISE NOTICE 'Toegepast: 0047_persoonsgegevens_compleet.';
+  END IF;
+END $jr_0047_persoonsgegevens_compleet$;
+

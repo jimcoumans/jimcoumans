@@ -38,6 +38,13 @@ export async function leverAan(_vorige: Aanlevering, f: FormData): Promise<Aanle
         city: tekst(f, 'woonplaats'),
         iban: tekst(f, 'iban'),
         accountHolder: tekst(f, 'tenaamstelling'),
+        gender: tekst(f, 'geslacht'),
+        nationality: tekst(f, 'nationaliteit'),
+        privateEmail: tekst(f, 'email'),
+        privatePhone: tekst(f, 'telefoon'),
+        emergencyName: tekst(f, 'noodNaam'),
+        emergencyRelation: tekst(f, 'noodRelatie'),
+        emergencyPhone: tekst(f, 'noodTelefoon'),
       },
       documenten,
     )

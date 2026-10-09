@@ -105,7 +105,7 @@ export function watOntbreekt(r: PersonalRecord, documenten: Pick<DocumentInfo, '
 
 /** Een punt van het dossier: iets wat er moet zijn voor contract en salarisadministratie. */
 export type DossierPunt = {
-  sleutel: 'naam' | 'geboortedatum' | 'adres' | 'iban' | 'id_kopie' | 'loonheffing' | 'contract' | 'avg_verklaring'
+  sleutel: 'naam' | 'geboortedatum' | 'adres' | 'contact' | 'iban' | 'noodcontact' | 'id_kopie' | 'loonheffing' | 'contract' | 'avg_verklaring'
   titel: string
   klaar: boolean
 }
@@ -121,7 +121,9 @@ export function dossierPunten(g: Pick<Gegevens, 'record' | 'documenten'> | null)
     { sleutel: 'naam', titel: 'Naam volgens paspoort', klaar: !!r?.officialFirstNames?.trim() && !!r?.lastName?.trim() },
     { sleutel: 'geboortedatum', titel: 'Geboortedatum', klaar: !!r?.birthDate },
     { sleutel: 'adres', titel: 'Adres', klaar: !!r?.addressLine?.trim() && !!r?.postalCode?.trim() && !!r?.city?.trim() },
+    { sleutel: 'contact', titel: 'E-mail en telefoon', klaar: !!r?.privateEmail && !!r?.privatePhone },
     { sleutel: 'iban', titel: 'IBAN', klaar: !!r?.ibanEnc },
+    { sleutel: 'noodcontact', titel: 'Noodcontact', klaar: !!r?.emergencyName && !!r?.emergencyPhone },
     { sleutel: 'id_kopie', titel: 'Kopie ID', klaar: heeft('id_kopie') },
     { sleutel: 'loonheffing', titel: 'Loonheffingsformulier', klaar: heeft('loonheffing') },
     { sleutel: 'contract', titel: 'Getekend contract', klaar: heeft('contract') },
@@ -168,7 +170,7 @@ export async function zorgVoorGegevens(candidateId: string): Promise<PersonalRec
   if (!k) throw new GegevensError('Deze kandidaat bestaat niet meer.')
   const [nieuw] = await db
     .insert(personalRecords)
-    .values({ candidateId, officialFirstNames: k.officialFirstNames, infix: k.infix, lastName: k.lastName })
+    .values({ candidateId, officialFirstNames: k.officialFirstNames, infix: k.infix, lastName: k.lastName, privateEmail: k.email, privatePhone: k.phone })
     .onConflictDoNothing()
     .returning()
   if (nieuw) return nieuw
@@ -211,6 +213,38 @@ export type GegevensInvoer = {
   /** Leeg laten = niet wijzigen. */
   iban?: string | null
   accountHolder?: string | null
+  /* Weglaten (undefined) = laten staan: niet elk formulier vraagt alles. */
+  gender?: string | null
+  nationality?: string | null
+  privateEmail?: string | null
+  privatePhone?: string | null
+  emergencyName?: string | null
+  emergencyRelation?: string | null
+  emergencyPhone?: string | null
+}
+
+export const GESLACHTEN = [
+  { value: 'man', label: 'Man' },
+  { value: 'vrouw', label: 'Vrouw' },
+  { value: 'x', label: 'X (zonder aanhef)' },
+] as const
+
+/** Van geslacht naar de aanhef in het contract. */
+export function aanhefVoor(gender: string | null | undefined): 'heer' | 'mevrouw' | 'neutraal' {
+  return gender === 'man' ? 'heer' : gender === 'vrouw' ? 'mevrouw' : 'neutraal'
+}
+
+/**
+ * Staat de achternaam ook bij de voornamen? Dan zou het contract
+ * "Daniël Matthijs Voncken Voncken" zeggen. Liever een melding dan een
+ * stil weggehaald woord: soms is het echt een voornaam.
+ */
+export function controleerVoornamen(voornamen: string | null | undefined, achternaam: string | null | undefined): void {
+  const v = (voornamen ?? '').trim().toLocaleLowerCase('nl-NL')
+  const a = (achternaam ?? '').trim().toLocaleLowerCase('nl-NL')
+  if (v && a && (v === a || v.endsWith(` ${a}`))) {
+    throw new GegevensError(`Bij de voornamen staat ook de achternaam (${achternaam!.trim()}). Vul daar alleen de voornamen in; de achternaam heeft een eigen veld.`)
+  }
 }
 
 const kort = (s: string | null | undefined, max = 200) => {
@@ -227,6 +261,7 @@ export function schoonPostcode(p: string | null | undefined): string | null {
 }
 
 export async function slaGegevensOp(recordId: string, invoer: GegevensInvoer): Promise<void> {
+  controleerVoornamen(invoer.officialFirstNames, invoer.lastName)
   const patch: Partial<typeof personalRecords.$inferInsert> = {
     officialFirstNames: kort(invoer.officialFirstNames),
     infix: kort(invoer.infix, 40),
@@ -239,6 +274,17 @@ export async function slaGegevensOp(recordId: string, invoer: GegevensInvoer): P
     accountHolder: kort(invoer.accountHolder),
     updatedAt: new Date(),
   }
+  if (invoer.gender !== undefined) patch.gender = invoer.gender === 'man' || invoer.gender === 'vrouw' || invoer.gender === 'x' ? invoer.gender : null
+  if (invoer.nationality !== undefined) patch.nationality = kort(invoer.nationality, 80)
+  if (invoer.privateEmail !== undefined) {
+    const e = kort(invoer.privateEmail)?.toLowerCase() ?? null
+    if (e && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) throw new GegevensError('Dit e-mailadres klopt niet.')
+    patch.privateEmail = e
+  }
+  if (invoer.privatePhone !== undefined) patch.privatePhone = kort(invoer.privatePhone, 40)
+  if (invoer.emergencyName !== undefined) patch.emergencyName = kort(invoer.emergencyName)
+  if (invoer.emergencyRelation !== undefined) patch.emergencyRelation = kort(invoer.emergencyRelation, 80)
+  if (invoer.emergencyPhone !== undefined) patch.emergencyPhone = kort(invoer.emergencyPhone, 40)
   if (invoer.birthDate && (invoer.birthDate.getTime() > Date.now() || invoer.birthDate.getFullYear() < 1920)) {
     throw new GegevensError('De geboortedatum klopt niet.')
   }
@@ -265,6 +311,7 @@ export async function werkContractgegevensBij(
   recordId: string,
   g: Pick<GegevensInvoer, 'officialFirstNames' | 'infix' | 'lastName' | 'addressLine' | 'postalCode' | 'city' | 'birthDate'>,
 ): Promise<void> {
+  controleerVoornamen(g.officialFirstNames, g.lastName)
   const patch: Partial<typeof personalRecords.$inferInsert> = { updatedAt: new Date() }
   if (kort(g.officialFirstNames)) patch.officialFirstNames = kort(g.officialFirstNames)
   if (g.infix !== undefined) patch.infix = kort(g.infix, 40)
@@ -294,7 +341,17 @@ export async function werkNaamBij(recordId: string, roepnaam: string | null | un
   if (r.candidateId) {
     await db
       .update(candidates)
-      .set({ name: naam, firstName: roep, infix: r.infix, lastName: r.lastName, officialFirstNames: r.officialFirstNames, updatedAt: new Date() })
+      .set({
+        name: naam,
+        firstName: roep,
+        infix: r.infix,
+        lastName: r.lastName,
+        officialFirstNames: r.officialFirstNames,
+        // Het privé-adres en -nummer zijn ook hoe we de kandidaat bereiken.
+        ...(r.privateEmail ? { email: r.privateEmail } : {}),
+        ...(r.privatePhone ? { phone: r.privatePhone } : {}),
+        updatedAt: new Date(),
+      })
       .where(eq(candidates.id, r.candidateId))
   }
   if (r.userId) {

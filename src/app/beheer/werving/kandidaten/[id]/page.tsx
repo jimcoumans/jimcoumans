@@ -20,7 +20,7 @@ import { listDocumentenPerKandidaat } from '@/lib/sollicitatie'
 import { listTeam } from '@/lib/team'
 import { listContracten, listFunctieprofielen } from '@/lib/contracten'
 import { getHuis, schaalNamen } from '@/lib/salarishuis'
-import { getGegevens, leesIban, gegevensPad, LINK_DAGEN } from '@/lib/persoonsgegevens'
+import { getGegevens, leesIban, gegevensPad, LINK_DAGEN, aanhefVoor } from '@/lib/persoonsgegevens'
 import { heeftSleutel } from '@/lib/versleuteling'
 import { formatDate, formatDateInput, formatDateLong } from '@/lib/dates'
 import { formatCents } from '@/lib/money'
@@ -136,6 +136,7 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
     tussenvoegsel: gegevens?.record.infix ?? k.infix ?? '',
     achternaam: gegevens?.record.lastName ?? k.lastName ?? '',
     roepnaam: k.firstName ?? '',
+    aanhef: gegevens?.record.gender ? aanhefVoor(gegevens.record.gender) : LEGE_START.aanhef,
     functieprofiel: profielBijVacature?.id ?? '',
     functie: v?.title ?? '',
     uren: v?.hoursPerWeekQuarters ? String(v.hoursPerWeekQuarters / 100).replace('.', ',') : '',
@@ -352,7 +353,7 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
                 iban={iban}
                 ibanFout={ibanFout}
                 sleutel={sleutel}
-                start={{ roepnaam: k.firstName, voornamen: k.officialFirstNames, tussenvoegsel: k.infix, achternaam: k.lastName }}
+                start={{ roepnaam: k.firstName, voornamen: k.officialFirstNames, tussenvoegsel: k.infix, achternaam: k.lastName, email: k.email, telefoon: k.phone }}
                 invullink={
                     <div className="mb-4 rounded-lg border border-gray-200 p-4">
                       <h3 className="mb-1 text-sm font-semibold">Laat {k.firstName ?? 'de kandidaat'} het zelf invullen</h3>
@@ -408,6 +409,7 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
                     schalen={huis ? schaalNamen(huis) : []}
                     tekenaars={tekenaars}
                     vestigingen={bedrijf?.vestigingen ?? []}
+                    dossierHref={`/beheer/werving/kandidaten/${k.id}/indiensttreding#gegevens`}
                   />
                 </Paneel>
               </div>

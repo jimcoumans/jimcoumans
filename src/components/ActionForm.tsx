@@ -238,6 +238,8 @@ export function Field({
   placeholder,
   defaultValue,
   hint,
+  markeerOptioneel = true,
+  autoComplete,
 }: {
   label: string
   name: string
@@ -246,18 +248,25 @@ export function Field({
   placeholder?: string
   defaultValue?: string
   hint?: string
+  /**
+   * "(optioneel)" achter het label. Uit in formulieren waar alles optioneel
+   * is: daar zegt het niets en duwt het labels naar een tweede regel.
+   */
+  markeerOptioneel?: boolean
+  autoComplete?: string
 }) {
   const id = `veld-${name}-${label.replace(/\W+/g, '')}`
   return (
     <div>
       <label htmlFor={id} className="mb-1.5 block text-[13px] font-medium text-jr-text">
         {label}
-        {!required && <span className="font-normal text-gray-500"> (optioneel)</span>}
+        {!required && markeerOptioneel && <span className="font-normal text-gray-500"> (optioneel)</span>}
       </label>
       <input
         id={id}
         name={name}
         type={type}
+        autoComplete={autoComplete}
         required={required}
         placeholder={placeholder}
         defaultValue={defaultValue}

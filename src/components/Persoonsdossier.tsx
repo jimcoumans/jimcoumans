@@ -1,6 +1,6 @@
-import { ActionForm, Field } from './ActionForm'
+import { ActionForm, Field, Select } from './ActionForm'
 import { dossierDocument, dossierDocumentWissen, dossierDoorgegeven, dossierGegevensOpslaan, dossierIban } from '@/app/beheer/aanname-actions'
-import { dossierPunten, type DocumentInfo, type DocumentSoort, type Gegevens } from '@/lib/persoonsgegevens'
+import { dossierPunten, GESLACHTEN, type DocumentInfo, type DocumentSoort, type Gegevens } from '@/lib/persoonsgegevens'
 import { formatDate, formatDateInput, formatDateLong } from '@/lib/dates'
 import { sleutelProbleem } from '@/lib/versleuteling'
 
@@ -17,7 +17,15 @@ import { sleutelProbleem } from '@/lib/versleuteling'
 
 export type DossierVan = { kandidaatId: string } | { userId: string }
 
-type Start = { roepnaam?: string | null; voornamen?: string | null; tussenvoegsel?: string | null; achternaam?: string | null }
+type Start = {
+  roepnaam?: string | null
+  voornamen?: string | null
+  tussenvoegsel?: string | null
+  achternaam?: string | null
+  /** Hoe we de kandidaat al kennen, als er nog geen privé-gegevens zijn. */
+  email?: string | null
+  telefoon?: string | null
+}
 
 const KNOP_KLEIN = 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 !px-3 !py-1 !text-xs !min-h-0'
 const KNOP_WEG = 'text-gray-500 hover:bg-gray-100 !px-2 !py-0.5 !text-xs !min-h-0'
@@ -181,41 +189,85 @@ export function DossierGegevens({
   start?: Start
 }) {
   const r = gegevens?.record ?? null
+  /* Alles is optioneel en later aan te vullen: geen "(optioneel)" achter elk
+     label, dat duwt labels naar twee regels en zegt hier niets. */
+  const veld = { markeerOptioneel: false } as const
   return (
-    <ActionForm action={dossierGegevensOpslaan} submitLabel="Gegevens opslaan" resetOnSuccess={false}>
+    <ActionForm action={dossierGegevensOpslaan} submitLabel="Gegevens opslaan" resetOnSuccess={false} className="space-y-6">
       <Verborgen van={van} />
-      <div className="grid gap-3 sm:grid-cols-[2fr_1fr]">
+
+      <Blok titel="Persoon">
         <Field
-          label="Voornamen (voluit, zoals in het paspoort)"
+          {...veld}
+          label="Voornamen, voluit zoals in het paspoort"
           name="officieleVoornamen"
           defaultValue={r?.officialFirstNames ?? start?.voornamen ?? ''}
-          hint="Alleen bovenaan het contract."
+          placeholder="Daniël Matthijs"
+          hint="Zonder achternaam. Staan alleen bovenaan het contract."
         />
-        <Field label="Roepnaam" name="roepnaam" defaultValue={start?.roepnaam ?? ''} hint="Overal elders: roepnaam en achternaam." />
-      </div>
-      <div className="grid gap-3 sm:grid-cols-[1fr_2fr]">
-        <Field label="Tussenvoegsel" name="tussenvoegsel" defaultValue={r?.infix ?? start?.tussenvoegsel ?? ''} />
-        <Field label="Achternaam" name="achternaam" defaultValue={r?.lastName ?? start?.achternaam ?? ''} />
-      </div>
-      <div className="grid gap-3 sm:grid-cols-2">
-        <Field label="Geboortedatum" name="geboortedatum" type="date" defaultValue={r?.birthDate ? formatDateInput(r.birthDate) : ''} />
-        <Field label="Geboorteplaats" name="geboorteplaats" defaultValue={r?.birthPlace ?? ''} />
-      </div>
-      <div className="grid gap-3 sm:grid-cols-[2fr_1fr_1.5fr]">
-        <Field label="Straat en huisnummer" name="adres" defaultValue={r?.addressLine ?? ''} />
-        <Field label="Postcode" name="postcode" defaultValue={r?.postalCode ?? ''} />
-        <Field label="Woonplaats" name="woonplaats" defaultValue={r?.city ?? ''} />
-      </div>
-      <div className="grid gap-3 sm:grid-cols-2">
-        <Field
-          label="IBAN"
-          name="iban"
-          placeholder={iban ? `Nu: ${iban}` : 'NL00 BANK 0123 4567 89'}
-          hint={iban ? 'Staat erin. Alleen invullen als het verandert.' : 'Wordt versleuteld bewaard.'}
-        />
-        <Field label="Ten name van" name="tenaamstelling" defaultValue={r?.accountHolder ?? ''} />
-      </div>
+        <div className="grid gap-3 sm:grid-cols-[1.2fr_0.8fr_1.6fr]">
+          <Field {...veld} label="Roepnaam" name="roepnaam" defaultValue={start?.roepnaam ?? ''} placeholder="Daan" />
+          <Field {...veld} label="Tussenvoegsel" name="tussenvoegsel" defaultValue={r?.infix ?? start?.tussenvoegsel ?? ''} placeholder="van" />
+          <Field {...veld} label="Achternaam" name="achternaam" defaultValue={r?.lastName ?? start?.achternaam ?? ''} placeholder="Voncken" />
+        </div>
+        <p className="-mt-1 text-xs text-gray-600">Overal behalve bovenaan het contract: roepnaam en achternaam.</p>
+        <div className="grid gap-3 sm:grid-cols-4">
+          <Select
+            label="Geslacht"
+            name="geslacht"
+            defaultValue={r?.gender ?? ''}
+            options={[{ value: '', label: 'Kies' }, ...GESLACHTEN.map((g) => ({ value: g.value, label: g.label }))]}
+          />
+          <Field {...veld} label="Geboortedatum" name="geboortedatum" type="date" defaultValue={r?.birthDate ? formatDateInput(r.birthDate) : ''} />
+          <Field {...veld} label="Geboorteplaats" name="geboorteplaats" defaultValue={r?.birthPlace ?? ''} />
+          <Field {...veld} label="Nationaliteit" name="nationaliteit" defaultValue={r?.nationality ?? ''} placeholder="Nederlandse" />
+        </div>
+      </Blok>
+
+      <Blok titel="Adres en contact">
+        <div className="grid gap-3 sm:grid-cols-[2fr_1fr_1.5fr]">
+          <Field {...veld} label="Straat en huisnummer" name="adres" defaultValue={r?.addressLine ?? ''} autoComplete="off" />
+          <Field {...veld} label="Postcode" name="postcode" defaultValue={r?.postalCode ?? ''} autoComplete="off" />
+          <Field {...veld} label="Woonplaats" name="woonplaats" defaultValue={r?.city ?? ''} autoComplete="off" />
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <Field {...veld} label="E-mail (privé)" name="email" type="email" defaultValue={r?.privateEmail ?? start?.email ?? ''} autoComplete="off" />
+          <Field {...veld} label="Telefoon (mobiel)" name="telefoon" defaultValue={r?.privatePhone ?? start?.telefoon ?? ''} autoComplete="off" />
+        </div>
+      </Blok>
+
+      <Blok titel="Bank">
+        <div className="grid gap-3 sm:grid-cols-2">
+          <Field
+            {...veld}
+            label="IBAN"
+            name="iban"
+            placeholder={iban ? `Nu: ${iban}` : 'NL00 BANK 0123 4567 89'}
+            hint={iban ? 'Staat erin. Alleen invullen als het verandert.' : 'Wordt versleuteld bewaard.'}
+            autoComplete="off"
+          />
+          <Field {...veld} label="Ten name van" name="tenaamstelling" defaultValue={r?.accountHolder ?? ''} autoComplete="off" />
+        </div>
+      </Blok>
+
+      <Blok titel="Bij nood bellen">
+        <div className="grid gap-3 sm:grid-cols-3">
+          <Field {...veld} label="Naam" name="noodNaam" defaultValue={r?.emergencyName ?? ''} autoComplete="off" />
+          <Field {...veld} label="Relatie" name="noodRelatie" defaultValue={r?.emergencyRelation ?? ''} placeholder="Partner, ouder…" autoComplete="off" />
+          <Field {...veld} label="Telefoon" name="noodTelefoon" defaultValue={r?.emergencyPhone ?? ''} autoComplete="off" />
+        </div>
+      </Blok>
     </ActionForm>
+  )
+}
+
+/** Een groep velden met een kleine kop: persoon, adres, bank, noodcontact. */
+function Blok({ titel, children }: { titel: string; children: React.ReactNode }) {
+  return (
+    <fieldset className="space-y-3">
+      <legend className="mb-2 text-xs font-semibold tracking-wide text-gray-500 uppercase">{titel}</legend>
+      {children}
+    </fieldset>
   )
 }
 
@@ -247,7 +299,7 @@ export function Persoonsdossier({
   const punten = dossierPunten(gegevens)
   const klaar = punten.filter((p) => p.klaar).length
   const compleet = klaar === punten.length
-  const anker = (s: string) => (['naam', 'geboortedatum', 'adres', 'iban'].includes(s) ? '#dossier-gegevens' : '#dossier-documenten')
+  const anker = (s: string) => (['naam', 'geboortedatum', 'adres', 'contact', 'iban', 'noodcontact'].includes(s) ? '#dossier-gegevens' : '#dossier-documenten')
 
   return (
     <section id="dossier" className="scroll-mt-4 rounded-xl bg-white p-6 shadow-sm">
