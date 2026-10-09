@@ -47,7 +47,11 @@ async function veilig(fn: () => Promise<void>, ook: string[] = []): Promise<Acti
     revalidatePath('/beheer/werving')
     revalidatePath('/beheer/werving/kandidaten')
     revalidatePath('/beheer')
-    for (const pad of ook) revalidatePath(pad)
+    for (const pad of ook) {
+      revalidatePath(pad)
+      // De stappen van de indiensttreding tonen dezelfde gegevens.
+      if (pad.startsWith('/beheer/werving/kandidaten/')) revalidatePath(`${pad}/indiensttreding`)
+    }
     return { ok: true }
   } catch (error) {
     if (error instanceof WervingError || error instanceof GegevensError || error instanceof SleutelError) {

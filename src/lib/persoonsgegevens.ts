@@ -253,6 +253,15 @@ export async function werkContractgegevensBij(
   await db.update(personalRecords).set(patch).where(eq(personalRecords.id, recordId))
 }
 
+/** Alleen het IBAN (en de tenaamstelling) bijwerken, bijvoorbeeld bij het tekenen. De rest blijft staan. */
+export async function werkIbanBij(recordId: string, iban: string, tenaamstelling?: string | null): Promise<void> {
+  const schoon = schoonIban(iban)
+  if (!ibanKlopt(schoon)) throw new GegevensError('Dit IBAN klopt niet. Controleer het nummer op de bankpas.')
+  const patch: Partial<typeof personalRecords.$inferInsert> = { ibanEnc: versleutel(schoon), ibanLast4: schoon.slice(-4), updatedAt: new Date() }
+  if (kort(tenaamstelling)) patch.accountHolder = kort(tenaamstelling)
+  await db.update(personalRecords).set(patch).where(eq(personalRecords.id, recordId))
+}
+
 export type NieuwDocument = { kind: DocumentSoort; contentType: string; filename: string | null; data: Buffer }
 
 export function controleerDocument(d: NieuwDocument): void {

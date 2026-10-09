@@ -46,8 +46,10 @@ export const maxDuration = 26
  */
 export default async function ContractPagina({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>
+  searchParams: Promise<{ volledig?: string }>
 }) {
   const user = await getSessionUser()
   if (!user) redirect('/login')
@@ -56,6 +58,11 @@ export default async function ContractPagina({
   const { id } = await params
   const contract = await getContract(id)
   if (!contract) notFound()
+  /* Een contract van een kandidaat die nog niet in dienst is, hoort bij de
+     stappen van de indiensttreding. Daar staat alles wat er bij het tekenen
+     nodig is; hier alleen de tekst, als je die wilt lezen. */
+  const { volledig } = await searchParams
+  if (contract.candidateId && !contract.userId && volledig !== '1') redirect(`/beheer/werving/kandidaten/${contract.candidateId}/indiensttreding`)
 
   const bedrijf = await getBedrijf()
   const kop = kopVanContract(contract, bedrijf)

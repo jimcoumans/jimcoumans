@@ -42,12 +42,9 @@ import {
   gegevensDoorgegeven,
 } from '../../../werving-actions'
 import { ContractFormulier, LEGE_START, type ContractStart } from '@/components/ContractFormulier'
-import { kandidaatAannemen, contractGetekend } from '../../../aanname-actions'
-import { vervolgstappen, werkadresVoorstel } from '@/lib/aanname'
-import { Vervolgstappen } from '@/components/Vervolgstappen'
+import { getIndiensttreding } from '@/lib/indiensttreding'
 import { contractMail, gegevensMail, welkomMail, mailtoLink } from '@/lib/mailsjablonen'
 import { getTekstOverrides } from '@/lib/sjablonen'
-import { AFDELINGEN } from '@/lib/team'
 import { listMogelijkeOndertekenaars } from '@/lib/contracten'
 import { getBedrijf, adresRegel, getBedrijfsdocument, handboekPad } from '@/lib/bedrijf'
 
@@ -109,8 +106,8 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
         listMogelijkeOndertekenaars(),
       ])
     : [[], null, null, [], null, null, []]
-  const toonStappen = beheerder && (k.status === 'aanbod' || k.status === 'contract' || k.status === 'aangenomen')
-  const stappen = toonStappen ? await vervolgstappen({ kandidaatId: id }) : []
+  const toonStappen = beheerder && (k.status === 'aanbod' || k.status === 'contract' || k.status === 'aangenomen' || contracten.length > 0)
+  const indiensttreding = toonStappen ? await getIndiensttreding(k) : null
 
   let iban: string | null = null
   let ibanFout = false
@@ -157,7 +154,6 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
   /* Wat er klaarligt om in dienst te nemen: een definitief, getekend contract
      dat nog bij niemand in het dossier staat. */
   const definitief = contracten.filter((c) => c.soort === 'definitief' && !c.userId)
-  const getekend = definitief.filter((c) => c.signedOn)
   const laatsteDefinitief = definitief[0] ?? null
   const roepnaam = k.firstName ?? k.name.split(' ')[0] ?? ''
   const mailTeksten = beheerder ? await getTekstOverrides() : undefined
@@ -305,6 +301,28 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
           </section>
 
           {/* ------------------------------ Contract ------------------------------ */}
+          {beheerder && indiensttreding && (
+            <section className="border-jr-blue/30 bg-jr-blue/5 flex flex-wrap items-center justify-between gap-4 rounded-xl border p-6">
+              <div>
+                <h2 className="text-base">Indiensttreding</h2>
+                <p className="text-sm text-gray-700">
+                  {indiensttreding.aangenomen
+                    ? 'Afgerond: in dienst genomen.'
+                    : `Stap ${indiensttreding.stappen.find((s) => s.sleutel === indiensttreding.huidige)?.nummer ?? 5} van 5: ${indiensttreding.stappen.find((s) => s.sleutel === indiensttreding.huidige)?.titel.toLowerCase() ?? 'in dienst nemen'}.`}{' '}
+                  Gegevens, contract, printen, getekende stukken en in dienst nemen, stap voor stap.
+                </p>
+                <div className="mt-2 flex gap-1" aria-hidden="true">
+                  {indiensttreding.stappen.map((s) => (
+                    <span key={s.sleutel} className={`h-1.5 w-10 rounded-full ${s.klaar ? 'bg-jr-green' : s.sleutel === indiensttreding.huidige ? 'bg-jr-blue' : 'bg-gray-200'}`} />
+                  ))}
+                </div>
+              </div>
+              <a href={`/beheer/werving/kandidaten/${k.id}/indiensttreding`} className="bg-jr-btn hover:bg-jr-btnhover rounded-full px-5 py-2.5 text-sm font-medium text-white">
+                {indiensttreding.aangenomen ? 'Bekijken' : 'Verder met de indiensttreding'}
+              </a>
+            </section>
+          )}
+
           {beheerder && (
             <section className="rounded-xl bg-white p-6 shadow-sm">
               <div className="mb-1 flex flex-wrap items-start justify-between gap-3">
@@ -347,27 +365,7 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
                         {c.soort === 'definitief' && c.signedOn && (
                           <span className="bg-jr-green/15 rounded-full px-2.5 py-0.5 text-xs text-[#1d7a36]">Getekend {formatDate(c.signedOn)}</span>
                         )}
-                        {c.soort === 'definitief' && !c.signedOn && !c.userId && (
-                          <Paneel knop="Getekend vastleggen" stijl="klein" titel="Contract getekend" uitleg="De datum waarop beide partijen getekend hebben. Upload meteen het getekende exemplaar; dat wordt versleuteld bewaard bij de persoonsgegevens.">
-                            <ActionForm action={contractGetekend} submitLabel="Vastleggen">
-                              <input type="hidden" name="contractId" value={c.id} />
-                              <Field label="Getekend op" name="getekendOp" type="date" required defaultValue={formatDateInput(c.signDate && c.signDate.getTime() <= Date.now() ? c.signDate : new Date())} />
-                              <div>
-                                <label className="text-jr-text mb-1.5 block text-[13px] font-medium" htmlFor={`getekend-${c.id}`}>
-                                  Getekend exemplaar (pdf, jpg of png, max. 4 MB) <span className="font-normal text-gray-500">(optioneel)</span>
-                                </label>
-                                <input id={`getekend-${c.id}`} type="file" name="bestand" accept="application/pdf,image/jpeg,image/png" className="block w-full text-sm" />
-                              </div>
-                              <div>
-                                <label className="text-jr-text mb-1.5 block text-[13px] font-medium" htmlFor={`avg-${c.id}`}>
-                                  Getekende AVG-verklaring <span className="font-normal text-gray-500">(optioneel)</span>
-                                </label>
-                                <input id={`avg-${c.id}`} type="file" name="avg" accept="application/pdf,image/jpeg,image/png" className="block w-full text-sm" />
-                              </div>
-                              {!c.handbookGivenOn && <Check label="Het personeelshandboek is ontvangen" name="handboek" defaultChecked={!!c.handbookDocumentId} />}
-                            </ActionForm>
-                          </Paneel>
-                        )}
+
                         <a href={`/api/contracten/${c.id}/pdf`} className="text-jr-link text-xs font-medium hover:underline">
                           Contract
                         </a>
@@ -402,55 +400,6 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
               )}
             </section>
           )}
-          {beheerder && !aangenomen && definitief.length > 0 && (
-            <section className="rounded-xl bg-white p-6 shadow-sm">
-              <h2 className="mb-1 text-base">In dienst nemen</h2>
-              {getekend.length === 0 ? (
-                <p className="text-sm text-gray-600">
-                  Kan zodra het definitieve contract getekend is. Leg dat hierboven vast bij het contract, met de datum en het getekende exemplaar.
-                </p>
-              ) : (
-                <>
-                  <p className="mb-4 text-sm text-gray-600">
-                    Eén stap: er komt een collega bij met dit werkadres, het contract en het salaris (met OP-toeslag) gaan in zijn dossier, de persoonsgegevens gaan mee, en de
-                    kandidaat staat op aangenomen. Is de vacature daarmee vol, dan gaat hij dicht.
-                  </p>
-                  <ActionForm action={kandidaatAannemen} submitLabel="In dienst nemen" bevestig>
-                    {verborgen}
-                    <Select
-                      label="Op basis van contract"
-                      name="contractId"
-                      defaultValue={getekend[0]!.id}
-                      options={getekend.map((c) => ({
-                        value: c.id,
-                        label: `${c.jobTitle} · ${formatDate(c.startedOn)}${c.endsOn ? ` t/m ${formatDate(c.endsOn)}` : ''} · getekend ${formatDate(c.signedOn!)}`,
-                      }))}
-                    />
-                    <div className="grid gap-3 sm:grid-cols-[1.6fr_1fr_1fr]">
-                      <Field label="Werkadres" name="werkEmail" type="email" required defaultValue={werkadresVoorstel(k.firstName)} hint="Hiermee logt hij in op het portaal." />
-                      <Select
-                        label="Afdeling"
-                        name="afdeling"
-                        defaultValue="Marketing"
-                        options={[{ value: '', label: 'Geen' }, ...AFDELINGEN.map((a) => ({ value: a, label: a }))]}
-                      />
-                      <Select
-                        label="Rol"
-                        name="rol"
-                        defaultValue="staff"
-                        options={[
-                          { value: 'staff', label: 'Collega' },
-                          { value: 'admin', label: 'Beheerder' },
-                        ]}
-                      />
-                    </div>
-                  </ActionForm>
-                </>
-              )}
-            </section>
-          )}
-
-          {toonStappen && stappen.length > 0 && <Vervolgstappen stappen={stappen} eigenaar={aangenomen ? { userId: k.hiredUserId! } : { kandidaatId: k.id }} />}
 
           {/* ------------------------------ Persoonsgegevens ------------------------------ */}
           {beheerder && (

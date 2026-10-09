@@ -12,6 +12,7 @@ import {
   voegDocumentToe,
   slaGegevensOp,
   markeerDoorgegeven,
+  werkIbanBij,
   GegevensError,
   DOCUMENT_LABELS,
   type DocumentSoort,
@@ -158,6 +159,52 @@ export async function stapDocument(formData: FormData): Promise<ActionResult> {
       await voegDocumentToe(r.id, { kind, ...bestand }, gebruiker.id)
     },
     [...(kandidaatId ? [`/beheer/werving/kandidaten/${kandidaatId}`] : []), ...(userId ? [`/beheer/medewerkers/${userId}`] : []), '/beheer/contracten'],
+  )
+}
+
+/**
+ * Alles van het moment van tekenen in een keer: de datum, de gescande
+ * stukken, het IBAN en het handboek. Wat je nu niet hebt, kun je later met
+ * hetzelfde formulier aanvullen; wat er al is, blijft staan.
+ */
+export async function getekendeStukken(formData: FormData): Promise<ActionResult> {
+  const gebruiker = await alsBeheerder()
+  if (!gebruiker) return GEEN_RECHT
+  const contractId = tekst(formData, 'contractId')
+  const contract = contractId ? await getContract(contractId) : null
+  if (!contract) return { ok: false, error: 'Onbekend contract.' }
+  if (contract.soort !== 'definitief') return { ok: false, error: 'Maak het contract eerst definitief: een pro forma wordt niet getekend.' }
+
+  const op = datum(formData, 'getekendOp')
+  const bestanden = {
+    contract: await bestandUit(formData, 'contract'),
+    avg_verklaring: await bestandUit(formData, 'avg'),
+    loonheffing: await bestandUit(formData, 'loonheffing'),
+    id_kopie: await bestandUit(formData, 'idkopie'),
+  } as const
+  const iban = tekst(formData, 'iban')
+  const handboek = formData.has('handboek')
+  if (!contract.signedOn && !op && Object.values(bestanden).some(Boolean)) {
+    return { ok: false, error: 'Vul ook de datum van ondertekening in.' }
+  }
+  if (!op && !iban && !handboek && !Object.values(bestanden).some(Boolean)) {
+    return { ok: false, error: 'Er is niets om vast te leggen. Kies een bestand, vul het IBAN in of zet een vinkje.' }
+  }
+
+  return veilig(
+    async () => {
+      if (op && !contract.signedOn) await markeerGetekend(contractId, op)
+      const record = contract.userId ? await zorgVoorGegevensVanCollega(contract.userId) : await zorgVoorGegevens(contract.candidateId!)
+      for (const [kind, bestand] of Object.entries(bestanden)) {
+        if (bestand) await voegDocumentToe(record.id, { kind: kind as DocumentSoort, ...bestand }, gebruiker.id)
+      }
+      if (iban) await werkIbanBij(record.id, iban, tekst(formData, 'tenaamstelling') || null)
+      if (handboek && !contract.handbookGivenOn) await markeerHandboekOntvangen(contractId, op ?? contract.signedOn ?? new Date())
+    },
+    [
+      `/beheer/contracten/${contractId}`,
+      ...(contract.candidateId ? [`/beheer/werving/kandidaten/${contract.candidateId}`, `/beheer/werving/kandidaten/${contract.candidateId}/indiensttreding`] : []),
+    ],
   )
 }
 

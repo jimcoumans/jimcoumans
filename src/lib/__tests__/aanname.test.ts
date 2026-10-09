@@ -249,3 +249,37 @@ test('wat je bij het contract invult, staat daarna in de persoonsgegevens', asyn
   assert.equal(pr!.birthDate?.getFullYear(), 1996)
   await assert.rejects(werkContractgegevensBij(record.id, { birthDate: dag(2099, 1, 1) }), (e: unknown) => e instanceof GegevensError)
 })
+
+test('de indiensttreding loopt stap voor stap, en ziet wat er nog mist', async () => {
+  const { getIndiensttreding } = await import('../indiensttreding')
+  const { kandidaat, contract } = await kandidaatMetContract({ soort: 'proforma' })
+  let stand = await getIndiensttreding(kandidaat)
+  assert.equal(stand.huidige, 'gegevens', 'zonder persoonsgegevens begint het bij stap 1')
+
+  const record = await zorgVoorGegevens(kandidaat.id)
+  await werkContractgegevensBij(record.id, {
+    officialFirstNames: 'Daniël Matthijs', lastName: 'Voncken', addressLine: 'Sint Hubertusstraat 9', postalCode: '6181 EZ', city: 'Elsloo', birthDate: dag(1996, 5, 1),
+  })
+  stand = await getIndiensttreding(kandidaat)
+  assert.equal(stand.huidige, 'contract', 'een pro forma moet eerst definitief')
+
+  await db.update(generatedContracts).set({ soort: 'definitief' }).where(eq(generatedContracts.id, contract.id))
+  stand = await getIndiensttreding(kandidaat)
+  assert.equal(stand.contractVerouderd, false)
+  assert.equal(stand.huidige, 'printen')
+
+  await markeerGetekend(contract.id, dag(2026, 10, 9))
+  stand = await getIndiensttreding(kandidaat)
+  assert.equal(stand.huidige, 'stukken')
+  assert.deepEqual(
+    stand.stukken.filter((s) => !s.klaar).map((s) => s.sleutel),
+    ['contract', 'avg_verklaring', 'loonheffing', 'id_kopie', 'iban', 'handboek'],
+  )
+
+  // Een gewijzigd adres na het opstellen: het contract klopt niet meer.
+  await werkContractgegevensBij(record.id, { addressLine: 'Andere straat 1' })
+  await db.update(generatedContracts).set({ signedOn: null }).where(eq(generatedContracts.id, contract.id))
+  stand = await getIndiensttreding(kandidaat)
+  assert.equal(stand.contractVerouderd, true)
+  assert.equal(stand.huidige, 'contract')
+})
