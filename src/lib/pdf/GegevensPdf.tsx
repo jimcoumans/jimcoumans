@@ -6,7 +6,7 @@ import { tekennaamVan } from '@/lib/contracten'
 import { getBedrijf, haalLogo, huidigBedrijfsdocument, haalBedrijfsdocument } from '@/lib/bedrijf'
 import { getGegevens, leesIban } from '@/lib/persoonsgegevens'
 import { registreerFonts } from './fonts'
-import { MerkKop, merkUit, merkRegel, type Merk, ZWART, GRIJS, BLAUW, VLAK, RAND, KOPLETTER } from './huisstijl'
+import { DocumentKop, KOP_RUIMTE, merkUit, merkRegel, type Merk, ZWART, GRIJS, BLAUW, VLAK, RAND, KOPLETTER } from './huisstijl'
 import { bestandsnaam, maakContractPdf } from './ContractPdf'
 import { maakAvgPdf } from './AvgPdf'
 
@@ -21,7 +21,7 @@ import { maakAvgPdf } from './AvgPdf'
    ------------------------------------------------------------------------- */
 
 const s = StyleSheet.create({
-  pagina: { fontFamily: 'Inter', fontSize: 9.5, color: ZWART, paddingTop: 104, paddingBottom: 56, paddingHorizontal: 56 },
+  pagina: { fontFamily: 'Inter', fontSize: 9.5, color: ZWART, paddingTop: KOP_RUIMTE, paddingBottom: 48, paddingHorizontal: 56 },
   regel: { fontSize: 9.5, lineHeight: 1.5 },
   eyebrow: { fontSize: 8.5, color: BLAUW, fontWeight: 500, marginBottom: 6 },
   titel: { fontFamily: KOPLETTER, fontWeight: 700, fontSize: 22, lineHeight: 1.15, marginBottom: 4 },
@@ -36,7 +36,6 @@ const s = StyleSheet.create({
   ondertekening: { flexDirection: 'row', marginTop: 12 },
   vlak: { flex: 1, backgroundColor: VLAK, borderRadius: 8, padding: 12, marginRight: 10 },
   lijn: { height: 30, borderBottomWidth: 0.75, borderBottomColor: GRIJS, marginBottom: 6 },
-  voetMerk: { position: 'absolute', bottom: 24, left: 56, fontSize: 7, color: GRIJS },
 })
 
 type Veld = [string, string | null | undefined]
@@ -72,7 +71,7 @@ export function GegevensPdf({ g, merk }: { g: GegevensVoorFormulier; merk: Merk 
   return (
     <Document title={`${g.naam} - gegevens voor de salarisadministratie`} author={merkRegel(merk)}>
       <Page size="A4" style={s.pagina}>
-        <MerkKop merk={merk} rechts={['Gegevens voor de salarisadministratie', g.naam]} />
+        <DocumentKop soort="Gegevens voor de salarisadministratie" wie={g.naam} merk={merk} />
         <Text style={s.eyebrow}>Bij de arbeidsovereenkomst</Text>
         <Text style={s.titel}>Gegevens voor de salarisadministratie</Text>
         <Text style={s.ondertitel}>Wat er al staat, controleer je. Wat leeg is, vul je aan. Daarna teken je onderaan.</Text>
@@ -145,9 +144,6 @@ export function GegevensPdf({ g, merk }: { g: GegevensVoorFormulier; merk: Merk 
           &quot;Opgaaf gegevens voor de loonheffingen&quot; van de Belastingdienst? Dat kan ook.
         </Text>
 
-        <Text style={s.voetMerk} fixed>
-          {[merkRegel(merk), merk.website].filter(Boolean).join(' · ')}
-        </Text>
       </Page>
     </Document>
   )

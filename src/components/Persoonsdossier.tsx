@@ -16,7 +16,7 @@ import { formatDate, formatDateInput, formatDateLong } from '@/lib/dates'
 
 export type DossierVan = { kandidaatId: string } | { userId: string }
 
-type Start = { voornamen?: string | null; tussenvoegsel?: string | null; achternaam?: string | null }
+type Start = { roepnaam?: string | null; voornamen?: string | null; tussenvoegsel?: string | null; achternaam?: string | null }
 
 const KNOP_KLEIN = 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 !px-3 !py-1 !text-xs !min-h-0'
 const KNOP_WEG = 'text-gray-500 hover:bg-gray-100 !px-2 !py-0.5 !text-xs !min-h-0'
@@ -183,8 +183,16 @@ export function DossierGegevens({
   return (
     <ActionForm action={dossierGegevensOpslaan} submitLabel="Gegevens opslaan" resetOnSuccess={false}>
       <Verborgen van={van} />
-      <div className="grid gap-3 sm:grid-cols-[2fr_1fr_1.5fr]">
-        <Field label="Voornamen (voluit, zoals in het paspoort)" name="officieleVoornamen" defaultValue={r?.officialFirstNames ?? start?.voornamen ?? ''} />
+      <div className="grid gap-3 sm:grid-cols-[2fr_1fr]">
+        <Field
+          label="Voornamen (voluit, zoals in het paspoort)"
+          name="officieleVoornamen"
+          defaultValue={r?.officialFirstNames ?? start?.voornamen ?? ''}
+          hint="Alleen bovenaan het contract."
+        />
+        <Field label="Roepnaam" name="roepnaam" defaultValue={start?.roepnaam ?? ''} hint="Overal elders: roepnaam en achternaam." />
+      </div>
+      <div className="grid gap-3 sm:grid-cols-[1fr_2fr]">
         <Field label="Tussenvoegsel" name="tussenvoegsel" defaultValue={r?.infix ?? start?.tussenvoegsel ?? ''} />
         <Field label="Achternaam" name="achternaam" defaultValue={r?.lastName ?? start?.achternaam ?? ''} />
       </div>

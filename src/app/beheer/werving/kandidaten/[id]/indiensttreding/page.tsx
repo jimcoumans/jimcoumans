@@ -196,7 +196,7 @@ export default async function IndiensttredingPagina({ params }: { params: Promis
             Wat er in het contract komt. Het is hetzelfde dossier als op de pagina van {k.firstName ?? 'de kandidaat'}: wat je hier opslaat, staat daar ook.
             {k.email || k.phone ? ` Contact: ${[k.email, k.phone].filter(Boolean).join(' · ')}.` : ''}
           </p>
-          <DossierGegevens van={van} gegevens={gegevens} iban={iban} start={{ voornamen: k.officialFirstNames, tussenvoegsel: k.infix, achternaam: k.lastName }} />
+          <DossierGegevens van={van} gegevens={gegevens} iban={iban} start={{ roepnaam: k.firstName, voornamen: k.officialFirstNames, tussenvoegsel: k.infix, achternaam: k.lastName }} />
         </Stap>
 
         {/* ------------------------------ 2. Contract ------------------------------ */}

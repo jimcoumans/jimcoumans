@@ -14,6 +14,7 @@ import {
   markeerDoorgegeven,
   werkIbanBij,
   wisDocument,
+  werkNaamBij,
   GegevensError,
   DOCUMENT_LABELS,
   type DocumentSoort,
@@ -174,8 +175,8 @@ export async function dossierGegevensOpslaan(formData: FormData): Promise<Action
   if (!(await alsBeheerder())) return GEEN_RECHT
   const v = vanUit(formData)
   if (!v) return ONBEKEND
-  return inDossier(v, (id) =>
-    slaGegevensOp(id, {
+  return inDossier(v, async (id) => {
+    await slaGegevensOp(id, {
       officialFirstNames: tekst(formData, 'officieleVoornamen'),
       infix: tekst(formData, 'tussenvoegsel'),
       lastName: tekst(formData, 'achternaam'),
@@ -186,8 +187,9 @@ export async function dossierGegevensOpslaan(formData: FormData): Promise<Action
       city: tekst(formData, 'woonplaats'),
       iban: tekst(formData, 'iban'),
       accountHolder: tekst(formData, 'tenaamstelling'),
-    }),
-  )
+    })
+    await werkNaamBij(id, tekst(formData, 'roepnaam'))
+  })
 }
 
 /** Alleen het IBAN, voor de regel bij de getekende stukken. */

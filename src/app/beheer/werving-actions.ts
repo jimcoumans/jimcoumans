@@ -263,10 +263,9 @@ export async function kandidaatBewerken(formData: FormData): Promise<ActionResul
   return veilig(
     () =>
       bewerkKandidaat(id, {
-        firstName: tekst(formData, 'voornaam') || null,
-        infix: tekst(formData, 'tussenvoegsel') || null,
-        lastName: tekst(formData, 'achternaam') || null,
-        officialFirstNames: tekst(formData, 'officieleVoornamen') || null,
+        ...(formData.has('voornaam')
+          ? { firstName: tekst(formData, 'voornaam') || null, infix: tekst(formData, 'tussenvoegsel') || null, lastName: tekst(formData, 'achternaam') || null }
+          : {}),
         email: tekst(formData, 'email') || null,
         phone: tekst(formData, 'telefoon') || null,
         linkedinUrl: tekst(formData, 'linkedin') || null,

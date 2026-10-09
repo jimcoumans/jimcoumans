@@ -98,3 +98,35 @@ export function MerkKop({ merk, rechts }: { merk: Merk; rechts: string[] }) {
     </View>
   )
 }
+
+/* De kop van een document: links wat het is en voor wie, rechts het
+   paginanummer. Geen logo en geen voetregel: de onderkant van een contract
+   is voor de parafen. */
+
+/** Waar de tekst onder de kop begint. */
+export const KOP_RUIMTE = 92
+
+const d = StyleSheet.create({
+  kop: { position: 'absolute', top: 40, left: 56, right: 56, borderBottomWidth: 0.75, borderBottomColor: LIJN, paddingBottom: 10, paddingRight: 48 },
+  soort: { fontFamily: 'Inter', fontSize: 8, color: GRIJS },
+  wie: { fontFamily: 'Inter', fontSize: 8, color: ZWART, fontWeight: 500 },
+  nr: { position: 'absolute', top: 40, right: 56, width: 48, fontFamily: 'Inter', fontSize: 8, color: GRIJS, textAlign: 'right' },
+})
+
+/**
+ * "Arbeidsovereenkomst voor bepaalde tijd · Daan Voncken × James Robinson"
+ * met rechts "1/9". Het nummer staat los van het blok: een render-tekst in
+ * een vast blok laat react-pdf overslaan.
+ */
+export function DocumentKop({ soort, wie, merk }: { soort: string; wie: string; merk: Merk }) {
+  return (
+    <>
+      <View style={d.kop} fixed>
+        <Text style={d.soort}>
+          {soort} · <Text style={d.wie}>{wie} × {merk.naam}</Text>
+        </Text>
+      </View>
+      <Text style={d.nr} fixed render={({ pageNumber, totalPages }) => `${pageNumber}/${totalPages}`} />
+    </>
+  )
+}

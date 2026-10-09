@@ -169,6 +169,62 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
     handboekLink: mailHandboek ? `${basis}${handboekPad(mailHandboek)}` : null,
     merk: bedrijf?.werkgever.tradeName ?? null,
   }
+  /* Vanaf "contract ter ondertekening" is de indiensttreding de flow: die
+     staat bovenaan, met het dossier eronder. De status zakt naar beneden. */
+  const flowEerst = beheerder && !!indiensttreding && (k.status === 'contract' || aangenomen)
+  const dossierZichtbaar = beheerder && (aangenomen || gegevensFase || !!gegevens || !!indiensttreding)
+  const statusBlok = (
+  <section className="rounded-xl bg-white p-6 shadow-sm">
+    <h2 className="mb-1 text-base">Status en volgende stap</h2>
+    {lopend && (
+      <p className="mb-4 text-sm text-gray-600">
+        {k.nextActionOn ? (
+          <>
+            Volgende stap: <strong>{k.nextAction}</strong> op {formatDate(k.nextActionOn)}
+            {kaart.looptAchter && <span className="text-jr-orange"> — die datum is voorbij</span>}
+          </>
+        ) : (
+          <span className="text-jr-orange">Nog geen volgende stap afgesproken.</span>
+        )}
+        {kaart.wachtDagen !== null && (
+          <span className={kaart.wachtDagen >= 3 ? 'text-jr-orange' : ''}>
+            {' '}
+            · wacht {kaart.wachtDagen} {kaart.wachtDagen === 1 ? 'dag' : 'dagen'} op een eerste antwoord
+          </span>
+        )}
+      </p>
+    )}
+    <div className="grid gap-5 lg:grid-cols-2">
+      <ActionForm action={kandidaatStatus} submitLabel="Status opslaan" submitClassName={KNOP_RUSTIG} resetOnSuccess={false}>
+        {verborgen}
+        <input type="hidden" name="vacatureId" value={k.vacancyId ?? ''} />
+        <Select
+          label="Status"
+          name="status"
+          defaultValue={k.status}
+          options={Object.entries(KANDIDAAT_STATUS_LABELS).map(([value, label]) => ({ value, label }))}
+        />
+        <Field label="Reden" name="reden" defaultValue={k.closedReason ?? ''} hint="Verplicht bij afwijzen. Komt ook op de tijdlijn." />
+      </ActionForm>
+      {lopend && (
+        <ActionForm action={kandidaatVervolgstap} submitLabel="Vastleggen" submitClassName={KNOP_RUSTIG} resetOnSuccess={false}>
+          {verborgen}
+          <input type="hidden" name="vacatureId" value={k.vacancyId ?? ''} />
+          <Field label="Volgende stap" name="actie" defaultValue={k.nextAction ?? ''} placeholder="Kennismaking met Jim en Stan" />
+          <Field label="Wanneer" name="actiedatum" type="date" defaultValue={k.nextActionOn ? formatDateInput(k.nextActionOn) : ''} />
+        </ActionForm>
+      )}
+    </div>
+    {k.respondedOn === null && lopend && (
+      <div className="mt-4 border-t border-gray-100 pt-4">
+        <ActionForm action={kandidaatBeantwoord} submitLabel="We hebben gereageerd" resetOnSuccess={false} className="">
+          {verborgen}
+          <input type="hidden" name="vacatureId" value={k.vacancyId ?? ''} />
+        </ActionForm>
+      </div>
+    )}
+  </section>
+  )
   const KNOP_MAIL = 'inline-flex items-center rounded-full border border-gray-300 bg-white px-3.5 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50'
 
   return (
@@ -245,57 +301,7 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
 
       <div className="grid items-start gap-6 xl:grid-cols-[1.45fr_1fr]">
         <div className="space-y-6">
-          {/* ------------------------------ Volgende stap ------------------------------ */}
-          <section className="rounded-xl bg-white p-6 shadow-sm">
-            <h2 className="mb-1 text-base">Status en volgende stap</h2>
-            {lopend && (
-              <p className="mb-4 text-sm text-gray-600">
-                {k.nextActionOn ? (
-                  <>
-                    Volgende stap: <strong>{k.nextAction}</strong> op {formatDate(k.nextActionOn)}
-                    {kaart.looptAchter && <span className="text-jr-orange"> — die datum is voorbij</span>}
-                  </>
-                ) : (
-                  <span className="text-jr-orange">Nog geen volgende stap afgesproken.</span>
-                )}
-                {kaart.wachtDagen !== null && (
-                  <span className={kaart.wachtDagen >= 3 ? 'text-jr-orange' : ''}>
-                    {' '}
-                    · wacht {kaart.wachtDagen} {kaart.wachtDagen === 1 ? 'dag' : 'dagen'} op een eerste antwoord
-                  </span>
-                )}
-              </p>
-            )}
-            <div className="grid gap-5 lg:grid-cols-2">
-              <ActionForm action={kandidaatStatus} submitLabel="Status opslaan" submitClassName={KNOP_RUSTIG} resetOnSuccess={false}>
-                {verborgen}
-                <input type="hidden" name="vacatureId" value={k.vacancyId ?? ''} />
-                <Select
-                  label="Status"
-                  name="status"
-                  defaultValue={k.status}
-                  options={Object.entries(KANDIDAAT_STATUS_LABELS).map(([value, label]) => ({ value, label }))}
-                />
-                <Field label="Reden" name="reden" defaultValue={k.closedReason ?? ''} hint="Verplicht bij afwijzen. Komt ook op de tijdlijn." />
-              </ActionForm>
-              {lopend && (
-                <ActionForm action={kandidaatVervolgstap} submitLabel="Vastleggen" submitClassName={KNOP_RUSTIG} resetOnSuccess={false}>
-                  {verborgen}
-                  <input type="hidden" name="vacatureId" value={k.vacancyId ?? ''} />
-                  <Field label="Volgende stap" name="actie" defaultValue={k.nextAction ?? ''} placeholder="Kennismaking met Jim en Stan" />
-                  <Field label="Wanneer" name="actiedatum" type="date" defaultValue={k.nextActionOn ? formatDateInput(k.nextActionOn) : ''} />
-                </ActionForm>
-              )}
-            </div>
-            {k.respondedOn === null && lopend && (
-              <div className="mt-4 border-t border-gray-100 pt-4">
-                <ActionForm action={kandidaatBeantwoord} submitLabel="We hebben gereageerd" resetOnSuccess={false} className="">
-                  {verborgen}
-                  <input type="hidden" name="vacatureId" value={k.vacancyId ?? ''} />
-                </ActionForm>
-              </div>
-            )}
-          </section>
+          {!flowEerst && statusBlok}
 
           {/* ------------------------------ Contract ------------------------------ */}
           {beheerder && indiensttreding && (
@@ -329,6 +335,7 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
                 iban={iban}
                 ibanFout={ibanFout}
                 sleutel={sleutel}
+                start={{ roepnaam: k.firstName }}
                 uitleg="Staat bij de collega, los van de bewaartermijn van de kandidaat. Hier en in het profiel van de collega is het hetzelfde dossier."
               />
             ) : !gegevensFase && !gegevens && !indiensttreding ? (
@@ -345,7 +352,7 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
                 iban={iban}
                 ibanFout={ibanFout}
                 sleutel={sleutel}
-                start={{ voornamen: k.officialFirstNames, tussenvoegsel: k.infix, achternaam: k.lastName }}
+                start={{ roepnaam: k.firstName, voornamen: k.officialFirstNames, tussenvoegsel: k.infix, achternaam: k.lastName }}
                 invullink={
                     <div className="mb-4 rounded-lg border border-gray-200 p-4">
                       <h3 className="mb-1 text-sm font-semibold">Laat {k.firstName ?? 'de kandidaat'} het zelf invullen</h3>
@@ -379,7 +386,17 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
               />
             ))}
 
-          {beheerder && (
+          {flowEerst && (
+            <details className="rounded-xl bg-white shadow-sm">
+              <summary className="cursor-pointer p-5 text-sm">
+                <span className="font-semibold">Status: {KANDIDAAT_STATUS_LABELS[k.status]}</span>
+                <span className="text-gray-500"> · wijzigen, bijvoorbeeld als {k.firstName ?? 'de kandidaat'} afhaakt</span>
+              </summary>
+              <div className="border-t border-gray-100">{statusBlok}</div>
+            </details>
+          )}
+
+          {beheerder && !flowEerst && (
             <section className="rounded-xl bg-white p-6 shadow-sm">
               <div className="mb-1 flex flex-wrap items-start justify-between gap-3">
                 <h2 className="text-base">Contract</h2>
@@ -505,15 +522,24 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
         <div className="space-y-6">
           {/* ------------------------------ Gegevens ------------------------------ */}
           <section className="rounded-xl bg-white p-6 shadow-sm">
-            <h2 className="mb-4 text-base">Gegevens</h2>
+            <h2 className="mb-4 text-base">{dossierZichtbaar ? 'Contact en sollicitatie' : 'Gegevens'}</h2>
             <ActionForm action={kandidaatBewerken} submitLabel="Opslaan" resetOnSuccess={false}>
               {verborgen}
-              <div className="grid gap-3 sm:grid-cols-[1.4fr_0.8fr_1.4fr]">
-                <Field label="Roepnaam" name="voornaam" defaultValue={k.firstName ?? ''} />
-                <Field label="Tussenv." name="tussenvoegsel" defaultValue={k.infix ?? ''} />
-                <Field label="Achternaam" name="achternaam" defaultValue={k.lastName ?? ''} />
-              </div>
-              <Field label="Alle voornamen (paspoort)" name="officieleVoornamen" defaultValue={k.officialFirstNames ?? ''} placeholder="Johannes Hubertus Maria" hint="Voor het contract. De roepnaam gebruiken we in het gesprek en de mail." />
+              {dossierZichtbaar ? (
+                <p className="text-sm">
+                  <span className="block text-[13px] font-medium">Naam</span>
+                  {k.name}{' '}
+                  <a href="#dossier-gegevens" className="text-jr-link text-xs hover:underline">
+                    wijzigen bij de persoonsgegevens
+                  </a>
+                </p>
+              ) : (
+                <div className="grid gap-3 sm:grid-cols-[1.4fr_0.8fr_1.4fr]">
+                  <Field label="Roepnaam" name="voornaam" defaultValue={k.firstName ?? ''} />
+                  <Field label="Tussenv." name="tussenvoegsel" defaultValue={k.infix ?? ''} />
+                  <Field label="Achternaam" name="achternaam" defaultValue={k.lastName ?? ''} />
+                </div>
+              )}
               <Field label="E-mail" name="email" type="email" defaultValue={k.email ?? ''} />
               <Field label="Telefoon" name="telefoon" defaultValue={k.phone ?? ''} />
               <Field label="LinkedIn" name="linkedin" defaultValue={k.linkedinUrl ?? ''} />
