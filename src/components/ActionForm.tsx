@@ -13,7 +13,17 @@ import { useConcept } from './useConcept'
  * en bij geld is stil falen het slechtste wat je kunt doen.
  */
 /** Een fout die de server niet netjes teruggaf: geen verbinding, of een nieuwe versie van het portaal. */
-function foutTekst(error: unknown): string {
+function foutTekst(error: unknown, formData?: FormData): string {
+  /* Netlify weigert een verzoek boven 6 MB voordat het het portaal bereikt;
+     de browser ziet dan alleen een mislukte verbinding. Zat er een groot
+     bestand in het formulier, dan is dat bijna zeker de oorzaak. */
+  let bytes = 0
+  formData?.forEach((v) => {
+    if (typeof v !== 'string') bytes += v.size
+  })
+  if (bytes > 4 * 1024 * 1024) {
+    return `Het bestand is te groot om te versturen (${(bytes / (1024 * 1024)).toFixed(1).replace('.', ',')} MB; maximaal 4 MB). Maak het kleiner, bijvoorbeeld op de Mac in Voorvertoning via Archief, Exporteer, Kwartsfilter "Verklein bestandsgrootte", en probeer het opnieuw.`
+  }
   const bericht = error instanceof Error ? error.message : ''
   if (/server action/i.test(bericht)) {
     return 'Het portaal is net bijgewerkt naar een nieuwe versie. Herlaad de pagina en klik nog eens op opslaan. Wat je invulde, staat er na het herladen nog.'
@@ -80,7 +90,7 @@ export function ActionForm({
     } catch (error) {
       if (isNextSignaal(error)) throw error
       console.error('[formulier] opslaan mislukt:', error)
-      return { ok: false, error: foutTekst(error) }
+      return { ok: false, error: foutTekst(error, formData) }
     }
   }, null)
 
