@@ -191,6 +191,9 @@ export function Salaris({
               <dd className="tabular text-xl font-bold leading-tight">
                 {formatCents(huidig.grossMonthlyCents)}
               </dd>
+              {huidig.opAllowanceCents > 0 && (
+                <dd className="tabular text-xs text-gray-600">+ {formatCents(huidig.opAllowanceCents)} OP-toeslag</dd>
+              )}
             </div>
             {/* Wat het ons kost staat groot en in kleur, want dat is het
                 getal waarmee je rekent. Bruto is bijna nooit het antwoord. */}
@@ -236,10 +239,20 @@ export function Salaris({
             )}
           </dl>
         ) : (
-          <p className="text-sm text-gray-600">
-            Nog geen beloning vastgelegd. Zolang dat zo is telt deze collega niet mee in het
-            kostenoverzicht.
-          </p>
+          (() => {
+            const komend = [...regels].filter((r) => r.effectiveFrom > new Date()).sort((x, y) => x.effectiveFrom.getTime() - y.effectiveFrom.getTime())[0]
+            return komend ? (
+              <p className="text-sm text-gray-600">
+                Gaat in op {formatDate(komend.effectiveFrom)}: <strong className="tabular">{formatCents(komend.grossMonthlyCents)}</strong> bruto per maand
+                {komend.opAllowanceCents > 0 && <> plus {formatCents(komend.opAllowanceCents)} OP-toeslag</>}. Vanaf die dag telt deze collega mee in het kostenoverzicht.
+              </p>
+            ) : (
+              <p className="text-sm text-gray-600">
+                Nog geen beloning vastgelegd. Zolang dat zo is telt deze collega niet mee in het
+                kostenoverzicht.
+              </p>
+            )
+          })()
         )}
       </div>
 
@@ -252,6 +265,9 @@ export function Salaris({
                 <div className="min-w-0">
                   <p className="text-sm">
                     <span className="tabular">{formatCents(r.grossMonthlyCents)}</span>
+                    {r.opAllowanceCents > 0 && (
+                      <span className="tabular text-gray-600"> + {formatCents(r.opAllowanceCents)} OP</span>
+                    )}
                     {r.soort === 'management_fee' && (
                       <span className="ml-1.5 rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600">
                         fee
@@ -300,6 +316,12 @@ export function Salaris({
               hint="Bij een management fee vervallen vakantiegeld en werkgeverslasten."
             />
             <Field label="Bruto per maand" name="bedrag" required placeholder="3200,00" />
+            <Field
+              label="OP-toeslag per maand"
+              name="opToeslag"
+              placeholder="0,00"
+              hint="Bij geen pensioenregeling. Er gaat geen vakantiegeld overheen."
+            />
             <Field label="Ingangsdatum" name="ingangsdatum" type="date" required defaultValue={vandaag()} />
             <Field
               label="Bij hoeveel uur"

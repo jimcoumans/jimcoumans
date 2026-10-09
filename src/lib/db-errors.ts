@@ -195,6 +195,8 @@ export function describeDbError(error: unknown): string | null {
       return 'Het aantal contracturen moet boven nul liggen en onder de twintig uur per dag.'
     case 'salary_positive':
       return 'Een salaris moet boven nul liggen.'
+    case 'salary_op_allowance_valid':
+      return 'De OP-toeslag kan niet negatief zijn.'
 
     /* Het salarishuis. De meldingen leggen niet alleen uit wat er fout is
        maar ook waarom de grens er staat: hier worden contracten uit

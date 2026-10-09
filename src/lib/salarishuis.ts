@@ -1,7 +1,8 @@
-import { asc, desc, eq, lte } from 'drizzle-orm'
+import { and, asc, count, desc, eq, gt, gte, isNotNull, lt, lte, ne } from 'drizzle-orm'
 import { db } from '@/db'
-import { salaryHouses, salaryScales } from '@/db/schema'
+import { salaryHouses, salaryScales, generatedContracts } from '@/db/schema'
 import type { SalaryHouse, SalaryScale } from '@/db/schema'
+import { SalarishuisError, controleerHuis, type Huis, type HuisInvoer } from './salarishuis-reken'
 
 /* -------------------------------------------------------------------------
    Het salarishuis.
@@ -30,174 +31,17 @@ import type { SalaryHouse, SalaryScale } from '@/db/schema'
    __tests__/salarishuis.test.ts en moet groen blijven.
    ------------------------------------------------------------------------- */
 
-export class SalarishuisError extends Error {}
-
-/** Een huis met zijn schalen, op volgorde van onder naar boven. */
-export type Huis = {
-  huis: SalaryHouse
-  schalen: SalaryScale[]
-}
-
-/**
- * Wat een schaal-trede oplevert, helemaal uitgerekend.
- *
- * Alles in centen. Bruto, want netto hangt af van de persoonlijke situatie
- * en dat hoort bij de salarisadministratie, niet hier.
- */
-export type Beloning = {
-  schaal: string
-  trede: number
-  /** Bruto per maand bij fulltime. */
-  fulltimeCents: number
-  /** Bruto per maand bij het afgesproken aantal uren. */
-  maandCents: number
-  /** De OP-toeslag over het maandbedrag, als er geen pensioenregeling is. */
-  opToeslagCents: number
-  /** Maandbedrag plus OP-toeslag. Dit is wat er maandelijks wordt overgemaakt. */
-  maandMetToeslagCents: number
-  /** Vakantietoeslag per maand opgebouwd. Niet over de OP-toeslag. */
-  vakantietoeslagPerMaandCents: number
-  /** Bruto per uur, waarmee je tegen het minimumloon toetst. */
-  uurloonCents: number
-  /** Vakantie-uren per kalenderjaar, naar rato van de uren. */
-  vakantieUren: number
-  /** Uren per week in kwartieren, zoals meegegeven. */
-  urenPerWeekKwartier: number
-  /**
-   * Waar het uurloon onder het wettelijk minimum ligt.
-   *
-   * Null als er geen minimum in het huis staat. False betekent dus echt
-   * gecontroleerd en in orde, en niet "we weten het niet".
-   */
-  onderMinimumloon: boolean | null
-}
-
-/* --- Rekenen -------------------------------------------------------------- */
-
-/**
- * Het fulltimebedrag van een schaal-trede, in centen.
- *
- * De enige plek waar wordt afgerond. Losgetrokken van de rest zodat de
- * berekening zonder database te testen is.
- */
-export function fulltimeCentsVoor(
-  baseCents: number,
-  stepIncreaseBp: number,
-  schalenTotEnMet: { multiplierBp: number }[],
-  trede: number,
-): number {
-  let bedrag = baseCents
-  // Stapelen, in deze volgorde. Zie de waarschuwing bovenaan dit bestand.
-  for (const s of schalenTotEnMet) bedrag = bedrag * (s.multiplierBp / 10_000)
-  bedrag = bedrag * (1 + stepIncreaseBp / 10_000) ** (trede - 1)
-  return Math.round(bedrag)
-}
-
-/** Deelt een percentage in basispunten toe en rondt af op centen. */
-function deelBp(cents: number, bp: number): number {
-  return Math.round((cents * bp) / 10_000)
-}
-
-/**
- * Wat iemand verdient op deze schaal en trede, bij dit aantal uren.
- *
- * Pure functie: geen database, geen datum, geen verrassingen. Het huis geef
- * je mee, zodat een oud contract met het oude huis doorgerekend kan worden.
- */
-export function berekenBeloning(
-  huis: Huis,
-  schaalNaam: string,
-  trede: number,
-  urenPerWeekKwartier: number,
-): Beloning {
-  const geordend = [...huis.schalen].sort((a, b) => a.sortOrder - b.sortOrder)
-  const index = geordend.findIndex((s) => s.name === schaalNaam)
-  if (index === -1) {
-    throw new SalarishuisError(
-      `Schaal "${schaalNaam}" bestaat niet in dit salarishuis. Beschikbaar: ${geordend
-        .map((s) => s.name)
-        .join(', ')}.`,
-    )
-  }
-
-  const schaal = geordend[index]!
-  if (!Number.isInteger(trede) || trede < 1 || trede > schaal.steps) {
-    throw new SalarishuisError(
-      `Trede ${trede} bestaat niet in schaal ${schaal.name}; die loopt van 1 tot en met ${schaal.steps}.`,
-    )
-  }
-  if (urenPerWeekKwartier <= 0) {
-    throw new SalarishuisError('Het aantal uren per week moet groter dan nul zijn.')
-  }
-
-  const h = huis.huis
-  const fulltimeCents = fulltimeCentsVoor(
-    h.baseCents,
-    h.stepIncreaseBp,
-    geordend.slice(0, index + 1),
-    trede,
-  )
-
-  const deel = urenPerWeekKwartier / h.fulltimeHoursWeekQuarters
-  const maandCents = Math.round(fulltimeCents * deel)
-  const opToeslagCents = deelBp(maandCents, h.pensionAllowanceBp)
-
-  /* Uurloon: het maandbedrag maal twaalf, gedeeld door de uren in een jaar.
-     Niet maandbedrag gedeeld door "uren in deze maand" - die verschilt per
-     maand en dan zou het uurloon in februari hoger zijn dan in maart. */
-  const urenPerWeek = urenPerWeekKwartier / 100
-  const uurloonCents = Math.round((maandCents * 12) / (urenPerWeek * 52))
-
-  return {
-    schaal: schaal.name,
-    trede,
-    fulltimeCents,
-    maandCents,
-    opToeslagCents,
-    maandMetToeslagCents: maandCents + opToeslagCents,
-    // Vakantietoeslag gaat NIET over de OP-toeslag. Staat zo in het contract
-    // en het scheelt op jaarbasis een paar honderd euro per persoon.
-    vakantietoeslagPerMaandCents: deelBp(maandCents, h.holidayAllowanceBp),
-    uurloonCents,
-    vakantieUren: Math.round(h.holidayHoursFulltime * deel),
-    urenPerWeekKwartier,
-    onderMinimumloon:
-      h.minimumHourlyCents === null ? null : uurloonCents < h.minimumHourlyCents,
-  }
-}
-
-/**
- * Het hele huis als tabel, zoals de sheet hem laat zien.
- *
- * Voor het scherm, en voor de test die hem tegen de sheet legt.
- */
-export function tabel(huis: Huis): {
-  schaal: string
-  sortOrder: number
-  tredes: { trede: number; fulltimeCents: number; metToeslagCents: number }[]
-}[] {
-  const geordend = [...huis.schalen].sort((a, b) => a.sortOrder - b.sortOrder)
-
-  return geordend.map((schaal, index) => ({
-    schaal: schaal.name,
-    sortOrder: schaal.sortOrder,
-    tredes: Array.from({ length: schaal.steps }, (_, i) => {
-      const trede = i + 1
-      const fulltimeCents = fulltimeCentsVoor(
-        huis.huis.baseCents,
-        huis.huis.stepIncreaseBp,
-        geordend.slice(0, index + 1),
-        trede,
-      )
-      return {
-        trede,
-        fulltimeCents,
-        metToeslagCents:
-          fulltimeCents + deelBp(fulltimeCents, huis.huis.pensionAllowanceBp),
-      }
-    }),
-  }))
-}
+export {
+  SalarishuisError,
+  fulltimeCentsVoor,
+  berekenBeloning,
+  tabel,
+  controleerHuis,
+  huisUit,
+  type Huis,
+  type HuisInvoer,
+  type Beloning,
+} from './salarishuis-reken'
 
 /* --- Ophalen -------------------------------------------------------------- */
 
@@ -283,4 +127,119 @@ export function schaalNamen(huis: Huis): string[] {
 /** Hoeveel tredes een schaal heeft, of null als de schaal niet bestaat. */
 export function aantalTredes(huis: Huis, schaalNaam: string): number | null {
   return huis.schalen.find((s) => s.name === schaalNaam)?.steps ?? null
+}
+
+/* --- Beheren -------------------------------------------------------------- */
+
+/*
+ * Een huis wijzig je niet als er al contracten op zijn opgesteld. Die
+ * contracten bewaren hun eigen bedragen en veranderen dus niet mee, maar dan
+ * staat er in het portaal een huis dat nooit heeft gegolden voor de mensen
+ * die er een contract op kregen. Een indexatie is daarom een nieuwe versie
+ * met een eigen ingangsdatum; corrigeren kan alleen zolang niemand er nog
+ * een contract op heeft.
+ */
+
+/** Hoeveel contracten er met schaal en trede zijn opgesteld in de periode van dit huis. */
+export async function contractenOpHuis(huisId: string): Promise<number> {
+  const [huis] = await db.select().from(salaryHouses).where(eq(salaryHouses.id, huisId)).limit(1)
+  if (!huis) return 0
+  const [volgende] = await db
+    .select({ effectiveFrom: salaryHouses.effectiveFrom })
+    .from(salaryHouses)
+    .where(gt(salaryHouses.effectiveFrom, huis.effectiveFrom))
+    .orderBy(asc(salaryHouses.effectiveFrom))
+    .limit(1)
+
+  const [rij] = await db
+    .select({ aantal: count() })
+    .from(generatedContracts)
+    .where(
+      and(
+        isNotNull(generatedContracts.salaryScaleName),
+        gte(generatedContracts.startedOn, huis.effectiveFrom),
+        volgende ? lt(generatedContracts.startedOn, volgende.effectiveFrom) : undefined,
+      ),
+    )
+  return Number(rij?.aantal ?? 0)
+}
+
+async function datumVrij(op: Date, behalve: string | null): Promise<void> {
+  const [bezet] = await db
+    .select({ id: salaryHouses.id })
+    .from(salaryHouses)
+    .where(and(eq(salaryHouses.effectiveFrom, op), behalve ? ne(salaryHouses.id, behalve) : undefined))
+    .limit(1)
+  if (bezet) throw new SalarishuisError('Er is al een salarishuis met deze ingangsdatum. Kies een andere datum of corrigeer dat huis.')
+}
+
+/** Een nieuwe versie van het huis, met zijn eigen ingangsdatum. */
+export async function maakHuis(invoer: HuisInvoer, doorUserId: string | null): Promise<SalaryHouse> {
+  controleerHuis(invoer)
+  await datumVrij(invoer.effectiveFrom, null)
+  return db.transaction(async (tx) => {
+    const [huis] = await tx
+      .insert(salaryHouses)
+      .values({
+        effectiveFrom: invoer.effectiveFrom,
+        baseCents: invoer.baseCents,
+        stepIncreaseBp: invoer.stepIncreaseBp,
+        pensionAllowanceBp: invoer.pensionAllowanceBp,
+        holidayAllowanceBp: invoer.holidayAllowanceBp,
+        fulltimeHoursWeekQuarters: invoer.fulltimeHoursWeekQuarters,
+        holidayHoursFulltime: invoer.holidayHoursFulltime,
+        minimumHourlyCents: invoer.minimumHourlyCents,
+        note: invoer.note,
+        createdByUserId: doorUserId,
+      })
+      .returning()
+    if (!huis) throw new SalarishuisError('Het salarishuis kon niet worden opgeslagen.')
+    await tx.insert(salaryScales).values(
+      invoer.schalen.map((s, n) => ({ houseId: huis.id, name: s.name.trim(), sortOrder: n + 1, multiplierBp: s.multiplierBp, steps: s.steps })),
+    )
+    return huis
+  })
+}
+
+/** Een huis corrigeren. Alleen zolang er geen contract op is opgesteld. */
+export async function corrigeerHuis(huisId: string, invoer: HuisInvoer): Promise<void> {
+  controleerHuis(invoer)
+  const inGebruik = await contractenOpHuis(huisId)
+  if (inGebruik > 0) {
+    throw new SalarishuisError(
+      `Op dit huis ${inGebruik === 1 ? 'is al een contract' : `zijn al ${inGebruik} contracten`} opgesteld. Maak een nieuwe versie met een eigen ingangsdatum.`,
+    )
+  }
+  await datumVrij(invoer.effectiveFrom, huisId)
+  await db.transaction(async (tx) => {
+    const [bij] = await tx
+      .update(salaryHouses)
+      .set({
+        effectiveFrom: invoer.effectiveFrom,
+        baseCents: invoer.baseCents,
+        stepIncreaseBp: invoer.stepIncreaseBp,
+        pensionAllowanceBp: invoer.pensionAllowanceBp,
+        holidayAllowanceBp: invoer.holidayAllowanceBp,
+        fulltimeHoursWeekQuarters: invoer.fulltimeHoursWeekQuarters,
+        holidayHoursFulltime: invoer.holidayHoursFulltime,
+        minimumHourlyCents: invoer.minimumHourlyCents,
+        note: invoer.note,
+      })
+      .where(eq(salaryHouses.id, huisId))
+      .returning({ id: salaryHouses.id })
+    if (!bij) throw new SalarishuisError('Dit salarishuis bestaat niet meer.')
+    await tx.delete(salaryScales).where(eq(salaryScales.houseId, huisId))
+    await tx.insert(salaryScales).values(
+      invoer.schalen.map((s, n) => ({ houseId: huisId, name: s.name.trim(), sortOrder: n + 1, multiplierBp: s.multiplierBp, steps: s.steps })),
+    )
+  })
+}
+
+/** Een huis wissen. Niet het laatste, en niet als er contracten op staan. */
+export async function wisHuis(huisId: string): Promise<void> {
+  const [rij] = await db.select({ aantal: count() }).from(salaryHouses)
+  if (Number(rij?.aantal ?? 0) <= 1) throw new SalarishuisError('Er moet minstens één salarishuis blijven.')
+  const inGebruik = await contractenOpHuis(huisId)
+  if (inGebruik > 0) throw new SalarishuisError('Op dit huis zijn al contracten opgesteld. Het blijft staan als historie.')
+  await db.delete(salaryHouses).where(eq(salaryHouses.id, huisId))
 }

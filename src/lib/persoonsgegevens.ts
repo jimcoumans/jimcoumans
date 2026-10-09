@@ -1,7 +1,7 @@
 import { createHmac, timingSafeEqual } from 'node:crypto'
 import { and, asc, eq } from 'drizzle-orm'
 import { db } from '@/db'
-import { candidates, personalRecords, personalDocuments, personalDocumentViews, candidateNotes } from '@/db/schema'
+import { candidates, users, personalRecords, personalDocuments, personalDocumentViews, candidateNotes } from '@/db/schema'
 import type { PersonalRecord } from '@/db/schema'
 import { versleutel, ontsleutel, ontsleutelTekst } from './versleuteling'
 
@@ -27,6 +27,7 @@ export const TOEGESTAAN = ['application/pdf', 'image/jpeg', 'image/png'] as cons
 export const DOCUMENT_LABELS = {
   id_kopie: 'Kopie ID',
   loonheffing: 'Loonheffingsformulier',
+  contract: 'Getekend contract',
   overig: 'Overig',
 } as const
 export type DocumentSoort = keyof typeof DOCUMENT_LABELS
@@ -145,6 +146,27 @@ export async function zorgVoorGegevens(candidateId: string): Promise<PersonalRec
     .returning()
   if (nieuw) return nieuw
   const [alsnog] = await db.select().from(personalRecords).where(eq(personalRecords.candidateId, candidateId)).limit(1)
+  return alsnog!
+}
+
+/**
+ * Het dossier van een collega; maakt het aan als het er nog niet is.
+ *
+ * Voor wie niet via werving binnenkwam, of van voor dit portaal: ook dan
+ * horen IBAN, kopie ID en het getekende contract op één versleutelde plek.
+ */
+export async function zorgVoorGegevensVanCollega(userId: string): Promise<PersonalRecord> {
+  const [bestaand] = await db.select().from(personalRecords).where(eq(personalRecords.userId, userId)).limit(1)
+  if (bestaand) return bestaand
+  const [u] = await db.select().from(users).where(eq(users.id, userId)).limit(1)
+  if (!u) throw new GegevensError('Deze collega bestaat niet meer.')
+  const [nieuw] = await db
+    .insert(personalRecords)
+    .values({ userId, infix: u.infix, lastName: u.lastName, addressLine: u.addressLine, postalCode: u.postalCode, city: u.city })
+    .onConflictDoNothing()
+    .returning()
+  if (nieuw) return nieuw
+  const [alsnog] = await db.select().from(personalRecords).where(eq(personalRecords.userId, userId)).limit(1)
   return alsnog!
 }
 
@@ -279,9 +301,11 @@ export async function maakGegevenslink(recordId: string, opnieuw = false): Promi
 export async function gegevensViaLink(id: string, token: string): Promise<(PersonalRecord & { voornaam: string }) | null> {
   if (!/^[0-9a-f-]{36}$/i.test(id) || !/^[A-Za-z0-9_-]{32}$/.test(token)) return null
   const [r] = await db
-    .select({ r: personalRecords, voornaam: candidates.firstName, naam: candidates.name })
+    .select({ r: personalRecords, voornaam: candidates.firstName, naam: candidates.name, collegaVoornaam: users.firstName, collegaNaam: users.name })
     .from(personalRecords)
     .leftJoin(candidates, eq(candidates.id, personalRecords.candidateId))
+    // Na de aanname hangt het dossier aan de collega; de link blijft dan werken.
+    .leftJoin(users, eq(users.id, personalRecords.userId))
     .where(eq(personalRecords.id, id))
     .limit(1)
   if (!r || r.r.linkVersie === 0 || !r.r.linkVerlooptOp) return null
@@ -289,7 +313,7 @@ export async function gegevensViaLink(id: string, token: string): Promise<(Perso
   const gegeven = Buffer.from(token)
   if (verwacht.length !== gegeven.length || !timingSafeEqual(verwacht, gegeven)) return null
   if (r.r.linkVerlooptOp.getTime() < Date.now()) return null
-  return { ...r.r, voornaam: r.voornaam ?? (r.naam ?? '').split(' ')[0] ?? '' }
+  return { ...r.r, voornaam: r.voornaam ?? r.collegaVoornaam ?? (r.naam ?? r.collegaNaam ?? '').split(' ')[0] ?? '' }
 }
 
 /**

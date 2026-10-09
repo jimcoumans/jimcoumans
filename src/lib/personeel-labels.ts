@@ -129,8 +129,11 @@ function maandenTussen(van: Date, tot: Date): number {
 }
 
 /** Wat een salaris per jaar kost aan bruto loon plus vakantiegeld. */
-export function jaarloonCents(regel: Pick<SalaryRecord, 'grossMonthlyCents' | 'holidayAllowancePercent'>): number {
+export function jaarloonCents(
+  regel: Pick<SalaryRecord, 'grossMonthlyCents' | 'holidayAllowancePercent'> & Partial<Pick<SalaryRecord, 'opAllowanceCents'>>,
+): number {
   const jaar = regel.grossMonthlyCents * 12
-  return jaar + Math.round((jaar * regel.holidayAllowancePercent) / 100)
+  // Vakantiegeld over het bruto, niet over de OP-toeslag.
+  return jaar + Math.round((jaar * regel.holidayAllowancePercent) / 100) + (regel.opAllowanceCents ?? 0) * 12
 }
 

@@ -40,9 +40,13 @@ export function maandlast(
   regel: Pick<
     SalaryRecord,
     'grossMonthlyCents' | 'holidayAllowancePercent' | 'employerCostPercent' | 'soort'
-  >,
+  > &
+    Partial<Pick<SalaryRecord, 'opAllowanceCents'>>,
 ): Maandlast {
   const bruto = regel.grossMonthlyCents
+  // De OP-toeslag wordt maandelijks uitbetaald en telt mee voor de premies,
+  // maar er gaat geen vakantiegeld overheen.
+  const op = regel.soort === 'management_fee' ? 0 : (regel.opAllowanceCents ?? 0)
 
   if (regel.soort === 'management_fee') {
     return {
@@ -54,11 +58,11 @@ export function maandlast(
   }
 
   const vakantiegeld = Math.round((bruto * regel.holidayAllowancePercent) / 100)
-  const grondslag = bruto + vakantiegeld
+  const grondslag = bruto + op + vakantiegeld
   const lasten = Math.round((grondslag * regel.employerCostPercent) / 100)
 
   return {
-    brutoCents: bruto,
+    brutoCents: bruto + op,
     vakantiegeldCents: vakantiegeld,
     werkgeverslastenCents: lasten,
     totaalCents: grondslag + lasten,

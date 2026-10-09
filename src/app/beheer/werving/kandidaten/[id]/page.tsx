@@ -43,6 +43,12 @@ import {
   gegevensDoorgegeven,
 } from '../../../werving-actions'
 import { nieuwContract } from '../../../contract-actions'
+import { kandidaatAannemen, contractGetekend } from '../../../aanname-actions'
+import { vervolgstappen, werkadresVoorstel } from '@/lib/aanname'
+import { Vervolgstappen } from '@/components/Vervolgstappen'
+import { contractMail, gegevensMail, welkomMail, mailtoLink } from '@/lib/mailsjablonen'
+import { AFDELINGEN } from '@/lib/team'
+import { getWerkgever } from '@/lib/contracten'
 
 export const maxDuration = 26
 
@@ -88,15 +94,21 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
 
   /* Contract en persoonsgegevens: alleen voor een beheerder, en niet ophalen
      als je het niet mag zien. */
-  const [contracten, gegevens, huis, profielen, vacature] = beheerder
+  /* Na de aanname staan de persoonsgegevens bij de collega, niet meer bij de
+     kandidaat: anders zouden ze met zijn bewaartermijn worden gewist. */
+  const aangenomen = k.status === 'aangenomen' && k.hiredUserId !== null
+  const [contracten, gegevens, huis, profielen, vacature, werkgever] = beheerder
     ? await Promise.all([
         listContracten({ candidateId: id }),
-        getGegevens({ candidateId: id }),
+        getGegevens(aangenomen ? { userId: k.hiredUserId! } : { candidateId: id }),
         getHuis(),
         listFunctieprofielen(),
         k.vacancyId ? getVacature(k.vacancyId) : Promise.resolve(null),
+        getWerkgever(),
       ])
-    : [[], null, null, [], null]
+    : [[], null, null, [], null, null]
+  const toonStappen = beheerder && (k.status === 'aanbod' || k.status === 'contract' || k.status === 'aangenomen')
+  const stappen = toonStappen ? await vervolgstappen({ kandidaatId: id }) : []
 
   let iban: string | null = null
   let ibanFout = false
@@ -118,6 +130,25 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
     volledigeNaam({ firstName: gegevens?.record.officialFirstNames ?? k.officialFirstNames ?? k.firstName, infix: gegevens?.record.infix ?? k.infix, lastName: gegevens?.record.lastName ?? k.lastName }) || k.name
   const v = vacature?.vacature ?? null
   const verborgen = <input type="hidden" name="kandidaatId" value={k.id} />
+
+  /* Wat er klaarligt om in dienst te nemen: een definitief, getekend contract
+     dat nog bij niemand in het dossier staat. */
+  const definitief = contracten.filter((c) => c.soort === 'definitief' && !c.userId)
+  const getekend = definitief.filter((c) => c.signedOn)
+  const laatsteDefinitief = definitief[0] ?? null
+  const roepnaam = k.firstName ?? k.name.split(' ')[0] ?? ''
+  const mailBasis = {
+    aan: k.email ?? '',
+    roepnaam,
+    functie: laatsteDefinitief?.jobTitle ?? contracten[0]?.jobTitle ?? v?.title ?? '[functie]',
+    startdatum: laatsteDefinitief?.startedOn ?? contracten[0]?.startedOn ?? null,
+    afzender: user.name ?? 'James Robinson',
+    gegevenslink: link,
+    linkDagen: LINK_DAGEN,
+    werkadres: werkgever ? `${werkgever.workAddress}, ${werkgever.workPostalCode} ${werkgever.workCity}` : null,
+    inlogUrl: `${basis}/login`,
+  }
+  const KNOP_MAIL = 'inline-flex items-center rounded-full border border-gray-300 bg-white px-3.5 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50'
 
   return (
     <AppShell user={user} actief="werving">
@@ -356,6 +387,14 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
                   </ActionForm>
                 </Paneel>
               </div>
+              {contracten.length > 0 && k.email && !aangenomen && (
+                <div className="mb-3 flex flex-wrap items-center gap-2 rounded-lg bg-gray-50 p-3">
+                  <a href={mailtoLink(contractMail({ ...mailBasis, functie: contracten[0]!.jobTitle, startdatum: contracten[0]!.startedOn }))} className={KNOP_MAIL}>
+                    Mail het contract
+                  </a>
+                  <span className="text-xs text-gray-600">Opent je mailprogramma met de tekst erin{link ? ' en de invullink voor de gegevens' : ''}. Download de pdf en voeg hem als bijlage toe.</span>
+                </div>
+              )}
               {contracten.length === 0 ? (
                 <p className="text-sm text-gray-600">Nog geen contract. Stel een pro forma op om te bespreken, of meteen een definitief contract.</p>
               ) : (
@@ -371,9 +410,28 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
                           {c.endsOn ? ` t/m ${formatDate(c.endsOn)}` : ''} · {formatCents(c.grossMonthlyCents)} per maand · opgesteld {formatDate(c.createdAt)}
                         </span>
                       </span>
-                      <a href={`/api/contracten/${c.id}/pdf`} className="text-jr-link text-xs font-medium hover:underline">
-                        Download pdf
-                      </a>
+                      <span className="flex flex-wrap items-center gap-2">
+                        {c.soort === 'definitief' && c.signedOn && (
+                          <span className="bg-jr-green/15 rounded-full px-2.5 py-0.5 text-xs text-[#1d7a36]">Getekend {formatDate(c.signedOn)}</span>
+                        )}
+                        {c.soort === 'definitief' && !c.signedOn && !c.userId && (
+                          <Paneel knop="Getekend vastleggen" stijl="klein" titel="Contract getekend" uitleg="De datum waarop beide partijen getekend hebben. Upload meteen het getekende exemplaar; dat wordt versleuteld bewaard bij de persoonsgegevens.">
+                            <ActionForm action={contractGetekend} submitLabel="Vastleggen">
+                              <input type="hidden" name="contractId" value={c.id} />
+                              <Field label="Getekend op" name="getekendOp" type="date" required defaultValue={formatDateInput(new Date())} />
+                              <div>
+                                <label className="text-jr-text mb-1.5 block text-[13px] font-medium" htmlFor={`getekend-${c.id}`}>
+                                  Getekend exemplaar (pdf, jpg of png, max. 4 MB) <span className="font-normal text-gray-500">(optioneel)</span>
+                                </label>
+                                <input id={`getekend-${c.id}`} type="file" name="bestand" accept="application/pdf,image/jpeg,image/png" className="block w-full text-sm" />
+                              </div>
+                            </ActionForm>
+                          </Paneel>
+                        )}
+                        <a href={`/api/contracten/${c.id}/pdf`} className="text-jr-link text-xs font-medium hover:underline">
+                          Download pdf
+                        </a>
+                      </span>
                     </li>
                   ))}
                 </ul>
@@ -381,11 +439,89 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
             </section>
           )}
 
+          {/* ------------------------------ In dienst nemen ------------------------------ */}
+          {beheerder && aangenomen && (
+            <section className="border-jr-green/30 bg-jr-green/5 rounded-xl border p-6">
+              <h2 className="mb-1 text-base">In dienst</h2>
+              <p className="text-sm text-gray-700">
+                {k.firstName ?? k.name} is aangenomen. Contract, salaris en persoonsgegevens staan in het dossier.{' '}
+                <a href={`/beheer/medewerkers/${k.hiredUserId}`} className="text-jr-link font-medium hover:underline">
+                  Naar het profiel van de collega
+                </a>
+              </p>
+              {k.email && (
+                <div className="mt-3 flex flex-wrap items-center gap-2">
+                  <a href={mailtoLink(welkomMail({ ...mailBasis }))} className={KNOP_MAIL}>
+                    Welkomstmail
+                  </a>
+                  <span className="text-xs text-gray-600">Met de startdatum, het adres en hoe hij inlogt. Vul de tijd en het programma zelf in.</span>
+                </div>
+              )}
+            </section>
+          )}
+          {beheerder && !aangenomen && definitief.length > 0 && (
+            <section className="rounded-xl bg-white p-6 shadow-sm">
+              <h2 className="mb-1 text-base">In dienst nemen</h2>
+              {getekend.length === 0 ? (
+                <p className="text-sm text-gray-600">
+                  Kan zodra het definitieve contract getekend is. Leg dat hierboven vast bij het contract, met de datum en het getekende exemplaar.
+                </p>
+              ) : (
+                <>
+                  <p className="mb-4 text-sm text-gray-600">
+                    Eén stap: er komt een collega bij met dit werkadres, het contract en het salaris (met OP-toeslag) gaan in zijn dossier, de persoonsgegevens gaan mee, en de
+                    kandidaat staat op aangenomen. Is de vacature daarmee vol, dan gaat hij dicht.
+                  </p>
+                  <ActionForm action={kandidaatAannemen} submitLabel="In dienst nemen" bevestig>
+                    {verborgen}
+                    <Select
+                      label="Op basis van contract"
+                      name="contractId"
+                      defaultValue={getekend[0]!.id}
+                      options={getekend.map((c) => ({
+                        value: c.id,
+                        label: `${c.jobTitle} · ${formatDate(c.startedOn)}${c.endsOn ? ` t/m ${formatDate(c.endsOn)}` : ''} · getekend ${formatDate(c.signedOn!)}`,
+                      }))}
+                    />
+                    <div className="grid gap-3 sm:grid-cols-[1.6fr_1fr_1fr]">
+                      <Field label="Werkadres" name="werkEmail" type="email" required defaultValue={werkadresVoorstel(k.firstName)} hint="Hiermee logt hij in op het portaal." />
+                      <Select
+                        label="Afdeling"
+                        name="afdeling"
+                        defaultValue="Marketing"
+                        options={[{ value: '', label: 'Geen' }, ...AFDELINGEN.map((a) => ({ value: a, label: a }))]}
+                      />
+                      <Select
+                        label="Rol"
+                        name="rol"
+                        defaultValue="staff"
+                        options={[
+                          { value: 'staff', label: 'Collega' },
+                          { value: 'admin', label: 'Beheerder' },
+                        ]}
+                      />
+                    </div>
+                  </ActionForm>
+                </>
+              )}
+            </section>
+          )}
+
+          {toonStappen && stappen.length > 0 && <Vervolgstappen stappen={stappen} />}
+
           {/* ------------------------------ Persoonsgegevens ------------------------------ */}
           {beheerder && (
             <section className="rounded-xl bg-white p-6 shadow-sm">
               <h2 className="mb-1 text-base">Persoonsgegevens voor contract en salarisadministratie</h2>
-              {!gegevensFase ? (
+              {aangenomen ? (
+                <p className="text-sm text-gray-600">
+                  Staan nu in het dossier van de collega, los van de bewaartermijn van de kandidaat.{' '}
+                  <a href={`/beheer/medewerkers/${k.hiredUserId}`} className="text-jr-link hover:underline">
+                    Bekijk ze daar
+                  </a>
+                  .
+                </p>
+              ) : !gegevensFase ? (
                 <p className="text-sm text-gray-600">
                   Komt in beeld in de fase “contract ter ondertekening”: pas als iemand bij ons komt werken, vragen we zijn paspoort, IBAN en loonheffingsformulier.
                   Zet de status op “Contract ter ondertekening” of stel een definitief contract op.
@@ -427,6 +563,11 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
                           <KopieerKnop tekst={link} />
                         </div>
                         <p className="text-xs text-gray-500">Geldig tot {formatDateLong(gegevens!.record.linkVerlooptOp!)}.</p>
+                        {k.email && (
+                          <a href={mailtoLink(gegevensMail(mailBasis))} className={KNOP_MAIL}>
+                            Mail de link
+                          </a>
+                        )}
                         <ActionForm action={gegevenslink} submitLabel="Nieuwe link (de oude vervalt)" submitClassName={KNOP_KLEIN} resetOnSuccess={false} meldGelukt={false} bevestig className="">
                           {verborgen}
                           <input type="hidden" name="opnieuw" value="1" />
