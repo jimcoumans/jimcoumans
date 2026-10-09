@@ -299,7 +299,7 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
         )}
       </header>
 
-      <div className="grid items-start gap-6 xl:grid-cols-[1.45fr_1fr]">
+      <div className={flowEerst ? 'mx-auto grid max-w-4xl gap-6' : 'grid items-start gap-6 xl:grid-cols-[1.45fr_1fr]'}>
         <div className="space-y-6">
           {!flowEerst && statusBlok}
 
@@ -519,7 +519,8 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
           </section>
         </div>
 
-        <div className="space-y-6">
+        {/* In de indiensttreding is de sollicitatie bijzaak: ingeklapt onderaan. */}
+        <Inklappen aan={flowEerst}>
           {/* ------------------------------ Gegevens ------------------------------ */}
           <section className="rounded-xl bg-white p-6 shadow-sm">
             <h2 className="mb-4 text-base">{dossierZichtbaar ? 'Contact en sollicitatie' : 'Gegevens'}</h2>
@@ -644,8 +645,22 @@ export default async function KandidaatPagina({ params }: { params: Promise<{ id
               </ActionForm>
             </div>
           </section>
-        </div>
+        </Inklappen>
       </div>
     </AppShell>
+  )
+}
+
+/** De kolom met de sollicitatie: gewoon, of ingeklapt als de indiensttreding loopt. */
+function Inklappen({ aan, children }: { aan: boolean; children: React.ReactNode }) {
+  if (!aan) return <div className="space-y-6">{children}</div>
+  return (
+    <details className="rounded-xl bg-white shadow-sm">
+      <summary className="cursor-pointer p-5 text-sm">
+        <span className="font-semibold">Sollicitatie</span>
+        <span className="text-gray-500"> · contact, vacature, cv en bewaartermijn</span>
+      </summary>
+      <div className="space-y-6 border-t border-gray-100 bg-gray-50 p-4">{children}</div>
+    </details>
   )
 }
