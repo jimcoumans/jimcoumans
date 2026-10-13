@@ -16,6 +16,7 @@ import {
 } from '@/lib/bedrijf'
 import { slaRegelingenOp, SjabloonError } from '@/lib/sjablonen'
 import type { ActionResult } from './actions'
+import { zetSalarisContact } from '@/lib/salarisadministratie'
 
 /* Bedrijfsgegevens beheren: naam, logo, vestigingen en het personeelshandboek.
    Alleen een beheerder: dit komt in elk contract. Elke actie controleert dat
@@ -125,4 +126,11 @@ export async function loonheffingsformulierUploaden(formData: FormData): Promise
   return veilig(async () => {
     await voegBedrijfsdocumentToe('loonheffingsformulier', bestand, tekst(formData, 'notitie') || null, gebruiker.id)
   })
+}
+
+/** Wie bij de salarisadministratie de gegevens van nieuwe collega's krijgt. */
+export async function salarisContactOpslaan(formData: FormData): Promise<ActionResult> {
+  if (!(await alsBeheerder())) return GEEN_RECHT
+  const id = tekst(formData, 'contactId')
+  return veilig(() => zetSalarisContact(id || null))
 }

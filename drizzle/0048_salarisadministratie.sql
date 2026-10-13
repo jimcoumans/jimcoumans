@@ -1,0 +1,2 @@
+ALTER TABLE "employer_settings" ADD COLUMN "payroll_contact_id" uuid;--> statement-breakpoint
+ALTER TABLE "employer_settings" ADD CONSTRAINT "employer_settings_payroll_contact_id_contacts_id_fk" FOREIGN KEY ("payroll_contact_id") REFERENCES "public"."contacts"("id") ON DELETE set null ON UPDATE no action;

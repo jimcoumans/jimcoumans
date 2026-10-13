@@ -110,3 +110,43 @@ function loginEmailHtml(loginUrl: string, merk: MerkTekst): string {
 function escapeHtml(s: string): string {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 }
+
+/* ------------------------------ Gewone mail -------------------------------- */
+
+export type GewoneMail = { aan: string; cc?: string | null; antwoordAan?: string | null; onderwerp: string; tekst: string }
+
+/**
+ * Een gewone tekstmail vanuit het portaal, bijvoorbeeld naar de
+ * salarisadministratie. Vanaf MAIL_FROM_HR (standaard work@jamesrobinson.nl);
+ * antwoorden gaan naar wie verstuurde, en die krijgt een kopie.
+ *
+ * Zonder RESEND_API_KEY gaat er niets weg en zegt dat ook: een mail die
+ * niet verstuurd is, mag niet als verstuurd in het dossier komen.
+ */
+export async function verstuurMail(m: GewoneMail): Promise<void> {
+  const apiKey = process.env.RESEND_API_KEY
+  if (!apiKey) throw new Error('Mailen vanuit het portaal kan nog niet: RESEND_API_KEY staat niet in Netlify.')
+  const from = process.env.MAIL_FROM_HR ?? 'James Robinson <work@jamesrobinson.nl>'
+  const html = `<div style="font-family:${FONT};font-size:15px;line-height:1.5;color:${JR_BLACK};white-space:pre-wrap;">${m.tekst
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" style="color:${JR_BLUE};">$1</a>')}</div>`
+  const response = await fetch(RESEND_ENDPOINT, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      from,
+      to: [m.aan],
+      ...(m.cc ? { cc: [m.cc] } : {}),
+      ...(m.antwoordAan ? { reply_to: m.antwoordAan } : {}),
+      subject: m.onderwerp,
+      text: m.tekst,
+      html,
+    }),
+  })
+  if (!response.ok) {
+    const body = await response.text().catch(() => '')
+    throw new Error(`De mail kon niet worden verstuurd (Resend gaf ${response.status}${body ? `: ${body.slice(0, 200)}` : ''}).`)
+  }
+}

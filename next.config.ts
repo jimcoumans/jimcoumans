@@ -18,6 +18,7 @@ const nextConfig: NextConfig = {
     '/api/contracten/*/gegevensformulier': ['./src/fonts/pdf/**/*'],
     '/api/bedrijf/avg-voorbeeld': ['./src/fonts/pdf/**/*'],
     '/api/sjablonen/*/voorbeeld': ['./src/fonts/pdf/**/*'],
+    '/api/dossier/map': ['./src/fonts/pdf/**/*'],
   },
   async headers() {
     return [

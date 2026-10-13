@@ -2,7 +2,8 @@ import { redirect } from 'next/navigation'
 import { getSessionUser } from '@/lib/auth'
 import { AppShell } from '@/components/AppShell'
 import { Paneel } from '@/components/Paneel'
-import { ActionForm, Check, Field, TextArea } from '@/components/ActionForm'
+import { ActionForm, Check, Field, Select, TextArea } from '@/components/ActionForm'
+import { getSalarisContact, listContactenMetEmail } from '@/lib/salarisadministratie'
 import { getBedrijf, standaardTekenaars, listVestigingen, listHandboeken, listBedrijfsdocumenten, handboekPad, adresRegel, merknaam, LOGO_MAX_BYTES } from '@/lib/bedrijf'
 import { formatDate } from '@/lib/dates'
 import { listMogelijkeOndertekenaars, namenZin } from '@/lib/contracten'
@@ -16,6 +17,7 @@ import {
   handboekUploaden,
   regelingenOpslaan,
   loonheffingsformulierUploaden,
+  salarisContactOpslaan,
 } from '../bedrijf-actions'
 import { REGELINGEN, verzekeringenZin } from '@/lib/sjablonen'
 
@@ -33,12 +35,14 @@ export default async function BedrijfPagina() {
   if (!user) redirect('/login')
   if (user.role !== 'admin') redirect('/beheer')
 
-  const [bedrijf, alleVestigingen, handboeken, loonheffing, tekenaars] = await Promise.all([
+  const [bedrijf, alleVestigingen, handboeken, loonheffing, tekenaars, salarisContact, contactKeuzes] = await Promise.all([
     getBedrijf(),
     listVestigingen({ inactief: true }),
     listHandboeken(),
     listBedrijfsdocumenten('loonheffingsformulier'),
     listMogelijkeOndertekenaars(),
+    getSalarisContact(),
+    listContactenMetEmail(),
   ])
   // Alleen eigenaren kunnen standaard tekenen; wie er nu al staat zonder eigenaar te zijn, blijft zichtbaar om uit te vinken.
   const eigenaren = tekenaars.filter((t) => t.eigenaar || t.standaard)
@@ -291,6 +295,30 @@ export default async function BedrijfPagina() {
         ) : (
           <p className="text-jr-orange text-sm">Nog niet geupload. Tot die tijd gebruikt het printpakket ons eigen gegevensformulier.</p>
         )}
+      </section>
+
+      {/* ------------------------------ Salarisadministratie ------------------------------ */}
+      <section className="mb-5 rounded-xl bg-white p-6 shadow-sm">
+        <h2 className="text-base">Salarisadministratie</h2>
+        <p className="mb-3 text-xs text-gray-600">
+          Wie de gegevens van nieuwe collega&apos;s krijgt. De mail gaat vanuit het portaal (work@jamesrobinson.nl), met jou in de kopie. Staat de persoon er
+          niet tussen? Voeg die persoon toe bij{' '}
+          <a href="/beheer/crm" className="text-jr-link hover:underline">
+            Contacten
+          </a>
+          , met een e-mailadres.
+        </p>
+        <ActionForm action={salarisContactOpslaan} submitLabel="Opslaan" resetOnSuccess={false} className="flex flex-wrap items-end gap-3" knopInRij>
+          <div className="min-w-[18rem] flex-1">
+            <Select
+              label="Contactpersoon"
+              name="contactId"
+              defaultValue={salarisContact?.id ?? ''}
+              options={[{ value: '', label: 'Nog niemand gekozen' }, ...contactKeuzes.map((c) => ({ value: c.id, label: c.label }))]}
+            />
+          </div>
+        </ActionForm>
+        {salarisContact && !salarisContact.email && <p className="text-jr-orange mt-2 text-sm">Bij {salarisContact.naam} staat geen e-mailadres.</p>}
       </section>
 
       {/* ------------------------------ Teksten ------------------------------ */}

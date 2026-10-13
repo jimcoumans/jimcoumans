@@ -3607,3 +3607,22 @@ BEGIN
   END IF;
 END $jr_0047_persoonsgegevens_compleet$;
 
+-- ---------------------------------------------------------------------------
+-- 0048_salarisadministratie
+-- ---------------------------------------------------------------------------
+
+DO $jr_0048_salarisadministratie$
+BEGIN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = 'c895cd9536318431247e20f2c172e78570661ad0334aee40a38afd804cc259c6') THEN
+    RAISE NOTICE 'Overgeslagen: 0048_salarisadministratie stond er al.';
+  ELSE
+    ALTER TABLE "employer_settings" ADD COLUMN "payroll_contact_id" uuid;
+
+    ALTER TABLE "employer_settings" ADD CONSTRAINT "employer_settings_payroll_contact_id_contacts_id_fk" FOREIGN KEY ("payroll_contact_id") REFERENCES "public"."contacts"("id") ON DELETE set null ON UPDATE no action;
+
+    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+    VALUES ('c895cd9536318431247e20f2c172e78570661ad0334aee40a38afd804cc259c6', 1791881556056);
+    RAISE NOTICE 'Toegepast: 0048_salarisadministratie.';
+  END IF;
+END $jr_0048_salarisadministratie$;
+

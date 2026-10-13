@@ -33,9 +33,13 @@ export type MailContext = {
   merk?: string | null
   /** Het contract in het kort, een regel per punt. */
   samenvatting?: string | null
+  werknemerNaam?: string | null
+  ontvangerVoornaam?: string | null
+  beveiligdeLink?: string | null
+  opmerking?: string | null
 }
 
-export type MailSleutel = 'mail_contract' | 'mail_afschrift' | 'mail_gegevens' | 'mail_welkom'
+export type MailSleutel = 'mail_contract' | 'mail_afschrift' | 'mail_gegevens' | 'mail_welkom' | 'mail_salarisadministratie'
 
 export const MAIL_PLAATSHOUDERS: Record<string, string> = {
   roepnaam: 'Roepnaam van de ontvanger',
@@ -50,6 +54,10 @@ export const MAIL_PLAATSHOUDERS: Record<string, string> = {
   werk_email: 'Het nieuwe werkadres (e-mail)',
   inlog_url: 'Adres van de inlogpagina van het portaal',
   samenvatting: 'Het contract in het kort: functie, periode, uren, salaris en standplaats',
+  werknemer_naam: 'Naam van de nieuwe collega: roepnaam en achternaam',
+  ontvanger_voornaam: 'Voornaam van de contactpersoon bij de salarisadministratie',
+  beveiligde_link: 'De link naar de beveiligde map (Bitwarden Send)',
+  opmerking: 'Wat je er bij het versturen zelf bij zet',
 }
 
 export const MAIL_VOORWAARDEN: Record<string, string> = {
@@ -60,6 +68,7 @@ export const MAIL_VOORWAARDEN: Record<string, string> = {
   werk_email: 'Er is een werkadres (e-mail)',
   inlog_url: 'Het adres van het portaal is bekend',
   samenvatting: 'Er is een contract om samen te vatten',
+  opmerking: 'Je zet er bij het versturen zelf iets bij',
 }
 
 const GEGEVENS_ALINEA = `{{#als gegevenslink}}Voor de salarisadministratie hebben we nog een paar gegevens nodig: je adres, je IBAN, een kopie van je ID en het loonheffingsformulier. Die vul je in via deze persoonlijke link, zonder inloggen:
@@ -112,6 +121,26 @@ Fijn dat we getekend hebben. In de bijlage vind je je afschrift van de getekende
 
 ${GROET}`,
   },
+  mail_salarisadministratie: {
+    label: 'Naar de salarisadministratie',
+    uitleg: 'Een nieuwe collega doorgeven, met de link naar de beveiligde map. Verstuurd vanuit het portaal.',
+    onderwerp: 'Nieuwe collega: {{werknemer_naam}}{{#als startdatum}}, in dienst per {{startdatum}}{{/als}}',
+    tekst: `Beste {{ontvanger_voornaam}},
+
+{{#als startdatum}}Per {{startdatum}} komt{{/als}}{{#alsniet startdatum}}Binnenkort komt{{/alsniet}} {{werknemer_naam}} bij ons in dienst als {{functie}}. Hierbij de gegevens voor de salarisadministratie.
+
+{{#als samenvatting}}In het kort:
+{{samenvatting}}
+
+{{/als}}Het gegevensoverzicht, het getekende contract, het loonheffingsformulier en de kopie ID staan in een beveiligde map:
+{{beveiligde_link}}
+
+De link is beperkt geldig. Lukt het openen niet, laat het me dan weten.
+
+{{#als opmerking}}{{opmerking}}
+
+{{/als}}${GROET}`,
+  },
   mail_gegevens: {
     label: 'Gegevens opvragen',
     uitleg: 'Alleen de invullink, als het contract al onderweg is.',
@@ -152,6 +181,7 @@ function maak(sleutel: MailSleutel, c: MailContext, eigen?: MailTeksten): Mail {
     werk_email: !!c.werkEmail,
     inlog_url: !!c.inlogUrl,
     samenvatting: !!c.samenvatting,
+    opmerking: !!c.opmerking?.trim(),
   }
   const waarden: Record<string, string> = {
     roepnaam: c.roepnaam,
@@ -166,6 +196,10 @@ function maak(sleutel: MailSleutel, c: MailContext, eigen?: MailTeksten): Mail {
     werk_email: c.werkEmail ?? '',
     inlog_url: c.inlogUrl ?? '',
     samenvatting: c.samenvatting ?? '',
+    werknemer_naam: c.werknemerNaam ?? '',
+    ontvanger_voornaam: c.ontvangerVoornaam ?? '',
+    beveiligde_link: c.beveiligdeLink ?? '',
+    opmerking: c.opmerking?.trim() ?? '',
   }
   const vul = (bron: string) => vulIn(pasVoorwaardenToe(bron, geldt).tekst, waarden).tekst.replace(/\n{3,}/g, '\n\n').trim()
   return { aan: c.aan, onderwerp: vul(versie?.subject || standaard.onderwerp), tekst: vul(versie?.body || standaard.tekst) }
@@ -179,6 +213,11 @@ export function contractMail(c: MailContext, eigen?: MailTeksten): Mail {
 /** Na het tekenen: het afschrift van het getekende contract. */
 export function afschriftMail(c: MailContext, eigen?: MailTeksten): Mail {
   return maak('mail_afschrift', c, eigen)
+}
+
+/** Een nieuwe collega doorgeven aan de salarisadministratie. */
+export function salarisMail(c: MailContext, eigen?: MailTeksten): Mail {
+  return maak('mail_salarisadministratie', c, eigen)
 }
 
 /** Alleen de invullink, als het contract al onderweg is. */
