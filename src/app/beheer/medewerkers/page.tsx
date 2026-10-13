@@ -65,6 +65,10 @@ export default async function MedewerkersPage() {
                 <a href="/beheer/contracten" className="text-jr-link font-medium hover:underline">
                   Alle contracten
                 </a>
+                {' · '}
+                <a href="/api/medewerkers/export" className="text-jr-link font-medium hover:underline">
+                  Exporteer naar Excel
+                </a>
               </>
             )}
           </p>

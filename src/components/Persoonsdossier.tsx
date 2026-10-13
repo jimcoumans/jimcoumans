@@ -1,6 +1,7 @@
 import { ActionForm, Field, Select } from './ActionForm'
 import { BestandVeld } from './BestandVeld'
-import { dossierDocument, dossierDocumentWissen, dossierDoorgegeven, dossierGegevensOpslaan, dossierIban } from '@/app/beheer/aanname-actions'
+import { SalarisBlok, mapHref } from './SalarisBlok'
+import { dossierDocument, dossierDocumentWissen, dossierGegevensOpslaan, dossierIban } from '@/app/beheer/aanname-actions'
 import { dossierPunten, GESLACHTEN, type DocumentInfo, type DocumentSoort, type Gegevens } from '@/lib/persoonsgegevens'
 import { formatDate, formatDateInput, formatDateLong } from '@/lib/dates'
 import { sleutelProbleem } from '@/lib/versleuteling'
@@ -306,8 +307,13 @@ export function Persoonsdossier({
     <section id="dossier" className="scroll-mt-4 rounded-xl bg-white p-6 shadow-sm">
       <div className="mb-1 flex flex-wrap items-baseline justify-between gap-2">
         <h2 className="text-base">Persoonsgegevens en documenten</h2>
-        <span className={`tabular text-sm font-medium ${compleet ? 'text-[#1d7a36]' : 'text-gray-700'}`}>
-          {klaar} van {punten.length} compleet
+        <span className="flex flex-wrap items-baseline gap-3">
+          <span className={`tabular text-sm font-medium ${compleet ? 'text-[#1d7a36]' : 'text-gray-700'}`}>
+            {klaar} van {punten.length} compleet
+          </span>
+          <a href={mapHref(van, 'eigen')} className="text-jr-link text-xs font-medium hover:underline" title="Alles uit het dossier in één zip, voor de eigen administratie">
+            Dossier downloaden (zip)
+          </a>
         </span>
       </div>
       <p className="mb-3 text-xs text-gray-500">{uitleg ?? 'Alles voor het contract en de salarisadministratie. Versleuteld bewaard; wie een document opent, wordt vastgelegd.'}</p>
@@ -358,28 +364,7 @@ export function Persoonsdossier({
         </ul>
       </div>
 
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-gray-100 pt-4">
-        {r?.doorgegevenOp ? (
-          <>
-            <p className="text-sm text-[#1d7a36]">✓ Doorgegeven aan de salarisadministratie op {formatDateLong(r.doorgegevenOp)}.</p>
-            <ActionForm action={dossierDoorgegeven} submitLabel="Toch nog niet doorgegeven" submitClassName={KNOP_WEG} resetOnSuccess={false} meldGelukt={false} className="">
-              <Verborgen van={van} />
-              <input type="hidden" name="terug" value="1" />
-            </ActionForm>
-          </>
-        ) : (
-          <>
-            <p className="max-w-prose text-xs text-gray-600">
-              {gegevens && gegevens.ontbreekt.length === 0
-                ? 'Compleet genoeg voor de salarisadministratie. Stuur het door naar Euregio Habets Royen en leg het hier vast.'
-                : 'Doorgeven aan de salarisadministratie kan als naam, geboortedatum, adres, IBAN, kopie ID en loonheffingsformulier er zijn.'}
-            </p>
-            <ActionForm action={dossierDoorgegeven} submitLabel="Doorgegeven aan de salarisadministratie" submitClassName={KNOP_KLEIN} resetOnSuccess={false} className="">
-              <Verborgen van={van} />
-            </ActionForm>
-          </>
-        )}
-      </div>
+      <SalarisBlok van={van} doorgegevenOp={r?.doorgegevenOp ?? null} />
     </section>
   )
 }

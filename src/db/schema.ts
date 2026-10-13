@@ -2886,6 +2886,8 @@ export const employerSettings = pgTable(
      * contractsjabloon kan er met {{#als ...}} op reageren.
      */
     regelingen: text('regelingen').array().notNull().default(sql`'{}'::text[]`),
+    /** Wie bij de salarisadministratie de gegevens van nieuwe collega's krijgt: iemand uit Contacten. */
+    payrollContactId: uuid('payroll_contact_id').references(() => contacts.id, { onDelete: 'set null' }),
     updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [

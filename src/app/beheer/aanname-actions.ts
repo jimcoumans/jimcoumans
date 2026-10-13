@@ -14,6 +14,7 @@ import {
   markeerDoorgegeven,
   werkIbanBij,
   wisDocument,
+  markeerGemaild,
   werkNaamBij,
   GegevensError,
   DOCUMENT_LABELS,
@@ -21,6 +22,11 @@ import {
 } from '@/lib/persoonsgegevens'
 import { SleutelError } from '@/lib/versleuteling'
 import { getContract } from '@/lib/contracten'
+import { getPersoon, getSalarisContact, samenvattingVoorMail } from '@/lib/salarisadministratie'
+import { salarisMail } from '@/lib/mailsjablonen'
+import { getTekstOverrides } from '@/lib/sjablonen'
+import { getBedrijf } from '@/lib/bedrijf'
+import { verstuurMail } from '@/lib/mail'
 import type { ActionResult } from './actions'
 
 /* Aannemen, ondertekening en de persoonsgegevens van een collega. Alleen een
@@ -235,4 +241,53 @@ export async function dossierDoorgegeven(formData: FormData): Promise<ActionResu
   const v = vanUit(formData)
   if (!v) return ONBEKEND
   return inDossier(v, (id) => markeerDoorgegeven(id, gebruiker.id, tekst(formData, 'terug') !== '1'))
+}
+
+/* --- Naar de salarisadministratie ------------------------------------------ */
+
+/**
+ * De mail naar de salarisadministratie, met de link naar de beveiligde map
+ * (een Bitwarden Send met de zip uit het portaal). Vanaf work@, met een kopie
+ * aan wie verstuurt. Daarna staat het dossier op doorgegeven.
+ */
+export async function mailSalarisadministratie(formData: FormData): Promise<ActionResult> {
+  const gebruiker = await alsBeheerder()
+  if (!gebruiker) return GEEN_RECHT
+  const v = vanUit(formData)
+  if (!v) return ONBEKEND
+  const link = tekst(formData, 'link')
+  if (!/^https:\/\/\S+$/.test(link)) return { ok: false, error: 'Plak de link naar de beveiligde map (begint met https://).' }
+
+  const [persoon, contact, teksten, bedrijf] = await Promise.all([
+    getPersoon('userId' in v ? { userId: v.userId } : { kandidaatId: v.kandidaatId }),
+    getSalarisContact(),
+    getTekstOverrides(),
+    getBedrijf(),
+  ])
+  if (!persoon) return { ok: false, error: 'Deze persoon bestaat niet meer.' }
+  if (!contact?.email) return { ok: false, error: 'Stel eerst bij Bedrijfsgegevens in wie bij de salarisadministratie de mail krijgt.' }
+
+  const mail = salarisMail(
+    {
+      aan: contact.email,
+      roepnaam: persoon.roepnaam,
+      functie: persoon.contract?.jobTitle ?? '[functie]',
+      startdatum: persoon.contract?.startedOn ?? null,
+      afzender: gebruiker.name ?? 'James Robinson',
+      merk: bedrijf?.werkgever.tradeName ?? null,
+      samenvatting: samenvattingVoorMail(persoon.contract),
+      werknemerNaam: persoon.naam,
+      ontvangerVoornaam: contact.voornaam,
+      beveiligdeLink: link,
+      opmerking: tekst(formData, 'opmerking'),
+    },
+    teksten,
+  )
+  try {
+    await verstuurMail({ aan: contact.email, cc: gebruiker.email, antwoordAan: gebruiker.email, onderwerp: mail.onderwerp, tekst: mail.tekst })
+  } catch (fout) {
+    console.error('[salarisadministratie] mail niet verstuurd:', fout)
+    return { ok: false, error: fout instanceof Error ? fout.message : 'De mail kon niet worden verstuurd.' }
+  }
+  return inDossier(v, (id) => markeerGemaild(id, gebruiker.id, contact.email!))
 }

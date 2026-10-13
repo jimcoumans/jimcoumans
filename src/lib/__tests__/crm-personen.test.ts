@@ -1,11 +1,9 @@
 /**
  * Tests voor het overkoepelende CRM.
  *
- * Wat hier vastligt: een contactpersoon hoort bij een klant OF bij een
- * partner, nooit bij allebei en nooit bij geen van beide. Dat is geen
- * netheid maar noodzaak — een persoon die nergens bij hoort vind je nooit
- * meer terug, want elk overzicht komt via een klant of via een partner
- * binnen.
+ * Wat hier vastligt: een contactpersoon hoort bij een klant, bij een
+ * partner of nergens (een los contact in het adresboek), maar nooit bij
+ * allebei. Losse contacten staan in de lijst met het label Netwerk.
  *
  * En: een collega staat in dezelfde lijst als de marketingmanager van een
  * klant en de vaste drukker, maar wel met zijn eigen label.

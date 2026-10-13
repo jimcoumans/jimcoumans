@@ -432,6 +432,27 @@ export async function markeerDoorgegeven(recordId: string, userId: string, doorg
   }
 }
 
+/**
+ * Vastleggen dat de gegevens naar de salarisadministratie zijn gemaild.
+ * Ook als nog niet alles compleet is: de mail is weg, en dat moet in het
+ * dossier staan. Wat ontbreekt, blijft als punt open staan.
+ */
+export async function markeerGemaild(recordId: string, userId: string, aan: string): Promise<void> {
+  const [r] = await db
+    .update(personalRecords)
+    .set({ doorgegevenOp: new Date(), doorgegevenDoorUserId: userId, updatedAt: new Date() })
+    .where(eq(personalRecords.id, recordId))
+    .returning()
+  if (r?.candidateId) {
+    await db.insert(candidateNotes).values({
+      candidateId: r.candidateId,
+      kind: 'status',
+      body: `Gegevens gemaild naar de salarisadministratie (${aan}), met de link naar de beveiligde map.`,
+      createdByUserId: userId,
+    })
+  }
+}
+
 /* ------------------------------ De invullink ------------------------------ */
 
 export async function maakGegevenslink(recordId: string, opnieuw = false): Promise<string> {
