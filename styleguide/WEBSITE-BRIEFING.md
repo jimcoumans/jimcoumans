@@ -621,6 +621,15 @@ Een derde poging werd afgekeurd als "te weinig Apple". De oorzaak: alle emotie z
   - voetnoten met bronnen bovenaan de footer.
 - **Sportmetaforen in de woorden, niet in tekeningen.** "Jij bezit de arena. Wij spelen de wedstrijd." staat op een video van een padelbaan, niet op een getekend stadion.
 
+### Aanvulling: gradients, grain en een tikkeltje rebels
+De Apple-versie was beter, maar nog te braaf. De beeldtaal komt nu uit de eigen Momentum-visual en de energie uit sportmerken als Strava:
+- **Merkgradient met grain:** linksonder bijna zwart, via JR-blauw naar een lichte gloed rechtsonder, met zichtbare korrel. Varianten: nacht (donker met blauwe gloed), vuur (zwart met lime en blauw onderin), blauw en licht.
+- **Grain ook over fotografie.** Foto's krijgen dezelfde korrel en een blauwe duotoon-richting.
+- **Koppen met gewichtscontrast:** eerst vet, dan licht. "Momentum first." vet, "Mastery later." licht.
+- **Gestapeld woordmerk** (JAMES / ROBINSON) met het beeldmerk, en "Performance Marketing" verticaal langs de rand.
+- **Energie:** schuine tapes met de merkzinnen, een lime lint als momentumlijn en één 3D-object per pagina (de duim bij Likes don't pay the bills). Lime is de ene actiekleur op donker.
+- **Copy:** korter, harder, performance. "Een motor. Geen gok." "Een aanvraag wordt niet ouder. Wel kouder." "Eén prijslijst. Geen kleine lettertjes." Rebels in toon, nooit in feiten: geen claims zonder bron.
+
 ### Beeldregie
 Elk beeldvlak heeft een vaste beschrijving: wat erop moet, waar, welk licht en welk formaat. Samen vormen ze het draaiboek voor vier dagen:
 1. **Draaidag A:** avond op de padelbaan (hero-video, playground, thuiswedstrijden).

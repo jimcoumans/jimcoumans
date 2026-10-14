@@ -2,7 +2,7 @@
 <meta name="description" content="Ontwerp van de nieuwe jamesrobinson.nl, in de lijn van apple.com.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap">
 <style>
 /* ==========================================================================
    James Robinson · website · Apple-pass
@@ -643,6 +643,161 @@ a.vlak:hover{text-decoration:none;transform:scale(1.012)}
 .stats--klein .stat b{font-size:clamp(28px,3vw,40px)}
 .ck-badge{align-self:flex-start}
 @media (max-width:600px){.tel-2{display:none}}
+/* ==========================================================================
+   Grain-laag: de beeldtaal van de Momentum-visual
+   - merkgradient van nachtblauw naar JR-blauw naar een lichte gloed;
+   - grain over elke gradient en elk beeld;
+   - koppen met gewichtscontrast: eerst vet, dan licht;
+   - energie uit sport: tape, een lint, één 3D-object per pagina.
+   ========================================================================== */
+:root{
+  --lime:#C4F000; --lime-donker:#7C9A00; --lime-dm:#D9FF33;
+  --nacht:#040B17;
+  --korrel:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.62' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 1.4 -.2'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---------- Gradients met grain ---------- */
+.gr{position:relative;isolation:isolate;overflow:hidden;color:#fff}
+.gr::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background-image:var(--korrel);background-size:240px;opacity:.6;mix-blend-mode:overlay}
+.gr>*{position:relative;z-index:1}
+/* De visual: linksonder bijna zwart, via JR-blauw naar een lichte gloed rechtsonder */
+.gr--merk{background:
+  radial-gradient(70% 90% at 106% 104%,#EEF2FA 0%,#D5DFF3 14%,#B4C6EA 26%,rgba(120,156,214,.6) 42%,rgba(80,130,200,0) 64%),
+  radial-gradient(60% 70% at 92% 12%,rgba(64,140,210,.95) 0%,rgba(52,118,192,.5) 40%,transparent 70%),
+  linear-gradient(28deg,#020812 0%,#08182F 18%,#12305F 40%,#1E4E95 62%,#2F6DB5 82%,#3B80C6 100%)}
+.gr--nacht{background:
+  radial-gradient(70% 60% at 100% 110%,rgba(59,128,198,.9) 0%,rgba(30,78,149,.55) 35%,transparent 70%),
+  radial-gradient(50% 50% at 0% 0%,rgba(18,48,95,.8),transparent 70%),
+  linear-gradient(200deg,#0A1A33 0%,#040B17 55%,#020509 100%)}
+/* Strava-energie in JR-kleuren: zwart bovenin, gloed onderin */
+.gr--vuur{background:
+  radial-gradient(60% 55% at 100% 104%,rgba(196,240,0,.55) 0%,rgba(120,180,40,.25) 30%,transparent 60%),
+  radial-gradient(70% 60% at 10% 110%,rgba(0,122,255,.75) 0%,rgba(0,92,191,.35) 40%,transparent 72%),
+  linear-gradient(180deg,#000 0%,#02060D 45%,#05122A 100%)}
+.gr--licht{color:var(--ink);background:
+  radial-gradient(60% 70% at 100% 0%,#DCE5F5 0%,transparent 60%),
+  radial-gradient(60% 70% at 0% 100%,#E8EDF7 0%,transparent 60%),
+  linear-gradient(160deg,#F7F8FB 0%,#EEF2F8 100%)}
+.gr--licht::after{opacity:.5;mix-blend-mode:multiply;filter:contrast(.6) brightness(1.6)}
+.gr--blauw{background:
+  radial-gradient(60% 80% at 0% 100%,#0A2448 0%,transparent 70%),
+  radial-gradient(60% 70% at 100% 0%,#5A9BE0 0%,transparent 65%),
+  linear-gradient(135deg,#123A78 0%,#1F5BB0 50%,#2E74C4 100%)}
+
+/* Donkere secties krijgen de nachtgradient in plaats van vlak zwart */
+.s--donker,.s--zwart{background:var(--nacht)}
+
+/* ---------- Typografie: vet tegenover licht ---------- */
+.hx,.h1,.h2{font-weight:800;letter-spacing:-.04em}
+.hx .l,.h1 .l,.h2 .l,.h3 .l{font-weight:300;letter-spacing:-.03em}
+.hx{font-size:clamp(48px,8vw,128px);line-height:.98}
+.h1{font-size:clamp(40px,6vw,88px);line-height:1}
+.eyebrow{letter-spacing:-.005em}
+.eyebrow--caps{font:700 13px/1 var(--text);letter-spacing:.14em;text-transform:uppercase}
+
+/* ---------- Woordmerk en beeldmerk ---------- */
+.woordmerk{display:inline-block;font:800 13px/.92 var(--display);letter-spacing:.02em;text-transform:uppercase;color:#fff}
+.gn-merk{gap:10px}
+.gn-merk .bm{width:18px;height:20px}
+.bm{display:block}
+.bm path{fill:none;stroke:currentColor;stroke-width:5.4;stroke-linejoin:miter;stroke-miterlimit:3}
+
+/* ---------- Hero als poster ---------- */
+.poster-held{min-height:calc(100vh - 48px);min-height:calc(100svh - 48px);display:flex;flex-direction:column;justify-content:space-between;padding:56px 0 64px}
+.poster-held .wrap{width:100%;max-width:calc(1240px + var(--gutter)*2)}
+.ph-top{display:flex;justify-content:space-between;align-items:flex-start}
+.ph-top .woordmerk{font-size:clamp(18px,2vw,26px)}
+.ph-top .bm{width:clamp(44px,5vw,64px);height:auto;color:#fff}
+.ph-zij{position:absolute;right:max(20px,calc((100vw - 1240px)/2 - 8px));bottom:64px;writing-mode:vertical-rl;transform:rotate(180deg);font:300 clamp(16px,1.6vw,22px)/1 var(--display);letter-spacing:.01em;color:rgba(255,255,255,.9);z-index:2}
+.ph-kop{font:800 clamp(52px,9.4vw,148px)/.94 var(--display);letter-spacing:-.045em;margin-top:24px}
+.ph-kop .l{display:block;font-weight:300;letter-spacing:-.035em}
+.ph-onder{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:32px 64px;align-items:end;margin-top:36px;padding-right:56px}
+.ph-onder p{font:400 clamp(18px,1.6vw,22px)/1.4 var(--display);color:rgba(255,255,255,.82);max-width:560px}
+.ph-h1{font:600 14px/1.3 var(--text);color:rgba(255,255,255,.75);letter-spacing:0}
+@media (max-width:734px){.poster-held{padding:32px 0 48px}.ph-onder{grid-template-columns:1fr;padding-right:28px}.ph-zij{bottom:48px;right:14px}}
+
+/* ---------- Knoppen: lime als de ene actie op donker ---------- */
+.knop--lime{background:var(--lime);color:#111;font-weight:600}
+.knop--lime:hover{background:#D4FF1A;color:#000}
+.gr .knop--rand,.s--donker .knop--rand{color:#fff;border-color:rgba(255,255,255,.7)}
+
+/* ---------- Tape (zoals de Strava-band) ---------- */
+.tapes{position:relative;height:150px;margin:-75px 0;z-index:5;pointer-events:none;overflow:hidden}
+.tape{position:absolute;left:-10%;width:120%;height:46px;display:flex;align-items:center;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.tape--lime{top:30px;background:var(--lime);color:#0B0B0B;transform:rotate(-3.2deg)}
+.tape--nacht{top:70px;background:#0A1A33;color:var(--lime);transform:rotate(2.4deg)}
+.tape-rij{display:flex;flex:none;align-items:center;gap:22px;padding-right:22px;white-space:nowrap;font:800 17px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;animation:tape 38s linear infinite}
+.tape--nacht .tape-rij{animation-direction:reverse;animation-duration:46s}
+.tape-rij .bm{width:16px;height:18px}
+@keyframes tape{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media (max-width:734px){.tapes{height:110px;margin:-55px 0}.tape{height:38px}.tape--lime{top:20px}.tape--nacht{top:52px}.tape-rij{font-size:14px}}
+
+/* ---------- Lint (momentum) ---------- */
+.lint{position:absolute;inset:0;z-index:0!important;pointer-events:none}
+.lint svg{width:100%;height:100%}
+.lint .onder{stroke:#5E7600}
+.lint .boven{stroke:url(#lintg)}
+.lint path{fill:none;stroke-linecap:round;stroke-linejoin:round}
+.lint .teken{stroke-dasharray:4200;stroke-dashoffset:4200;transition:stroke-dashoffset 2.6s cubic-bezier(.3,.1,.2,1)}
+.in .lint .teken,.lint.in .teken{stroke-dashoffset:0}
+
+/* ---------- 3D-object ---------- */
+.object3d{width:min(360px,70vw);height:auto;filter:drop-shadow(0 30px 40px rgba(0,0,0,.45))}
+.object3d .schaduw path{stroke:#5B7300}
+.object3d .voor path{stroke:var(--lime)}
+.object3d path{fill:none;stroke-width:14;stroke-linejoin:round;stroke-linecap:round}
+
+/* ---------- Beelden: blauwe duotoon met grain ---------- */
+.beeld::after{opacity:.42;mix-blend-mode:overlay;background-image:var(--korrel);background-size:220px}
+.beeld[data-t=avond]{--licht:conic-gradient(from 148deg at 12% -8%,transparent 0deg,rgba(255,255,255,.12) 6deg,rgba(255,255,255,.02) 14deg,transparent 20deg),conic-gradient(from 192deg at 88% -8%,transparent 0deg,rgba(220,236,255,.1) 6deg,rgba(255,255,255,.02) 14deg,transparent 20deg),radial-gradient(28% 22% at 12% -2%,rgba(255,255,255,.75),transparent 70%),radial-gradient(28% 22% at 88% -2%,rgba(220,236,255,.65),transparent 70%),radial-gradient(90% 55% at 50% 118%,rgba(59,128,198,.75),transparent 70%),linear-gradient(180deg,#0B1A33 0%,#06101F 55%,#020812 100%)}
+.beeld[data-t=kantoor],.beeld[data-t=warm]{--licht:radial-gradient(45% 55% at 72% 38%,rgba(201,214,240,.55),transparent 65%),radial-gradient(45% 55% at 22% 75%,rgba(30,78,149,.7),transparent 70%),radial-gradient(30% 30% at 60% 20%,rgba(238,242,250,.4),transparent 70%),linear-gradient(160deg,#12305F 0%,#08182F 60%,#020812 100%)}
+.beeld[data-t=studio]{--licht:radial-gradient(38% 34% at 50% 34%,rgba(220,232,250,.3),transparent 70%),radial-gradient(60% 40% at 50% 112%,rgba(59,128,198,.6),transparent 70%),linear-gradient(180deg,#0E1C33 0%,#060D18 100%)}
+.beeld[data-t=daglicht]{background:#DCE5F5;--licht:radial-gradient(60% 60% at 80% 15%,#fff,transparent 65%),radial-gradient(55% 55% at 10% 90%,rgba(59,128,198,.45),transparent 70%),linear-gradient(170deg,#EEF2FA 0%,#C9D6F0 100%)}
+.beeld[data-t=merk]{--wazig:0px;--licht:radial-gradient(55% 75% at 104% 108%,#EEF2FA 0%,#C9D6F0 16%,rgba(140,170,220,.55) 34%,transparent 58%),radial-gradient(60% 70% at 92% 12%,rgba(64,140,210,.95),transparent 70%),linear-gradient(28deg,#020812 0%,#12305F 40%,#2F6DB5 82%,#3B80C6 100%)}
+.beeld[data-t=veld]{--licht:radial-gradient(70% 45% at 50% 0%,rgba(255,255,255,.4),transparent 65%),radial-gradient(80% 50% at 50% 100%,rgba(196,240,0,.22),transparent 70%),linear-gradient(180deg,#0B1A33 0%,#020812 100%)}
+
+/* Tegels en kaarten op donker */
+.tegel--donker,.tegel--zwart{background:#0B1628!important}
+.s--donker .vlak{background:#0F1E36}
+.s--wit .tegel:not(.tegel--donker):not(.tegel--zwart):not(.op-beeld){background:var(--grijs)}
+
+
+/* Verloop-tekst in de merkkleuren */
+.verloop{background:linear-gradient(120deg,#12305F 0%,#1E4E95 35%,#3B80C6 75%,#8FB4E6 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.s--donker .verloop,.s--zwart .verloop,.gr .verloop{background:linear-gradient(120deg,#C9D6F0 0%,#7FAEE6 45%,#3B80C6 100%);-webkit-background-clip:text;background-clip:text}
+.verloop-lime{background:linear-gradient(120deg,#EAFF8A 0%,#C4F000 50%,#8DB300 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* Manifest: woorden lichten op tijdens het scrollen */
+.manifest{font:700 clamp(30px,4.4vw,64px)/1.12 var(--display);letter-spacing:-.035em;max-width:1100px}
+.manifest span{color:rgba(255,255,255,.16);transition:color .4s var(--ease)}
+.manifest span.aan{color:#fff}
+.manifest span.lime.aan{color:var(--lime)}
+
+/* Lime-badge en zijlabel in secties */
+.zijlabel{position:absolute;right:max(14px,calc((100vw - 1240px)/2 - 8px));top:var(--sy);writing-mode:vertical-rl;transform:rotate(180deg);font:300 15px/1 var(--display);color:currentColor;opacity:.55}
+@media (max-width:900px){.zijlabel{display:none}}
+.chip{display:inline-flex;align-items:center;gap:8px;font:700 12px/1 var(--text);letter-spacing:.12em;text-transform:uppercase;padding:8px 12px;border-radius:var(--r-pil);background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.18)}
+.chip i{width:7px;height:7px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 4px rgba(196,240,0,.2)}
+.s--wit .chip,.s--grijs .chip{background:var(--ink);border-color:var(--ink)}
+
+/* Footer en navigatie in merkkleuren */
+.gn{background:rgba(4,11,23,.78)}
+.mm{background:rgba(4,11,23,.96)}
+@media (max-width:900px){.gn-vol{background:var(--nacht)}}
+.chat-knop{background:var(--lime);color:#111}
+.chat-knop i{border-color:var(--lime)}
+.chat-kop{background:var(--nacht)}
+.rh-uit{background:var(--nacht)}
+.ck-blok--donker{background:var(--nacht)}
+.vgl .spelers i{background:var(--blauw)}
+.speler .badge{background:var(--lime)}
+.hx .l,.h1 .l{display:block}
+.ph-zij{bottom:150px}
+.slot-in .hx{max-width:900px}
+@media (max-width:734px){.lint svg{transform:scale(1.6) translateX(-12%)}.ph-zij{bottom:120px}}
+.h1 .l{margin-top:.02em}
+@media (max-width:734px){.ph-kop{font-size:44px}}
+.poster-held{padding-bottom:112px}@media (max-width:734px){.poster-held{padding-bottom:88px}}
 
 </style>
 <script>
@@ -1000,120 +1155,149 @@ function vergelijking(link){
 }
 
 /* ==========================================================================
-   Homepage: een verhaal in hoofdstukken. Eén gedachte per scherm.
+   Merkelementen: beeldmerk, woordmerk, tape, lint en het 3D-object
+   ========================================================================== */
+/* Beeldmerk, nagetekend uit de Momentum-visual. Vervang door de officiële SVG. */
+function bm(cls){return '<svg class="bm '+(cls||'')+'" viewBox="0 0 64 72" aria-hidden="true"><path d="M10.6 32V9.2H54.8C54.8 19 52 26.5 46.5 31.5"/><path d="M8 31.5H53.6V41C53.6 56 44 66.6 33 66.6C22 66.6 12.6 57 10.4 47.4L33 41.6"/><path d="M33 31.5V66.6"/></svg>'}
+function woordmerk(){return '<span class="woordmerk">James<br>Robinson</span>'}
+
+/* Tape: twee banden die schuin over de naad tussen twee secties lopen */
+var TAPE=['Momentum first','Mastery later','Numbers don\'t lie','Likes don\'t pay the bills','Data beats opinion','Resultaat staat op één'];
+function tapeRij(woorden){var r=woorden.map(function(w){return '<span>'+w+'</span>'+bm()}).join('');return '<div class="tape-rij">'+r+r+r+'</div><div class="tape-rij" aria-hidden="true">'+r+r+r+'</div>'}
+function tapes(a,b){return '<div class="tapes" aria-hidden="true"><div class="tape tape--nacht">'+tapeRij(b||TAPE.slice(2).concat(TAPE.slice(0,2)))+'</div><div class="tape tape--lime">'+tapeRij(a||TAPE)+'</div></div>'}
+
+/* Lint: een dikke lus, als een groeicurve die even omkeert en dan doorschiet */
+function lint(){
+  var d='M-80 690 C 320 700, 720 650, 920 500 S 1060 170, 1190 200 S 1320 440, 1170 480 S 990 340, 1170 250 S 1400 150, 1560 70';
+  return '<div class="lint" aria-hidden="true"><svg viewBox="0 0 1440 700" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="lintg" x1="0" x2="1" y1="1" y2="0"><stop offset="0" stop-color="#9DC000"/><stop offset=".45" stop-color="#C4F000"/><stop offset="1" stop-color="#E6FF6A"/></linearGradient></defs>'
+    +'<path class="onder teken" d="'+d+'" stroke-width="120" transform="translate(10 16)"/><path class="boven teken" d="'+d+'" stroke-width="112"/></svg></div>';
+}
+
+/* 3D-object: een duim omhoog, uitgezet in lagen zoals de Strava-like */
+function duim3d(){
+  var d='M66 104 L96 40 C100 30 112 28 118 36 C122 42 122 50 120 56 L112 86 H160 C172 86 180 96 176 108 L162 160 C159 170 152 176 142 176 H66 Z M24 100 H52 V178 H24 Z';
+  var lagen='';for(var i=12;i>0;i--)lagen+='<path d="'+d+'" transform="translate('+(i*1.4)+' '+(i*1.6)+')"/>';
+  return '<svg class="object3d" viewBox="0 0 220 220" aria-hidden="true" style="transform:rotate(-14deg)"><g class="schaduw">'+lagen+'</g><g class="voor"><path d="'+d+'"/></g></svg>';
+}
+
+/* Kop met gewichtscontrast: "Vet deel." "Licht deel." */
+function vl(cls,vet,licht,tag){tag=tag||'h2';return '<'+tag+' class="'+cls+'">'+vet+(licht?' <span class="l">'+licht+'</span>':'')+'</'+tag+'>'}
+
+/* ==========================================================================
+   Homepage: poster, manifest, en dan het systeem in korte klappen.
+   Toon: performance, direct, een tikkeltje rebels. Feiten, geen beloftes.
    ========================================================================== */
 var PAGINA={};
 
 PAGINA.home=function(){
   var h='';
 
-  /* 1. Hero: video over de volle breedte */
-  h+='<section class="held s--zwart" aria-labelledby="h-held">'+beeld('held','avond','',{capLinks:1})+'<div class="verdonker" aria-hidden="true"></div>'
-    +'<div class="held-in"><h1 class="eyebrow rv">Marketingbureau in Zuid-Limburg</h1>'
-    +'<p class="hx hx--held rv rv-2" id="h-held"><span>Jij bezit de arena.</span> <span>Wij spelen de wedstrijd.</span></p>'
-    +'<div class="knoppen rv rv-3"><a class="knop knop--licht" href="#/past-het">Start de check</a><a class="knop knop--rand" href="#/werkwijze">Zo werkt het</a></div></div></section>';
+  /* 1. Poster: de Momentum-visual als hero */
+  h+='<section class="gr gr--merk poster-held" aria-labelledby="h-held">'
+    +'<div class="wrap ph-top rv"><h1 class="ph-h1">Performance-marketingbureau<br>in Zuid-Limburg</h1>'+bm()+'</div>'
+    +'<div class="wrap"><p class="ph-kop rv rv-2" id="h-held">Momentum first.<span class="l">Mastery later.</span></p>'
+    +'<div class="ph-onder rv rv-3"><p>We zetten je marketing vandaag aan en maken hem elke maand scherper. Meer aanvragen, lagere kosten per aanvraag. En jij ziet elk cijfer.</p>'
+    +'<div class="knoppen" style="margin-top:0"><a class="knop knop--lime knop--groot" href="#/past-het">Start de check</a><a class="knop knop--rand knop--groot" href="#/werkwijze">Zo werkt het</a></div></div></div>'
+    +'<span class="ph-zij" aria-hidden="true">Performance Marketing</span></section>';
+  h+=tapes();
 
-  /* 2. Wat we doen, in vier woorden */
+  /* 2. Manifest */
+  var man='Marketing zonder cijfers is hoop. Een mooie post. Een nieuwe huisstijl. Duimen. Wij doen het andersom. |Aanzetten. Meten. Bijsturen.| Elke maand opnieuw. Tot het werkt, of tot we zelf zeggen dat het niet werkt.';
+  h+='<section class="s s--zwart" style="padding-top:calc(var(--sy) + 40px)"><div class="wrap"><span class="chip rv" style="margin-bottom:36px"><i></i>Ons standpunt</span>'
+    +'<p class="manifest" data-oplicht>'+man.split('|').map(function(deel,i){return deel.split(' ').filter(Boolean).map(function(w){return '<span'+(i===1?' class="lime"':'')+'>'+w+'</span>'}).join(' ')}).join(' ')+'</p></div></section>';
+
+  /* 3. Wat we doen */
   h+='<section class="s s--wit mid"><div class="wrap">'
-    +'<h2 class="h1 rv">Nieuwe klanten.<br><span class="verloop">Voorspelbaar.</span></h2>'
-    +'<p class="lead rv rv-2">Via advertenties in Google en op social media. Je ziet elke aanvraag binnenkomen, en wat hij kost.</p>'
-    +'<div class="links rv rv-3"><a class="ln-k" href="#/werkwijze">Bekijk hoe het werkt</a><a class="ln-k" href="#/prijzen">Bekijk de prijzen</a></div>'
+    +vl('h1 rv','Meer klanten.','Minder giswerk.')
+    +'<p class="lead rv rv-2">Advertenties in Google en op social media, content die opvalt en een pagina die converteert. Alles met één doel: meer klanten voor jou.</p>'
     +'<nav class="rij rv rv-3" aria-label="Diensten">'
-    +[['zoek','Google Ads','#/diensten/google-ads'],['social','Social advertising','#/diensten/social-advertising'],['camera','Foto en video','#/diensten/videografie'],['pagina','Landings&shy;pagina\'s','#/diensten/conversie-optimalisatie'],['mail','E-mail','#/diensten/e-mailmarketing'],['groei','SEO','#/diensten/seo'],['bord','Het portaal','#/portaal'],['alles','Alle diensten','#/diensten']]
+    +[['zoek','Google Ads','#/diensten/google-ads'],['social','Social advertising','#/diensten/social-advertising'],['camera','Foto en video','#/diensten/videografie'],['pagina','Landings&shy;pagina\'s','#/diensten/conversie-optimalisatie'],['mail','E-mail','#/diensten/e-mailmarketing'],['groei','SEO','#/diensten/seo'],['bord','Het scorebord','#/portaal'],['alles','Alle diensten','#/diensten']]
       .map(function(d){return '<a href="'+d[2]+'">'+ic(d[0])+'<span>'+d[1]+'</span></a>'}).join('')+'</nav>'
     +'</div></section>';
 
-  /* 3. Het systeem: vier tegels */
-  h+='<section class="s s--grijs"><div class="wrap"><div class="mid"><span class="eyebrow rv">Het systeem</span><h2 class="h1 rv">Een motor. Geen gok.</h2>'
-    +'<p class="lead rv rv-2">Gokken doe je in het casino. Wij bouwen één systeem dat elke maand meetbaar is, en elke volgende klant goedkoper maakt.</p></div>'
+  /* 4. Het systeem */
+  h+='<section class="s gr gr--licht"><span class="zijlabel" aria-hidden="true">Het systeem</span><div class="wrap"><div class="mid">'
+    +vl('h1 rv','Een motor.','Geen gok.')
+    +'<p class="lead rv rv-2">Gokken doe je in het casino. Wij bouwen één systeem dat elke maand meetbaar is en elke volgende klant goedkoper maakt.</p></div>'
     +'<div class="bento">'
-    +'<article class="tegel tegel--donker b-3 rv"><span class="eyebrow eyebrow--blauw">De motor</span><h3>Adverteren.</h3><p class="grijs">Google en Meta. Het enige wat je vandaag aanzet en morgen meet.</p><div class="tegel-voet">'+tel(SCHERM.google(),'tel--half')+'</div></article>'
-    +'<article class="tegel op-beeld b-3 rv rv-2">'+beeld('draaidag','warm')+'<span class="eyebrow">De brandstof</span><h3>Content.</h3><p class="grijs">Een draaidag op locatie. Foto en video in 9:16, 4:5 en 1:1.</p></article>'
-    +'<article class="tegel b-3 rv"><span class="eyebrow eyebrow--blauw">De landing</span><h3>Eén pagina per campagne.</h3><p class="grijs">Eén boodschap. Eén actie. Op je eigen website.</p><div class="tegel-voet">'+tel(SCHERM.landing(),'tel--half')+'</div></article>'
-    +'<article class="tegel tegel--zwart b-3 rv rv-2"><span class="eyebrow eyebrow--blauw">De voordeur</span><h3>Een aanvraag.</h3><p class="grijs">Daar stopt ons werk. Daarna ben jij aan zet.</p><div class="tegel-voet">'+tel(SCHERM.slot(),'tel--half tel--donker')+'</div></article>'
+    +'<article class="tegel tegel--donker b-3 rv"><span class="eyebrow eyebrow--blauw">De motor</span><h3>Adverteren.</h3><p class="grijs">Vandaag aan. Morgen gemeten. Google en Meta voorop.</p><div class="tegel-voet">'+tel(SCHERM.google(),'tel--half')+'</div></article>'
+    +'<article class="tegel op-beeld b-3 rv rv-2">'+beeld('draaidag','kantoor')+'<span class="eyebrow">De brandstof</span><h3>Content.</h3><p class="grijs">Brandstof, geen decoratie. Een draaidag op locatie, in 9:16, 4:5 en 1:1.</p></article>'
+    +'<article class="tegel b-3 rv" style="background:#fff"><span class="eyebrow eyebrow--blauw">De landing</span><h3>Eén pagina. Eén doel.</h3><p class="grijs">Per campagne een pagina met één boodschap en één knop. Op je eigen website.</p><div class="tegel-voet">'+tel(SCHERM.landing(),'tel--half')+'</div></article>'
+    +'<article class="tegel gr gr--blauw b-3 rv rv-2"><span class="eyebrow" style="color:#fff">De voordeur</span><h3>Een aanvraag.</h3><p class="grijs" style="color:rgba(255,255,255,.8)">Hier stopt ons werk. Hier begint het jouwe.</p><div class="tegel-voet">'+tel(SCHERM.slot(),'tel--half tel--donker')+'</div></article>'
     +'</div>'
-    +'<p class="mid grijs rv" style="margin-top:40px">Draait de motor, dan maken vier versnellers elke volgende klant goedkoper: conversie, e-mail, SEO en betere landingspagina\'s. <a class="ln-k" href="#/werkwijze">Bekijk de werkwijze</a></p>'
+    +'<p class="mid grijs rv" style="margin-top:40px">Draait de motor, dan schakelen we de versnellers bij: conversie, e-mail, SEO en betere landingspagina\'s. <a class="ln-k" href="#/werkwijze">Bekijk de werkwijze</a></p>'
     +'</div></section>';
 
-  /* 4. Applaus is geen doelpunt (opbouw zoals "Power coupled") */
-  h+='<section class="s s--wit"><div class="wrap"><div class="split"><div>'
-    +'<svg class="icoon-groot rv" viewBox="0 0 120 72" aria-hidden="true"><defs><linearGradient id="hartg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#E8E8ED"/><stop offset="1" stop-color="#ADADB2"/></linearGradient></defs><path d="M36 64S6 46 6 24A15 15 0 0 1 36 15a15 15 0 0 1 30 9c0 22-30 40-30 40z" fill="url(#hartg)" stroke="#86868B" stroke-width="1.5"/></svg>'
-    +'<h2 class="h1 rv">Applaus is geen doelpunt.</h2>'
-    +'<div class="tekst rv rv-2"><p>Een bericht op Facebook of Instagram bereikt gemiddeld <b>1 tot 3% van je eigen volgers</b>. Die kenden je al. Een advertentie bereikt <b>wie jij kiest</b>, ook wie je nog niet kent.</p><p>Een verzorgd profiel hoort erbij. Nieuwe klanten komen ergens anders vandaan. Likes don\'t pay the bills.</p></div>'
-    +'<div class="links rv rv-3"><a class="ln-k" href="#/kennis">Lees waarom we niet posten voor klanten</a></div></div>'
-    +'<div class="stats">'+stat('Gemiddeld bereik','1 tot 3%','van je volgers ziet een bericht op Facebook of Instagram.',1)+stat('Bij kleine pagina\'s','4 tot 7%','Nog steeds mensen die je al kenden.',1)+'</div>'
+  /* 5. Likes don't pay the bills */
+  h+='<section class="s gr gr--vuur" style="padding:calc(var(--sy)*1.1) 0"><div class="wrap"><div class="split" style="align-items:center">'
+    +'<div><span class="chip rv" style="margin-bottom:28px"><i></i>Organisch bereik</span>'+vl('h1 rv','Likes don\'t','pay the bills.')
+    +'<div class="tekst rv rv-2" style="font-size:clamp(18px,1.6vw,21px)"><p style="color:rgba(255,255,255,.75)">Een bericht bereikt gemiddeld 1 tot 3% van je eigen volgers.<sup class="vn"><a href="#noten">1</a></sup> Die kenden je al. Wij steken je budget in mensen die je nog niet kennen, en die vandaag zoeken wat jij verkoopt.</p></div>'
+    +'<div class="stats stats--rij rv rv-3" style="grid-template-columns:1fr 1fr;margin-top:44px">'+stat('Gemiddeld bereik','1–3%','van je volgers ziet een bericht.',1)+stat('Kleine pagina\'s','4–7%','Nog steeds mensen die je al kenden.',1)+'</div></div>'
+    +'<div class="mid rv rv-2">'+duim3d()+'</div></div></div></section>';
+
+  /* 6. De voorzet */
+  h+='<section class="s--zwart"><div class="held" style="min-height:min(84vh,780px);text-align:left;justify-content:flex-start">'+beeld('voorzet','kantoor')+'<div class="verdonker" aria-hidden="true"></div>'
+    +'<div class="held-in" style="max-width:none;width:100%;max-width:calc(1240px + var(--gutter)*2);margin:0 auto"><span class="chip rv" style="margin-bottom:24px"><i></i>Tot aan de voordeur</span>'+vl('h1 rv rv-2','Een aanvraag wordt niet ouder.','Wel kouder.')+'</div></div>'
+    +'<div class="s" style="padding-top:72px"><div class="wrap"><div class="split"><p class="lead rv" style="margin:0;color:rgba(255,255,255,.75)">Wij leveren de voorzet. <b>Jij kopt hem in.</b> Daarom spreken we vooraf af hoe snel je belt, en meten we het. Elke aanvraag, elke maand.</p>'
+    +'<div class="stats rv rv-2">'+stat('Binnen een uur gebeld','Bijna 7×','zo vaak een serieus gesprek als een uur later.',2)+stat('Nooit teruggebeld','23%','van de bedrijven belde een aanvraag nooit terug.',2)+'</div></div></div></div></section>';
+
+  /* 7. Het scorebord */
+  h+='<section class="s gr gr--licht" style="overflow:hidden"><div class="wrap mid"><span class="eyebrow rv">Het scorebord</span>'+vl('h1 rv','Geen rapport.','Een scorebord.')
+    +'<p class="lead rv rv-2">Elk uur bijgewerkt. Dezelfde cijfers als wij. Niets weggepoetst.</p></div>'
+    +'<div class="wrap wrap--breed" style="margin-top:64px"><div class="rv">'+laptop()+'</div><p class="mid voorbeeld-label">Voorbeeldcijfers. In het echt staan hier die van jou.</p></div>'
+    +'<div class="wrap"><div class="kenmerken">'
+    +'<div class="kenmerk rv">'+ic('klok')+'<p><b>Elk uur vers.</b> Google, Meta, LinkedIn, TikTok, je website en Search Console op één scherm.</p></div>'
+    +'<div class="kenmerk rv rv-2">'+ic('duim')+'<p><b>Jij beoordeelt.</b> Per aanvraag zeg jij of het een goede was. De campagne leert ervan.</p></div>'
+    +'<div class="kenmerk rv rv-3">'+ic('sleutel')+'<p><b>Alles op jouw naam.</b> Accounts, data en budget. Stop je, dan neem je alles mee.</p></div>'
     +'</div></div></section>';
 
-  /* 5. De voorzet: beeld over de volle breedte, daarna drie feiten */
-  h+='<section class="s--zwart"><div class="held" style="min-height:min(84vh,780px)">'+beeld('voorzet','warm')+'<div class="verdonker" aria-hidden="true"></div>'
-    +'<div class="held-in"><span class="eyebrow rv">Tot aan de voordeur</span><h2 class="hx hx--held rv rv-2"><span>Wij leveren de voorzet.</span> <span>Jij kopt hem in.</span></h2></div></div>'
-    +'<div class="s" style="padding-top:72px"><div class="wrap"><p class="lead rv" style="margin:0 auto 72px;text-align:center">Ons werk stopt bij een aanvraag die klaar is om te kopen. Wat daarna gebeurt, maakt het verschil. Daarom spreken we vooraf af hoe snel je belt, en meten we het.</p>'
-    +'<div class="stats stats--rij mid">'+stat('Binnen een uur gebeld','Bijna 7×','zo vaak een serieus gesprek als een uur later.',2)+stat('Gemiddelde reactietijd','42 uur','bij de bedrijven in hetzelfde onderzoek.',2)+stat('Nooit gereageerd','23%','van de bedrijven belde een aanvraag nooit terug.',2)+'</div></div></div></section>';
-
-  /* 6. Het scorebord: productbeeld */
-  h+='<section class="s s--grijs" style="overflow:hidden"><div class="wrap mid"><span class="eyebrow rv">Het scorebord</span><h2 class="h1 rv">Je ziet wat wij zien.</h2>'
-    +'<p class="lead rv rv-2">Eén portaal met alle cijfers, elk uur bijgewerkt. Geen rapport van een maand oud.</p></div>'
-    +'<div class="wrap wrap--breed" style="margin-top:64px"><div class="rv" data-teken>'+laptop()+'</div><p class="mid voorbeeld-label">Voorbeeldcijfers. In het echt staan hier die van jou.</p></div>'
-    +'<div class="wrap"><div class="kenmerken">'
-    +'<div class="kenmerk rv">'+ic('klok')+'<p><b>Elk uur bijgewerkt.</b> Google, Meta, LinkedIn, TikTok, je website en Search Console op één scherm.</p></div>'
-    +'<div class="kenmerk rv rv-2">'+ic('duim')+'<p><b>Per aanvraag een oordeel.</b> Jij zegt of het een goede was. De campagne leert ervan.</p></div>'
-    +'<div class="kenmerk rv rv-3">'+ic('sleutel')+'<p><b>Alles op jouw naam.</b> Accounts, data en budget. Stop je, dan neem je alles mee.</p></div>'
-    +'</div><div class="links mid" style="margin-top:48px"><a class="ln-k" href="#/portaal">Bekijk het scorebord</a></div></div></section>';
-
-  /* 7. Eén verhaal, op elk scherm: carrousel */
-  var verhaal=[
-    ['google','#F5F5F7','Zoekadvertentie.','Bovenaan, op het moment dat iemand zoekt.'],
-    ['insta','#E2EBF3','Social advertentie.','In beeld voordat iemand zoekt. Met jouw eigen beeld.'],
-    ['landing','#F5F5F7','Landingspagina.','Eén boodschap, één knop. Op je eigen website.'],
-    ['mail','#E2EBF3','Bevestiging.','Binnen een minuut in de inbox, in jouw toon.'],
-    ['portaal','#F5F5F7','Het scorebord.','Jij ziet de aanvraag binnenkomen, en wat hij kostte.']
-  ];
-  h+='<section class="s s--wit"><div class="wrap"><div class="rail-kop"><h2 class="h1 rv">Eén verhaal.<br>Op elk scherm.</h2></div></div>'
-    +rail('rail-verhaal',verhaal.map(function(v){return '<figure class="kaart"><div class="media scherm" style="background:'+v[1]+'">'+tel(SCHERM[v[0]](),'tel--half')+'</div><figcaption><b>'+v[2]+'</b> '+v[3]+'</figcaption></figure>'}),'rail--smal')
+  /* 8. Eén boodschap, op elk scherm */
+  var verhaal=[['google','Zoekadvertentie.','Bovenaan, op het moment dat iemand zoekt.'],['insta','Social advertentie.','In beeld voordat iemand zoekt.'],['landing','Landingspagina.','Eén boodschap, één knop.'],['mail','Bevestiging.','Binnen een minuut in de inbox.'],['portaal','Het scorebord.','Jij ziet hem binnenkomen, en wat hij kostte.']];
+  h+='<section class="s s--wit"><div class="wrap">'+vl('h1 rv','Eén boodschap.','Op elk scherm.')+'</div>'
+    +rail('rail-verhaal',verhaal.map(function(v,i){return '<figure class="kaart"><div class="media scherm gr '+(i%2?'gr--blauw':'gr--merk')+'">'+tel(SCHERM[v[0]](),'tel--half')+'</div><figcaption><b>'+v[1]+'</b> '+v[2]+'</figcaption></figure>'}),'rail--smal')
     +'<div class="wrap"><p class="mini" style="margin-top:8px">Voorbeeld B.V. is een voorbeeld.</p></div></section>';
 
-  /* 8. De opstellingen: vergelijking */
-  h+='<section class="s s--wit s--naad"><div class="wrap"><div class="paneel"><div class="mid"><span class="eyebrow rv">De opstellingen</span><h2 class="h1 rv">Kies je opstelling.</h2><p class="lead rv rv-2">Vier pakketten. Eén prijslijst, voor iedereen gelijk. Geen uurtarief en geen meerwerk.</p></div>'
+  /* 9. Prijzen */
+  h+='<section class="s s--wit s--naad"><div class="wrap"><div class="paneel"><div class="mid"><span class="eyebrow rv">De opstellingen</span>'+vl('h1 rv','Eén prijslijst.','Geen kleine lettertjes.')
+    +'<p class="lead rv rv-2">Geen uurtje-factuurtje. Geen meerwerk. Geen korting voor wie het hardst onderhandelt.</p></div>'
     +'<div style="margin-top:64px" class="rv">'+vergelijking(false)+'</div>'
     +'<p class="mid klein grijs" style="margin-top:56px">Eenmalig: het fundament van € 4.500. Daarin zetten we alles neer en maken we je eerste campagne.<br>Maandelijks opzegbaar. Alle bedragen exclusief btw.</p>'
     +'<div class="links mid"><a class="ln-k" href="#/prijzen">Bekijk alle prijzen</a><a class="ln-k" href="#/prijzen/rekenhulp">Reken uit wat je nodig hebt</a></div></div></div></section>';
 
-  /* 9. De selectie */
+  /* 10. De selectie */
   var spelers=['jim-coumans','jim-kikken','robin-jacobs','speler-07','speler-10','speler-11','speler-14','speler-23'];
-  h+='<section class="s s--donker"><div class="wrap"><div class="rail-kop"><div><span class="eyebrow rv">De selectie</span><h2 class="h1 rv">Een selectie.<br>Geen bureau.</h2></div>'
-    +'<p class="lead rv rv-2" style="max-width:380px;margin:0">Tien mensen in Hulsberg. Zeven begonnen hier als stagiair.</p></div></div>'
+  h+='<section class="s gr gr--nacht"><div class="wrap"><div class="rail-kop"><div><span class="chip rv" style="margin-bottom:24px"><i></i>De selectie</span>'+vl('h1 rv','Geen bureau.','Een selectie.')+'</div>'
+    +'<p class="lead rv rv-2" style="max-width:380px;margin:0;color:rgba(255,255,255,.75)">Tien mensen in Hulsberg. Zeven begonnen hier als stagiair.</p></div></div>'
     +rail('rail-selectie',spelers.map(spelerKaart),'rail--portret')+'</section>';
 
-  /* 10. Aftrap op dag 19 */
-  h+='<section class="s s--wit mid"><div class="wrap"><span class="eyebrow rv">Het seizoen</span><h2 class="h1 rv">Aftrap op dag 19.</h2>'
+  /* 11. Aftrap */
+  h+='<section class="s s--wit mid"><div class="wrap">'+vl('h1 rv','Dag 19.','Aftrap.')
     +'<div class="stats stats--rij" style="margin-top:72px">'
-    +'<div class="stat rv"><small>Dag</small><b class="verloop" style="font-size:clamp(72px,9vw,120px)">0</b><span>Je tekent en betaalt het fundament.</span></div>'
-    +'<div class="stat rv rv-2"><small>Werkdag</small><b class="verloop" style="font-size:clamp(72px,9vw,120px)">3</b><span>Alle toegangen binnen.</span></div>'
-    +'<div class="stat rv rv-3"><small>Dag</small><b class="verloop" style="font-size:clamp(72px,9vw,120px)">19</b><span>Je eerste campagne live.</span></div>'
-    +'</div><p class="lead rv" style="margin-top:64px">Daarna maandelijks opzegbaar. De eerste maanden zijn leren; rond maand drie trekken we de eerste voorzichtige conclusies.</p>'
+    +'<div class="stat rv"><small>Dag</small><b class="verloop" style="font-size:clamp(80px,10vw,140px)">0</b><span>Je tekent en betaalt het fundament.</span></div>'
+    +'<div class="stat rv rv-2"><small>Werkdag</small><b class="verloop" style="font-size:clamp(80px,10vw,140px)">3</b><span>Alle toegangen binnen.</span></div>'
+    +'<div class="stat rv rv-3"><small>Dag</small><b class="verloop" style="font-size:clamp(80px,10vw,140px)">19</b><span>Je eerste campagne live.</span></div>'
+    +'</div><p class="lead rv" style="margin-top:64px">Daarna maandelijks opzegbaar. De eerste maanden zijn leren. Rond maand drie trekken we de eerste conclusies.</p>'
     +'<div class="links"><a class="ln-k" href="#/werkwijze">De klantreis in acht stappen</a></div></div></section>';
 
-  /* 11. Van de tribune */
-  h+='<section class="s s--grijs mid"><div class="wrap"><span class="eyebrow rv">Van de tribune</span><div class="cijfer-xl verloop rv">5,0</div>'+sterren()
-    +'<p class="lead rv" style="margin-top:4px">Elf reviews op Google.<sup class="vn"><a href="#noten">3</a></sup> Allemaal vijf sterren.</p>'
-    +'<div class="links"><a class="ln-k" href="#/resultaten">Bekijk de uitslagen</a></div></div></section>';
+  /* 12. Van de tribune */
+  h+='<section class="s gr gr--blauw mid"><div class="wrap"><span class="chip rv"><i></i>Van de tribune</span><div class="cijfer-xl rv" style="margin-top:24px">5,0</div><div class="tribune" style="--c:#fff">'+[1,2,3,4,5].map(function(){return IC.ster.replace('<svg','<svg style="fill:#fff"')}).join('')+'</div>'
+    +'<p class="lead rv" style="margin-top:4px;color:rgba(255,255,255,.85)">Elf reviews op Google.<sup class="vn"><a href="#noten">3</a></sup> Elf keer vijf sterren.</p></div></section>';
 
-  /* 12. Eerlijk vooraf */
-  h+='<section class="s s--wit"><div class="wrap"><div class="mid"><span class="eyebrow rv">Eerlijk vooraf</span><h2 class="h1 rv">Niet elke club past bij ons.</h2><p class="lead rv rv-2">We beginnen alleen als we erin geloven. Anders zeggen we nee, liever nu dan over drie maanden.</p></div>'
-    +'<div class="twee"><div class="rv"><h3>Het past als</h3><ul class="vink"><li>je verkoopt via een aanvraag, afspraak of offerte.</li><li>je nieuwe klanten aankunt.</li><li>je een aanvraag snel terugbelt.</li><li>je de eerste maanden de tijd geeft om te leren.</li></ul></div>'
-    +'<div class="rv rv-2"><h3>Het past niet als</h3><ul class="vink vink--nee"><li>je iemand zoekt die je feed vult.</li><li>het om één losse campagne gaat.</li><li>je bedrijf vooral om een webshop draait.</li><li>je nu geen extra klanten aankunt.</li></ul></div></div></div></section>';
+  /* 13. Eerlijk vooraf */
+  h+='<section class="s s--wit"><div class="wrap"><div class="mid">'+vl('h1 rv','Niet voor iedereen.','Met opzet.')+'<p class="lead rv rv-2">We beginnen alleen als we erin geloven. Anders zeggen we nee. Liever nu dan over drie maanden.</p></div>'
+    +'<div class="twee"><div class="rv"><h3>Wel als</h3><ul class="vink"><li>je verkoopt via een aanvraag, afspraak of offerte.</li><li>je nieuwe klanten aankunt.</li><li>je een aanvraag snel terugbelt.</li><li>je de eerste maanden de tijd geeft om te leren.</li></ul></div>'
+    +'<div class="rv rv-2"><h3>Niet als</h3><ul class="vink vink--nee"><li>je iemand zoekt die je feed vult.</li><li>het om één losse campagne gaat.</li><li>je bedrijf vooral om een webshop draait.</li><li>je nu geen extra klanten aankunt.</li></ul></div></div></div></section>';
 
-  /* 13. De club */
-  h+='<section class="s s--donker"><div class="wrap"><div class="mid"><span class="eyebrow rv">De club</span><h2 class="h1 rv">Meer dan een bureau.<br>Een club.</h2><p class="lead rv rv-2">Je hoeft geen klant te zijn om erbij te horen.</p></div>'
+  /* 14. De club */
+  h+='<section class="s gr gr--nacht"><div class="wrap"><div class="mid"><span class="chip rv"><i></i>De club</span>'+vl('h1 rv','Fan worden mag.','Klant worden hoeft niet.')+'</div>'
     +'<div class="bento">'
-    +'<a class="tegel op-beeld b-4 rv" href="#/playground" style="color:#fff">'+beeld('club-padel','avond')+'<span class="eyebrow">De playground</span><h3 class="vs" style="font-size:clamp(34px,4vw,56px)">James Robinson<em>vs</em>Fagro</h3><p class="grijs">Padel tegen bedrijven uit de regio. <span class="ln-k" style="color:#fff">Daag ons uit</span></p></a>'
-    +'<article class="tegel tegel--zwart b-2 rv rv-2"><span class="eyebrow eyebrow--blauw">Het clubblad</span><h3>Eén keer per maand de beste analyse.</h3><p class="grijs">Geen aanbiedingen. Wat we leren, in je inbox.</p><form class="inschrijf" onsubmit="return false"><label class="vh" for="cb-mail">E-mailadres</label><input id="cb-mail" type="email" placeholder="E-mailadres"><button class="knop knop--klein" type="submit">Aanmelden</button></form><div style="flex:1"></div></article>'
-    +'<a class="tegel op-beeld b-2 tegel--laag rv" href="#/events" style="color:#fff">'+beeld('club-thuis','avond')+'<span class="eyebrow">Thuiswedstrijden</span><h3 style="font-size:28px">Padel met klanten en team.</h3><p class="grijs">Ondernemers die ons willen leren kennen, zijn welkom.</p></a>'
-    +'<a class="tegel op-beeld b-2 tegel--laag rv rv-2" href="#/werken-bij" style="color:#fff">'+beeld('club-jeugd','kantoor')+'<span class="eyebrow">JRNXT</span><h3 style="font-size:28px">De jeugdopleiding.</h3><p class="grijs">Zeven van de tien begonnen hier als stagiair.</p></a>'
-    +'<article class="tegel tegel--zwart b-2 tegel--laag rv rv-3"><span class="eyebrow eyebrow--blauw">Het wedstrijdprogramma</span><h3 style="font-size:28px">Op papier. Aan tafel.</h3><p class="grijs">The Performance Issue krijg je bij het intakegesprek.</p><div class="tegel-voet" style="padding-bottom:0;margin-bottom:-24px"><div class="magazine"><small>James Robinson</small><b>The<br>Perfor&shy;mance<br><span>Issue</span></b></div></div></article>'
+    +'<a class="tegel op-beeld b-4 rv" href="#/playground" style="color:#fff">'+beeld('club-padel','avond')+'<span class="eyebrow">De playground</span><h3 class="vs" style="font-size:clamp(34px,4vw,56px)">James Robinson<em>vs</em>Fagro</h3><p class="grijs">Padel tegen bedrijven uit de regio. <span class="ln-k" style="color:var(--lime)">Daag ons uit</span></p></a>'
+    +'<article class="tegel gr gr--blauw b-2 rv rv-2"><span class="eyebrow" style="color:#fff">Het clubblad</span><h3>Eén mail per maand. Alleen wat werkt.</h3><p class="grijs" style="color:rgba(255,255,255,.8)">Geen aanbiedingen. Wat we leren, in je inbox.</p><form class="inschrijf" onsubmit="return false"><label class="vh" for="cb-mail">E-mailadres</label><input id="cb-mail" type="email" placeholder="E-mailadres"><button class="knop knop--lime knop--klein" type="submit">Aanmelden</button></form><div style="flex:1"></div></article>'
+    +'<a class="tegel op-beeld b-2 tegel--laag rv" href="#/events" style="color:#fff">'+beeld('club-thuis','avond')+'<span class="eyebrow">Thuiswedstrijden</span><h3 style="font-size:28px">Padel met klanten en team.</h3><p class="grijs">Wie ons wil leren kennen, is welkom.</p></a>'
+    +'<a class="tegel op-beeld b-2 tegel--laag rv rv-2" href="#/werken-bij" style="color:#fff">'+beeld('club-jeugd','kantoor')+'<span class="eyebrow">JRNXT</span><h3 style="font-size:28px">Begin als stagiair.</h3><p class="grijs">Zeven van de tien deden dat ook.</p></a>'
+    +'<article class="tegel tegel--zwart b-2 tegel--laag rv rv-3"><span class="eyebrow eyebrow--blauw">Het wedstrijdprogramma</span><h3 style="font-size:28px">Op papier. Aan tafel.</h3><p class="grijs">The Performance Issue krijg je bij het intakegesprek.</p><div class="tegel-voet" style="padding-bottom:0;margin-bottom:-6px"><div class="magazine gr gr--merk"><small>James Robinson</small><b>The<br>Perfor&shy;mance<br>Issue</b></div></div></article>'
     +'</div></div></section>';
 
-  /* 14. Slot */
   h+=slot();
   return h;
 };
@@ -1123,10 +1307,12 @@ function spelerKaart(k){
   return '<a class="kaart speler" href="#/team/'+k+'"><div class="media">'+beeld('portret','studio','',{sil:1,geenCap:k!=='jim-coumans'})+'<span class="nr" aria-hidden="true">'+p.nr+'</span></div><div class="onder"><b>'+vul(p.n)+'</b>'+vul(p.rol)+' · '+vul(p.spec)+(p.jrnxt?'<br><span class="badge">JRNXT</span>':'')+'</div></a>';
 }
 
-function slot(kop,lead){
-  return '<section class="s s--wit mid" style="padding-bottom:calc(var(--sy)*1.1)"><div class="wrap"><h2 class="hx rv">'+(kop||'Klaar voor<br>de aftrap.')+'</h2>'
-    +'<p class="lead rv rv-2">'+(lead||'Vijftien vragen. Dan weet je of we samen het veld op gaan. Past het niet, dan zeggen we dat ook.')+'</p>'
-    +'<div class="knoppen rv rv-3"><a class="knop knop--groot" href="#/past-het">Start de check</a><a class="ln-k" href="tel:0457920009">Bel 045 792 0009</a></div></div></section>';
+/* Slot: Strava-energie, het lint achter de kop */
+function slot(vet,licht,lead){
+  return '<section class="s gr gr--vuur rv" style="padding:calc(var(--sy)*1.4) 0;min-height:80vh;display:flex;align-items:center">'+lint()
+    +'<div class="wrap slot-in" style="position:relative;z-index:2;width:100%">'+vl('hx',vet||'Genoeg gelezen.',licht||'Tijd voor de aftrap.')
+    +'<p class="lead" style="color:rgba(255,255,255,.85);max-width:560px">'+(lead||'Vijftien vragen. Eén eerlijk antwoord. Past het niet, dan zeggen we dat ook.')+'</p>'
+    +'<div class="knoppen"><a class="knop knop--lime knop--groot" href="#/past-het">Start de check</a><a class="ln-k" style="color:#fff" href="tel:0457920009">Bel 045 792 0009</a></div></div></section>';
 }
 
 /* ==========================================================================
@@ -1147,7 +1333,7 @@ function contactVoor(spec){
 PAGINA.dienst=function(slug){
   var d=JR.diensten[slug]; if(!d)return PAGINA.nietGevonden();
   var h=lokaal(d.naam);
-  h+='<section class="s s--wit pk mid"><div class="wrap"><span class="eyebrow eyebrow--blauw rv">'+d.groep+'</span><h1 class="hx rv">'+d.naam+'</h1>'
+  h+='<section class="s gr gr--licht pk mid"><div class="wrap"><span class="eyebrow eyebrow--blauw rv">'+d.groep+'</span><h1 class="hx rv">'+d.naam+'</h1>'
     +'<p class="lead rv rv-2" style="font-size:clamp(22px,2.4vw,32px);color:var(--ink);font-weight:600;letter-spacing:-.02em">'+kaal(d.merk)+'</p>'
     +'<p class="lead rv rv-2" style="margin-top:12px">'+d.sub+'</p>'
     +'<div class="knoppen rv rv-3"><a class="knop" href="#/past-het">Start de check</a><a class="ln-k" href="#/prijzen">Bekijk de prijzen</a></div></div></section>';
@@ -1180,14 +1366,14 @@ PAGINA.dienst=function(slug){
     +'<div class="vlak" style="flex-direction:row;gap:28px;align-items:center;padding:28px"><div style="width:128px;flex:none;border-radius:20px;overflow:hidden;position:relative;aspect-ratio:4/5">'+beeld('portret','studio','',{sil:1,geenCap:1})+'</div><div><span class="eyebrow eyebrow--klein">Vragen over '+d.naam+'</span><h3>'+vul(c[1].n)+'</h3><p>'+vul(c[1].rol)+' · '+vul(c[1].spec)+'</p><a class="ln-k" style="padding-top:12px;display:inline-block" href="#/contact">Plan een gesprek</a></div></div>'
     +'<div class="vlak"><span class="eyebrow eyebrow--klein">Speelt samen met</span>'+d.rel.map(function(r){var x=JR.diensten[r];return x?'<a href="#/diensten/'+r+'" style="display:flex;justify-content:space-between;padding:14px 0;border-top:1px solid var(--lijn-zacht);color:var(--ink);font:600 19px var(--display)">'+x.naam+'<span class="ln-k" style="font:400 15px var(--text)">'+kaal(x.merk)+'</span></a>':''}).join('')+'</div>'
     +'</div></div></section>';
-  h+=slot('Klaar voor<br>de aftrap.');
+  h+=slot();
   return h;
 };
 
 PAGINA.diensten=function(){
   var groepen=['Adverteren','Content','Versnellers'], uitleg={Adverteren:'De motor. Het enige wat je vandaag aanzet en morgen meet.',Content:'De brandstof. Advertenties slijten; nieuwe content houdt de motor draaiend.',Versnellers:'Draait de motor, dan maken deze elke volgende klant goedkoper.'};
   var icoon={'google-ads':'zoek','social-advertising':'social','microsoft-ads':'zoek',fotografie:'camera',videografie:'camera',animatie:'alles',copywriting:'pagina','conversie-optimalisatie':'pagina','e-mailmarketing':'mail',seo:'groei',hosting:'bord'};
-  var h='<section class="s s--wit pk mid"><div class="wrap"><span class="eyebrow eyebrow--blauw rv">Diensten</span><h1 class="hx rv">Alles met één doel.</h1><p class="lead rv rv-2">Meer klanten voor jou. Je mag elke marketingvraag bij ons neerleggen: dat doen wij, of we zeggen bij wie je moet zijn.</p></div></section>';
+  var h='<section class="s gr gr--licht pk mid"><div class="wrap"><span class="eyebrow eyebrow--blauw rv">Diensten</span><h1 class="hx rv">Eén doel.<span class="l">Meer klanten.</span></h1><p class="lead rv rv-2">Meer klanten voor jou. Je mag elke marketingvraag bij ons neerleggen: dat doen wij, of we zeggen bij wie je moet zijn.</p></div></section>';
   groepen.forEach(function(g,gi){
     var lijst=Object.keys(JR.diensten).filter(function(k){return JR.diensten[k].groep===g});
     h+='<section class="s '+(gi%2?'s--wit':'s--grijs')+'"><div class="wrap"><span class="eyebrow rv">'+g+'</span><h2 class="h2 rv" style="max-width:640px">'+uitleg[g]+'</h2><div class="raster-3">'
@@ -1201,13 +1387,13 @@ PAGINA.diensten=function(){
 /* ---------- Prijzen ---------- */
 PAGINA.prijzen=function(){
   var h=lokaal('Prijzen','<a class="knop knop--rand" href="#/prijzen/rekenhulp">Rekenhulp</a>');
-  h+='<section class="s s--wit pk mid"><div class="wrap"><span class="eyebrow eyebrow--blauw rv">Prijzen</span><h1 class="hx rv">Eén prijslijst.<br>Voor iedereen.</h1><p class="lead rv rv-2">Geen uurtarief, geen meerwerk en geen korting. Het advertentiebudget betaal je rechtstreeks aan het platform, op jouw naam, zonder iets erbovenop.</p></div></section>';
+  h+='<section class="s gr gr--licht pk mid"><div class="wrap"><span class="eyebrow eyebrow--blauw rv">Prijzen</span><h1 class="hx rv">Eén prijslijst.<span class="l">Geen kleine lettertjes.</span></h1><p class="lead rv rv-2">Geen uurtje-factuurtje, geen meerwerk en geen korting. Het advertentiebudget betaal je rechtstreeks aan het platform, op jouw naam, zonder iets erbovenop.</p></div></section>';
   h+='<section class="s s--wit s--naad"><div class="wrap"><div class="paneel rv"><div class="mid"><h2 class="h2">Kies je opstelling.</h2><p class="lead">Het pakket is het hoogste van twee: het aantal campagnes tegelijk, of je advertentiebudget.</p></div><div style="margin-top:56px">'+vergelijking(true)+'</div><p class="mid mini" style="margin-top:48px">Alle bedragen per maand, exclusief btw. Maandelijks opzegbaar, voor allebei.</p></div></div></section>';
   /* Fundament */
   h+='<section class="s s--grijs"><div class="wrap"><div class="split"><div><span class="eyebrow rv">Eenmalig, in de opstartmaand</span><h2 class="h1 rv">Het fundament.</h2><div class="stat rv rv-2" style="margin-top:28px"><small>Eenmalig</small><b>€ 4.500</b><span>Betaald bij ondertekening. Niet los verkrijgbaar, en na de start niet terug te krijgen.</span></div></div>'
     +'<div class="raster-2" style="margin-top:0;grid-template-columns:1fr"><div class="vlak rv"><h3>De basis</h3><p>Doelgroep, boodschap en concurrenten. Een technische audit en de meting. De advertentieaccounts, MailerLite, het portaal en de nulmeting.</p></div><div class="vlak rv rv-2"><h3>De eerste campagne</h3><p>Zoekwoorden, structuur en advertenties. Een landingspagina. Een dagdeel filmen, montage in drie formaten, en de livegang rond dag 19.</p></div></div></div></div></section>';
   /* Rekenhulp */
-  h+='<section class="s s--wit" id="rekenhulp"><div class="wrap"><div class="mid"><span class="eyebrow rv">De rekenhulp</span><h2 class="h1 rv">Begin bij je ambitie.</h2><p class="lead rv rv-2">Hoeveel extra omzet je wilt. Daaruit volgen het aantal klanten, de aanvragen en hoe groot de motor moet zijn.</p></div>'
+  h+='<section class="s s--wit" id="rekenhulp"><div class="wrap"><div class="mid"><span class="eyebrow rv">De rekenhulp</span><h2 class="h1 rv">Begin bij je ambitie.<span class="l">Niet bij je budget.</span></h2><p class="lead rv rv-2">Hoeveel extra omzet je wilt. Daaruit volgen het aantal klanten, de aanvragen en hoe groot de motor moet zijn.</p></div>'
     +'<div class="rh"><div class="rh-in">'
     +'<div class="rh-r"><label for="rh-omzet">Extra omzet per jaar <b id="rh-o-omzet"></b></label><input type="range" id="rh-omzet" min="25000" max="1000000" step="5000" value="150000"></div>'
     +'<div class="rh-r"><label for="rh-klant">Wat een klant oplevert <b id="rh-o-klant"></b></label><input type="range" id="rh-klant" min="250" max="50000" step="250" value="5000"></div>'
@@ -1221,7 +1407,7 @@ PAGINA.prijzen=function(){
     +'<div class="rh-tot"><span>Per maand samen</span><b id="rh-totaal"></b></div><div class="rh-tot" style="margin-top:10px"><span class="mini" style="color:var(--inv-2)">Eerste jaar, met fundament</span><span id="rh-jaar" style="font-weight:600"></span></div>'
     +'<p class="mini" style="margin-top:24px">Een rekensom, geen belofte. Ons pakket is nooit meer dan de helft van wat je samen uitgeeft.</p></div></div></div></section>';
   /* Regels */
-  h+='<section class="s s--donker"><div class="wrap"><span class="eyebrow rv">De regels</span><h2 class="h1 rv">Vier regels. Geen kleine letters.</h2><div class="stappen">'
+  h+='<section class="s s--donker"><div class="wrap"><span class="eyebrow rv">De regels</span><h2 class="h1 rv">Vier regels.<span class="l">Geen uitzonderingen.</span></h2><div class="stappen">'
     +[['Het hoogste van twee','Je pakket volgt uit het aantal campagnes of uit je budget. Wat hoger uitkomt, telt.'],['Tegelijk is tegelijk','Een campagne is één aanbod, voor één doelgroep, met één landingspagina. Google en Meta samen tellen als één.'],['Wij kiezen de kanalen','Minimaal € 500 per kanaal per campagne per maand. Op LinkedIn € 1.000.'],['Omhoog per direct','Omlaag per de eerste van de volgende maand.']]
       .map(function(r,i){return '<div class="stap rv rv-'+(i+1)+'"><small>Regel '+(i+1)+'</small><h3>'+r[0]+'</h3><p>'+r[1]+'</p></div>'}).join('')+'</div>'
     +'<div class="split" style="margin-top:120px"><div><h2 class="h2 rv">De 50%-regel.</h2><p class="lead rv">Ons pakket is nooit meer dan de helft van wat je samen uitgeeft. Advertentiebudget is de motor, geen restpost.</p></div><div class="stat rv rv-2"><small>Maximaal</small><b class="verloop" style="font-size:clamp(88px,10vw,140px)">50%</b><span>van pakket plus advertentiebudget is voor ons.</span></div></div></div></section>';
@@ -1242,7 +1428,7 @@ PAGINA.prijzen=function(){
 /* ---------- Werkwijze ---------- */
 PAGINA.werkwijze=function(){
   var h=lokaal('Werkwijze');
-  h+='<section class="s s--wit pk mid"><div class="wrap"><span class="eyebrow eyebrow--blauw rv">Werkwijze</span><h1 class="hx rv">Zo werkt het.</h1><p class="lead rv rv-2">Voorspelbaar nieuwe aanvragen via advertenties, en elke maand iets goedkoper. Alles meetbaar, en jij ziet dezelfde cijfers als wij.</p></div></section>';
+  h+='<section class="s gr gr--licht pk mid"><div class="wrap"><span class="eyebrow eyebrow--blauw rv">Werkwijze</span><h1 class="hx rv">Geen gok.<span class="l">Een systeem.</span></h1><p class="lead rv rv-2">Voorspelbaar nieuwe aanvragen via advertenties, en elke maand iets goedkoper. Alles meetbaar, en jij ziet dezelfde cijfers als wij.</p></div></section>';
   h+='<section class="s--wit"><div class="wrap wrap--breed rv">'+beeld('intake','kantoor','r-219 rond')+'</div></section>';
   h+='<section class="s s--wit"><div class="wrap"><span class="eyebrow rv">Het systeem</span><h2 class="h1 rv">Vier onderdelen.</h2><div class="stappen">'
     +[['De motor','Adverteren','Google Ads en Meta, standaard. LinkedIn bij zakelijke klanten, TikTok als je doelgroep daar zit.'],['De brandstof','Content','Eerst een contentplan, dan een draaidag op locatie. In 9:16, 4:5 en 1:1.'],['De landing','Je website','Eén pagina per campagne, met één boodschap en één actie.'],['De voordeur','Een aanvraag','Daar eindigt ons werk. Daarna ben jij aan zet.']]
@@ -1264,20 +1450,20 @@ PAGINA.werkwijze=function(){
 /* ---------- Portaal ---------- */
 PAGINA.portaal=function(){
   var h=lokaal('Het scorebord','<a class="knop knop--rand" href="#/inloggen">Inloggen</a>');
-  h+='<section class="s s--grijs pk mid" style="overflow:hidden"><div class="wrap"><span class="eyebrow eyebrow--blauw rv">Het portaal</span><h1 class="hx rv">Je ziet wat<br>wij zien.</h1><p class="lead rv rv-2">Alle cijfers van al je kanalen op één scherm, elk uur bijgewerkt. Het blijft van jou, ook als je stopt.</p></div>'
+  h+='<section class="s gr gr--licht pk mid" style="overflow:hidden"><div class="wrap"><span class="eyebrow eyebrow--blauw rv">Het portaal</span><h1 class="hx rv">Geen rapport.<span class="l">Een scorebord.</span></h1><p class="lead rv rv-2">Alle cijfers van al je kanalen op één scherm, elk uur bijgewerkt. Het blijft van jou, ook als je stopt.</p></div>'
     +'<div class="wrap wrap--breed" style="margin-top:72px"><div class="rv">'+laptop()+'</div><p class="mid voorbeeld-label">Voorbeeldcijfers.</p></div></section>';
   h+='<section class="s s--wit"><div class="wrap"><div class="kenmerken" style="margin-top:0">'
     +'<div class="kenmerk rv">'+ic('klok')+'<p><b>Elk uur bijgewerkt.</b> Google, Meta, LinkedIn, TikTok, je website en Search Console.</p></div>'
     +'<div class="kenmerk rv rv-2">'+ic('duim')+'<p><b>Per aanvraag een oordeel.</b> Goed, twijfel of niet goed. En later: werd het een klant.</p></div>'
     +'<div class="kenmerk rv rv-3">'+ic('sleutel')+'<p><b>De merkkluis.</b> Logo\'s, foto\'s, video\'s en je huisstijl op één plek.</p></div></div></div></section>';
   h+='<section class="s s--donker" style="overflow:hidden"><div class="wrap"><div class="split" style="align-items:center"><div><span class="eyebrow">Ook in je broekzak</span><h2 class="h1">Een aanvraag.<br>Nu.</h2><p class="lead">Elke nieuwe aanvraag direct op je telefoon. Hoe sneller je belt, hoe groter de kans op een gesprek.<sup class="vn"><a href="#noten">2</a></sup></p></div><div style="display:flex;justify-content:center;gap:24px">'+tel(SCHERM.slot(),'tel--donker')+'</div></div></div></section>';
-  h+=slot('Bekijk het<br>met je eigen cijfers.','In het intakegesprek laten we het portaal zien. Daarna weet je of het past.');
+  h+=slot('Bekijk het met','je eigen cijfers.','In het intakegesprek laten we het portaal zien. Daarna weet je of het past.');
   return h;
 };
 
 /* ---------- Team en spelers ---------- */
 PAGINA.team=function(){
-  var h='<section class="held s--zwart" style="min-height:min(80vh,760px)">'+beeld('team','kantoor')+'<div class="verdonker"></div><div class="held-in"><h1 class="eyebrow rv">Over James Robinson</h1><p class="hx rv rv-2">Een selectie.<br>Geen bureau.</p></div></section>';
+  var h='<section class="held s--zwart" style="min-height:min(80vh,760px)">'+beeld('team','kantoor')+'<div class="verdonker"></div><div class="held-in"><h1 class="eyebrow rv">Over James Robinson</h1><p class="hx rv rv-2">Geen bureau.<span class="l">Een selectie.</span></p></div></section>';
   h+='<section class="s s--wit"><div class="wrap"><div class="split"><div><h2 class="h1 rv">Bedacht in 2017.<br>Opgericht in 2018.</h2><div class="tekst rv rv-2"><p>Een performance-marketingbureau in Hulsberg, voor ondernemers in Zuid-Limburg. Online is ons vak, maar de beste gesprekken voer je aan tafel.</p><p>Jim Coumans richtte het bureau op. Jim Kikken is sinds 2022 mede-eigenaar, met data-gedreven performance marketing als vak. Voor fotografie, video, animatie en techniek werken we met vaste specialisten.</p></div></div>'
     +'<div class="stats">'+stat('In Hulsberg','10','mensen in de selectie.')+stat('Begonnen als stagiair','7','van de tien. We leiden op in onze eigen manier van werken.')+'</div></div></div></section>';
   h+='<section class="s s--donker"><div class="wrap"><span class="eyebrow rv">De selectie</span><h2 class="h1 rv">Staf, selectie en jeugd.</h2><div class="raster-4">'+Object.keys(JR.team).map(function(k){return '<div class="rv">'+spelerKaart(k)+'</div>'}).join('')+'</div></div></section>';
@@ -1298,12 +1484,12 @@ PAGINA.speler=function(k){
 
 /* ---------- Werken bij ---------- */
 PAGINA['werken-bij']=function(){
-  var h='<section class="held s--zwart" style="min-height:min(80vh,760px)">'+beeld('werken','kantoor')+'<div class="verdonker"></div><div class="held-in"><h1 class="eyebrow rv">Werken bij James Robinson</h1><p class="hx rv rv-2">Zeven van de tien<br>begonnen hier.</p><div class="knoppen rv rv-3"><a class="knop knop--licht" href="#vacatures">Bekijk de vacatures</a></div></div></section>';
+  var h='<section class="held s--zwart" style="min-height:min(80vh,760px)">'+beeld('werken','kantoor')+'<div class="verdonker"></div><div class="held-in"><h1 class="eyebrow rv">Werken bij James Robinson</h1><p class="hx rv rv-2">Begin als stagiair.<span class="l">Speel in de selectie.</span></p><div class="knoppen rv rv-3"><a class="knop knop--licht" href="#vacatures">Bekijk de vacatures</a></div></div></section>';
   h+='<section class="s s--wit mid"><div class="wrap"><span class="eyebrow rv">JRNXT</span><h2 class="h1 rv">De jeugdopleiding.</h2><p class="lead rv rv-2">Je leert het vak in onze manier van werken, met echte klanten en echte budgetten.</p></div></section>';
   h+='<section class="s s--grijs" id="vacatures"><div class="wrap wrap--tekst"><h2 class="h2">Open plekken.</h2><div class="faq" style="margin-top:32px">'
     +Object.keys(JR.vacatures).map(function(k){var v=JR.vacatures[k];return '<a href="#/contact" style="display:flex;justify-content:space-between;align-items:center;gap:16px;padding:24px 0;border-bottom:1px solid var(--lijn);color:var(--ink)"><div><span class="label">'+v[1]+'</span><b style="display:block;font:600 24px/1.25 var(--display);letter-spacing:-.02em;margin-top:10px">'+v[0]+'</b><span class="grijs">'+v[2]+'</span></div><span class="ln-k">Solliciteer</span></a>'}).join('')+'</div></div></section>';
   h+='<section class="s s--donker"><div class="wrap"><div class="bento" style="margin-top:0"><a class="tegel op-beeld b-3 rv" href="#/playground" style="color:#fff">'+beeld('club-padel','avond')+'<span class="eyebrow">De playground</span><h3>Ook buiten kantoor een team.</h3><p class="grijs">Padel tegen bedrijven uit de regio.</p></a><a class="tegel op-beeld b-3 rv rv-2" href="#/events" style="color:#fff">'+beeld('club-thuis','avond')+'<span class="eyebrow">Events</span><h3>Thuiswedstrijden.</h3><p class="grijs">Met klanten, met het team, of op een podium.</p></a></div></div></section>';
-  h+=slot('Geen vacature<br>die past.','Wel een speler die past. Stuur een open sollicitatie.');
+  h+=slot('Geen vacature die past.','Wel een speler die past.','Stuur een open sollicitatie.');
   return h;
 };
 
@@ -1315,7 +1501,7 @@ PAGINA.playground=function(){
 };
 PAGINA.events=function(){
   var soort={eigen:'Voor klanten en ondernemers',team:'Teamevent',extern:'Op het podium'};
-  var h='<section class="s s--wit pk mid"><div class="wrap"><span class="eyebrow eyebrow--blauw">Events</span><h1 class="hx">Thuiswedstrijden.</h1><p class="lead">Met klanten, met het team, of waar we spreken. Na afloop een terugblik met foto\'s.</p></div></section>';
+  var h='<section class="s gr gr--licht pk mid"><div class="wrap"><span class="eyebrow eyebrow--blauw">Events</span><h1 class="hx">Thuis&shy;wedstrijden.<span class="l">Iedereen welkom.</span></h1><p class="lead">Met klanten, met het team, of waar we spreken. Na afloop een terugblik met foto\'s.</p></div></section>';
   h+='<section class="s s--wit s--naad"><div class="wrap wrap--tekst"><div class="faq" style="margin-top:0">'+JR.events.map(function(e){return '<div style="display:grid;grid-template-columns:80px 1fr auto;gap:20px;align-items:center;padding:24px 0;border-bottom:1px solid var(--lijn)"><div style="text-align:center"><b style="display:block;font:700 32px/1 var(--display)">'+vul(e.d)+'</b><span class="klein grijs">'+vul(e.m)+'</span></div><div><span class="label">'+soort[e.soort]+'</span><b style="display:block;font:600 21px/1.25 var(--display);margin-top:8px">'+vul(e.t)+'</b><span class="klein grijs">'+vul(e.p)+' · '+vul(e.plek)+'</span></div>'+(e.soort==='eigen'?'<a class="knop knop--klein" href="#/contact">Aanmelden</a>':'<span></span>')+'</div>'}).join('')+'</div></div></section>';
   return h+slot();
 };
@@ -1323,14 +1509,14 @@ PAGINA.events=function(){
 /* ---------- Kennis ---------- */
 PAGINA.kennis=function(){
   var ks=Object.keys(JR.artikelen), eerste=JR.artikelen[ks[0]];
-  var h='<section class="s s--wit pk"><div class="wrap"><span class="eyebrow eyebrow--blauw">De analyse</span><h1 class="hx">Wat we leren,<br>delen we.</h1></div></section>';
+  var h='<section class="s gr gr--licht pk"><div class="wrap"><span class="eyebrow eyebrow--blauw">De analyse</span><h1 class="hx">Wat we leren.<span class="l">Ongefilterd.</span></h1></div></section>';
   h+='<section class="s--wit"><div class="wrap"><a class="tegel tegel--donker rv" href="#/kennis/'+ks[0]+'" style="min-height:460px;color:var(--inv);justify-content:space-between;padding-bottom:44px"><span class="eyebrow eyebrow--blauw">'+eerste.s+' · '+eerste.min+' minuten</span><div><div class="cijfer-xl verloop" style="font-size:clamp(96px,14vw,200px)">'+eerste.n+'</div><h2 class="h2" style="max-width:760px;margin-top:12px">'+eerste.t+'</h2></div></a></div></section>';
   h+='<section class="s s--wit"><div class="wrap"><div class="raster-3" style="margin-top:0">'+ks.slice(1).map(function(k,i){var a=JR.artikelen[k];return '<a class="vlak rv rv-'+(i%3+1)+'" href="#/kennis/'+k+'" style="min-height:300px"><span class="eyebrow eyebrow--klein">'+a.s+' · '+a.min+' min</span><div class="verloop" style="font:700 56px/1 var(--display);letter-spacing:-.04em;margin:18px 0">'+a.n+'</div><h3>'+a.t+'</h3></a>'}).join('')+'</div></div></section>';
   return h+slot();
 };
 PAGINA.artikel=function(k){
   var a=JR.artikelen[k]; if(!a)return PAGINA.nietGevonden();
-  var h='<section class="s s--wit pk"><div class="wrap wrap--tekst"><a class="ln-k" href="#/kennis" style="font-size:14px">De analyse</a><span class="eyebrow eyebrow--klein" style="margin-top:32px">'+a.s+' · '+a.min+' minuten lezen</span><h1 class="h1" style="font-size:clamp(36px,4.6vw,56px)">'+a.t+'</h1></div></section>';
+  var h='<section class="s gr gr--licht pk"><div class="wrap wrap--tekst"><a class="ln-k" href="#/kennis" style="font-size:14px">De analyse</a><span class="eyebrow eyebrow--klein" style="margin-top:32px">'+a.s+' · '+a.min+' minuten lezen</span><h1 class="h1" style="font-size:clamp(36px,4.6vw,56px)">'+a.t+'</h1></div></section>';
   h+='<section class="s s--wit s--naad"><div class="wrap wrap--tekst"><div class="prose">'+(a.body||'<p>'+vul('[Artikel in te vullen]')+'</p>')+'</div></div></section>';
   return h+slot();
 };
@@ -1346,14 +1532,14 @@ PAGINA.branche=function(k){
 
 /* ---------- Uitslagen ---------- */
 PAGINA.resultaten=function(){
-  var h='<section class="s s--wit pk mid"><div class="wrap"><span class="eyebrow eyebrow--blauw">Uitslagen</span><h1 class="hx">De stand.<br>Voor en na.</h1><p class="lead">Wedstrijdverslagen met echte cijfers en de naam van de klant. Ze verschijnen hier zodra de klant akkoord geeft.</p></div></section>';
+  var h='<section class="s gr gr--licht pk mid"><div class="wrap"><span class="eyebrow eyebrow--blauw">Uitslagen</span><h1 class="hx">De stand.<span class="l">Voor en na.</span></h1><p class="lead">Wedstrijdverslagen met echte cijfers en de naam van de klant. Ze verschijnen hier zodra de klant akkoord geeft.</p></div></section>';
   h+='<section class="s s--grijs mid"><div class="wrap"><div class="cijfer-xl verloop">5,0</div>'+sterren()+'<p class="lead" style="margin-top:4px">Elf reviews op Google.<sup class="vn"><a href="#noten">3</a></sup></p></div></section>';
   return h+slot();
 };
 
 /* ---------- Contact ---------- */
 PAGINA.contact=function(){
-  var h='<section class="s s--wit pk mid"><div class="wrap"><span class="eyebrow eyebrow--blauw">Contact</span><h1 class="hx">Kom langs.<br>Of bel.</h1><p class="lead">Online is ons vak. De beste gesprekken voer je aan tafel.</p></div></section>';
+  var h='<section class="s gr gr--licht pk mid"><div class="wrap"><span class="eyebrow eyebrow--blauw">Contact</span><h1 class="hx">Bel. Mail.<span class="l">Of kom langs.</span></h1><p class="lead">Online is ons vak. De beste gesprekken voer je aan tafel.</p></div></section>';
   h+='<section class="s--wit"><div class="wrap wrap--breed">'+beeld('pand','avond','r-219 rond')+'</div></section>';
   h+='<section class="s s--wit"><div class="wrap"><div class="raster-3" style="margin-top:0">'
     +'<div class="vlak"><span class="eyebrow eyebrow--klein">Bellen</span><h3>045 792 0009</h3><p>Maandag tot en met vrijdag, 8.00 tot 18.00 uur. Ligt je campagne of website eruit, bel dan altijd.</p><a class="ln-k" href="tel:0457920009">Bel ons</a></div>'
@@ -1365,7 +1551,7 @@ PAGINA.contact=function(){
 
 /* ---------- Beeldregie ---------- */
 PAGINA.beeldregie=function(){
-  var h='<section class="s s--grijs pk"><div class="wrap"><span class="eyebrow eyebrow--blauw">Voor de shoot</span><h1 class="hx">Beeldregie.</h1><p class="lead">Elk beeldvlak op de site, met wat erin moet. Gegroepeerd per draaidag, zodat je in vier dagen alles hebt. Tot die tijd staat er een lichtstudie in dezelfde sfeer.</p></div></section>';
+  var h='<section class="s gr gr--licht pk"><div class="wrap"><span class="eyebrow eyebrow--blauw">Voor de shoot</span><h1 class="hx">Beeldregie.</h1><p class="lead">Elk beeldvlak op de site, met wat erin moet. Gegroepeerd per draaidag, zodat je in vier dagen alles hebt. Tot die tijd staat er een lichtstudie in dezelfde sfeer.</p></div></section>';
   Object.keys(DAGEN).forEach(function(d){
     var ids=Object.keys(SHOTS).filter(function(k){return SHOTS[k].dag===d});
     h+='<section class="s s--grijs s--naad"><div class="wrap"><h2 class="h2">'+DAGEN[d]+'</h2><p class="grijs" style="margin-top:6px">'+ids.length+' beeld'+(ids.length>1?'en':'')+'</p><div class="shots">'
@@ -1376,7 +1562,7 @@ PAGINA.beeldregie=function(){
 };
 
 PAGINA.nietGevonden=function(){
-  return '<section class="s s--wit pk mid" style="min-height:70vh"><div class="wrap"><span class="eyebrow eyebrow--blauw">404</span><h1 class="hx">Buitenspel.</h1><p class="lead">Deze pagina bestaat niet, of niet meer.</p><div class="knoppen"><a class="knop" href="#/">Naar de homepage</a></div></div></section>';
+  return '<section class="s gr gr--licht pk mid" style="min-height:70vh"><div class="wrap"><span class="eyebrow eyebrow--blauw">404</span><h1 class="hx">Buitenspel.</h1><p class="lead">Deze pagina bestaat niet, of niet meer.</p><div class="knoppen"><a class="knop" href="#/">Naar de homepage</a></div></div></section>';
 };
 
 /* ======================= De check: 15 vragen ======================= */
@@ -1426,7 +1612,7 @@ var check=(function(){
   function render(){
     var el=document.getElementById('check-app'); if(!el)return; var a=st.a, h='';
     if(st.stap==='intro'){
-      h='<div class="ck-kaart"><span class="eyebrow eyebrow--klein">De voorbespreking</span><h1 class="h1" style="font-size:clamp(36px,4.6vw,60px)">Na 15 vragen weet je het.</h1><p class="lead">Over je bedrijf, je klanten en je marketing nu. Je krijgt meteen een eerlijk antwoord, met de rekensom erbij: wat een aanvraag jou mag kosten.</p><div class="knoppen"><button class="knop knop--groot" data-a="start" type="button">Start de check</button><span class="klein grijs">Geen account nodig.</span></div></div><aside class="ck-zij">'+zijNa+zijBel+'</aside>';
+      h='<div class="ck-kaart"><span class="eyebrow eyebrow--klein">De voorbespreking</span><h1 class="h1" style="font-size:clamp(36px,4.6vw,60px)">Vijftien vragen.<span class="l" style="display:block;font-weight:300">Eén eerlijk antwoord.</span></h1><p class="lead">Over je bedrijf, je klanten en je marketing nu. Je krijgt meteen een eerlijk antwoord, met de rekensom erbij: wat een aanvraag jou mag kosten.</p><div class="knoppen"><button class="knop knop--groot" data-a="start" type="button">Start de check</button><span class="klein grijs">Geen account nodig.</span></div></div><aside class="ck-zij">'+zijNa+zijBel+'</aside>';
     } else if(st.stap==='vraag'){
       var L=lijst(), i=Math.min(st.i,L.length-1), v=L[i], w=a[v.id], kan=v.optioneel||heeft(v), laatste=i===L.length-1;
       h='<div class="ck-kaart"><div class="ck-teller"><span>Vraag '+(i+1)+' van '+L.length+'</span><span>'+v.o+'</span></div><div class="ck-bar"><i style="width:'+Math.round((i+1)/(L.length+1)*100)+'%"></i></div><h1 class="ck-vraag">'+v.v+'</h1>';
@@ -1483,9 +1669,9 @@ var MENU=[
 ];
 
 function kop(){
-  return '<header class="gn" id="gn"><div class="wrap"><a class="gn-merk" href="#/" aria-label="James Robinson, naar de homepage">James Robinson</a>'
+  return '<header class="gn" id="gn"><div class="wrap"><a class="gn-merk" href="#/" aria-label="James Robinson, naar de homepage">'+bm()+woordmerk()+'</a>'
     +'<nav class="gn-links" aria-label="Hoofdmenu">'+MENU.map(function(m,i){return '<a href="'+m.h+'" data-mm="'+(m.groot?i:'')+'">'+m.k+'</a>'}).join('')+'</nav>'
-    +'<div class="gn-acties"><a class="gn-in" href="#/portaal">Inloggen</a><a class="knop" href="#/past-het">Start de check</a><button class="gn-menu" type="button" aria-label="Menu" aria-expanded="false"><i></i></button></div></div>'
+    +'<div class="gn-acties"><a class="gn-in" href="#/portaal">Inloggen</a><a class="knop knop--lime" href="#/past-het">Start de check</a><button class="gn-menu" type="button" aria-label="Menu" aria-expanded="false"><i></i></button></div></div>'
     +MENU.map(function(m,i){return m.groot?'<div class="mm" data-mm-paneel="'+i+'"><div class="wrap"><div class="groot"><small>'+m.k+'</small>'+m.groot.map(function(l){return '<a href="'+l[1]+'">'+l[0]+'</a>'}).join('')+'</div><div class="fijn"><small>Meer</small>'+m.fijn.map(function(l){return '<a href="'+l[1]+'">'+l[0]+'</a>'}).join('')+'</div></div></div>':''}).join('')
     +'<div class="gn-vol">'+MENU.map(function(m){return '<a href="'+m.h+'">'+m.k+'</a>'}).join('')+'<small>Snel naar</small><div class="sub"><a href="#/past-het">Start de check</a><a href="#/contact">Contact</a><a href="#/portaal">Inloggen in het portaal</a><a href="tel:0457920009">045 792 0009</a></div></div>'
     +'</header>';
@@ -1546,6 +1732,12 @@ function activeer(root){
     function st(){b[0].disabled=r.scrollLeft<8;b[1].disabled=r.scrollLeft+r.clientWidth>=r.scrollWidth-8}
     b.forEach(function(x,i){x.addEventListener('click',function(){var k=r.firstElementChild;var w=k?k.getBoundingClientRect().width+20:400;r.scrollBy({left:(i?1:-1)*w,behavior:'smooth'})})});
     r.addEventListener('scroll',st,{passive:true});st();
+  });
+  /* Manifest: woord voor woord oplichten tijdens het scrollen */
+  $$('[data-oplicht]',root).forEach(function(m){
+    var w=$$('span',m);
+    function upd(){var r=m.getBoundingClientRect(),vh=window.innerHeight,p=Math.min(1,Math.max(0,(vh*.85-r.top)/(r.height+vh*.35)));var n=Math.round(p*w.length);w.forEach(function(x,i){x.classList.toggle('aan',i<n)})}
+    window.addEventListener('scroll',upd,{passive:true});upd();
   });
   /* Video pauzeren */
   $$('.beeld-pauze',root).forEach(function(b){b.addEventListener('click',function(){var v=b.closest('.beeld');v.classList.toggle('pauze');b.setAttribute('aria-label',v.classList.contains('pauze')?'Speel de video af':'Pauzeer de video')})});
