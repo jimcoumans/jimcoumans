@@ -601,6 +601,37 @@ De homepage is geen overzicht van alles wat we doen. Het is een verhaal in hoofd
 
 ---
 
+## 8c. Het niveau van apple.com (leidend voor de beeldtaal)
+
+Een derde poging werd afgekeurd als "te weinig Apple". De oorzaak: alle emotie zat in getekende illustraties (een stadion uit stoeltjes, een bal die een boog trekt, een veld met spelers als stippen) en lime knoppen. Dat leest als een infographic, niet als apple.com.
+
+### Wat Apple doet, en wij dus ook
+- **Beeld draagt de emotie, niet tekeningen.** Video en foto over de volle breedte, met de kop eroverheen. Het arena-gevoel komt uit echte beelden: de padelbaan bij avond, lichtmasten, het team, de klant die zijn telefoon pakt.
+- **Productbeeld in plaats van illustratie.** Het portaal op een laptop, advertenties en meldingen op telefoons, net zoals Apple een iPhone laat zien.
+- **Rust in kleur.** Wit, Apple-grijs (#F5F5F7) en merkzwart wisselen per sectie. Blauw alleen voor knoppen en links. Lime alleen als klein accent (de JRNXT-badge, een doelpunt in het portaal), nooit als knop.
+- **Pilknoppen zoals Apple:** gevuld blauw, of wit op donker, met een omlijnde tweede knop. Tekstlinks met een klein pijltje.
+- **Vaste Apple-patronen:**
+  - een kop van twee korte zinnen met een punt ("Nieuwe klanten. Voorspelbaar.");
+  - een rij iconen met de diensten, zoals de rij boven Entertainment;
+  - bento-tegels met afgeronde hoeken;
+  - kop en tekst links, kengetallen rechts ("Up to 31 hours");
+  - een vergelijkingspaneel op een grijs vlak voor de pakketten;
+  - carrousels met afgeronde kaarten, een vet eerste woord en grijze tekst eronder, en ronde pijlknoppen rechtsonder;
+  - een zwevende balk met de paginanaam en twee knoppen zodra je scrolt;
+  - voetnoten met bronnen bovenaan de footer.
+- **Sportmetaforen in de woorden, niet in tekeningen.** "Jij bezit de arena. Wij spelen de wedstrijd." staat op een video van een padelbaan, niet op een getekend stadion.
+
+### Beeldregie
+Elk beeldvlak heeft een vaste beschrijving: wat erop moet, waar, welk licht en welk formaat. Samen vormen ze het draaiboek voor vier dagen:
+1. **Draaidag A:** avond op de padelbaan (hero-video, playground, thuiswedstrijden).
+2. **Draaidag B:** kantoor in Hulsberg (team aan tafel, stille werkplek, JRNXT, intakegesprek, de voordeur).
+3. **Draaidag C:** bij klanten op locatie (de telefoon gaat, een draaidag, één beeld per branche).
+4. **Portretdag:** studio, voor elke speler hetzelfde licht.
+
+Tot die beelden er zijn, staat er een lichtstudie in dezelfde sfeer met rechtsonder wat er komt. Het ontwerp heeft een pagina "Beeldregie" met het complete overzicht.
+
+---
+
 ## 9. Designsysteem (exact toepassen)
 
 **Uitgangspunt:** de rust van Apple, in het blauw van James Robinson. Eén lime accent per scherm.
