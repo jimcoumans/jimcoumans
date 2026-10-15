@@ -132,7 +132,7 @@ export function GegevensFormulier({
       <fieldset className="space-y-3">
         <legend className="mb-1 text-[17px] font-semibold">Hoe we je bereiken</legend>
         <div className="grid gap-3 sm:grid-cols-2">
-          <Veld label="E-mail" name="email" type="email" defaultValue={bekend.email} autoComplete="email" />
+          <Veld label="Privé e-mailadres" name="email" type="email" defaultValue={bekend.email} autoComplete="email" />
           <Veld label="Mobiel nummer" name="telefoon" type="tel" defaultValue={bekend.telefoon} autoComplete="tel" />
         </div>
       </fieldset>

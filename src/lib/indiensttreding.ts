@@ -23,7 +23,7 @@ export type Stap = { sleutel: StapSleutel; nummer: number; titel: string; klaar:
 
 /** Een ding dat bij het tekenen terug moet komen. */
 export type Stuk = {
-  sleutel: 'contract' | 'avg_verklaring' | 'loonheffing' | 'id_kopie' | 'iban' | 'handboek'
+  sleutel: 'contract' | 'avg_verklaring' | 'loonheffing' | 'id_kopie' | 'iban' | 'contact' | 'handboek'
   titel: string
   klaar: boolean
   toelichting?: string
@@ -88,6 +88,13 @@ export async function getIndiensttreding(k: Candidate): Promise<Indiensttreding>
     { sleutel: 'loonheffing', titel: 'Getekend loonheffingsformulier', klaar: heeft('loonheffing'), voorEersteWerkdag: true, toelichting: 'Opgaaf gegevens voor de loonheffingen: met BSN en de keuze voor de loonheffingskorting.' },
     { sleutel: 'id_kopie', titel: 'Kopie identiteitsbewijs', klaar: heeft('id_kopie'), voorEersteWerkdag: true, toelichting: 'Bekijk het origineel bij het tekenen.' },
     { sleutel: 'iban', titel: 'Bankrekening (IBAN)', klaar: !!r?.ibanEnc, voorEersteWerkdag: true, toelichting: r?.ibanEnc ? `Eindigt op ${r.ibanLast4 ?? '…'}.` : undefined },
+    {
+      sleutel: 'contact',
+      titel: 'Privé e-mailadres en mobiel nummer',
+      klaar: !!r?.privateEmail?.trim() && !!r?.privatePhone?.trim(),
+      voorEersteWerkdag: true,
+      toelichting: 'De salarisadministratie vraagt erom.',
+    },
     {
       sleutel: 'handboek',
       titel: 'Personeelshandboek ontvangen',

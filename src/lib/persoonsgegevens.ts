@@ -97,15 +97,28 @@ export function watOntbreekt(r: PersonalRecord, documenten: Pick<DocumentInfo, '
   if (!r.lastName?.trim()) uit.push('achternaam')
   if (!r.birthDate) uit.push('geboortedatum')
   if (!r.addressLine?.trim() || !r.postalCode?.trim() || !r.city?.trim()) uit.push('adres')
+  if (!r.privateEmail?.trim()) uit.push('privé e-mailadres')
+  if (!r.privatePhone?.trim()) uit.push('mobiel nummer')
   if (!r.ibanEnc) uit.push('IBAN')
   if (!documenten.some((d) => d.kind === 'id_kopie')) uit.push('kopie ID')
   if (!documenten.some((d) => d.kind === 'loonheffing')) uit.push('loonheffingsformulier')
   return uit
 }
 
+/**
+ * Wat de salarisadministratie nodig heeft en nog ontbreekt: alles uit
+ * watOntbreekt plus het getekende contract. Pas als dit leeg is, gaat er een
+ * pakket de deur uit; zo hoeven ze nooit iets na te vragen.
+ */
+export function watOntbreektVoorSalaris(r: PersonalRecord, documenten: Pick<DocumentInfo, 'kind'>[]): string[] {
+  const uit = watOntbreekt(r, documenten)
+  if (!documenten.some((d) => d.kind === 'contract')) uit.push('getekend contract')
+  return uit
+}
+
 /** Een punt van het dossier: iets wat er moet zijn voor contract en salarisadministratie. */
 export type DossierPunt = {
-  sleutel: 'naam' | 'geboortedatum' | 'adres' | 'contact' | 'iban' | 'noodcontact' | 'id_kopie' | 'loonheffing' | 'contract' | 'avg_verklaring'
+  sleutel: 'naam' | 'geboortedatum' | 'adres' | 'email' | 'mobiel' | 'iban' | 'noodcontact' | 'id_kopie' | 'loonheffing' | 'contract' | 'avg_verklaring'
   titel: string
   klaar: boolean
 }
@@ -121,7 +134,8 @@ export function dossierPunten(g: Pick<Gegevens, 'record' | 'documenten'> | null)
     { sleutel: 'naam', titel: 'Naam volgens paspoort', klaar: !!r?.officialFirstNames?.trim() && !!r?.lastName?.trim() },
     { sleutel: 'geboortedatum', titel: 'Geboortedatum', klaar: !!r?.birthDate },
     { sleutel: 'adres', titel: 'Adres', klaar: !!r?.addressLine?.trim() && !!r?.postalCode?.trim() && !!r?.city?.trim() },
-    { sleutel: 'contact', titel: 'E-mail en telefoon', klaar: !!r?.privateEmail && !!r?.privatePhone },
+    { sleutel: 'email', titel: 'Privé e-mailadres', klaar: !!r?.privateEmail?.trim() },
+    { sleutel: 'mobiel', titel: 'Mobiel nummer', klaar: !!r?.privatePhone?.trim() },
     { sleutel: 'iban', titel: 'IBAN', klaar: !!r?.ibanEnc },
     { sleutel: 'noodcontact', titel: 'Noodcontact', klaar: !!r?.emergencyName && !!r?.emergencyPhone },
     { sleutel: 'id_kopie', titel: 'Kopie ID', klaar: heeft('id_kopie') },
@@ -129,6 +143,14 @@ export function dossierPunten(g: Pick<Gegevens, 'record' | 'documenten'> | null)
     { sleutel: 'contract', titel: 'Getekend contract', klaar: heeft('contract') },
     { sleutel: 'avg_verklaring', titel: 'AVG-verklaring', klaar: heeft('avg_verklaring') },
   ]
+}
+
+/** Wat er in het pakket voor de salarisadministratie hoort, in de volgorde van het gegevensoverzicht. */
+export const SALARIS_PUNTEN: DossierPunt['sleutel'][] = ['naam', 'geboortedatum', 'adres', 'email', 'mobiel', 'iban', 'contract', 'loonheffing', 'id_kopie']
+
+export function salarisPakket(g: Pick<Gegevens, 'record' | 'documenten'> | null): DossierPunt[] {
+  const punten = dossierPunten(g)
+  return SALARIS_PUNTEN.map((s) => punten.find((p) => p.sleutel === s)!)
 }
 
 async function documentenVan(recordId: string): Promise<DocumentInfo[]> {
@@ -415,7 +437,7 @@ export async function markeerDoorgegeven(recordId: string, userId: string, doorg
   if (!r) throw new GegevensError('Deze gegevens bestaan niet meer.')
   if (doorgegeven) {
     const documenten = await documentenVan(recordId)
-    const mist = watOntbreekt(r, documenten)
+    const mist = watOntbreektVoorSalaris(r, documenten)
     if (mist.length > 0) throw new GegevensError(`Nog niet compleet: ${mist.join(', ')}.`)
   }
   await db
