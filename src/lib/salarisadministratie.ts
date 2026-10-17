@@ -5,7 +5,7 @@ import { db } from '@/db'
 import { candidates, contacts, employerSettings, employmentContracts, users } from '@/db/schema'
 import type { GeneratedContract, PersonalRecord } from '@/db/schema'
 import { listContracten, invoerUit, tekennaamVan, urenTekst, deeltijdfactor } from './contracten'
-import { getGegevens, leesDocument, leesIban, dossierPunten, DOCUMENT_LABELS, type DocumentSoort, type Gegevens } from './persoonsgegevens'
+import { getGegevens, leesDocument, leesIban, dossierPunten, salarisPakket, DOCUMENT_LABELS, type DocumentSoort, type Gegevens } from './persoonsgegevens'
 import { huidigSalaris } from './personeel'
 import { formatCents } from './money'
 import { formatDateLong } from './dates'
@@ -138,8 +138,8 @@ function secties(p: Persoon, voor: MapSoort): Sectie[] {
       regels: [
         ['Adres', r?.addressLine],
         ['Postcode en woonplaats', [r?.postalCode, r?.city].filter(Boolean).join(' ') || null],
-        ['E-mail', r?.privateEmail],
-        ['Telefoon', r?.privatePhone],
+        ['Privé e-mailadres', r?.privateEmail],
+        ['Mobiel nummer', r?.privatePhone],
       ],
     },
     {
@@ -287,7 +287,9 @@ export async function medewerkersXlsx(): Promise<Uint8Array> {
     'Functie',
     'Afdeling',
     'E-mail (werk)',
-    'Mobiel',
+    'Telefoon (werk)',
+    'Privé e-mailadres',
+    'Mobiel nummer (privé)',
     'In dienst sinds',
     'Uit dienst per',
     'Soort contract',
@@ -314,6 +316,8 @@ export async function medewerkersXlsx(): Promise<Uint8Array> {
       u.department,
       u.email,
       u.mobile ?? u.phone,
+      r?.privateEmail ?? null,
+      r?.privatePhone ?? null,
       datum(u.startedOn),
       datum(u.endedOn),
       soort,

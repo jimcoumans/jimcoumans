@@ -132,7 +132,12 @@ ${GROET}`,
 {{#als samenvatting}}In het kort:
 {{samenvatting}}
 
-{{/als}}Het gegevensoverzicht, het getekende contract, het loonheffingsformulier en de kopie ID staan in een beveiligde map:
+{{/als}}In de beveiligde map staat het complete pakket:
+- het gegevensoverzicht, met adres, geboortedatum, privé e-mailadres, mobiel nummer en IBAN;
+- het getekende contract;
+- het loonheffingsformulier;
+- de kopie ID.
+
 {{beveiligde_link}}
 
 De link is beperkt geldig. Lukt het openen niet, laat het me dan weten.
