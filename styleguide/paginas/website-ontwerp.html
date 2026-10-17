@@ -1234,6 +1234,124 @@ a.club-t:hover{transform:translateY(-4px);text-decoration:none}
   .ld-stage .ip{width:40%}
 }
 
+/* ==========================================================================
+   Ronde 4: de homepage vanuit de klant
+   ========================================================================== */
+
+/* ---------- Hero: belofte links, live aanvragen rechts ---------- */
+.held4{min-height:calc(100vh - 48px);min-height:calc(100svh - 48px);display:flex;align-items:center;padding:72px 0 132px}
+.held4 .vlek{position:absolute!important;z-index:0!important;border-radius:50%;filter:blur(60px);opacity:.55;pointer-events:none}
+.held4-in{width:100%;max-width:calc(1240px + var(--gutter)*2);display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,.6fr);gap:56px;align-items:center;position:relative;z-index:1}
+.held4-kop{font:800 clamp(40px,5.3vw,80px)/.98 var(--display);letter-spacing:-.045em;margin-top:18px}
+.held4-kop .l{display:block;font-weight:300;font-size:.5em;letter-spacing:-.03em;line-height:1.1;margin-top:.25em;color:rgba(255,255,255,.92)}
+.held4-lead{font:400 clamp(18px,1.55vw,21px)/1.45 var(--display);color:rgba(255,255,255,.84);max-width:600px;margin-top:22px}
+.branches{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:30px}
+.branches small{font:500 13px var(--text);color:rgba(255,255,255,.7);margin-right:6px}
+.branches button{font:500 13px var(--text);color:#fff;padding:7px 12px;border-radius:99px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.06);transition:background .2s,border-color .2s,color .2s}
+.branches button:hover{background:rgba(255,255,255,.14)}
+.branches button.op{background:var(--lime);border-color:var(--lime);color:#111}
+.h4-kaart{background:rgba(255,255,255,.96);color:var(--ink);border-radius:22px;padding:22px;box-shadow:0 40px 80px -30px rgba(2,8,18,.7),0 0 0 1px rgba(255,255,255,.4)}
+.h4-kop{display:flex;align-items:center;gap:10px;padding-bottom:14px;border-bottom:1px solid #EEF1F6}
+.h4-kop .bm{width:20px;height:22px;color:#12305F}
+.h4-kop b{display:block;font:700 14px var(--display)}
+.h4-kop small{display:block;font-size:11px;color:#8A94A6}
+.h4-live{margin-left:auto;display:inline-flex;align-items:center;gap:6px;font:600 11px var(--text);color:#1D7D3F;background:#E6F7EB;border-radius:99px;padding:4px 9px}
+.h4-live i{width:6px;height:6px;border-radius:50%;background:#34C759;animation:puls 1.6s ease-in-out infinite}
+@keyframes puls{50%{opacity:.3}}
+.h4-getal{padding:16px 0 6px}
+.h4-getal small{display:block;font-size:12px;color:#6E7A8C}
+.h4-getal b{display:block;font:800 64px/1 var(--display);letter-spacing:-.05em;color:#0B1A33;margin:4px 0}
+.h4-getal span{font-size:12px;color:var(--groen-tekst)}
+.feed--held{margin-top:12px}
+.feed--held li{box-shadow:0 0 0 1px rgba(16,36,72,.07);animation:feedIn .7s cubic-bezier(.2,.8,.2,1) both;opacity:0}
+@keyframes feedIn{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+.feed--rustig li{animation:none;opacity:1}
+.feed .fi{width:22px;height:22px;stroke:#1E4E95;fill:none;stroke-width:2.4;flex:none}
+@media (max-width:1000px){.held4{padding:56px 0 120px}.held4-in{grid-template-columns:1fr;gap:40px}.held4-beeld{max-width:460px}}
+@media (max-width:520px){.held4-kop{font-size:38px}}
+
+/* ---------- Herkenning ---------- */
+.herk{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:56px}
+.herk>div{border-radius:22px;padding:32px;background:var(--grijs);position:relative}
+.herk-nr{font:800 15px var(--display);color:var(--blauw-link)}
+.herk h3{font:700 23px/1.2 var(--display);letter-spacing:-.025em;color:#0B1A33;margin-top:14px}
+.herk p{margin-top:10px;font-size:16px;line-height:1.55;color:#5B6678}
+@media (max-width:900px){.herk{grid-template-columns:1fr}}
+
+/* ---------- De rekensom ---------- */
+.rs{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:64px;align-items:center}
+.rs-kaart{background:#fff;color:var(--ink);border-radius:24px;padding:34px;box-shadow:0 40px 80px -30px rgba(0,0,0,.7)}
+.rs-r{margin-top:24px}
+.rs-r:first-child{margin-top:0}
+.rs-r label{display:flex;justify-content:space-between;align-items:baseline;gap:16px;font-size:14px;color:#5B6678}
+.rs-r label b{font:700 18px var(--display);color:#0B1A33;white-space:nowrap}
+.rs-r input{width:100%;margin-top:10px;accent-color:#1E4E95}
+.rs-uit{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:28px}
+.rs-uit>div{border-radius:16px;padding:18px;background:#F3F6FA}
+.rs-uit>div:first-child{background:#0B1A33;color:#fff}
+.rs-uit small{display:block;font-size:12px;color:#6E7A8C;line-height:1.35}
+.rs-uit>div:first-child small{color:rgba(255,255,255,.7)}
+.rs-uit b{display:block;font:800 44px/1 var(--display);letter-spacing:-.045em;margin:8px 0 6px}
+.rs-uit>div:first-child b{color:var(--lime)}
+.rs-uit>div>span{font-size:12px;color:#6E7A8C;line-height:1.4}
+.rs-uit>div:first-child>span{color:rgba(255,255,255,.65)}
+@media (max-width:900px){.rs{grid-template-columns:1fr;gap:36px}.rs-kaart{padding:26px 22px}.rs-uit{grid-template-columns:1fr}}
+
+/* ---------- Aanpak: wat jij merkt ---------- */
+.t3-merk{margin-top:14px!important;padding:12px 14px;border-radius:12px;background:#F3F6FA;font-size:15px!important;color:#3A4558!important}
+.t3-merk b{color:#0B1A33}
+.t3--donker .t3-merk{background:rgba(255,255,255,.08);color:rgba(255,255,255,.8)!important}
+.t3--donker .t3-merk b{color:var(--lime)}
+
+/* ---------- Inzichten ---------- */
+.inz{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:56px}
+.inz article{border-radius:22px;padding:28px 26px;background:#0E1A2E;border:1px solid rgba(255,255,255,.07);display:flex;flex-direction:column}
+.inz b{font:800 52px/1 var(--display);letter-spacing:-.05em;background:linear-gradient(120deg,#EAFF8A,#C4F000);-webkit-background-clip:text;background-clip:text;color:transparent}
+.inz h3{font:700 20px/1.2 var(--display);letter-spacing:-.02em;margin-top:18px;color:#fff}
+.inz p{margin:10px 0 16px;font-size:14px;line-height:1.55;color:rgba(255,255,255,.66)}
+.inz article>span{margin-top:auto;padding-top:16px;border-top:1px solid rgba(255,255,255,.1);font-size:14px;line-height:1.45;color:#fff}
+@media (max-width:1100px){.inz{grid-template-columns:1fr 1fr}}
+@media (max-width:600px){.inz{grid-template-columns:1fr}}
+
+/* ---------- Het verschil ---------- */
+.vs2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:56px}
+.vs2>div{border-radius:22px;padding:36px}
+.vs2-nooit{background:var(--grijs)}
+.vs2-wel{background:#0B1A33;color:#fff}
+.vs2 h3{font:700 22px var(--display);letter-spacing:-.02em;margin-bottom:12px}
+.vs2-wel .vink li{border-color:rgba(255,255,255,.1)}
+.vs2-wel .vink li::before{background-color:var(--lime);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath d='M5 9.4l2.6 2.5L13 6.4' fill='none' stroke='%23111' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+@media (max-width:800px){.vs2{grid-template-columns:1fr}}
+
+/* ---------- Starten ---------- */
+.start{margin-top:56px;border-top:1px solid #E2E8F0}
+.start li{display:grid;grid-template-columns:64px minmax(0,1fr) 180px;gap:24px;align-items:center;padding:24px 0;border-bottom:1px solid #E2E8F0}
+.start-nr{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:800 18px var(--display);background:#0B1A33;color:#fff}
+.start li:last-child .start-nr{background:var(--lime);color:#111}
+.start h3{font:700 21px/1.2 var(--display);letter-spacing:-.02em;color:#0B1A33}
+.start p{margin-top:4px;font-size:15px;color:#5B6678;line-height:1.5}
+.start-tijd{text-align:right;font:700 15px var(--display);color:#0B1A33}
+.start-tijd small{display:block;font:500 12px var(--text);color:#8A94A6;margin-top:2px}
+@media (max-width:700px){.start li{grid-template-columns:48px 1fr;gap:14px}.start-tijd{grid-column:2;text-align:left}}
+
+/* ---------- Bewijs ---------- */
+.case-leeg{border-radius:22px;padding:36px;background:#0B1A33;color:#fff;display:flex;flex-direction:column}
+.case-leeg .eyebrow{color:var(--lime);font:600 14px var(--text)}
+.case-leeg h3{font:700 24px/1.2 var(--display);margin-top:8px}
+.case-leeg p{margin-top:10px;font-size:15px;color:rgba(255,255,255,.7);line-height:1.55}
+.case-leeg .vul{margin-top:auto;padding-top:16px;color:var(--lime)}
+.duo{grid-template-columns:1fr 1.4fr}
+@media (max-width:900px){.duo{grid-template-columns:1fr}}
+
+/* ---------- Vragen ---------- */
+.faq4{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:64px;align-items:start}
+.faq4 .faq{margin-top:0}
+@media (max-width:900px){.faq4{grid-template-columns:1fr;gap:32px}}
+
+/* ---------- Team ---------- */
+.team4 .sk{max-width:820px}
+.duo>.case-leeg{background:#0B1A33}
+.faq4 .h1{font-size:clamp(34px,3.8vw,54px)}
 </style>
 <script>
 
@@ -1692,169 +1810,215 @@ SCHERM.mail=function(){return status+'<div class="ml"><div class="ml-van">'+AVAT
 SCHERM.slot=function(){return status+'<div class="vergrendel"><small>dinsdag 14 oktober</small><b>9:41</b></div><div class="notif" style="margin-top:22px"><i>'+IC.bel+'</i><div><b>Nieuwe aanvraag</b><span>Check ingevuld via Google</span></div><small>nu</small></div><div class="notif"><i>'+IC.bel+'</i><div><b>Nieuwe aanvraag</b><span>Kennismaking via LinkedIn</span></div><small>8 min</small></div>'};
 
 /* ==========================================================================
-   Homepage, ronde 3. Poster en manifest blijven; de rest is opnieuw opgezet
-   met echte kanaallogo's, mock-ups in de eigen huisstijl en kaarten die
-   subtiel bewegen.
+   Homepage, ronde 4: geschreven vanuit de ondernemer, niet vanuit ons.
+
+   De lijn:
+   1. Hero        wat jij krijgt, in jouw woorden (per branche)
+   2. Herkenning  jouw situatie, in feiten
+   3. Rekensom    onze expertise, meteen voelbaar: wat een aanvraag jou mag kosten
+   4. Aanpak      wat wij doen, en wat jij daarvan merkt
+   5. Inzicht     wat wij elke dag zien, met bron
+   6. Verschil    wat je bij ons nooit krijgt, en wat altijd
+   7. Portaal     bewijs van transparantie
+   8. Prijzen     alles op tafel
+   9. Starten     van eerste klik tot eerste aanvraag
+   10. Team       de mensen, en waarom "Momentum first"
+   11. Bewijs     reviews (cases volgen)
+   12. Eerlijk    voor wie wel en niet
+   13. Vragen     de bezwaren die iedereen heeft
+   14. Slot
    ========================================================================== */
 var PAGINA={};
 
+/* Per branche: het woord voor een aanvraag en hoe die binnenkomt */
+var BRANCHE={
+  '':{n:'Alle branches',mv:'aanvragen',ev:'aanvraag',feed:[['google','Offerteaanvraag','via Google · zoeken'],['instagram','Afspraak','via Instagram · story'],['linkedin','Kennismaking','via LinkedIn'],['facebook','Offerteaanvraag','via Facebook · feed']]},
+  'horeca':{n:'Horeca',mv:'reserveringen',ev:'reservering',feed:[['google','Reservering · 4 personen','zaterdag 19.30 · via Google'],['instagram','Groepsaanvraag · 22 personen','kerstdiner · via Instagram'],['facebook','Reservering · 2 personen','vrijdag 18.00 · via Facebook'],['google','Arrangement · 6 personen','zondag · via Google Maps']]},
+  'makelaardij':{n:'Makelaardij',mv:'waardebepalingen',ev:'waardebepaling',feed:[['facebook','Waardebepaling','Valkenburg · via Facebook'],['google','Waardebepaling','Heerlen · via Google'],['instagram','Verkoopgesprek','Sittard · via Instagram'],['google','Waardebepaling','Hulsberg · via Google']]},
+  'automotive':{n:'Automotive',mv:'proefritten',ev:'proefrit',feed:[['instagram','Proefrit','elektrisch · via Instagram'],['google','Inruilvoorstel','via Google'],['facebook','Proefrit','occasion · via Facebook'],['google','Werkplaatsafspraak','via Google Maps']]},
+  'retail':{n:'Retail',mv:'afspraken',ev:'afspraak',feed:[['instagram','Afspraak in de winkel','zaterdag · via Instagram'],['google','Route naar de winkel','via Google Maps'],['facebook','Aanvraag maatwerk','via Facebook'],['google','Afspraak','via Google']]},
+  'zakelijke-dienstverlening':{n:'Zakelijk',mv:'kennismakingen',ev:'kennismaking',feed:[['linkedin','Kennismaking','directeur · via LinkedIn'],['google','Offerteaanvraag','via Google'],['linkedin','Terugbelverzoek','HR-manager · via LinkedIn'],['google','Kennismaking','via Google']]},
+  'zorg':{n:'Zorg',mv:'intakes',ev:'intake',feed:[['google','Intake aangevraagd','via Google'],['facebook','Terugbelverzoek','via Facebook'],['google','Afspraak','via Google Maps'],['instagram','Intake aangevraagd','via Instagram']]},
+  'overheid':{n:'Overheid',mv:'aanmeldingen',ev:'aanmelding',feed:[['facebook','Aanmelding','informatieavond · via Facebook'],['instagram','Aanmelding','via Instagram'],['google','Aanmelding','via Google'],['facebook','Aanmelding','wijkbijeenkomst · via Facebook']]},
+  'sport-en-vrije-tijd':{n:'Sport en vrije tijd',mv:'boekingen',ev:'boeking',feed:[['instagram','Boeking · 8 personen','via Instagram'],['tiktok','Boeking · groep','via TikTok'],['google','Boeking · 2 personen','via Google'],['facebook','Lidmaatschap','via Facebook']]}
+};
+function feedHtml(b){return b.feed.map(function(f,i){return '<li style="animation-delay:'+(i*1.1)+'s">'+logo(f[0])+'<span><b>'+f[1]+'</b><small>'+f[2]+'</small></span><em'+(i===2?' class="goal"':'')+'>'+(i===2?'Klant':i===0?'Nu':(i*7)+' min')+'</em></li>'}).join('')}
+
 PAGINA.home=function(){
-  var h='';
+  var h='', B=BRANCHE[''];
 
-  /* 1. Poster */
-  h+='<section class="gr gr--merk poster-held" aria-labelledby="h-held"><i class="vlek vlek-1" aria-hidden="true"></i><i class="vlek vlek-2" aria-hidden="true"></i>'
-    +'<div class="wrap ph-top rv"><h1 class="ph-h1">Performance-marketingbureau<br>in Zuid-Limburg</h1>'+bm()+'</div>'
-    +'<div class="wrap"><p class="ph-kop rv rv-2" id="h-held">Momentum first.<span class="l">Mastery later.</span></p>'
-    +'<div class="ph-onder rv rv-3"><p>We zetten je marketing vandaag aan en maken hem elke maand scherper. Meer aanvragen, lagere kosten per aanvraag. En jij ziet elk cijfer.</p>'
-    +'<div class="knoppen" style="margin-top:0"><a class="knop knop--lime knop--groot" href="#/past-het">Start de check</a><a class="knop knop--rand knop--groot" href="#/werkwijze">Zo werkt het</a></div></div></div>'
-    +'<span class="ph-zij" aria-hidden="true">Performance Marketing</span></section>';
-  h+=tapes();
-
-  /* 2. Manifest */
-  var man='Marketing zonder cijfers is hoop. Een mooie post. Een nieuwe huisstijl. Duimen. Wij doen het andersom. |Aanzetten. Meten. Bijsturen.| Elke maand opnieuw. Tot het werkt, of tot we zelf zeggen dat het niet werkt.';
-  h+='<section class="s s--zwart" style="padding-top:calc(var(--sy) + 40px)"><div class="wrap"><span class="chip rv" style="margin-bottom:36px"><i></i>Ons standpunt</span>'
-    +'<p class="manifest" data-oplicht>'+man.split('|').map(function(deel,i){return deel.split(' ').filter(Boolean).map(function(w){return '<span'+(i===1?' class="lime"':'')+'>'+w+'</span>'}).join(' ')}).join(' ')+'</p></div></section>';
-
-  /* 3. Alle kanalen, één motor */
-  var y=[12,26,40,54,68,82];
-  h+='<section class="s gr gr--licht"><div class="wrap"><div class="sk"><span class="eyebrow rv">Alle kanalen</span>'+vl('h1 rv','Overal waar je klant is.','Eén motor erachter.')
-    +'<p class="lead rv rv-2">Zoeken in Google, kijken op YouTube, scrollen op Instagram en TikTok, netwerken op LinkedIn. We zetten in wat werkt voor jouw klant en schuiven budget naar wat oplevert.</p></div>'
-    +'<div class="kd rv" data-kd>'
-    +'<svg class="kd-lijnen" viewBox="0 0 1000 440" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="kdg" x1="0" x2="1"><stop offset="0" stop-color="#1E4E95"/><stop offset="1" stop-color="#8DB300"/></linearGradient></defs>'
-      +y.map(function(p){var yy=p/100*440;return '<path d="M200 '+yy+' C 300 '+yy+', 300 220, 375 220"/>'}).join('')
-      +'<path class="vol" d="M625 220 H 770"/><circle class="kd-pulse" r="5"><animateMotion dur="2.4s" repeatCount="indefinite" path="M625 220 H 770"/></circle></svg>'
-    +'<div class="kd-kanalen">'+KANALEN.map(function(k,i){return '<div class="kd-kanaal" style="top:'+y[i]+'%">'+logo(k[0])+k[1]+'<small>'+['Zoeken','Video','Feed','Stories','Zakelijk','Video'][i]+'</small></div>'}).join('')+'</div>'
-    +'<div class="kd-motor gr gr--merk">'+bm()+'<b>Eén campagne, alle kanalen.</b><p>Eén boodschap, één landingspagina en één budget dat elke dag schuift naar wat werkt.</p><div class="kd-chips"><span>Budget</span><span>Doelgroep</span><span>Beeld</span></div></div>'
-    +'<div class="kd-uit"><small>Aanvragen deze maand</small><b data-tel="38">0</b><span>+6 ten opzichte van vorige maand</span><ul><li>'+logo('google')+'Offerteaanvraag<em>09.12</em></li><li>'+logo('linkedin')+'Kennismaking<em>08.47</em></li><li>'+logo('instagram')+'Afspraak<em>gisteren</em></li></ul></div>'
-    +'<span class="kd-noot">Voorbeeldcijfers</span></div></div></section>';
-
-  /* 4. Het systeem in vier tegels */
-  var wandKol=[['momentum','cr--staand','likes','zeven','cr--liggend','check'],['video','cr--staand','motor','check','cr--liggend','likes'],['zeven','','momentum','motor','cr--staand','video']];
-  h+='<section class="s s--wit"><div class="wrap"><div class="sk"><span class="eyebrow rv">Het systeem</span>'+vl('h1 rv','Een motor.','Geen gok.')
-    +'<p class="lead rv rv-2">Adverteren is de motor, content de brandstof en je website de plek waar het landt. Wat eruit komt, is een aanvraag van iemand die wil kopen.</p></div>'
-    +'<div class="b3">'
-    /* Adverteren */
-    +'<article class="t3 t3--breed rv"><div class="t3-tekst"><span class="eyebrow">De motor</span><h3>Adverteren. <span class="l">Waar je klant zoekt en scrollt.</span></h3>'
-      +'<p>Op Google op het moment dat iemand zoekt. Op Facebook, Instagram, LinkedIn, TikTok en YouTube voordat hij zoekt. Wij kiezen de kanalen op de cijfers, niet op gevoel.</p>'
-      +'<div class="kn-rij">'+KANALEN.map(function(k){return '<span>'+logo(k[0])+k[1]+'</span>'}).join('')+'</div></div>'
-      +'<div class="adv-stage"><div class="adv-g">'+browser(ADV.google(),'google.nl/search')+'</div><div class="adv-li">'+ADV.linkedin()+'</div><div class="adv-st">'+telefoon(ADV.story())+'</div><div class="adv-tt">'+telefoon(ADV.tiktok())+'</div></div></article>'
-    /* Content */
-    +'<article class="t3 t3--half t3--donker rv"><div class="t3-tekst"><span class="eyebrow">De brandstof</span><h3>Content. <span class="l">Beeld dat de duim stopt.</span></h3><p>Foto, video en ontwerp, gemaakt op een draaidag bij jou op locatie. Steeds nieuwe varianten, want advertenties slijten.</p></div>'
-      +'<div class="t3-beeld"><div class="wand" aria-hidden="true">'+wandKol.map(function(kol){var r='';for(var i=0;i<kol.length;i+=2)r+=creatief(kol[i]).replace('class="cr ','class="cr '+kol[i+1]+' ');return '<div class="wand-kol">'+r+r+'</div>'}).join('')+'</div></div></article>'
-    /* Landing */
-    +'<article class="t3 t3--half rv rv-2"><div class="t3-tekst"><span class="eyebrow">De landing</span><h3>Een pagina <span class="l">die verkoopt.</span></h3><p>Elke campagne krijgt een eigen pagina met één boodschap en één knop. Wie klikt, landt precies waar hij moet zijn.</p></div>'
-      +'<div class="t3-beeld"><div class="ld-stage">'+laptopMet(ADV.landing())+ipad(ADV.landing(true))+'<span class="ld-cursor" aria-hidden="true"></span><span class="ld-toast"><i></i><span>Aanvraag verstuurd<small>Via LinkedIn · zojuist</small></span></span></div></div></article>'
-    /* Aanvraag */
-    +'<article class="t3 t3--breed rv"><div class="t3-tekst"><span class="eyebrow">De voordeur</span><h3>Een aanvraag. <span class="l">Klaar om te kopen.</span></h3><p>Daar stopt ons werk en begint het jouwe. Je ziet elke aanvraag binnenkomen, met het kanaal waar hij vandaan kwam en wat hij kostte.</p></div>'
-      +'<div class="av-stage"><div class="av-kaart"><small>Aanvragen deze maand</small><span class="getal" data-tel="38">0</span><span class="plus">+6 ten opzichte van september</span>'
-      +'<svg viewBox="0 0 300 120" preserveAspectRatio="none"><defs><linearGradient id="avg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#3B80C6" stop-opacity=".25"/><stop offset="1" stop-color="#3B80C6" stop-opacity="0"/></linearGradient></defs><path d="M0 104 L30 98 L60 101 L90 86 L120 88 L150 70 L180 73 L210 56 L240 50 L270 34 L300 28 V120 H0Z" fill="url(#avg)"/><path class="teken-lijn" d="M0 104 L30 98 L60 101 L90 86 L120 88 L150 70 L180 73 L210 56 L240 50 L270 34 L300 28" fill="none" stroke="#1E4E95" stroke-width="2.5" stroke-linecap="round"/></svg><small style="margin-top:8px">Voorbeeldcijfers</small></div>'
-      +'<ul class="feed">'+[['google','Offerteaanvraag','Google · zoeken','Nieuw'],['linkedin','Kennismaking','LinkedIn · advertentie','Nieuw'],['instagram','Afspraak','Instagram · story','Gebeld'],['facebook','Klant geworden','Facebook · feed','Doelpunt']].map(function(f){return '<li>'+logo(f[0])+'<span><b>'+f[1]+'</b><small>'+f[2]+'</small></span><em'+(f[3]==='Doelpunt'?' class="goal"':'')+'>'+f[3]+'</em></li>'}).join('')+'</ul></div></article>'
+  /* 1. Hero: wat jij krijgt */
+  h+='<section class="gr gr--merk held4" aria-labelledby="h-held"><i class="vlek vlek-1" aria-hidden="true"></i><i class="vlek vlek-2" aria-hidden="true"></i>'
+    +'<div class="wrap held4-in"><div class="held4-tekst">'
+    +'<h1 class="ph-h1 rv">Performance-marketingbureau in Zuid-Limburg</h1>'
+    +'<p class="held4-kop rv rv-2" id="h-held">Meer <span data-b="mv">'+B.mv+'</span>.<span class="l">Elke maand. Niet alleen als het meezit.</span></p>'
+    +'<p class="held4-lead rv rv-3">Wij adverteren voor ondernemers in Zuid-Limburg, in Google en op social media. Jij ziet elke <span data-b="ev">'+B.ev+'</span> binnenkomen en wat hij kostte. Werkt het niet, dan zeggen we het zelf.</p>'
+    +'<div class="knoppen rv rv-3"><a class="knop knop--lime knop--groot" href="#rekensom">Reken het uit</a><a class="knop knop--rand knop--groot" href="#/past-het">Start de check</a></div>'
+    +'<div class="branches rv rv-4" role="group" aria-label="Kies je branche"><small>Jouw branche:</small>'+Object.keys(BRANCHE).filter(Boolean).map(function(k){return '<button type="button" data-branche="'+k+'">'+BRANCHE[k].n+'</button>'}).join('')+'</div>'
     +'</div>'
-    +'<p class="grijs rv" style="margin-top:32px">Draait de motor, dan schakelen we de versnellers bij: conversie, e-mail, SEO en betere landingspagina\'s. <a class="ln-k" href="#/werkwijze">Bekijk de werkwijze</a></p>'
+    +'<div class="held4-beeld rv rv-2"><div class="h4-kaart"><div class="h4-kop">'+bm()+'<span><b>Portaal</b><small>Voorbeeld</small></span><span class="h4-live"><i></i>Live</span></div>'
+    +'<div class="h4-getal"><small>Nieuwe <span data-b="mv">'+B.mv+'</span> deze maand</small><b data-tel="38">0</b><span>+6 ten opzichte van vorige maand</span></div>'
+    +'<ul class="feed feed--held" data-feed>'+feedHtml(B)+'</ul></div></div>'
     +'</div></section>';
+  h+=tapes(['Google','YouTube','Facebook','Instagram','LinkedIn','TikTok'],['Resultaat staat op één','Numbers don\'t lie','Likes don\'t pay the bills','Maandelijks opzegbaar','Alles op jouw naam']);
 
-  /* 5. Likes don't pay the bills */
-  h+='<section class="s gr gr--vuur"><div class="wrap"><div class="split" style="align-items:center">'
-    +'<div class="sk"><span class="eyebrow rv">Organisch bereik</span>'+vl('h1 rv','Likes don\'t','pay the bills.')
-    +'<p class="lead rv rv-2">Een bericht op Facebook of Instagram bereikt gemiddeld 1 tot 3% van je eigen volgers.<sup class="vn"><a href="#noten">1</a></sup> Die kenden je al. Wij steken je budget in mensen die je nog niet kennen, en die vandaag zoeken wat jij verkoopt.</p></div>'
-    +'<div class="rv rv-2"><div class="volgers" data-volgers aria-label="Van de honderd volgers zien er gemiddeld één tot drie een bericht">'+new Array(101).join('<i></i>')+'</div><div class="volgers-leg"><span>100 volgers</span><span><b>2</b> zien je bericht</span></div></div>'
+  /* 2. Herkenning */
+  h+='<section class="s s--wit"><div class="wrap"><div class="sk"><span class="eyebrow rv">Herkenbaar</span>'+vl('h1 rv','Goed in je vak.','Onvoorspelbaar in je agenda.')
+    +'<p class="lead rv rv-2">Je klanten zijn tevreden en komen terug. Alleen weet je nooit hoeveel nieuwe er volgende maand bijkomen. Daar is wat aan te doen, met cijfers in plaats van hoop.</p></div>'
+    +'<div class="herk">'
+    +'<div class="rv"><span class="herk-nr">01</span><h3>Mond-tot-mond is je beste verkoper.</h3><p>Alleen bepaal jij niet wanneer hij langskomt. Een drukke maand en een stille maand wisselen elkaar af, en je kunt er niet op plannen.</p></div>'
+    +'<div class="rv rv-2"><span class="herk-nr">02</span><h3>Je weet wat marketing kost. Niet wat het oplevert.</h3><p>Een rapport over bereik en likes zegt niets over je omzet. De enige vraag die telt: hoeveel aanvragen, en wat kostte elke aanvraag.</p></div>'
+    +'<div class="rv rv-3"><span class="herk-nr">03</span><h3>Posten kost tijd. Het levert weinig op.</h3><p>Een bericht bereikt gemiddeld 1 tot 3% van je eigen volgers.<sup class="vn"><a href="#noten">1</a></sup> Die kenden je al. Nieuwe klanten vind je ergens anders.</p></div>'
     +'</div></div></section>';
 
-  /* 6. Snelheid */
-  h+='<section class="s gr gr--licht"><div class="wrap"><div class="sn">'
-    +'<div class="sk"><span class="eyebrow rv">Tot aan de voordeur</span>'+vl('h1 rv','Wie het snelst belt,','wint.')
-    +'<p class="lead rv rv-2">Wij leveren de aanvraag. Hoe snel jij belt, bepaalt of het een klant wordt. Daarom spreken we vooraf af hoe snel je opvolgt, en meten we het in het portaal.</p></div>'
-    +'<div class="rv rv-2"><div class="sn-kaart" data-in><h4>Kans op een serieus gesprek</h4>'
-      +'<div class="staaf staaf--snel"><span>Binnen een uur</span><i><s></s></i><b>7×</b></div>'
-      +'<div class="staaf staaf--traag"><span>Een uur later</span><i><s></s></i><b>1×</b></div>'
-      +'<p class="sn-bron">Oldroyd e.a., Harvard Business Review, 2011.<sup class="vn"><a href="#noten">2</a></sup></p>'
-      +'<div class="sn-melding">'+AVATAR+'<span><b>Nieuwe aanvraag</b><small>Check ingevuld via Google</small></span><span class="timer" data-timer>00:00</span></div></div>'
-      +'<div class="sn-feiten"><div><b>42 uur</b><span>gemiddelde reactietijd van de bedrijven in hetzelfde onderzoek.</span></div><div><b>23%</b><span>belde een aanvraag nooit terug.</span></div></div></div>'
+  /* 3. De rekensom: expertise die je meteen voelt */
+  h+='<section class="s gr gr--nacht" id="rekensom"><div class="wrap"><div class="rs">'
+    +'<div class="sk"><span class="eyebrow rv">De rekensom</span>'+vl('h1 rv','Reken eerst.','Adverteer daarna.')
+    +'<p class="lead rv rv-2">Niet beginnen bij een budget, maar bij wat een klant jou oplevert. Daaruit volgt wat een <span data-b="ev">aanvraag</span> mag kosten, en dus of adverteren voor jou loont. Vul je eigen getallen in.</p>'
+    +'<p class="mini rv rv-3" style="color:rgba(255,255,255,.55);margin-top:18px">Een rekensom, geen belofte. In de check en het intakegesprek rekenen we hem door met jouw echte cijfers.</p></div>'
+    +'<div class="rs-kaart rv rv-2">'
+    +'<div class="rs-r"><label for="rs-w"><span>Wat een nieuwe klant je in het eerste jaar oplevert</span> <b id="rs-ow"></b></label><input type="range" id="rs-w" min="250" max="25000" step="250" value="3000"></div>'
+    +'<div class="rs-r"><label for="rs-c"><span>Hoeveel van de 10 <span data-b="mv">aanvragen</span> klant worden</span> <b id="rs-oc"></b></label><input type="range" id="rs-c" min="1" max="9" step="1" value="3"></div>'
+    +'<div class="rs-r"><label for="rs-k"><span>Hoeveel nieuwe klanten je per maand wilt</span> <b id="rs-ok"></b></label><input type="range" id="rs-k" min="1" max="40" step="1" value="5"></div>'
+    +'<div class="rs-uit"><div><small>Een <span data-b="ev">aanvraag</span> mag je maximaal kosten</small><b id="rs-max">€ 0</b><span>Bij 30% marge. Daaronder verdien je aan elke klant.</span></div>'
+    +'<div><small>Daarvoor heb je per maand nodig</small><b id="rs-aanv">0</b><span id="rs-uitleg"></span></div></div>'
+    +'<a class="knop knop--lime" style="margin-top:22px" href="#/past-het">Reken het door met je echte cijfers</a></div>'
     +'</div></div></section>';
 
-  /* 7. Het scorebord */
-  h+='<section class="s gr gr--merk" style="overflow:hidden"><div class="wrap"><div class="sk"><span class="eyebrow rv">Het scorebord</span>'+vl('h1 rv','Geen rapport.','Een scorebord.')
-    +'<p class="lead rv rv-2">Alle cijfers van al je kanalen op één scherm, elk uur bijgewerkt. Dezelfde cijfers als wij. Niets weggepoetst.</p></div>'
+  /* 4. Aanpak: wat wij doen, wat jij merkt */
+  h+='<section class="s gr gr--licht"><div class="wrap"><div class="sk"><span class="eyebrow rv">Hoe het werkt</span>'+vl('h1 rv','Wij doen het werk.','Jij merkt het aan je agenda.')+'</div>'
+    +'<div class="b3">'
+    +'<article class="t3 t3--breed rv"><div class="t3-tekst"><span class="eyebrow">1 · Gevonden worden</span><h3>We staan er <span class="l">op het moment dat je klant kijkt.</span></h3>'
+      +'<p>In Google als iemand zoekt wat jij verkoopt. Op Facebook, Instagram, LinkedIn, TikTok en YouTube bij wie lijkt op je beste klanten. We kiezen de kanalen op de cijfers en schuiven elke week budget naar wat oplevert.</p>'
+      +'<p class="t3-merk"><b>Wat jij merkt:</b> meer mensen die jou vinden, terwijl je gewoon aan het werk bent.</p>'
+      +'<div class="kn-rij">'+KANALEN.map(function(k){return '<span>'+logo(k[0])+k[1]+'</span>'}).join('')+'</div></div>'
+      +'<div class="adv-stage"><div class="adv-g">'+browser(ADV.google(),'google.nl/search')+'</div><div class="adv-li">'+ADV.linkedin()+'</div><div class="adv-st">'+telefoon(ADV.story())+'</div></div></article>'
+    +'<article class="t3 t3--half t3--donker rv"><div class="t3-tekst"><span class="eyebrow">2 · Opvallen</span><h3>Beeld van jouw zaak. <span class="l">Geen stockfoto.</span></h3><p>We filmen en fotograferen bij jou op locatie en maken er steeds nieuwe advertenties van. Een advertentie slijt; wie blijft verversen, blijft opvallen.</p><p class="t3-merk"><b>Wat jij merkt:</b> een dagdeel filmen per draaidag. De rest doen wij.</p></div>'
+      +'<div class="t3-beeld"><div class="wand" aria-hidden="true">'+[['momentum','cr--staand','likes','','zeven','cr--liggend'],['video','cr--staand','check','','motor','cr--staand']].map(function(kol){var r='';for(var i=0;i<kol.length;i+=2)r+=creatief(kol[i]).replace('class="cr ','class="cr '+kol[i+1]+' ');return '<div class="wand-kol">'+r+r+'</div>'}).join('')+'</div></div></article>'
+    +'<article class="t3 t3--half rv rv-2"><div class="t3-tekst"><span class="eyebrow">3 · Overtuigen</span><h3>Een pagina <span class="l">die verkoopt.</span></h3><p>Elke campagne krijgt een eigen pagina op jouw website, met één boodschap en één knop. Twee van de honderd bezoekers doen iets; wij zorgen dat het er meer worden.</p><p class="t3-merk"><b>Wat jij merkt:</b> meer aanvragen uit hetzelfde budget.</p></div>'
+      +'<div class="t3-beeld"><div class="ld-stage">'+laptopMet(ADV.landing())+ipad(ADV.landing(true))+'<span class="ld-cursor" aria-hidden="true"></span><span class="ld-toast"><i></i><span>Aanvraag verstuurd<small>zojuist</small></span></span></div></div></article>'
+    +'<article class="t3 t3--breed rv"><div class="t3-tekst"><span class="eyebrow">4 · Bijsturen</span><h3>Elke ochtend om 7.00 uur <span class="l">een controle.</span></h3><p>Wat buiten de lijntjes valt, zien wij voordat jij het merkt: een advertentie die wordt afgekeurd, een formulier dat niet werkt, kosten die oplopen. Elke maand een update, en wat werkt krijgt meer budget.</p><p class="t3-merk"><b>Wat jij merkt:</b> <span data-b="mv">aanvragen</span> die elke maand iets minder kosten.</p></div>'
+      +'<div class="av-stage"><div class="av-kaart"><small>Kosten per <span data-b="ev">aanvraag</span></small><span class="getal">€ 52</span><span class="plus">−€ 8 ten opzichte van vorige maand</span>'
+      +'<svg viewBox="0 0 300 120" preserveAspectRatio="none"><defs><linearGradient id="avg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#3B80C6" stop-opacity=".25"/><stop offset="1" stop-color="#3B80C6" stop-opacity="0"/></linearGradient></defs><path d="M0 22 L30 30 L60 26 L90 44 L120 40 L150 58 L180 55 L210 70 L240 74 L270 86 L300 90 V120 H0Z" fill="url(#avg)"/><path class="teken-lijn" d="M0 22 L30 30 L60 26 L90 44 L120 40 L150 58 L180 55 L210 70 L240 74 L270 86 L300 90" fill="none" stroke="#1E4E95" stroke-width="2.5" stroke-linecap="round"/></svg><small style="margin-top:8px">Voorbeeldcijfers</small></div>'
+      +'<ul class="feed feed--rustig"><li>'+IC.klok.replace('<svg','<svg class="fi"')+'<span><b>Dagmail 7.00 uur</b><small>Alles binnen de lijntjes</small></span><em>OK</em></li><li>'+logo('google')+'<span><b>Budget verschoven</b><small>Van display naar zoeken</small></span><em>Gedaan</em></li><li>'+logo('instagram')+'<span><b>Nieuwe variant live</b><small>Story uit de draaidag</small></span><em>Test</em></li></ul></div></article>'
+    +'</div></div></section>';
+
+  /* 5. Inzicht: wat wij elke dag zien */
+  h+='<section class="s s--zwart"><div class="wrap"><div class="sk"><span class="eyebrow rv">Wat wij elke dag zien</span>'+vl('h1 rv','Vier lessen','die je geld besparen.')
+    +'<p class="lead rv rv-2">Geen meningen. Feiten uit onderzoek en uit het vak, en wat we ermee doen.</p></div>'
+    +'<div class="inz">'
+    +'<article class="rv"><b>7×</b><h3>Wie het snelst belt, wint.</h3><p>Bedrijven die binnen een uur reageerden, hadden bijna zeven keer zo vaak een serieus gesprek als bedrijven die later belden.<sup class="vn"><a href="#noten">2</a></sup></p><span>Daarom spreken we vooraf af hoe snel je belt, en meten we het.</span></article>'
+    +'<article class="rv rv-2"><b>+50%</b><h3>Van 2 naar 3% conversie.</h3><p>Doen 3 in plaats van 2 van de 100 bezoekers een aanvraag, dan heb je de helft meer <span data-b="mv">aanvragen</span>. Voor hetzelfde budget.</p><span>Daarom werken we eerst aan je pagina, en pas daarna aan je budget.</span></article>'
+    +'<article class="rv rv-3"><b>10–20%</b><h3>De meeste ideeën werken niet.</h3><p>Bij Google verbetert maar 10 tot 20% van de geteste ideeën het resultaat.<sup class="vn"><a href="#noten">4</a></sup> Ook goede ideeën van slimme mensen.</p><span>Daarom testen we, ook onze eigen ideeën. De cijfers kiezen.</span></article>'
+    +'<article class="rv rv-4"><b>1–3%</b><h3>Likes don\'t pay the bills.</h3><p>Een bericht bereikt gemiddeld 1 tot 3% van je eigen volgers.<sup class="vn"><a href="#noten">1</a></sup> Een advertentie bereikt wie jij kiest.</p><span>Daarom steken we je budget in mensen die je nog niet kennen.</span></article>'
+    +'</div><div class="links rv"><a class="ln-k" href="#/kennis">Meer uit de analyse</a></div></div></section>';
+
+  /* 6. Het verschil */
+  h+='<section class="s s--wit"><div class="wrap"><div class="sk"><span class="eyebrow rv">Het verschil</span>'+vl('h1 rv','Geen kleine lettertjes.','Ook niet in het groot.')+'</div>'
+    +'<div class="vs2">'
+    +'<div class="vs2-nooit rv"><h3>Wat je bij ons nooit krijgt</h3><ul class="vink vink--nee"><li>Een jaarcontract. Je zegt maandelijks op, net als wij.</li><li>Een uurtarief of meerwerk achteraf.</li><li>Een marge op je advertentiebudget.</li><li>Accounts die op naam van het bureau staan.</li><li>Een rapport van een maand oud.</li></ul></div>'
+    +'<div class="vs2-wel rv rv-2"><h3>Wat je altijd krijgt</h3><ul class="vink"><li>Een vaste prijs per maand, voor iedereen gelijk.</li><li>Advertentiebudget dat rechtstreeks naar Google en Meta gaat, op jouw naam.</li><li>Dezelfde cijfers als wij, elk uur bijgewerkt.</li><li>Een meetlat vooraf: de nulmeting en het doel.</li><li>Eerlijk nee als het niet werkt, met de cijfers erbij.</li></ul></div>'
+    +'</div></div></section>';
+
+  /* 7. Het portaal */
+  h+='<section class="s gr gr--merk" style="overflow:hidden"><div class="wrap"><div class="sk"><span class="eyebrow rv">Het portaal</span>'+vl('h1 rv','Je ziet wat wij zien.','Elk uur.')
+    +'<p class="lead rv rv-2">Alle cijfers van al je kanalen op één scherm. Per <span data-b="ev">aanvraag</span> zie je waar hij vandaan kwam, wat hij kostte en of hij klant werd. Stop je, dan neem je alles mee.</p></div>'
     +'<div class="sb-stage rv">'+browser(scorebord(),'portaal.jamesrobinson.nl')
     +'<div class="zw zw-1"><small>Kosten per aanvraag</small><b>€ 52</b> <span style="color:var(--groen-tekst);font-size:12px">−€ 8</span></div>'
-    +'<div class="zw zw-2"><small>Jouw oordeel</small><div style="display:flex;gap:6px;margin-top:6px"><span class="label" style="background:#E6F7EB;color:#1D7D3F">Goed</span><span class="label">Twijfel</span><span class="label">Niet goed</span></div></div>'
+    +'<div class="zw zw-2"><small>Jouw oordeel over deze aanvraag</small><div style="display:flex;gap:6px;margin-top:6px"><span class="label" style="background:#E6F7EB;color:#1D7D3F">Goed</span><span class="label">Twijfel</span><span class="label">Niet goed</span></div></div>'
     +'<div class="zw zw-3">'+logo('linkedin')+'<span><small>Zojuist</small><strong style="font-size:13px">Nieuwe aanvraag via LinkedIn</strong></span></div></div>'
-    +'<div class="kol3"><div class="rv"><h4>Elk uur vers</h4><p>Google, Meta, LinkedIn, TikTok, je website en Search Console op één scherm. Geen pdf van een maand oud.</p></div>'
-    +'<div class="rv rv-2"><h4>Jij beoordeelt</h4><p>Per aanvraag zeg jij of het een goede was, en later of het een klant werd. De campagne leert ervan.</p></div>'
-    +'<div class="rv rv-3"><h4>Alles op jouw naam</h4><p>Accounts, data en budget staan op jouw naam. Stop je, dan neem je alles mee. Ook het portaal.</p></div></div>'
     +'</div></section>';
 
-  /* 8. Overal: tabs die vanzelf doorlopen */
-  var podium=[
-    ['google','Google','Zoeken op een groot scherm.','Een zoekadvertentie bovenaan, op het moment dat iemand zoekt.',monitor(browser(ADV.google(),'google.nl/search').replace('class="br ','class="br br--plat '))],
-    ['instagram','Instagram','Een story op de telefoon.','Beeld van de draaidag, met één knop.',telefoon(ADV.story())+telefoon(ADV.tiktok())],
-    ['linkedin','LinkedIn','Een post op de laptop.','Voor zakelijke klanten met een duidelijke koper.',laptopMet('<div style="background:#F3F2EF;height:100%;padding:16px 22%">'+ADV.linkedin()+'</div>')],
-    ['youtube','YouTube','Video op de iPad.','Zes seconden voor de video die iemand wil zien.',ipad('<div style="position:relative;height:100%;background:#0F0F0F">'+ADV.youtube()+'</div>','ip--liggend')],
-    ['facebook','Facebook','In de feed.','Voor wie je nog niet kent, maar wel op jouw klant lijkt.',ipad('<div style="background:#F0F2F5;height:100%;padding:18px">'+ADV.facebook()+'</div>')],
-    ['','Op papier','Het magazine, aan tafel.','The Performance Issue krijg je bij het intakegesprek.',papier(ADV.magazine())+papier('<div style="font:800 22px/1 var(--display);letter-spacing:-.03em;color:#0B1A33">Je voorstel</div><div style="font-size:11px;color:#6E7A8C;margin-top:6px">Op jouw cijfers, binnen 3 werkdagen.</div><div style="margin-top:16px;display:grid;gap:7px">'+[90,70,84,60,76].map(function(w){return '<i style="display:block;height:6px;border-radius:3px;background:#E8ECF2;width:'+w+'%"></i>'}).join('')+'</div><div style="margin-top:18px;border-radius:8px;padding:12px;background:#0B1A33;color:#fff;font:700 13px var(--display)">Captain · € 2.000 per maand</div>')]
-  ];
-  h+='<section class="s s--wit"><div class="wrap"><div class="sk"><span class="eyebrow rv">Eén verhaal</span>'+vl('h1 rv','Eén boodschap.','Op elk scherm.')
-    +'<p class="lead rv rv-2">Dezelfde belofte in de advertentie, op de pagina, in de mail en aan tafel. Wie klikt, krijgt wat hij verwachtte.</p></div>'
-    +'<div class="tabs" role="tablist" data-tabs>'+podium.map(function(p,i){return '<button class="tab'+(i===0?' op':'')+'" role="tab" type="button" data-tab="'+i+'">'+(p[0]?logo(p[0]):'')+p[1]+'<i></i></button>'}).join('')+'</div>'
-    +'<div class="podium gr gr--merk rv">'+podium.map(function(p,i){return '<div class="podium-item'+(i===0?' op':'')+'" data-paneel="'+i+'">'+p[4]+'</div>'}).join('')
-    +'<div class="podium-uitleg" data-uitleg>'+podium.map(function(p,i){return '<span'+(i?' hidden':'')+' data-u="'+i+'"><b>'+p[2]+'</b>'+p[3]+'</span>'}).join('')+'</div></div>'
-    +'<p class="mini" style="margin-top:10px">Mock-ups in de huisstijl van James Robinson.</p></div></section>';
-
-  /* 9. Prijzen */
-  h+='<section class="s gr gr--licht"><div class="wrap"><div class="sk"><span class="eyebrow rv">Prijzen</span>'+vl('h1 rv','Eén prijslijst.','Geen kleine lettertjes.')
-    +'<p class="lead rv rv-2">Geen uurtje-factuurtje, geen meerwerk en geen korting voor wie het hardst onderhandelt. Je advertentiebudget betaal je rechtstreeks aan het platform, zonder iets erbovenop.</p></div>'
-    +'<div class="pk4">'+PAKKETTEN.map(function(p,i){var sp='';for(var j=0;j<p.c;j++)sp+='<i></i>';return '<div class="rv rv-'+(i+1)+'"><div class="spelers">'+sp+'</div><h3>'+p.n+'</h3><div class="prijs">'+euro(p.p)+'</div><div class="pm">per maand</div><ul><li>'+p.c+' campagne'+(p.c>1?'s':'')+' tegelijk</li><li>Advertentiebudget '+p.bud.replace('Vanaf','vanaf')+'</li><li>Nieuwe content: '+p.cr.toLowerCase()+'</li><li>'+p.dd.replace(' per jaar','')+' draaidag'+(p.c>1?'en':'')+' per jaar</li></ul><a class="ln-k" href="#/prijzen">Bekijk '+p.n+'</a></div>'}).join('')+'</div>'
-    +'<div class="fundament-balk rv"><span><b>Eenmalig: het fundament, € 4.500.</b> Daarin zetten we alles neer en maken we je eerste campagne.</span><span>Maandelijks opzegbaar · alle bedragen exclusief btw · <a class="ln-k" style="color:var(--lime)" href="#/prijzen/rekenhulp">Reken het uit</a></span></div>'
+  /* 8. Prijzen */
+  h+='<section class="s gr gr--licht"><div class="wrap"><div class="sk"><span class="eyebrow rv">Prijzen</span>'+vl('h1 rv','Wat het kost.','Voordat je belt.')
+    +'<p class="lead rv rv-2">Eén prijslijst, voor iedereen gelijk. Je advertentiebudget betaal je rechtstreeks aan het platform. Ons pakket is nooit meer dan de helft van wat je samen uitgeeft.</p></div>'
+    +'<div class="pk4">'+PAKKETTEN.map(function(p,i){var sp='';for(var j=0;j<p.c;j++)sp+='<i></i>';return '<div class="rv rv-'+(i+1)+'"><div class="spelers">'+sp+'</div><h3>'+p.n+'</h3><div class="prijs">'+euro(p.p)+'</div><div class="pm">per maand, plus advertentiebudget</div><ul><li>'+p.c+' campagne'+(p.c>1?'s':'')+' tegelijk</li><li>Advertentiebudget '+p.bud.replace('Vanaf','vanaf')+'</li><li>Nieuwe content: '+p.cr.toLowerCase()+'</li><li>'+p.dd.replace(' per jaar','')+' draaidag'+(p.c>1?'en':'')+' per jaar</li></ul><a class="ln-k" href="#/prijzen">Bekijk '+p.n+'</a></div>'}).join('')+'</div>'
+    +'<div class="fundament-balk rv"><span><b>Eenmalig: het fundament, € 4.500.</b> Meting, accounts, portaal en je eerste campagne, live rond dag 19.</span><span>Maandelijks opzegbaar · exclusief btw · <a class="ln-k" style="color:var(--lime)" href="#/prijzen/rekenhulp">Reken je totaal uit</a></span></div>'
     +'</div></section>';
 
-  /* 10. De selectie */
+  /* 9. Van eerste klik tot eerste aanvraag */
+  h+='<section class="s s--wit"><div class="wrap"><div class="sk"><span class="eyebrow rv">Starten</span>'+vl('h1 rv','Van eerste klik','tot eerste <span data-b="ev">aanvraag</span>.')+'</div>'
+    +'<ol class="start">'
+    +[['De check','Vijftien vragen, online. Je krijgt meteen een eerlijke uitkomst met de rekensom.','15 minuten','Jij'],
+      ['Scouting en intakegesprek','Wij bekijken je website en markt. Daarna een uur aan tafel, bij ons in Hulsberg of bij jou.','1 uur','Samen'],
+      ['Je voorstel','Op jouw cijfers, met een hypothese: wat het kost en wat het kan opleveren.','Binnen 3 werkdagen','Wij'],
+      ['Het fundament','Meting, accounts, een draaidag, je pagina en je eerste campagne. Jij geeft de toegangen en filmt een dagdeel mee.','± 4 weken','Samen'],
+      ['Live','Je eerste campagne draait. De eerste maanden zijn leren; rond maand drie trekken we de eerste conclusies.','Rond dag 19','Wij']]
+      .map(function(s,i){return '<li class="rv rv-'+(i%4+1)+'"><span class="start-nr">'+(i+1)+'</span><div><h3>'+s[0]+'</h3><p>'+s[1]+'</p></div><span class="start-tijd">'+s[2]+'<small>'+s[3]+'</small></span></li>'}).join('')
+    +'</ol></div></section>';
+
+  /* 10. Team en motto */
   var spelers=['jim-coumans','jim-kikken','robin-jacobs','speler-07','speler-10','speler-11','speler-14','speler-23'];
   var tinten=['gr--merk','gr--nacht','gr--blauw','gr--nacht','gr--merk','gr--blauw','gr--nacht','gr--merk'];
-  h+='<section class="s gr gr--nacht"><div class="wrap"><div class="rail-kop"><div class="sk"><span class="eyebrow rv">De selectie</span>'+vl('h1 rv','Geen bureau.','Een selectie.')+'</div>'
-    +'<p class="lead rv rv-2" style="max-width:380px;margin:0;color:rgba(255,255,255,.75)">Tien mensen in Hulsberg. Zeven begonnen hier als stagiair.</p></div></div>'
-    +rail('rail-selectie',spelers.map(function(k,i){var p=JR.team[k];var ini=(p.n.charAt(0)==='['?'?':p.n.split(' ').map(function(w){return w.charAt(0)}).join('').slice(0,2));return '<a class="sp gr '+tinten[i]+'" href="#/team/'+k+'"><span class="ini">'+ini+'</span><span class="nr" aria-hidden="true">'+p.nr+'</span><b>'+vul(p.n)+'</b><span>'+vul(p.rol)+' · '+vul(p.spec)+'</span>'+(p.jrnxt?'<em>JRNXT</em>':'')+'</a>'}),'rail--portret')
-    +'<div class="wrap"><p class="mini" style="color:rgba(255,255,255,.5);margin-top:4px">Portretten volgen na de portretdag.</p></div></section>';
+  h+='<section class="s gr gr--nacht"><div class="wrap"><div class="team4">'
+    +'<div class="sk"><span class="eyebrow rv">Wie er aan je campagnes werkt</span>'+vl('h1 rv','Momentum first.','Mastery later.')
+    +'<p class="lead rv rv-2">Ons motto, en ook ons advies aan jou. Een campagne die draait, leert. Een campagne in de la niet. Dus we gaan live, meten, en maken hem daarna elke maand beter.</p>'
+    +'<p class="lead rv rv-3" style="font-size:18px">Tien specialisten in Hulsberg. Zeven begonnen hier als stagiair en kennen onze manier van werken van binnenuit.</p></div></div></div>'
+    +rail('rail-selectie',spelers.map(function(k,i){return spelerKaart(k,tinten[i])}),'rail--portret')
+    +'</section>';
 
-  /* 11. Aftrap en de tribune */
-  h+='<section class="s gr gr--licht"><div class="wrap"><div class="sk"><span class="eyebrow rv">Het seizoen</span>'+vl('h1 rv','Dag 19.','Aftrap.')+'</div>'
-    +'<div class="duo"><div class="rv"><div class="tl3"><div><small>Dag</small><b>0</b><span>Je tekent en betaalt het fundament.</span></div><div><small>Werkdag</small><b>3</b><span>Alle toegangen binnen.</span></div><div><small>Dag</small><b>19</b><span>Je eerste campagne live.</span></div></div>'
-    +'<p class="grijs" style="margin-top:28px;font-size:15px">Daarna maandelijks opzegbaar. De eerste maanden zijn leren; rond maand drie trekken we de eerste conclusies. <a class="ln-k" href="#/werkwijze">De klantreis</a></p></div>'
-    +'<div class="rev rv rv-2"><span class="rev-top">'+logo('google')+'Reviews op Google</span><div><b>5,0</b><div class="ster">'+[1,2,3,4,5].map(function(){return IC.ster}).join('')+'</div><p>Elf reviews, elf keer vijf sterren.<sup class="vn"><a href="#noten">3</a></sup></p></div></div></div>'
+  /* 11. Bewijs */
+  h+='<section class="s gr gr--licht"><div class="wrap"><div class="sk"><span class="eyebrow rv">Wat klanten zeggen</span>'+vl('h1 rv','Elf reviews.','Elf keer vijf sterren.')+'</div>'
+    +'<div class="duo"><div class="rev rv"><span class="rev-top">'+logo('google')+'Reviews op Google</span><div><b>5,0</b><div class="ster">'+[1,2,3,4,5].map(function(){return IC.ster}).join('')+'</div><p>Gemiddelde van elf reviews.<sup class="vn"><a href="#noten">3</a></sup></p></div><a class="ln-k" href="#/resultaten">Lees ze op Google</a></div>'
+    +'<div class="case-leeg rv rv-2"><span class="eyebrow">Uitslagen</span><h3>Cases met cijfers, naam en toestemming.</h3><p>Uitdaging, aanpak, resultaat en wat we leerden. Ze staan hier zodra de klant akkoord geeft. Tot die tijd laten we liever niets zien dan iets wat we niet kunnen onderbouwen.</p><span class="vul">[3 cases in te vullen]</span></div></div>'
     +'</div></section>';
 
   /* 12. Eerlijk vooraf */
-  h+='<section class="s s--wit"><div class="wrap"><div class="sk"><span class="eyebrow rv">Eerlijk vooraf</span>'+vl('h1 rv','Niet voor iedereen.','Met opzet.')+'<p class="lead rv rv-2">We beginnen alleen als we erin geloven. Anders zeggen we nee. Liever nu dan over drie maanden.</p></div>'
-    +'<div class="eer"><div class="rv"><h3>Wel als</h3><ul class="vink"><li>je verkoopt via een aanvraag, afspraak of offerte.</li><li>je nieuwe klanten aankunt.</li><li>je een aanvraag snel terugbelt.</li><li>je de eerste maanden de tijd geeft om te leren.</li></ul></div>'
-    +'<div class="rv rv-2"><h3>Niet als</h3><ul class="vink vink--nee"><li>je iemand zoekt die je feed vult.</li><li>het om één losse campagne gaat.</li><li>je bedrijf vooral om een webshop draait.</li><li>je nu geen extra klanten aankunt.</li></ul></div></div></div></section>';
+  h+='<section class="s s--wit"><div class="wrap"><div class="sk"><span class="eyebrow rv">Eerlijk vooraf</span>'+vl('h1 rv','Niet voor iedereen.','Met opzet.')+'<p class="lead rv rv-2">We beginnen alleen als we erin geloven. Anders zeggen we nee, liever nu dan over drie maanden.</p></div>'
+    +'<div class="eer"><div class="rv"><h3>Het past als</h3><ul class="vink"><li>je klanten een aanvraag, afspraak of offerte doen.</li><li>je nieuwe klanten kunt aannemen.</li><li>je een aanvraag snel terugbelt.</li><li>je de eerste maanden de tijd geeft om te leren.</li></ul></div>'
+    +'<div class="rv rv-2"><h3>Het past niet als</h3><ul class="vink vink--nee"><li>je iemand zoekt die je feed vult.</li><li>het om één losse campagne gaat.</li><li>je bedrijf vooral om een webshop draait.</li><li>je nu geen extra klanten aankunt.</li></ul></div></div></div></section>';
 
-  /* 13. De club */
-  h+='<section class="s gr gr--nacht"><div class="wrap"><div class="sk"><span class="eyebrow rv">De club</span>'+vl('h1 rv','Fan worden mag.','Klant worden hoeft niet.')+'</div>'
-    +'<div class="club">'
-    +'<a class="club-t c-4 gr gr--merk rv" href="#/playground"><span class="eyebrow">De playground</span><h3 class="vs" style="font-size:clamp(36px,4.4vw,60px)">James Robinson<em>vs</em>Fagro</h3><p>Padel tegen bedrijven uit de regio. <span class="ln-k" style="color:var(--lime)">Daag ons uit</span></p></a>'
-    +'<div class="c-2 gr gr--blauw rv rv-2"><span class="eyebrow">Het clubblad</span><h3>Eén mail per maand. Alleen wat werkt.</h3><p>Geen aanbiedingen. Wat we leren, in je inbox.</p><form class="inschrijf" style="margin-top:auto" onsubmit="return false"><label class="vh" for="cb-mail">E-mailadres</label><input id="cb-mail" type="email" placeholder="E-mailadres"><button class="knop knop--lime knop--klein" type="submit">Aanmelden</button></form></div>'
-    +'<a class="club-t c-2 gr gr--vuur rv" href="#/events"><span class="eyebrow">Thuiswedstrijden</span><h3>Padel met klanten en team.</h3><p>Wie ons wil leren kennen, is welkom.</p></a>'
-    +'<a class="club-t c-2 gr gr--blauw rv rv-2" href="#/werken-bij"><span class="eyebrow">JRNXT</span><h3>Begin als stagiair.</h3><p>Zeven van de tien deden dat ook.</p></a>'
-    +'<div class="c-2 rv rv-3" style="background:#0B1628"><span class="eyebrow">Het wedstrijdprogramma</span><h3>Op papier. Aan tafel.</h3><p>The Performance Issue krijg je bij het intakegesprek.</p>'+papier(ADV.magazine())+'</div>'
-    +'</div></div></section>';
+  /* 13. Vragen */
+  h+='<section class="s gr gr--licht"><div class="wrap"><div class="faq4"><div class="sk"><span class="eyebrow rv">Vragen</span>'+vl('h1 rv','Wat iedereen','eerst wil weten.')+'<p class="lead rv rv-2">Staat je vraag er niet bij, bel dan 045 792 0009. Er zit een mens aan de lijn.</p></div>'
+    +'<div class="faq rv">'+[
+      ['Wat als het niet werkt?','Dan zeggen we het zelf, met de cijfers erbij. We sturen bij, of we stoppen op tijd. Je zit nergens aan vast: we zijn maandelijks opzegbaar, voor allebei.'],
+      ['Hoeveel tijd kost het mij?','Een uur aan tafel bij de start, de toegangen binnen drie werkdagen, een dagdeel filmen per draaidag en per aanvraag een oordeel in het portaal. En snel terugbellen. Dat laatste bepaalt het meest.'],
+      ['Wat kost het in totaal?','Ons pakket vanaf € 1.000 per maand, je advertentiebudget vanaf € 1.000 per maand en eenmalig het fundament van € 4.500. Alles exclusief btw. Met de rekenhulp zie je wat jouw ambitie vraagt.'],
+      ['Hoe snel zie ik resultaat?','Je eerste campagne staat rond dag 19 live. De eerste maanden zijn leren: platforms hebben tijd en data nodig. Rond maand drie trekken we de eerste voorzichtige conclusies.'],
+      ['Waarom posten jullie niet op mijn social media?','Omdat een bericht maar 1 tot 3% van je volgers bereikt. Een verzorgd profiel hoort erbij, maar nieuwe klanten komen uit advertenties. Wil je zelf blijven posten, dan helpen we met templates of een contentsessie.'],
+      ['Werken jullie ook buiten Zuid-Limburg?','Onze focus ligt binnen zo\'n 30 kilometer van Hulsberg. Online is ons vak, maar de beste gesprekken voer je aan tafel.']
+    ].map(function(f){return '<details><summary>'+f[0]+'</summary><p>'+f[1]+'</p></details>'}).join('')+'</div></div></div></section>';
 
   h+=slot();
   return h;
 };
 
-function spelerKaart(k){
+function spelerKaart(k,tint){
   var p=JR.team[k];
   var ini=(p.n.charAt(0)==='['?'?':p.n.split(' ').map(function(w){return w.charAt(0)}).join('').slice(0,2));
-  return '<a class="sp gr gr--merk" href="#/team/'+k+'"><span class="ini">'+ini+'</span><span class="nr" aria-hidden="true">'+p.nr+'</span><b>'+vul(p.n)+'</b><span>'+vul(p.rol)+' · '+vul(p.spec)+'</span>'+(p.jrnxt?'<em>JRNXT</em>':'')+'</a>';
+  return '<a class="sp gr '+(tint||'gr--merk')+'" href="#/team/'+k+'"><span class="ini">'+ini+'</span><span class="nr" aria-hidden="true">'+p.nr+'</span><b>'+vul(p.n)+'</b><span>'+vul(p.rol)+' · '+vul(p.spec)+'</span>'+(p.jrnxt?'<em>Begon als stagiair</em>':'')+'</a>';
 }
 
-/* Slot: het lint achter de kop */
+/* Slot */
 function slot(vet,licht,lead){
   return '<section class="s gr gr--vuur rv" style="padding:calc(var(--sy)*1.4) 0;min-height:80vh;display:flex;align-items:center">'+lint()
-    +'<div class="wrap slot-in" style="position:relative;z-index:2;width:100%">'+vl('hx',vet||'Genoeg gelezen.',licht||'Tijd voor de aftrap.')
-    +'<p class="lead" style="color:rgba(255,255,255,.85);max-width:560px">'+(lead||'Vijftien vragen. Eén eerlijk antwoord. Past het niet, dan zeggen we dat ook.')+'</p>'
-    +'<div class="knoppen"><a class="knop knop--lime knop--groot" href="#/past-het">Start de check</a><a class="ln-k" style="color:#fff" href="tel:0457920009">Bel 045 792 0009</a></div></div></section>';
+    +'<div class="wrap slot-in" style="position:relative;z-index:2;width:100%">'+vl('hx',vet||'Genoeg gelezen.',licht||'Tijd om te rekenen.')
+    +'<p class="lead" style="color:rgba(255,255,255,.85);max-width:560px">'+(lead||'Vijftien vragen, een kwartier. Je krijgt meteen een eerlijke uitkomst met de rekensom erbij. Past het niet, dan zeggen we dat ook.')+'</p>'
+    +'<div class="knoppen"><a class="knop knop--lime knop--groot" href="#/past-het">Start de check</a><a class="ln-k" style="color:#fff" href="tel:0457920009">Liever bellen: 045 792 0009</a></div></div></section>';
 }
 
+/* ---------- Personalisatie per branche en de rekensom ---------- */
+function kiesBranche(k){
+  var b=BRANCHE[k]||BRANCHE[''];
+  $$('[data-b]').forEach(function(el){el.textContent=b[el.getAttribute('data-b')]});
+  $$('[data-branche]').forEach(function(x){x.classList.toggle('op',x.getAttribute('data-branche')===k)});
+  var f=$('[data-feed]'); if(f){f.innerHTML=feedHtml(b)}
+  if($('#rs-w'))rekenNu();
+  try{localStorage.setItem('jr-branche',k)}catch(e){}
+}
+function rekenNu(){
+  var w=+$('#rs-w').value,c=+$('#rs-c').value,k=+$('#rs-k').value,mv=($('[data-b="mv"]')||{}).textContent||'aanvragen';
+  $('#rs-ow').textContent=euro(w);$('#rs-oc').textContent=c+' van de 10';$('#rs-ok').textContent=k;
+  $('#rs-max').textContent=euro(w*.3*c/10);
+  $('#rs-aanv').textContent=Math.ceil(k/(c/10));
+  $('#rs-uitleg').textContent=mv+', als er '+c+' van de 10 klant worden.';
+}
+function rekensom(){
+  if(!$('#rs-w'))return;
+  ['#rs-w','#rs-c','#rs-k'].forEach(function(id){$(id).addEventListener('input',rekenNu)});
+  rekenNu();
+}
+document.addEventListener('click',function(e){var b=e.target.closest('[data-branche]');if(!b)return;var k=b.getAttribute('data-branche');kiesBranche(b.classList.contains('op')?'':k)});
 /* ==========================================================================
    Pagina's op dezelfde bouwstenen
    ========================================================================== */
@@ -2222,6 +2386,7 @@ function voet(){
     +'<li>Socialinsider, 2026. Gemiddeld organisch bereik van berichten op Facebook en Instagram, als deel van het aantal volgers.</li>'
     +'<li>Oldroyd, McElheran en Elkington, The Short Life of Online Sales Leads, Harvard Business Review, 2011.</li>'
     +'<li>Google-reviews, stand '+vul('[datum]')+'.</li>'
+    +'<li>Kohavi en Thomke, The Surprising Power of Online Experiments, Harvard Business Review, 2017.</li>'
     +'<p>Cijfers in het portaal, op telefoons en op de laptop zijn voorbeeldcijfers. Mock-ups tonen de huisstijl van James Robinson. Alle bedragen exclusief btw.</p></ol>'
     +'<div class="ft-kol">'
     +'<div><h4>Werkwijze</h4><a href="#/werkwijze">Zo werkt het</a><a href="#/prijzen">Prijzen</a><a href="#/prijzen/rekenhulp">Rekenhulp</a><a href="#/past-het">De check</a><a href="#/portaal">Het scorebord</a></div>'
@@ -2259,6 +2424,7 @@ function route(){
   window.scrollTo(0,anker?$('#'+anker).getBoundingClientRect().top+window.scrollY-60:0);
   activeer(main);
   if(d[0]==='prijzen')rekenhulp();
+  if(h===''||h==='home'){rekensom();try{var kb=localStorage.getItem('jr-branche');if(kb&&BRANCHE[kb])kiesBranche(kb)}catch(e){}}
   if(d[0]==='past-het')check.render();
 }
 
