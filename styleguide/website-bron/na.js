@@ -404,7 +404,7 @@ function route(){
   activeer(main);
   if(d[0]==='prijzen')rekenhulp();
   if(h===''||h==='home'){rekensom();try{var kb=localStorage.getItem('jr-branche');if(kb&&BRANCHE[kb])kiesBranche(kb)}catch(e){}}
-  if(d[0]==='past-het')check.render();
+  if(d[0]==='past-het')check.render();if(window.naRender)naRender(d);
 }
 
 /* ---------- Interactie ---------- */
