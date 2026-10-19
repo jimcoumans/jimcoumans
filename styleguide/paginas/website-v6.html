@@ -565,18 +565,134 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border:0;border-radiu
 .s,.held,.slot-cta{overflow-x:clip}
 .vb-mobiel .tel{width:190px}
 @media (max-width:700px){.curve{overflow-x:auto}.curve svg{min-width:620px}}
+
+/* ==========================================================================
+   Ronde 7: homepage in zeven schermen
+   ========================================================================== */
+.knop--groot{min-height:56px;padding:16px 30px;font-size:18px}
+
+/* 1. Hero */
+.h7{background:var(--wit);padding-top:clamp(56px,7vw,96px);overflow-x:clip}
+.h7-in{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,.5fr);gap:clamp(32px,5vw,72px);align-items:center;padding-bottom:clamp(56px,7vw,96px)}
+.h7-kop{font:700 clamp(52px,7.6vw,120px)/.94 var(--letter);letter-spacing:-.045em;text-wrap:balance}
+.h7-mark{background:linear-gradient(transparent 68%,var(--bal) 68%,var(--bal) 92%,transparent 92%);padding-right:.06em}
+.h7-lead{font:400 clamp(19px,1.7vw,23px)/1.42 var(--letter);letter-spacing:-.015em;color:var(--tekst-2);max-width:600px;margin-top:28px}
+.h7 .knoppen{margin-top:36px;gap:14px 20px}
+.h7-duur{font-size:15px;color:var(--tekst-3)}
+.h7-branches{justify-content:flex-start;margin-top:36px}
+.h7-branches small{width:auto;margin:0 6px 0 0;align-self:center}
+.h7-tel{display:flex;flex-direction:column;align-items:center;gap:12px}
+.h7-tel .tel{width:min(270px,100%)}
+@media (max-width:860px){.h7-in{grid-template-columns:1fr}.h7-tel .tel{width:230px}}
+
+/* Inkomende aanvraag op de telefoon */
+.bel{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;text-align:center;padding:30% 8% 12%;color:#fff;font-size:clamp(9px,4.6cqw,14px);background:radial-gradient(70% 40% at 50% 30%,#2E2E33,transparent 70%),linear-gradient(180deg,#1A1A1D,#0A0A0B)}
+.bel::after{content:"";position:absolute;inset:0;background-image:var(--korrel);background-size:160px;opacity:.35;mix-blend-mode:overlay;pointer-events:none}
+.bel-ring{position:relative;width:6.2em;height:6.2em;margin-bottom:1.6em}
+.bel-ring span{position:absolute;inset:0;border-radius:50%;background:#fff;color:var(--tekst);display:flex;align-items:center;justify-content:center;z-index:1}
+.bel-ring .bm{width:2.2em;height:2.5em}
+.bel-ring i{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(255,255,255,.45);animation:ring 2.4s var(--ease) infinite}
+.bel-ring i+i{animation-delay:1.2s}
+@keyframes ring{from{transform:scale(1);opacity:.9}to{transform:scale(1.9);opacity:0}}
+.bel small{font-size:.9em;color:rgba(255,255,255,.65)}
+.bel b{font-size:1.55em;font-weight:700;letter-spacing:-.02em;margin-top:.25em;line-height:1.15}
+.bel>span{font-size:.95em;color:rgba(255,255,255,.7);margin-top:.3em}
+.bel-knoppen{display:flex;gap:4.2em;margin-top:auto}
+.bel-knoppen span{width:4.4em;height:4.4em;border-radius:50%;display:flex;align-items:center;justify-content:center;background-repeat:no-repeat;background-position:center;background-size:52%}
+.bel-nee{background-color:var(--rood);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 14c5-4.5 13-4.5 18 0l-2.4 2.6-3.6-1.4v-2.6c-2-.7-4-.7-6 0v2.6L5.4 16.6z' fill='%23fff'/%3E%3C/svg%3E")}
+.bel-ja{background-color:var(--groen);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6.6 3l3.4 4-2 2.2c1.1 2.4 3.4 4.7 5.8 5.8L16 13l4 3.4-1.8 3.2C10.4 19.4 4.6 13.6 3.4 4.8z' fill='%23fff'/%3E%3C/svg%3E");animation:bel 1.2s ease-in-out infinite}
+@keyframes bel{0%,60%,100%{transform:rotate(0)}10%,30%,50%{transform:rotate(-12deg)}20%,40%{transform:rotate(12deg)}}
+.bel em{font-style:normal;font-size:.82em;color:rgba(255,255,255,.6);margin-top:1.2em}
+
+/* Lopende band met feiten */
+.band{border-block:1px solid var(--lijn-zacht);overflow:hidden;background:var(--wit)}
+.band-in{display:flex;width:max-content;animation:band 40s linear infinite}
+.band span{display:flex;align-items:center;gap:28px;padding:18px 0 18px 28px;font:700 15px var(--letter);white-space:nowrap}
+.band span::after{content:"";width:6px;height:6px;border-radius:50%;background:var(--tekst)}
+@keyframes band{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.band-in,.bel-ring i,.bel-ja{animation:none}}
+
+/* 2. Manifest */
+.manifest .wrap{max-width:calc(1080px + 2*var(--rand))}
+.mf-r{font:700 clamp(34px,4.8vw,72px)/1.06 var(--letter);letter-spacing:-.035em;margin-top:clamp(28px,4vw,48px);text-wrap:balance}
+.mf-r span{color:#6E6E73}
+.mf-r--bal{color:var(--bal);margin-top:clamp(48px,7vw,96px)}
+
+/* 3. Wat je krijgt */
+.krijg{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:64px}
+.kr{border-radius:28px;background:var(--wit);padding:28px;display:flex;flex-direction:column}
+.kr-beeld{height:220px;border-radius:18px;background:var(--grijs);padding:20px;position:relative;margin-bottom:28px;display:flex;flex-direction:column;justify-content:flex-end}
+.kr h3{font:700 clamp(22px,2vw,28px)/1.12 var(--letter);letter-spacing:-.02em}
+.kr p{margin-top:10px;color:var(--tekst-2)}
+.kr-label{position:absolute;left:20px;top:18px;font-size:13px;color:var(--tekst-2)}
+.kr-beeld svg{width:100%;height:auto;overflow:visible}
+.staaf{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;height:100%;align-items:end}
+.staaf div{display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
+.staaf i{display:block;width:100%;height:calc(var(--h) * .72);border-radius:8px 8px 3px 3px;background:var(--tekst);transform-origin:bottom;transition:transform 1s var(--ease)}
+.staaf div:last-child i{background:var(--bal);box-shadow:inset 0 0 0 1.5px var(--tekst)}
+.js .op:not(.in) .staaf i{transform:scaleY(.1)}
+.staaf b{font-size:13px;font-weight:700}
+.staaf small{font-size:11px;color:var(--tekst-3)}
+.kr-live{justify-content:center;gap:4px}
+.kr-live .live{position:absolute;left:20px;top:18px;font-size:13px}
+.kr-live small{font-size:13px;color:var(--tekst-2)}
+.kr-live b{font:700 64px/1 var(--letter);letter-spacing:-.05em}
+.kr-live em{font-style:normal;font-size:14px;font-weight:700;color:var(--groen-tekst)}
+.kr-live .kr-tijd{position:absolute;right:20px;top:18px;font-size:12px;color:var(--tekst-3)}
+@media (max-width:960px){.krijg{grid-template-columns:1fr}}
+
+/* 4. Waarom wij */
+.waarom{margin-top:64px;border-top:2px solid var(--tekst)}
+.wr{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px;align-items:baseline;padding:clamp(28px,3.4vw,44px) 0;border-bottom:1px solid var(--lijn)}
+.wr b{font:700 clamp(48px,7vw,104px)/.9 var(--letter);letter-spacing:-.05em}
+.wr .wr-nee{color:var(--rood)}
+.wr p{font:400 clamp(19px,1.7vw,24px)/1.38 var(--letter);letter-spacing:-.015em;color:var(--tekst-2);max-width:480px}
+@media (max-width:760px){.wr{grid-template-columns:1fr;gap:12px}}
+
+/* 5. Bewijs */
+.bewijs7{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:20px;margin-top:64px}
+.score{border-radius:28px;background:var(--zwart);color:#fff;padding:clamp(28px,3vw,44px);display:flex;flex-direction:column}
+.score .logo{width:30px;height:30px}
+.score b{font:700 clamp(96px,11vw,160px)/.9 var(--letter);letter-spacing:-.06em;margin-top:auto;padding-top:48px}
+.score .sterren{color:var(--bal);margin-top:14px}
+.score p{margin-top:16px;color:var(--op-zwart-2);font-size:17px}
+.cases7{display:grid;gap:12px}
+.c7{border-radius:22px;background:var(--wit);padding:24px 28px}
+.c7 small{font-size:13px;color:var(--tekst-3)}
+.c7-cijfer{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;margin-top:10px;padding-bottom:12px;border-bottom:1px solid var(--lijn-zacht)}
+.c7-cijfer span{font-size:14px;color:var(--tekst-2)}
+.c7-cijfer b{font:700 26px var(--letter);letter-spacing:-.02em}
+.c7-cijfer i{font-style:normal;color:var(--groen-tekst)}
+.c7 p{margin-top:12px;font-size:15px;color:var(--tekst-2)}
+@media (max-width:900px){.bewijs7{grid-template-columns:1fr}.score b{padding-top:24px}}
+
+/* 6. Prijs */
+.prijs7{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(40px,6vw,96px);align-items:center}
+.prijs7 .intro{margin-top:24px}
+.p7{border-radius:28px;border:1px solid var(--lijn-zwart);padding:clamp(28px,3.4vw,48px)}
+.p7-bedrag{font:700 clamp(80px,9vw,140px)/.9 var(--letter);letter-spacing:-.06em;color:var(--bal)}
+.p7-per{display:block;margin-top:10px;color:var(--op-zwart-2)}
+.p7 ul{margin-top:28px;border-top:1px solid var(--lijn-zwart)}
+.p7 li{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--lijn-zwart)}
+.p7 li::before{content:"";flex:none;width:18px;height:18px;margin-top:3px;border-radius:50%;background:var(--groen) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath d='M5 9.4l2.6 2.5L13 6.4' fill='none' stroke='%23fff' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/18px no-repeat}
+.p7 .knop{margin-top:32px}
+@media (max-width:900px){.prijs7{grid-template-columns:1fr}}
+
+/* 7. Slot */
+.slot-sub{font:700 clamp(28px,3.6vw,52px)/1.08 var(--letter);letter-spacing:-.03em;color:rgba(255,255,255,.55);margin-top:18px;max-width:900px;text-wrap:balance}
+.mf-r span{display:block}
 </style>
 <header class="nav"><div class="wrap nav-in">
 <a class="merk" href="#home" aria-label="James Robinson, naar de homepage"><svg class="bm " viewBox="0 0 64 72" aria-hidden="true"><path d="M10.6 32V9.2H54.8C54.8 19 52 26.5 46.5 31.5"/><path d="M8 31.5H53.6V41C53.6 56 44 66.6 33 66.6C22 66.6 12.6 57 10.4 47.4L33 41.6"/><path d="M33 31.5V66.6"/></svg><b>James<br>Robinson</b></a>
 <nav class="nav-links" aria-label="Hoofdmenu"><a href="#werkwijze">Werkwijze</a><a href="javascript:void(0)" data-toast="Diensten volgt na akkoord op deze richting.">Diensten</a><a href="javascript:void(0)" data-naar="prijzen">Prijzen</a><a href="javascript:void(0)" data-naar="team">Over ons</a></nav>
-<button type="button" class="knop knop--klein" data-check>Start de check</button>
+<button type="button" class="knop knop--klein" data-check>Doe de check</button>
 </div></header>
 <main id="app"></main>
 <footer class="voet"><div class="wrap">
 <ol class="noten" id="noten"><li>1. Socialinsider, 2026. Gemiddeld organisch bereik van berichten op Facebook en Instagram, als deel van het aantal volgers.</li><li>2. Oldroyd, McElheran en Elkington, The Short Life of Online Sales Leads, Harvard Business Review, 2011.</li><li>3. Google-reviews, stand <span class="vul">[datum]</span>.</li><li>4. Kohavi en Thomke, The Surprising Power of Online Experiments, Harvard Business Review, 2017.</li><li>Cijfers in het portaal, op telefoons en op laptops zijn voorbeeldcijfers. Foto's zijn stand-ins tot de eigen shoot. Bedragen exclusief btw, voorlopig.</li></ol>
 <div class="voet-rij"><span>Copyright © 2026 James Robinson B.V. · Hulsberg · 045 792 0009 · support@jamesrobinson.nl</span><span>Privacy · Cookies · Voorwaarden</span></div>
 </div></footer>
-<div class="mbalk"><button type="button" class="knop" data-check>Start de check</button></div>
+<div class="mbalk"><button type="button" class="knop" data-check>Doe de check</button></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div class="check" id="check" hidden></div>
 <script>var LOGO={
@@ -935,4 +1051,74 @@ document.addEventListener('DOMContentLoaded',function(){
   window.addEventListener('hashchange',route);route();
   var bar=$('.mbalk');window.addEventListener('scroll',function(){bar.classList.toggle('aan',scrollY>620)},{passive:true});
 });
+/* Ronde 7: de homepage in zeven schermen, in de toon van Nike.
+   Kort, uitdagend, vanuit de ondernemer. Vervangt PAGINA.home en slot() uit app.js. */
+function belScherm(){
+  return '<div class="bel"><div class="bel-ring"><i></i><i></i><span>'+bm()+'</span></div>'
+    +'<small>Nieuwe aanvraag</small><b data-bel>'+B.feed[0][1]+'</b><span data-bel2>'+B.feed[0][2]+'</span>'
+    +'<div class="bel-knoppen"><span class="bel-nee" aria-hidden="true"></span><span class="bel-ja" aria-hidden="true"></span></div><em>Bel binnen het uur</em></div>';
+}
+function staafjes(){
+  var v=[12,15,14,19,22,26],m=['mei','jun','jul','aug','sep','okt'];
+  return '<div class="staaf">'+v.map(function(x,i){return '<div><i style="--h:'+(x/26*100)+'%"></i><b class="tab">'+x+'</b><small>'+m[i]+'</small></div>'}).join('')+'</div>';
+}
+function dalend(){
+  var v=[96,88,81,74,69,62],W=300,H=130,p=12,mx=100,mn=55;
+  var pt=v.map(function(y,i){return [p+i*(W-2*p)/(v.length-1),p+(mx-y)*(H-2*p)/(mx-mn)]});
+  var d=pt.map(function(q,i){return (i?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1)}).join(' ');
+  var l=pt[pt.length-1],f=pt[0];
+  return '<svg viewBox="0 0 '+W+' '+(H+22)+'" aria-hidden="true"><path class="teken" d="'+d+'" fill="none" stroke="#1D1D1F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>'
+    +'<circle cx="'+f[0]+'" cy="'+f[1]+'" r="4" fill="#fff" stroke="#1D1D1F" stroke-width="2"/><circle cx="'+l[0]+'" cy="'+l[1]+'" r="7" fill="#34C759"/>'
+    +'<text x="'+f[0]+'" y="'+(f[1]+24)+'" font-size="13" fill="#86868B">€ 96</text><text x="'+l[0]+'" y="'+(l[1]+28)+'" text-anchor="end" font-size="15" font-weight="700" fill="#1F8A3B">€ 62</text></svg>';
+}
+PAGINA.home=function(){
+  var h='';
+  /* 1. Hero. Begrip van het probleem en geld in één zin. Het beeld: de telefoon gaat. */
+  h+='<section class="h7"><div class="wrap h7-in"><div>'
+    +'<h1 class="h7-kop op">Je wilt geen marketing.<br><span class="h7-mark">Je wilt klanten.</span></h1>'
+    +'<p class="h7-lead op op-2">Wij zorgen dat je telefoon gaat. Elke maand, meetbaar tot op de euro. Werkt het niet, dan hoor je dat van ons. Niet van je boekhouder.</p>'
+    +'<div class="knoppen op op-3"><button type="button" class="knop knop--zwart knop--groot" data-check>Doe de check</button><span class="h7-duur">15 minuten. Eerlijk antwoord.</span></div>'
+    +'<div class="branches h7-branches op op-4" role="group" aria-label="Kies je branche"><small>Jouw branche</small>'+Object.keys(BRANCHE).filter(Boolean).map(function(k){return '<button type="button" data-branche="'+k+'" aria-pressed="'+(BRANCHE[k]===B)+'">'+BRANCHE[k].n+'</button>'}).join('')+'</div>'
+    +'</div><div class="h7-tel op op-2">'+tel(belScherm())+'<p class="mini">Voorbeeld</p></div></div>'
+    +'<div class="band" aria-label="Kort samengevat"><div class="band-in">'+['5,0 op Google','Maandelijks opzegbaar','Alles op jouw naam','Nooit marge op je budget','Elke ochtend om 7.00 gecontroleerd'].concat(['5,0 op Google','Maandelijks opzegbaar','Alles op jouw naam','Nooit marge op je budget','Elke ochtend om 7.00 gecontroleerd']).map(function(t){return '<span>'+t+'</span>'}).join('')+'</div></div></section>';
+
+  /* 2. Herkenning. Manifest-stijl: de klant herkent zijn eigen week. */
+  h+='<section class="s s--zwart manifest"><div class="wrap"><span class="boven boven--bal op">Je kent het</span>'
+    +'<p class="mf-r op">Drukke maand. Stille maand. <span>Je weet nooit welke eraan komt.</span></p>'
+    +'<p class="mf-r op">Je bureau stuurt een rapport vol bereik. <span>Je kassa merkt er niets van.</span></p>'
+    +'<p class="mf-r op">Je post, je boost, je hoopt.</p>'
+    +'<p class="mf-r mf-r--bal op">Dat is geen plan. Dat is een gok.</p></div></section>';
+
+  /* 3. Wat je krijgt. Rendement, zichtbaar gemaakt. */
+  h+='<section class="s s--grijs"><div class="wrap"><h2 class="kop-l op">Voorspelbaar. Meetbaar.<br><span class="grijs">Steeds goedkoper.</span></h2>'
+    +'<div class="krijg">'
+    +'<article class="kr op"><div class="kr-beeld">'+staafjes()+'</div><h3>Een vaste stroom <span data-b="mvA">'+B.mvA+'</span>.</h3><p>Uit Google en social, elke maand. Niet alleen als het meezit.</p></article>'
+    +'<article class="kr op op-2"><div class="kr-beeld"><small class="kr-label">Kosten per klant</small>'+dalend()+'</div><h3>Elke maand goedkoper per klant.</h3><p>Omdat we testen in plaats van gokken. Wat wint, krijgt het budget.</p></article>'
+    +'<article class="kr op op-3"><div class="kr-beeld kr-live"><span class="live"><i></i>Live</span><small>Kosten per <span data-b="ev">'+B.ev+'</span></small><b class="tab">€ 52</b><em>− € 8 deze maand</em><small class="kr-tijd">Bijgewerkt om 9.00</small></div><h3>Elk uur je cijfers live.</h3><p>Je ziet precies wat elke klant kost. Geen pdf van een maand oud.</p></article>'
+    +'</div><p class="mini" style="margin-top:20px">Voorbeeldcijfers.</p></div></section>';
+
+  /* 4. Waarom wij. De besten, en eerlijk. Elk punt is controleerbaar. */
+  h+='<section class="s"><div class="wrap"><h2 class="kop-l op">Wij spelen op resultaat.<br><span class="grijs">Niet op uren.</span></h2><div class="waarom">'
+    +[['Aanvragen','We worden afgerekend op aanvragen. Niet op uren en niet op likes.'],['7.00','Elke ochtend checken we elke campagne. We zien een probleem voordat jij het merkt.'],['Jouw naam','Accounts, data en portaal staan op jouw naam. Stop je, dan neem je alles mee.'],['Nee','Past het niet? Dan zeggen we nee. Liever nu dan over drie maanden.']]
+      .map(function(r,i){return '<div class="wr op"><b'+(i===3?' class="wr-nee"':'')+'>'+r[0]+'</b><p>'+r[1]+'</p></div>'}).join('')+'</div></div></section>';
+
+  /* 5. Bewijs. Alleen wat klopt. De vakken laten zien wat er nog moet komen. */
+  h+='<section class="s s--grijs"><div class="wrap"><h2 class="kop-l op">Vraag het<br><span class="grijs">onze klanten.</span></h2><div class="bewijs7">'
+    +'<div class="score op">'+logo('google')+'<b>5,0</b><div class="sterren">'+[1,2,3,4,5].map(function(){return IC.ster}).join('')+'</div><p>11 reviews op Google. Allemaal vijf sterren.'+noot(3)+'</p></div>'
+    +'<div class="cases7">'+[1,2,3].map(function(n,i){return '<article class="c7 op op-'+(i+1)+'"><small>'+vul('[Klant]')+' · '+vul('[branche]')+'</small><div class="c7-cijfer"><span>Kosten per aanvraag</span><b>'+vul('[van]')+' <i>→</i> '+vul('[naar]')+'</b></div><p>'+vul('[Eén zin: wat er veranderde voor de ondernemer.]')+'</p></article>'}).join('')+'</div></div></div></section>';
+
+  /* 6. Prijs. Eén getal, geen kleine lettertjes. */
+  h+='<section class="s s--zwart"><div class="wrap prijs7"><div><h2 class="kop-l op">Eén pakket.<br><span class="grijs">Geen kleine lettertjes.</span></h2><p class="intro op op-2">Eén prijs, voor iedereen gelijk. Daarna alleen extra\'s als de cijfers erom vragen, met de prijs vooraf erbij.</p></div>'
+    +'<div class="p7 op op-2"><div class="p7-bedrag tab">€ 1.250</div><span class="p7-per">per maand, exclusief btw</span><ul><li>Maandelijks opzegbaar</li><li>Geen marge op je advertentiebudget. Nooit.</li><li>Eenmalig het fundament: € 4.500</li></ul><button type="button" class="knop knop--bal" data-check>Doe de check</button></div></div></section>';
+  return h+slot();
+};
+/* 7. Slot. Uitdaging, dan één actie. */
+function slot(){
+  return '<section class="slot-cta">'+foto('Stand-in · foto 03','Slotbeeld','Extreme close-up: padelbal net na de klap, vervormd. Zwarte achtergrond, één harde lichtbron, zware grain.')
+    +'<div class="wrap"><h2 class="kop-xl op">Je concurrent<br>adverteert al.</h2>'
+    +'<p class="slot-sub op op-2">De vraag is alleen wie als eerste terugbelt.</p>'
+    +'<div class="knoppen op op-3"><button type="button" class="knop knop--bal knop--groot" data-check>Doe de check</button><span class="tel-tekst">Of bel <b>045 792 0009</b></span></div></div></section>';
+}
+var oudKies=kiesBranche;
+kiesBranche=function(k){oudKies(k);var a=$('[data-bel]'),b=$('[data-bel2]');if(a){a.textContent=B.feed[0][1];b.textContent=B.feed[0][2]}};
 </script>
