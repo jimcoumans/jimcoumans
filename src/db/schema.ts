@@ -13,6 +13,7 @@ import {
   primaryKey,
   jsonb,
   date,
+  type AnyPgColumn,
 } from 'drizzle-orm/pg-core'
 import { relations, sql } from 'drizzle-orm'
 
@@ -3254,6 +3255,9 @@ export const budgetModeEnum = pgEnum('budget_mode', ['berekend', 'vast'])
 
 export const channelStatusEnum = pgEnum('channel_status', ['bestaat', 'maken'])
 
+/** Je of u: voor de tone of voice van een merk en voor een doelgroep. */
+export const voiceAddressEnum = pgEnum('voice_address', ['je', 'u', 'wisselend'])
+
 /** De vaste doelgroepen van een klant, om in elke briefing uit te kiezen. */
 export const organizationAudiences = pgTable(
   'organization_audiences',
@@ -3265,6 +3269,14 @@ export const organizationAudiences = pgTable(
     name: text('name').notNull(),
     /** Wie het zijn, en waar ze vandaan komen (klantenlijst, websitebezoekers, interesses). */
     description: text('description'),
+    /** Hoe je deze groep aanspreekt. Leeg: zoals de tone of voice van het merk. */
+    address: voiceAddressEnum('address'),
+    /**
+     * De stijlaccenten voor deze groep: toon, woorden, wat wel en niet. Een
+     * zakelijke en een particuliere doelgroep van dezelfde klant klinken
+     * anders; de uitingen-check toetst hierop.
+     */
+    styleNotes: text('style_notes'),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [
@@ -3764,7 +3776,6 @@ export const peopleConsentEnum = pgEnum('people_consent', ['geen', 'toestemming'
 export const brandColorRoleEnum = pgEnum('brand_color_role', ['primair', 'secundair', 'accent', 'achtergrond', 'tekst'])
 export const brandFontRoleEnum = pgEnum('brand_font_role', ['koppen', 'tekst', 'accent'])
 export const fontLicenceEnum = pgEnum('font_licence', ['open', 'web', 'desktop', 'onbekend'])
-export const voiceAddressEnum = pgEnum('voice_address', ['je', 'u', 'wisselend'])
 
 export const brandFiles = pgTable(
   'brand_files',
@@ -3803,6 +3814,12 @@ export const brandFiles = pgTable(
     peopleConsent: peopleConsentEnum('people_consent'),
     /** Is het beeld door AI gemaakt of wezenlijk bewerkt? Dan moet het gelabeld (AI-verordening, art. 50). */
     aiAltered: boolean('ai_altered').notNull().default(false),
+
+    /**
+     * Bij welk merk van de klant dit bestand hoort, als de klant er meer dan
+     * één heeft (Van Oys en Create). Leeg: het hoofdmerk.
+     */
+    merkId: uuid('merk_id').references((): AnyPgColumn => klantMerken.id, { onDelete: 'set null' }),
 
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
     createdByUserId: uuid('created_by_user_id').references(() => users.id, { onDelete: 'set null' }),
@@ -4067,3 +4084,177 @@ export const performanceDaily = pgTable(
 
 export type AnalyticsConnection = typeof analyticsConnections.$inferSelect
 export type PerformanceDag = typeof performanceDaily.$inferSelect
+
+/* -------------------------------------------------------------------------
+   De uitingen-check.
+
+   Elke uiting (post, advertentie, nieuwsbrief, flyer, poster) gaat langs de
+   AI voordat de klant hem ziet. De check toetst op wat we afspraken: de
+   algemene regels van James Robinson, de afspraken per klant, de tone of
+   voice, de doelgroep, spelling en grammatica, de huisstijl en of de uiting
+   klopt met de landingspagina.
+
+   Drie soorten kennis, elk op hun eigen plek:
+   - check_regels: wat voor elke klant geldt, beheerd door een beheerder;
+   - klant_afspraken: maatwerk per klant, eventueel alleen voor één merk,
+     doelgroep, kanaal of soort uiting;
+   - klant_merken: een klant met meer dan één merk (Van Oys en Create), zodat
+     de check weet welk logo op welke uiting hoort.
+   ------------------------------------------------------------------------- */
+
+export const checkCategorieEnum = pgEnum('check_categorie', [
+  'merk', // logo, welk merk, sjabloon
+  'afspraak', // maatwerk dat we met de klant afspraken
+  'toon', // tone of voice
+  'doelgroep', // de juiste groep, op de juiste manier aangesproken
+  'taal', // spelling en grammatica
+  'feiten', // prijzen, data, aanbod, en of het klopt met de landingspagina
+  'huisstijl', // kleuren, typografie, opmaak
+  'overig',
+])
+
+export const checkStatusEnum = pgEnum('check_status', [
+  'wacht', // aangemaakt, de achtergrondfunctie moet hem nog oppakken
+  'bezig', // de AI is aan het werk
+  'klaar',
+  'fout',
+])
+
+export const checkOordeelEnum = pgEnum('check_oordeel', ['groen', 'oranje', 'rood'])
+
+/** Wat voor elke klant geldt. Geen klant erbij: dit zijn onze eigen regels. */
+export const checkRegels = pgTable(
+  'check_regels',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    titel: text('titel').notNull(),
+    tekst: text('tekst').notNull(),
+    categorie: checkCategorieEnum('categorie').notNull().default('overig'),
+    actief: boolean('actief').notNull().default(true),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedByUserId: uuid('updated_by_user_id').references(() => users.id, { onDelete: 'set null' }),
+  },
+  (t) => [
+    check('check_regel_titel_not_empty', sql`length(trim(${t.titel})) > 0`),
+    check('check_regel_tekst_not_empty', sql`length(trim(${t.tekst})) > 0`),
+  ],
+)
+
+/** De merken van één klant, als dat er meer dan één is. */
+export const klantMerken = pgTable(
+  'klant_merken',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    organizationId: uuid('organization_id')
+      .notNull()
+      .references(() => organizations.id, { onDelete: 'cascade' }),
+    naam: text('naam').notNull(),
+    /** Waar dit merk voor staat en wanneer het op een uiting hoort. */
+    omschrijving: text('omschrijving'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex('klant_merken_org_naam_idx').on(t.organizationId, sql`lower(${t.naam})`),
+    check('klant_merk_naam_not_empty', sql`length(trim(${t.naam})) > 0`),
+  ],
+)
+
+/**
+ * Maatwerk per klant. Zonder merk, doelgroep, kanaal of soort geldt een
+ * afspraak voor elke uiting van de klant; met, alleen daarvoor.
+ */
+export const klantAfspraken = pgTable(
+  'klant_afspraken',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    organizationId: uuid('organization_id')
+      .notNull()
+      .references(() => organizations.id, { onDelete: 'cascade' }),
+    tekst: text('tekst').notNull(),
+    categorie: checkCategorieEnum('categorie').notNull().default('afspraak'),
+    merkId: uuid('merk_id').references(() => klantMerken.id, { onDelete: 'cascade' }),
+    doelgroepId: uuid('doelgroep_id').references(() => organizationAudiences.id, { onDelete: 'cascade' }),
+    /** Bijvoorbeeld Instagram, Google Ads, nieuwsbrief. Vrije tekst. */
+    kanaal: text('kanaal'),
+    /** Soort uiting: post, advertentie, nieuwsbrief, ... */
+    soort: text('soort'),
+    actief: boolean('actief').notNull().default(true),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    createdByUserId: uuid('created_by_user_id').references(() => users.id, { onDelete: 'set null' }),
+  },
+  (t) => [
+    index('klant_afspraken_org_idx').on(t.organizationId),
+    check('klant_afspraak_tekst_not_empty', sql`length(trim(${t.tekst})) > 0`),
+  ],
+)
+
+export type CheckBestand = { naam: string; type: string; sleutel: string; bytes: number }
+
+/** Eén check van één versie van een uiting. Een nieuwe versie is een nieuwe rij, met de vorige erbij. */
+export const uitingChecks = pgTable(
+  'uiting_checks',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    organizationId: uuid('organization_id')
+      .notNull()
+      .references(() => organizations.id, { onDelete: 'cascade' }),
+    titel: text('titel').notNull(),
+    /** post, advertentie, story, nieuwsbrief, flyer, poster, banner, landingspagina, overig. */
+    soort: text('soort').notNull(),
+    kanaal: text('kanaal'),
+    /** Van welk merk de inhoud is. Leeg: het hoofdmerk. */
+    merkId: uuid('merk_id').references(() => klantMerken.id, { onDelete: 'set null' }),
+    /** Op het kanaal van welk merk de uiting verschijnt. Leeg: het hoofdmerk. */
+    kanaalMerkId: uuid('kanaal_merk_id').references(() => klantMerken.id, { onDelete: 'set null' }),
+    doelgroepId: uuid('doelgroep_id').references(() => organizationAudiences.id, { onDelete: 'set null' }),
+    campaignId: uuid('campaign_id').references(() => campaigns.id, { onDelete: 'set null' }),
+    /** Wat de uiting moet doen: tickets verkopen, aanmeldingen, reserveringen. */
+    doel: text('doel'),
+    /** De tekst bij de uiting: caption, advertentietekst, onderwerpregel. */
+    tekst: text('tekst'),
+    /** De uiting zelf als link: een afbeelding, een webversie van een nieuwsbrief. */
+    uitingUrl: text('uiting_url'),
+    /** De landingspagina waar de uiting naartoe linkt. */
+    lpUrl: text('lp_url'),
+    /** Wat de check verder moet weten, voor deze ene uiting. */
+    toelichting: text('toelichting'),
+    bestanden: jsonb('bestanden').$type<CheckBestand[]>().notNull().default(sql`'[]'::jsonb`),
+    versie: integer('versie').notNull().default(1),
+    vorigeCheckId: uuid('vorige_check_id').references((): AnyPgColumn => uitingChecks.id, { onDelete: 'set null' }),
+
+    status: checkStatusEnum('status').notNull().default('wacht'),
+    oordeel: checkOordeelEnum('oordeel'),
+    /** De bevindingen van de AI; de vorm staat in src/lib/uitingen-check.ts. */
+    uitkomst: jsonb('uitkomst'),
+    fout: text('fout'),
+    invoerTokens: integer('invoer_tokens'),
+    uitvoerTokens: integer('uitvoer_tokens'),
+    gestartOp: timestamp('gestart_op', { withTimezone: true }),
+    klaarOp: timestamp('klaar_op', { withTimezone: true }),
+
+    /* --- De poort naar de klant --- */
+    vrijgegevenOp: timestamp('vrijgegeven_op', { withTimezone: true }),
+    vrijgegevenDoorUserId: uuid('vrijgegeven_door_user_id').references(() => users.id, { onDelete: 'set null' }),
+    /** Verplicht als het oordeel niet groen is: waarom het toch naar de klant mag. */
+    vrijgaveReden: text('vrijgave_reden'),
+
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    createdByUserId: uuid('created_by_user_id').references(() => users.id, { onDelete: 'set null' }),
+  },
+  (t) => [
+    index('uiting_checks_org_idx').on(t.organizationId, t.createdAt),
+    index('uiting_checks_created_idx').on(t.createdAt),
+    check('uiting_check_titel_not_empty', sql`length(trim(${t.titel})) > 0`),
+    check(
+      'uiting_check_heeft_uiting',
+      sql`length(trim(coalesce(${t.tekst}, ''))) > 0 OR ${t.uitingUrl} IS NOT NULL OR jsonb_array_length(${t.bestanden}) > 0`,
+    ),
+    check('uiting_check_vrijgave_na_check', sql`${t.vrijgegevenOp} IS NULL OR ${t.status} = 'klaar'`),
+  ],
+)
+
+export type CheckRegel = typeof checkRegels.$inferSelect
+export type KlantMerk = typeof klantMerken.$inferSelect
+export type KlantAfspraak = typeof klantAfspraken.$inferSelect
+export type UitingCheck = typeof uitingChecks.$inferSelect

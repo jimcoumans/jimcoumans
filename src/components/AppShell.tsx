@@ -142,6 +142,12 @@ const icons = {
       <path d="m21 16-5-5-8 8" strokeLinejoin="round" />
     </svg>
   ),
+  checks: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
+      <path d="M12 3 4.5 6v5.5c0 4.6 3.2 8.2 7.5 9.5 4.3-1.3 7.5-4.9 7.5-9.5V6z" strokeLinejoin="round" />
+      <path d="m8.8 12.2 2.3 2.3 4.3-4.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  ),
   chevron: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <path d="m9 6 6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
@@ -186,13 +192,14 @@ const TEAM_GROEPEN: NavGroep[] = [
       { href: '/beheer/abonnementen', label: 'Abonnementen', key: 'abonnementen', icon: icons.subs },
     ],
   },
-  /* Het werk voor klanten: campagnes en hun merk. */
+  /* Het werk voor klanten: campagnes, de check op elke uiting, en hun merk. */
   {
     label: 'Uitvoering',
     key: 'g-uitvoering',
     icon: icons.campagnes,
     items: [
       { href: '/beheer/campagnes', label: 'Campagnes', key: 'campagnes', icon: icons.campagnes },
+      { href: '/beheer/checks', label: 'Uitingen-check', key: 'checks', icon: icons.checks },
       { href: '/beheer/assets', label: 'Merkkluizen', key: 'assets', icon: icons.assets },
       { href: '/beheer/assets/beeldbank', label: 'Beeldbank', key: 'beeldbank', icon: icons.assets },
     ],

@@ -476,6 +476,23 @@ export function describeDbError(error: unknown): string | null {
       return 'Deze tekststijl bestaat al. Ververs de pagina.'
     case 'campaign_versions_idx':
       return 'Deze versie is al vastgelegd. Ververs de pagina en probeer het opnieuw.'
+    /* --- Uitingen-check --- */
+    case 'check_regel_titel_not_empty':
+      return 'Geef de regel een titel.'
+    case 'check_regel_tekst_not_empty':
+      return 'Schrijf op wat de regel inhoudt.'
+    case 'klant_afspraak_tekst_not_empty':
+      return 'Schrijf de afspraak op.'
+    case 'klant_merk_naam_not_empty':
+      return 'Geef het merk een naam.'
+    case 'klant_merken_org_naam_idx':
+      return 'Deze klant heeft al een merk met die naam.'
+    case 'uiting_check_titel_not_empty':
+      return 'Geef de uiting een naam, bijvoorbeeld "Kerstbrunch · post 2".'
+    case 'uiting_check_heeft_uiting':
+      return 'Voeg de uiting toe: een afbeelding of pdf, een link, of de tekst.'
+    case 'uiting_check_vrijgave_na_check':
+      return 'Vrijgeven kan pas als de check klaar is.'
     default:
       break
   }
