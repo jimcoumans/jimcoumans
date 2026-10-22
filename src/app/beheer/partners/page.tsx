@@ -3,6 +3,8 @@ import { getSessionUser } from '@/lib/auth'
 import { listPartners, listOrganizationsPerPartner, partnerTypeLabels } from '@/lib/crm'
 import { listContactenPerPartner } from '@/lib/crm-personen'
 import { getPartnerFigures } from '@/lib/quotes'
+import { pakkettenPerPartner } from '@/lib/partneraanvragen'
+import { PartnerProfiel } from '@/components/partners/PartnerProfiel'
 import { AppShell } from '@/components/AppShell'
 import { Paneel } from '@/components/Paneel'
 import { ActionForm, Field, Select, Uitklap } from '@/components/ActionForm'
@@ -163,15 +165,20 @@ export default async function PartnersPage() {
   // Twee queries voor alle partners samen, niet twee per partner. Bij veertig
   // partners scheelt dat zesentachtig netwerkrondes; lokaal merk je dat niet,
   // vanaf een serverless functie is het het verschil tussen laden en aflopen.
-  const [perPartner, contactenPerPartner] = await Promise.all([
+  const [perPartner, contactenPerPartner, pakketten] = await Promise.all([
     listOrganizationsPerPartner(),
     listContactenPerPartner(),
+    pakkettenPerPartner(),
   ])
 
   return (
     <AppShell user={user} actief="partners">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <h1 className="mb-1 text-[28px] sm:text-[32px]">Partners</h1>
+          <div className="flex flex-wrap items-center gap-2">
+          <a href="/beheer/partners/aanvragen" className="rounded-full border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-jr-text hover:bg-gray-50">
+            Partneraanvragen
+          </a>
           <Paneel
             knop="+ Partner toevoegen"
             titel="Partner toevoegen"
@@ -205,6 +212,7 @@ export default async function PartnersPage() {
               <Field label="Interne notities" name="notities" />
             </ActionForm>
           </Paneel>
+          </div>
         </div>
         <p className="mb-6 text-sm text-gray-600">
           De externen met wie we werken, wat we met ze hebben afgesproken en bij welke
@@ -298,6 +306,13 @@ export default async function PartnersPage() {
                         <p className="mt-0.5 text-[13px] text-gray-600">
                           {[partnerTypeLabels[p.type], p.contactName, p.email, p.phone].filter(Boolean).join(' · ')}
                         </p>
+                        {(p.specialismen.length > 0 || (pakketten.get(p.id) ?? []).length > 0) && (
+                          <p className="mt-1 text-[13px] text-gray-600">
+                            {[p.specialismen.join(', '), (pakketten.get(p.id) ?? []).length ? `${(pakketten.get(p.id) ?? []).length} ${(pakketten.get(p.id) ?? []).length === 1 ? 'prijsafspraak' : 'prijsafspraken'}` : 'nog geen prijsafspraken']
+                              .filter(Boolean)
+                              .join(' · ')}
+                          </p>
+                        )}
                         {p.agreementNotes && <p className="mt-1 text-[13px] text-gray-600">{p.agreementNotes}</p>}
                           {(() => {
                             const c = perPartnerCijfers.get(p.id)
@@ -346,6 +361,9 @@ export default async function PartnersPage() {
                       </div>
 
                       <Menu>
+                        <Paneel knop="Matchprofiel en prijsafspraken" stijl="menu" titel={p.name} sluitNaOpslaan={false}>
+                          <PartnerProfiel partner={p} pakketten={pakketten.get(p.id) ?? []} />
+                        </Paneel>
                         <Paneel knop="Gegevens en tarieven" stijl="menu" titel={p.name}>
                           <PartnerVelden partner={p} />
                         </Paneel>

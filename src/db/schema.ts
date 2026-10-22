@@ -165,6 +165,7 @@ export const partnerTypeEnum = pgEnum('partner_type', [
   'copywriter',
   'translator',
   'designer',
+  'animator',
   'other',
 ])
 
@@ -1011,6 +1012,17 @@ export const partners = pgTable(
     agreementNotes: text('agreement_notes'),
 
     notes: text('notes'),
+
+    /* --- Het matchprofiel: waarmee een aanvraag bij de juiste partner komt --- */
+    /** Wat de partner maakt: Video, Fotografie, Drone, Animatie, ... (SPECIALISMEN in partneraanvragen.ts). */
+    specialismen: text('specialismen').array().notNull().default(sql`ARRAY[]::text[]`),
+    /** De branches waar de partner graag en goed voor werkt. */
+    branches: text('branches').array().notNull().default(sql`ARRAY[]::text[]`),
+    /** Waar de partner werkt en tegen welke reiskosten. */
+    werkgebied: text('werkgebied'),
+    /** Stijl, uitrusting, sterke punten: waarom je deze partner kiest. */
+    sterktes: text('sterktes'),
+
     active: boolean('active').notNull().default(true),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
@@ -4258,3 +4270,190 @@ export type CheckRegel = typeof checkRegels.$inferSelect
 export type KlantMerk = typeof klantMerken.$inferSelect
 export type KlantAfspraak = typeof klantAfspraken.$inferSelect
 export type UitingCheck = typeof uitingChecks.$inferSelect
+
+/* -------------------------------------------------------------------------
+   Partneraanvragen.
+
+   Een klant (of wijzelf) vraagt iets dat een partner maakt: een video, een
+   fotoshoot, een animatie. Het portaal legt de vraag naast de partners met
+   dat specialisme, rekent per partner uit wat het kost op basis van de
+   vaste prijsafspraken (partner_pakketten), en stuurt de gekozen partners
+   een uitvraag met een link. Wat zij antwoorden, bevestigen of passen we
+   aan; daarna wordt het met één klik een offerte.
+
+   Het werk van de partner gaat één-op-één door naar de klant: geen opslag.
+   Ons eigen werk (acquisitie, briefing, uitwerking) staat er apart op, per
+   aanvraag aan of uit te zetten.
+   ------------------------------------------------------------------------- */
+
+/** Een vaste prijsafspraak met een partner: een pakket of een los tarief. */
+export const partnerPakketten = pgTable(
+  'partner_pakketten',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    partnerId: uuid('partner_id')
+      .notNull()
+      .references(() => partners.id, { onDelete: 'cascade' }),
+    specialisme: text('specialisme').notNull(),
+    naam: text('naam').notNull(),
+    /** Wat erin zit: uren op locatie, montage, aantal eindproducten, formaten, reiskosten. */
+    omschrijving: text('omschrijving'),
+    prijsCents: integer('prijs_cents').notNull(),
+    /** opdracht, dagdeel, dag, uur of stuk. */
+    eenheid: text('eenheid').notNull().default('opdracht'),
+    /** Tot wanneer deze prijs is afgesproken. Leeg: geen einddatum. */
+    geldigTot: date('geldig_tot', { mode: 'string' }),
+    actief: boolean('actief').notNull().default(true),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('partner_pakketten_partner_idx').on(t.partnerId),
+    check('partner_pakket_naam_not_empty', sql`length(trim(${t.naam})) > 0`),
+    check('partner_pakket_prijs_positive', sql`${t.prijsCents} > 0`),
+    check('partner_pakket_eenheid_geldig', sql`${t.eenheid} IN ('opdracht', 'dagdeel', 'dag', 'uur', 'stuk')`),
+  ],
+)
+
+/**
+ * Ons eigen werk bij een partneropdracht, als sjabloon: elke nieuwe aanvraag
+ * krijgt deze regels, met "standaard aan" al aangevinkt.
+ */
+export const partnerWerkSjablonen = pgTable(
+  'partner_werk_sjablonen',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    naam: text('naam').notNull(),
+    omschrijving: text('omschrijving'),
+    /** In honderdsten: 150 is anderhalf uur. */
+    urenHonderdsten: integer('uren_honderdsten').notNull(),
+    uurtariefCents: integer('uurtarief_cents').notNull(),
+    standaardAan: boolean('standaard_aan').notNull().default(false),
+    volgorde: integer('volgorde').notNull().default(0),
+    actief: boolean('actief').notNull().default(true),
+  },
+  (t) => [
+    check('partner_werk_sjabloon_naam_not_empty', sql`length(trim(${t.naam})) > 0`),
+    check('partner_werk_sjabloon_uren_positive', sql`${t.urenHonderdsten} > 0`),
+    check('partner_werk_sjabloon_tarief_positive', sql`${t.uurtariefCents} > 0`),
+  ],
+)
+
+export const partnerAanvragen = pgTable(
+  'partner_aanvragen',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    organizationId: uuid('organization_id')
+      .notNull()
+      .references(() => organizations.id, { onDelete: 'cascade' }),
+    titel: text('titel').notNull(),
+    specialisme: text('specialisme').notNull(),
+    /** De concrete vraag: wat, waarvoor, welke stijl. Gaat letterlijk naar de partner. */
+    vraag: text('vraag').notNull(),
+    /** De branche waarvoor het is; standaard die van de klant. Telt mee in de match. */
+    branche: text('branche'),
+    voorkeursdatum: date('voorkeursdatum', { mode: 'string' }),
+    datumToelichting: text('datum_toelichting'),
+    locatie: text('locatie'),
+    /** De omvang, om pakketten per dagdeel of per stuk mee te rekenen. */
+    dagdelen: integer('dagdelen'),
+    stuks: integer('stuks'),
+    /** open: in voorbereiding of uitgevraagd. voorstel: er is een offerte. geannuleerd: gaat niet door. */
+    status: text('status').notNull().default('open'),
+    quoteId: uuid('quote_id').references(() => quotes.id, { onDelete: 'set null' }),
+    notities: text('notities'),
+    createdByUserId: uuid('created_by_user_id').references(() => users.id, { onDelete: 'set null' }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('partner_aanvragen_org_idx').on(t.organizationId),
+    index('partner_aanvragen_created_idx').on(t.createdAt),
+    check('partner_aanvraag_titel_not_empty', sql`length(trim(${t.titel})) > 0`),
+    check('partner_aanvraag_vraag_not_empty', sql`length(trim(${t.vraag})) > 0`),
+    check('partner_aanvraag_status_geldig', sql`${t.status} IN ('open', 'voorstel', 'geannuleerd')`),
+    check('partner_aanvraag_omvang_positive', sql`(${t.dagdelen} IS NULL OR ${t.dagdelen} > 0) AND (${t.stuks} IS NULL OR ${t.stuks} > 0)`),
+  ],
+)
+
+/** Ons eigen werk op één aanvraag: overgenomen uit de sjablonen, per regel aan of uit. */
+export const partnerAanvraagWerk = pgTable(
+  'partner_aanvraag_werk',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    aanvraagId: uuid('aanvraag_id')
+      .notNull()
+      .references(() => partnerAanvragen.id, { onDelete: 'cascade' }),
+    naam: text('naam').notNull(),
+    omschrijving: text('omschrijving'),
+    urenHonderdsten: integer('uren_honderdsten').notNull(),
+    uurtariefCents: integer('uurtarief_cents').notNull(),
+    aan: boolean('aan').notNull().default(false),
+    volgorde: integer('volgorde').notNull().default(0),
+  },
+  (t) => [
+    index('partner_aanvraag_werk_idx').on(t.aanvraagId),
+    check('partner_aanvraag_werk_naam_not_empty', sql`length(trim(${t.naam})) > 0`),
+    check('partner_aanvraag_werk_uren_positive', sql`${t.urenHonderdsten} > 0`),
+    check('partner_aanvraag_werk_tarief_positive', sql`${t.uurtariefCents} > 0`),
+  ],
+)
+
+/** Eén uitvraag aan één partner: wat wij vroegen, wat de partner antwoordde, wat wij bevestigden. */
+export const partnerUitvragen = pgTable(
+  'partner_uitvragen',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    aanvraagId: uuid('aanvraag_id')
+      .notNull()
+      .references(() => partnerAanvragen.id, { onDelete: 'cascade' }),
+    partnerId: uuid('partner_id')
+      .notNull()
+      .references(() => partners.id, { onDelete: 'cascade' }),
+    /** Het pakket dat wij voorstelden, en de prijs zoals wij hem uitrekenden. */
+    pakketId: uuid('pakket_id').references(() => partnerPakketten.id, { onDelete: 'set null' }),
+    indicatieCents: integer('indicatie_cents'),
+    /** verstuurd, beantwoord, bevestigd of afgewezen. */
+    status: text('status').notNull().default('verstuurd'),
+    /** Versie van de link: ophogen maakt een eerder verstuurde link ongeldig. Het token staat niet in de database. */
+    linkVersie: integer('link_versie').notNull().default(1),
+    verstuurdOp: timestamp('verstuurd_op', { withTimezone: true }).notNull().defaultNow(),
+    /** Lukte het mailen niet, dan staat hier waarom; de link kun je dan zelf delen. */
+    mailFout: text('mail_fout'),
+
+    /* --- Het antwoord van de partner --- */
+    beschikbaar: boolean('beschikbaar'),
+    andereDatum: text('andere_datum'),
+    /** Het pakket dat volgens de partner past. Leeg met een prijs: past in geen pakket. */
+    antwoordPakketId: uuid('antwoord_pakket_id').references(() => partnerPakketten.id, { onDelete: 'set null' }),
+    antwoordPrijsCents: integer('antwoord_prijs_cents'),
+    antwoordOpmerking: text('antwoord_opmerking'),
+    beantwoordOp: timestamp('beantwoord_op', { withTimezone: true }),
+
+    /* --- Onze bevestiging --- */
+    /** De inkoopprijs die we bevestigen, en die één-op-één op de offerte komt. */
+    prijsCents: integer('prijs_cents'),
+    bevestigdOp: timestamp('bevestigd_op', { withTimezone: true }),
+    bevestigdDoorUserId: uuid('bevestigd_door_user_id').references(() => users.id, { onDelete: 'set null' }),
+
+    /* --- Na de opdracht --- */
+    beoordeling: integer('beoordeling'),
+    beoordelingNotitie: text('beoordeling_notitie'),
+
+    createdByUserId: uuid('created_by_user_id').references(() => users.id, { onDelete: 'set null' }),
+  },
+  (t) => [
+    uniqueIndex('partner_uitvragen_paar_idx').on(t.aanvraagId, t.partnerId),
+    index('partner_uitvragen_partner_idx').on(t.partnerId),
+    check('partner_uitvraag_status_geldig', sql`${t.status} IN ('verstuurd', 'beantwoord', 'bevestigd', 'afgewezen')`),
+    check('partner_uitvraag_prijzen_positive', sql`(${t.antwoordPrijsCents} IS NULL OR ${t.antwoordPrijsCents} > 0) AND (${t.prijsCents} IS NULL OR ${t.prijsCents} > 0)`),
+    check('partner_uitvraag_beoordeling_geldig', sql`${t.beoordeling} IS NULL OR ${t.beoordeling} BETWEEN 1 AND 5`),
+    check('partner_uitvraag_bevestigd_met_prijs', sql`${t.status} <> 'bevestigd' OR ${t.prijsCents} IS NOT NULL`),
+  ],
+)
+
+export type PartnerPakket = typeof partnerPakketten.$inferSelect
+export type PartnerWerkSjabloon = typeof partnerWerkSjablonen.$inferSelect
+export type PartnerAanvraag = typeof partnerAanvragen.$inferSelect
+export type PartnerAanvraagWerk = typeof partnerAanvraagWerk.$inferSelect
+export type PartnerUitvraag = typeof partnerUitvragen.$inferSelect

@@ -63,6 +63,7 @@ export const partnerTypeLabels = {
   copywriter: 'Tekstschrijver',
   translator: 'Vertaler',
   designer: 'Vormgever',
+  animator: 'Animator',
   other: 'Overig',
 } as const
 
