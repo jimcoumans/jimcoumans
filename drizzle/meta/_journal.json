@@ -351,6 +351,13 @@
       "when": 1792574576805,
       "tag": "0049_uitingen_check",
       "breakpoints": true
+    },
+    {
+      "idx": 50,
+      "version": "7",
+      "when": 1792658417211,
+      "tag": "0050_partneraanvragen",
+      "breakpoints": true
     }
   ]
 }

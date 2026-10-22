@@ -189,6 +189,7 @@ const TEAM_GROEPEN: NavGroep[] = [
     items: [
       { href: '/beheer/pijplijn', label: 'Pijplijn', key: 'pijplijn', icon: icons.pijplijn },
       { href: '/beheer/offertes', label: 'Offertes', key: 'offertes', icon: icons.quotes },
+      { href: '/beheer/partners/aanvragen', label: 'Partneraanvragen', key: 'partneraanvragen', icon: icons.partners },
       { href: '/beheer/abonnementen', label: 'Abonnementen', key: 'abonnementen', icon: icons.subs },
     ],
   },

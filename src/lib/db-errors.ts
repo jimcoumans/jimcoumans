@@ -476,6 +476,40 @@ export function describeDbError(error: unknown): string | null {
       return 'Deze tekststijl bestaat al. Ververs de pagina.'
     case 'campaign_versions_idx':
       return 'Deze versie is al vastgelegd. Ververs de pagina en probeer het opnieuw.'
+    /* --- Partneraanvragen --- */
+    case 'partner_aanvraag_omvang_positive':
+      return 'Dagdelen en aantal zijn hele getallen boven nul, of leeg.'
+    case 'partner_aanvraag_status_geldig':
+      return 'Een aanvraag is open, heeft een voorstel of is geannuleerd.'
+    case 'partner_aanvraag_titel_not_empty':
+      return 'Geef de aanvraag een naam.'
+    case 'partner_aanvraag_vraag_not_empty':
+      return 'Beschrijf de vraag. Die gaat letterlijk naar de partner.'
+    case 'partner_aanvraag_werk_naam_not_empty':
+    case 'partner_werk_sjabloon_naam_not_empty':
+      return 'Geef het onderdeel een naam.'
+    case 'partner_aanvraag_werk_tarief_positive':
+    case 'partner_werk_sjabloon_tarief_positive':
+      return 'Vul een uurtarief boven nul in.'
+    case 'partner_aanvraag_werk_uren_positive':
+    case 'partner_werk_sjabloon_uren_positive':
+      return 'Vul een aantal uren boven nul in.'
+    case 'partner_pakket_eenheid_geldig':
+      return 'Kies de eenheid: per opdracht, dagdeel, dag, uur of stuk.'
+    case 'partner_pakket_naam_not_empty':
+      return 'Geef de prijsafspraak een naam.'
+    case 'partner_pakket_prijs_positive':
+      return 'Vul een prijs boven nul in.'
+    case 'partner_uitvraag_beoordeling_geldig':
+      return 'Geef een beoordeling van 1 tot 5.'
+    case 'partner_uitvraag_bevestigd_met_prijs':
+      return 'Bevestig een partner altijd met een prijs.'
+    case 'partner_uitvraag_prijzen_positive':
+      return 'Een prijs is een bedrag boven nul.'
+    case 'partner_uitvraag_status_geldig':
+      return 'Een uitvraag is verstuurd, beantwoord, bevestigd of afgewezen.'
+    case 'partner_uitvragen_paar_idx':
+      return 'Deze partner is al uitgevraagd voor deze aanvraag. Gebruik "Opnieuw versturen".'
     /* --- Uitingen-check --- */
     case 'check_regel_titel_not_empty':
       return 'Geef de regel een titel.'
