@@ -20,7 +20,7 @@ import { formatCents } from '@/lib/money'
 import { contractBijwerken } from '../../../../contract-actions'
 import { kandidaatEmail } from '../../../../werving-actions'
 import { contractGetekend, handboekOntvangen, kandidaatAannemen } from '../../../../aanname-actions'
-import { DossierGegevens, DossierDocumenten, DossierRegel, IbanRegel, type DossierVan } from '@/components/Persoonsdossier'
+import { ContactRegel, DossierGegevens, DossierDocumenten, DossierRegel, IbanRegel, type DossierVan } from '@/components/Persoonsdossier'
 
 export const maxDuration = 26
 
@@ -427,6 +427,7 @@ export default async function IndiensttredingPagina({ params }: { params: Promis
               <ul className="divide-y divide-gray-100">
                 <DossierDocumenten van={van} gegevens={gegevens} soorten={['id_kopie', 'loonheffing']} />
                 <IbanRegel van={van} gegevens={gegevens} iban={iban} />
+                <ContactRegel van={van} gegevens={gegevens} start={{ email: k.email, telefoon: k.phone }} />
                 <DossierRegel
                   klaar={!!contract.handbookGivenOn}
                   titel="Personeelshandboek ontvangen"

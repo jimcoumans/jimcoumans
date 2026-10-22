@@ -1,6 +1,7 @@
 import { ActionForm, Field, TextArea } from './ActionForm'
 import { mailSalarisadministratie, dossierDoorgegeven } from '@/app/beheer/aanname-actions'
 import { getPersoon, getSalarisContact, samenvattingVoorMail, type DossierVan } from '@/lib/salarisadministratie'
+import { salarisPakket } from '@/lib/persoonsgegevens'
 import { salarisMail } from '@/lib/mailsjablonen'
 import { getTekstOverrides } from '@/lib/sjablonen'
 import { getBedrijf } from '@/lib/bedrijf'
@@ -25,6 +26,9 @@ export function mapHref(van: DossierVan, voor: 'salaris' | 'eigen'): string {
 export async function SalarisBlok({ van, doorgegevenOp }: { van: DossierVan; doorgegevenOp: Date | null }) {
   const [persoon, contact, teksten, bedrijf, gebruiker] = await Promise.all([getPersoon(van), getSalarisContact(), getTekstOverrides(), getBedrijf(), getSessionUser()])
   if (!persoon) return null
+  const pakket = salarisPakket(persoon.gegevens ?? null)
+  const mist = pakket.filter((p) => !p.klaar)
+  const compleet = mist.length === 0
   const verborgen = 'userId' in van ? <input type="hidden" name="userId" value={van.userId} /> : <input type="hidden" name="kandidaatId" value={van.kandidaatId} />
 
   const voorbeeld = contact
@@ -52,10 +56,38 @@ export async function SalarisBlok({ van, doorgegevenOp }: { van: DossierVan; doo
         {doorgegevenOp && <span className="text-sm text-[#1d7a36]">✓ Doorgegeven op {formatDateLong(doorgegevenOp)}</span>}
       </div>
 
+      <div className="mb-4 rounded-lg bg-gray-50 p-3">
+        <p className="mb-2 text-xs font-medium text-gray-700">
+          {compleet ? 'Het pakket is compleet' : `Het pakket is nog niet compleet: ${mist.length} van ${pakket.length} ontbreekt`}
+        </p>
+        <ul className="grid gap-x-4 gap-y-1 text-xs sm:grid-cols-3">
+          {pakket.map((p) => (
+            <li key={p.sleutel} className={p.klaar ? 'text-gray-700' : 'text-jr-orange font-medium'}>
+              <span aria-hidden="true">{p.klaar ? '✓ ' : '○ '}</span>
+              {p.titel}
+              <span className="sr-only">{p.klaar ? ' (in orde)' : ' (ontbreekt nog)'}</span>
+            </li>
+          ))}
+        </ul>
+        {!compleet && (
+          <p className="mt-2 text-xs text-gray-600">
+            Vul aan bij{' '}
+            <a href="#dossier-gegevens" className="text-jr-link hover:underline">
+              de gegevens
+            </a>{' '}
+            en{' '}
+            <a href="#dossier-documenten" className="text-jr-link hover:underline">
+              de documenten
+            </a>
+            . Daarna kun je mailen; zo hoeft de salarisadministratie niets na te vragen.
+          </p>
+        )}
+      </div>
+
       <ol className="space-y-4 text-sm">
         <li>
           <p className="font-medium">1. Download de map</p>
-          <p className="mb-2 text-xs text-gray-600">Gegevensoverzicht, getekend contract, loonheffingsformulier en kopie ID, in één zip. Zonder AVG-verklaring en noodcontact: die zijn van ons.</p>
+          <p className="mb-2 text-xs text-gray-600">Gegevensoverzicht (met adres, privé e-mailadres, mobiel nummer en IBAN), getekend contract, loonheffingsformulier en kopie ID, in één zip. Zonder AVG-verklaring en noodcontact: die zijn van ons.</p>
           <a href={mapHref(van, 'salaris')} className={KNOP_RUSTIG}>
             Map voor de salarisadministratie (zip)
           </a>
@@ -66,7 +98,9 @@ export async function SalarisBlok({ van, doorgegevenOp }: { van: DossierVan; doo
         </li>
         <li>
           <p className="font-medium">3. Mail de link</p>
-          {!contact?.email ? (
+          {!compleet ? (
+            <p className="text-jr-orange text-xs">Kan zodra het pakket compleet is. Nog nodig: {mist.map((p) => (/^[A-Z]{2}/.test(p.titel) ? p.titel : p.titel[0]!.toLowerCase() + p.titel.slice(1))).join(', ')}.</p>
+          ) : !contact?.email ? (
             <p className="text-jr-orange text-xs">
               Stel eerst bij{' '}
               <a href="/beheer/bedrijf" className="text-jr-link hover:underline">

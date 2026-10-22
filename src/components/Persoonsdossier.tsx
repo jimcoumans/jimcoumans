@@ -1,7 +1,7 @@
 import { ActionForm, Field, Select } from './ActionForm'
 import { BestandVeld } from './BestandVeld'
 import { SalarisBlok, mapHref } from './SalarisBlok'
-import { dossierDocument, dossierDocumentWissen, dossierGegevensOpslaan, dossierIban } from '@/app/beheer/aanname-actions'
+import { dossierContact, dossierDocument, dossierDocumentWissen, dossierGegevensOpslaan, dossierIban } from '@/app/beheer/aanname-actions'
 import { dossierPunten, GESLACHTEN, type DocumentInfo, type DocumentSoort, type Gegevens } from '@/lib/persoonsgegevens'
 import { formatDate, formatDateInput, formatDateLong } from '@/lib/dates'
 import { sleutelProbleem } from '@/lib/versleuteling'
@@ -177,6 +177,27 @@ export function IbanRegel({ van, gegevens, iban }: { van: DossierVan; gegevens: 
   )
 }
 
+/** Privé e-mailadres en mobiel nummer: de salarisadministratie vraagt erom. */
+export function ContactRegel({ van, gegevens, start }: { van: DossierVan; gegevens: Gegevens | null; start?: { email?: string | null; telefoon?: string | null } }) {
+  const r = gegevens?.record ?? null
+  const klaar = !!r?.privateEmail?.trim() && !!r?.privatePhone?.trim()
+  return (
+    <DossierRegel klaar={klaar} titel="Privé e-mailadres en mobiel nummer" uitleg={klaar ? undefined : 'De salarisadministratie vraagt erom.'}>
+      {klaar ? (
+        <p className="mt-0.5 text-sm">
+          {r!.privateEmail} · {r!.privatePhone}
+        </p>
+      ) : (
+        <ActionForm action={dossierContact} submitLabel="Opslaan" submitClassName={KNOP_KLEIN} resetOnSuccess={false} meldGelukt={false} className="mt-2 flex flex-wrap items-center gap-2" knopInRij>
+          <Verborgen van={van} />
+          <input name="email" type="email" required defaultValue={r?.privateEmail ?? start?.email ?? ''} placeholder="Privé e-mailadres" aria-label="Privé e-mailadres" className="min-h-9 w-56 rounded-lg border border-gray-300 px-3 text-sm" />
+          <input name="telefoon" type="tel" required defaultValue={r?.privatePhone ?? start?.telefoon ?? ''} placeholder="06 12345678" aria-label="Mobiel nummer" className="min-h-9 w-44 rounded-lg border border-gray-300 px-3 text-sm" />
+        </ActionForm>
+      )}
+    </DossierRegel>
+  )
+}
+
 /** De gegevens zelf, altijd open: naam zoals in het paspoort, geboortedatum, adres en IBAN. */
 export function DossierGegevens({
   van,
@@ -233,8 +254,8 @@ export function DossierGegevens({
           <Field {...veld} label="Woonplaats" name="woonplaats" defaultValue={r?.city ?? ''} autoComplete="off" />
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
-          <Field {...veld} label="E-mail (privé)" name="email" type="email" defaultValue={r?.privateEmail ?? start?.email ?? ''} autoComplete="off" />
-          <Field {...veld} label="Telefoon (mobiel)" name="telefoon" defaultValue={r?.privatePhone ?? start?.telefoon ?? ''} autoComplete="off" />
+          <Field {...veld} label="Privé e-mailadres" name="email" type="email" defaultValue={r?.privateEmail ?? start?.email ?? ''} autoComplete="off" />
+          <Field {...veld} label="Mobiel nummer" name="telefoon" defaultValue={r?.privatePhone ?? start?.telefoon ?? ''} autoComplete="off" />
         </div>
       </Blok>
 
@@ -301,7 +322,7 @@ export function Persoonsdossier({
   const punten = dossierPunten(gegevens)
   const klaar = punten.filter((p) => p.klaar).length
   const compleet = klaar === punten.length
-  const anker = (s: string) => (['naam', 'geboortedatum', 'adres', 'contact', 'iban', 'noodcontact'].includes(s) ? '#dossier-gegevens' : '#dossier-documenten')
+  const anker = (s: string) => (['naam', 'geboortedatum', 'adres', 'email', 'mobiel', 'iban', 'noodcontact'].includes(s) ? '#dossier-gegevens' : '#dossier-documenten')
 
   return (
     <section id="dossier" className="scroll-mt-4 rounded-xl bg-white p-6 shadow-sm">

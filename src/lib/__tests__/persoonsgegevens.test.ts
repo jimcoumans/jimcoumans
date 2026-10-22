@@ -26,6 +26,7 @@ import {
   dienGegevensIn,
   leesDocument,
   markeerDoorgegeven,
+  voegDocumentToe,
   GegevensError,
 } from '../persoonsgegevens'
 import { maakKandidaat, bewerkKandidaat, listNotities, voegNotitieToe, zetKandidaatStatus, wisKandidaat, getKandidaat } from '../werving'
@@ -163,6 +164,8 @@ test('aanleveren via de link, document openen wordt vastgelegd, doorgeven pas al
       addressLine: 'Dorpsstraat 1',
       postalCode: '6181EZ',
       city: 'Elsloo',
+      privateEmail: 'gijs@example.nl',
+      privatePhone: '06 12345678',
       iban: 'NL91ABNA0417164300',
     },
     [{ kind: 'id_kopie', contentType: 'image/jpeg', filename: 'paspoort.jpg', data: pdf }],
@@ -188,6 +191,9 @@ test('aanleveren via de link, document openen wordt vastgelegd, doorgeven pas al
   assert.equal(inzage.length, 1)
   assert.equal(inzage[0]!.userId, beheerderId)
 
+  // Voor de salarisadministratie hoort ook het getekende contract erbij.
+  await assert.rejects(markeerDoorgegeven(r.id, beheerderId), /Nog niet compleet: getekend contract/)
+  await voegDocumentToe(r.id, { kind: 'contract', contentType: 'application/pdf', filename: 'contract.pdf', data: pdf }, beheerderId)
   await markeerDoorgegeven(r.id, beheerderId)
   assert.ok((await getGegevens({ candidateId: k.id }))!.record.doorgegevenOp)
   assert.ok((await listNotities(k.id)).some((n) => n.body === 'Gegevens doorgegeven aan de salarisadministratie.'))

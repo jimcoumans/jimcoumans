@@ -275,6 +275,7 @@ test('de indiensttreding loopt stap voor stap, en ziet wat er nog mist', async (
     stand.stukken.filter((s) => !s.klaar).map((s) => s.sleutel),
     ['contract', 'avg_verklaring', 'loonheffing', 'id_kopie', 'iban', 'handboek'],
   )
+  assert.equal(stand.stukken.find((s) => s.sleutel === 'contact')!.klaar, true, 'e-mail en telefoon van de kandidaat staan al in het dossier')
 
   // Een gewijzigd adres na het opstellen: het contract klopt niet meer.
   await werkContractgegevensBij(record.id, { addressLine: 'Andere straat 1' })

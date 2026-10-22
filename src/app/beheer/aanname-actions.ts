@@ -12,6 +12,7 @@ import {
   voegDocumentToe,
   slaGegevensOp,
   markeerDoorgegeven,
+  watOntbreektVoorSalaris,
   werkIbanBij,
   wisDocument,
   markeerGemaild,
@@ -215,6 +216,17 @@ export async function dossierIban(formData: FormData): Promise<ActionResult> {
   return inDossier(v, (id) => werkIbanBij(id, iban, tekst(formData, 'tenaamstelling') || null))
 }
 
+/** Alleen privé e-mailadres en mobiel nummer, voor de regel bij de getekende stukken. */
+export async function dossierContact(formData: FormData): Promise<ActionResult> {
+  if (!(await alsBeheerder())) return GEEN_RECHT
+  const v = vanUit(formData)
+  if (!v) return ONBEKEND
+  const email = tekst(formData, 'email')
+  const telefoon = tekst(formData, 'telefoon')
+  if (!email || !telefoon) return { ok: false, error: 'Vul allebei in: het privé e-mailadres en het mobiele nummer.' }
+  return inDossier(v, (id) => slaGegevensOp(id, { privateEmail: email, privatePhone: telefoon }))
+}
+
 export async function dossierDocument(formData: FormData): Promise<ActionResult> {
   const gebruiker = await alsBeheerder()
   if (!gebruiker) return GEEN_RECHT
@@ -266,6 +278,8 @@ export async function mailSalarisadministratie(formData: FormData): Promise<Acti
   ])
   if (!persoon) return { ok: false, error: 'Deze persoon bestaat niet meer.' }
   if (!contact?.email) return { ok: false, error: 'Stel eerst bij Bedrijfsgegevens in wie bij de salarisadministratie de mail krijgt.' }
+  const mist = persoon.gegevens ? watOntbreektVoorSalaris(persoon.gegevens.record, persoon.gegevens.documenten) : ['alle persoonsgegevens']
+  if (mist.length > 0) return { ok: false, error: `Het pakket is nog niet compleet: ${mist.join(', ')}. Vul dat eerst aan, dan hoeft de salarisadministratie niets na te vragen.` }
 
   const mail = salarisMail(
     {

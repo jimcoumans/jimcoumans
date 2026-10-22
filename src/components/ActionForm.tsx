@@ -295,6 +295,7 @@ export function TextArea({
   placeholder,
   defaultValue,
   hint,
+  required = false,
 }: {
   label: string
   name: string
@@ -302,18 +303,20 @@ export function TextArea({
   placeholder?: string
   defaultValue?: string
   hint?: string
+  required?: boolean
 }) {
   const id = `tekst-${name}-${label.replace(/\W+/g, '')}`
   return (
     <div>
       <label htmlFor={id} className="mb-1.5 block text-[13px] font-medium text-jr-text">
         {label}
-        <span className="font-normal text-gray-500"> (optioneel)</span>
+        {!required && <span className="font-normal text-gray-500"> (optioneel)</span>}
       </label>
       <textarea
         id={id}
         name={name}
         rows={rows}
+        required={required}
         placeholder={placeholder}
         defaultValue={defaultValue}
         className="min-h-11 w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-[15px] outline-none hover:border-gray-400"

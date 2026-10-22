@@ -25,6 +25,7 @@ import { Vestigingen, Concurrenten, Doelen } from '@/components/Bedrijfsprofiel'
 import { Tijdlijn } from '@/components/Tijdlijn'
 import { FormulierenTab } from '@/components/formulieren/FormulierenTab'
 import { KlantCampagnes, VasteDoelgroepen } from '@/components/KlantCampagnes'
+import { KlantUitingen } from '@/components/checks/KlantUitingen'
 import { KlantreisBalk, KlantreisDetail } from '@/components/Klantreis'
 import { Klantprofiel } from '@/components/Klantprofiel'
 import { getKlantreis } from '@/lib/klantreis'
@@ -69,6 +70,7 @@ const TABS = [
   { key: 'merkkluis', label: 'Merkkluis' },
   { key: 'budget', label: 'Budget en facturen' },
   { key: 'campagnes', label: 'Campagnes' },
+  { key: 'uitingen', label: 'Uitingen' },
   { key: 'contacten', label: 'Contacten' },
 ] as const
 type Tab = (typeof TABS)[number]['key']
@@ -325,6 +327,8 @@ export default async function KlantPage({
         {tab === 'formulieren' && <FormulierenTab organizationId={klant.organization.id} />}
 
         {tab === 'campagnes' && <KlantCampagnes organizationId={klant.organization.id} slug={slug} />}
+
+        {tab === 'uitingen' && <KlantUitingen organizationId={klant.organization.id} slug={slug} naam={klant.organization.name} />}
 
         {tab === 'contacten' && (
           <div className="space-y-10">
