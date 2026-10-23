@@ -358,6 +358,13 @@
       "when": 1792658417211,
       "tag": "0050_partneraanvragen",
       "breakpoints": true
+    },
+    {
+      "idx": 51,
+      "version": "7",
+      "when": 1792739983519,
+      "tag": "0051_partnerofferte",
+      "breakpoints": true
     }
   ]
 }

@@ -308,11 +308,21 @@ export default async function PartnersPage() {
                         </p>
                         {(p.specialismen.length > 0 || (pakketten.get(p.id) ?? []).length > 0) && (
                           <p className="mt-1 text-[13px] text-gray-600">
-                            {[p.specialismen.join(', '), (pakketten.get(p.id) ?? []).length ? `${(pakketten.get(p.id) ?? []).length} ${(pakketten.get(p.id) ?? []).length === 1 ? 'prijsafspraak' : 'prijsafspraken'}` : 'nog geen prijsafspraken']
+                            {[p.specialismen.join(', '), (pakketten.get(p.id) ?? []).length ? `${(pakketten.get(p.id) ?? []).length} ${(pakketten.get(p.id) ?? []).length === 1 ? 'standaardproduct' : 'standaardproducten'}` : 'nog geen standaardproducten']
                               .filter(Boolean)
                               .join(' · ')}
                           </p>
                         )}
+                        <div className="mt-1.5">
+                          <Paneel
+                            knop={`Standaardproducten en matchprofiel${(pakketten.get(p.id) ?? []).length ? ` (${(pakketten.get(p.id) ?? []).length})` : ''}`}
+                            stijl="link"
+                            titel={p.name}
+                            sluitNaOpslaan={false}
+                          >
+                            <PartnerProfiel partner={p} pakketten={pakketten.get(p.id) ?? []} />
+                          </Paneel>
+                        </div>
                         {p.agreementNotes && <p className="mt-1 text-[13px] text-gray-600">{p.agreementNotes}</p>}
                           {(() => {
                             const c = perPartnerCijfers.get(p.id)
@@ -361,9 +371,6 @@ export default async function PartnersPage() {
                       </div>
 
                       <Menu>
-                        <Paneel knop="Matchprofiel en prijsafspraken" stijl="menu" titel={p.name} sluitNaOpslaan={false}>
-                          <PartnerProfiel partner={p} pakketten={pakketten.get(p.id) ?? []} />
-                        </Paneel>
                         <Paneel knop="Gegevens en tarieven" stijl="menu" titel={p.name}>
                           <PartnerVelden partner={p} />
                         </Paneel>

@@ -3367,3 +3367,26 @@ BEGIN
   END IF;
 END $jr_0050_partneraanvragen$;
 
+-- ---------------------------------------------------------------------------
+-- 0051_partnerofferte
+-- ---------------------------------------------------------------------------
+
+DO $jr_0051_partnerofferte$
+BEGIN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = '517cdb66514f9a976c10b9245070d867ab0439a1ba0def15fd8b49f654763bce') THEN
+    RAISE NOTICE 'Overgeslagen: 0051_partnerofferte stond er al.';
+  ELSE
+    ALTER TABLE "partner_uitvragen" ADD COLUMN "handmatig" boolean DEFAULT false NOT NULL;
+
+    ALTER TABLE "partner_uitvragen" ADD COLUMN "offerte_naam" text;
+
+    ALTER TABLE "partner_uitvragen" ADD COLUMN "offerte_type" text;
+
+    ALTER TABLE "partner_uitvragen" ADD COLUMN "offerte_sleutel" text;
+
+    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+    VALUES ('517cdb66514f9a976c10b9245070d867ab0439a1ba0def15fd8b49f654763bce', 1792739983519);
+    RAISE NOTICE 'Toegepast: 0051_partnerofferte.';
+  END IF;
+END $jr_0051_partnerofferte$;
+

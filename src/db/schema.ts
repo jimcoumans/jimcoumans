@@ -4420,6 +4420,12 @@ export const partnerUitvragen = pgTable(
     verstuurdOp: timestamp('verstuurd_op', { withTimezone: true }).notNull().defaultNow(),
     /** Lukte het mailen niet, dan staat hier waarom; de link kun je dan zelf delen. */
     mailFout: text('mail_fout'),
+    /** Met de hand ingevoerd (telefoon, mail, eigen offerte), zonder uitvraag via de link. */
+    handmatig: boolean('handmatig').notNull().default(false),
+    /** De offerte van de partner als bestand (pdf of afbeelding), in de bestandsopslag. */
+    offerteNaam: text('offerte_naam'),
+    offerteType: text('offerte_type'),
+    offerteSleutel: text('offerte_sleutel'),
 
     /* --- Het antwoord van de partner --- */
     beschikbaar: boolean('beschikbaar'),

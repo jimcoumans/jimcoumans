@@ -18,6 +18,9 @@ import { addQuoteLine, createQuote } from './quotes'
 import { verstuurMail } from './mail'
 import { formatEuro } from './money'
 import { formatDate } from './dates'
+import { createPartner } from './crm'
+import { bewaar } from './bestandsopslag'
+import { herkenFeedbackBestand } from './campagne-verwerken'
 
 /* -------------------------------------------------------------------------
    Partneraanvragen: van "de klant wil een video" naar een offerte.
@@ -909,4 +912,127 @@ export async function maakVoorstel(aanvraagId: string, uitvraagId: string, userI
 /** Voor schermen: is deze prijsafspraak vandaag verlopen? */
 export function isVerlopenVandaag(p: Pick<PartnerPakket, 'geldigTot'>): boolean {
   return isVerlopen(p, new Date().toISOString().slice(0, 10))
+}
+
+/* ------------------------------ Vanuit de aanvraag zelf ------------------- */
+
+/*
+ * Alles wat je bij een aanvraag nodig hebt, moet ook vanuit die aanvraag
+ * kunnen: een partner die er nog niet in staat toevoegen, en een offerte
+ * die per mail of telefoon binnenkwam vastleggen. Anders loop je vast op
+ * het moment dat het telt: de klant wacht op een prijs.
+ */
+
+export type NieuwePartnerInvoer = {
+  naam: string
+  type: Partner['type']
+  contactName: string | null
+  email: string | null
+  phone: string | null
+  specialismen: string[]
+  /** Een eerste standaardproduct, als je de prijs al weet. */
+  product: { naam: string; prijsCents: number | null; eenheid: string; omschrijving: string | null } | null
+}
+
+/** Een nieuwe partner, meteen met het specialisme van de aanvraag, zodat hij in de vergelijking staat. */
+export async function maakPartnerVoorAanvraag(aanvraagId: string, input: NieuwePartnerInvoer): Promise<string> {
+  const a = await openAanvraag(aanvraagId)
+  if (input.naam.trim().length < 2) throw new AanvraagError('Vul de naam van de partner in.')
+  const partner = await createPartner({ name: input.naam, type: input.type, contactName: input.contactName, email: input.email, phone: input.phone })
+  const specialismen = [...new Set([a.specialisme, ...input.specialismen])]
+  await zetPartnerProfiel(partner.id, { specialismen, branches: [], werkgebied: null, sterktes: null })
+  if (input.product && input.product.naam.trim()) {
+    await maakPakket(partner.id, {
+      specialisme: a.specialisme,
+      naam: input.product.naam,
+      omschrijving: input.product.omschrijving,
+      prijsCents: input.product.prijsCents,
+      eenheid: input.product.eenheid,
+      geldigTot: null,
+    })
+  }
+  return partner.id
+}
+
+export type HandmatigeOfferte = {
+  partnerId: string
+  pakketId: string | null
+  prijsCents: number | null
+  beschikbaar: boolean
+  andereDatum: string | null
+  opmerking: string | null
+  bestand: { naam: string; data: Buffer } | null
+  /** Meteen bevestigen: dan kan er direct een offerte voor de klant van gemaakt worden. */
+  bevestigen: boolean
+}
+
+export const MAX_OFFERTE_BYTES = 4.5 * 1024 * 1024
+
+/**
+ * De offerte van een partner vastleggen zoals die binnenkwam: per mail, aan
+ * de telefoon of als pdf. Staat de partner al op de aanvraag (uitgevraagd
+ * via de link), dan werken we zijn antwoord bij; anders komt hij erop, als
+ * handmatig ingevoerd. Er gaat geen mail weg.
+ */
+export async function legOfferteVast(aanvraagId: string, o: HandmatigeOfferte, userId: string, vandaag = new Date().toISOString().slice(0, 10)): Promise<void> {
+  const a = await openAanvraag(aanvraagId)
+  const [partner] = await db.select().from(partners).where(eq(partners.id, o.partnerId)).limit(1)
+  if (!partner) throw new AanvraagError('Kies de partner.')
+  let pakket: PartnerPakket | null = null
+  if (o.pakketId) {
+    const [p] = await db.select().from(partnerPakketten).where(eq(partnerPakketten.id, o.pakketId)).limit(1)
+    if (!p || p.partnerId !== partner.id) throw new AanvraagError('Dit standaardproduct hoort niet bij deze partner.')
+    pakket = p
+  }
+  const prijs = o.prijsCents ?? (pakket ? indicatieVoor(pakket, a, vandaag).cents : null)
+  if (prijs !== null && prijs <= 0) throw new AanvraagError('Vul een prijs boven nul in.')
+  if (o.beschikbaar && prijs === null) throw new AanvraagError('Vul de prijs van de partner in, of kies een standaardproduct.')
+  if (o.bevestigen && !o.beschikbaar) throw new AanvraagError('Een partner die niet kan, kun je niet bevestigen. Haal het vinkje "meteen bevestigen" weg.')
+
+  let bestand: { offerteNaam: string; offerteType: string; offerteSleutel: string } | null = null
+  if (o.bestand && o.bestand.data.length > 0) {
+    if (o.bestand.data.length > MAX_OFFERTE_BYTES) throw new AanvraagError('De offerte is groter dan 4,5 MB. Maak hem kleiner.')
+    const soort = herkenFeedbackBestand(o.bestand.data)
+    if (!soort || soort.blok === 'tekst') throw new AanvraagError('Gebruik een pdf of een afbeelding voor de offerte.')
+    const veiligeNaam = o.bestand.naam.replace(/[^a-z0-9._-]+/gi, '-').replace(/^-+|-+$/g, '').slice(0, 80) || 'offerte'
+    const sleutel = `partneroffertes/${aanvraagId}/${partner.id}/${Date.now()}-${veiligeNaam}`
+    await bewaar(sleutel, o.bestand.data, soort.mime)
+    bestand = { offerteNaam: o.bestand.naam, offerteType: soort.mime, offerteSleutel: sleutel }
+  }
+
+  const antwoord = {
+    beschikbaar: o.beschikbaar,
+    andereDatum: o.andereDatum?.trim() || null,
+    antwoordPakketId: pakket?.id ?? null,
+    antwoordPrijsCents: o.prijsCents,
+    antwoordOpmerking: o.opmerking?.trim() || null,
+    beantwoordOp: new Date(),
+    status: o.bevestigen ? 'bevestigd' : 'beantwoord',
+    ...(o.bevestigen ? { prijsCents: prijs, bevestigdOp: new Date(), bevestigdDoorUserId: userId } : {}),
+    ...(bestand ?? {}),
+  }
+  const [bestaand] = await db
+    .select({ id: partnerUitvragen.id })
+    .from(partnerUitvragen)
+    .where(and(eq(partnerUitvragen.aanvraagId, aanvraagId), eq(partnerUitvragen.partnerId, partner.id)))
+    .limit(1)
+  if (bestaand) {
+    await db.update(partnerUitvragen).set(antwoord).where(eq(partnerUitvragen.id, bestaand.id))
+  } else {
+    await db.insert(partnerUitvragen).values({
+      aanvraagId,
+      partnerId: partner.id,
+      pakketId: pakket?.id ?? null,
+      indicatieCents: pakket ? indicatieVoor(pakket, a, vandaag).cents : null,
+      handmatig: true,
+      createdByUserId: userId,
+      ...antwoord,
+    })
+  }
+  await db.update(partnerAanvragen).set({ updatedAt: new Date() }).where(eq(partnerAanvragen.id, aanvraagId))
+}
+
+/** Alle actieve partners, voor de keuze "offerte van een partner invoeren" (ook buiten het specialisme). */
+export async function listPartnersVoorKeuze() {
+  return db.select({ id: partners.id, name: partners.name, specialismen: partners.specialismen }).from(partners).where(eq(partners.active, true)).orderBy(asc(partners.name))
 }

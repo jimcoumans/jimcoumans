@@ -7,7 +7,7 @@ import { formatDate } from '@/lib/dates'
 import type { Partner, PartnerPakket } from '@/db/schema'
 
 /* -------------------------------------------------------------------------
-   Het matchprofiel en de prijsafspraken van één partner. Hiermee komt een
+   Het matchprofiel en de standaardproducten (vaste prijzen) van één partner. Hiermee komt een
    aanvraag bij de juiste partner, met de juiste prijs.
    ------------------------------------------------------------------------- */
 
@@ -69,10 +69,10 @@ export function PartnerProfiel({ partner, pakketten }: { partner: Partner; pakke
       </section>
 
       <section>
-        <h3 className="mb-1 text-[15px] font-semibold">Prijsafspraken</h3>
-        <p className="mb-3 text-xs text-gray-600">Vaste pakketten en losse tarieven. Een aanvraag rekent met het goedkoopste pakket dat nog geldig is; je kunt per aanvraag een ander kiezen.</p>
+        <h3 className="mb-1 text-[15px] font-semibold">Standaardproducten en vaste prijzen</h3>
+        <p className="mb-3 text-xs text-gray-600">Wat je bij deze partner afneemt, met de afgesproken prijs: een pakket of een los tarief. Een aanvraag rekent met het goedkoopste product dat nog geldig is; per aanvraag kun je een ander kiezen.</p>
         {pakketten.length === 0 ? (
-          <p className="text-sm text-gray-500">Nog geen prijsafspraken.</p>
+          <p className="text-sm text-gray-500">Nog geen standaardproducten.</p>
         ) : (
           <ul className="divide-y divide-gray-100">
             {pakketten.map((p) => {
@@ -110,7 +110,7 @@ export function PartnerProfiel({ partner, pakketten }: { partner: Partner; pakke
             })}
           </ul>
         )}
-        <Uitklap label="Prijsafspraak toevoegen" inline className="mt-3">
+        <Uitklap label="+ Standaardproduct toevoegen" inline className="mt-3">
           <ActionForm action={nieuwPakket} submitLabel="Toevoegen">
             <PakketVelden partner={partner} />
           </ActionForm>
