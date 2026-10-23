@@ -51,6 +51,7 @@ export function ActionForm({
   bevestig,
   knopInRij = false,
   concept,
+  id,
 }: {
   action: (formData: FormData) => Promise<ActionResult>
   children: React.ReactNode
@@ -75,6 +76,8 @@ export function ActionForm({
    * concept van een oudere versie wordt niet teruggezet.
    */
   concept?: { sleutel: string; versie: string }
+  /** Een id, zodat velden buiten het formulier er via form="…" toch bij horen (bijvoorbeeld vinkjes in een tabel). */
+  id?: string
 }) {
   const vragen = bevestig ?? ONOMKEERBAAR.test(submitLabel)
   const [zeker, setZeker] = useState(false)
@@ -101,6 +104,7 @@ export function ActionForm({
 
   return (
     <form
+      id={id}
       ref={formulier}
       onInput={concept ? bewaarConcept : undefined}
       onChange={concept ? bewaarConcept : undefined}

@@ -9,7 +9,9 @@ import {
   AanvraagError,
   beoordeel,
   bevestig,
+  legOfferteVast,
   maakAanvraag,
+  maakPartnerVoorAanvraag,
   maakPakket,
   maakSjabloon,
   maakVoorstel,
@@ -27,6 +29,8 @@ import {
   type AanvraagInvoer,
   type PakketInvoer,
 } from '@/lib/partneraanvragen'
+import type { Partner } from '@/db/schema'
+import { partnerTypeLabels } from '@/lib/crm'
 import type { ActionResult } from './actions'
 
 /* Acties voor partneraanvragen, het matchprofiel en de prijsafspraken van
@@ -248,4 +252,48 @@ export async function maakPartnerVoorstel(formData: FormData): Promise<ActionRes
   })
   if (uit.ok) redirect(`/beheer/offertes/${quoteId}`)
   return uit
+}
+
+/* ------------------------------ Vanuit de aanvraag ------------------------ */
+
+/** Een partner toevoegen zonder de aanvraag te verlaten, meteen met het specialisme van de aanvraag. */
+export async function nieuwePartnerVoorAanvraag(formData: FormData): Promise<ActionResult> {
+  await requireStaff()
+  const type = tekst(formData, 'type')
+  return veilig([aanvraagPad(formData), '/beheer/partners'], async () => {
+    await maakPartnerVoorAanvraag(tekst(formData, 'aanvraagId'), {
+      naam: tekst(formData, 'naam'),
+      type: (type in partnerTypeLabels ? type : 'other') as Partner['type'],
+      contactName: ofNull(formData, 'contactpersoon'),
+      email: ofNull(formData, 'email'),
+      phone: ofNull(formData, 'telefoon'),
+      specialismen: formData.getAll('specialismen').map(String),
+      product: tekst(formData, 'productNaam')
+        ? { naam: tekst(formData, 'productNaam'), prijsCents: bedrag(formData, 'productPrijs'), eenheid: tekst(formData, 'productEenheid'), omschrijving: ofNull(formData, 'productOmschrijving') }
+        : null,
+    })
+  })
+}
+
+/** De offerte van een partner vastleggen zoals hij binnenkwam, eventueel met het bestand erbij. */
+export async function offerteVastleggen(formData: FormData): Promise<ActionResult> {
+  const user = await requireStaff()
+  const bestand = formData.get('offerte')
+  const pakket = tekst(formData, 'pakketId')
+  return veilig([aanvraagPad(formData)], async () => {
+    await legOfferteVast(
+      tekst(formData, 'aanvraagId'),
+      {
+        partnerId: tekst(formData, 'partnerId'),
+        pakketId: pakket && pakket !== 'geen' ? pakket : null,
+        prijsCents: bedrag(formData, 'prijs'),
+        beschikbaar: tekst(formData, 'beschikbaar') !== 'nee',
+        andereDatum: ofNull(formData, 'andereDatum'),
+        opmerking: ofNull(formData, 'opmerking'),
+        bestand: bestand instanceof File && bestand.size > 0 ? { naam: bestand.name || 'offerte', data: Buffer.from(await bestand.arrayBuffer()) } : null,
+        bevestigen: formData.get('bevestigen') === 'on',
+      },
+      user.id,
+    )
+  })
 }

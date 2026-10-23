@@ -102,7 +102,7 @@ export default async function AanvragenPage() {
       {aanvragen.length === 0 ? (
         <LeegVlak
           titel="Nog geen aanvragen"
-          tekst="Vraagt een klant om een video, fotoshoot of animatie? Leg de vraag hier vast; het portaal zet de partners met hun prijs naast elkaar. Vul eerst bij Partners het matchprofiel en de prijsafspraken in."
+          tekst="Vraagt een klant om een video, fotoshoot of animatie? Leg de vraag hier vast; het portaal zet de partners met hun prijs naast elkaar. Partners en hun standaardproducten voeg je toe in de aanvraag zelf, of bij Partners."
           actie={nieuw}
         />
       ) : (

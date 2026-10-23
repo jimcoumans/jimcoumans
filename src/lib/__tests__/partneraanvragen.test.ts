@@ -34,8 +34,14 @@ import {
   vergelijk,
   verstuurUitvragen,
   zetWerk,
+  legOfferteVast,
+  maakPartnerVoorAanvraag,
   AanvraagError,
 } from '../partneraanvragen'
+import { mkdtemp, rm } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import path from 'node:path'
+import { haal } from '../bestandsopslag'
 
 const suffix = Date.now()
 const VANDAAG = '2026-10-22'
@@ -49,6 +55,8 @@ let pakketLens: string
 let pakketBeeldAnder: string
 const quoteIds: string[] = []
 let oudeMailSleutel: string | undefined
+let opslag: string
+const extraPartners: string[] = []
 
 function pakket(extra: Partial<PartnerPakket>): PartnerPakket {
   return {
@@ -68,6 +76,9 @@ function pakket(extra: Partial<PartnerPakket>): PartnerPakket {
 }
 
 before(async () => {
+  opslag = await mkdtemp(path.join(tmpdir(), 'partneroffertes-'))
+  process.env.BESTANDSOPSLAG_MAP = opslag
+  process.env.BESTANDSOPSLAG = 'lokaal'
   oudeMailSleutel = process.env.RESEND_API_KEY
   delete process.env.RESEND_API_KEY
   const [org] = await db.insert(organizations).values({ slug: `pa-${suffix}`, name: `Makelaar ${suffix}`, industry: 'Makelaardij', city: 'Valkenburg' }).returning()
@@ -100,7 +111,9 @@ before(async () => {
 after(async () => {
   for (const id of quoteIds) await db.delete(quotes).where(eq(quotes.id, id))
   await db.delete(organizations).where(eq(organizations.id, orgId))
-  for (const id of [lensId, beeldId, fotoId]) await db.delete(partners).where(eq(partners.id, id))
+  for (const id of [lensId, beeldId, fotoId, ...extraPartners]) await db.delete(partners).where(eq(partners.id, id))
+  delete process.env.BESTANDSOPSLAG_MAP
+  await rm(opslag, { recursive: true, force: true })
   await db.delete(users).where(eq(users.id, userId))
   if (oudeMailSleutel !== undefined) process.env.RESEND_API_KEY = oudeMailSleutel
   await client.end()
@@ -255,4 +268,58 @@ test('ons werk komt per regel op de offerte, en eerdere opdrachten tellen mee in
   const werk = await db.select().from(partnerAanvraagWerk).where(eq(partnerAanvraagWerk.aanvraagId, a.id))
   assert.equal(regels.length, 1 + werk.filter((w) => w.aan).length)
   assert.ok(regels.some((r) => r.kind === 'custom' && r.description.startsWith('Basisfee')))
+})
+
+test('vanuit de aanvraag: partner toevoegen, offerte vastleggen en meteen de klantofferte maken', async () => {
+  const a = await maakAanvraag(
+    { organizationId: orgId, titel: 'Drone-opnames', specialisme: 'Drone', vraag: 'Luchtbeelden van het pand', branche: null, voorkeursdatum: null, datumToelichting: null, locatie: null, dagdelen: 1, stuks: null, notities: null },
+    userId,
+  )
+  const nieuw = await maakPartnerVoorAanvraag(a.id, {
+    naam: `Luchtwerk ${suffix}`,
+    type: 'other',
+    contactName: null,
+    email: null,
+    phone: null,
+    specialismen: [],
+    product: { naam: 'Halve dag drone', prijsCents: 60000, eenheid: 'opdracht', omschrijving: null },
+  })
+  extraPartners.push(nieuw)
+  const rij = (await vergelijk(a.id, VANDAAG)).find((r) => r.partner.id === nieuw)
+  assert.ok(rij, 'de nieuwe partner staat meteen in de vergelijking, met het specialisme van de aanvraag')
+  assert.equal(rij!.indicatie?.cents, 60000)
+
+  // Een offerte die per mail binnenkwam, met de pdf erbij, meteen bevestigd. Er gaat geen mail weg.
+  const pdf = Buffer.from('%PDF-1.4\n1 0 obj<<>>endobj\ntrailer<<>>\n%%EOF')
+  await legOfferteVast(a.id, { partnerId: nieuw, pakketId: null, prijsCents: 65000, beschikbaar: true, andereDatum: null, opmerking: 'Incl. vergunning', bestand: { naam: 'offerte.pdf', data: pdf }, bevestigen: true }, userId)
+  let [u] = await db.select().from(partnerUitvragen).where(eq(partnerUitvragen.aanvraagId, a.id))
+  assert.equal(u!.handmatig, true)
+  assert.equal(u!.status, 'bevestigd')
+  assert.equal(u!.prijsCents, 65000)
+  assert.equal(u!.mailFout, null)
+  assert.equal((await haal(u!.offerteSleutel!))?.contentType, 'application/pdf')
+
+  // Nog een keer vastleggen werkt bij, en maakt geen tweede regel.
+  await legOfferteVast(a.id, { partnerId: nieuw, pakketId: rij!.indicatie!.pakket.id, prijsCents: null, beschikbaar: true, andereDatum: null, opmerking: null, bestand: null, bevestigen: true }, userId)
+  const alle = await db.select().from(partnerUitvragen).where(eq(partnerUitvragen.aanvraagId, a.id))
+  assert.equal(alle.length, 1)
+  u = alle[0]
+  assert.equal(u!.prijsCents, 60000, 'zonder eigen prijs geldt het standaardproduct')
+  assert.ok(u!.offerteSleutel, 'het eerder bewaarde bestand blijft staan')
+
+  await assert.rejects(
+    () => legOfferteVast(a.id, { partnerId: nieuw, pakketId: null, prijsCents: 1000, beschikbaar: false, andereDatum: null, opmerking: null, bestand: null, bevestigen: true }, userId),
+    /niet kan/,
+  )
+  await assert.rejects(
+    () => legOfferteVast(a.id, { partnerId: nieuw, pakketId: pakketLens, prijsCents: null, beschikbaar: true, andereDatum: null, opmerking: null, bestand: null, bevestigen: false }, userId),
+    /hoort niet bij deze partner/,
+  )
+
+  const quoteId = await maakVoorstel(a.id, u!.id, userId)
+  quoteIds.push(quoteId)
+  const regels = await db.select().from(quoteLines).where(eq(quoteLines.quoteId, quoteId))
+  const partnerregel = regels.find((r) => r.kind === 'partner')
+  assert.equal(partnerregel?.unitPriceCents, 60000)
+  assert.equal(partnerregel?.partnerId, nieuw)
 })
