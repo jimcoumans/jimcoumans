@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>James Robinson Designsysteem: paginaonderdelen</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Figtree:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="jr-elementor-globals.css">
+<style>
+/* Alleen voor deze voorbeeldpagina: kaders rond de voorbeelden en de uitleg ernaast.
+   Alles in een .vb-voorbeeld komt uit jr-elementor-globals.css. */
+body { background: #FFFFFF; }
+.vb-sectie { padding: 72px 0; border-top: 1px solid var(--jr-line-subtle); }
+.vb-sectie:nth-child(even) { background: var(--jr-surface-subtle); }
+.vb-wrap { max-width: 1180px; margin: 0 auto; padding: 0 32px; }
+.vb-kop { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-bottom: 32px; align-items: end; }
+.vb-kop h2 { margin: 8px 0 0; }
+.vb-kop p { margin: 0; color: var(--jr-text-secondary); font-size: 15px; }
+.vb-voorbeeld { border: 1px solid var(--jr-line); border-radius: 18px; background: #FFFFFF; overflow: hidden; position: relative; }
+.vb-voorbeeld + .vb-voorbeeld { margin-top: 24px; }
+.vb-kop { break-after: avoid; } /* pdf: kop nooit los van zijn voorbeeld */
+.vb-label { font: 500 11px/1 var(--jr-font-mono); color: var(--jr-text-tertiary); padding: 10px 14px; border-bottom: 1px solid var(--jr-line-subtle); background: var(--jr-surface-subtle); }
+.vb-binnen { padding: 32px; }
+.vb-specs { margin-top: 16px; font-size: 13px; color: var(--jr-text-secondary); display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px 24px; }
+.vb-specs b { color: var(--jr-text); font-weight: 600; }
+.vb-foto { background: linear-gradient(135deg, #3A3A3C, #1C1C1E); color: rgba(255,255,255,.55); display: flex; align-items: center; justify-content: center; font-size: 12px; font-family: var(--jr-font-mono); }
+.vb-scherm { height: 100%; padding: 8% 7%; font-size: 9px; display: grid; gap: 6%; align-content: start; background: #F5F5F7; }
+.vb-scherm b { font: 700 18px/1 var(--jr-font-display); display: block; }
+.vb-tegel { background: #FFF; border-radius: 8px; padding: 8px; }
+.vb-titel { padding: 120px 0 64px; }
+.vb-titel .jr-display { margin: 12px 0 20px; }
+.vb-inhoud { columns: 2; column-gap: 48px; font-size: 15px; margin-top: 32px; }
+.vb-inhoud li { margin-bottom: 6px; }
+.vb-pagina-hoog .jr-header { position: relative; }
+.vb-pagina-hoog .jr-header--overlay { position: absolute; }
+@media print { .vb-sectie { break-inside: auto; } .vb-voorbeeld { break-inside: avoid; } }
+</style>
+</head>
+<body>
+
+<div class="vb-wrap vb-titel">
+  <span class="jr-eyebrow">Designsysteem v3.2 · oktober 2026 · deel 2</span>
+  <h1 class="jr-display">Elk onderdeel van de site, uitgewerkt.</h1>
+  <p class="jr-lead">Deel 1 legt het systeem vast: kleur, typografie, ruimte, knoppen, formulieren en de basiscomponenten. Dit deel voegt alles toe wat een pagina van de nieuwe website nodig heeft, van de topbar tot de footer. Alles hieronder is echte CSS uit <code>jr-elementor-globals.css</code>, secties 28 tot en met 41.</p>
+  <ol class="vb-inhoud">
+    <li>28 · Header en topbar</li>
+    <li>29 · Footer</li>
+    <li>30 · Hero's en grain</li>
+    <li>31 · Device-mockups</li>
+    <li>32 · Contact, livechat en zwevende knoppen</li>
+    <li>33 · De check</li>
+    <li>34 · Rekenhulp</li>
+    <li>35 · Het pakket en de modules</li>
+    <li>36 · Cases</li>
+    <li>37 · Team en spelersprofiel</li>
+    <li>38 · Artikelen en begrippen</li>
+    <li>39 · Lijstrijen en events</li>
+    <li>40 · Reviews, live en certificeringen</li>
+    <li>41 · Kaart, 404, bestand uploaden, juridisch</li>
+  </ol>
+</div>
+
+<main>
+
+<!-- 28 HEADER -->
+<section class="vb-sectie" id="header">
+  <div class="vb-wrap">
+    <div class="vb-kop">
+      <div><span class="jr-eyebrow">28 · Header en topbar</span><h2>De kop van elke pagina</h2></div>
+      <p>Topbar (36px, optioneel) met service. Navbalk van 72px: logo links, menu in het midden, rechts “Inloggen” en één knop. Bij het scrollen verdwijnt de topbar en wordt de navbalk 56px. Mobiel: alleen logo, knop en hamburger.</p>
+    </div>
+
+    <div class="vb-voorbeeld">
+      <div class="vb-label">.jr-header › .jr-topbar + .jr-nav › .jr-nav-inner — bovenaan de pagina</div>
+      <header class="jr-header" style="position:relative">
+        <div class="jr-topbar">
+          <div class="jr-topbar-inner">
+            <div class="jr-topbar-group">
+              <a class="jr-rating" href="#" style="color:inherit"><span class="jr-stars"><svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg></span> 5,0 op Google</a>
+              <span>Maandelijks opzegbaar</span>
+            </div>
+            <div class="jr-topbar-group"><a href="#">045 792 0009</a><a href="#">support@jamesrobinson.nl</a></div>
+          </div>
+        </div>
+        <nav class="jr-nav">
+          <div class="jr-nav-inner">
+            <a class="jr-logo" href="#"><svg viewBox="0 0 180 32" width="180" height="32"><rect width="32" height="32" rx="7" fill="#007AFF"/><text x="44" y="22" font-family="Figtree,Inter,sans-serif" font-weight="700" font-size="17" fill="#1D1D1F">James Robinson</text></svg></a>
+            <ul class="jr-nav-menu">
+              <li><a class="jr-nav-link is-active" href="#">Werkwijze</a></li>
+              <li><a class="jr-nav-link" href="#">Diensten</a></li>
+              <li><a class="jr-nav-link" href="#">Prijzen</a></li>
+              <li><a class="jr-nav-link" href="#">Cases</a></li>
+              <li><a class="jr-nav-link" href="#">Kennis</a></li>
+              <li><a class="jr-nav-link" href="#">Over ons</a></li>
+            </ul>
+            <div class="jr-nav-actions">
+              <a class="jr-nav-login" href="#">Inloggen</a>
+              <a class="jr-btn jr-btn--primary" href="#">Doe de check</a>
+            </div>
+          </div>
+        </nav>
+      </header>
+    </div>
+
+    <div class="vb-voorbeeld">
+      <div class="vb-label">.jr-header.is-scrolled — na het scrollen: topbar weg, 56px, bijna dicht glas</div>
+      <header class="jr-header is-scrolled" style="position:relative">
+        <nav class="jr-nav">
+          <div class="jr-nav-inner">
+            <a class="jr-logo" href="#"><svg viewBox="0 0 180 32" width="180" height="32"><rect width="32" height="32" rx="7" fill="#007AFF"/><text x="44" y="22" font-family="Figtree,Inter,sans-serif" font-weight="700" font-size="17" fill="#1D1D1F">James Robinson</text></svg></a>
+            <ul class="jr-nav-menu">
+              <li><a class="jr-nav-link" href="#">Werkwijze</a></li><li><a class="jr-nav-link" href="#">Diensten</a></li><li><a class="jr-nav-link" href="#">Prijzen</a></li><li><a class="jr-nav-link" href="#">Cases</a></li><li><a class="jr-nav-link" href="#">Kennis</a></li><li><a class="jr-nav-link" href="#">Over ons</a></li>
+            </ul>
+            <div class="jr-nav-actions"><a class="jr-nav-login" href="#">Inloggen</a><a class="jr-btn jr-btn--primary" href="#">Doe de check</a></div>
+          </div>
+        </nav>
+      </header>
+    </div>
+
+    <div class="vb-voorbeeld vb-pagina-hoog">
+      <div class="vb-label">.jr-header--overlay — transparant over een beeldvullende hero, witte tekst en wit logo; na scrollen gewoon wit glas</div>
+      <div class="vb-foto jr-grain" style="height:220px;position:relative;align-items:flex-end;padding-bottom:24px">foto · close-up, één harde lichtbron, grain</div>
+      <header class="jr-header jr-header--overlay" style="top:37px">
+        <nav class="jr-nav">
+          <div class="jr-nav-inner">
+            <a class="jr-logo jr-logo--wit" href="#"><svg viewBox="0 0 180 32" width="180" height="32"><rect width="32" height="32" rx="7" fill="#FFFFFF"/><text x="44" y="22" font-family="Figtree,Inter,sans-serif" font-weight="700" font-size="17" fill="#FFFFFF">James Robinson</text></svg></a>
+            <a class="jr-logo jr-logo--kleur" href="#">kleur</a>
+            <ul class="jr-nav-menu"><li><a class="jr-nav-link" href="#">Werkwijze</a></li><li><a class="jr-nav-link" href="#">Diensten</a></li><li><a class="jr-nav-link" href="#">Prijzen</a></li><li><a class="jr-nav-link" href="#">Cases</a></li></ul>
+            <div class="jr-nav-actions"><a class="jr-nav-login" href="#">Inloggen</a><a class="jr-btn jr-btn--lime" href="#">Doe de check</a></div>
+          </div>
+        </nav>
+      </header>
+    </div>
+
+    <div class="vb-voorbeeld" style="max-width:390px">
+      <div class="vb-label">Mobiel ≤ 734px — logo · knop · hamburger, 56px</div>
+      <nav class="jr-nav"><div class="jr-nav-inner" style="min-height:56px;padding-inline:20px;gap:12px">
+        <a class="jr-logo" href="#"><svg viewBox="0 0 150 28" width="150" height="28"><rect width="28" height="28" rx="6" fill="#007AFF"/><text x="38" y="19" font-family="Figtree,Inter,sans-serif" font-weight="700" font-size="15" fill="#1D1D1F">James Robinson</text></svg></a>
+        <span></span>
+        <div class="jr-nav-actions" style="gap:8px"><a class="jr-btn jr-btn--primary" href="#">Check</a><button class="jr-burger" aria-label="Menu"><span></span><span></span><span></span></button></div>
+      </div></nav>
+    </div>
+
+    <div class="vb-specs">
+      <span><b>Topbar</b> 36px · donker · 12px tekst</span>
+      <span><b>Navbalk</b> 72px → 56px na scrollen</span>
+      <span><b>Logo</b> 32px hoog → 28px</span>
+      <span><b>Menu</b> Inter 14px · 10/14px padding</span>
+      <span><b>Knop</b> klein (40px), primair · lime op een hero</span>
+      <span><b>Maximaal</b> 6 menu-items · één knop</span>
+    </div>
+  </div>
+</section>
+
+<!-- 29 FOOTER -->
+<section class="vb-sectie" id="footer">
+  <div class="vb-wrap">
+    <div class="vb-kop">
+      <div><span class="jr-eyebrow">29 · Footer</span><h2>Vijf rijen, altijd dezelfde</h2></div>
+      <p>Afsluiter met één knop, vijf kolommen (merk en contact, diensten, over ons, kennis, voor klanten), vertrouwen (score en certificeringen), nieuwsbrief, en de juridische regel.</p>
+    </div>
+    <div class="vb-voorbeeld">
+      <div class="vb-label">.jr-footer › .jr-footer-cta · .jr-footer-grid · .jr-footer-trust · .jr-footer-legal</div>
+      <footer class="jr-footer">
+        <div class="jr-footer-inner">
+          <div class="jr-footer-cta">
+            <p class="jr-footer-cta-title">Past het? Dat weet je in vijf minuten.</p>
+            <a class="jr-btn jr-btn--primary jr-btn--lg" href="#">Doe de check</a>
+          </div>
+          <div class="jr-footer-grid">
+            <div class="jr-footer-brand">
+              <a class="jr-logo" href="#"><svg viewBox="0 0 160 28" width="160" height="28"><rect width="28" height="28" rx="6" fill="#007AFF"/><text x="38" y="19" font-family="Figtree,Inter,sans-serif" font-weight="700" font-size="15" fill="#1D1D1F">James Robinson</text></svg></a>
+              <p>Performance Agency. Volle agenda's. Volle restaurants. Volle hotels.</p>
+              <address>Hulsberg, Zuid-Limburg<br>045 792 0009<br>support@jamesrobinson.nl</address>
+            </div>
+            <div><h6>Diensten</h6><ul><li><a href="#">Google Ads</a></li><li><a href="#">Social advertising</a></li><li><a href="#">Content</a></li><li><a href="#">Conversie-optimalisatie</a></li><li><a href="#">SEO</a></li></ul></div>
+            <div><h6>Over ons</h6><ul><li><a href="#">Werkwijze</a></li><li><a href="#">Team</a></li><li><a href="#">Werken bij</a></li><li><a href="#">Contact</a></li></ul></div>
+            <div><h6>Kennis</h6><ul><li><a href="#">Artikelen</a></li><li><a href="#">Gidsen</a></li><li><a href="#">Begrippen</a></li><li><a href="#">Cases</a></li></ul></div>
+            <div><h6>Voor klanten</h6><ul><li><a href="#">Inloggen portaal</a></li><li><a href="#">Helpdesk</a></li><li><a href="#">Portaal-updates</a></li></ul></div>
+          </div>
+          <div class="jr-footer-trust">
+            <span class="jr-rating"><span class="jr-rating-score">5,0</span><span class="jr-stars"><svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg></span>11 reviews op Google</span>
+            <form class="jr-footer-newsletter" onsubmit="return false"><input class="jr-input" type="email" placeholder="Je e-mailadres"><button class="jr-btn jr-btn--secondary" type="button">Aanmelden</button></form>
+          </div>
+          <div class="jr-footer-legal">
+            <span>© 2026 James Robinson · KvK [in te vullen]</span>
+            <ul><li><a href="#">Privacy</a></li><li><a href="#">Cookies</a></li><li><a href="#">Voorwaarden</a></li><li><a href="#">Toegankelijkheid</a></li></ul>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</section>
+
+<!-- 30 HERO -->
+<section class="vb-sectie" id="hero">
+  <div class="vb-wrap">
+    <div class="vb-kop">
+      <div><span class="jr-eyebrow">30 · Hero's en grain</span><h2>Drie hero's, meer niet</h2></div>
+      <p>Standaard (tekst links, beeld rechts), gecentreerd, en beeld of video over de volle breedte met een donkere overloop. De korrel (.jr-grain) gaat over elk beeld met de high-performancerichting: close-up, beweging, één harde lichtbron.</p>
+    </div>
+    <div class="vb-voorbeeld">
+      <div class="vb-label">.jr-hero — standaard</div>
+      <section class="jr-hero" style="padding-block:56px;min-height:0">
+        <div class="jr-hero-inner">
+          <div>
+            <span class="jr-eyebrow">Performance Agency</span>
+            <h1 class="jr-hero-title" style="font-size:56px">Volle agenda's. Volle restaurants. Volle hotels.</h1>
+            <p class="jr-hero-lead">Eerst de motor: binnen weken live in Google en op social. Daarna elke maand beter.</p>
+            <div class="jr-hero-actions"><a class="jr-btn jr-btn--primary jr-btn--lg" href="#">Doe de check</a><span class="jr-hero-note">Vijf minuten. Eerlijk antwoord.</span></div>
+          </div>
+          <div class="vb-foto jr-grain" style="aspect-ratio:4/5;border-radius:24px">beeld of device</div>
+        </div>
+      </section>
+    </div>
+    <div class="vb-voorbeeld">
+      <div class="vb-label">.jr-hero--media + .jr-grain — beeld of video over de volle breedte, tekst onderaan</div>
+      <section class="jr-hero jr-hero--media jr-grain" style="min-height:420px;padding-block:80px 48px">
+        <div class="vb-foto jr-hero-media" style="align-items:flex-start;padding-top:20px">video-loop 4–8 s, zonder geluid te begrijpen</div>
+        <div class="jr-hero-inner">
+          <div>
+            <h1 class="jr-hero-title" style="font-size:56px">Eerst de motor. Dan de rest.</h1>
+            <p class="jr-hero-lead">Wat niet werkt, weten we liever na twee weken dan na vier maanden.</p>
+            <div class="jr-hero-actions"><a class="jr-btn jr-btn--lime jr-btn--lg" href="#">Doe de check</a></div>
+          </div>
+        </div>
+      </section>
+    </div>
+    <div class="vb-specs">
+      <span><b>Titel</b> display 80/72/56/40px · Figtree 700</span>
+      <span><b>Media-hero</b> min. 720px · mobiel 82% van het scherm</span>
+      <span><b>Grain</b> 14% overlay · sterk 24%</span>
+    </div>
+  </div>
+</section>
+
+<!-- 31 DEVICES -->
+<section class="vb-sectie" id="devices">
+  <div class="vb-wrap">
+    <div class="vb-kop">
+      <div><span class="jr-eyebrow">31 · Device-mockups</span><h2>Telefoon, laptop en browser</h2></div>
+      <p>Pure CSS. Zet een screenshot, video of HTML in .jr-device-screen. De telefoon schaalt mee met één breedte; laptop en telefoon samen in .jr-device-duo.</p>
+    </div>
+    <div class="vb-voorbeeld"><div class="vb-label">.jr-device-duo › .jr-device-laptop + .jr-device-phone · en .jr-device-browser</div>
+      <div class="vb-binnen" style="display:grid;grid-template-columns:1.3fr 1fr;gap:48px;align-items:center">
+        <div class="jr-device-duo">
+          <div class="jr-device-laptop"><div class="jr-device-lid"><div class="jr-device-screen"><div class="vb-scherm"><span class="jr-live"><span class="jr-live-dot"></span>Live</span><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px"><div class="vb-tegel">Aanvragen<b>26</b></div><div class="vb-tegel">Kosten p/a<b>€ 52</b></div><div class="vb-tegel">Budget<b>€ 1.840</b></div></div><div class="vb-tegel" style="height:60px">grafiek</div></div></div></div><div class="jr-device-base"></div></div>
+          <div class="jr-device-phone"><div class="jr-device-screen"><div class="vb-scherm" style="padding-top:28%">Nieuwe aanvraag<b>Woningvideo</b></div></div></div>
+        </div>
+        <div class="jr-device-browser"><div class="jr-device-browser-bar"><i></i><i></i><i></i><span class="jr-device-browser-url">jamesrobinson.nl/past-het</span></div><div class="vb-scherm" style="height:220px">landingspagina</div></div>
+      </div>
+    </div>
+    <p class="jr-small" style="margin-top:12px">Cijfers in de schermen zijn voorbeeldwaarden.</p>
+  </div>
+</section>
+
+<!-- 32 CONTACT -->
+<section class="vb-sectie" id="contact">
+  <div class="vb-wrap">
+    <div class="vb-kop">
+      <div><span class="jr-eyebrow">32 · Contact</span><h2>De juiste specialist, onder elke pagina</h2></div>
+      <p>Het contactblok toont automatisch de specialist bij het onderwerp. Zwevende knoppen rechtsonder in vaste volgorde: livechat onderaan, terug-naar-boven erboven. Op mobiel schuiven ze boven de sticky CTA-balk.</p>
+    </div>
+    <div class="vb-voorbeeld"><div class="vb-label">.jr-contact-person</div>
+      <div class="vb-binnen">
+        <div class="jr-contact-person">
+          <div class="vb-foto" style="width:96px;height:96px;border-radius:50%">foto</div>
+          <div><p class="jr-contact-person-name">[Naam specialist]</p><p class="jr-contact-person-role">Specialist Google Ads</p><p class="jr-contact-person-quote">Vragen over adverteren in Google? Bel of mail me direct.</p></div>
+          <div class="jr-contact-person-actions"><a class="jr-btn jr-btn--primary jr-btn--sm" href="#">Bel 045 792 0009</a><a class="jr-btn jr-btn--secondary jr-btn--sm" href="#">Mail</a></div>
+        </div>
+      </div>
+    </div>
+    <div class="vb-voorbeeld"><div class="vb-label">.jr-fab-stack › .jr-chat-launcher + .jr-to-top</div>
+      <div class="vb-binnen" style="height:160px;position:relative">
+        <div class="jr-fab-stack" style="position:absolute">
+          <button class="jr-chat-launcher" aria-label="Chat"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16v11H9l-5 4z" stroke-linejoin="round"/></svg><span class="jr-live-dot"></span></button>
+          <a class="jr-to-top is-visible" href="#" aria-label="Naar boven">↑</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 33 CHECK -->
+<section class="vb-sectie" id="check">
+  <div class="vb-wrap">
+    <div class="vb-kop">
+      <div><span class="jr-eyebrow">33 · De check</span><h2>Eén vraag per scherm, een eerlijke uitkomst</h2></div>
+      <p>Voortgang bovenaan die niet bij nul begint. Antwoorden als keuzekaarten. Vier uitkomsten: groen, oranje, later en rood. Rood is een eerlijk nee, met een verwijzing.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+      <div class="vb-voorbeeld"><div class="vb-label">.jr-check</div>
+        <div class="vb-binnen" style="background:var(--jr-surface-subtle)">
+          <div class="jr-check" style="padding:32px">
+            <div class="jr-check-head"><span>Vraag 4 van 15</span><span>Nog 3 minuten</span></div>
+            <div class="jr-progress" style="margin-bottom:28px"><div class="jr-progress-bar" style="width:33%"></div></div>
+            <h3 class="jr-check-question">Hoeveel nieuwe klanten kun je per maand aan?</h3>
+            <p class="jr-check-why">Waarom we dit vragen: meer aanvragen dan je aankunt, kost je geld.</p>
+            <div class="jr-check-options">
+              <label class="jr-choice jr-choice--card jr-choice--radio"><input type="radio" name="v"><span class="jr-choice-box"></span><span class="jr-choice-label">1 tot 5</span></label>
+              <label class="jr-choice jr-choice--card jr-choice--radio"><input type="radio" name="v" checked><span class="jr-choice-box"></span><span class="jr-choice-label">5 tot 20</span></label>
+              <label class="jr-choice jr-choice--card jr-choice--radio"><input type="radio" name="v"><span class="jr-choice-box"></span><span class="jr-choice-label">Meer dan 20</span></label>
+            </div>
+            <div class="jr-check-nav"><a class="jr-btn jr-btn--text" href="#">‹ Vorige</a><a class="jr-btn jr-btn--primary" href="#">Volgende</a></div>
+          </div>
+        </div>
+      </div>
+      <div style="display:grid;gap:16px">
+        <div class="jr-check-result"><span class="jr-check-result-label">Groen · het past</span><p class="jr-check-result-title" style="font-size:28px">Plan het intakegesprek.</p></div>
+        <div class="jr-check-result jr-check-result--oranje"><span class="jr-check-result-label">Oranje · even overleggen</span><p class="jr-check-result-title" style="font-size:28px">We bellen je binnen één werkdag.</p></div>
+        <div class="jr-check-result jr-check-result--later"><span class="jr-check-result-label">Later</span><p class="jr-check-result-title" style="font-size:28px">Nu nog niet. We melden ons rond je startmoment.</p></div>
+        <div class="jr-check-result jr-check-result--rood"><span class="jr-check-result-label">Rood · eerlijk nee</span><p class="jr-check-result-title" style="font-size:28px">Wij zijn niet de juiste partij. Dit bureau wel.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 34 REKENHULP -->
+<section class="vb-sectie" id="rekenhulp">
+  <div class="vb-wrap">
+    <div class="vb-kop">
+      <div><span class="jr-eyebrow">34 · Rekenhulp</span><h2>Van ambitie naar investering</h2></div>
+      <p>Links schuiven, rechts de uitkomst die meeloopt. Onderaan de verdeling als één balk: hoeveel naar de motor (advertentiebudget, lime) en hoeveel naar James Robinson (blauw). Nooit meer dan de helft.</p>
+    </div>
+    <div class="vb-voorbeeld"><div class="vb-label">.jr-calc › .jr-calc-input + .jr-calc-output · .jr-split</div>
+      <div class="vb-binnen">
+        <div class="jr-calc">
+          <div class="jr-calc-input">
+            <div class="jr-calc-field"><label>Extra klanten per maand <output>10</output></label><div class="jr-range"><input type="range" min="1" max="50" value="10"></div></div>
+            <div class="jr-calc-field"><label>Wat een klant oplevert <output>€ 2.500</output></label><div class="jr-range"><input type="range" min="100" max="10000" value="2500"></div></div>
+            <div class="jr-calc-field"><label>Van aanvraag naar klant <output>30%</output></label><div class="jr-range"><input type="range" min="5" max="80" value="30"></div></div>
+          </div>
+          <div class="jr-calc-output">
+            <div><span class="jr-calc-result-label">Extra omzet per maand</span><span class="jr-calc-result-value">€ 25.000</span></div>
+            <dl class="jr-calc-rows"><div><dt>Nodige aanvragen</dt><dd>34</dd></div><div><dt>Advertentiebudget</dt><dd>€ 1.750</dd></div><div><dt>Pakket</dt><dd>€ 1.250</dd></div></dl>
+            <div class="jr-split"><div class="jr-split-bar"><span class="is-motor" style="width:58%"></span><span class="is-jr" style="width:42%"></span></div><div class="jr-split-legend"><span>Motor 58%</span><span class="is-jr">James Robinson 42%</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="jr-small" style="margin-top:12px">Voorbeeldwaarden; de echte rekenregels komen uit de propositie.</p>
+  </div>
+</section>
+
+<!-- 35 PAKKET -->
+<section class="vb-sectie" id="pakket">
+  <div class="vb-wrap">
+    <div class="vb-kop">
+      <div><span class="jr-eyebrow">35 · Het pakket en de modules</span><h2>Eén prijs. Modules met een prijs vooraf.</h2></div>
+      <p>Geen tabel met drie kolommen. Eén donker blok met het pakket, daaronder de modules als rijen. Ronde bedragen.</p>
+    </div>
+    <div class="vb-voorbeeld"><div class="vb-label">.jr-package · .jr-addons › .jr-addon</div>
+      <div class="vb-binnen">
+        <div class="jr-package">
+          <div><span class="jr-eyebrow jr-eyebrow--lime">Het pakket</span><span class="jr-package-price">€ 1.250</span><span class="jr-package-period">per maand, exclusief btw · maandelijks opzegbaar</span></div>
+          <div><ul class="jr-list-check jr-list-check--lime"><li>Google en Meta, één campagne</li><li>Nieuwe advertenties per contentronde</li><li>Elke maand een Performance Review</li><li>De dagmail en het portaal, live</li></ul><p class="jr-package-note">Eenmalig het fundament. Advertentiebudget rechtstreeks naar de platforms, zonder marge.</p></div>
+        </div>
+        <ul class="jr-addons" style="margin-top:32px">
+          <li class="jr-addon"><p class="jr-addon-name">Extra campagne</p><p class="jr-addon-desc">Een tweede aanbod, doelgroep of landingspagina.</p><span class="jr-addon-price">€ [in te vullen]<small>per maand</small></span></li>
+          <li class="jr-addon"><p class="jr-addon-name">Draaidag</p><p class="jr-addon-desc">Een dagdeel filmen op locatie, montage in drie formaten.</p><span class="jr-addon-price">€ [in te vullen]<small>eenmalig</small></span></li>
+          <li class="jr-addon"><p class="jr-addon-name">SEO</p><p class="jr-addon-desc">Op de woorden waarvan de advertenties bewezen dat ze klanten opleveren.</p><span class="jr-addon-price">€ [in te vullen]<small>per maand</small></span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 36 CASES -->
+<section class="vb-sectie" id="cases">
+  <div class="vb-wrap">
+    <div class="vb-kop">
+      <div><span class="jr-eyebrow">36 · Cases</span><h2>Eén cijfer, van en naar</h2></div>
+      <p>De case-kop zet het cijfer naast het beeld. .jr-delta toont van → naar, altijd met de periode. Daaronder drie resultaten en de drie stappen: situatie, aanpak, resultaat. Alleen met een geverifieerd cijfer.</p>
+    </div>
+    <div class="vb-voorbeeld"><div class="vb-label">.jr-case-hero · .jr-delta · .jr-results · .jr-case-steps</div>
+      <div class="vb-binnen">
+        <div class="jr-case-hero">
+          <div>
+            <div class="jr-case-client"><span class="jr-badge">[Klant] · [branche]</span></div>
+            <h2 style="margin:0 0 32px">[Eén zin: wat er veranderde voor de ondernemer.]</h2>
+            <div class="jr-delta"><span class="jr-delta-label">Kosten per aanvraag</span><div class="jr-delta-values"><span class="jr-delta-from">€ [van]</span><span class="jr-delta-arrow">→</span><span class="jr-delta-to">€ [naar]</span><span class="jr-delta-change">−[x]%</span></div><span class="jr-delta-period">[periode]</span></div>
+          </div>
+          <div class="jr-case-figure vb-foto jr-grain" style="aspect-ratio:4/3">beeld van de klant</div>
+        </div>
+        <div class="jr-results" style="margin-top:40px"><div class="jr-stat"><span class="jr-stat-value">[x]</span><span class="jr-stat-label">aanvragen per maand</span></div><div class="jr-stat"><span class="jr-stat-value">[x]</span><span class="jr-stat-label">kosten per aanvraag</span></div><div class="jr-stat"><span class="jr-stat-value">[x]</span><span class="jr-stat-label">dagen tot livegang</span></div></div>
+        <div class="jr-case-steps" style="margin-top:40px"><div><h5>Situatie</h5><p class="jr-small">Wat er speelde.</p></div><div><h5>Aanpak</h5><p class="jr-small">Wat we deden, in welke volgorde.</p></div><div><h5>Resultaat</h5><p class="jr-small">Wat het opleverde, met cijfer.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 37 TEAM -->
+<section class="vb-sectie" id="team">
+  <div class="vb-wrap">
+    <div class="vb-kop">
+      <div><span class="jr-eyebrow">37 · Team</span><h2>Persoonskaart en spelersprofiel</h2></div>
+      <p>Portretten in zwart-wit, in kleur bij hover. Op de persoonspagina een statistiekbalk met vier cijfers en daaronder de feiten.</p>
+    </div>
+    <div class="vb-voorbeeld"><div class="vb-label">.jr-person · .jr-statbar · .jr-profile-facts</div>
+      <div class="vb-binnen" style="display:grid;grid-template-columns:240px 1fr;gap:48px;align-items:start">
+        <a class="jr-person" href="#"><div class="jr-person-photo vb-foto">portret</div><p class="jr-person-name">[Naam]</p><p class="jr-person-role">[Functie]</p></a>
+        <div>
+          <div class="jr-statbar"><div><strong>[x]</strong><span>jaar bij James Robinson</span></div><div><strong>[x]</strong><span>specialismen</span></div><div><strong>[x]</strong><span>cases</span></div><div><strong>[x]</strong><span>certificeringen</span></div></div>
+          <dl class="jr-profile-facts" style="margin-top:32px"><dt>Trots op</dt><dd>[in te vullen]</dd><dt>Volgens een collega</dt><dd>[in te vullen]</dd><dt>Werkt met</dt><dd>Google Ads, Opteo, Looker Studio</dd></dl>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 38 ARTIKELEN -->
+<section class="vb-sectie" id="artikelen">
+  <div class="vb-wrap">
+    <div class="vb-kop">
+      <div><span class="jr-eyebrow">38 · Artikelen en begrippen</span><h2>Lange tekst die je wilt uitlezen</h2></div>
+      <p>.jr-prose zet tekst uit de editor goed zonder klassen per element. Max 692px breed, inhoudsopgave rechts, bronnen onderaan. Begrippen met een stippellijn en uitleg bij hover.</p>
+    </div>
+    <div class="vb-voorbeeld"><div class="vb-label">.jr-article-layout › .jr-prose + .jr-toc · .jr-author · .jr-sources · .jr-term</div>
+      <div class="vb-binnen">
+        <div class="jr-article-layout">
+          <article>
+            <div class="jr-article-head"><span class="jr-eyebrow">Agency insights</span><h1 style="font-size:40px;margin:8px 0 0">Waarom de eerste maanden duur voelen</h1><div class="jr-article-meta"><span class="vb-foto" style="width:32px;height:32px;border-radius:50%"></span><span>Jim Coumans</span><span>· 6 minuten lezen</span></div></div>
+            <div class="jr-prose" style="margin-top:32px">
+              <p>Algoritmes kunnen niet lezen, alleen meten. Daarom heeft een campagne tijd en budget nodig om te leren. Dat noemen we de <span class="jr-term jr-tooltip" data-tip="Het aantal klikken gedeeld door het aantal vertoningen.">doorklikratio</span> en de rest van de keten.</p>
+              <h2>Tijd + geld = data</h2>
+              <ul><li>Weinig tijd, weinig budget: toevalstreffers.</li><li>Veel tijd, veel budget: testen, meten, opschalen.</li></ul>
+              <blockquote>Wat niet werkt, weten we liever na twee weken dan na vier maanden.</blockquote>
+              <p>Bij Google verbetert maar 10 tot 20% van de geteste ideeën het resultaat.<a class="jr-footnote-ref" href="#">1</a></p>
+            </div>
+            <div class="jr-sources"><strong>Bronnen</strong><ol><li>Kohavi en Thomke, Harvard Business Review, 2017.</li></ol></div>
+            <div class="jr-author" style="margin-top:32px"><div class="vb-foto" style="width:72px;height:72px;border-radius:50%"></div><div><strong>Jim Coumans</strong><p class="jr-small" style="margin:4px 0 0">Oprichter van James Robinson.</p></div></div>
+          </article>
+          <nav class="jr-toc"><p class="jr-toc-title">Inhoud</p><ol><li><a class="is-active" href="#">De eerste maanden</a></li><li><a href="#">Tijd + geld = data</a></li><li><a href="#">Wat je wel kunt doen</a></li></ol></nav>
+        </div>
+      </div>
+    </div>
+    <div class="vb-voorbeeld"><div class="vb-label">.jr-glossary-index · .jr-glossary</div>
+      <div class="vb-binnen">
+        <nav class="jr-glossary-index" style="margin-bottom:24px"><a href="#">A</a><a href="#">B</a><a href="#">C</a><a href="#">D</a><a aria-disabled="true">E</a><a href="#">K</a><a href="#">R</a></nav>
+        <dl class="jr-glossary"><dt>CTR</dt><dd>Doorklikratio: het aantal klikken gedeeld door het aantal vertoningen.</dd><dt>Conversieratio</dt><dd>Het deel van de bezoekers dat een aanvraag doet.</dd><dt>ROAS</dt><dd>Wat een euro advertentiebudget oplevert aan omzet.</dd></dl>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 39 LIJSTRIJEN -->
+<section class="vb-sectie" id="lijsten">
+  <div class="vb-wrap">
+    <div class="vb-kop">
+      <div><span class="jr-eyebrow">39 · Lijstrijen en events</span><h2>Alles wat een lijst is, geen kaart</h2></div>
+      <p>Vacatures, tools, partners en portaal-updates als rijen: titel, meta, pijl. De hele rij is klikbaar. Events en padelduels krijgen een datumblok; een duel toont de stand.</p>
+    </div>
+    <div class="vb-voorbeeld"><div class="vb-label">.jr-listrows › .jr-listrow · .jr-date · .jr-listrow-logo</div>
+      <div class="vb-binnen">
+        <ul class="jr-listrows">
+          <li><a class="jr-listrow" href="#"><span class="jr-badge jr-badge--blue">Vast</span><div><p class="jr-listrow-title">Specialist social advertising</p><div class="jr-listrow-meta"><span>Hulsberg</span><span>32–40 uur</span></div></div><span class="jr-listrow-arrow">›</span></a></li>
+          <li><a class="jr-listrow" href="#"><span class="jr-date"><span class="jr-date-month">nov</span><span class="jr-date-day">14</span></span><div><p class="jr-listrow-title">James Robinson vs [klant]: padel</p><div class="jr-listrow-meta"><span>Playground</span><span>19.30 uur</span></div></div><span class="jr-listrow-arrow">›</span></a></li>
+          <li><a class="jr-listrow" href="#"><span class="jr-listrow-logo">logo</span><div><p class="jr-listrow-title">MailerLite</p><div class="jr-listrow-meta"><span>E-mailmarketing</span><span>Wij gebruiken dit omdat: [in te vullen]</span></div></div><span class="jr-listrow-arrow">›</span></a></li>
+        </ul>
+        <div class="jr-versus" style="margin-top:40px"><div><strong>James Robinson</strong><div class="jr-versus-score">6</div></div><span class="jr-versus-vs">vs</span><div><strong>[Klant]</strong><div class="jr-versus-score">4</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 40 VERTROUWEN -->
+<section class="vb-sectie" id="vertrouwen">
+  <div class="vb-wrap">
+    <div class="vb-kop">
+      <div><span class="jr-eyebrow">40 · Reviews, live en certificeringen</span><h2>Bewijs en signalen</h2></div>
+      <p>De Google-score klein (topbar, footer) of groot (bewijssectie). Rood is alleen voor live en signalen. Certificeringen rustiger dan klantlogo's. Een lopende band met feiten pauzeert bij hover en staat stil bij “minder beweging”.</p>
+    </div>
+    <div class="vb-voorbeeld"><div class="vb-label">.jr-rating(--lg) · .jr-live · .jr-certs · .jr-marquee</div>
+      <div class="vb-binnen" style="display:grid;gap:32px">
+        <div style="display:flex;flex-wrap:wrap;gap:48px;align-items:center">
+          <span class="jr-rating jr-rating--lg"><span class="jr-rating-score">5,0</span><span><span class="jr-stars"><svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg></span><br>11 reviews op Google</span></span>
+          <span class="jr-live"><span class="jr-live-dot"></span>Live</span>
+          <div class="jr-certs"><span class="jr-badge">Google Partner</span><span class="jr-badge">Meta Business Partner</span></div>
+        </div>
+        <div class="jr-marquee"><div class="jr-marquee-track"><span>5,0 op Google</span><span>Maandelijks opzegbaar</span><span>Alles op jouw naam</span><span>Nooit marge op je budget</span><span>Elke ochtend om 7.00 gecontroleerd</span><span>5,0 op Google</span><span>Maandelijks opzegbaar</span><span>Alles op jouw naam</span><span>Nooit marge op je budget</span><span>Elke ochtend om 7.00 gecontroleerd</span></div></div>
+      </div>
+    </div>
+    <p class="jr-small" style="margin-top:12px">De certificeringen hierboven zijn plaatshouders; vervang ze door de echte logo's.</p>
+  </div>
+</section>
+
+<!-- 41 OVERIG -->
+<section class="vb-sectie" id="overig">
+  <div class="vb-wrap">
+    <div class="vb-kop">
+      <div><span class="jr-eyebrow">41 · Kaart, 404, uploaden, juridisch</span><h2>De rest van de pagina's</h2></div>
+      <p>Een kaart in grijs met één blauwe pin. Een 404 die je terugstuurt. Een uploadvak voor sollicitaties en briefings. Juridische pagina's als rustige tekst met de datum bovenaan.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+      <div class="vb-voorbeeld"><div class="vb-label">.jr-map</div><div class="vb-binnen"><div class="jr-map"><div class="vb-foto" style="position:absolute;inset:0;background:#E5E5E9;color:#86868B">Google Maps, grijs</div><span class="jr-map-pin"></span></div></div></div>
+      <div class="vb-voorbeeld"><div class="vb-label">.jr-error-page</div><div class="jr-error-page" style="padding-block:40px;min-height:0"><span class="jr-error-code">404</span><h3 style="margin:0">Deze pagina bestaat niet (meer).</h3><a class="jr-btn jr-btn--primary" href="#">Naar de homepage</a></div></div>
+      <div class="vb-voorbeeld"><div class="vb-label">.jr-upload · input[type=file]</div><div class="vb-binnen"><label class="jr-upload"><input type="file"><span><strong>Kies een bestand</strong> of sleep het hierheen</span><span class="jr-caption">Pdf of Word, tot 10 MB</span></label><div style="margin-top:16px"><input type="file"></div></div></div>
+      <div class="vb-voorbeeld"><div class="vb-label">.jr-legal</div><div class="vb-binnen"><div class="jr-legal"><h3 style="margin:0">Privacyverklaring</h3><p class="jr-legal-updated">Bijgewerkt op [datum]</p><h4 style="margin:0 0 8px">Welke gegevens we bewaren</h4><p class="jr-small">[Tekst van de jurist.]</p></div></div></div>
+    </div>
+  </div>
+</section>
+
+</main>
+</body>
+</html>

@@ -4,7 +4,8 @@
    --------------------------------------------------------------------------
    Designtaal : Apple (rust, ruimte, terughoudendheid)
    Merkbasis  : James Robinson Brandbook 2024
-   Versie     : 2.0
+   Versie     : 3.2 (oktober 2026): header, topbar, footer, hero's en alle
+                paginaonderdelen uit de sitemap toegevoegd (secties 28 t/m 41)
    --------------------------------------------------------------------------
    LETTERTYPE
    Figtree (display/koppen) + Inter (body/UI). Beide via Google Fonts.
@@ -44,6 +45,20 @@
    23. Feedback — meldingen, tooltips, laden, leeg
    24. Elementor-widgets
    25. Beeld, iconen & Nederlandse typografie
+   28. Header & topbar (compleet)
+   29. Footer (compleet)
+   30. Hero's en grain
+   31. Device-mockups: telefoon, laptop, browser
+   32. Contact: specialist, contactblok, livechat, zwevende knoppen
+   33. De check: vragenlijst met uitkomst
+   34. Rekenhulp: van ambitie naar investering
+   35. Het pakket en de modules
+   36. Cases: het bewijs
+   37. Team: persoonskaart en spelersprofiel
+   38. Artikelen, gidsen, helpdesk en begrippen
+   39. Lijstrijen: vacatures, events, tools, partners, updates
+   40. Vertrouwen en signalen: reviews, live, certificeringen
+   41. Overig: kaart, 404, bestand uploaden, juridisch
    26. Responsive
    27. Toegankelijkheid & print
    ========================================================================== */
@@ -792,9 +807,9 @@ select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
 .jr-link-quiet:hover { color: var(--jr-text); text-decoration: none; }
 
 /* Links op donkere achtergrond */
-.jr-section--dark a, .jr-surface--dark a, .jr-card--dark a { color: var(--jr-blue-dm); }
-.jr-section--dark a:hover { color: var(--jr-blue-dm-hover); }
-.jr-section--dark a:focus-visible { box-shadow: var(--jr-focus-ring-dark); }
+.jr-section--dark a:where(:not(.jr-btn, .elementor-button)), .jr-surface--dark a:where(:not(.jr-btn, .elementor-button)), .jr-card--dark a:where(:not(.jr-btn, .elementor-button)) { color: var(--jr-blue-dm); }
+.jr-section--dark a:where(:not(.jr-btn, .elementor-button)):hover { color: var(--jr-blue-dm-hover); }
+.jr-section--dark a:where(:not(.jr-btn, .elementor-button)):focus-visible { box-shadow: var(--jr-focus-ring-dark); }
 
 
 /* ==========================================================================
@@ -1183,8 +1198,8 @@ input[type="submit"], .elementor-field-type-submit .elementor-button {
   font-size: var(--jr-fs-small);
   color: var(--jr-text-secondary);
 }
-.jr-footer a { color: var(--jr-text-secondary); text-decoration: none; }
-.jr-footer a:hover { color: var(--jr-text); text-decoration: underline;
+.jr-footer a:where(:not(.jr-btn, .elementor-button)) { color: var(--jr-text-secondary); text-decoration: none; }
+.jr-footer a:where(:not(.jr-btn, .elementor-button)):hover { color: var(--jr-text); text-decoration: underline;
                      text-underline-offset: var(--jr-underline-offset); }
 .jr-footer h5, .jr-footer h6 {
   font-family: var(--jr-font-text);
@@ -1193,8 +1208,8 @@ input[type="submit"], .elementor-field-type-submit .elementor-button {
   margin-bottom: var(--jr-space-3);
 }
 .jr-footer--dark { background-color: var(--jr-surface-dark); color: var(--jr-text-inverse-sec); }
-.jr-footer--dark a { color: var(--jr-text-inverse-sec); }
-.jr-footer--dark a:hover { color: var(--jr-text-inverse); }
+.jr-footer--dark a:where(:not(.jr-btn, .elementor-button)) { color: var(--jr-text-inverse-sec); }
+.jr-footer--dark a:where(:not(.jr-btn, .elementor-button)):hover { color: var(--jr-text-inverse); }
 
 .jr-footer-legal {
   border-top: var(--jr-stroke-hairline) solid var(--jr-line);
@@ -2134,7 +2149,7 @@ a.jr-tag:hover { border-color: var(--jr-text); color: var(--jr-text); text-decor
   transition: transform var(--jr-dur-slow) var(--jr-ease-out);
 }
 .jr-offcanvas.is-open { transform: translateX(0); }
-.jr-offcanvas a {
+.jr-offcanvas a:where(:not(.jr-btn, .elementor-button)) {
   display: block;
   font-family: var(--jr-font-display);
   font-size: var(--jr-fs-h4);
@@ -2145,7 +2160,7 @@ a.jr-tag:hover { border-color: var(--jr-text); color: var(--jr-text); text-decor
   border-bottom: var(--jr-stroke-hairline) solid var(--jr-line-subtle);
   text-decoration: none;
 }
-.jr-offcanvas a:hover { color: var(--jr-blue-link); text-decoration: none; }
+.jr-offcanvas a:where(:not(.jr-btn, .elementor-button)):hover { color: var(--jr-blue-link); text-decoration: none; }
 
 .jr-backdrop {
   position: fixed; inset: 0;
@@ -2178,7 +2193,7 @@ a.jr-tag:hover { border-color: var(--jr-text); color: var(--jr-text); text-decor
   color: var(--jr-text-tertiary);
   margin-bottom: var(--jr-space-4);
 }
-.jr-megamenu a {
+.jr-megamenu a:where(:not(.jr-btn, .elementor-button)) {
   display: block;
   font-size: var(--jr-fs-h5);
   font-weight: var(--jr-weight-semibold);
@@ -2186,7 +2201,7 @@ a.jr-tag:hover { border-color: var(--jr-text); color: var(--jr-text); text-decor
   padding: 5px 0;
   text-decoration: none;
 }
-.jr-megamenu a:hover { color: var(--jr-blue-link); text-decoration: none; }
+.jr-megamenu a:where(:not(.jr-btn, .elementor-button)):hover { color: var(--jr-blue-link); text-decoration: none; }
 
 /* Breadcrumbs */
 .jr-breadcrumbs {
@@ -2800,6 +2815,922 @@ a.jr-tag:hover { border-color: var(--jr-text); color: var(--jr-text); text-decor
 @media (max-width: 734px) {
   .jr-hyphens-mobile { hyphens: auto; -webkit-hyphens: auto; word-break: break-word; }
 }
+
+
+/* ==========================================================================
+   28. HEADER & TOPBAR — DE COMPLETE KOP VAN ELKE PAGINA
+   --------------------------------------------------------------------------
+   Opbouw van boven naar beneden:
+     1. Topbar (36px, optioneel)  — service: Google-score, telefoon, inloggen.
+                                    Verdwijnt bij het scrollen en op mobiel.
+     2. Navbalk (72px, sticky)     — logo links · menu midden · acties rechts.
+                                    Acties: "Inloggen" (tekstlink) + één knop
+                                    "Doe de check" (primair, of lime op een hero).
+     3. Bij het scrollen (.is-scrolled): 72 → 56px, glas wordt bijna dicht,
+        logo 32 → 28px.
+   Op een donkere of beeldvullende hero begint de header transparant
+   (.jr-header--overlay) met witte tekst, en wordt hij bij het scrollen
+   gewoon wit glas.
+   Mobiel (≤ 734px): geen topbar, navbalk 56px, logo · knop · hamburger.
+   ========================================================================== */
+
+:root {
+  --jr-topbar-height:      36px;
+  --jr-header-height:      var(--jr-nav-height);   /* 72px */
+  --jr-header-height-sm:   56px;                   /* gescrold en mobiel */
+  --jr-logo-height:        32px;
+  --jr-logo-height-sm:     28px;
+  --jr-gap-nav-items:      4px;                    /* tussen menulinks (die zelf 14px padding hebben) */
+  --jr-gap-header-actions: 16px;
+  --jr-alpha-nav-solid:    rgba(255,255,255,.94);  /* glas na scrollen */
+}
+
+/* Topbar */
+.jr-topbar {
+  height: var(--jr-topbar-height);
+  background-color: var(--jr-surface-dark);
+  color: var(--jr-text-inverse-sec);
+  font-size: var(--jr-fs-caption);
+  line-height: var(--jr-topbar-height);
+  transition: margin-top var(--jr-dur-base) var(--jr-ease);
+}
+.jr-topbar-inner {
+  max-width: var(--jr-container-wide);
+  margin-inline: auto;
+  padding-inline: var(--jr-gutter-nav);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--jr-space-6);
+}
+.jr-topbar-group { display: flex; align-items: center; gap: var(--jr-space-6); }
+.jr-topbar a:where(:not(.jr-btn, .elementor-button)) { color: var(--jr-text-inverse-sec); text-decoration: none; }
+.jr-topbar a:where(:not(.jr-btn, .elementor-button)):hover { color: var(--jr-text-inverse); }
+.jr-topbar .jr-stars svg { width: 12px; height: 12px; }
+.jr-topbar--light { background-color: var(--jr-surface-subtle); color: var(--jr-text-secondary); border-bottom: var(--jr-stroke-hairline) solid var(--jr-line-subtle); }
+.jr-topbar--light a:where(:not(.jr-btn, .elementor-button)) { color: var(--jr-text-secondary); }
+.jr-topbar--light a:where(:not(.jr-btn, .elementor-button)):hover { color: var(--jr-text); }
+.is-scrolled .jr-topbar { margin-top: calc(var(--jr-topbar-height) * -1); }
+
+/* Header: de sticky wrapper rond topbar en navbalk */
+.jr-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--jr-z-nav);
+}
+.jr-header .jr-nav { position: relative; top: auto; }
+.jr-nav-inner {
+  max-width: var(--jr-container-wide);
+  margin-inline: auto;
+  padding-inline: var(--jr-gutter-nav);
+  width: 100%;
+  min-height: var(--jr-header-height);
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--jr-space-7);
+  transition: min-height var(--jr-dur-base) var(--jr-ease);
+}
+.jr-logo { display: inline-flex; align-items: center; line-height: 0; }
+.jr-logo img, .jr-logo svg {
+  height: var(--jr-logo-height);
+  width: auto;
+  transition: height var(--jr-dur-base) var(--jr-ease);
+}
+.jr-nav-menu {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--jr-gap-nav-items);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.jr-nav-actions { display: flex; align-items: center; gap: var(--jr-gap-header-actions); }
+.jr-nav-login {
+  font-size: var(--jr-fs-small);
+  color: var(--jr-text);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--jr-space-2);
+}
+.jr-nav-login:hover { color: var(--jr-text-secondary); text-decoration: none; }
+.jr-nav-actions .jr-btn { min-height: var(--jr-h-btn-sm); padding: var(--jr-pad-btn-sm); font-size: var(--jr-fs-small); }
+.jr-nav-burger { display: none; }
+
+/* Gescrold */
+.is-scrolled .jr-nav { background-color: var(--jr-alpha-nav-solid); box-shadow: var(--jr-shadow-xs); }
+.is-scrolled .jr-nav-inner { min-height: var(--jr-header-height-sm); }
+.is-scrolled .jr-logo img, .is-scrolled .jr-logo svg { height: var(--jr-logo-height-sm); }
+
+/* Transparant over een donkere of beeldvullende hero */
+.jr-header--overlay { position: fixed; left: 0; right: 0; }
+.jr-header--overlay:not(.is-scrolled) .jr-nav {
+  background-color: transparent;
+  border-bottom-color: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.jr-header--overlay:not(.is-scrolled) .jr-nav-menu a,
+.jr-header--overlay:not(.is-scrolled) .jr-nav-login { color: var(--jr-text-inverse); }
+.jr-header--overlay:not(.is-scrolled) .jr-nav-menu a:hover,
+.jr-header--overlay:not(.is-scrolled) .jr-nav-login:hover { color: var(--jr-text-inverse-sec); }
+.jr-header--overlay:not(.is-scrolled) .jr-logo--wit { display: inline-flex; }
+.jr-header--overlay:not(.is-scrolled) .jr-logo--kleur { display: none; }
+.jr-logo--wit { display: none; }
+
+/* Megamenu-paneel onder een menu-item: 3 kolommen, één uitgelicht blok */
+.jr-megamenu-panel {
+  position: absolute;
+  left: 0; right: 0; top: 100%;
+  background-color: var(--jr-alpha-dropdown);
+  -webkit-backdrop-filter: var(--jr-blur-nav);
+  backdrop-filter: var(--jr-blur-nav);
+  border-bottom: var(--jr-stroke-hairline) solid var(--jr-line-subtle);
+  box-shadow: var(--jr-shadow-md);
+  padding: var(--jr-space-9) 0 var(--jr-space-10);
+  z-index: var(--jr-z-dropdown);
+}
+.jr-megamenu-grid {
+  max-width: var(--jr-container-wide);
+  margin-inline: auto;
+  padding-inline: var(--jr-gutter-nav);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr) 1.3fr;
+  gap: var(--jr-space-9);
+}
+.jr-megamenu-feature {
+  background-color: var(--jr-surface-subtle);
+  border-radius: var(--jr-radius-md);
+  padding: var(--jr-pad-card-sm);
+}
+
+@media (max-width: 1068px) {
+  .jr-nav-menu { display: none; }
+  .jr-nav-inner { grid-template-columns: auto 1fr auto; }
+  .jr-nav-actions { justify-content: flex-end; }
+  .jr-nav-burger { display: flex; }
+}
+@media (max-width: 734px) {
+  .jr-topbar { display: none; }
+  .jr-nav-inner { min-height: var(--jr-header-height-sm); padding-inline: var(--jr-gutter); gap: var(--jr-space-4); }
+  .jr-logo img, .jr-logo svg { height: var(--jr-logo-height-sm); }
+  .jr-nav-login { display: none; }               /* staat in het off-canvas menu */
+}
+
+
+/* ==========================================================================
+   29. FOOTER — COMPLEET
+   --------------------------------------------------------------------------
+   Vijf rijen, in deze volgorde:
+     1. Afsluiter: één zin + knop "Doe de check" (optioneel, .jr-footer-cta)
+     2. Kolommen: merk en contact (breed) · Diensten · Over ons · Kennis · Klant
+     3. Vertrouwen: Google-score, certificeringen (logo's, grijs)
+     4. Nieuwsbrief (één veld + knop)
+     5. Juridisch: © James Robinson · KvK · privacy · cookies · voorwaarden ·
+        toegankelijkheid (.jr-footer-legal, bestond al)
+   ========================================================================== */
+
+.jr-footer-inner { max-width: var(--jr-container-wide); margin-inline: auto; padding-inline: var(--jr-gutter); }
+.jr-footer-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--jr-space-7);
+  padding-bottom: var(--jr-space-10);
+  margin-bottom: var(--jr-space-10);
+  border-bottom: var(--jr-stroke-hairline) solid var(--jr-line);
+}
+.jr-footer-cta-title {
+  font-family: var(--jr-font-display);
+  font-size: var(--jr-fs-h3);
+  font-weight: var(--jr-weight-bold);
+  letter-spacing: var(--jr-ls-h3);
+  line-height: var(--jr-lh-heading);
+  color: var(--jr-text);
+  margin: 0;
+  max-width: 560px;
+}
+.jr-footer-grid {
+  display: grid;
+  grid-template-columns: 1.6fr repeat(4, 1fr);
+  gap: var(--jr-space-9) var(--jr-space-7);
+}
+.jr-footer-brand p { margin: var(--jr-space-4) 0 0; max-width: 300px; }
+.jr-footer-brand .jr-logo img, .jr-footer-brand .jr-logo svg { height: 28px; }
+.jr-footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--jr-space-3); }
+.jr-footer address { font-style: normal; line-height: 1.7; margin-top: var(--jr-space-5); }
+.jr-footer-trust {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--jr-space-6);
+  margin-top: var(--jr-space-10);
+  padding-top: var(--jr-space-7);
+  border-top: var(--jr-stroke-hairline) solid var(--jr-line);
+}
+.jr-footer-trust .jr-logos { grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: var(--jr-space-7); flex: 1; max-width: 640px; }
+.jr-footer-trust .jr-logos img { max-height: 28px; }
+.jr-footer-newsletter { display: flex; gap: var(--jr-space-2); max-width: 420px; margin-top: var(--jr-space-4); }
+.jr-footer-newsletter input { flex: 1; min-width: 0; }
+.jr-footer-legal { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--jr-space-3) var(--jr-space-6); }
+.jr-footer-legal ul { display: flex; flex-wrap: wrap; gap: var(--jr-space-5); }
+.jr-footer--dark .jr-footer-cta, .jr-footer--dark .jr-footer-trust { border-color: var(--jr-line-dark); }
+.jr-footer--dark .jr-footer-cta-title, .jr-footer--dark h5, .jr-footer--dark h6 { color: var(--jr-text-inverse); }
+
+@media (max-width: 1068px) {
+  .jr-footer-grid { grid-template-columns: repeat(3, 1fr); }
+  .jr-footer-brand { grid-column: 1 / -1; }
+}
+@media (max-width: 734px) {
+  .jr-footer-cta { flex-direction: column; align-items: flex-start; }
+  .jr-footer-grid { grid-template-columns: 1fr 1fr; gap: var(--jr-space-8) var(--jr-space-5); }
+  .jr-footer-legal { flex-direction: column; }
+}
+
+
+/* ==========================================================================
+   30. HERO'S EN GRAIN
+   --------------------------------------------------------------------------
+   Drie hero's, meer niet:
+     .jr-hero            — tekst links, beeld/device rechts (standaard)
+     .jr-hero--center    — tekst gecentreerd, beeld eronder over de breedte
+     .jr-hero--media     — foto of video over de volle breedte, tekst erop
+   Grain: de fotografierichting (close-ups, beweging, één harde lichtbron)
+   krijgt overal dezelfde korrel. Zet .jr-grain op de beeldcontainer.
+   ========================================================================== */
+
+:root {
+  --jr-grain-opacity:  .14;
+  --jr-grain-size:     180px;
+  /* Ruis als SVG, geen extra bestand nodig. */
+  --jr-grain-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --jr-scrim: linear-gradient(180deg, rgba(0,0,0,.10) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,.62) 100%);
+}
+
+.jr-hero {
+  padding-block: var(--jr-space-13) var(--jr-section-y);
+  min-height: var(--jr-min-hero);
+}
+.jr-hero-inner {
+  max-width: var(--jr-container-wide);
+  margin-inline: auto;
+  padding-inline: var(--jr-gutter);
+  display: grid;
+  grid-template-columns: 1.15fr .85fr;
+  gap: var(--jr-space-10);
+  align-items: center;
+}
+.jr-hero-title {
+  font-family: var(--jr-font-display);
+  font-size: var(--jr-fs-display);
+  font-weight: var(--jr-weight-bold);
+  line-height: var(--jr-lh-display);
+  letter-spacing: var(--jr-ls-display);
+  text-wrap: balance;
+  margin: 0;
+}
+.jr-hero-lead { font-size: var(--jr-fs-lead); line-height: var(--jr-lh-lead); color: var(--jr-text-secondary); margin: var(--jr-gap-display-lead) 0 0; max-width: 560px; }
+.jr-hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--jr-space-4) var(--jr-space-6); margin-top: var(--jr-gap-body-cta); }
+.jr-hero-note { font-size: var(--jr-fs-small); color: var(--jr-text-tertiary); }
+.jr-hero--center .jr-hero-inner { grid-template-columns: 1fr; text-align: center; justify-items: center; }
+.jr-hero--center .jr-hero-lead { margin-inline: auto; }
+.jr-hero--center .jr-hero-actions { justify-content: center; }
+
+.jr-hero--media {
+  position: relative;
+  min-height: var(--jr-min-hero-full);
+  display: flex;
+  align-items: flex-end;
+  color: var(--jr-text-inverse);
+  overflow: hidden;
+  isolation: isolate;
+  padding-block: var(--jr-space-13) var(--jr-space-11);
+}
+.jr-hero--media > img, .jr-hero--media > video, .jr-hero-media {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  z-index: -2;
+}
+.jr-hero--media::after { content: ""; position: absolute; inset: 0; background: var(--jr-scrim); z-index: -1; }
+.jr-hero--media .jr-hero-inner { grid-template-columns: 1fr; }
+.jr-hero--media .jr-hero-title { color: var(--jr-text-inverse); max-width: 900px; }
+.jr-hero--media .jr-hero-lead { color: rgba(255,255,255,.82); }
+
+.jr-grain { position: relative; isolation: isolate; }
+.jr-grain::before {
+  content: "";
+  position: absolute; inset: 0;
+  background-image: var(--jr-grain-image);
+  background-size: var(--jr-grain-size);
+  opacity: var(--jr-grain-opacity);
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  z-index: 1;
+}
+.jr-grain--sterk { --jr-grain-opacity: .24; }
+
+@media (prefers-reduced-motion: reduce) {
+  .jr-hero--media video { display: none; }       /* de poster-afbeelding blijft staan */
+}
+@media (max-width: 1068px) {
+  .jr-hero-inner { grid-template-columns: 1fr; gap: var(--jr-space-9); }
+}
+@media (max-width: 734px) {
+  .jr-hero { padding-block: var(--jr-space-11) var(--jr-space-10); min-height: 0; }
+  .jr-hero--media { min-height: 82svh; padding-bottom: var(--jr-space-9); }
+  .jr-hero-actions .jr-btn { width: 100%; }
+}
+
+
+/* ==========================================================================
+   31. DEVICE-MOCKUPS — TELEFOON, LAPTOP, BROWSER
+   --------------------------------------------------------------------------
+   Voor het portaal, advertenties en landingspagina's. Puur CSS: de inhoud
+   (screenshot, video of HTML) zet je in .jr-device-screen. De telefoon
+   rekent in container-eenheden: één maat instellen, de rest schaalt mee.
+   ========================================================================== */
+
+.jr-device-phone {
+  container-type: inline-size;
+  width: min(300px, 80vw);
+  aspect-ratio: 9 / 19.5;
+  padding: 3.2%;
+  background-color: var(--jr-black);
+  border-radius: 13% / 6%;
+  box-shadow: var(--jr-shadow-xl), inset 0 0 0 2px #3A3A3C;
+  position: relative;
+}
+.jr-device-phone::before {             /* dynamic island */
+  content: "";
+  position: absolute;
+  top: 3.6%; left: 50%;
+  width: 30%; height: 3.4%;
+  transform: translateX(-50%);
+  background-color: var(--jr-black);
+  border-radius: var(--jr-radius-pill);
+  z-index: 2;
+}
+.jr-device-phone .jr-device-screen { width: 100%; height: 100%; border-radius: 10% / 4.8%; overflow: hidden; background-color: var(--jr-surface); position: relative; }
+
+.jr-device-laptop { width: 100%; max-width: 880px; }
+.jr-device-laptop .jr-device-lid {
+  background-color: var(--jr-black);
+  border-radius: var(--jr-radius-md) var(--jr-radius-md) 0 0;
+  padding: 2.2% 2.2% 3%;
+  box-shadow: inset 0 0 0 2px #3A3A3C;
+}
+.jr-device-laptop .jr-device-screen { aspect-ratio: 16 / 10; overflow: hidden; background-color: var(--jr-surface); border-radius: 4px; }
+.jr-device-laptop .jr-device-base {
+  height: 14px;
+  margin-inline: -6%;
+  background: linear-gradient(180deg, #D2D2D7 0%, #A1A1A6 100%);
+  border-radius: 0 0 var(--jr-radius-lg) var(--jr-radius-lg);
+  position: relative;
+}
+.jr-device-laptop .jr-device-base::after {   /* inkeping */
+  content: ""; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 14%; height: 5px; background-color: #8E8E93; border-radius: 0 0 6px 6px;
+}
+
+.jr-device-browser {
+  border-radius: var(--jr-radius-md);
+  overflow: hidden;
+  background-color: var(--jr-surface);
+  box-shadow: var(--jr-shadow-lg);
+  border: var(--jr-stroke-hairline) solid var(--jr-line-subtle);
+}
+.jr-device-browser-bar {
+  height: 40px;
+  display: flex; align-items: center; gap: var(--jr-space-2);
+  padding-inline: var(--jr-space-4);
+  background-color: var(--jr-surface-subtle);
+  border-bottom: var(--jr-stroke-hairline) solid var(--jr-line-subtle);
+}
+.jr-device-browser-bar i { width: 11px; height: 11px; border-radius: 50%; background-color: var(--jr-gray-30); }
+.jr-device-browser-url {
+  margin-left: var(--jr-space-4);
+  flex: 1;
+  max-width: 420px;
+  height: 26px;
+  border-radius: var(--jr-radius-xs);
+  background-color: var(--jr-surface);
+  font-size: var(--jr-fs-caption);
+  color: var(--jr-text-tertiary);
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* Telefoon en laptop samen: de telefoon overlapt rechtsonder */
+.jr-device-duo { position: relative; padding-right: 12%; padding-bottom: 6%; }
+.jr-device-duo .jr-device-phone { position: absolute; right: 0; bottom: 0; width: 26%; }
+
+
+/* ==========================================================================
+   32. CONTACT: SPECIALIST, CONTACTBLOK, LIVECHAT, ZWEVENDE KNOPPEN
+   --------------------------------------------------------------------------
+   Onder elke dienst- en kennispagina staat automatisch de juiste specialist
+   (.jr-contact-person). De zwevende knoppen rechtsonder stapelen in een
+   vaste volgorde: livechat onderaan, terug-naar-boven erboven. Op mobiel
+   schuiven ze omhoog boven de sticky CTA-balk.
+   ========================================================================== */
+
+:root {
+  --jr-size-contact-photo: 96px;
+  --jr-size-fab:           56px;
+  --jr-fab-offset:         24px;
+}
+
+.jr-contact-person {
+  display: grid;
+  grid-template-columns: var(--jr-size-contact-photo) 1fr auto;
+  align-items: center;
+  gap: var(--jr-space-6);
+  padding: var(--jr-pad-card-md);
+  background-color: var(--jr-surface-subtle);
+  border-radius: var(--jr-radius-lg);
+}
+.jr-contact-person img {
+  width: var(--jr-size-contact-photo);
+  height: var(--jr-size-contact-photo);
+  border-radius: var(--jr-radius-round);
+  object-fit: cover;
+  background-color: var(--jr-gray-20);
+}
+.jr-contact-person-name { font-family: var(--jr-font-display); font-size: var(--jr-fs-h5); font-weight: var(--jr-weight-semibold); margin: 0; }
+.jr-contact-person-role { font-size: var(--jr-fs-small); color: var(--jr-text-secondary); margin: var(--jr-space-1) 0 0; }
+.jr-contact-person-quote { font-size: var(--jr-fs-body); color: var(--jr-text); margin: var(--jr-space-3) 0 0; }
+.jr-contact-person-actions { display: flex; flex-direction: column; gap: var(--jr-space-2); align-items: stretch; }
+
+/* Contactgegevens als rij: telefoon · mail · adres */
+.jr-contact-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--jr-space-4); }
+.jr-contact-list li { display: grid; grid-template-columns: 24px 1fr; gap: var(--jr-space-3); align-items: start; }
+.jr-contact-list strong { display: block; font-weight: var(--jr-weight-medium); }
+
+/* Zwevende knoppen */
+.jr-fab-stack {
+  position: fixed;
+  right: var(--jr-fab-offset);
+  bottom: var(--jr-fab-offset);
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: flex-end;
+  gap: var(--jr-space-3);
+  z-index: var(--jr-z-sticky);
+}
+.jr-chat-launcher {
+  width: var(--jr-size-fab);
+  height: var(--jr-size-fab);
+  border: none;
+  border-radius: var(--jr-radius-round);
+  background-color: var(--jr-blue-action);
+  color: var(--jr-text-on-color);
+  box-shadow: var(--jr-shadow-blue);
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: transform var(--jr-dur-base) var(--jr-ease-out), background-color var(--jr-dur-fast) var(--jr-ease);
+  position: relative;
+}
+.jr-chat-launcher:hover { background-color: var(--jr-blue-action-hov); transform: scale(1.05); }
+.jr-chat-launcher .jr-live-dot { position: absolute; top: 4px; right: 4px; }
+.jr-fab-stack .jr-to-top { position: static; }      /* in de stapel schuift hij mee */
+@media (max-width: 734px) {
+  .jr-fab-stack { right: var(--jr-space-4); bottom: calc(var(--jr-bar-height) + var(--jr-space-4)); }
+  .jr-contact-person { grid-template-columns: 72px 1fr; --jr-size-contact-photo: 72px; padding: var(--jr-pad-card-sm); }
+  .jr-contact-person-actions { grid-column: 1 / -1; flex-direction: row; flex-wrap: wrap; }
+}
+
+
+/* ==========================================================================
+   33. DE CHECK — VRAGENLIJST MET UITKOMST
+   --------------------------------------------------------------------------
+   Eén vraag per scherm. Bovenin de voortgang (.jr-progress, bestond al, die
+   niet bij nul begint). Antwoorden als keuzekaarten (.jr-choice--card,
+   bestond al). De uitkomst in één van vier kleuren:
+     groen  — past: intake inplannen
+     oranje — we bellen binnen één werkdag
+     later  — nu niet, wel rond het startmoment (blauw)
+     rood   — een eerlijk nee, met een verwijzing
+   ========================================================================== */
+
+.jr-check {
+  max-width: var(--jr-container-text);
+  margin-inline: auto;
+  background-color: var(--jr-surface);
+  border-radius: var(--jr-radius-xl);
+  box-shadow: var(--jr-shadow-lg);
+  padding: var(--jr-pad-card-lg);
+}
+.jr-check-head { display: flex; justify-content: space-between; align-items: center; gap: var(--jr-space-4); margin-bottom: var(--jr-space-7); font-size: var(--jr-fs-small); color: var(--jr-text-secondary); }
+.jr-check-question {
+  font-family: var(--jr-font-display);
+  font-size: var(--jr-fs-h3);
+  font-weight: var(--jr-weight-bold);
+  line-height: var(--jr-lh-heading);
+  letter-spacing: var(--jr-ls-h3);
+  margin: 0 0 var(--jr-space-3);
+}
+.jr-check-why { font-size: var(--jr-fs-small); color: var(--jr-text-secondary); margin: 0 0 var(--jr-space-7); }
+.jr-check-options { display: grid; gap: var(--jr-space-3); }
+.jr-check-options--2 { grid-template-columns: 1fr 1fr; }
+.jr-check-nav { display: flex; justify-content: space-between; align-items: center; margin-top: var(--jr-space-8); }
+
+.jr-check-result {
+  border-radius: var(--jr-radius-xl);
+  padding: var(--jr-pad-card-lg);
+  border-top: var(--jr-stroke-rule) solid var(--jr-green);
+  background-color: var(--jr-green-50);
+}
+.jr-check-result-label { display: inline-flex; align-items: center; gap: var(--jr-space-2); font-size: var(--jr-fs-small); font-weight: var(--jr-weight-semibold); color: var(--jr-green-text); }
+.jr-check-result-label::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background-color: currentColor; }
+.jr-check-result-title { font-family: var(--jr-font-display); font-size: var(--jr-fs-h2); font-weight: var(--jr-weight-bold); letter-spacing: var(--jr-ls-h2); line-height: var(--jr-lh-heading); margin: var(--jr-space-3) 0 var(--jr-space-4); }
+.jr-check-result--oranje { border-top-color: var(--jr-orange); background-color: var(--jr-orange-50); }
+.jr-check-result--oranje .jr-check-result-label { color: var(--jr-orange-text); }
+.jr-check-result--later { border-top-color: var(--jr-blue); background-color: var(--jr-blue-50); }
+.jr-check-result--later .jr-check-result-label { color: var(--jr-blue-link); }
+.jr-check-result--rood { border-top-color: var(--jr-red); background-color: var(--jr-red-50); }
+.jr-check-result--rood .jr-check-result-label { color: var(--jr-red-text); }
+@media (max-width: 734px) {
+  .jr-check, .jr-check-result { padding: var(--jr-pad-card-sm); border-radius: var(--jr-radius-lg); }
+  .jr-check-options--2 { grid-template-columns: 1fr; }
+}
+
+
+/* ==========================================================================
+   34. REKENHULP — VAN AMBITIE NAAR INVESTERING
+   --------------------------------------------------------------------------
+   Links de invoer (schuifjes, .jr-range bestond al), rechts de uitkomst die
+   meeloopt. Onderaan de verdeling: welk deel naar James Robinson gaat en
+   welk deel naar de motor (de 50%-regel), als één balk.
+   ========================================================================== */
+
+.jr-calc {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border-radius: var(--jr-radius-xl);
+  overflow: hidden;
+  box-shadow: var(--jr-shadow-lg);
+}
+.jr-calc-input { background-color: var(--jr-surface); padding: var(--jr-pad-card-lg); display: grid; gap: var(--jr-space-8); align-content: start; }
+.jr-calc-field label { display: flex; justify-content: space-between; align-items: baseline; gap: var(--jr-space-4); font-size: var(--jr-fs-small); font-weight: var(--jr-weight-medium); margin-bottom: var(--jr-space-3); }
+.jr-calc-field output { font-family: var(--jr-font-display); font-size: var(--jr-fs-h4); font-weight: var(--jr-weight-bold); font-variant-numeric: tabular-nums; color: var(--jr-text); }
+.jr-calc-output { background-color: var(--jr-surface-dark); color: var(--jr-text-inverse); padding: var(--jr-pad-card-lg); display: flex; flex-direction: column; gap: var(--jr-space-7); }
+.jr-calc-result-label { font-size: var(--jr-fs-small); color: var(--jr-text-inverse-sec); }
+.jr-calc-result-value {
+  font-family: var(--jr-font-display);
+  font-size: var(--jr-fs-stat);
+  font-weight: var(--jr-weight-bold);
+  line-height: 1;
+  letter-spacing: var(--jr-ls-display);
+  font-variant-numeric: tabular-nums;
+  color: var(--jr-lime);
+  display: block;
+  margin-top: var(--jr-space-2);
+}
+.jr-calc-rows { display: grid; gap: var(--jr-space-3); font-size: var(--jr-fs-small); }
+.jr-calc-rows div { display: flex; justify-content: space-between; gap: var(--jr-space-4); padding-bottom: var(--jr-space-3); border-bottom: var(--jr-stroke-hairline) solid var(--jr-line-dark); }
+.jr-calc-rows dd { margin: 0; font-variant-numeric: tabular-nums; color: var(--jr-text-inverse); }
+.jr-calc-rows dt { color: var(--jr-text-inverse-sec); }
+
+/* De verdeling: één balk, twee delen */
+.jr-split { display: grid; gap: var(--jr-space-2); }
+.jr-split-bar { display: flex; height: 14px; border-radius: var(--jr-radius-pill); overflow: hidden; background-color: var(--jr-gray-90); }
+.jr-split-bar span { display: block; height: 100%; }
+.jr-split-bar .is-motor { background-color: var(--jr-lime); }
+.jr-split-bar .is-jr    { background-color: var(--jr-blue); }
+.jr-split-legend { display: flex; flex-wrap: wrap; gap: var(--jr-space-5); font-size: var(--jr-fs-caption); color: var(--jr-text-inverse-sec); }
+.jr-split-legend span::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: var(--jr-space-2); background-color: var(--jr-lime); }
+.jr-split-legend span.is-jr::before { background-color: var(--jr-blue); }
+@media (max-width: 1068px) { .jr-calc { grid-template-columns: 1fr; } }
+@media (max-width: 734px) {
+  .jr-calc-input, .jr-calc-output { padding: var(--jr-pad-card-sm); }
+  .jr-calc { border-radius: var(--jr-radius-lg); }
+}
+
+
+/* ==========================================================================
+   35. HET PAKKET EN DE MODULES
+   --------------------------------------------------------------------------
+   Eén pakket, één prijs (.jr-package). Daaronder de modules als rijen met
+   een prijs vooraf (.jr-addons). Geen tabel met drie kolommen.
+   ========================================================================== */
+
+.jr-package {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--jr-space-10);
+  align-items: center;
+  padding: var(--jr-pad-card-lg);
+  border-radius: var(--jr-radius-xl);
+  background-color: var(--jr-surface-dark);
+  color: var(--jr-text-inverse);
+}
+.jr-package-price {
+  font-family: var(--jr-font-display);
+  font-size: clamp(64px, 9vw, 120px);
+  font-weight: var(--jr-weight-bold);
+  line-height: .95;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+  color: var(--jr-lime);
+  display: block;
+}
+.jr-package-period { display: block; margin-top: var(--jr-space-3); font-size: var(--jr-fs-small); color: var(--jr-text-inverse-sec); }
+.jr-package .jr-list-check li { color: var(--jr-text-inverse); }
+.jr-package-note { font-size: var(--jr-fs-small); color: var(--jr-text-inverse-sec); margin-top: var(--jr-space-6); }
+
+.jr-addons { list-style: none; margin: 0; padding: 0; border-top: var(--jr-stroke-hairline) solid var(--jr-line); }
+.jr-addon {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--jr-space-2) var(--jr-space-7);
+  padding: var(--jr-space-6) 0;
+  border-bottom: var(--jr-stroke-hairline) solid var(--jr-line);
+  align-items: baseline;
+}
+.jr-addon-name { font-size: var(--jr-fs-h6); font-weight: var(--jr-weight-semibold); margin: 0; }
+.jr-addon-desc { grid-column: 1; font-size: var(--jr-fs-small); color: var(--jr-text-secondary); margin: 0; }
+.jr-addon-price { grid-column: 2; grid-row: 1 / span 2; font-variant-numeric: tabular-nums; font-weight: var(--jr-weight-semibold); text-align: right; white-space: nowrap; }
+.jr-addon-price small { display: block; font-weight: var(--jr-weight-regular); color: var(--jr-text-tertiary); font-size: var(--jr-fs-caption); }
+@media (max-width: 1068px) { .jr-package { grid-template-columns: 1fr; gap: var(--jr-space-8); } }
+@media (max-width: 734px) { .jr-package { padding: var(--jr-pad-card-sm); border-radius: var(--jr-radius-lg); } }
+
+
+/* ==========================================================================
+   36. CASES — HET BEWIJS
+   --------------------------------------------------------------------------
+   Een case draait om één cijfer. De case-kop zet het cijfer naast het
+   beeld; .jr-delta laat van → naar zien (kosten per aanvraag, aantal
+   aanvragen), altijd met de periode erbij. Een case gaat alleen live met
+   een geverifieerd cijfer.
+   ========================================================================== */
+
+.jr-case-hero { display: grid; grid-template-columns: 1fr 1fr; gap: var(--jr-space-10); align-items: end; }
+.jr-case-client { display: flex; align-items: center; gap: var(--jr-space-4); margin-bottom: var(--jr-space-6); }
+.jr-case-client img { height: 32px; width: auto; }
+.jr-case-figure { border-radius: var(--jr-radius-xl); overflow: hidden; aspect-ratio: 4 / 5; background-color: var(--jr-gray-20); }
+.jr-case-figure img { width: 100%; height: 100%; object-fit: cover; }
+
+.jr-delta { display: grid; gap: var(--jr-space-2); }
+.jr-delta-label { font-size: var(--jr-fs-small); color: var(--jr-text-secondary); }
+.jr-delta-values { display: flex; align-items: baseline; flex-wrap: wrap; gap: var(--jr-space-4); font-family: var(--jr-font-display); font-variant-numeric: tabular-nums; }
+.jr-delta-from { font-size: var(--jr-fs-h3); font-weight: var(--jr-weight-semibold); color: var(--jr-text-tertiary); text-decoration: line-through; text-decoration-thickness: 2px; }
+.jr-delta-arrow { font-size: var(--jr-fs-h4); color: var(--jr-text-tertiary); }
+.jr-delta-to { font-size: var(--jr-fs-stat); font-weight: var(--jr-weight-bold); line-height: 1; letter-spacing: var(--jr-ls-display); color: var(--jr-text); }
+.jr-delta-change { display: inline-flex; align-items: center; padding: var(--jr-pad-badge); border-radius: var(--jr-radius-pill); background-color: var(--jr-green-100); color: var(--jr-green-text); font-family: var(--jr-font-text); font-size: var(--jr-fs-small); font-weight: var(--jr-weight-semibold); }
+.jr-delta-period { font-size: var(--jr-fs-caption); color: var(--jr-text-tertiary); }
+.jr-section--dark .jr-delta-to { color: var(--jr-text-inverse); }
+
+/* Resultaatrij: drie cijfers naast elkaar onder de case-kop */
+.jr-results { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--jr-space-7); padding-block: var(--jr-space-9); border-block: var(--jr-stroke-hairline) solid var(--jr-line); }
+/* Situatie · aanpak · resultaat als drie blokken met een nummer */
+.jr-case-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--jr-space-9); counter-reset: casestap; }
+.jr-case-steps > * { counter-increment: casestap; }
+.jr-case-steps > *::before { content: "0" counter(casestap); display: block; font-size: var(--jr-fs-caption); font-weight: var(--jr-weight-semibold); color: var(--jr-blue-link); margin-bottom: var(--jr-space-3); }
+@media (max-width: 1068px) { .jr-case-hero { grid-template-columns: 1fr; } .jr-case-steps { grid-template-columns: 1fr; gap: var(--jr-space-7); } }
+@media (max-width: 734px) { .jr-results { grid-template-columns: 1fr; gap: var(--jr-space-6); } }
+
+
+/* ==========================================================================
+   37. TEAM — PERSOONSKAART EN SPELERSPROFIEL
+   ========================================================================== */
+
+.jr-person { display: flex; flex-direction: column; gap: var(--jr-space-4); text-decoration: none; color: inherit; }
+.jr-person-photo { aspect-ratio: 4 / 5; border-radius: var(--jr-radius-lg); overflow: hidden; background-color: var(--jr-gray-20); }
+.jr-person-photo img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); transition: filter var(--jr-dur-slow) var(--jr-ease), transform var(--jr-dur-slow) var(--jr-ease-out); }
+.jr-person:hover .jr-person-photo img { filter: grayscale(0); transform: scale(1.03); }
+.jr-person-name { font-family: var(--jr-font-display); font-size: var(--jr-fs-h5); font-weight: var(--jr-weight-semibold); margin: 0; }
+.jr-person-role { font-size: var(--jr-fs-small); color: var(--jr-text-secondary); margin: 0; }
+
+/* Spelersprofiel: de statistiekbalk bovenaan de persoonspagina */
+.jr-statbar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border: var(--jr-stroke-hairline) solid var(--jr-line);
+  border-radius: var(--jr-radius-lg);
+  overflow: hidden;
+}
+.jr-statbar > div { padding: var(--jr-space-6); border-right: var(--jr-stroke-hairline) solid var(--jr-line); }
+.jr-statbar > div:last-child { border-right: none; }
+.jr-statbar strong { display: block; font-family: var(--jr-font-display); font-size: var(--jr-fs-h2); font-weight: var(--jr-weight-bold); line-height: 1; letter-spacing: var(--jr-ls-h2); font-variant-numeric: tabular-nums; }
+.jr-statbar span { display: block; margin-top: var(--jr-space-2); font-size: var(--jr-fs-small); color: var(--jr-text-secondary); }
+.jr-profile-facts { display: grid; grid-template-columns: 180px 1fr; gap: var(--jr-space-4) var(--jr-space-7); }
+.jr-profile-facts dt { font-size: var(--jr-fs-small); color: var(--jr-text-secondary); }
+.jr-profile-facts dd { margin: 0; }
+@media (max-width: 734px) {
+  .jr-statbar { grid-template-columns: 1fr 1fr; }
+  .jr-statbar > div:nth-child(2) { border-right: none; }
+  .jr-statbar > div:nth-child(-n+2) { border-bottom: var(--jr-stroke-hairline) solid var(--jr-line); }
+  .jr-profile-facts { grid-template-columns: 1fr; gap: var(--jr-space-1); }
+  .jr-profile-facts dd { margin-bottom: var(--jr-space-4); }
+}
+
+
+/* ==========================================================================
+   38. ARTIKELEN, GIDSEN, HELPDESK EN BEGRIPPEN
+   --------------------------------------------------------------------------
+   .jr-prose zet lopende tekst uit de editor (WordPress/Elementor) goed,
+   zonder klassen per element: koppen, alinea's, lijsten, beeld met
+   onderschrift, citaten, tabellen en code. Max 692px breed (65–75 tekens).
+   ========================================================================== */
+
+.jr-prose { max-width: var(--jr-container-text); font-size: var(--jr-fs-body); line-height: 1.65; color: var(--jr-text); }
+.jr-prose > * + * { margin-top: var(--jr-gap-paragraph); }
+.jr-prose h2 { font-size: var(--jr-fs-h3); letter-spacing: var(--jr-ls-h3); margin-top: var(--jr-space-10); }
+.jr-prose h3 { font-size: var(--jr-fs-h5); letter-spacing: var(--jr-ls-h5); margin-top: var(--jr-space-8); }
+.jr-prose h2 + *, .jr-prose h3 + * { margin-top: var(--jr-space-3); }
+.jr-prose ul, .jr-prose ol { padding-left: 1.3em; }
+.jr-prose li + li { margin-top: var(--jr-space-2); }
+.jr-prose li::marker { color: var(--jr-text-tertiary); }
+.jr-prose a:where(:not(.jr-btn, .elementor-button)) { color: var(--jr-blue-link); text-decoration: underline; text-decoration-color: var(--jr-alpha-underline); text-underline-offset: var(--jr-underline-offset); }
+.jr-prose a:where(:not(.jr-btn, .elementor-button)):hover { text-decoration-color: currentColor; }
+.jr-prose figure { margin-block: var(--jr-space-9); }
+.jr-prose figure img { border-radius: var(--jr-radius-md); width: 100%; }
+.jr-prose figcaption { font-size: var(--jr-fs-caption); color: var(--jr-text-tertiary); margin-top: var(--jr-space-3); }
+.jr-prose blockquote { margin-block: var(--jr-space-9); padding-left: var(--jr-space-6); border-left: var(--jr-stroke-accent) solid var(--jr-blue); font-family: var(--jr-font-display); font-size: var(--jr-fs-h4); font-weight: var(--jr-weight-semibold); line-height: 1.35; }
+.jr-prose code { font-family: var(--jr-font-mono); font-size: .9em; background-color: var(--jr-surface-subtle); padding: 2px 6px; border-radius: 6px; }
+.jr-prose pre { background-color: var(--jr-surface-dark); color: var(--jr-text-inverse); padding: var(--jr-space-6); border-radius: var(--jr-radius-md); overflow-x: auto; font-size: var(--jr-fs-small); }
+.jr-prose pre code { background: none; padding: 0; color: inherit; }
+.jr-prose table { width: 100%; font-size: var(--jr-fs-small); }
+.jr-prose hr { margin-block: var(--jr-space-10); }
+
+/* Artikelkop */
+.jr-article-head { max-width: var(--jr-container-text); }
+.jr-article-meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--jr-space-3) var(--jr-space-5); font-size: var(--jr-fs-small); color: var(--jr-text-secondary); margin-top: var(--jr-space-6); }
+.jr-article-meta .jr-avatar { width: 32px; height: 32px; }
+
+/* Artikel met inhoudsopgave rechts */
+.jr-article-layout { display: grid; grid-template-columns: minmax(0, var(--jr-container-text)) 240px; gap: var(--jr-space-11); justify-content: center; }
+.jr-toc { position: sticky; top: calc(var(--jr-header-height-sm) + var(--jr-space-7)); align-self: start; font-size: var(--jr-fs-small); }
+.jr-toc-title { font-size: var(--jr-fs-caption); font-weight: var(--jr-weight-semibold); text-transform: uppercase; letter-spacing: .06em; color: var(--jr-text-tertiary); margin-bottom: var(--jr-space-3); }
+.jr-toc ol { list-style: none; margin: 0; padding: 0; border-left: var(--jr-stroke-medium) solid var(--jr-line-subtle); }
+.jr-toc a { display: block; padding: var(--jr-space-2) 0 var(--jr-space-2) var(--jr-space-4); margin-left: calc(var(--jr-stroke-medium) * -1); border-left: var(--jr-stroke-medium) solid transparent; color: var(--jr-text-secondary); text-decoration: none; }
+.jr-toc a:hover { color: var(--jr-text); }
+.jr-toc a.is-active { color: var(--jr-text); border-left-color: var(--jr-blue); font-weight: var(--jr-weight-medium); }
+
+/* Auteur onder het artikel */
+.jr-author { display: grid; grid-template-columns: 72px 1fr; gap: var(--jr-space-5); align-items: center; padding: var(--jr-pad-card-sm); background-color: var(--jr-surface-subtle); border-radius: var(--jr-radius-lg); }
+.jr-author .jr-avatar { width: 72px; height: 72px; }
+
+/* Bronnen: elk cijfer heeft er een */
+.jr-sources { font-size: var(--jr-fs-caption); color: var(--jr-text-secondary); border-top: var(--jr-stroke-hairline) solid var(--jr-line); padding-top: var(--jr-space-5); margin-top: var(--jr-space-10); }
+.jr-sources ol { padding-left: 1.2em; margin: var(--jr-space-2) 0 0; }
+.jr-footnote-ref { font-size: .7em; vertical-align: super; line-height: 0; color: var(--jr-blue-link); text-decoration: none; }
+
+/* Begrippen: een term in de tekst met uitleg bij hover, en de begrippenlijst */
+.jr-term { border-bottom: var(--jr-stroke-hairline) dashed var(--jr-text-tertiary); cursor: help; }
+.jr-glossary { display: grid; grid-template-columns: 220px 1fr; gap: var(--jr-space-5) var(--jr-space-9); }
+.jr-glossary dt { font-weight: var(--jr-weight-semibold); }
+.jr-glossary dd { margin: 0; color: var(--jr-text-secondary); }
+.jr-glossary-index { display: flex; flex-wrap: wrap; gap: var(--jr-space-1); }
+.jr-glossary-index a { width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; border-radius: var(--jr-radius-xs); font-weight: var(--jr-weight-medium); color: var(--jr-text); text-decoration: none; }
+.jr-glossary-index a:hover { background-color: var(--jr-surface-subtle); }
+.jr-glossary-index a[aria-disabled="true"] { color: var(--jr-text-disabled); pointer-events: none; }
+
+@media (max-width: 1068px) {
+  .jr-article-layout { grid-template-columns: 1fr; }
+  .jr-toc { position: static; order: -1; }
+}
+@media (max-width: 734px) {
+  .jr-glossary { grid-template-columns: 1fr; gap: var(--jr-space-1); }
+  .jr-glossary dd { margin-bottom: var(--jr-space-5); }
+}
+
+
+/* ==========================================================================
+   39. LIJSTRIJEN — VACATURES, EVENTS, TOOLS, PARTNERS, PORTAAL-UPDATES
+   --------------------------------------------------------------------------
+   Voor alles wat een lijst is en geen kaart: één rij met titel, meta en een
+   pijl. De hele rij is klikbaar. Events krijgen een datumblok.
+   ========================================================================== */
+
+.jr-listrows { list-style: none; margin: 0; padding: 0; border-top: var(--jr-stroke-hairline) solid var(--jr-line); }
+.jr-listrow {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--jr-space-6);
+  padding: var(--jr-space-6) var(--jr-space-2);
+  border-bottom: var(--jr-stroke-hairline) solid var(--jr-line);
+  color: inherit;
+  text-decoration: none;
+  transition: background-color var(--jr-dur-fast) var(--jr-ease);
+}
+a.jr-listrow:hover { background-color: var(--jr-surface-subtle); text-decoration: none; }
+.jr-listrow-title { font-size: var(--jr-fs-h6); font-weight: var(--jr-weight-semibold); margin: 0; }
+.jr-listrow-meta { display: flex; flex-wrap: wrap; gap: var(--jr-space-2) var(--jr-space-4); margin-top: var(--jr-space-2); font-size: var(--jr-fs-small); color: var(--jr-text-secondary); }
+.jr-listrow-arrow { color: var(--jr-text-tertiary); transition: transform var(--jr-dur-base) var(--jr-ease-out), color var(--jr-dur-fast) var(--jr-ease); }
+a.jr-listrow:hover .jr-listrow-arrow { color: var(--jr-blue-link); transform: translateX(4px); }
+.jr-listrow-logo { width: 56px; height: 56px; border-radius: var(--jr-radius-sm); background-color: var(--jr-surface-subtle); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.jr-listrow-logo img { max-width: 70%; max-height: 70%; }
+
+/* Datumblok voor events en playground-duels */
+.jr-date {
+  width: 64px;
+  border-radius: var(--jr-radius-sm);
+  overflow: hidden;
+  text-align: center;
+  border: var(--jr-stroke-hairline) solid var(--jr-line);
+  background-color: var(--jr-surface);
+}
+.jr-date-month { display: block; background-color: var(--jr-red); color: var(--jr-text-on-color); font-size: var(--jr-fs-caption); font-weight: var(--jr-weight-semibold); text-transform: uppercase; letter-spacing: .04em; padding: 3px 0; }
+.jr-date-day { display: block; font-family: var(--jr-font-display); font-size: var(--jr-fs-h3); font-weight: var(--jr-weight-bold); line-height: 1.3; font-variant-numeric: tabular-nums; }
+
+/* Duel: James Robinson vs klant */
+.jr-versus { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: var(--jr-space-6); text-align: center; }
+.jr-versus-vs { font-family: var(--jr-font-display); font-size: var(--jr-fs-h4); font-weight: var(--jr-weight-bold); color: var(--jr-text-tertiary); }
+.jr-versus-score { font-family: var(--jr-font-display); font-size: var(--jr-fs-stat); font-weight: var(--jr-weight-bold); line-height: 1; font-variant-numeric: tabular-nums; }
+
+@media (max-width: 734px) {
+  .jr-listrow { grid-template-columns: auto 1fr; gap: var(--jr-space-4); padding-inline: 0; }
+  .jr-listrow-arrow { display: none; }
+}
+
+
+/* ==========================================================================
+   40. VERTROUWEN EN SIGNALEN — REVIEWS, LIVE, CERTIFICERINGEN
+   ========================================================================== */
+
+/* Google-score: "5,0 ★★★★★ 11 reviews op Google" */
+.jr-rating { display: inline-flex; align-items: center; gap: var(--jr-space-3); font-size: var(--jr-fs-small); color: var(--jr-text-secondary); text-decoration: none; }
+.jr-rating-score { font-family: var(--jr-font-display); font-size: var(--jr-fs-h5); font-weight: var(--jr-weight-bold); color: var(--jr-text); font-variant-numeric: tabular-nums; }
+.jr-rating--lg .jr-rating-score { font-size: var(--jr-fs-stat); line-height: 1; letter-spacing: var(--jr-ls-display); }
+.jr-rating--lg .jr-stars svg { width: 22px; height: 22px; }
+.jr-section--dark .jr-rating-score { color: var(--jr-text-inverse); }
+
+/* Live: rood is voor live en signalen, en alleen daarvoor */
+.jr-live { display: inline-flex; align-items: center; gap: var(--jr-space-2); font-size: var(--jr-fs-caption); font-weight: var(--jr-weight-semibold); color: var(--jr-red-text); text-transform: uppercase; letter-spacing: .06em; }
+.jr-live-dot { position: relative; width: 8px; height: 8px; border-radius: 50%; background-color: var(--jr-red); flex: none; }
+.jr-live-dot::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background-color: var(--jr-red); animation: jr-pulse 1.8s var(--jr-ease-out) infinite; }
+@keyframes jr-pulse { from { transform: scale(1); opacity: .7; } to { transform: scale(2.6); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .jr-live-dot::after { animation: none; } }
+
+/* Certificeringen en partners: kleiner en rustiger dan klantlogo's */
+.jr-certs { display: flex; flex-wrap: wrap; align-items: center; gap: var(--jr-space-6) var(--jr-space-8); }
+.jr-certs img { height: 36px; width: auto; filter: grayscale(100%); opacity: .7; }
+
+/* Lopende band met feiten — horizontaal, één regel, langzaam */
+.jr-marquee { overflow: hidden; border-block: var(--jr-stroke-hairline) solid var(--jr-line-subtle); }
+.jr-marquee-track { display: flex; width: max-content; gap: var(--jr-space-9); padding-block: var(--jr-space-5); animation: jr-marquee 40s linear infinite; font-weight: var(--jr-weight-semibold); font-size: var(--jr-fs-small); white-space: nowrap; }
+@keyframes jr-marquee { to { transform: translateX(-50%); } }
+.jr-marquee:hover .jr-marquee-track { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) { .jr-marquee-track { animation: none; flex-wrap: wrap; width: auto; } }
+
+
+/* ==========================================================================
+   41. OVERIGE PAGINA-ONDERDELEN — KAART, 404, BESTAND UPLOADEN, JURIDISCH
+   ========================================================================== */
+
+/* Kaart (regiopagina's, contact): Google Maps-embed of afbeelding */
+.jr-map { position: relative; aspect-ratio: 16 / 9; border-radius: var(--jr-radius-lg); overflow: hidden; background-color: var(--jr-gray-20); }
+.jr-map iframe, .jr-map img { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; filter: grayscale(100%) contrast(1.05); }
+.jr-map-pin { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -100%); width: 20px; height: 20px; border-radius: 50% 50% 50% 0; rotate: -45deg; background-color: var(--jr-blue); box-shadow: var(--jr-shadow-blue); }
+
+/* 404 en andere foutpagina's */
+.jr-error-page { min-height: var(--jr-min-page); display: grid; place-content: center; text-align: center; gap: var(--jr-space-5); padding-block: var(--jr-section-y); }
+.jr-error-code { font-family: var(--jr-font-display); font-size: clamp(96px, 16vw, 200px); font-weight: var(--jr-weight-bold); line-height: .9; letter-spacing: -0.05em; color: var(--jr-gray-25); }
+
+/* Bestand uploaden (sollicitatie, briefing) */
+.jr-upload {
+  display: grid;
+  place-items: center;
+  gap: var(--jr-space-2);
+  padding: var(--jr-space-8) var(--jr-space-6);
+  border: var(--jr-stroke-medium) dashed var(--jr-line-strong);
+  border-radius: var(--jr-radius-md);
+  background-color: var(--jr-surface-subtle);
+  text-align: center;
+  font-size: var(--jr-fs-small);
+  color: var(--jr-text-secondary);
+  cursor: pointer;
+  transition: border-color var(--jr-dur-fast) var(--jr-ease), background-color var(--jr-dur-fast) var(--jr-ease);
+}
+.jr-upload:hover, .jr-upload.is-dragover { border-color: var(--jr-blue); background-color: var(--jr-blue-50); }
+.jr-upload strong { color: var(--jr-blue-link); font-weight: var(--jr-weight-medium); }
+.jr-upload input[type="file"] { position: absolute; width: 1px; height: 1px; opacity: 0; }
+input[type="file"]::file-selector-button {
+  font: inherit;
+  font-size: var(--jr-fs-small);
+  font-weight: var(--jr-weight-medium);
+  padding: var(--jr-pad-btn-sm);
+  margin-right: var(--jr-space-4);
+  border: var(--jr-stroke-hairline) solid var(--jr-line-strong);
+  border-radius: var(--jr-radius-pill);
+  background-color: var(--jr-surface);
+  color: var(--jr-text);
+  cursor: pointer;
+}
+input[type="file"]::file-selector-button:hover { border-color: var(--jr-text-tertiary); }
+
+/* Juridische pagina's: rustige lopende tekst met een datum bovenaan */
+.jr-legal { max-width: var(--jr-container-text); }
+.jr-legal-updated { font-size: var(--jr-fs-small); color: var(--jr-text-tertiary); margin-bottom: var(--jr-space-8); }
+.jr-legal h2 { font-size: var(--jr-fs-h4); margin-top: var(--jr-space-9); }
+.jr-legal h3 { font-size: var(--jr-fs-h6); margin-top: var(--jr-space-7); }
 
 
 /* ==========================================================================

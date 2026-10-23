@@ -1,6 +1,6 @@
 # James Robinson — Elementor Pro setup
 
-Implementatiegids bij `jr-elementor-globals.css` (v3.0).
+Implementatiegids bij `jr-elementor-globals.css` (v3.2).
 327 tokens, 3.043 regels. Elke waarde hieronder komt één op één overeen met een token in de stylesheet.
 
 ---
@@ -745,6 +745,104 @@ Alle klassen die je in Elementor invult bij **Advanced → CSS Classes**.
 | Alleen op mobiel / desktop | `jr-only-mobile` / `jr-only-desktop` |
 | Alleen voor schermlezers | `jr-sr-only` |
 
+### Header en topbar (sectie 28)
+
+Bouw de header als Theme Builder → Header. Eén container `jr-header` (sticky) met daarin twee rijen: de topbar en de navbalk. Het script voor `is-scrolled` staat onderaan bij de snippets.
+
+| Wat | Klasse |
+|---|---|
+| Header-wrapper (sticky, beide rijen) | `jr-header` (+ `is-scrolled` na 40px scrollen) |
+| Header over beeldvullende hero | `jr-header--overlay` (transparant, wit logo en wit menu) |
+| Topbar (36px, donker) | `jr-topbar` + `jr-topbar-inner` + `jr-topbar-group` |
+| Topbar licht | `jr-topbar--light` |
+| Navbalk-indeling (logo, menu, acties) | `jr-nav` + `jr-nav-inner` |
+| Logo | `jr-logo` / `jr-logo--wit` / `jr-logo--kleur` |
+| Menu | `jr-nav-menu` (op de Nav Menu-widget) |
+| Rechts: inloggen en knop | `jr-nav-actions` + `jr-nav-login` + `jr-btn jr-btn--primary jr-btn--sm` |
+| Hamburger (alleen ≤1068px) | `jr-burger jr-nav-burger` |
+| Megamenu-paneel | `jr-megamenu-panel` + `jr-megamenu-grid` + `jr-megamenu-feature` |
+
+Regels: topbar maximaal drie items, menu maximaal zes items, één knop. Op mobiel verdwijnen topbar en "Inloggen".
+
+### Footer (sectie 29)
+
+| Wat | Klasse |
+|---|---|
+| Footer | `jr-footer` / `jr-footer--dark` + `jr-footer-inner` |
+| Afsluiter met één knop | `jr-footer-cta` + `jr-footer-cta-title` |
+| Kolommen (merk + vier) | `jr-footer-grid` + `jr-footer-brand` |
+| Score en certificeringen | `jr-footer-trust` |
+| Nieuwsbrief | `jr-footer-newsletter` |
+| Juridische regel | `jr-footer-legal` |
+
+### Hero's en beeld (secties 30 en 31)
+
+| Wat | Klasse |
+|---|---|
+| Hero standaard (tekst links, beeld rechts) | `jr-hero` + `jr-hero-inner` + `jr-hero-title` + `jr-hero-lead` + `jr-hero-actions` + `jr-hero-note` |
+| Hero gecentreerd | `jr-hero--center` |
+| Hero met beeld of video over de volle breedte | `jr-hero--media` + `jr-hero-media` |
+| Korrel over beeld | `jr-grain` / `jr-grain--sterk` |
+| Telefoon | `jr-device-phone` |
+| Laptop | `jr-device-laptop` + `jr-device-laptop-lid` / `-screen` / `-base` |
+| Browservenster | `jr-device-browser` + `jr-device-browser-bar` + `jr-device-browser-url` |
+| Laptop en telefoon samen | `jr-device-duo` |
+
+### Contact en zwevende knoppen (sectie 32)
+
+| Wat | Klasse |
+|---|---|
+| Specialist met foto en knoppen | `jr-contact-person` |
+| Contactlijst | `jr-contact-list` |
+| Zwevende knoppen rechtsonder | `jr-fab-stack` |
+| Livechat-knop | `jr-chat-launcher` |
+
+### Verkooppagina's (secties 33 t/m 35)
+
+| Wat | Klasse |
+|---|---|
+| De check (één vraag per scherm) | `jr-check` + `jr-check-head` / `-question` / `-why` / `-options` (`--2`) / `-nav` |
+| Uitkomst van de check | `jr-check-result` (groen) / `--oranje` / `--later` / `--rood` + `jr-check-result-label` / `-title` |
+| Rekenhulp | `jr-calc` + `jr-calc-input` / `-field` / `-output` / `-result-label` / `-result-value` / `-rows` |
+| Verdeling motor en bureau | `jr-split` + `jr-split-bar` (`is-motor`, `is-jr`) + `jr-split-legend` |
+| Pakket (donker blok, prijs in lime) | `jr-package` + `jr-package-price` / `-period` / `-note` |
+| Modules als rijen | `jr-addons` + `jr-addon` + `jr-addon-name` / `-desc` / `-price` |
+
+### Cases, team en kennis (secties 36 t/m 38)
+
+| Wat | Klasse |
+|---|---|
+| Case-kop | `jr-case-hero` + `jr-case-client` + `jr-case-figure` |
+| Van-naar-cijfer | `jr-delta` + `jr-delta-label` / `-values` / `-from` / `-arrow` / `-to` / `-change` / `-period` |
+| Resultatenrij | `jr-results` |
+| Situatie, aanpak, resultaat | `jr-case-steps` |
+| Persoonskaart (zwart-wit, kleur bij hover) | `jr-person` + `jr-person-photo` / `-name` / `-role` |
+| Statistiekbalk (vier cijfers) | `jr-statbar` |
+| Spelersprofiel-feiten | `jr-profile-facts` |
+| Lange tekst uit de editor | `jr-prose` |
+| Artikelkop en -opbouw | `jr-article-head` + `jr-article-meta` + `jr-article-layout` |
+| Inhoudsopgave | `jr-toc` + `jr-toc-title` (actieve link: `is-active`) |
+| Auteur, bronnen, voetnoot | `jr-author` / `jr-sources` / `jr-footnote-ref` |
+| Begrip in de tekst / begrippenlijst | `jr-term` / `jr-glossary` + `jr-glossary-index` |
+
+### Lijsten, vertrouwen en overig (secties 39 t/m 41)
+
+| Wat | Klasse |
+|---|---|
+| Lijstrijen (vacatures, partners, updates) | `jr-listrows` + `jr-listrow` + `jr-listrow-title` / `-meta` / `-arrow` / `-logo` |
+| Datumblok (events) | `jr-date` + `jr-date-month` / `-day` |
+| Duel (padel) | `jr-versus` + `jr-versus-vs` / `-score` |
+| Google-score | `jr-rating` / `jr-rating--lg` + `jr-rating-score` |
+| Live-indicator | `jr-live` + `jr-live-dot` |
+| Certificeringen | `jr-certs` |
+| Lopende band met logo's | `jr-marquee` + `jr-marquee-track` |
+| Kaart met pin | `jr-map` + `jr-map-pin` |
+| 404 | `jr-error-page` + `jr-error-code` |
+| Bestand uploaden | `jr-upload` (+ `is-dragover`) |
+| Juridische pagina | `jr-legal` + `jr-legal-updated` |
+
+Alle voorbeelden staan in `styleguide-onderdelen.html` (deel 2 van het designsysteem).
+
 ### Twee snippets voor Custom Code → footer
 
 **Scroll reveal:**
@@ -767,7 +865,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 ```
 
-**Off-canvas menu, terug-naar-boven en anchor-nav:**
+**Header bij scrollen, off-canvas menu, terug-naar-boven en anchor-nav:**
 
 ```html
 <script>
@@ -788,6 +886,14 @@ document.addEventListener('DOMContentLoaded', function () {
   });
   if (back) back.addEventListener('click', function () { setMenu(false); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setMenu(false); });
+
+  // Header: topbar weg en navbalk compact na 40px scrollen
+  var header = document.querySelector('.jr-header');
+  if (header) {
+    var onScroll = function () { header.classList.toggle('is-scrolled', window.scrollY > 40); };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
 
   // Terug naar boven
   var top = document.querySelector('.jr-to-top');
