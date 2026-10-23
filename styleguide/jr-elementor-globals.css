@@ -286,6 +286,7 @@
   --jr-lh-snug:     1.25;
   --jr-lh-body:     1.55;
   --jr-lh-lead:     1.45;
+  --jr-lh-caption:  1.4;     /* caption, kolomkop megamenu */
 
   /* Letterafstand — hoe groter de tekst, hoe strakker */
   --jr-ls-display:  -0.028em;
@@ -1162,6 +1163,9 @@ input[type="submit"], .elementor-field-type-submit .elementor-button {
   font-family: var(--jr-font-text);
   font-size: var(--jr-fs-small);
   font-weight: var(--jr-weight-regular);
+  line-height: var(--jr-lh-nav);
+  letter-spacing: var(--jr-ls-body);
+  text-transform: none;
   color: var(--jr-text);
   padding: var(--jr-pad-navlink);
   border-radius: var(--jr-radius-xs);
@@ -2188,6 +2192,8 @@ a.jr-tag:hover { border-color: var(--jr-text); color: var(--jr-text); text-decor
 }
 .jr-megamenu h5 {
   font-family: var(--jr-font-text);
+  line-height: var(--jr-lh-caption);
+  letter-spacing: 0;
   font-size: var(--jr-fs-caption);
   font-weight: var(--jr-weight-semibold);
   color: var(--jr-text-tertiary);
@@ -2195,6 +2201,9 @@ a.jr-tag:hover { border-color: var(--jr-text); color: var(--jr-text); text-decor
 }
 .jr-megamenu a:where(:not(.jr-btn, .elementor-button)) {
   display: block;
+  font-family: var(--jr-font-display);
+  letter-spacing: var(--jr-ls-h5);
+  line-height: var(--jr-lh-snug);
   font-size: var(--jr-fs-h5);
   font-weight: var(--jr-weight-semibold);
   color: var(--jr-text);
@@ -2843,6 +2852,7 @@ a.jr-tag:hover { border-color: var(--jr-text); color: var(--jr-text); text-decor
   --jr-gap-nav-items:      4px;                    /* tussen menulinks (die zelf 14px padding hebben) */
   --jr-gap-header-actions: 16px;
   --jr-alpha-nav-solid:    rgba(255,255,255,.94);  /* glas na scrollen */
+  --jr-lh-nav:             20px;                   /* menu, inloggen, dropdown */
 }
 
 /* Topbar */
@@ -2850,7 +2860,11 @@ a.jr-tag:hover { border-color: var(--jr-text); color: var(--jr-text); text-decor
   height: var(--jr-topbar-height);
   background-color: var(--jr-surface-dark);
   color: var(--jr-text-inverse-sec);
+  font-family: var(--jr-font-text);
   font-size: var(--jr-fs-caption);
+  font-weight: var(--jr-weight-regular);
+  letter-spacing: var(--jr-ls-small);
+  text-transform: none;
   line-height: var(--jr-topbar-height);
   transition: margin-top var(--jr-dur-base) var(--jr-ease);
 }
@@ -2868,6 +2882,8 @@ a.jr-tag:hover { border-color: var(--jr-text); color: var(--jr-text); text-decor
 .jr-topbar a:where(:not(.jr-btn, .elementor-button)) { color: var(--jr-text-inverse-sec); text-decoration: none; }
 .jr-topbar a:where(:not(.jr-btn, .elementor-button)):hover { color: var(--jr-text-inverse); }
 .jr-topbar .jr-stars svg { width: 12px; height: 12px; }
+.jr-topbar strong { font-weight: var(--jr-weight-medium); color: var(--jr-text-inverse); }   /* alleen de score */
+.jr-topbar--light strong { color: var(--jr-text); }
 .jr-topbar--light { background-color: var(--jr-surface-subtle); color: var(--jr-text-secondary); border-bottom: var(--jr-stroke-hairline) solid var(--jr-line-subtle); }
 .jr-topbar--light a:where(:not(.jr-btn, .elementor-button)) { color: var(--jr-text-secondary); }
 .jr-topbar--light a:where(:not(.jr-btn, .elementor-button)):hover { color: var(--jr-text); }
@@ -2907,8 +2923,16 @@ a.jr-tag:hover { border-color: var(--jr-text); color: var(--jr-text); text-decor
   margin: 0;
   padding: 0;
 }
+.jr-nav-menu a { font-family: var(--jr-font-text); font-size: var(--jr-fs-small); font-weight: var(--jr-weight-regular); line-height: var(--jr-lh-nav); color: var(--jr-text); padding: var(--jr-pad-navlink); text-decoration: none; }
+.jr-nav-menu a:hover { color: var(--jr-text-secondary); text-decoration: none; }
+.jr-nav-menu a.is-active, .jr-nav-menu a[aria-current="page"] { color: var(--jr-text); font-weight: var(--jr-weight-medium); }
+.jr-nav .elementor-nav-menu--dropdown a { display: block; padding: var(--jr-pad-navlink); border-radius: var(--jr-radius-xs); }
+.jr-nav .elementor-nav-menu--dropdown a:hover { background-color: var(--jr-surface-subtle); color: var(--jr-text); }
 .jr-nav-actions { display: flex; align-items: center; gap: var(--jr-gap-header-actions); }
 .jr-nav-login {
+  font-family: var(--jr-font-text);
+  font-weight: var(--jr-weight-regular);
+  line-height: var(--jr-lh-nav);
   font-size: var(--jr-fs-small);
   color: var(--jr-text);
   text-decoration: none;

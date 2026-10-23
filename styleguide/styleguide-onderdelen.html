@@ -24,6 +24,19 @@ body { background: #FFFFFF; }
 .vb-binnen { padding: 32px; }
 .vb-specs { margin-top: 16px; font-size: 13px; color: var(--jr-text-secondary); display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px 24px; }
 .vb-specs b { color: var(--jr-text); font-weight: 600; }
+.vb-typo { width: 100%; border-collapse: collapse; font-size: 13px; background: #FFF; border: 1px solid var(--jr-line); border-radius: 18px; overflow: hidden; }
+.vb-typo-kop { margin: 48px 0 4px; font: 600 21px/1.25 var(--jr-font-display); letter-spacing: -0.008em; }
+.vb-typo-intro { margin: 0 0 16px; font-size: 14px; color: var(--jr-text-secondary); }
+.vb-typo td:nth-child(2), .vb-typo td:nth-child(3), .vb-typo td:nth-child(4) { white-space: nowrap; }
+.vb-typo th { text-align: left; font-weight: 600; font-size: 12px; color: var(--jr-text-secondary); background: var(--jr-surface-subtle); padding: 10px 12px; border-bottom: 1px solid var(--jr-line); }
+.vb-typo td { padding: 10px 12px; border-bottom: 1px solid var(--jr-line-subtle); vertical-align: middle; }
+.vb-typo tr:last-child td { border-bottom: 0; }
+.vb-typo td:first-child { font-weight: 600; color: var(--jr-text); }
+.vb-typo .groep td { background: var(--jr-surface-subtle); font: 600 11px/1 var(--jr-font-mono); color: var(--jr-text-tertiary); text-transform: uppercase; letter-spacing: .04em; padding: 8px 12px; }
+.vb-typo .sw { display: inline-block; width: 10px; height: 10px; border-radius: 3px; border: 1px solid rgba(0,0,0,.12); vertical-align: -1px; margin-right: 6px; }
+.vb-typo code { font: 500 12px var(--jr-font-mono); }
+.vb-regels { margin: 16px 0 0; padding-left: 18px; font-size: 14px; color: var(--jr-text-secondary); }
+.vb-regels li { margin-bottom: 4px; }
 .vb-foto { background: linear-gradient(135deg, #3A3A3C, #1C1C1E); color: rgba(255,255,255,.55); display: flex; align-items: center; justify-content: center; font-size: 12px; font-family: var(--jr-font-mono); }
 .vb-scherm { height: 100%; padding: 8% 7%; font-size: 9px; display: grid; gap: 6%; align-content: start; background: #F5F5F7; }
 .vb-scherm b { font: 700 18px/1 var(--jr-font-display); display: block; }
@@ -77,7 +90,7 @@ body { background: #FFFFFF; }
         <div class="jr-topbar">
           <div class="jr-topbar-inner">
             <div class="jr-topbar-group">
-              <a class="jr-rating" href="#" style="color:inherit"><span class="jr-stars"><svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg></span> 5,0 op Google</a>
+              <a class="jr-rating" href="#" style="color:inherit"><span class="jr-stars"><svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg></span> <strong>5,0</strong> op Google</a>
               <span>Maandelijks opzegbaar</span>
             </div>
             <div class="jr-topbar-group"><a href="#">045 792 0009</a><a href="#">support@jamesrobinson.nl</a></div>
@@ -146,10 +159,44 @@ body { background: #FFFFFF; }
       <span><b>Topbar</b> 36px · donker · 12px tekst</span>
       <span><b>Navbalk</b> 72px → 56px na scrollen</span>
       <span><b>Logo</b> 32px hoog → 28px</span>
-      <span><b>Menu</b> Inter 14px · 10/14px padding</span>
+      <span><b>Menu</b> Inter 14px · 400 · 10/14px padding</span>
       <span><b>Knop</b> klein (40px), primair · lime op een hero</span>
       <span><b>Maximaal</b> 6 menu-items · één knop</span>
     </div>
+
+    <h3 class="vb-typo-kop">Typografie van de kop</h3>
+    <p class="vb-typo-intro">Dit vul je in. Grootte / regelafstand in px. De laatste kolom is de globale stijl in Elementor (Site Settings → Global Fonts), zie TYPOGRAFIE-ELEMENTOR.md.</p>
+    <table class="vb-typo">
+      <thead><tr><th>Element</th><th>Lettertype</th><th>Dikte</th><th>Grootte / regel</th><th>Letterafstand</th><th>Kleur</th><th>Hover</th><th>Elementor-stijl</th></tr></thead>
+      <tbody>
+        <tr class="groep"><td colspan="8">Topbar · donkere balk van 36px</td></tr>
+        <tr><td>Tekst (“Maandelijks opzegbaar”)</td><td>Inter</td><td>400 Regular</td><td>12 / 36</td><td>0,004em (0 px)</td><td><span class="sw" style="background:#A1A1A6"></span>#A1A1A6</td><td>—</td><td>JR Caption</td></tr>
+        <tr><td>Link (telefoon, mail)</td><td>Inter</td><td>400 Regular</td><td>12 / 36</td><td>0,004em (0 px)</td><td><span class="sw" style="background:#A1A1A6"></span>#A1A1A6</td><td><span class="sw" style="background:#F5F5F7"></span>#F5F5F7</td><td>JR Caption</td></tr>
+        <tr><td>Score “5,0”</td><td>Inter</td><td>500 Medium</td><td>12 / 36</td><td>0,004em (0 px)</td><td><span class="sw" style="background:#F5F5F7"></span>#F5F5F7</td><td>—</td><td>JR Caption, dikte 500</td></tr>
+        <tr><td>Sterren</td><td>—</td><td>—</td><td>12 × 12 px</td><td>—</td><td><span class="sw" style="background:#FFD631"></span>#FFD631</td><td>—</td><td>icoon</td></tr>
+        <tr><td>Lichte topbar: tekst · hover · score</td><td>Inter</td><td>400 · 500</td><td>12 / 36</td><td>0,004em</td><td><span class="sw" style="background:#6E6E73"></span>#6E6E73</td><td><span class="sw" style="background:#1D1D1F"></span>#1D1D1F</td><td>JR Caption</td></tr>
+        <tr class="groep"><td colspan="8">Navbalk · 72px, na scrollen 56px</td></tr>
+        <tr><td>Menu-item</td><td>Inter</td><td>400 Regular</td><td>14 / 20</td><td>0</td><td><span class="sw" style="background:#1D1D1F"></span>#1D1D1F</td><td><span class="sw" style="background:#6E6E73"></span>#6E6E73</td><td>JR Nav</td></tr>
+        <tr><td>Menu-item, huidige pagina</td><td>Inter</td><td>500 Medium</td><td>14 / 20</td><td>0</td><td><span class="sw" style="background:#1D1D1F"></span>#1D1D1F</td><td>—</td><td>JR Nav, dikte 500</td></tr>
+        <tr><td>Menu-item over beeld (overlay)</td><td>Inter</td><td>400 Regular</td><td>14 / 20</td><td>0</td><td><span class="sw" style="background:#F5F5F7"></span>#F5F5F7</td><td><span class="sw" style="background:#A1A1A6"></span>#A1A1A6</td><td>JR Nav</td></tr>
+        <tr><td>Inloggen</td><td>Inter</td><td>400 Regular</td><td>14 / 20</td><td>0</td><td><span class="sw" style="background:#1D1D1F"></span>#1D1D1F</td><td><span class="sw" style="background:#6E6E73"></span>#6E6E73</td><td>JR Nav</td></tr>
+        <tr><td>Knop “Doe de check”</td><td>Inter</td><td>500 Medium</td><td>14 / 17 · 40px hoog</td><td>−0,008em (−0,1 px)</td><td>wit op <span class="sw" style="background:#0857C3"></span>#0857C3</td><td><span class="sw" style="background:#003967"></span>#003967</td><td>JR Action, 14px</td></tr>
+        <tr><td>Knop over beeld</td><td>Inter</td><td>600 Semibold</td><td>14 / 17 · 40px hoog</td><td>−0,008em</td><td>zwart op <span class="sw" style="background:#C4F000"></span>#C4F000</td><td><span class="sw" style="background:#B2DA00"></span>#B2DA00</td><td>JR Action, 14px, 600</td></tr>
+        <tr class="groep"><td colspan="8">Uitklapmenu en megamenu</td></tr>
+        <tr><td>Item in uitklapmenu</td><td>Inter</td><td>400 Regular</td><td>14 / 20</td><td>0</td><td><span class="sw" style="background:#1D1D1F"></span>#1D1D1F</td><td>vlak <span class="sw" style="background:#F5F5F7"></span>#F5F5F7</td><td>JR Nav</td></tr>
+        <tr><td>Kolomkop megamenu</td><td>Inter</td><td>600 Semibold</td><td>12 / 17</td><td>0</td><td><span class="sw" style="background:#86868B"></span>#86868B</td><td>—</td><td>JR Caption, dikte 600</td></tr>
+        <tr><td>Link megamenu</td><td>Figtree</td><td>600 Semibold</td><td>21 / 26</td><td>−0,008em (−0,2 px)</td><td><span class="sw" style="background:#1D1D1F"></span>#1D1D1F</td><td><span class="sw" style="background:#0066CC"></span>#0066CC</td><td>JR H5 (H5)</td></tr>
+        <tr class="groep"><td colspan="8">Mobiel menu (≤ 1068px, uitschuifpaneel)</td></tr>
+        <tr><td>Menu-item</td><td>Figtree</td><td>600 Semibold</td><td>24 / 30</td><td>−0,010em (−0,2 px)</td><td><span class="sw" style="background:#1D1D1F"></span>#1D1D1F</td><td><span class="sw" style="background:#0066CC"></span>#0066CC</td><td>JR Menu Mobile</td></tr>
+        <tr><td>Knop onderaan</td><td>Inter</td><td>500 Medium</td><td>16 / 19 · 48px hoog</td><td>−0,008em</td><td>wit op <span class="sw" style="background:#0857C3"></span>#0857C3</td><td><span class="sw" style="background:#003967"></span>#003967</td><td>JR Action</td></tr>
+      </tbody>
+    </table>
+    <ul class="vb-regels">
+      <li>Altijd zoals je het schrijft: “Over ons”, nooit HOOFDLETTERS en nooit onderstreept.</li>
+      <li>De grootte verandert niet tussen desktop, tablet en mobiel en niet na het scrollen. Alleen de balk wordt lager.</li>
+      <li>De huidige pagina krijgt dikte 500, verder niets: geen kleur, geen streepje. Hover verandert alleen de kleur, nooit de dikte, zodat het menu niet verspringt.</li>
+      <li>Padding per menu-item 10px boven en onder, 14px links en rechts; 4px tussen de items.</li>
+    </ul>
   </div>
 </section>
 

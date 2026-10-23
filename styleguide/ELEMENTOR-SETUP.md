@@ -764,6 +764,8 @@ Bouw de header als Theme Builder → Header. Eén container `jr-header` (sticky)
 
 Regels: topbar maximaal drie items, menu maximaal zes items, één knop. Op mobiel verdwijnen topbar en "Inloggen".
 
+Lettertype, dikte, grootte en kleur per onderdeel van de kop staan in `TYPOGRAFIE-ELEMENTOR.md` onder Navigatie, en in deel 2 van het designsysteem (sectie 28). Kort: topbar Inter 400, 12px; menu Inter 400, 14/20px; huidige pagina dikte 500.
+
 ### Footer (sectie 29)
 
 | Wat | Klasse |
