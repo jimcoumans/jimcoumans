@@ -19,6 +19,8 @@ const nextConfig: NextConfig = {
     '/api/bedrijf/avg-voorbeeld': ['./src/fonts/pdf/**/*'],
     '/api/sjablonen/*/voorbeeld': ['./src/fonts/pdf/**/*'],
     '/api/dossier/map': ['./src/fonts/pdf/**/*'],
+    // De voorstelgenerator wordt van schijf gelezen.
+    '/beheer/voorstellen/generator': ['./src/lib/voorstel/generator.html'],
   },
   async headers() {
     return [

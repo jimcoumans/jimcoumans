@@ -379,6 +379,13 @@
       "when": 1794408330434,
       "tag": "0053_rapportage_acties",
       "breakpoints": true
+    },
+    {
+      "idx": 54,
+      "version": "7",
+      "when": 1794415927267,
+      "tag": "0054_voorstelgenerator",
+      "breakpoints": true
     }
   ]
 }

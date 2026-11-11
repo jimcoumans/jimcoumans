@@ -4047,3 +4047,50 @@ BEGIN
   END IF;
 END $jr_0053_rapportage_acties$;
 
+-- ---------------------------------------------------------------------------
+-- 0054_voorstelgenerator
+-- ---------------------------------------------------------------------------
+
+DO $jr_0054_voorstelgenerator$
+BEGIN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = 'f0910d1e82eb6a278568e8ce3b75d79d9328dfbe72aa93316faf3b6b579f0783') THEN
+    RAISE NOTICE 'Overgeslagen: 0054_voorstelgenerator stond er al.';
+  ELSE
+    CREATE TABLE "proposal_settings" (
+    	"key" text PRIMARY KEY NOT NULL,
+    	"data" jsonb NOT NULL,
+    	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
+    );
+
+
+    CREATE TABLE "proposals" (
+    	"id" text PRIMARY KEY NOT NULL,
+    	"naam" text NOT NULL,
+    	"bedrijfsnaam" text,
+    	"plaats" text,
+    	"organization_id" uuid,
+    	"staat" jsonb NOT NULL,
+    	"updated_by_user_id" uuid,
+    	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+    	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
+    	CONSTRAINT "proposals_id_format" CHECK ("proposals"."id" ~ '^[a-z0-9][a-z0-9-]{0,80}$'),
+    	CONSTRAINT "proposals_naam_not_empty" CHECK (length(trim("proposals"."naam")) > 0)
+    );
+
+
+    ALTER TABLE "proposals" ADD CONSTRAINT "proposals_organization_id_organizations_id_fk" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON DELETE set null ON UPDATE no action;
+
+    ALTER TABLE "proposals" ADD CONSTRAINT "proposals_updated_by_user_id_users_id_fk" FOREIGN KEY ("updated_by_user_id") REFERENCES "public"."users"("id") ON DELETE set null ON UPDATE no action;
+
+    CREATE INDEX "proposals_updated_idx" ON "proposals" USING btree ("updated_at");
+
+    ALTER TABLE "proposals" ENABLE ROW LEVEL SECURITY;
+
+    ALTER TABLE "proposal_settings" ENABLE ROW LEVEL SECURITY;
+
+    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+    VALUES ('f0910d1e82eb6a278568e8ce3b75d79d9328dfbe72aa93316faf3b6b579f0783', 1794415927267);
+    RAISE NOTICE 'Toegepast: 0054_voorstelgenerator.';
+  END IF;
+END $jr_0054_voorstelgenerator$;
+
