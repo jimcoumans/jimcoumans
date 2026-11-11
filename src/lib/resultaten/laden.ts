@@ -5,7 +5,7 @@
 
 import { and, asc, desc, eq, gte, inArray, isNotNull, isNull, lt, lte, or, sql } from 'drizzle-orm'
 import { db } from '@/db'
-import { type ReportAction, analyticsConnections, campaignChannels, campaigns, organizationOwners, organizations, performanceDaily, subscriptions, users } from '@/db/schema'
+import { type ReportAction, analyticsConnections, contacts, campaignChannels, campaigns, organizationOwners, organizations, performanceDaily, subscriptions, users } from '@/db/schema'
 import type { Bron } from '../performance/bronnen'
 import { analyseer, type Bevinding } from './analyse'
 import { getActies } from './acties'
@@ -38,6 +38,36 @@ export const HOOFDDOEL_LABEL: Record<Hoofddoel, string> = {
 
 export type Selectie = Bron | 'alle'
 
+export type Contactpersoon = {
+  naam: string
+  functie: string | null
+  avatarImageId: string | null
+  /** Heeft een inlog op het portaal (en die is niet ingetrokken). */
+  inlog: boolean
+  laatstIngelogd: Date | null
+}
+
+/** Contactpersonen uit het CRM, aangevuld met inloggers die (nog) geen contactpersoon zijn. */
+function contactpersonen(
+  rijen: { naam: string; functie: string | null; avatarImageId: string | null; userId: string | null; laatstIngelogd: Date | null; uitgeschakeld: Date | null }[],
+  inloggers: { id: string; naam: string | null; email: string; functie: string | null; laatstIngelogd: Date | null; avatarImageId: string | null }[],
+): Contactpersoon[] {
+  const actieveInlog = new Set(inloggers.map((u) => u.id))
+  const uit: Contactpersoon[] = rijen.map((c) => ({
+    naam: c.naam,
+    functie: c.functie,
+    avatarImageId: c.avatarImageId,
+    inlog: !!c.userId && actieveInlog.has(c.userId),
+    laatstIngelogd: c.userId && actieveInlog.has(c.userId) ? c.laatstIngelogd : null,
+  }))
+  const gekoppeld = new Set(rijen.map((c) => c.userId).filter(Boolean))
+  for (const u of inloggers) {
+    if (gekoppeld.has(u.id)) continue
+    uit.push({ naam: u.naam || u.email, functie: u.functie, avatarImageId: u.avatarImageId, inlog: true, laatstIngelogd: u.laatstIngelogd })
+  }
+  return uit
+}
+
 export type Maandbeeld = {
   maand: string
   kanalen: Kanaal[]
@@ -66,7 +96,8 @@ export type Resultaten = {
   maanden: string[]
   gekoppeld: Provider[]
   marketingmanager: { naam: string; functie: string | null; email: string | null; telefoon: string | null; avatarImageId: string | null } | null
-  toegang: { naam: string; functie: string | null; laatstIngelogd: Date | null }[]
+  /** Contactpersonen van de klant, met of zonder inlog op het portaal. */
+  toegang: Contactpersoon[]
   nu: Maandbeeld
   vorigJaar: Maandbeeld
   /** Twaalf maanden tot en met de gekozen maand, plus dezelfde maand een jaar eerder vooraan. */
@@ -179,7 +210,7 @@ export async function getResultaten(organizationId: string, maand: string): Prom
 
   // Zestien maanden: twaalf voor de grafiek, plus de drie maanden voor dezelfde maand vorig jaar (seizoen).
   const van = maandPlus(maand, -15)
-  const [eigenRijen, alleRijen, koppelingen, alleOrgs, mm, toegang, abonnementen, pubs, acties] = await Promise.all([
+  const [eigenRijen, alleRijen, koppelingen, alleOrgs, mm, toegang, abonnementen, pubs, acties, contactRijen, mmCampagne] = await Promise.all([
     maandRijen(van, maand, organizationId),
     maandRijen(maand, maand),
     koppelingenPerKlant(),
@@ -200,7 +231,7 @@ export async function getResultaten(organizationId: string, maand: string): Prom
       .orderBy(desc(organizationOwners.isPrimary), desc(users.isMarketingManager), asc(organizationOwners.createdAt))
       .limit(1),
     db
-      .select({ naam: users.name, email: users.email, functie: users.jobTitle, laatstIngelogd: users.lastLoginAt })
+      .select({ id: users.id, naam: users.name, email: users.email, functie: users.jobTitle, laatstIngelogd: users.lastLoginAt, avatarImageId: users.avatarImageId })
       .from(users)
       .where(and(eq(users.organizationId, organizationId), eq(users.role, 'client'), isNull(users.disabledAt)))
       .orderBy(asc(users.name)),
@@ -228,6 +259,35 @@ export async function getResultaten(organizationId: string, maand: string): Prom
         ),
       ),
     getActies(organizationId, maand),
+    db
+      .select({
+        naam: contacts.name,
+        functie: contacts.jobTitle,
+        avatarImageId: contacts.avatarImageId,
+        userId: contacts.userId,
+        laatstIngelogd: users.lastLoginAt,
+        uitgeschakeld: users.disabledAt,
+      })
+      .from(contacts)
+      .leftJoin(users, eq(users.id, contacts.userId))
+      .where(and(eq(contacts.organizationId, organizationId), eq(contacts.active, true)))
+      .orderBy(desc(contacts.isPrimary), asc(contacts.name)),
+    // Geen vaste aanspreekpartner? Dan de marketingmanager van de laatste campagne.
+    db
+      .select({
+        naam: users.name,
+        voornaam: users.firstName,
+        functie: users.jobTitle,
+        email: users.email,
+        telefoon: users.phone,
+        mobiel: users.mobile,
+        avatarImageId: users.avatarImageId,
+      })
+      .from(campaigns)
+      .innerJoin(users, eq(users.id, campaigns.marketingManagerId))
+      .where(and(eq(campaigns.organizationId, organizationId), isNull(users.disabledAt)))
+      .orderBy(desc(campaigns.createdAt))
+      .limit(1),
   ])
 
   const gekoppeld = koppelingen.get(organizationId) ?? new Set<Provider>()
@@ -276,7 +336,7 @@ export async function getResultaten(organizationId: string, maand: string): Prom
     metGa4: gekoppeld.has('ga4'),
   })
 
-  const m = mm[0]
+  const m = mm[0] ?? mmCampagne[0]
   const fee = abonnementen.reduce((t, a) => t + a.bedrag - a.korting, 0)
 
   return {
@@ -289,7 +349,7 @@ export async function getResultaten(organizationId: string, maand: string): Prom
     marketingmanager: m
       ? { naam: m.naam || m.email, functie: m.functie, email: m.email, telefoon: m.telefoon || m.mobiel, avatarImageId: m.avatarImageId }
       : null,
-    toegang: toegang.map((t) => ({ naam: t.naam || t.email, functie: t.functie, laatstIngelogd: t.laatstIngelogd })),
+    toegang: contactpersonen(contactRijen, toegang),
     nu,
     vorigJaar,
     reeks: reeks.slice(1),

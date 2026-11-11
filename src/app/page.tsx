@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
-import { getSessionUser } from '@/lib/auth'
+import { getPortaal } from '@/lib/meekijken'
 import { getOrganizationWallets, getWalletEntries, getReversedEntryIds } from '@/lib/ledger'
 import { AppShell } from '@/components/AppShell'
 import { BalanceCard } from '@/components/BalanceCard'
@@ -17,22 +17,21 @@ export const maxDuration = 26
 
 /** Het klantportaal: saldo en de laatste mutaties. */
 export default async function HomePage() {
-  const user = await getSessionUser()
-  if (!user) redirect('/login')
+  const portaal = await getPortaal()
+  if (portaal.status === 'geen_sessie') redirect('/login')
+  // Het JR-team komt in het beheer terecht, behalve als het meekijkt bij een klant.
+  if (portaal.status === 'team') redirect('/beheer')
+  const { user, organizationId, organisatieNaam, meekijken } = portaal
 
-  // Het JR-team komt niet in het klantportaal terecht maar in het beheer.
-  if (user.role === 'staff' || user.role === 'admin') redirect('/beheer')
-  if (!user.organizationId) redirect('/login')
-
-  const wallets = await getOrganizationWallets(user.organizationId)
+  const wallets = await getOrganizationWallets(organizationId)
 
   return (
-    <AppShell user={user} actief="wallet">
+    <AppShell user={user} actief="wallet" meekijken={meekijken}>
         {wallets.length === 0 ? (
           <div className="rounded-xl bg-white p-8 shadow-sm">
             <h1 className="mb-2 text-[28px] sm:text-[32px]">Nog geen wallet</h1>
             <p className="text-sm text-gray-600">
-              Er is nog geen wallet ingericht voor {user.organization?.name}. Je vaste
+              Er is nog geen wallet ingericht voor {organisatieNaam}. Je vaste
               contactpersoon zet dit voor je klaar.
             </p>
           </div>

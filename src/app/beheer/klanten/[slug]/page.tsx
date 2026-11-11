@@ -7,6 +7,7 @@ import { getOrganizationInvoices, invoiceStatusLabels, invoiceStatusStyles } fro
 import { AppShell } from '@/components/AppShell'
 import { ActionForm, Field, Select } from '@/components/ActionForm'
 import { zetResultaatInstellingen } from '@/app/beheer/performance-actions'
+import { startMeekijken } from '@/app/beheer/meekijken-actions'
 import { HOOFDDOEL_LABEL } from '@/lib/resultaten/laden'
 import { Paneel } from '@/components/Paneel'
 import { Menu } from '@/components/Menu'
@@ -154,6 +155,12 @@ export default async function KlantPage({
               >
                 {organizationStatusLabels[klant.organization.status]}
               </span>
+              <form action={startMeekijken}>
+                <input type="hidden" name="organizationId" value={klant.organization.id} />
+                <button type="submit" className="rounded-full border border-gray-300 bg-white px-3 py-1 text-xs hover:border-jr-blue hover:text-jr-blue" title="Bekijk het portaal precies zoals deze klant het ziet">
+                  Portaal bekijken als klant
+                </button>
+              </form>
             </div>
           {/* Wat het bedrijf is en waar het zit. Telefoon en contactpersoon
               horen bij Contacten, het aantal wallets bij Budget. */}
@@ -454,7 +461,7 @@ async function PerformanceTab({
             <p className="mt-1 text-sm text-gray-600">Het hoofddoel staat bovenaan de rapportage; vanaf de livegang telt de leerfase (maand 1 tot en met 3).</p>
           </div>
           <a href={`/beheer/klanten/${slug}/resultaten`} className="rounded-full border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50">
-            Bekijk zoals de klant het ziet
+            Rapportage en acties
           </a>
         </div>
         <ActionForm action={zetResultaatInstellingen} submitLabel="Opslaan" resetOnSuccess={false} meldGelukt>

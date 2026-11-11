@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
-import { getSessionUser } from '@/lib/auth'
+import { getPortaal } from '@/lib/meekijken'
 import {
   getOrganizationWallets,
   getWalletEntries,
@@ -28,11 +28,12 @@ export default async function ActiviteitPage({
 }: {
   searchParams: Promise<{ wallet?: string; pagina?: string }>
 }) {
-  const user = await getSessionUser()
-  if (!user) redirect('/login')
-  if (!user.organizationId) redirect('/beheer')
+  const portaal = await getPortaal()
+  if (portaal.status === 'geen_sessie') redirect('/login')
+  if (portaal.status === 'team') redirect('/beheer')
+  const { user, organizationId, meekijken } = portaal
 
-  const wallets = await getOrganizationWallets(user.organizationId)
+  const wallets = await getOrganizationWallets(organizationId)
   if (wallets.length === 0) redirect('/')
 
   const params = await searchParams
@@ -56,7 +57,7 @@ export default async function ActiviteitPage({
   const meerPaginas = gekozen.balance.entryCount > pagina * PER_PAGINA
 
   return (
-    <AppShell user={user} actief="activiteit">
+    <AppShell user={user} actief="activiteit" meekijken={meekijken}>
         <h1 className="mb-1 text-[28px] sm:text-[32px]">Activiteit</h1>
         <p className="mb-6 text-sm text-gray-600">
           Alle mutaties op je wallet, van nieuw naar oud. Bij elke regel staat het
