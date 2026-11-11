@@ -446,6 +446,17 @@ export function describeDbError(error: unknown): string | null {
       return 'Een bron gaf een negatief cijfer terug; die regel is overgeslagen.'
     case 'performance_daily_organization_id_day_bron_provider_pk':
       return 'Deze dagcijfers staan er al. Probeer het bijwerken opnieuw.'
+    /* --- Rapportage --- */
+    case 'report_actions_month_format':
+      return 'De maand van de actie klopt niet. Kies een maand in de rapportage.'
+    case 'report_actions_owner_valid':
+      return 'Kies wie de actie uitvoert: wij, de klant, of het kost extra budget.'
+    case 'report_actions_status_valid':
+      return 'Kies een status: gepland, bezig of klaar.'
+    case 'report_actions_action_not_empty':
+      return 'Een actie zonder omschrijving kan niet.'
+    case 'report_actions_uniek_idx':
+      return 'Deze actie is voor deze maand al aangevinkt.'
     /* --- Stylesheet --- */
     case 'brand_text_style_weight_valid':
     case 'brand_button_weight_valid':

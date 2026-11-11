@@ -36,9 +36,9 @@ export default async function KlantResultatenPage({
         <Link href={`/beheer/klanten/${slug}?tab=performance`} className="text-jr-link hover:underline">
           ← Terug naar {klant.organization.name}
         </Link>
-        <span className="text-gray-500">Zo ziet de klant het onder Resultaten in het portaal.</span>
+        <span className="text-gray-500">Zo ziet de klant het onder Resultaten, met daarbij de knoppen om acties aan te vinken.</span>
       </div>
-      <Resultaten data={data} pad={`/beheer/klanten/${slug}/resultaten`} kanaal={selectie} />
+      <Resultaten data={data} pad={`/beheer/klanten/${slug}/resultaten`} kanaal={selectie} beheer={{ slug }} />
     </AppShell>
   )
 }

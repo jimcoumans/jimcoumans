@@ -139,3 +139,47 @@
   .st4:nth-child(4) { border-top: 1px solid var(--lijn); }
   .verberg { display: none; }
 }
+
+/* analyse */
+.analyse { display: grid; gap: 16px; border-top: 2px solid var(--zwart); padding-top: 20px; }
+.signaal { display: grid; gap: 4px; background: #fff; border: 1px solid var(--lijn); border-left: 6px solid var(--grijs); border-radius: 14px; padding: 14px 20px; }
+.signaal b { font-size: 1.15rem; font-weight: 500; }
+.signaal p { color: var(--grijs); }
+.e_urgent { border-left-color: var(--slecht); }
+.e_aandacht { border-left-color: #f4971a; }
+.e_goed { border-left-color: var(--goed); }
+.twee { display: grid; gap: 16px; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); align-items: start; }
+.actie { display: grid; grid-template-columns: 5.2rem 1fr auto; gap: 10px; align-items: start; padding: 10px 0; border-bottom: 1px solid var(--lijn); font-size: 14px; }
+.actie:last-child { border-bottom: 0; }
+.actieM { display: block; font-size: 11px; color: var(--grijs); margin-top: 2px; }
+.status { font-size: 11px; font-weight: 500; border-radius: 999px; padding: 2px 8px; text-align: center; background: var(--vlak); color: var(--grijs); }
+.status_bezig { composes: status; background: var(--blauw); color: #fff; }
+.status_klaar { composes: status; background: #e3f4e8; color: var(--goed); }
+.legendaEig { display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: 11px; color: var(--grijs); align-items: center; }
+.bevinding { background: #fff; border: 1px solid var(--lijn); border-top: 4px solid var(--grijs); border-radius: 14px; padding: 14px 16px; display: grid; gap: 10px; }
+.b_urgent { border-top-color: var(--slecht); }
+.b_aandacht { border-top-color: #f4971a; }
+.b_goed { border-top-color: var(--goed); }
+.bKop { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; justify-content: space-between; }
+.bKop b { font-size: 15px; font-weight: 500; }
+.urgentie { font-size: 11px; font-weight: 500; border-radius: 999px; padding: 2px 8px; }
+.u_urgent { composes: urgentie; background: #fde7e5; color: var(--slecht); }
+.u_aandacht { composes: urgentie; background: #fdf0dc; color: var(--matig); }
+.bCols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 8px 24px; }
+.bCols .k { display: block; margin-bottom: 2px; }
+.knoppen { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.knoppen li { display: grid; grid-template-columns: 4.8rem 1fr auto; gap: 8px; align-items: center; font-size: 13px; line-height: 1.35; }
+.eig { display: inline-block; text-align: center; font-size: 11px; font-weight: 500; border-radius: 999px; padding: 2px 6px; }
+.eig_wij { composes: eig; background: var(--blauw); color: #fff; }
+.eig_jullie { composes: eig; background: #fdf0dc; color: var(--matig); }
+.eig_kost_geld { composes: eig; border: 1px solid #d2d1d7; color: var(--grijs); }
+.gekozen { font-size: 11px; font-weight: 500; color: var(--blauw); white-space: nowrap; }
+.knopje { font: inherit; font-size: 12px; border: 1px solid #d2d1d7; background: #fff; border-radius: 999px; padding: 3px 10px; cursor: pointer; white-space: nowrap; }
+.knopje:hover { border-color: var(--blauw); color: var(--blauw); }
+.knopjeAan { composes: knopje; background: var(--blauw); border-color: var(--blauw); color: #fff; }
+.knopjeAan:hover { color: #fff; opacity: 0.85; }
+.inline { display: inline-flex; gap: 6px; align-items: center; }
+.inline select { font: inherit; font-size: 12px; border: 1px solid #d2d1d7; border-radius: 999px; padding: 2px 8px; background: #fff; }
+@media (max-width: 1080px) {
+  .twee, .bCols { grid-template-columns: 1fr; }
+}

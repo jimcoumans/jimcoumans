@@ -5,6 +5,7 @@ import { formatDate } from '@/lib/dates'
 import { HOOFDDOEL_LABEL, selectieCijfers, type Resultaten as Data, type Selectie } from '@/lib/resultaten/laden'
 import { delta, type Cijfers, type Oordeel } from '@/lib/resultaten/bereken'
 import { KostenGrafiek, TijdlijnGrafiek } from './Grafieken'
+import { Analyse } from './Analyse'
 import s from './resultaten.module.css'
 
 /* -------------------------------------------------------------------------
@@ -27,7 +28,7 @@ const maandKort = (m: string) => new Date(Date.UTC(+m.slice(0, 4), +m.slice(5, 7
 const OORDEEL_KLASSE: Record<Oordeel, string | undefined> = { goed: s.goed, matig: s.matig, slecht: s.slecht, geen: s.neutraal, leerfase: s.neutraal }
 const OORDEEL_WOORD: Record<Oordeel, string> = { goed: 'goed', matig: 'matig', slecht: 'slecht', geen: 'geen benchmark', leerfase: 'leerfase, nog geen oordeel' }
 
-export function Resultaten({ data, pad, kanaal }: { data: Data; pad: string; kanaal: Selectie }) {
+export function Resultaten({ data, pad, kanaal, beheer }: { data: Data; pad: string; kanaal: Selectie; beheer?: { slug: string } }) {
   const { klant, nu, vorigJaar, reeks } = data
   const gekoppeld = new Set(data.gekoppeld)
   const metGa4 = gekoppeld.has('ga4')
@@ -115,6 +116,8 @@ export function Resultaten({ data, pad, kanaal }: { data: Data; pad: string; kan
       <Inzoomen data={data} kanaal={kanaal} link={link} />
 
       <Opbrengst data={data} />
+
+      <Analyse bevindingen={data.bevindingen} acties={data.acties} beheer={beheer ? { slug: beheer.slug, organizationId: klant.id, maand: data.maand } : undefined} />
 
       <section className={s.kaart} id="toegang">
         <h3>Wie dit dashboard kan zien</h3>

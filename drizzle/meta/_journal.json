@@ -372,6 +372,13 @@
       "when": 1794400750282,
       "tag": "0052_resultaten",
       "breakpoints": true
+    },
+    {
+      "idx": 53,
+      "version": "7",
+      "when": 1794408330434,
+      "tag": "0053_rapportage_acties",
+      "breakpoints": true
     }
   ]
 }
