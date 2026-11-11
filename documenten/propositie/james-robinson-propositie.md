@@ -1,8 +1,8 @@
 # James Robinson: propositie en werkwijze
 
-Versie oktober 2026. Dit document beschrijft hoe James Robinson werkt, wat we belangrijk vinden en hoe we erover praten. Gebruik het als achtergrond bij alles wat je voor of over James Robinson schrijft, bedenkt of beslist.
+Versie november 2026. Dit document beschrijft hoe James Robinson werkt, wat we belangrijk vinden en hoe we erover praten. Gebruik het als achtergrond bij alles wat je voor of over James Robinson schrijft, bedenkt of beslist.
 
-Bij twijfel geldt de leidende gids (`styleguide/paginas/gids.html` in de repository). Prijzen en regels in dit document komen daaruit.
+Prijzen en tarieven in dit document komen uit de voorstelgenerator (besluit november 2026). Die is leidend voor alles wat met geld te maken heeft. Oudere bronnen, zoals de gids (`styleguide/paginas/gids.html`), het magazine en eerdere offertes, noemen nog pakketten (Starter, Playmaker, Captain, Champion) en een fundament van € 4.500. Die gelden niet meer; gebruik ze nooit in nieuwe offertes of teksten.
 
 ---
 
@@ -39,7 +39,7 @@ We zorgen dat er voorspelbaar nieuwe aanvragen binnenkomen via advertenties in z
 ## 4. Het systeem
 
 1. **De motor: paid advertising.** Google Ads, Meta (Facebook en Instagram), LinkedIn, TikTok en Microsoft Ads. Het enige dat je vandaag aanzet en morgen meet. Standaard starten we met Google en Meta. LinkedIn is voor B2B met een duidelijke koper. TikTok als de doelgroep daar zit. Microsoft als Google laat zien dat er meer te halen is.
-2. **De brandstof: content.** We plannen de contentproductie meteen aan het begin. Eerst een contentplan, dan een shoot (draaidag) bij de klant op locatie. We werken met de beste makers per vak: fotografie, videografie, animatie, statische visuals en copywriting, in de formaten 9:16, 4:5 en 1:1. Advertenties slijten (creative fatigue, Meta waarschuwt er zelf voor), daarom maken we in contentrondes steeds nieuwe varianten.
+2. **De brandstof: content.** We plannen de contentproductie meteen aan het begin. Eerst een contentplan, dan een contentshoot bij de klant op locatie. We werken met de beste makers per vak: fotografie, videografie, animatie, statische visuals en copywriting, in de formaten 9:16, 4:5 en 1:1. Advertenties slijten (creative fatigue, Meta waarschuwt er zelf voor), daarom maken we in contentrondes steeds nieuwe varianten.
 3. **De landing: website en landingspagina's.** Eén pagina per campagne, met één boodschap en één actie. We bouwen ze op de website van de klant, zodat snelheid en meting kloppen.
 4. **De voordeur: een kwalitatieve aanvraag.** Daar eindigt ons werk. Daarna is de klant aan zet.
 5. **De versnellers.** Geen losse trucjes; ze worden ingezet als de motor draait, in de volgorde die de cijfers aanwijzen.
@@ -91,14 +91,14 @@ De les: onze rol houdt op bij de voordeur. We leveren ready-to-buy-aanvragen van
 
 ## 8. Wat we doen, en wat niet
 
-| Altijd (in elk pakket) | Per vraag (eigen project of partner, zonder opslag) | Nooit |
+| Altijd (in elke samenwerking) | Per vraag (eigen project of partner, zonder opslag) | Nooit |
 |---|---|---|
 | Adverteren in zoekmachines en op social | Webdevelopment | Losse campagnes zonder samenwerking |
 | Marketingcontent: foto, video, animatie, graphics | Design en branding | E-commerce als propositie |
 | Landingspagina's en CRO | Social-mediatemplates, contentsessies | Werving als propositie |
-| E-mail en automation | Extra draaidagen | Social feeds vullen en beheren |
+| E-mail en automation | Extra contentshoots | Social feeds vullen en beheren |
 | SEO op woorden die converteren | Koppelingen met systemen van de klant | Bedrijfsvideo's |
-| Draaidagen en contentrondes naar pakket | | Leads opvolgen |
+| Nieuwe advertentievisuals elke maand, contentshoots naar afspraak | | Leads opvolgen |
 | | | Uren verantwoorden |
 | | | Marge op werk van een ander |
 
@@ -113,40 +113,66 @@ De les: onze rol houdt op bij de voordeur. We leveren ready-to-buy-aanvragen van
 
 ## 9. Wat het kost
 
-Alle bedragen zijn exclusief btw. De prijslijst is voor iedereen gelijk: geen uurtarief, geen meerwerk, geen korting.
+Alle bedragen zijn exclusief btw. De prijslijst is voor iedereen gelijk: geen uurtarief en geen meerwerk. **Er zijn geen vaste pakketten.** We stellen elke samenwerking samen uit vaste bouwstenen, met de voorstelgenerator. De klant ziet drie dingen: wat het eenmalig kost (de set-up), wat het per maand kost (Marketing Partnership plus budgetten) en welke licenties er per jaar bij komen.
 
-**Fundament: € 4.500 eenmalig (voorlopig, wordt nog nagerekend).** Wordt betaald bij ondertekening en uitgevoerd in de opstartmaand. Het bestaat uit twee delen:
-- **De basis:** doelgroep, boodschap en concurrenten, technische audit en meting, advertentieaccounts, MailerLite, het portaal en de nulmeting.
-- **De eerste campagne:** zoekwoorden, structuur, advertenties, een landingspagina, een dagdeel filmen, montage in drie formaten en de livegang.
+**Marketing Set-up (eenmalig, in de set-upmaand)**
 
-Niet los verkrijgbaar.
+| Onderdeel | Prijs |
+|---|---|
+| Basis set-up, altijd: kick-off en toegangen, Google-basis en meting (Tag Manager, GA4, Search Console, Bedrijfsprofiel), nulmeting, templateset van vijf advertentietemplates, dashboard, opleveringscheck | € 1.500 |
+| Cookietoestemming: Cookiescript Plus met Google Consent Mode v2 | € 100 |
+| Google Ads (zoekwoordonderzoek, meting, doelgroepen, accountstructuur; bij webshops ook Merchant Center en Shopping) | € 1.000 |
+| Meta Ads (pixel, doelgroepen, accountstructuur, Conversions API) | € 600 |
+| TikTok Ads | € 500 |
+| LinkedIn Ads | € 500 |
+| E-mailmarketing (MailerLite-account, verzenddomein, koppelingen, template) | € 500 |
+| Content: de klant levert aan | € 0 |
+| Content: contentplan en briefing voor de eigen contentpartner van de klant | € 300 |
+| Alleen als nodig: landingspagina € 500, snelheid herstellen € 750, redirects € 500, e-mailauthenticatie € 250 | |
+| Optioneel: Calendly inrichten € 250; ClickCease en Leadinfo inrichten € 0 | |
 
-**Pakketten (retainer per maand, vanaf de eerste maand na de opstart):**
+Zet de klant een kanaal later aan, dan komt de set-up van dat kanaal op de eerstvolgende maandfactuur.
 
-| | Starter | Playmaker | Captain | Champion |
-|---|---|---|---|---|
-| Retainer | € 1.000 | € 1.500 | € 2.000 | € 2.500 |
-| Campagnes tegelijk | 1 | 2 | 3 | 4 |
-| Advertentiebudget p/m | € 1.000 – 2.500 | € 2.500 – 5.000 | € 5.000 – 7.500 | vanaf € 7.500 |
-| Contentrondes | elk kwartaal | elke 2 maanden | maandelijks | 2 per maand |
-| Draaidagen per jaar | 1 | 2 | 3 | 4 |
-| Performance Review (1 uur) | elk kwartaal | elke 2 maanden | maandelijks | maandelijks |
+**Marketing Partnership (per maand, vanaf de maand na de set-up, maandelijks opzegbaar)**
 
-- **Sub (€ 500 p/m)** bieden we alleen op verzoek aan, met een licht fundament van € 1.500. Het is bedoeld om door te groeien naar Starter.
-- **Regels:**
-  - Het pakket is het hoogste van twee: het aantal campagnes of het budget.
-  - "Tegelijk" betekent tegelijk.
-  - Wij kiezen de kanalen: minimaal € 500 per kanaal per campagne per maand, op LinkedIn € 1.000.
-  - Omhoog gaat per direct, omlaag per de 1e van de volgende maand.
-- **Eén campagne** is één aanbod, voor één doelgroep, met één doel en één landingspagina. Google en Meta samen tellen als één campagne.
-- **Toolset op naam van de klant** (de leverancier factureert rechtstreeks):
-  - portaal € 25 p/m;
-  - MailerLite € 9,90 tot 73 p/m;
-  - Cookiescript € 150 p/j;
-  - optioneel: ClickCease (vanaf $ 99 p/m), Leadinfo (€ 69 tot 179 p/m, alleen B2B), Calendly (€ 15 p/m);
-  - hosting via Webmix € 85 p/m.
-- **Herstelposten uit de quickscan (via Webmix):** snelheid € 750, redirects € 500, e-mailauthenticatie € 250.
-- **De 50%-regel.** Onze retainer is nooit meer dan de helft van retainer plus advertentiebudget.
+- **Marketing Fundamentals: € 250**, altijd. Elke maand een Performance Review, het dashboard en één vast aanspreekpunt (support@jamesrobinson.nl).
+- **Per advertentiekanaal: € 500.** Daarin zit één campagne, met dagelijkse monitoring, beheer en optimalisatie.
+- **Elke extra campagne op een kanaal: + € 250** per maand.
+- **Staffel: + € 250** per kanaal voor elke begonnen € 2.500 advertentiebudget boven € 2.500 op dat kanaal. Verdelen we het budget naar eigen inzicht over de kanalen, dan rekenen we de staffel over het totaal.
+- **E-mailmarketing: € 250 per mailing** per maand.
+- **Nieuwe advertentievisuals en copy:** tot zes varianten per maand, op basis van de templateset en het aangeleverde beeld. Inbegrepen.
+- **Contentshoots door James Robinson:** een dagdeel kost € 1.500. Spreken we een vaste frequentie af (1, 2, 3, 4, 6 of 12 keer per jaar), dan krijgt de klant 10% korting en verdelen we het bedrag over twaalf maanden. Voorbeeld: vier shoots per jaar is € 450 per maand. De prijs van een hele dag is [in te vullen].
+
+Een campagne is één aanbod, voor één doelgroep, met één doel en één landingsplek.
+
+**Budgetten (per maand, naast de Marketing Partnership)**
+
+- **Advertentiebudget.** Minimaal even hoog als het beheer (Fundamentals, kanalen, extra campagnes en staffel; content en mailings tellen niet mee), en minimaal € 500 per kanaal. Lager mag alleen bewust: de generator geeft dan een waarschuwing. Dit vervangt de oude 50%-regel.
+- **Wie betaalt het budget.** Standaard betaalt de klant de platforms rechtstreeks, met een eigen creditcard. Heeft de klant geen creditcard of wil hij het niet zelf betalen, dan betalen wij de platforms en factureren we het budget per maand, met 10% opslag. Die opslag staat als eigen regel op de offerte.
+- **Linkbuildingbudget.** Optioneel, met een eigen bedrag per maand.
+
+**Licenties**
+
+- Via James Robinson; de eerste keer gefactureerd in de set-upmaand, daarna jaarlijks vooruit:
+  - Cookiescript Plus: € 348 per jaar;
+  - Conversions API: € 153 per jaar (€ 12,75 per maand) per kanaal, voor Meta, TikTok en Google.
+- Rechtstreeks bij de leverancier, op naam van de klant:
+  - MailerLite vanaf € 9,90 per maand;
+  - ClickCease vanaf $ 69 per maand;
+  - Leadinfo vanaf € 69 per maand (alleen zakelijke klanten);
+  - Calendly vanaf $ 10 per gebruiker per maand.
+
+**Eerste factuur.** Set-up plus de licenties van het eerste jaar die via James Robinson lopen. De Marketing Partnership start de maand erna.
+
+**Losse opdrachten:** campagnemailing € 250, extra contentronde (tot zes varianten) € 500, extra contentshoot (dagdeel) € 1.500, landingspagina € 500, nieuwe campagne opzetten € 250 (daarna + € 250 per maand).
+
+**Rekenvoorbeeld** (Google Ads en Meta Ads, elk één campagne, budget op het minimum, geen content via ons):
+- Set-up: € 1.500 + € 100 + € 1.000 + € 600 = € 3.200.
+- Licenties via James Robinson: € 348 + 2 × € 153 = € 654 per jaar.
+- Eerste factuur: € 3.854.
+- Marketing Partnership: € 250 + 2 × € 500 = € 1.250 per maand.
+- Advertentiebudget: minimaal € 1.250 per maand.
+- Per maand in totaal: € 2.500, waarvan de helft naar de platforms.
 
 **Investeringsdenken naar de klant toe.** We beginnen bij de ambitie: hoeveel extra omzet wil je realiseren? Daaruit volgen het aantal klanten, het aantal aanvragen, en hoe groot de motor (het advertentiebudget) moet zijn.
 
@@ -160,25 +186,25 @@ Voorbeeld: € 50.000 marketing per jaar met een hypothese van ROAS 4 is in pote
 | | 02 De quickscan | Wij bekijken site en markt, een half uur |
 | | 03 Het intakegesprek | Een uur aan tafel |
 | | 04 Voorstel en voorstelgesprek | Binnen 3 werkdagen voorstel, dan 45 minuten |
-| Starten (opstartmaand, maand 0) | 05 Tekenen en betalen | Moneybird, dezelfde dag |
+| Starten (de set-upmaand) | 05 Tekenen en betalen | Moneybird, dezelfde dag |
 | | 06 De onboarding | Formulier en toegangen binnen 3 werkdagen, toegangensessie van 45 minuten |
-| | 07 Het fundament | Set-up en content, ±4 weken, live rond dag 19 |
+| | 07 De Marketing Set-up | Set-up en content, ±4 weken, live rond dag 19 |
 | Samenwerken (maandelijks opzegbaar) | 08 Live en het maandritme | Dagmail, maandupdate in het portaal, Performance Review, 100-dagenreview, jaargesprek |
 
 **Verkoopmateriaal.** Het magazine *James Robinson · The Performance Issue* wordt aan de klant meegegeven. Daarnaast is er een gestylede pdf met het voorstel op basis van de cijfers van de klant, en de offerte in Moneybird (daar wordt getekend en betaald).
 
 **Verwachtingen.** De eerste maanden zijn leren; reken niet op een storm aan de telefoon. In het begin loopt de lijn vlak; als er tractie is, versnelt het. Bij de een na een week, bij de ander na zes maanden. Rond maand drie trekken we de eerste voorzichtige conclusies. Het doel is vanaf dag één hetzelfde.
 
-**Tijdsindeling.** Maand 0 is de opstart (fundament), daarna volgt een jaar van 12 maanden retainer. Zie ook de open punten in hoofdstuk 14.
+**Tijdsindeling.** Eerst de set-upmaand, daarna de Marketing Partnership, maandelijks opzegbaar. Of de set-upmaand maand 0 of maand 1 heet, is nog een open punt (hoofdstuk 14).
 
 ## 11. Spelregels
 
 1. **Resultaat staat op één.** Werkt iets niet, dan zeggen we dat zelf, met de cijfers erbij. Er is altijd een meetlat: nulmeting en doel.
-2. **Maandelijks opzegbaar, voor allebei.** Het fundament krijg je na de start niet terug.
+2. **Maandelijks opzegbaar, voor allebei.** De set-up krijg je na de start niet terug.
 3. **We beginnen alleen als we erin geloven.** Op basis van onderzoek en een hypothese.
-4. **De 50%-regel.**
-5. **Nooit marge erbovenop.** Zeg "we zetten er nooit iets bovenop", niet "we verdienen er niets aan". Doorverwijsvergoedingen (bijvoorbeeld Leadinfo, ClickCease, MailerLite) melden we.
-6. **Niets gratis erbij.** Wat buiten fundament of retainer valt, wordt een apart voorstel met een prijs vooraf.
+4. **Het advertentiebudget is minimaal even hoog als het beheer.** Het budget is de motor, geen restpost.
+5. **Nooit marge erbovenop.** Zeg "we zetten er nooit iets bovenop", niet "we verdienen er niets aan". Doorverwijsvergoedingen (bijvoorbeeld Leadinfo, ClickCease, MailerLite) melden we. Betalen wij het advertentiebudget voor, dan rekenen we 10% opslag. Dat is een eigen, zichtbare regel op de offerte, nooit verstopt in het budget.
+6. **Niets gratis erbij.** Wat buiten de set-up of de Marketing Partnership valt, wordt een apart voorstel met een prijs vooraf.
 7. **Altijd on-brand.** Elke uiting gaat langs de merkcheck.
 8. **Data beats opinion.**
 9. **Alles op naam van de klant.** Wij zijn beheerder, nooit eigenaar.
@@ -209,7 +235,7 @@ Voorbeeld: € 50.000 marketing per jaar met een hypothese van ROAS 4 is in pote
 
 ## 13. Hoe we schrijven en praten
 
-**Toon.** Menselijk, direct, zelfverzekerd, nuchter. Geen jargon en geen hol marketingpraat. Je/jij naar de klant. Korte zinnen. Een sportieve twist mag (gameplan, Starter, Playmaker, Captain, Champion, "On top of your game"). Schrijf voor de lezer en zijn belevingswereld, niet vanuit onze interne logica.
+**Toon.** Menselijk, direct, zelfverzekerd, nuchter. Geen jargon en geen hol marketingpraat. Je/jij naar de klant. Korte zinnen. Een sportieve twist mag (gameplan, spelers, "On top of your game"). Schrijf voor de lezer en zijn belevingswereld, niet vanuit onze interne logica.
 
 **Wel gebruiken:**
 - Momentum first. Mastery later.
@@ -241,7 +267,7 @@ Voorbeeld: € 50.000 marketing per jaar met een hypothese van ROAS 4 is in pote
 | Microsoft als voorbeeld | Geen gewenste associatie | Google, Meta, Apple, LinkedIn |
 | "Kans dat het niets oplevert is nihil" in druk | Belofte die we niet kunnen garanderen | Uitkomst op een schaal; bijsturen of op tijd stoppen |
 
-**Vaste namen.** Intakegesprek, quickscan, scanrapport, voorstel, voorstelgesprek, offerte, kick-off(mail), onboardingformulier, toegangendocument, toegangensessie, fundament, draaidag, livegang, contentronde, Performance Review, 100-dagenreview, jaargesprek, maandupdate, diagnoseformulier, dagmail, portaal (marketingdashboard).
+**Vaste namen.** Intakegesprek, quickscan, scanrapport, voorstel, voorstelgesprek, offerte, kick-off(mail), onboardingformulier, toegangendocument, toegangensessie, Marketing Set-up, Marketing Partnership, Marketing Fundamentals, contentshoot, livegang, contentronde, Performance Review, 100-dagenreview, jaargesprek, maandupdate, diagnoseformulier, dagmail, portaal (marketingdashboard).
 
 **Schrijfregels.**
 - Sentence case.
@@ -279,9 +305,12 @@ Voorbeeld: € 50.000 marketing per jaar met een hypothese van ROAS 4 is in pote
 Verder: het meest toonaangevende bureau van Limburg zijn. Niet in omzet of grootte, maar als voorbeeld: zelf de beste marketing hebben.
 
 **Open punten (oktober 2026):**
-- Fundament € 4.500 is voorlopig; wordt nagerekend tegen € 100 tot 125 per uur.
-- Uren per pakket narekenen. Champion levert nu minder per uur op dan Starter.
-- Jaar 1 omzetten van "set-up + 11 maanden" naar "maand 0 + 12 maanden" in de rekensom (04.1), het voorstel en de gids.
+- Besloten (november 2026): het prijsmodel van de voorstelgenerator is leidend. De pakketten Starter, Playmaker, Captain, Champion en Sub, en het fundament van € 4.500, zijn vervallen.
+- Gids, magazine, documentenmap en Agency OS (offertes en producten) noemen nog het oude model en moeten worden bijgewerkt.
+- Bedragen narekenen: € 250 per mailing, € 1.500 per dagdeel, 10% korting bij vaste contentshoots, de staffel bij vrije budgetverdeling, en de prijs van een hele shootdag.
+- De 10% opslag op voorgefinancierd advertentiebudget schuurt met "nooit marge erbovenop". Kiezen: uitleggen als vergoeding voor voorfinanciering en administratie, of schrappen.
+- De generator kan tijdelijke kortingen geven, terwijl de regel "geen korting" is. Bepalen wanneer dat mag.
+- Is de set-upmaand maand 0 of maand 1? Dat raakt de rekensom van jaar 1, het voorstel en de gids.
 - De regel van € 500 per kanaal opnieuw onderbouwen. De leerfase van Meta (±50 resultaten per week) haal je daar niet mee; hij is te verdedigen als "liever één kanaal goed dan drie half".
 - Cases verzamelen (beschrijvend: uitdaging, aanpak, resultaat, inzicht, met quotes en toestemming van de klant).
 - Fotografie voor het magazine en een vectorlogo voor drukwerk.

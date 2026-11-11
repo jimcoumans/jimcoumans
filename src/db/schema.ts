@@ -82,6 +82,9 @@ export const syncStatusEnum = pgEnum('sync_status', ['running', 'success', 'fail
 
 /** Staat van een abonnement. Alleen 'active' wordt gefactureerd. */
 /** Waar een klant in de relatie staat. */
+/** Het hoofddoel van een klant: waar de rapportage op stuurt. */
+export const mainGoalEnum = pgEnum('main_goal', ['aanvragen', 'reserveringen', 'omzet', 'naamsbekendheid'])
+
 export const organizationStatusEnum = pgEnum('organization_status', [
   'lead', // binnengekomen, nog geen gesprek
   'prospect', // in gesprek, nog geen klant
@@ -410,6 +413,10 @@ export const organizations = pgTable(
     city: text('city'),
     country: text('country').notNull().default('Nederland'),
     clientSince: timestamp('client_since', { withTimezone: true }),
+    /** Waar de rapportage op stuurt. Leeg: nog niet vastgelegd. */
+    mainGoal: mainGoalEnum('main_goal'),
+    /** De dag dat de eerste campagne live ging. Maand 1 tot en met 3 daarna is de leerfase. */
+    liveOn: date('live_on', { mode: 'string' }),
     notes: text('notes'),
 
     /* --- Moneybird ---

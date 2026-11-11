@@ -286,13 +286,29 @@ Dit is het antwoord op "welke moet ik nou kiezen". Per component, per element.
 
 ### Navigatie
 
-| Element | Stijl | Kleur |
-|---|---|---|
-| Menu-item | **Nav** | `#1D1D1F` |
-| Actief menu-item | **Nav**, dikte 500 | `#1D1D1F` |
-| Kolomkop in een mega menu | **Caption**, dikte 600 | `#86868B` |
-| Link in een mega menu | **H5** | `#1D1D1F` |
-| Item in het mobiele menu | **Menu mobiel** | `#1D1D1F` |
+| Element | Stijl | Kleur | Hover |
+|---|---|---|---|
+| Topbar: tekst | **Caption** (Inter 400, 12px), regelafstand = hoogte balk (36px) | `#A1A1A6` | — |
+| Topbar: link (telefoon, mail) | **Caption** | `#A1A1A6` | `#F5F5F7` |
+| Topbar: score "5,0" | **Caption**, dikte 500 | `#F5F5F7` | — |
+| Lichte topbar: tekst, link, score | **Caption** / dikte 500 voor de score | `#6E6E73` / score `#1D1D1F` | `#1D1D1F` |
+| Menu-item | **Nav** (Inter 400, 14/20px) | `#1D1D1F` | `#6E6E73` |
+| Menu-item, huidige pagina | **Nav**, dikte 500 | `#1D1D1F` | — |
+| Menu-item over beeld (overlay) | **Nav** | `#F5F5F7` | `#A1A1A6` |
+| Inloggen | **Nav** | `#1D1D1F` | `#6E6E73` |
+| Knop in de kop | **Knop** op 14px (Inter 500, 40px hoog) | wit op `#0857C3` | `#003967` |
+| Knop in de kop, over beeld | **Knop** op 14px, dikte 600 | `#1D1D1F` op `#C4F000` | `#B2DA00` |
+| Item in uitklapmenu | **Nav** | `#1D1D1F` | vlak `#F5F5F7` |
+| Kolomkop in een mega menu | **Caption**, dikte 600 | `#86868B` | — |
+| Link in een mega menu | **H5** (Figtree 600, 21/26px) | `#1D1D1F` | `#0066CC` |
+| Item in het mobiele menu | **Menu mobiel** (Figtree 600, 24/30px) | `#1D1D1F` | `#0066CC` |
+
+Vaste regels voor de kop:
+
+- Menu en topbar staan in sentence case ("Over ons"), nooit in hoofdletters en nooit onderstreept.
+- De lettergrootte blijft gelijk op desktop, tablet en mobiel en na het scrollen. Alleen de balk wordt lager.
+- Hover verandert alleen de kleur, nooit de dikte. Zo verspringt het menu niet.
+- In de Nav Menu-widget: Typografie → Global Fonts → **JR Nav**. Zet Transform op "Standaard" en Decoratie op "Geen".
 | Kruimelpad | **Small** | `#6E6E73` |
 | Paginanummer | **Small**, dikte 500 | `#6E6E73` |
 | Anchor-nav | **Small** | `#6E6E73` |

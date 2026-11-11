@@ -7,7 +7,9 @@ import { KoppelingFout } from '@/lib/performance/google'
 import { zetKoppeling, verwijderKoppeling } from '@/lib/performance/lezen'
 import { syncAlles } from '@/lib/performance/sync'
 import { alleKeuzes } from '@/lib/performance/oauth'
-import type { AnalyticsConnection } from '@/db/schema'
+import { eq } from 'drizzle-orm'
+import { db } from '@/db'
+import { organizations, type AnalyticsConnection } from '@/db/schema'
 import type { ActionResult } from './actions'
 
 const BRONNEN = ['ga4', 'search_console', 'google_ads', 'meta_ads', 'linkedin_ads', 'tiktok_ads'] as const
@@ -69,5 +71,23 @@ export async function nuBijwerken(formData: FormData): Promise<ActionResult> {
     const uit = await syncAlles({ organizationId: orgId, budgetMs: 18000 })
     const mis = uit.filter((u) => !u.ok)
     if (mis.length) throw new KoppelingFout(mis.map((m) => m.melding).join(' '))
+  })
+}
+
+const HOOFDDOELEN = ['aanvragen', 'reserveringen', 'omzet', 'naamsbekendheid'] as const
+
+/** Hoofddoel en livegang: waar de rapportage op stuurt en wanneer de leerfase loopt. */
+export async function zetResultaatInstellingen(formData: FormData): Promise<ActionResult> {
+  await requireStaff()
+  const orgId = tekst(formData, 'organizationId')
+  const doel = tekst(formData, 'hoofddoel')
+  const live = tekst(formData, 'liveOn')
+  if (doel && !(HOOFDDOELEN as readonly string[]).includes(doel)) return { ok: false, error: 'Onbekend hoofddoel.' }
+  if (live && !/^\d{4}-\d{2}-\d{2}$/.test(live)) return { ok: false, error: 'Vul de livegang in als datum.' }
+  return veilig(tekst(formData, 'slug'), async () => {
+    await db
+      .update(organizations)
+      .set({ mainGoal: (doel || null) as (typeof HOOFDDOELEN)[number] | null, liveOn: live || null })
+      .where(eq(organizations.id, orgId))
   })
 }

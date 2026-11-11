@@ -241,6 +241,7 @@ const ALLEEN_ADMIN = new Set(['salarishuis', 'bedrijf', 'sjablonen'])
 
 const CLIENT_NAV: NavItem[] = [
   { href: '/', label: 'Mijn wallet', key: 'wallet', icon: icons.wallet },
+  { href: '/resultaten', label: 'Resultaten', key: 'resultaten', icon: icons.performance },
   { href: '/activiteit', label: 'Activiteit', key: 'activiteit', icon: icons.activity },
   { href: '/facturen', label: 'Facturen', key: 'facturen', icon: icons.quotes },
 ]

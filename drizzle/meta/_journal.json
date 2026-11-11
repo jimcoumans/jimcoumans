@@ -365,6 +365,13 @@
       "when": 1792739983519,
       "tag": "0051_partnerofferte",
       "breakpoints": true
+    },
+    {
+      "idx": 52,
+      "version": "7",
+      "when": 1794400750282,
+      "tag": "0052_resultaten",
+      "breakpoints": true
     }
   ]
 }
