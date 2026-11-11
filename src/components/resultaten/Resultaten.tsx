@@ -55,7 +55,7 @@ export function Resultaten({ data, pad, kanaal, beheer }: { data: Data; pad: str
             )}
             {data.leerfase && <span className={s.chip}>◦ Leerfase</span>}
             <a href="#toegang" className={s.chip}>
-              <b>{data.toegang.length + (data.marketingmanager ? 1 : 0)}</b> met toegang
+              <b>{data.toegang.filter((t) => t.inlog).length + (data.marketingmanager ? 1 : 0)}</b> met toegang
             </a>
           </div>
         </div>
@@ -120,15 +120,17 @@ export function Resultaten({ data, pad, kanaal, beheer }: { data: Data; pad: str
       <Analyse bevindingen={data.bevindingen} acties={data.acties} beheer={beheer ? { slug: beheer.slug, organizationId: klant.id, maand: data.maand } : undefined} />
 
       <section className={s.kaart} id="toegang">
-        <h3>Wie dit dashboard kan zien</h3>
+        <h3>Contactpersonen en toegang</h3>
         <ul className={s.toegang}>
-          {data.toegang.map((t) => (
-            <li key={t.naam}>
-              <Avatar naam={t.naam} imageId={null} maat={32} />
+          {data.toegang.map((t, i) => (
+            <li key={`${t.naam}-${i}`}>
+              <Avatar naam={t.naam} imageId={t.avatarImageId} maat={32} />
               <span>
                 <b>{t.naam}</b>
                 <span>
-                  {[t.functie, t.laatstIngelogd ? `laatst gezien ${formatDate(t.laatstIngelogd)}` : 'nog nooit ingelogd'].filter(Boolean).join(' · ')}
+                  {[t.functie, !t.inlog ? 'geen inlog op het portaal' : t.laatstIngelogd ? `laatst gezien ${formatDate(t.laatstIngelogd)}` : 'nog nooit ingelogd']
+                    .filter(Boolean)
+                    .join(' · ')}
                 </span>
               </span>
             </li>
@@ -143,7 +145,8 @@ export function Resultaten({ data, pad, kanaal, beheer }: { data: Data; pad: str
             </li>
           )}
         </ul>
-        <p className={s.sub}>Contactpersonen met een inlog op het portaal, en het team van James Robinson.</p>
+        {data.toegang.length === 0 && <p className={s.leeg}>Er staan nog geen contactpersonen bij deze klant.</p>}
+        <p className={s.sub}>Iedereen met een inlog ziet dit dashboard. Een inlog regelt James Robinson voor je.</p>
       </section>
     </div>
   )

@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
-import { getSessionUser } from '@/lib/auth'
+import { getPortaal } from '@/lib/meekijken'
 import {
   getOrganizationInvoices,
   invoiceStatusLabels,
@@ -20,18 +20,19 @@ export const maxDuration = 26
 
 /** Facturen die het budget hebben opgebouwd. */
 export default async function FacturenPage() {
-  const user = await getSessionUser()
-  if (!user) redirect('/login')
-  if (!user.organizationId) redirect('/beheer')
+  const portaal = await getPortaal()
+  if (portaal.status === 'geen_sessie') redirect('/login')
+  if (portaal.status === 'team') redirect('/beheer')
+  const { user, organizationId, meekijken } = portaal
 
-  const facturen = await getOrganizationInvoices(user.organizationId)
+  const facturen = await getOrganizationInvoices(organizationId)
 
   const openstaand = facturen
     .filter((f) => f.status === 'open' || f.status === 'overdue')
     .reduce((acc, f) => acc + f.amountExclVatCents + f.vatCents, 0)
 
   return (
-    <AppShell user={user} actief="facturen">
+    <AppShell user={user} actief="facturen" meekijken={meekijken}>
         <h1 className="mb-1 text-[28px] sm:text-[32px]">Facturen</h1>
         <p className="mb-6 text-sm text-gray-600">
           Deze facturen vormen samen het budget in je wallet. Bedragen zijn exclusief

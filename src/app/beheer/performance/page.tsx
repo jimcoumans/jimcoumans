@@ -8,6 +8,10 @@ import { getAlleKoppelingen, getDagcijfers, getPerKlant } from '@/lib/performanc
 import { PERIODES, periodeGrenzen, type Periode } from '@/lib/performance/bronnen'
 import { listOrganizations } from '@/lib/admin'
 import { formatEuro } from '@/lib/money'
+import { Avatar } from '@/components/Avatar'
+import { getRapportageOverzicht, type OverzichtRij } from '@/lib/resultaten/overzicht'
+import { HOOFDDOEL_LABEL } from '@/lib/resultaten/laden'
+import { startMeekijken } from '@/app/beheer/meekijken-actions'
 
 export const maxDuration = 26
 
@@ -26,12 +30,13 @@ export default async function PerformancePage({ searchParams }: { searchParams: 
   const { periode: p } = await searchParams
   const periode = (PERIODES.some((x) => x.periode === p) ? p : '30_dagen') as Periode
   const g = periodeGrenzen(periode)
-  const [rijen, vorige, perKlant, koppelingen, klanten] = await Promise.all([
+  const [rijen, vorige, perKlant, koppelingen, klanten, overzicht] = await Promise.all([
     getDagcijfers(g.van, g.tot),
     getDagcijfers(g.vorigeVan, g.vorigeTot),
     getPerKlant(g.van, g.tot),
     getAlleKoppelingen(),
     listOrganizations(),
+    getRapportageOverzicht(),
   ])
   const actieveKlanten = klanten.filter((k) => k.organization.status === 'client')
   // Alleen een werkende koppeling telt: een koppeling met een fout levert niets.
@@ -71,6 +76,8 @@ export default async function PerformancePage({ searchParams }: { searchParams: 
           </ul>
         </section>
       )}
+
+      <Rapportages rijen={overzicht} />
 
       {rijen.length === 0 ? (
         <LeegVlak
@@ -115,5 +122,76 @@ export default async function PerformancePage({ searchParams }: { searchParams: 
         </div>
       )}
     </AppShell>
+  )
+}
+
+const KOPPEL_LABEL: Record<keyof OverzichtRij['koppelingen'], string> = { ga4: 'Analytics', search_console: 'Search Console', google_ads: 'Google Ads', meta_ads: 'Meta' }
+const KOPPEL_STIJL = { werkt: 'bg-[#E3F4E8] text-[#1D7D3F]', fout: 'bg-[#FDECEA] text-[#C02A22]', geen: 'bg-gray-100 text-gray-400' }
+
+/** Elke klant met zijn rapportage, ook zonder koppelingen: wat er al is, staat er al in. */
+function Rapportages({ rijen }: { rijen: OverzichtRij[] }) {
+  return (
+    <section className="mb-8 rounded-xl bg-white shadow-sm">
+      <div className="px-6 pt-5 pb-3">
+        <h2 className="text-[17px]">Rapportages per klant</h2>
+        <p className="mt-1 text-sm text-gray-600">
+          Voor elke klant staat de rapportage klaar. Wat nog niet gekoppeld is, staat er in grijs bij. Met Portaal kijk je mee zoals de klant het ziet.
+        </p>
+      </div>
+      {rijen.length === 0 ? (
+        <p className="px-6 pb-5 text-sm text-gray-500">Nog geen klanten met de status klant.</p>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[860px] text-sm">
+            <thead>
+              <tr className="border-y border-gray-150 text-left text-xs text-gray-600">
+                <th className="px-6 py-2.5 font-normal">Klant</th>
+                <th className="px-3 py-2.5 font-normal">Hoofddoel</th>
+                <th className="px-3 py-2.5 font-normal">Marketingmanager</th>
+                <th className="px-3 py-2.5 font-normal">Koppelingen</th>
+                <th className="px-6 py-2.5 text-right font-normal">Bekijken</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-150">
+              {rijen.map((r) => (
+                <tr key={r.id}>
+                  <td className="px-6 py-3">
+                    <a href={`/beheer/klanten/${r.slug}?tab=performance`} className="flex items-center gap-3 hover:text-jr-link">
+                      <Avatar naam={r.naam} imageId={r.logoImageId} maat={28} rond={false} />
+                      {r.naam}
+                    </a>
+                  </td>
+                  <td className="px-3 py-3">{r.hoofddoel ? HOOFDDOEL_LABEL[r.hoofddoel] : <span className="text-gray-400">Nog vastleggen</span>}</td>
+                  <td className="px-3 py-3">{r.marketingmanager ?? <span className="text-gray-400">Nog koppelen</span>}</td>
+                  <td className="px-3 py-3">
+                    <div className="flex flex-wrap gap-1">
+                      {(Object.keys(KOPPEL_LABEL) as (keyof OverzichtRij['koppelingen'])[]).map((k) => (
+                        <span key={k} className={`rounded-full px-2 py-0.5 text-xs ${KOPPEL_STIJL[r.koppelingen[k]]}`} title={r.koppelingen[k] === 'fout' ? 'Koppeling geeft een fout' : undefined}>
+                          {KOPPEL_LABEL[k]}
+                        </span>
+                      ))}
+                    </div>
+                  </td>
+                  <td className="px-6 py-3">
+                    <div className="flex items-center justify-end gap-2">
+                      <a href={`/beheer/klanten/${r.slug}/resultaten`} className="rounded-full border border-gray-300 px-3 py-1 text-xs hover:border-jr-blue hover:text-jr-blue">
+                        Rapportage en acties
+                      </a>
+                      <form action={startMeekijken}>
+                        <input type="hidden" name="organizationId" value={r.id} />
+                        <input type="hidden" name="naar" value="/resultaten" />
+                        <button type="submit" className="rounded-full border border-gray-300 px-3 py-1 text-xs hover:border-jr-blue hover:text-jr-blue">
+                          Portaal
+                        </button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </section>
   )
 }

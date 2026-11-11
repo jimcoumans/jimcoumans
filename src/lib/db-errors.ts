@@ -457,6 +457,10 @@ export function describeDbError(error: unknown): string | null {
       return 'Een actie zonder omschrijving kan niet.'
     case 'report_actions_uniek_idx':
       return 'Deze actie is voor deze maand al aangevinkt.'
+    case 'proposals_id_format':
+      return 'De sleutel van het dossier klopt niet. Sla het dossier opnieuw op.'
+    case 'proposals_naam_not_empty':
+      return 'Vul eerst de bedrijfsnaam in.'
     /* --- Stylesheet --- */
     case 'brand_text_style_weight_valid':
     case 'brand_button_weight_valid':

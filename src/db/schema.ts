@@ -4138,6 +4138,42 @@ export const reportActions = pgTable(
 
 export type ReportAction = typeof reportActions.$inferSelect
 
+/**
+ * Dossiers van de voorstelgenerator: alles wat in de generator is ingevuld,
+ * van bedrijfsgegevens tot de offerte, als één document. De id is een
+ * leesbare sleutel uit de handelsnaam, zoals de generator hem maakt.
+ */
+export const proposals = pgTable(
+  'proposals',
+  {
+    id: text('id').primaryKey(),
+    naam: text('naam').notNull(),
+    bedrijfsnaam: text('bedrijfsnaam'),
+    plaats: text('plaats'),
+    /** Gekoppeld bedrijf, zodra het voorstel aan een klant of prospect hangt. */
+    organizationId: uuid('organization_id').references(() => organizations.id, { onDelete: 'set null' }),
+    /** De volledige staat van de generator. */
+    staat: jsonb('staat').notNull(),
+    updatedByUserId: uuid('updated_by_user_id').references(() => users.id, { onDelete: 'set null' }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('proposals_updated_idx').on(t.updatedAt),
+    check('proposals_id_format', sql`${t.id} ~ '^[a-z0-9][a-z0-9-]{0,80}$'`),
+    check('proposals_naam_not_empty', sql`length(trim(${t.naam})) > 0`),
+  ],
+)
+
+export type Proposal = typeof proposals.$inferSelect
+
+/** Gedeelde instellingen van de generator, zoals de eigen subdoelen. */
+export const proposalSettings = pgTable('proposal_settings', {
+  key: text('key').primaryKey(),
+  data: jsonb('data').notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+})
+
 export type AnalyticsConnection = typeof analyticsConnections.$inferSelect
 export type PerformanceDag = typeof performanceDaily.$inferSelect
 

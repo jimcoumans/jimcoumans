@@ -1,5 +1,6 @@
 'use client'
 
+import { stopMeekijken } from '@/app/beheer/meekijken-actions'
 import { useState } from 'react'
 import type { SessionUser } from '@/lib/auth'
 
@@ -189,6 +190,7 @@ const TEAM_GROEPEN: NavGroep[] = [
     items: [
       { href: '/beheer/pijplijn', label: 'Pijplijn', key: 'pijplijn', icon: icons.pijplijn },
       { href: '/beheer/offertes', label: 'Offertes', key: 'offertes', icon: icons.quotes },
+      { href: '/beheer/voorstellen/generator', label: 'Voorstelgenerator', key: 'voorstellen', icon: icons.quotes },
       { href: '/beheer/partners/aanvragen', label: 'Partneraanvragen', key: 'partneraanvragen', icon: icons.partners },
       { href: '/beheer/abonnementen', label: 'Abonnementen', key: 'abonnementen', icon: icons.subs },
     ],
@@ -250,10 +252,13 @@ export function AppShell({
   user,
   actief,
   breed = false,
+  meekijken,
   children,
 }: {
   user: SessionUser
   actief?: string
+  /** Een collega kijkt mee in het portaal van deze klant: klantmenu en een balk om te stoppen. */
+  meekijken?: { naam: string; slug: string } | null
   /**
    * Laat de inhoud de volle breedte gebruiken.
    *
@@ -266,7 +271,8 @@ export function AppShell({
   children: React.ReactNode
 }) {
   const [open, setOpen] = useState(false)
-  const isTeam = user.role === 'staff' || user.role === 'admin'
+  // Wie meekijkt, ziet het klantmenu: precies wat de klant ziet.
+  const isTeam = (user.role === 'staff' || user.role === 'admin') && !meekijken
   const groepen = TEAM_GROEPEN.map((g) => ({
     ...g,
     items: g.items.filter((i) => user.role === 'admin' || !ALLEEN_ADMIN.has(i.key)),
@@ -417,7 +423,7 @@ export function AppShell({
         <div className="border-t border-white/10 px-5 py-4">
           {(() => {
             // Zonder naam staat het e-mailadres er anders twee keer.
-            const bovenste = isTeam ? user.name : user.organization?.name
+            const bovenste = isTeam || meekijken ? user.name : user.organization?.name
             return (
               <>
                 {bovenste && <p className="truncate text-xs text-gray-300">{bovenste}</p>}
@@ -438,6 +444,19 @@ export function AppShell({
       </nav>
 
       <div className="min-w-0 flex-1">
+        {meekijken && (
+          <div className="bg-jr-blue flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 text-sm text-white sm:px-8 xl:px-12">
+            <span>
+              Je kijkt mee in het portaal van <b>{meekijken.naam}</b>, precies zoals de klant het ziet. Alleen kijken.
+            </span>
+            <form action={stopMeekijken}>
+              <input type="hidden" name="slug" value={meekijken.slug} />
+              <button type="submit" className="rounded-full bg-white px-4 py-1.5 text-sm font-medium text-jr-blue hover:bg-white/90">
+                Stoppen met meekijken
+              </button>
+            </form>
+          </div>
+        )}
         <main
           className={`mx-auto px-4 py-8 sm:px-8 xl:px-12 ${breed ? 'max-w-[1800px]' : 'max-w-[1440px]'}`}
         >
