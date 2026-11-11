@@ -5,8 +5,10 @@
 
 import { and, asc, desc, eq, gte, inArray, isNotNull, isNull, lt, lte, or, sql } from 'drizzle-orm'
 import { db } from '@/db'
-import { analyticsConnections, campaignChannels, campaigns, organizationOwners, organizations, performanceDaily, subscriptions, users } from '@/db/schema'
+import { type ReportAction, analyticsConnections, campaignChannels, campaigns, organizationOwners, organizations, performanceDaily, subscriptions, users } from '@/db/schema'
 import type { Bron } from '../performance/bronnen'
+import { analyseer, type Bevinding } from './analyse'
+import { getActies } from './acties'
 import {
   benchmark,
   cijfers,
@@ -73,6 +75,10 @@ export type Resultaten = {
   verhoudingen: Record<Selectie, Verhoudingen>
   /** Marketing Partnership en andere abonnementen in deze maand, of null als er geen zijn. */
   feeCents: number | null
+  /** De analyse, belangrijkste eerst. */
+  bevindingen: Bevinding[]
+  /** Wat de marketingmanager voor deze maand heeft aangevinkt. */
+  acties: ReportAction[]
   publicaties: { datum: string; titel: string }[]
 }
 
@@ -171,8 +177,9 @@ export async function getResultaten(organizationId: string, maand: string): Prom
     .where(eq(organizations.id, organizationId))
   if (!org) return null
 
-  const van = maandPlus(maand, -12)
-  const [eigenRijen, alleRijen, koppelingen, alleOrgs, mm, toegang, abonnementen, pubs] = await Promise.all([
+  // Zestien maanden: twaalf voor de grafiek, plus de drie maanden voor dezelfde maand vorig jaar (seizoen).
+  const van = maandPlus(maand, -15)
+  const [eigenRijen, alleRijen, koppelingen, alleOrgs, mm, toegang, abonnementen, pubs, acties] = await Promise.all([
     maandRijen(van, maand, organizationId),
     maandRijen(maand, maand),
     koppelingenPerKlant(),
@@ -220,6 +227,7 @@ export async function getResultaten(organizationId: string, maand: string): Prom
           lte(campaignChannels.liveFrom, new Date(`${eersteDag(maandPlus(maand, 1))}T00:00:00Z`)),
         ),
       ),
+    getActies(organizationId, maand),
   ])
 
   const gekoppeld = koppelingen.get(organizationId) ?? new Set<Provider>()
@@ -228,6 +236,7 @@ export async function getResultaten(organizationId: string, maand: string): Prom
   const reeks = maanden.map((m) => beeld(m, eigenRijen, gekoppeld))
   const nu = reeks[reeks.length - 1]!
   const vorigJaar = reeks[0]!
+  const historie = (n: number) => beeld(maandPlus(maand, -n), eigenRijen, gekoppeld)
 
   const maandnr = maandNummer(org.liveOn, maand)
   const leerfase = isLeerfase(maandnr)
@@ -257,6 +266,16 @@ export async function getResultaten(organizationId: string, maand: string): Prom
     }
   }
 
+  const bevindingen = analyseer({
+    nu,
+    ervoor: [3, 2, 1].map(historie),
+    vorigJaar,
+    vorigJaarErvoor: [15, 14, 13].map(historie),
+    oordelen: verhoudingen,
+    leerfase,
+    metGa4: gekoppeld.has('ga4'),
+  })
+
   const m = mm[0]
   const fee = abonnementen.reduce((t, a) => t + a.bedrag - a.korting, 0)
 
@@ -276,6 +295,8 @@ export async function getResultaten(organizationId: string, maand: string): Prom
     reeks: reeks.slice(1),
     verhoudingen,
     feeCents: abonnementen.length ? fee : null,
+    bevindingen,
+    acties,
     publicaties: pubs
       .filter((p) => p.datum)
       .map((p) => ({ datum: p.datum!.toISOString().slice(0, 10), titel: `${p.campagne}: ${p.naam || p.soort}` })),

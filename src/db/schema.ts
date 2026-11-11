@@ -4101,6 +4101,43 @@ export const performanceDaily = pgTable(
   ],
 )
 
+/**
+ * Acties bij de rapportage: wat de marketingmanager per klant per maand
+ * aanvinkt uit de knoppen van de analyse. Alleen wat hier staat, ziet de
+ * klant onder "Waar we aan werken". Niets komt automatisch bij de klant.
+ */
+export const reportActions = pgTable(
+  'report_actions',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    organizationId: uuid('organization_id')
+      .notNull()
+      .references(() => organizations.id, { onDelete: 'cascade' }),
+    /** De maand van de rapportage, JJJJ-MM. */
+    month: text('month').notNull(),
+    /** De bevinding waar de actie bij hoort, bijv. doorklik:google_ads. */
+    findingCode: text('finding_code').notNull(),
+    /** De titel van de bevinding op het moment van aanvinken; de analyse kan later anders uitvallen. */
+    findingTitle: text('finding_title').notNull(),
+    action: text('action').notNull(),
+    /** Wie het doet: wij, jullie (de klant), of het kost extra budget. */
+    owner: text('owner').notNull(),
+    status: text('status').notNull().default('gepland'),
+    createdByUserId: uuid('created_by_user_id').references(() => users.id, { onDelete: 'set null' }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex('report_actions_uniek_idx').on(t.organizationId, t.month, t.findingCode, t.action),
+    index('report_actions_org_month_idx').on(t.organizationId, t.month),
+    check('report_actions_month_format', sql`${t.month} ~ '^[0-9]{4}-(0[1-9]|1[0-2])$'`),
+    check('report_actions_owner_valid', sql`${t.owner} IN ('wij', 'jullie', 'kost_geld')`),
+    check('report_actions_status_valid', sql`${t.status} IN ('gepland', 'bezig', 'klaar')`),
+    check('report_actions_action_not_empty', sql`length(trim(${t.action})) > 0`),
+  ],
+)
+
+export type ReportAction = typeof reportActions.$inferSelect
+
 export type AnalyticsConnection = typeof analyticsConnections.$inferSelect
 export type PerformanceDag = typeof performanceDaily.$inferSelect
 
