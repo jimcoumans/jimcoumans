@@ -3983,3 +3983,24 @@ BEGIN
   END IF;
 END $jr_0051_partnerofferte$;
 
+-- ---------------------------------------------------------------------------
+-- 0052_resultaten
+-- ---------------------------------------------------------------------------
+
+DO $jr_0052_resultaten$
+BEGIN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = 'f7cab52f6a99178fa53a0a95104eb2c686d34eb2158af9592a06a45160360a2d') THEN
+    RAISE NOTICE 'Overgeslagen: 0052_resultaten stond er al.';
+  ELSE
+    CREATE TYPE "public"."main_goal" AS ENUM('aanvragen', 'reserveringen', 'omzet', 'naamsbekendheid');
+
+    ALTER TABLE "organizations" ADD COLUMN "main_goal" "main_goal";
+
+    ALTER TABLE "organizations" ADD COLUMN "live_on" date;
+
+    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+    VALUES ('f7cab52f6a99178fa53a0a95104eb2c686d34eb2158af9592a06a45160360a2d', 1794400750282);
+    RAISE NOTICE 'Toegepast: 0052_resultaten.';
+  END IF;
+END $jr_0052_resultaten$;
+

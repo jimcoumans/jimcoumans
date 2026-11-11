@@ -6,6 +6,8 @@ import { getWalletEntries, getReversedEntryIds } from '@/lib/ledger'
 import { getOrganizationInvoices, invoiceStatusLabels, invoiceStatusStyles } from '@/lib/invoices'
 import { AppShell } from '@/components/AppShell'
 import { ActionForm, Field, Select } from '@/components/ActionForm'
+import { zetResultaatInstellingen } from '@/app/beheer/performance-actions'
+import { HOOFDDOEL_LABEL } from '@/lib/resultaten/laden'
 import { Paneel } from '@/components/Paneel'
 import { Menu } from '@/components/Menu'
 import { Avatar } from '@/components/Avatar'
@@ -320,7 +322,14 @@ export default async function KlantPage({
 
         {tab === 'merkkluis' && <MerkkluisTab slug={slug} />}
 
-        {tab === 'performance' && <PerformanceTab organizationId={klant.organization.id} slug={slug} periode={periode} klant={{ name: klant.organization.name, website: klant.organization.website }} />}
+        {tab === 'performance' && (
+          <PerformanceTab
+            organizationId={klant.organization.id}
+            slug={slug}
+            periode={periode}
+            klant={{ name: klant.organization.name, website: klant.organization.website, mainGoal: klant.organization.mainGoal, liveOn: klant.organization.liveOn }}
+          />
+        )}
 
         {tab === 'klantreis' && <KlantreisDetail stand={klantreis} organizationId={klant.organization.id} slug={slug} />}
 
@@ -409,7 +418,7 @@ async function PerformanceTab({
   organizationId: string
   slug: string
   periode?: string
-  klant: { name: string; website: string | null }
+  klant: { name: string; website: string | null; mainGoal: string | null; liveOn: string | null }
 }) {
   const periode = (PERIODES.some((p) => p.periode === periodeParam) ? periodeParam : '30_dagen') as Periode
   const g = periodeGrenzen(periode)
@@ -435,8 +444,34 @@ async function PerformanceTab({
             ))}
           </select>
         </FilterBalk>
-        <p className="text-xs text-gray-500">Alleen zichtbaar voor het team. De klant ziet dit later in zijn eigen wallet.</p>
+        <p className="text-xs text-gray-500">Alleen zichtbaar voor het team. De klant ziet zijn rapportage onder Resultaten.</p>
       </div>
+
+      <section className="rounded-xl bg-white p-5 shadow-sm">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h2 className="text-lg">Resultaten voor de klant</h2>
+            <p className="mt-1 text-sm text-gray-600">Het hoofddoel staat bovenaan de rapportage; vanaf de livegang telt de leerfase (maand 1 tot en met 3).</p>
+          </div>
+          <a href={`/beheer/klanten/${slug}/resultaten`} className="rounded-full border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50">
+            Bekijk zoals de klant het ziet
+          </a>
+        </div>
+        <ActionForm action={zetResultaatInstellingen} submitLabel="Opslaan" resetOnSuccess={false} meldGelukt>
+          <input type="hidden" name="organizationId" value={organizationId} />
+          <input type="hidden" name="slug" value={slug} />
+          <Select
+            label="Hoofddoel"
+            name="hoofddoel"
+            defaultValue={klant.mainGoal ?? ''}
+            options={[
+              { value: '', label: 'Nog niet vastgelegd' },
+              ...Object.entries(HOOFDDOEL_LABEL).map(([value, label]) => ({ value, label })),
+            ]}
+          />
+          <Field label="Livegang" name="liveOn" type="date" defaultValue={klant.liveOn ?? ''} />
+        </ActionForm>
+      </section>
 
       {waarschuwingen.length > 0 && (
         <section className="rounded-xl bg-[#FFF4E0] px-5 py-4 text-sm text-[#94590A]">
