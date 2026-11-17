@@ -547,18 +547,24 @@ img.ico{object-fit:contain;border-radius:4px}
 .pp-blok-t.maand span{color:#007AFF}
 .pp-blok-i{display:flex;justify-content:space-between;gap:12px;font-size:12px;font-weight:300;color:#636466;margin-top:4px}
 .pp-bterms{font-size:11.5px;font-weight:300;color:#636466;margin:8px 18px 0;line-height:1.5}
-/* Visiepagina: redactioneel, zonder kaders. Een uitspraak van Jim, met naam en foto. */
+/* Visiepagina: een blauwe pagina met witte tekst, als uitspraak van Jim.
+   Tussenkoppen zijn even groot als de tekst, alleen een slag dikker (Regular op Light).
+   "Whatever it takes." staat als quote onderaan, met naam en foto. */
+.pp-page.pp-blauw{background:#007AFF!important;color:#FFFFFF}
+.pp-blauw .pp-head{border-bottom-color:rgba(255,255,255,.35)!important}
+.pp-blauw .pp-knaam,.pp-blauw .pp-meta{color:#FFFFFF!important}
+.pp-blauw .pp-h1,.pp-blauw .pp-h2{color:#FFFFFF!important}
 .pp-visie{padding:0 18px}
-.pp-visie p{font-size:15px;line-height:1.6;font-weight:300;color:#1C1C1E;margin:0 0 10px;max-width:640px}
-.pp-visie .pp-visie-open{font-size:24px;line-height:1.25;font-weight:400;letter-spacing:-.01em;margin:0 0 12px}
-.pp-visie h3{font-size:20px;font-weight:400;line-height:1.2;letter-spacing:-.01em;color:#1C1C1E;margin:20px 0 6px}
-.pp-visie .pp-visie-slot{font-size:24px;line-height:1.25;font-weight:400;letter-spacing:-.01em;margin:22px 0 0}
-.pp-visie-voet{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:16px;padding-top:16px;border-top:1px solid #E5E5E9}
-.pp-visie-wit{font-size:36px;line-height:1;letter-spacing:-.025em;color:#007AFF;font-weight:400}
-.pp-visie-door{display:flex;align-items:center;gap:12px;text-align:right}
-.pp-visie-door img{width:52px;height:52px;border-radius:50%;object-fit:cover;display:block}
-.pp-visie-door b{display:block;font-size:15px;font-weight:400!important;color:#1C1C1E}
-.pp-visie-door span{display:block;font-size:12px;font-weight:300;color:#636466}
+.pp-visie p{font-size:15px;line-height:1.6;font-weight:300;color:#FFFFFF;margin:0 0 10px;max-width:640px}
+.pp-visie .pp-visie-open{font-size:24px;line-height:1.25;font-weight:400;letter-spacing:-.01em;margin:0 0 14px}
+.pp-visie h3{font-size:15px;font-weight:400;line-height:1.4;color:#FFFFFF;margin:16px 0 2px}
+.pp-visie .pp-visie-slot{font-size:24px;line-height:1.25;font-weight:400;letter-spacing:-.01em;margin:20px 0 0}
+.pp-visie-quote{margin:22px 0 0;padding-top:20px;border-top:1px solid rgba(255,255,255,.35);display:flex;flex-direction:column;align-items:flex-start;gap:14px}
+.pp-visie-quote blockquote{margin:0;white-space:nowrap;flex:none;font-size:44px;line-height:1;letter-spacing:-.025em;font-weight:400;color:#FFFFFF}
+.pp-visie-door{display:flex;align-items:center;gap:12px;text-align:left}
+.pp-visie-door img{width:56px;height:56px;border-radius:50%;object-fit:cover;display:block;border:2px solid rgba(255,255,255,.85)}
+.pp-visie-door b{display:block;font-size:15px;font-weight:400!important;color:#FFFFFF}
+.pp-visie-door span{display:block;white-space:nowrap;font-size:12px;font-weight:300;color:rgba(255,255,255,.85)}
 .pp-sec{font-size:20px;font-weight:400;line-height:1.2;letter-spacing:-.01em;color:#1C1C1E;margin:26px 0 12px}
 .pp-sumkop{color:#1C1C1E!important;font-size:16px;font-weight:400;margin-bottom:10px}
 .pp-row > span:first-child{color:#1C1C1E}
@@ -1818,7 +1824,10 @@ let AUTEURS = {}; try{ AUTEURS = JSON.parse(localStorage.getItem('jr-auteurs')||
 /* Wie het voorstel opstelt: uit Beheer → Medewerkers (via /api/voorstellen/opstellers).
    De oude, in de generator ingevulde gegevens (AUTEURS) zijn alleen nog een terugval. */
 let OPSTELLERS = [], IK = null;
-const opsteller = naam => OPSTELLERS.find(o=>o.naam===String(naam||'').trim()) || null;
+const normNaam = n => String(n||'').trim().toLowerCase().replace(/\s+/g,' ');
+const opsteller = naam => OPSTELLERS.find(o=>normNaam(o.naam)===normNaam(naam)) || null;
+/* De visie is van Jim: zoek op naam, anders de eigenaar met die voor- en achternaam. */
+const visieAuteur = () => opsteller(VISIE_AUTEUR) || OPSTELLERS.find(o=>o.eigenaar && /\bjim\b/i.test(o.naam) && /coumans/i.test(o.naam)) || AUTEURS[VISIE_AUTEUR] || {};
 const auteur = () => { const o = opsteller(S.offerte.door); return o ? {functie:o.functie, telefoon:o.telefoon, email:o.email, foto:o.foto} : (AUTEURS[(S.offerte.door||'').trim()] || {}); };
 function vulOpstellers(){ const sel = $('o-door'); if(!sel) return; const huidig = (S.offerte.door||'').trim();
   const namen = OPSTELLERS.map(o=>o.naam); if(huidig && !namen.includes(huidig)) namen.push(huidig);
@@ -1832,6 +1841,7 @@ async function laadOpstellers(){
 function renderAuteur(){ const a = auteur(); ['functie','telefoon','email'].forEach(k=>{ const x = $('au-'+k); if(x) x.textContent = a[k] || 'niet ingevuld'; });
   const fp = $('au-foto-prev'); if(fp){ fp.hidden = !a.foto; if(a.foto) fp.src = a.foto; $('au-foto-leeg').hidden = !!a.foto; }
   if($('o-door') && $('o-door').value !== (S.offerte.door||'').trim()) vulOpstellers();
+  const vn = $('au-visie'); if(vn){ const v = visieAuteur(); vn.textContent = !OPSTELLERS.length ? '' : v.foto ? 'Visiepagina: foto van '+VISIE_AUTEUR+' gevonden.' : 'Visiepagina: geen profielfoto van '+VISIE_AUTEUR+' gevonden. Voeg die toe bij Beheer → Medewerkers.'; vn.hidden = !vn.textContent; }
   $('au-naam').textContent = (S.offerte.door||'').trim() || 'nog niemand ingevuld bij Offertegegevens';
  }
 
@@ -2363,10 +2373,10 @@ async function buildPdf(parts){
 
   // ---- onze visie: vaste tekst, wordt niet door AI herschreven ----
   if(parts.includes('visie')){
-    nieuwePagina();
-    const jim = opsteller(VISIE_AUTEUR) || AUTEURS[VISIE_AUTEUR] || {};
+    nieuwePagina(); body.parentElement.classList.add('pp-blauw');
+    const jim = visieAuteur();
     add('<div>'+h2('Zo kijken wij naar marketing', true)+'<div class="pp-visie">'+VISIE_TEKST+
-      '<div class="pp-visie-voet"><div class="pp-visie-wit">Whatever it takes.</div><div class="pp-visie-door"><div><b>'+esc(VISIE_AUTEUR)+'</b><span>'+esc((jim.functie||'Mede-eigenaar').trim())+', James Robinson</span></div>'+(jim.foto?'<img src="'+jim.foto+'" alt="">':'')+'</div></div></div></div>');
+      '<figure class="pp-visie-quote"><blockquote>“Whatever it takes.”</blockquote><figcaption class="pp-visie-door">'+(jim.foto?'<img src="'+jim.foto+'" alt="">':'')+'<div><b>'+esc(VISIE_AUTEUR)+'</b><span>'+esc((jim.functie||'Mede-eigenaar').trim())+', James Robinson</span></div></figcaption></figure></div></div>');
   }
 
   // ---- onze werkwijze ----
@@ -2593,7 +2603,7 @@ $('f-tekst').innerHTML = '<div class="fhead"><span>Zo hebben we jullie begrepen<
 bindForm('f-tekst','tekst','t-');
 $('f-auteur').innerHTML = frow('au-naam-r','Naam','Uit Offertegegevens.','<span id="au-naam" style="font-weight:400"></span>')+
   frow('au-foto-r','Foto','','<img id="au-foto-prev" alt="" style="width:48px;height:48px;border-radius:50%;object-fit:cover" hidden><span id="au-foto-leeg" class="note" style="margin:0">Geen profielfoto</span>')+
-  frow('au-functie-r','Functie','','<span id="au-functie"></span>')+frow('au-telefoon-r','Telefoon','','<span id="au-telefoon"></span>')+frow('au-email-r','E-mail','','<span id="au-email"></span>');
+  frow('au-functie-r','Functie','','<span id="au-functie"></span>')+frow('au-telefoon-r','Telefoon','','<span id="au-telefoon"></span>')+frow('au-email-r','E-mail','','<span id="au-email"></span>')+'<p class="note" id="au-visie" style="margin:10px 0 0" hidden></p>';
 $('o-door').addEventListener('change', ()=>{ S.offerte.door = $('o-door').value; save(); renderAuteur(); });
 laadOpstellers();
 $('tx-ai').addEventListener('click', async ()=>{ const btn = $('tx-ai');
