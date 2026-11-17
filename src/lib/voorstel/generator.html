@@ -511,6 +511,13 @@ img.ico{object-fit:contain;border-radius:4px}
 .pp-card.on .pp-subs{border-top-color:#C2DDFF!important}
 .pp-card.on .pp-subs li{border-top-color:#D6E8FF!important}
 .pp-h1,.pp-h2{color:#007AFF!important;font-size:36px!important;line-height:1.05!important;letter-spacing:-.025em!important;margin:0 0 14px!important}
+.pp-h1,.pp-h2,.pp-sec,.pp-lead,.pp-brief{padding-left:18px!important;padding-right:18px!important}
+.pp-sum{padding:18px 18px!important}
+.pp-lines li{font-weight:300;color:#636466}
+.pp-bold[style*="font-weight:300"]{font-weight:300!important;color:#49484A;font-size:13.5px}
+.pp-lico{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;margin-right:8px;vertical-align:-2px;color:#007AFF;flex:none}
+.pp-lico .ico{width:14px!important;height:14px!important;margin:0!important;vertical-align:0!important;color:#007AFF}
+.pp-lico .pp-schild{width:11px;height:14px;color:#1C1C1E}
 .pp-sec{font-size:20px;font-weight:400;line-height:1.2;letter-spacing:-.01em;color:#1C1C1E;margin:26px 0 12px}
 .pp-sumkop{color:#1C1C1E!important;font-size:16px;font-weight:400;margin-bottom:10px}
 .pp-row > span:first-child{color:#1C1C1E}
@@ -2159,7 +2166,16 @@ async function buildPdf(parts){
   function newPage(){ const pg = el('div','pp-page'); pg.innerHTML = '<div class="pp-head pp-head2"><div class="pp-client">'+(klantIcoon()?'<img class="pp-cicon" src="'+klantIcoon()+'" alt="">':'')+'<span class="pp-knaam">'+esc(klant)+'</span></div><div class="pp-meta">'+(datum?esc(datum):'')+'</div></div><div class="pp-body"></div>'; root.append(pg); pages.push(pg); return pg.querySelector('.pp-body'); }
   if(parts.includes('intro')) voorblad(root, pages, klant, datum);
   let body = newPage();
-  function add(html){ const w = el('div'); w.innerHTML = html; const node = w.firstElementChild; body.append(node); if(body.scrollHeight > body.clientHeight + 1 && body.children.length > 1){ node.remove(); body = newPage(); body.append(node); } }
+  // Logo of icoon voor een regel in een prijsblok: het kanaal of de leverancier, het schild
+  // voor werk van James Robinson. Regels zonder logo krijgen een lege plek, zodat alles uitlijnt.
+  const lico = t => { const T = String(t);
+    if(/^Opslag|via James Robinson|Basis set-up|Fundamentals|Marketing Partnership|Marketing Set-up/i.test(T) && !/Meta|Google|TikTok|LinkedIn|Cookie/.test(T)) return '<span class="pp-lico">'+SCHILD+'</span>';
+    const id = /Meta/.test(T)?'meta':/Google/.test(T)?'google':/TikTok/.test(T)?'tiktok':/LinkedIn/.test(T)?'linkedin':/E-mail|MailerLite/i.test(T)?'email':/Cookie/i.test(T)?'cookie':/ClickCease/i.test(T)?'clickcease':/Leadinfo/i.test(T)?'leadinfo':/Calendly/i.test(T)?'calendly':/shoot|video|foto|content/i.test(T)?'camera':'';
+    const i = id ? ico(id) : ''; return i ? '<span class="pp-lico">'+i+'</span>' : ''; };
+  const metLogos = node => { const spans = Array.from(node.querySelectorAll('.pp-lines li > span:first-child, .pp-bold > span:first-child')); if(!spans.length) return;
+    const ic = spans.map(sp=>lico(sp.textContent)); if(!ic.some(Boolean)) return;
+    spans.forEach((sp,i)=>{ sp.innerHTML = (ic[i] || '<span class="pp-lico"></span>') + sp.innerHTML; }); };
+  function add(html){ const w = el('div'); w.innerHTML = html; const node = w.firstElementChild; if(node.classList.contains('pp-sum') || node.querySelector('.pp-sum')) metLogos(node); body.append(node); if(body.scrollHeight > body.clientHeight + 1 && body.children.length > 1){ node.remove(); body = newPage(); body.append(node); } }
   const subs = lines => '<ul class="pp-subs">'+subsLi(lines)+'</ul>';
   const card = (title, price, lines, on, ic) => '<div class="pp-card'+(on?' on':'')+'"><div class="pp-row"><span>'+(ic?ico(ic):'')+esc(title)+'</span><span>'+price+'</span></div>'+(lines&&lines.length?subs(lines):'<div style="height:8px"></div>')+'</div>';
   const kop = t => '<h3 class="pp-sec">'+esc(t)+'</h3>';
@@ -2188,7 +2204,8 @@ async function buildPdf(parts){
   const sumCo = () => '<div class="pp-sum"><div class="pp-sumkop">Content</div><ul class="pp-lines">'+coRows.map(r=>'<li><span>'+esc(coNaam(r))+'</span><span>'+eur(r[1])+'</span></li>').join('')+'</ul><div class="pp-total sec"><b>Subtotaal</b><span>'+eur(coSub)+'</span></div>'+(S.btw?pincl(eur2(incl(coSub))):'')
     +'<div class="pp-terms">'+btwNote()+' Eenmalig, gefactureerd in de set-upmaand.'+(cJr() && S.cnt.afreken==='los' && shootPrijs() ? ' Daarna plannen we nieuwe shoots in overleg: als indicatie '+keerTxt(shootFreq())+', '+eur(shootPrijs())+' per shoot.' : '')+'</div></div>';
   const budgetCard = () => card('Advertentiebudget', eur(B.total)+'<small>per maand</small>', [
-    ['Wat het is', 'Dit budget gaat direct en één-op-één naar '+joinNl(B_PLATFORMS())+'. Daarmee betalen we de advertenties zelf.'+(A.viaJr?' Het loopt via James Robinson, met '+CAT.maand.opslagPct+'% opslag voor de administratie.':' Wij rekenen er niets op.')],
+    ['Wat het is', 'Hiermee betalen we de advertenties zelf. Het gaat één-op-één naar '+joinNl(B_PLATFORMS())+'.'],
+    ['Hoe het betaald wordt', A.viaJr ? 'Het loopt via James Robinson: we factureren het per maand, met '+CAT.maand.opslagPct+'% opslag voor de administratie.' : joinNl(B_PLATFORMS())+' '+(B_PLATFORMS().length>1?'brengen':'brengt')+' het rechtstreeks bij jullie in rekening, via jullie eigen advertentieaccount. Het loopt dus niet via James Robinson, en wij rekenen er niets op.'],
     ['Ons doel', 'Zoveel mogelijk resultaat halen uit het beschikbare budget.'],
     ['Bijsturen', 'Tijdens de samenwerking kunnen we adviseren om het budget te verhogen, te verlagen of anders te verdelen over de kanalen. Dat advies onderbouwen we altijd met cijfers.']], false);
   if(!full){
@@ -2253,10 +2270,10 @@ async function buildPdf(parts){
     if(S.ch.email) add(card('E-mailmarketing', eur(mails()*CAT.maand.mailing.prijs)+'<small>per maand</small>', [['Mailings', mailTxt(mails())+': tekst, opmaak en verzending naar jullie lijst, in jullie huisstijl.'],['Licentie', CAT.licenties['LIC-MAILERLITE'].txt]], true, 'email'));
     if(contentRet()) add(card('Contentshoots', eur(contentMaand())+'<small>per maand</small>', [['Wat', 'Een shoot '+shootWat()+', '+keerTxt(shootFreq())+'. De eerste in de set-upmaand, zodat we snel live kunnen.'],['Wat we doen', CP.wie[2].desc],['Waarom vast', 'Vooraf ingepland is '+CP.vastKorting+'% voordeliger dan los: '+eur(contentBesparing())+' per jaar minder.']], true));
     if(!B.off && B.act.length) add(budgetCard());
-    let s = '<div class="pp-sum"><div class="pp-sumkop">Maandpakket</div><ul class="pp-lines">'+B.ret.lines.map(l=>'<li><span>'+esc(l[0])+'</span><span>'+eur(l[1])+'</span></li>').join('')+'</ul><div class="pp-split"></div>'+prow('Marketing Partnership', eur(B.ret.total), true)+K.maandL.map(m=>pdisc(esc(m.label), eurPdf(-m.bedrag))).join('')+(B.off||!B.act.length ? '' : (S.budget.vrij && B.act.length>1 ? prow('Advertentiebudget, verdeeld over '+esc(joinNl(B.act.map(k=>k.naam)))+'', eur(B.total)) : B.act.map(k=>prow('Advertentiebudget '+esc(k.naam)+'', eur(B.budgets[k.id]))).join('')))+(A.opslag?prow('Opslag advertentiebudget via James Robinson, '+CAT.maand.opslagPct+'%', eur(A.opslag)):'')+(A.link?prow('Linkbuildingbudget', eur(A.link)):'')+
+    let s = '<div class="pp-sum"><div class="pp-sumkop">Maandpakket</div><ul class="pp-lines">'+B.ret.lines.map(l=>'<li><span>'+esc(l[0])+'</span><span>'+eur(l[1])+'</span></li>').join('')+'</ul><div class="pp-split"></div>'+prow('Marketing Partnership', eur(B.ret.total), true)+K.maandL.map(m=>pdisc(esc(m.label), eurPdf(-m.bedrag))).join('')+(B.off||!B.act.length ? '' : (S.budget.vrij && B.act.length>1 ? prow('Advertentiebudget, verdeeld over '+esc(joinNl(B.act.map(k=>k.naam)))+'', eur(B.total)) : B.act.map(k=>prow('Advertentiebudget'+(B.act.length>1?' '+esc(k.naam):'')+(A.viaJr?'':', rechtstreeks aan '+esc(({meta:'Meta', tiktok:'TikTok', linkedin:'LinkedIn', google:'Google'})[k.id]||k.naam)), eur(B.budgets[k.id]))).join('')))+(A.opslag?prow('Opslag advertentiebudget via James Robinson, '+CAT.maand.opslagPct+'%', eur(A.opslag)):'')+(A.link?prow('Linkbuildingbudget', eur(A.link)):'')+
       '<div class="pp-total"><b>Investering per maand</b><span>'+eur(A.monthlyNow)+'</span></div>'+(S.btw?pincl(eur2(incl(A.monthlyNow))):'');
     const sch = K.schema.length>1 ? ' '+K.schema.map(x=>(x.tot?'Maand '+x.van+(x.tot>x.van?' tot '+x.tot:'')+': ':'Daarna: ')+eur(x.ret+B.total+A.link+A.opslag)+' per maand').join(' · ')+'.' : '';
-    s += '<div class="pp-terms">'+btwNote()+sch+(B.off||!B.act.length||B.teLaag?'':' Het advertentiebudget is minimaal even hoog als het beheer van de kanalen.')+' Het maandpakket start na de set-upmaand en is maandelijks opzegbaar.</div></div>'; add(s);
+    s += '<div class="pp-terms">'+btwNote()+sch+(B.off||!B.act.length||B.teLaag?'':' Het advertentiebudget is minimaal even hoog als het beheer van de kanalen.')+(B.off||!B.act.length||A.viaJr?'':' Het advertentiebudget betalen jullie rechtstreeks aan '+joinNl(B_PLATFORMS())+'; het loopt niet via James Robinson.')+' Het maandpakket start na de set-upmaand en is maandelijks opzegbaar.</div></div>'; add(s);
   }
 
   // ---- content ----
@@ -2311,7 +2328,7 @@ async function buildPdf(parts){
       nieuwePagina();
       if(full) add('<div>'+h2('Licenties', true)+intro('Sommige onderdelen hebben een licentie nodig om goed te werken en alles volledig te kunnen meten. Licenties via James Robinson factureren we in de set-upmaand en daarna elk jaar vooruit. Andere lopen rechtstreeks via de leverancier.')+'</div>');
       let rec = '<div class="pp-sum"><div class="pp-sumkop" style="margin-bottom:6px">Licenties</div>';
-      if(su.jr.length){ rec += '<div class="pp-terms" style="margin:4px 0 6px;font-weight:500">Via James Robinson</div><ul class="pp-lines">'+su.jr.map(x=>'<li><span>'+esc(x[0])+'</span><span>'+esc(x[2])+'</span></li>').join('')+'</ul><div class="pp-bold" style="border-top:1px solid #E5E5E9;padding-top:8px;margin-top:8px"><span>Subtotaal per jaar</span><span>'+eur(su.jrTotal)+'</span></div><div class="pp-terms" style="margin-top:6px">We factureren deze licenties in de set-upmaand en daarna elk jaar vooruit.</div>'; }
+      if(su.jr.length){ rec += '<div class="pp-terms" style="margin:4px 0 6px;font-weight:500">Via James Robinson</div><ul class="pp-lines">'+su.jr.map(x=>'<li><span>'+esc(x[0])+'</span><span>'+esc(x[2])+'</span></li>').join('')+'</ul><div class="pp-split"></div><div class="pp-total sec" style="margin-top:0"><b>Subtotaal per jaar</b><span>'+eur(su.jrTotal)+'</span></div><div class="pp-terms" style="margin-top:6px">We factureren deze licenties in de set-upmaand en daarna elk jaar vooruit.</div>'; }
       if(su.partner.length) rec += '<div class="pp-terms" style="margin:12px 0 6px;font-weight:500">Rechtstreeks bij de leverancier</div><ul class="pp-lines">'+su.partner.map(x=>'<li><span>'+esc(x[0])+'</span><span>'+esc(x[1])+'</span></li>').join('')+'</ul>';
       const n = ['Exclusief btw.']; if(su.partner.length) n.push('Tarieven van leveranciers kunnen wijzigen; de actuele prijzen staan op hun website.'); if(K.setupDisc) n.push('De korting geldt niet voor licenties.');
       rec += '<div class="pp-terms">'+n.join(' ')+'</div></div>'; add(rec);
@@ -2336,25 +2353,26 @@ async function buildPdf(parts){
       L.forEach(k=>{ const lm = num(S.laterM[k.id]); const fee = kanaalFee(k);
         const erbij = 'Wat er dan bij komt: eenmalig een set-up van '+eur(k.setup.prijs)+(fee?' en '+eur(fee)+' per maand voor het beheer':'')+(isCapi(k)?', plus '+E+'153 per jaar voor de Conversions API':'')+(k.ads?'. Het advertentiebudget bepalen we dan samen.':'.');
         add('<div class="pp-later"><div class="pp-row"><span>'+ico(k.id)+esc(k.naam)+'</span><span style="font-size:11px;font-weight:300;color:#636466">'+(lm?'indicatie: vanaf maand '+lm:'later')+'</span></div><p style="color:#49484A">'+esc(laterWhy(k.id))+'</p><p>'+esc(erbij)+'</p></div>'); });
-      X.forEach(x=>add('<div class="pp-later"><div class="pp-row"><span>'+esc(x.naam)+'</span><span style="font-size:11px;font-weight:300;color:#636466">later</span></div><p style="color:#49484A">'+esc(laterWhy(x.id))+'</p><p>Gaan we hiermee aan de slag, dan maken we eerst een voorstel met de kosten van de set-up en het werk per maand.</p></div>'));
+      X.forEach(x=>add('<div class="pp-later"><div class="pp-row"><span>'+(x.id==='seo'?ico('google'):'')+esc(x.naam)+'</span><span style="font-size:11px;font-weight:300;color:#636466">later</span></div><p style="color:#49484A">'+esc(laterWhy(x.id))+'</p><p>Gaan we hiermee aan de slag, dan maken we eerst een voorstel met de kosten van de set-up en het werk per maand.</p></div>'));
     }
   }
   if(parts.includes('samen')){
     nieuwePagina();
     const eerst = setupNet + coSub + su.jrTotal;
     const losShoot = cJr() && S.cnt.afreken==='los' && shootPrijs();
-    let s = '<div class="pp-sum"><div class="pp-sumkop">In de set-upmaand</div>'+
-      prow('Marketing Set-up, eenmalig', eur(setupNet))+coRows.map(r=>prow(esc(coNaam(r)), eur(r[1]))).join('')+(su.jrTotal?prow('Licenties eerste jaar, via James Robinson', eur(su.jrTotal)):'')+
+    const li = (a,b) => '<li><span>'+a+'</span><span>'+b+'</span></li>';
+    let s = '<div class="pp-sum"><div class="pp-sumkop">In de set-upmaand</div><ul class="pp-lines">'+
+      li('Marketing Set-up, eenmalig', eur(setupNet))+coRows.map(r=>li(esc(coNaam(r)), eur(r[1]))).join('')+(su.jrTotal?li('Licenties eerste jaar, via James Robinson', eur(su.jrTotal)):'')+'</ul>'+
       '<div class="pp-total sec"><b>Totaal in de set-upmaand</b><span>'+eur(eerst)+'</span></div>'+(S.btw?pincl(eur2(incl(eerst))):'')+
-      '<div class="pp-split"></div><div class="pp-sumkop">Daarna elke maand</div>'+
-      prow('Marketing Partnership', eur(B.ret.total))+K.maandL.map(m=>pdisc(esc(m.label), eurPdf(-m.bedrag))).join('')+(B.off||!B.act.length?'':prow('Advertentiebudget', eur(B.total)))+(A.opslag?prow('Opslag advertentiebudget via James Robinson, '+CAT.maand.opslagPct+'%', eur(A.opslag)):'')+(A.link?prow('Linkbuildingbudget', eur(A.link)):'')+
+      '<div class="pp-split"></div><div class="pp-sumkop">Daarna elke maand</div><ul class="pp-lines">'+
+      li('Marketing Partnership', eur(B.ret.total))+'</ul>'+K.maandL.map(m=>pdisc(esc(m.label), eurPdf(-m.bedrag))).join('')+'<ul class="pp-lines">'+(B.off||!B.act.length?'':li('Advertentiebudget'+(A.viaJr?', via James Robinson':', rechtstreeks aan '+esc(joinNl(B_PLATFORMS()))), eur(B.total)))+(A.opslag?li('Opslag advertentiebudget via James Robinson, '+CAT.maand.opslagPct+'%', eur(A.opslag)):'')+(A.link?li('Linkbuildingbudget', eur(A.link)):'')+'</ul>'+
       '<div class="pp-total"><b>Totaal per maand</b><span>'+eur(A.monthlyNow)+'</span></div>'+(S.btw?pincl(eur2(incl(A.monthlyNow))):'');
-    if(su.jrTotal || losShoot) s += '<div class="pp-split"></div><div class="pp-sumkop">Periodiek</div>'+
-      (su.jrTotal?prow('Licenties via James Robinson, daarna elk jaar vooruit', eur(su.jrTotal)+' per jaar'):'')+
-      (losShoot?prow('Nieuwe '+soortNaam().toLowerCase()+'s, als indicatie '+keerTxt(shootFreq()), eur(shootPrijs())+' per shoot'):'');
+    if(su.jrTotal || losShoot) s += '<div class="pp-split"></div><div class="pp-sumkop">Periodiek</div><ul class="pp-lines">'+
+      (su.jrTotal?li('Licenties via James Robinson, daarna elk jaar vooruit', eur(su.jrTotal)+' per jaar'):'')+
+      (losShoot?li('Nieuwe '+soortNaam().toLowerCase()+'s, als indicatie '+keerTxt(shootFreq()), eur(shootPrijs())+' per shoot'):'')+'</ul>';
     const t = [S.btw?'Bedragen exclusief btw, tenzij anders vermeld.':'Alle bedragen exclusief btw.'];
     if(K.schema.length>1) t.push(K.schema.map(x=>(x.tot?'Maand '+x.van+(x.tot>x.van?' tot '+x.tot:'')+': ':'Daarna: ')+eur(x.ret+B.total+A.link+A.opslag)+' per maand').join(' · ')+'.');
-    if(A.viaJr) t.push('Het advertentiebudget loopt via James Robinson: we factureren het per maand, inclusief '+CAT.maand.opslagPct+'% opslag.'); if(su.partner.length || opts.length) t.push('Licenties via leveranciers en optionele extra\'s komen er los bij.'); if(losShoot) t.push('Nieuwe shoots plannen we altijd in overleg.'); t.push('Het maandpakket start na de set-upmaand en is maandelijks opzegbaar.');
+    if(A.viaJr) t.push('Het advertentiebudget loopt via James Robinson: we factureren het per maand, inclusief '+CAT.maand.opslagPct+'% opslag.'); else if(!B.off && B.act.length) t.push('Het advertentiebudget betalen jullie rechtstreeks aan '+joinNl(B_PLATFORMS())+'; het loopt niet via James Robinson.'); if(su.partner.length || opts.length) t.push('Licenties via leveranciers en optionele extra\'s komen er los bij.'); if(losShoot) t.push('Nieuwe shoots plannen we altijd in overleg.'); t.push('Het maandpakket start na de set-upmaand en is maandelijks opzegbaar.');
     s += '<div class="pp-terms">'+t.join(' ')+'</div></div>';
     add('<div>'+h2('Samengevat', true)+s+'</div>');
   }
