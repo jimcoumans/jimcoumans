@@ -91,6 +91,8 @@ export type Opsteller = {
   telefoon: string
   email: string
   foto: string | null
+  /** Eigenaar van James Robinson. */
+  eigenaar: boolean
 }
 
 type OpstellerRij = {
@@ -104,6 +106,7 @@ type OpstellerRij = {
   phone: string | null
   mobile: string | null
   avatarImageId: string | null
+  isOwner?: boolean
   endedOn: Date | null
 }
 
@@ -117,6 +120,7 @@ export function naarOpsteller(r: OpstellerRij): Opsteller {
     telefoon: (r.mobile?.trim() || r.phone?.trim()) ?? '',
     email: r.email,
     foto: afbeeldingUrl(r.avatarImageId),
+    eigenaar: r.isOwner === true,
   }
 }
 
@@ -138,6 +142,7 @@ export async function lijstOpstellers(): Promise<Opsteller[]> {
       phone: users.phone,
       mobile: users.mobile,
       avatarImageId: users.avatarImageId,
+      isOwner: users.isOwner,
       endedOn: users.endedOn,
     })
     .from(users)
