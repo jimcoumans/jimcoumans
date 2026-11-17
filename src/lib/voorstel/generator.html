@@ -2503,7 +2503,10 @@ async function buildPdf(parts){
   // Zonder tekst geen brief.
   if(parts.includes('persoonlijk') && String((S.tekst||{}).persoonlijk||'').trim()){
     body = newPage(); const au = auteur(); const naam = (S.offerte.door||'').trim();
-    const pers = String((S.tekst||{}).persoonlijk||'').trim();
+    // Aanhef en groet zet de generator er zelf bij; staan ze ook in de tekst, dan halen we ze daar weg.
+    const pers = String((S.tekst||{}).persoonlijk||'').trim()
+      .replace(/^(beste|hoi|hallo|dag|geachte)\b[^\n,]{0,40},[ \t]*\n+/i, '')
+      .replace(/\n+\s*(met vriendelijke groet|met hartelijke groet|vriendelijke groet|groet|groeten|hartelijke groet)\b[\s\S]*$/i, '').trim();
     let h = '<div class="pp-brief"><h2 class="pp-h2" style="margin:0!important">Tot slot</h2><p>Beste '+esc((S.contact.naam||'').trim().split(' ')[0] || handelsNaam())+',</p>';
     if(pers) pers.split(/\n{2,}/).forEach(p=>{ h += '<p>'+esc(p.trim()).replace(/\n/g,'<br>')+'</p>'; });
     h += '<p style="margin-top:6px">Met vriendelijke groet,</p>';
