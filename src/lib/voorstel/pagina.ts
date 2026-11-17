@@ -15,12 +15,12 @@ import path from 'node:path'
 
 const BESTAND = path.join(/*turbopackIgnore: true*/ process.cwd(), 'src/lib/voorstel/generator.html')
 
-/** De vervanger voor window.claude: database en downloads via de Wallet; AI volgt later. */
+/** De vervanger voor window.claude: database, downloads en AI via de Wallet. */
 export const SHIM = `(function(){
   var api = function(p, o){
     return fetch('/api/voorstellen' + p, Object.assign({ credentials: 'same-origin', headers: { 'Content-Type': 'application/json' } }, o || {}))
       .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){
-        if(!r.ok || !j.ok){ var e = new Error(j.error || 'fout'); e.code = r.status === 401 ? 'geen_toegang' : (j.error || 'serverfout'); throw e; }
+        if(!r.ok || !j.ok){ var e = new Error(j.error || 'fout'); e.code = r.status === 401 ? 'geen_toegang' : (j.code || 'serverfout'); throw e; }
         return j;
       }); });
   };
@@ -49,8 +49,11 @@ export const SHIM = `(function(){
     document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
     return Promise.resolve();
   } };
+  var sample = function(prompt){ return api('/ai', { method: 'POST', body: JSON.stringify({ prompt: String(prompt) }) }).then(function(j){ return j.uitkomst; }); };
+  sample.json = function(prompt){ return api('/ai', { method: 'POST', body: JSON.stringify({ prompt: String(prompt), json: true }) }).then(function(j){ return j.uitkomst; }); };
   window.claude = { use: function(n){
     if(n === 'db') return Promise.resolve(db);
+    if(n === 'sample') return Promise.resolve(sample);
     if(n === 'downloads') return Promise.resolve(downloads);
     return Promise.reject(new Error('Niet beschikbaar in de Wallet: ' + n));
   } };
@@ -60,7 +63,7 @@ const TERUG = `<div style="font-family:'Helvetica Neue',Helvetica,Arial,sans-ser
 
 /** De generator met de vervanger en een terugbalk erin. */
 export function zetIn(html: string): string {
-  let uit = html.replace('AI werkt in de gepubliceerde pagina op claude.ai.', 'AI-hulp volgt in een volgende versie van het portaal.')
+  let uit = html.replace('AI werkt in de gepubliceerde pagina op claude.ai.', 'AI werkt pas als de AI-sleutel in het portaal is ingesteld.')
   const script = uit.indexOf('<script')
   if (script < 0) throw new Error('De generator heeft geen script.')
   uit = `${uit.slice(0, script)}<script>${SHIM}</script>${uit.slice(script)}`
