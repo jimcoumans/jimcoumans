@@ -497,14 +497,14 @@ img.ico{object-fit:contain;border-radius:4px}
 .pp-sigsub{font-size:12.5px;color:#636466}
 
 /* Typografie van het voorstel: drie niveaus, overal hetzelfde.
-   1. Hoofdstuktitel: 24px, Regular, JR-blauw. Eén per hoofdstuk, geen labels erboven.
+   1. Hoofdstuktitel: 36px, Regular, JR-blauw, strak gezet (zoals de website, iets kleiner). Eén per hoofdstuk, geen labels erboven.
    2. Bloktitel (kaart of samenvatting): 16px, Regular, zwart.
    3. Rij-label in een kaart: 12.5px, Regular, zwart; de uitleg ernaast Light, grijs.
    Lopende tekst onder een hoofdstuktitel: 15px, grijs.
    Blauw komt alleen terug in hoofdstuktitels en in het bedrag dat de klant betaalt.
    Vlakken: wit met grijze rand = uitleg; grijs vlak = wat het kost;
    gestippelde rand = zit niet in dit voorstel (later interessant). */
-.pp-h1,.pp-h2{color:#007AFF!important;font-size:24px!important;line-height:1.15!important;margin:0 0 12px!important}
+.pp-h1,.pp-h2{color:#007AFF!important;font-size:36px!important;line-height:1.05!important;letter-spacing:-.025em!important;margin:0 0 14px!important}
 .pp-sumkop{color:#1C1C1E!important;font-size:16px;font-weight:400;margin-bottom:10px}
 .pp-row > span:first-child{color:#1C1C1E}
 .pp-lead{margin-top:0!important}
@@ -2168,6 +2168,17 @@ async function buildPdf(parts){
   const intro = t => '<p class="pp-lead" style="margin:0 0 14px">'+esc(t)+'</p>';
   // Een hoofdstuk begint op een nieuwe pagina (alleen in het volledige voorstel).
   const nieuwePagina = () => { if(full && body.children.length) body = newPage(); };
+  // In het volledige voorstel staan set-up, content en licenties elk apart, met een eigen
+  // subtotaal; de samenvatting telt ze op per moment van betalen. In de bijlagen blijft
+  // de eerste contentshoot onderdeel van de set-up, zoals in de editor.
+  const isCo = r => r[2]===CP.shoot.code || (su.co.id!=='jr' && r[2]===su.co.code);
+  const suRows = full ? su.rows.filter(r=>!isCo(r)) : su.rows;
+  const coRows = full ? su.rows.filter(r=>isCo(r) && r[1]>0) : [];
+  const coSub = coRows.reduce((a,r)=>a+r[1],0);
+  const setupNet = A.setupNet - coSub;
+  const coNaam = r => r[2]===CP.shoot.code ? 'Eerste '+soortNaam().toLowerCase()+', in de set-upmaand' : r[0];
+  const sumCo = () => '<div class="pp-sum"><div class="pp-sumkop">Content</div><ul class="pp-lines">'+coRows.map(r=>'<li><span>'+esc(coNaam(r))+'</span><span>'+eur(r[1])+'</span></li>').join('')+'</ul><div class="pp-total sec"><b>Subtotaal</b><span>'+eur(coSub)+'</span></div>'+(S.btw?pincl(eur2(incl(coSub))):'')
+    +'<div class="pp-terms">'+btwNote()+' Eenmalig, gefactureerd in de set-upmaand.'+(cJr() && S.cnt.afreken==='los' && shootPrijs() ? ' Daarna plannen we nieuwe shoots in overleg: als indicatie '+keerTxt(shootFreq())+', '+eur(shootPrijs())+' per shoot.' : '')+'</div></div>';
   const budgetCard = () => card('Advertentiebudget', eur(B.total)+'<small>per maand</small>', [
     ['Wat het is', 'Dit budget gaat direct en één-op-één naar '+joinNl(B_PLATFORMS())+'. Daarmee betalen we de advertenties zelf.'+(A.viaJr?' Het loopt via James Robinson, met '+CAT.maand.opslagPct+'% opslag voor de administratie.':' Wij rekenen er niets op.')],
     ['Ons doel', 'Zoveel mogelijk resultaat halen uit het beschikbare budget.'],
@@ -2250,8 +2261,10 @@ async function buildPdf(parts){
         ['Hoe vaak', 'Als indicatie '+keerTxt(shootFreq())+'. Wanneer nieuwe content nodig is, geven we aan tijdens het marketingoverleg.'],
         ['Afrekenen', los ? 'Per shoot, als los project buiten de retainer. Zo kunnen we in overleg bijsturen.' : 'Vooraf ingepland en verrekend in de retainer: '+CP.vastKorting+'% voordeliger dan los.']];
       add(card(shootTitel(), los ? (p?eur(p)+'<small>per shoot</small>':'') : eur(contentMaand())+'<small>per maand</small>', rijen, true));
+      if(coSub) add(sumCo());
     } else if(su.co){
       add('<div>'+h2('Content', true)+intro('Content is de brandstof van de campagnes. Hieronder staat hoe we dat met jullie aanpakken.')+card('Content: '+su.co.kort, su.co.prijs?eur(su.co.prijs)+'<small>eenmalig</small>':'', [[su.co.label||'Wat we doen', su.co.desc]], false)+'</div>');
+      if(coSub) add(sumCo());
     }
   }
   const opts = CAT.opties.filter(optOn);
@@ -2268,22 +2281,29 @@ async function buildPdf(parts){
     const cn = capiNu(); if(cn.length) add('<div class="pp-later" style="border-style:solid;border-color:#E5E5E9"><div class="pp-row" style="margin:0"><span>De Conversions API, uitgelegd</span><span style="font-size:11px;font-weight:300;color:#636466">geldt voor '+esc(joinNl(cn.map(c=>c.naam)))+'</span></div>'+subs(CAT.capiUitleg)+'</div>');
     if(S.web.cookie){ const c = CAT.setup.cookie; add(card(c.naam+' set-up', eur(c.prijs)+'<small>eenmalig</small>', [['Waarom',c.why],['Wat we doen',c.desc],['Licentie',CAT.licenties[c.lic].txt]], true, 'cookie')); }
     CAT.setup.web.filter(o=>S.web[o.id]).forEach(o=>add(card(o.naam, eur(o.prijs)+'<small>eenmalig</small>', [['Wat we doen',o.desc]], true)));
-    if(su.co.id!=='jr') add(card('Content: '+su.co.kort, eur(su.co.prijs)+'<small>eenmalig</small>', [[su.co.label||'Wat we doen', su.co.desc]], su.co.prijs>0));
+    if(full){} else if(su.co.id!=='jr') add(card('Content: '+su.co.kort, eur(su.co.prijs)+'<small>eenmalig</small>', [[su.co.label||'Wat we doen', su.co.desc]], su.co.prijs>0));
     else add(card('Eerste '+soortNaam().toLowerCase(), (S.cnt.afreken==='los' ? eur(su.coPrijs)+'<small>eenmalig</small>' : 'via de retainer'), [['Wat', 'De eerste '+soortNaam().toLowerCase()+' ('+duurNaam()+'), in de set-upmaand. Zo hebben we beeld voor de eerste advertenties. Meer hierover bij Content.'],['Wie', partnerTxt()]], S.cnt.afreken==='los'));
     su.cad.forEach(c=>add(card('Extra: '+c.naam, (c.prijs?eur(c.prijs):'gratis')+'<small>normaal '+eur(c.normaal)+'</small>', [['Wat het is', c.desc]].concat(c.oms?[['Waarom', c.oms]]:[]), true)));
+    if(full){
+      let s = '<div class="pp-sum"><div class="pp-sumkop">Marketing Set-up</div><ul class="pp-lines">'+suRows.map(([n,p,c,t])=>'<li><span>'+esc(n)+'</span><span>'+rowAmt(p,t)+'</span></li>').join('')+'</ul>';
+      if(K.setupDisc) s += '<div class="pp-split"></div>'+prow('Normaal', eur(suRows.reduce((a,r)=>a+r[1],0)), true)+K.setupL.map(d=>pdisc(esc(d.label), eurPdf(-d.bedrag))).join('');
+      s += '<div class="pp-total sec"><b>Subtotaal</b><span>'+eur(setupNet)+'</span></div>'+(S.btw?pincl(eur2(incl(setupNet))):'');
+      s += '<div class="pp-terms">'+btwNote()+' Eenmalig. De set-up voeren we uit in de maand voor livegang.</div></div>'; add(s);
+    } else {
     let s = '<div class="pp-sum"><div class="pp-sumkop">Marketing Set-up</div><ul class="pp-lines">'+su.rows.map(([n,p,c,t])=>'<li><span>'+esc(n)+'</span><span>'+rowAmt(p,t)+'</span></li>').join('')+'</ul><div class="pp-split"></div>';
     if(K.setupDisc) s += prow('Normaal', eur(su.sub), true)+K.setupL.map(d=>pdisc(esc(d.label), eurPdf(-d.bedrag))).join('');
     if(su.jrTotal){ s += (K.setupDisc?'<div class="pp-split"></div>':'')+prow('Set-up, eenmalig', eur(A.setupNet), true)+(su.jrTotal?prow('Licenties eerste jaar, via James Robinson', eur(su.jrTotal), true):'')+'<div class="pp-total sec"><b>Jullie betalen in de set-upmaand</b><span>'+eur(A.first)+'</span></div>'; if(S.btw) s += pincl(eur2(incl(A.first))); }
     else { s += '<div class="pp-total sec"><b>'+(K.setupDisc?'Jullie betalen':'Totaal')+'</b><span>'+eur(A.setupNet)+'</span></div>'; if(S.btw) s += pincl(eur2(incl(A.setupNet))); }
     const t = [btwNote()]; if(su.jrTotal) t.push('Daarna elk jaar '+eur(su.jrTotal)+' aan licenties'+(S.btw?' ('+eur2(incl(su.jrTotal))+' inclusief btw)':'')+', vooruit gefactureerd.'); if(su.partner.length) t.push('Licenties die rechtstreeks via een leverancier lopen, komen daar los bij.'); t.push('De set-up voeren we uit in de maand voor livegang.');
     s += '<div class="pp-terms">'+t.join(' ')+'</div></div>'; add(s);
+    }
   }
   if(parts.includes('licenties')){
     if(su.jr.length || su.partner.length){
       nieuwePagina();
       if(full) add('<div>'+h2('Licenties', true)+intro('Sommige onderdelen hebben een licentie nodig om goed te werken en alles volledig te kunnen meten. Licenties via James Robinson factureren we in de set-upmaand en daarna elk jaar vooruit. Andere lopen rechtstreeks via de leverancier.')+'</div>');
       let rec = '<div class="pp-sum"><div class="pp-sumkop" style="margin-bottom:6px">Licenties</div>';
-      if(su.jr.length){ rec += '<div class="pp-terms" style="margin:4px 0 6px;font-weight:500">Via James Robinson</div><ul class="pp-lines">'+su.jr.map(x=>'<li><span>'+esc(x[0])+'</span><span>'+esc(x[2])+'</span></li>').join('')+'</ul><div class="pp-bold" style="border-top:1px solid #E5E5E9;padding-top:8px;margin-top:8px"><span>Totaal per jaar</span><span>'+eur(su.jrTotal)+'</span></div><div class="pp-terms" style="margin-top:6px">We factureren deze licenties in de set-upmaand en daarna elk jaar vooruit.</div>'; }
+      if(su.jr.length){ rec += '<div class="pp-terms" style="margin:4px 0 6px;font-weight:500">Via James Robinson</div><ul class="pp-lines">'+su.jr.map(x=>'<li><span>'+esc(x[0])+'</span><span>'+esc(x[2])+'</span></li>').join('')+'</ul><div class="pp-bold" style="border-top:1px solid #E5E5E9;padding-top:8px;margin-top:8px"><span>Subtotaal per jaar</span><span>'+eur(su.jrTotal)+'</span></div><div class="pp-terms" style="margin-top:6px">We factureren deze licenties in de set-upmaand en daarna elk jaar vooruit.</div>'; }
       if(su.partner.length) rec += '<div class="pp-terms" style="margin:12px 0 6px;font-weight:500">Rechtstreeks bij de leverancier</div><ul class="pp-lines">'+su.partner.map(x=>'<li><span>'+esc(x[0])+'</span><span>'+esc(x[1])+'</span></li>').join('')+'</ul>';
       const n = ['Exclusief btw.']; if(su.partner.length) n.push('Tarieven van leveranciers kunnen wijzigen; de actuele prijzen staan op hun website.'); if(K.setupDisc) n.push('De korting geldt niet voor licenties.');
       rec += '<div class="pp-terms">'+n.join(' ')+'</div></div>'; add(rec);
@@ -2313,14 +2333,20 @@ async function buildPdf(parts){
   }
   if(parts.includes('samen')){
     nieuwePagina();
-    let s = '<div class="pp-sum"><div class="pp-sumkop">Wat jullie betalen</div>'+
-      prow('Marketing Set-up, eenmalig', eur(A.setupNet), true)+(su.jrTotal?prow('Licenties eerste jaar, via James Robinson', eur(su.jrTotal), true):'')+
-      '<div class="pp-total sec"><b>In de set-upmaand</b><span>'+eur(A.first)+'</span></div>'+(S.btw?pincl(eur2(incl(A.first))):'')+
-      '<div class="pp-split"></div>'+prow('Marketing Partnership', eur(B.ret.total), true)+K.maandL.map(m=>pdisc(esc(m.label), eurPdf(-m.bedrag))).join('')+(B.off||!B.act.length?'':prow('Advertentiebudget', eur(B.total)))+(A.opslag?prow('Opslag advertentiebudget via James Robinson, '+CAT.maand.opslagPct+'%', eur(A.opslag)):'')+(A.link?prow('Linkbuildingbudget', eur(A.link)):'')+
-      '<div class="pp-total"><b>Daarna per maand</b><span>'+eur(A.monthlyNow)+'</span></div>'+(S.btw?pincl(eur2(incl(A.monthlyNow))):'');
+    const eerst = setupNet + coSub + su.jrTotal;
+    const losShoot = cJr() && S.cnt.afreken==='los' && shootPrijs();
+    let s = '<div class="pp-sum"><div class="pp-sumkop">In de set-upmaand</div>'+
+      prow('Marketing Set-up, eenmalig', eur(setupNet))+coRows.map(r=>prow(esc(coNaam(r)), eur(r[1]))).join('')+(su.jrTotal?prow('Licenties eerste jaar, via James Robinson', eur(su.jrTotal)):'')+
+      '<div class="pp-total sec"><b>Totaal in de set-upmaand</b><span>'+eur(eerst)+'</span></div>'+(S.btw?pincl(eur2(incl(eerst))):'')+
+      '<div class="pp-split"></div><div class="pp-sumkop">Daarna elke maand</div>'+
+      prow('Marketing Partnership', eur(B.ret.total))+K.maandL.map(m=>pdisc(esc(m.label), eurPdf(-m.bedrag))).join('')+(B.off||!B.act.length?'':prow('Advertentiebudget', eur(B.total)))+(A.opslag?prow('Opslag advertentiebudget via James Robinson, '+CAT.maand.opslagPct+'%', eur(A.opslag)):'')+(A.link?prow('Linkbuildingbudget', eur(A.link)):'')+
+      '<div class="pp-total"><b>Totaal per maand</b><span>'+eur(A.monthlyNow)+'</span></div>'+(S.btw?pincl(eur2(incl(A.monthlyNow))):'');
+    if(su.jrTotal || losShoot) s += '<div class="pp-split"></div><div class="pp-sumkop">Periodiek</div>'+
+      (su.jrTotal?prow('Licenties via James Robinson, daarna elk jaar vooruit', eur(su.jrTotal)+' per jaar'):'')+
+      (losShoot?prow('Nieuwe '+soortNaam().toLowerCase()+'s, als indicatie '+keerTxt(shootFreq()), eur(shootPrijs())+' per shoot'):'');
     const t = [S.btw?'Bedragen exclusief btw, tenzij anders vermeld.':'Alle bedragen exclusief btw.'];
     if(K.schema.length>1) t.push(K.schema.map(x=>(x.tot?'Maand '+x.van+(x.tot>x.van?' tot '+x.tot:'')+': ':'Daarna: ')+eur(x.ret+B.total+A.link+A.opslag)+' per maand').join(' · ')+'.');
-    if(su.jrTotal) t.push('Licenties daarna elk jaar '+eur(su.jrTotal)+', vooruit gefactureerd.'); if(A.viaJr) t.push('Het advertentiebudget loopt via James Robinson: we factureren het per maand, inclusief '+CAT.maand.opslagPct+'% opslag.'); if(su.partner.length || opts.length) t.push('Licenties via leveranciers en optionele extra\'s komen er los bij.'); t.push('Het maandpakket is maandelijks opzegbaar.');
+    if(A.viaJr) t.push('Het advertentiebudget loopt via James Robinson: we factureren het per maand, inclusief '+CAT.maand.opslagPct+'% opslag.'); if(su.partner.length || opts.length) t.push('Licenties via leveranciers en optionele extra\'s komen er los bij.'); if(losShoot) t.push('Nieuwe shoots plannen we altijd in overleg.'); t.push('Het maandpakket start na de set-upmaand en is maandelijks opzegbaar.');
     s += '<div class="pp-terms">'+t.join(' ')+'</div></div>';
     add('<div>'+h2('Samengevat', true)+s+'</div>');
   }
