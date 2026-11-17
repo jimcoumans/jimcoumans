@@ -127,7 +127,7 @@ aside{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);display:grid
 .lines li{display:flex;justify-content:space-between;gap:12px}
 .lines li span:last-child{font-variant-numeric:tabular-nums;white-space:nowrap}
 .lines li.off{color:var(--muted)}
-.lines li.disc{color:var(--ok)}
+.lines li.disc{color:#FF3B30}
 .sub{display:flex;justify-content:space-between;gap:12px;border-top:1px solid var(--line);margin-top:14px;padding-top:12px;font-size:15px;font-variant-numeric:tabular-nums}
 .total{display:flex;justify-content:space-between;align-items:baseline;gap:12px;border-top:1px solid var(--line);margin-top:12px;padding-top:14px}
 .total b{font-size:15px}
@@ -308,7 +308,7 @@ details.bench th{font-weight:500;color:var(--muted)}
   .bval{font-size:22px}
 }
 .orow small.tnorm{display:block;font-size:12px;font-weight:300;color:var(--muted)}
-.orow.tdisc span{color:var(--ok)}
+.orow.tdisc span{color:#FF3B30}
 .orow.tsum{border-top:1px solid var(--line)}
 .tamt{font-size:24px;font-weight:700;font-variant-numeric:tabular-nums}
 .tbig{background:var(--tint);border-color:var(--accent)}
@@ -374,7 +374,7 @@ input:disabled{opacity:.6}
 }
 .incl{font-weight:300;font-style:italic;color:var(--muted);font-size:13px}
 .orow.tincl span{font-weight:300;font-style:italic;color:var(--muted);font-size:13px}
-.lines li.disc,#dscbox .dline{color:var(--ok)}
+.lines li.disc,#dscbox .dline{color:#FF3B30}
 .gr{color:var(--ok);font-weight:500}
 .total .amt,.tamt{color:var(--accent)}
 .pp-root{--ok:#1E7A3A}
@@ -406,7 +406,7 @@ img.ico{object-fit:contain;border-radius:4px}
 #aside .lines li small{display:block;font-size:12px;color:var(--muted)}
 .bul{width:7px;height:7px;border-radius:50%;background:var(--accent);margin-top:.55em;opacity:.85}
 #aside .lines li.off .bul,#aside .lines li.partner .bul{background:transparent;box-shadow:inset 0 0 0 1.5px var(--quiet)}
-#aside .lines li.disc .bul{background:var(--ok)}
+#aside .lines li.disc .bul{background:#FF3B30}
 .sumc-f.small-tot .total .amt{font-size:20px;color:var(--fg)}
 .sumc-f.small-tot .total b{font-weight:500}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .jrm{filter:invert(1) grayscale(1)!important}}
@@ -524,7 +524,8 @@ img.ico{object-fit:contain;border-radius:4px}
 .pp-total.sec span{font-size:24px;color:#1C1C1E}
 /* Prijsblokken, zoals de samenvatting in de editor: kop met label rechts, regels met een
    bolletje (blauw en zwart = zit erin, grijs = later of niet in dit totaal), grijze voet
-   met het totaal. Het bedrag per maand is blauw, de andere totalen zwart. */
+   met het totaal. Het bedrag per maand is blauw, de andere totalen zwart.
+   Een korting en het bedrag na korting staan in JR-rood, de oude prijs doorgestreept. */
 .pp-blok{border:1px solid #E5E5E9;border-radius:18px;overflow:hidden;background:#FFFFFF}
 .pp-blok-b{padding:16px 18px 12px}
 .pp-blok-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:10px}
@@ -537,8 +538,9 @@ img.ico{object-fit:contain;border-radius:4px}
 .pp-dl li small{display:block;font-size:11px;color:#8E8E93;margin-top:1px}
 .pp-dl li.off{color:#8E8E93}
 .pp-dl li.off i{background:transparent;box-shadow:inset 0 0 0 1.4px #ADADB2}
-.pp-dl li.disc{color:#007AFF}
-.pp-dl li.disc i{background:#007AFF}
+.pp-dl li.disc{color:#FF3B30}
+.pp-dl li.disc i{background:#FF3B30}
+.pp-blok-t.korting span{color:#FF3B30}
 .pp-blok-t s{font-size:15px;color:#8E8E93;margin-right:10px;letter-spacing:0}
 .pp-blok-f{background:#F2F2F7;padding:13px 18px 14px}
 .pp-blok-t{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
@@ -558,13 +560,12 @@ img.ico{object-fit:contain;border-radius:4px}
 .pp-visie p{font-size:15px;line-height:1.6;font-weight:300;color:#FFFFFF;margin:0 0 10px;max-width:640px}
 .pp-visie .pp-visie-open{font-size:24px;line-height:1.25;font-weight:400;letter-spacing:-.01em;margin:0 0 14px}
 .pp-visie h3{font-size:15px;font-weight:400;line-height:1.4;color:#FFFFFF;margin:16px 0 2px}
-.pp-visie .pp-visie-slot{font-size:24px;line-height:1.25;font-weight:400;letter-spacing:-.01em;margin:20px 0 0}
-.pp-visie-quote{margin:22px 0 0;padding-top:20px;border-top:1px solid rgba(255,255,255,.35);display:flex;flex-direction:column;align-items:flex-start;gap:14px}
-.pp-visie-quote blockquote{margin:0;white-space:nowrap;flex:none;font-size:44px;line-height:1;letter-spacing:-.025em;font-weight:400;color:#FFFFFF}
+.pp-visie-quote{margin:28px 0 0;padding-top:28px;border-top:1px solid rgba(255,255,255,.35);display:flex;flex-direction:column;align-items:flex-start;gap:14px}
+.pp-visie-quote blockquote{margin:0;white-space:nowrap;flex:none;font-size:56px;line-height:1;letter-spacing:-.025em;font-weight:400;color:#FFFFFF}
 .pp-visie-door{display:flex;align-items:center;gap:12px;text-align:left}
-.pp-visie-door img{width:56px;height:56px;border-radius:50%;object-fit:cover;display:block;border:2px solid rgba(255,255,255,.85)}
-.pp-visie-door b{display:block;font-size:15px;font-weight:400!important;color:#FFFFFF}
-.pp-visie-door span{display:block;white-space:nowrap;font-size:12px;font-weight:300;color:rgba(255,255,255,.85)}
+.pp-visie-door img{width:68px;height:68px;border-radius:50%;object-fit:cover;display:block;border:2px solid rgba(255,255,255,.85)}
+.pp-visie-door b{display:block;font-size:16px;font-weight:400!important;color:#FFFFFF}
+.pp-visie-door span{display:block;white-space:nowrap;font-size:13px;font-weight:300;color:rgba(255,255,255,.85)}
 .pp-sec{font-size:20px;font-weight:400;line-height:1.2;letter-spacing:-.01em;color:#1C1C1E;margin:26px 0 12px}
 .pp-sumkop{color:#1C1C1E!important;font-size:16px;font-weight:400;margin-bottom:10px}
 .pp-row > span:first-child{color:#1C1C1E}
@@ -843,7 +844,7 @@ img.ico{object-fit:contain;border-radius:4px}
         </section>
         <section class="group">
           <h2>Opgesteld door</h2>
-          <p class="gsub">Naam, functie, contactgegevens en foto komen uit het profiel bij <a href="/beheer/medewerkers" target="_top">Beheer → Medewerkers</a>. Klopt er iets niet, pas het daar aan; dan staat het goed in elk voorstel. De visiepagina gebruikt altijd het profiel van Jim Coumans.</p>
+          <p class="gsub">Naam, functie, contactgegevens en foto komen uit het profiel bij <a href="/beheer/medewerkers" target="_top">Beheer → Medewerkers</a>. Klopt er iets niet, pas het daar aan; dan staat het goed in elk voorstel. De quote op de visiepagina staat op naam van wie het voorstel opstelt, met foto.</p>
           <div class="form" id="f-auteur"></div>
         </section>
         <section class="group">
@@ -1841,7 +1842,7 @@ async function laadOpstellers(){
 function renderAuteur(){ const a = auteur(); ['functie','telefoon','email'].forEach(k=>{ const x = $('au-'+k); if(x) x.textContent = a[k] || 'niet ingevuld'; });
   const fp = $('au-foto-prev'); if(fp){ fp.hidden = !a.foto; if(a.foto) fp.src = a.foto; $('au-foto-leeg').hidden = !!a.foto; }
   if($('o-door') && $('o-door').value !== (S.offerte.door||'').trim()) vulOpstellers();
-  const vn = $('au-visie'); if(vn){ const v = visieAuteur(); vn.textContent = !OPSTELLERS.length ? '' : v.foto ? 'Visiepagina: foto van '+VISIE_AUTEUR+' gevonden.' : 'Visiepagina: geen profielfoto van '+VISIE_AUTEUR+' gevonden. Voeg die toe bij Beheer → Medewerkers.'; vn.hidden = !vn.textContent; }
+  const vn = $('au-visie'); if(vn){ const o = opsteller(S.offerte.door); vn.textContent = !OPSTELLERS.length || !o ? '' : o.foto ? 'Foto gevonden: staat bij de quote op de visiepagina.' : 'Geen profielfoto gevonden. Voeg die toe bij Beheer → Medewerkers; dan staat hij bij de quote op de visiepagina.'; vn.hidden = !vn.textContent; }
   $('au-naam').textContent = (S.offerte.door||'').trim() || 'nog niemand ingevuld bij Offertegegevens';
  }
 
@@ -2245,7 +2246,8 @@ function contentKort(){ if(!cJr()) return (CP.wie.find(o=>o.id===S.cnt.wie)||{})
   return soortNaam()+' ('+duurNaam()+'), als indicatie '+keerTxt(shootFreq())+(pn?', in samenwerking met '+pn:'')+'. '+(S.cnt.afreken==='los' ? 'Als losse post, buiten de retainer. De eerste in de set-upmaand.' : 'Vooraf ingepland in de retainer.'); }
 const B_PLATFORMS = () => calcAll().B.act.map(k=>({meta:'Meta', tiktok:'TikTok', linkedin:'LinkedIn', google:'Google'})[k.id] || k.naam);
 
-/* De visie van James Robinson, als uitspraak van Jim. Vaste tekst: niet aanpassen per klant. */
+/* De visie van James Robinson. Vaste tekst: niet aanpassen per klant.
+   De quote onderaan staat op naam van wie het voorstel opstelt; zonder opsteller Jim. */
 const VISIE_AUTEUR = 'Jim Coumans';
 const VISIE_TEKST = [
   '<p class="pp-visie-open">Marketing moet geld opleveren. Punt.</p>',
@@ -2257,8 +2259,7 @@ const VISIE_TEKST = [
   '<h3>Drie dingen moeten kloppen</h3>',
   '<p>Adverteren rust op drie pijlers. Meetbaarheid: weten wat werkt en wat het oplevert. Content: sterk, on-brand beeld dat mensen een reden geeft om voor jou te kiezen. En advertentiebudget: genoeg om de juiste mensen te bereiken, te leren en op te schalen.</p>',
   '<h3>Geen magie. Wel een systeem.</h3>',
-  '<p>Er bestaat geen knop voor gegarandeerd meer klanten. Marketing vraagt kennis, creativiteit, tijd en geld. We testen, meten, leren en sturen bij. En als de resultaten erom vragen, kijken we verder dan waar we mee begonnen.</p>',
-  '<p class="pp-visie-slot">Het doel staat vast. De weg ernaartoe niet.</p>'
+  '<p>Er bestaat geen knop voor gegarandeerd meer klanten. Marketing vraagt kennis, creativiteit, tijd en geld. We testen, meten, leren en sturen bij. En als de resultaten erom vragen, kijken we verder dan waar we mee begonnen.</p>'
 ].join('');
 
 async function buildPdf(parts){
@@ -2301,7 +2302,7 @@ async function buildPdf(parts){
   const regel = (l, a, o) => Object.assign({l, a}, o||{});
   const blok = (titel, rechts, regels, voet) => '<div class="pp-blok"><div class="pp-blok-b"><div class="pp-blok-h"><b>'+esc(titel)+'</b><span>'+esc(rechts||'')+'</span></div><ul class="pp-dl">'
     +regels.map(r=>'<li'+(r.off?' class="off"':r.disc?' class="disc"':'')+'><i></i><span>'+r.l+(r.sub?'<small>'+r.sub+'</small>':'')+'</span><span>'+r.a+'</span></li>').join('')+'</ul></div>'
-    +(voet?'<div class="pp-blok-f"><div class="pp-blok-t'+(voet.maand?' maand':'')+'"><b>'+esc(voet.l)+'</b><span>'+(voet.was?'<s>'+voet.was+'</s>':'')+voet.a+'</span></div>'+(S.btw&&voet.incl!=null?'<div class="pp-blok-i"><span>Inclusief 21% btw</span><span>'+eur2(incl(voet.incl))+'</span></div>':'')+'</div>':'')+'</div>';
+    +(voet?'<div class="pp-blok-f"><div class="pp-blok-t'+(voet.maand?' maand':'')+(voet.was?' korting':'')+'"><b>'+esc(voet.l)+'</b><span>'+(voet.was?'<s>'+voet.was+'</s>':'')+voet.a+'</span></div>'+(S.btw&&voet.incl!=null?'<div class="pp-blok-i"><span>Inclusief 21% btw</span><span>'+eur2(incl(voet.incl))+'</span></div>':'')+'</div>':'')+'</div>';
   const prijsblok = (b, terms) => '<div>'+b+(terms?'<p class="pp-bterms">'+terms+'</p>':'')+'</div>';
   const platNaam = k => ({meta:'Meta', tiktok:'TikTok', linkedin:'LinkedIn', google:'Google'})[k.id] || k.naam;
   const budgetRegels = () => (B.off||!B.act.length ? [] : (S.budget.vrij && B.act.length>1
@@ -2374,9 +2375,9 @@ async function buildPdf(parts){
   // ---- onze visie: vaste tekst, wordt niet door AI herschreven ----
   if(parts.includes('visie')){
     nieuwePagina(); body.parentElement.classList.add('pp-blauw');
-    const jim = visieAuteur();
+    const door = opsteller(S.offerte.door); const jim = door || visieAuteur(); const wie = door ? door.naam : VISIE_AUTEUR;
     add('<div>'+h2('Zo kijken wij naar marketing', true)+'<div class="pp-visie">'+VISIE_TEKST+
-      '<figure class="pp-visie-quote"><blockquote>“Whatever it takes.”</blockquote><figcaption class="pp-visie-door">'+(jim.foto?'<img src="'+jim.foto+'" alt="">':'')+'<div><b>'+esc(VISIE_AUTEUR)+'</b><span>'+esc((jim.functie||'Mede-eigenaar').trim())+', James Robinson</span></div></figcaption></figure></div></div>');
+      '<figure class="pp-visie-quote"><blockquote>“Whatever it takes.”</blockquote><figcaption class="pp-visie-door">'+(jim.foto?'<img src="'+jim.foto+'" alt="">':'')+'<div><b>'+esc(wie)+'</b><span>'+esc((jim.functie||'Mede-eigenaar').trim())+', James Robinson</span></div></figcaption></figure></div></div>');
   }
 
   // ---- onze werkwijze ----
