@@ -2207,7 +2207,7 @@ const shootDoel = () => S.cnt.soort==='video' ? 'Krachtige video\'s voor de camp
 const partnerTxt = () => { const n = (S.cnt.partner||'').trim(), o = (S.cnt.partnerOms||'').trim(); return (n ? 'We werken hiervoor samen met '+n+(o?', '+o.replace(/^[A-Z]/, c=>c.toLowerCase()).replace(/\.$/,''):'')+'.' : 'We werken hiervoor samen met een gespecialiseerde partner uit de regio.')+' Wij regisseren en begeleiden het hele traject.'; };
 function contentKort(){ if(!cJr()) return (CP.wie.find(o=>o.id===S.cnt.wie)||{}).naam || 'Content';
   const pn = (S.cnt.partner||'').trim();
-  return soortNaam()+' ('+duurNaam()+'), als indicatie '+keerTxt(shootFreq())+(pn?', samen met '+pn:'')+'. '+(S.cnt.afreken==='los' ? 'Als losse post, buiten de retainer. De eerste in de set-upmaand.' : 'Vooraf ingepland in de retainer.'); }
+  return soortNaam()+' ('+duurNaam()+'), als indicatie '+keerTxt(shootFreq())+(pn?', in samenwerking met '+pn:'')+'. '+(S.cnt.afreken==='los' ? 'Als losse post, buiten de retainer. De eerste in de set-upmaand.' : 'Vooraf ingepland in de retainer.'); }
 const B_PLATFORMS = () => calcAll().B.act.map(k=>({meta:'Meta', tiktok:'TikTok', linkedin:'LinkedIn', google:'Google'})[k.id] || k.naam);
 
 async function buildPdf(parts){
@@ -2270,7 +2270,7 @@ async function buildPdf(parts){
   const laterSetups = () => later().map(k=>regel(esc(k.naam)+' set-up', 'later', {off:true}));
   const setupRegels = () => suRows.map(([n,p,c,t])=>regel(esc(n), rowAmt(p,t), t==='ret'?{off:true}:null)).concat(setupKorting());
   const licRegels = () => su.jr.map(x=>regel(esc(x[0].replace(/^Licentie /,'')), eur(x[1]))).concat(su.partner.map(x=>regel(esc(x[0]), esc(x[1]), {off:true, sub:'rechtstreeks via de leverancier'})));
-  const sumCo = () => prijsblok(blok('Content', 'Eenmalig', coRows.map(r=>regel(esc(coNaam(r)), eur(r[1]), partnerNaam()?{sub:'met '+esc(partnerNaam())}:null)).concat(contentKorting(), volgendeShoots()), {l:'Subtotaal', a:eur(coSub), was: K.contentDisc ? eur(coSub + K.contentDisc) : null, incl:coSub}),
+  const sumCo = () => prijsblok(blok('Content', 'Eenmalig', coRows.map(r=>regel(esc(coNaam(r)), eur(r[1]), partnerNaam()?{sub:'In samenwerking met '+esc(partnerNaam())}:null)).concat(contentKorting(), volgendeShoots()), {l:'Subtotaal', a:eur(coSub), was: K.contentDisc ? eur(coSub + K.contentDisc) : null, incl:coSub}),
     btwNote()+' Gefactureerd in de set-upmaand.'+(losShoot()?' Nieuwe shoots plannen we altijd in overleg.':'')+kVoorwaarde(K.contentL));
   const budgetCard = () => card('Advertentiebudget', eur(B.total)+'<small>per maand</small>', [
     ['Wat het is', 'Hiermee betalen we de advertenties zelf. Het gaat één-op-één naar '+joinNl(B_PLATFORMS())+'.'],
@@ -2351,7 +2351,7 @@ async function buildPdf(parts){
   if(parts.includes('content')){
     if(cJr() || su.co) nieuwePagina();
     if(cJr()){
-      add('<div>'+h2('Content', true)+intro('Content is de brandstof van de campagnes. We plannen geen shoot om een shoot te plannen: elke shoot moet bijdragen aan de commerciële doelen. Mooi en on-brand, maar vooral effectief. Wij begeleiden het hele traject, van plan en regie tot montage en de advertenties in de formaten van elk kanaal.'+(partnerNaam()?' De shoots maken we samen met '+partnerNaam()+'.':''))+'</div>');
+      add('<div>'+h2('Content', true)+intro('Content is de brandstof van de campagnes. We plannen geen shoot om een shoot te plannen: elke shoot moet bijdragen aan de commerciële doelen. Mooi en on-brand, maar vooral effectief. Wij begeleiden het hele traject, van plan en regie tot montage en de advertenties in de formaten van elk kanaal.'+(partnerNaam()?' De shoots maken we in samenwerking met '+partnerNaam()+'.':''))+'</div>');
       const los = S.cnt.afreken==='los'; const p = shootPrijs();
       const rijen = [['Wat', shootDoel()],['Duur', shootDuur()],['Wie', partnerTxt()],['Wanneer', 'De eerste shoot plannen we in de set-upmaand, zodat we snel live kunnen.'+(los?' Die staat op de eerste factuur.':'')],
         ['Hoe vaak', 'Als indicatie '+keerTxt(shootFreq())+'. Wanneer nieuwe content nodig is, geven we aan tijdens het marketingoverleg.'],
@@ -2418,7 +2418,7 @@ async function buildPdf(parts){
     // Chronologisch: wat de klant in de set-upmaand betaalt, daarna per maand, daarna per jaar.
     // Elk bedrag staat maar één keer, zodat niemand de blokken bij elkaar optelt.
     const eerst = A.first;
-    const coKort = coRows.map(r=>regel(esc(coNaam(r).replace(/, in de set-upmaand$/,'')), eur(r[1]), partnerNaam()?{sub:'met '+esc(partnerNaam())}:null)).concat(contentKorting());
+    const coKort = coRows.map(r=>regel(esc(coNaam(r).replace(/, in de set-upmaand$/,'')), eur(r[1]), partnerNaam()?{sub:'In samenwerking met '+esc(partnerNaam())}:null)).concat(contentKorting());
     const blokken = [
       blok('In de set-upmaand', 'Eerste factuur', [regel('Marketing Set-up', eur(setupNet + K.setupDisc))].concat(setupKorting(), coKort, su.jrTotal?[regel('Licenties, eerste jaar', eur(su.jrTotal))]:[]), {l:'Totaal eerste factuur', a:eur(eerst), was: (K.setupDisc+K.contentDisc) ? eur(eerst + K.setupDisc + K.contentDisc) : null, incl:eerst}),
       blok('Daarna per maand', 'Na de set-upmaand', [regel('Marketing Partnership', eur(B.ret.total), {sub: esc(joinNl(B.ret.lines.map(l=>l[0])))})].concat(maandKorting(), budgetRegels()), {l:'Totaal per maand', a:eur(A.monthlyNow), was:maandWas(), maand:true, incl:A.monthlyNow})
