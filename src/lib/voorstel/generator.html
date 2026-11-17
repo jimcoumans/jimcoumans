@@ -2503,7 +2503,7 @@ async function buildPdf(parts){
     body = newPage(); const au = auteur(); const naam = (S.offerte.door||'').trim();
     const pers = String((S.tekst||{}).persoonlijk||'').trim();
     let h = '<div class="pp-brief"><h2 class="pp-h2" style="margin:0!important">Tot slot</h2><p>Beste '+esc((S.contact.naam||'').trim().split(' ')[0] || handelsNaam())+',</p>';
-    h += '<p>Bedankt voor het fijne gesprek en het vertrouwen om met ons mee te denken. In dit voorstel staat hoe wij '+esc(handelsNaam())+' willen laten groeien: concreet, meetbaar en zonder verrassingen achteraf.</p>';
+    h += '<p>Bedankt voor het fijne gesprek en voor de kans om met jullie mee te denken. In dit voorstel staat hoe wij '+esc(handelsNaam())+' willen laten groeien: concreet, meetbaar en zonder verrassingen achteraf.</p>';
     if(pers) pers.split(/\n{2,}/).forEach(p=>{ h += '<p>'+esc(p.trim()).replace(/\n/g,'<br>')+'</p>'; });
     h += '<p>Heb je vragen, of wil je iets anders zien? Bel of mail me gerust. Dan lopen we het samen door.</p><p style="margin-top:6px">Met vriendelijke groet,</p>';
     h += '<div class="pp-sign"><div class="pp-sig"><div><div class="pp-signaam">'+esc(naam||'James Robinson')+'</div>'+(au.functie?'<div class="pp-sigsub">'+esc(au.functie)+' · James Robinson</div>':'<div class="pp-sigsub">James Robinson</div>')+(au.telefoon||au.email?'<div class="pp-sigsub">'+[au.telefoon, au.email].filter(Boolean).map(esc).join(' · ')+'</div>':'')+'</div></div></div></div>';
