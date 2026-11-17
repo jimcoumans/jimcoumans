@@ -537,18 +537,15 @@ img.ico{object-fit:contain;border-radius:4px}
 .pp-dl li small{display:block;font-size:11px;color:#8E8E93;margin-top:1px}
 .pp-dl li.off{color:#8E8E93}
 .pp-dl li.off i{background:transparent;box-shadow:inset 0 0 0 1.4px #ADADB2}
-.pp-dl li.disc{color:#1E7A3A}
-.pp-dl li.disc i{background:#25AD42}
+.pp-dl li.disc{color:#007AFF}
+.pp-dl li.disc i{background:#007AFF}
+.pp-blok-t s{font-size:15px;color:#8E8E93;margin-right:10px;letter-spacing:0}
 .pp-blok-f{background:#F2F2F7;padding:13px 18px 14px}
 .pp-blok-t{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
 .pp-blok-t b{font-size:15px;font-weight:400!important;color:#1C1C1E}
 .pp-blok-t span{font-size:26px;font-weight:400;letter-spacing:-.01em;color:#1C1C1E;white-space:nowrap}
 .pp-blok-t.maand span{color:#007AFF}
 .pp-blok-i{display:flex;justify-content:space-between;gap:12px;font-size:12px;font-weight:300;color:#636466;margin-top:4px}
-.pp-bgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
-.pp-bgrid > :only-child{grid-column:1/-1}
-.pp-bgrid .pp-blok{display:flex;flex-direction:column}
-.pp-bgrid .pp-blok-b{flex:1}
 .pp-bterms{font-size:11.5px;font-weight:300;color:#636466;margin:8px 18px 0;line-height:1.5}
 .pp-sec{font-size:20px;font-weight:400;line-height:1.2;letter-spacing:-.01em;color:#1C1C1E;margin:26px 0 12px}
 .pp-sumkop{color:#1C1C1E!important;font-size:16px;font-weight:400;margin-bottom:10px}
@@ -558,7 +555,7 @@ img.ico{object-fit:contain;border-radius:4px}
 .pp-total span{font-weight:400!important}
 .pp-page b,.pp-page strong{font-weight:400}
 .pp-page [style*="font-weight:500"],.pp-page [style*="font-weight:700"],.pp-page [style*="font-weight: 500"]{font-weight:400!important}
-.pp-head2{align-items:center}
+.pp-head2{align-items:center;padding-left:18px;padding-right:18px}
 .pp-head2 .pp-client{gap:12px}
 .pp-head2 .pp-cicon{width:30px;height:30px}
 .pp-knaam{font-size:13px;font-weight:400;color:#1C1C1E}
@@ -876,6 +873,13 @@ img.ico{object-fit:contain;border-radius:4px}
           <div class="dsc" id="dscbox" hidden></div>
         </div>
         <div class="sumc-f small-tot"><div class="total"><b>Totaal eenmalig</b><span class="amt" id="setupamt">€ 0</span></div><div class="incl" id="setinclrow" hidden><span>Inclusief 21% btw</span><span id="setinclamt"></span></div></div>
+      </div>
+      <div class="sumc" id="corow" hidden>
+        <div class="sumc-b">
+          <div class="sumc-h"><b>Content</b><span>Eenmalig</span></div>
+          <ul class="lines" id="c-lines"></ul>
+        </div>
+        <div class="sumc-f small-tot"><div class="total"><b>Totaal content</b><span class="amt" id="coamt">€ 0</span></div></div>
       </div>
       <div class="sumc" aria-live="polite">
         <div class="sumc-b">
@@ -1305,10 +1309,12 @@ function setupCalc(){
   if(S.web.cookie) rows.push(['Cookietoestemming set-up', CAT.setup.cookie.prijs, CAT.setup.cookie.code]);
   CAT.setup.web.forEach(o=>{ if(S.web[o.id]) rows.push([o.naam, o.prijs, o.code]); });
   const co = CP.wie.find(o=>o.id===S.cnt.wie) || CP.wie[2];
-  let coPrijs = 0;
-  if(co.id!=='jr'){ coPrijs = co.prijs; rows.push(['Content: '+co.kort, co.prijs, co.code]); }
-  else if(S.cnt.afreken==='los'){ coPrijs = shootPrijs()||0; rows.push(['Eerste contentshoot', coPrijs, CP.shoot.code]); }
-  else rows.push(['Eerste contentshoot', 0, CP.shoot.code, 'ret']);
+  // Content is een eigen onderdeel, los van de set-up. De eerste shoot valt wel in de set-upmaand.
+  let coPrijs = 0; const coRows = [];
+  if(co.id!=='jr'){ coPrijs = co.prijs; if(co.prijs) coRows.push(['Content: '+co.kort, co.prijs, co.code]); }
+  else if(S.cnt.afreken==='los'){ coPrijs = shootPrijs()||0; coRows.push(['Eerste contentshoot', coPrijs, CP.shoot.code]); }
+  else coRows.push(['Eerste contentshoot', 0, CP.shoot.code, 'ret']);
+  const coSub = coRows.reduce((a,r)=>a+r[1],0);
   const cad = (S.cadeaus||[]).map(c=>{ const p = cadeauItem(c.code); if(!p) return null; const prijs = Math.max(0, num(c.prijs)||0); return {naam:p.naam, normaal:p.prijs, prijs, code:p.code, desc:p.desc, oms:c.oms}; }).filter(Boolean);
   cad.forEach(c=>rows.push(['Extra: '+lc(c.naam), c.prijs, c.code, 'cad']));
   const sub = rows.reduce((a,r)=>a+r[1],0);
@@ -1317,39 +1323,41 @@ function setupCalc(){
   if(S.web.cookie) addLic(CAT.setup.cookie.lic);
   setupKan().forEach(k=>{ if(k.lic) addLic(k.lic); });
   const jrTotal = jr.reduce((a,x)=>a+x[1],0);
-  return {rows, sub, jr, jrTotal, partner, co, coPrijs, cad};
+  return {rows, sub, jr, jrTotal, partner, co, coPrijs, coRows, coSub, cad};
 }
 /* Korting: per regel, met doel, soort, waarde en looptijd */
 const KDOEL = () => {
   const su = setupCalc(); const o = [['setup','Marketing Set-up, totaal']];
   su.rows.forEach(r=>{ if(r[1]>0 && r[3]!=='cad') o.push(['regel:'+r[2], 'Set-up: '+lc(r[0])]); });
+  su.coRows.forEach(r=>{ if(r[1]>0) o.push(['regel:'+r[2], 'Content: '+lc(r[0])]); });
   o.push(['retainer','Retainer, totaal']);
   return o;
 };
 function kortingCalc(su, ret){
-  const out = {setup:[], maand:[]}; let setupDisc = 0;
+  const out = {setup:[], content:[], maand:[]}; let setupDisc = 0, contentDisc = 0;
   (S.kortingen||[]).forEach(k=>{
     const w = num(k.waarde)||0; if(!w) return;
     const lab = (k.oms||'').trim();
     if(k.doel==='retainer'){
       const d = k.soort==='pct' ? Math.round(ret*Math.min(w,100)/100) : Math.min(Math.round(w), ret);
       const n = k.duur==='maanden' ? Math.max(1, Math.round(num(k.maanden)||1)) : null;
-      out.maand.push({bedrag:d, maanden:n, label: (k.soort==='pct'? w.toLocaleString('nl-NL')+'% ':'')+(lab||'korting')+' op de retainer'+(n?', eerste '+n+' maand'+(n>1?'en':''):'')});
+      out.maand.push({bedrag:d, maanden:n, voorwaarde:String(k.voorwaarde||'').trim(), label: (k.soort==='pct'? w.toLocaleString('nl-NL')+'% ':'')+(lab||'korting')+' op de retainer'+(n?', eerste '+n+' maand'+(n>1?'en':''):'')});
     } else {
-      let basis = su.sub, naam = 'de Marketing Set-up';
-      if(k.doel && k.doel.startsWith('regel:')){ const code = k.doel.slice(6); const r = su.rows.find(x=>x[2]===code); if(!r) return; basis = r[1]; naam = lc(r[0]); }
+      let basis = su.sub, naam = 'de Marketing Set-up', opContent = false;
+      if(k.doel && k.doel.startsWith('regel:')){ const code = k.doel.slice(6); let r = su.rows.find(x=>x[2]===code); if(!r){ r = su.coRows.find(x=>x[2]===code); opContent = !!r; } if(!r) return; basis = r[1]; naam = lc(r[0]); }
       const d = k.soort==='pct' ? Math.round(basis*Math.min(w,100)/100) : Math.min(Math.round(w), basis);
-      setupDisc += d; out.setup.push({bedrag:d, label:(k.soort==='pct'? w.toLocaleString('nl-NL')+'% ':'')+(lab||'korting')+' op '+naam});
+      const regel = {bedrag:d, voorwaarde:String(k.voorwaarde||'').trim(), label:(k.soort==='pct'? w.toLocaleString('nl-NL')+'% ':'')+(lab||'korting')+' op '+naam};
+      if(opContent){ contentDisc += d; out.content.push(regel); } else { setupDisc += d; out.setup.push(regel); }
     }
   });
-  setupDisc = Math.min(setupDisc, su.sub);
+  setupDisc = Math.min(setupDisc, su.sub); contentDisc = Math.min(contentDisc, su.coSub);
   // Maandschema: retainer per maand zolang tijdelijke kortingen lopen
   const vast = out.maand.filter(m=>!m.maanden).reduce((a,m)=>a+m.bedrag,0);
   const ends = [...new Set(out.maand.filter(m=>m.maanden).map(m=>m.maanden))].sort((a,b)=>a-b);
   const schema = []; let start = 1;
   ends.forEach(e=>{ const d = vast + out.maand.filter(m=>m.maanden && m.maanden>=e).reduce((a,m)=>a+m.bedrag,0); if(e>=start){ schema.push({van:start, tot:e, ret: Math.max(0, ret-d)}); start = e+1; } });
   schema.push({van:start, tot:null, ret: Math.max(0, ret-vast)});
-  return {setupDisc, setupL: out.setup, maandL: out.maand, schema};
+  return {setupDisc, setupL: out.setup, contentDisc, contentL: out.content, maandL: out.maand, schema};
 }
 /* Leerfase per platform: Meta en TikTok noemen ± 50 resultaten per week, Google ± 30 per maand voor automatisch bieden. */
 const LEER = { meta:{n:50, per:'week', wie:'Meta'}, tiktok:{n:50, per:'week', wie:'TikTok'}, google:{n:30, per:'maand', wie:'Google'} };
@@ -1362,13 +1370,13 @@ function calcAll(){
   const B = budgetCalc(); const su = setupCalc();
   const link = S.linkOn ? Math.max(0, num(S.link)||0) : 0;
   const K = kortingCalc(su, B.ret.total);
-  const setupNet = su.sub - K.setupDisc;
+  const setupNet = su.sub - K.setupDisc; const contentNet = su.coSub - K.contentDisc;
   const retNow = K.schema[0].ret; const retLater = K.schema[K.schema.length-1].ret;
   /* Advertentiebudget via James Robinson: per maand gefactureerd, met opslag. */
   const viaJr = !!S.budgetJr && !B.off && B.act.length>0 && B.total>0;
   const opslag = viaJr ? Math.round(B.total*CAT.maand.opslagPct/100) : 0, budgetFactuur = viaJr ? B.total+opslag : 0;
   const monthlyNow = retNow + B.total + link + opslag; const monthlyLater = retLater + B.total + link + opslag;
-  return {B, su, link, K, setupNet, retNow, retLater, monthlyNow, monthlyLater, viaJr, opslag, budgetFactuur, first: setupNet + su.jrTotal};
+  return {B, su, link, K, setupNet, contentNet, retNow, retLater, monthlyNow, monthlyLater, viaJr, opslag, budgetFactuur, first: setupNet + contentNet + su.jrTotal};
 }
 function onderCalc(A){
   const {B, su, link} = A; const act = B.act, budgets = B.budgets, adb = B.total;
@@ -1984,13 +1992,14 @@ function renderKortingen(){
       frow('ks-'+i,'Soort','','<select id="ks-'+i+'"><option value="pct">Percentage</option><option value="eur">Vast bedrag</option></select>')+
       frow('kw-'+i,'Waarde','In procenten of als bedrag.',nin('kw-'+i,1))+
       '<div class="frow" id="kdu-row-'+i+'"><label class="fl" for="kdu-'+i+'">Looptijd<span class="fh">Alleen bij de retainer.</span></label><div class="fi2" style="display:flex;gap:8px"><select id="kdu-'+i+'"><option value="doorlopend">Doorlopend</option><option value="maanden">Eerste maanden</option></select><input type="number" min="1" step="1" id="km-'+i+'" style="max-width:90px" aria-label="Aantal maanden"></div></div>'+
-      frow('ko-'+i,'Omschrijving','Bijvoorbeeld: introductiekorting.',tin('ko-'+i))+'</div>').join('');
+      frow('ko-'+i,'Omschrijving','Bijvoorbeeld: introductiekorting.',tin('ko-'+i))+
+      frow('kv-'+i,'Voorwaarde','Waaronder de korting geldt, bijvoorbeeld: als de set-upmaand in januari 2027 start. Leeg: geen voorwaarde.',ta('kv-'+i,2))+'</div>').join('');
     S.kortingen.forEach((k,i)=>{
-      [['kd-','doel'],['ks-','soort'],['kw-','waarde'],['kdu-','duur'],['km-','maanden'],['ko-','oms']].forEach(([p,f])=>{ $(p+i).addEventListener('input',e=>{ S.kortingen[i][f]=e.target.value; save(); render(); }); });
+      [['kd-','doel'],['ks-','soort'],['kw-','waarde'],['kdu-','duur'],['km-','maanden'],['ko-','oms'],['kv-','voorwaarde']].forEach(([p,f])=>{ $(p+i).addEventListener('input',e=>{ S.kortingen[i][f]=e.target.value; save(); render(); }); });
     });
     wrap.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>{ S.kortingen.splice(Number(b.dataset.del),1); save(); render(); }));
   }
-  S.kortingen.forEach((k,i)=>{ setVal('kd-'+i, k.doel); setVal('ks-'+i, k.soort); setVal('kw-'+i, k.waarde); setVal('kdu-'+i, k.duur==='eenmalig'?'doorlopend':k.duur); setVal('km-'+i, k.maanden); setVal('ko-'+i, k.oms);
+  S.kortingen.forEach((k,i)=>{ setVal('kd-'+i, k.doel); setVal('ks-'+i, k.soort); setVal('kw-'+i, k.waarde); setVal('kdu-'+i, k.duur==='eenmalig'?'doorlopend':k.duur); setVal('km-'+i, k.maanden); setVal('ko-'+i, k.oms); setVal('kv-'+i, k.voorwaarde||'');
     $('kdu-row-'+i).hidden = k.doel!=='retainer'; $('km-'+i).hidden = k.duur!=='maanden'; });
 }
 function renderCadeaus(){
@@ -2116,13 +2125,15 @@ function render(){
   const K = A.K; const dsc = $('dscbox'); dsc.hidden = !K.setupDisc;
   dsc.innerHTML = '<div class="was"><span>Normaal</span><span>'+eur(su.sub)+'</span></div>'+K.setupL.map(d=>'<div class="dline"><span>'+esc(d.label)+'</span><span>'+eur(-d.bedrag)+'</span></div>').join('');
   $('setupamt').textContent = eur(A.setupNet);
+  const CL = $('c-lines'); CL.innerHTML = ''; su.coRows.forEach(([n,p,c,t])=>sli(CL, ['jr'], esc(n), rowAmt(p,t))); K.contentL.forEach(d=>sli(CL, ['jr'], esc(d.label)+(d.voorwaarde?'<small>'+esc(d.voorwaarde)+'</small>':''), eur(-d.bedrag), 'disc'));
+  $('corow').hidden = !su.coRows.length; $('coamt').textContent = eur(A.contentNet); $('coamt').closest('.sumc-f').hidden = !su.coSub;
   const LL = $('l-lines'); LL.innerHTML = '';
   su.jr.forEach(l=>sli(LL, ['jr'], esc(l[0]), eur(l[1])));
   su.partner.forEach(l=>sli(LL, [LIC_LOGO[l[2]]||'link'], esc(l[0])+'<small>rechtstreeks via de leverancier</small>', '<small>'+esc(l[1])+'</small>', 'partner'));
   $('licrow').hidden = !(su.jr.length || su.partner.length); $('licamt').textContent = eur(su.jrTotal); $('licfoot').hidden = !su.jrTotal;
   $('total').textContent = eur(A.first); $('inclrow').hidden = !S.btw; $('inclamt').textContent = eur2(incl(A.first));
   const FL = $('f-lines'); FL.innerHTML = '';
-  sli(FL, [], 'Marketing Set-up', eur(A.setupNet)); if(su.jrTotal) sli(FL, [], 'Licenties, eerste jaar', eur(su.jrTotal));
+  sli(FL, [], 'Marketing Set-up', eur(A.setupNet)); if(A.contentNet) sli(FL, [], 'Content', eur(A.contentNet)); if(su.jrTotal) sli(FL, [], 'Licenties, eerste jaar', eur(su.jrTotal));
   sli(FL, [], 'Marketing Partnership<small>vanaf maand 2, niet in dit totaal</small>', eur(A.retNow), 'off');
   $('setinclrow').hidden = !S.btw; $('setinclamt').textContent = eur2(incl(A.setupNet));
   $('licinclrow').hidden = !S.btw || !su.jrTotal; $('licinclamt').textContent = eur2(incl(su.jrTotal));
@@ -2145,7 +2156,7 @@ function render(){
 function contentTxt(){
   if(S.cnt.wie==='klant') return 'Jullie leveren de content aan; wij maken er de advertenties van.';
   if(S.cnt.wie==='partner') return 'Jullie contentpartner maakt het beeld, wij regisseren: contentplan, briefing en merkcheck.';
-  return 'Contentshoots door James Robinson: '+shootWat()+', '+keerTxt(shootFreq())+'. De eerste in de set-upmaand. '+(S.cnt.afreken==='vast' ? 'Vast ingepland en verrekend in de retainer.' : 'Per shoot gefactureerd'+(shootPrijs()?', '+eur(shootPrijs())+' per shoot':'')+'.');
+  return 'Contentshoots door James Robinson'+((S.cnt.partner||'').trim()?', samen met contentpartner '+S.cnt.partner.trim()+((S.cnt.partnerOms||'').trim()?' ('+S.cnt.partnerOms.trim()+')':''):'')+': '+shootWat()+', '+keerTxt(shootFreq())+'. De eerste in de set-upmaand. '+(S.cnt.afreken==='vast' ? 'Vast ingepland en verrekend in de retainer.' : 'Per shoot gefactureerd'+(shootPrijs()?', '+eur(shootPrijs())+' per shoot':'')+'.');
 }
 function renderTotaal(A, opt){
   const B = A.B, su = A.su, K = A.K;
@@ -2155,12 +2166,13 @@ function renderTotaal(A, opt){
     later().map(k=>r('<span style="color:var(--muted)">'+esc(k.naam)+' set-up, later</span>','<span style="color:var(--muted)">'+eur(k.setup.prijs)+'</span>')).join('');
   if(K.setupDisc) h += r('<b>Normaal</b>','<b>'+eur(su.sub)+'</b>')+K.setupL.map(d=>r(esc(d.label), eur(-d.bedrag),'tdisc')).join('');
   h += r('<b>'+(K.setupDisc?'Set-up na korting':'Set-up, totaal')+'</b>','<b>'+eur(A.setupNet)+'</b>','tsum')+'</div>';
+  if(su.coRows.length) h += '<div class="ocard"><h3>Content, eenmalig</h3>'+su.coRows.map(([n,p,c,t])=>r(esc(n), rowAmt(p,t))).join('')+K.contentL.map(d=>r(esc(d.label), eur(-d.bedrag),'tdisc')).join('')+(su.coSub?r('<b>Content, totaal</b>','<b>'+eur(A.contentNet)+'</b>','tsum'):'')+'</div>';
   if(su.jr.length || su.partner.length){
     h += '<div class="ocard"><h3>Licenties</h3>'+su.jr.map(l=>r(esc(l[0])+' <small class="tnorm">via James Robinson, gefactureerd in de set-upmaand en daarna jaarlijks</small>', esc(l[2]))).join('')+
       su.partner.map(l=>r(esc(l[0])+' <small class="tnorm">rechtstreeks via de leverancier</small>', esc(l[1]))).join('')+
       (su.jrTotal?r('<b>Licenties eerste jaar, via James Robinson</b>','<b>'+eur(su.jrTotal)+'</b>','tsum'):'')+'</div>';
   }
-  h += '<div class="ocard tsec">'+r('Marketing Set-up', eur(A.setupNet))+(su.jrTotal?r('Licenties, eerste jaar', eur(su.jrTotal)):'')+'<div class="orow tsum"><span><b>Jullie betalen in de set-upmaand</b></span><span class="tamt">'+eur(A.first)+'</span></div>'+(S.btw?r('Inclusief 21% btw', eur2(incl(A.first)),'tincl'):'')+'</div>';
+  h += '<div class="ocard tsec">'+r('Marketing Set-up', eur(A.setupNet))+(A.contentNet?r('Content', eur(A.contentNet)):'')+(su.jrTotal?r('Licenties, eerste jaar', eur(su.jrTotal)):'')+'<div class="orow tsum"><span><b>Jullie betalen in de set-upmaand</b></span><span class="tamt">'+eur(A.first)+'</span></div>'+(S.btw?r('Inclusief 21% btw', eur2(incl(A.first)),'tincl'):'')+'</div>';
   h += '<div class="ocard tbig"><h3>Daarna per maand</h3>'+B.ret.lines.map(l=>r(esc(l[0]), eur(l[1]))).join('')+r('<b>Marketing Partnership</b>','<b>'+eur(B.ret.total)+'</b>','tsum')+
     K.maandL.map(m=>r(esc(m.label), eur(-m.bedrag),'tdisc')).join('')+
     (B.act.length && !B.off ? r('Advertentiebudget'+(A.viaJr?' <small class="tnorm">via James Robinson, per maand gefactureerd</small>':''), eur(B.total)) : '')+(A.viaJr ? r('Opslag advertentiebudget, '+CAT.maand.opslagPct+'%', eur(A.opslag)) : '')+(A.link?r('Linkbuildingbudget', eur(A.link)):'')+
@@ -2194,7 +2206,8 @@ const shootDuur = () => { const w = S.cnt.soort==='video' ? 'filmen' : S.cnt.soo
 const shootDoel = () => S.cnt.soort==='video' ? 'Krachtige video\'s voor de campagnes, die de doelgroep aanspreken en bijdragen aan de commerciële doelen.' : S.cnt.soort==='foto' ? 'Sterke beelden voor de campagnes, die de doelgroep aanspreken en bijdragen aan de commerciële doelen.' : 'Foto en video voor de campagnes, die de doelgroep aanspreken en bijdragen aan de commerciële doelen.';
 const partnerTxt = () => { const n = (S.cnt.partner||'').trim(), o = (S.cnt.partnerOms||'').trim(); return (n ? 'We werken hiervoor samen met '+n+(o?', '+o.replace(/^[A-Z]/, c=>c.toLowerCase()).replace(/\.$/,''):'')+'.' : 'We werken hiervoor samen met een gespecialiseerde partner uit de regio.')+' Wij regisseren en begeleiden het hele traject.'; };
 function contentKort(){ if(!cJr()) return (CP.wie.find(o=>o.id===S.cnt.wie)||{}).naam || 'Content';
-  return soortNaam()+' ('+duurNaam()+'), als indicatie '+keerTxt(shootFreq())+'. '+(S.cnt.afreken==='los' ? 'Als losse post, buiten de retainer. De eerste in de set-upmaand.' : 'Vooraf ingepland in de retainer.'); }
+  const pn = (S.cnt.partner||'').trim();
+  return soortNaam()+' ('+duurNaam()+'), als indicatie '+keerTxt(shootFreq())+(pn?', samen met '+pn:'')+'. '+(S.cnt.afreken==='los' ? 'Als losse post, buiten de retainer. De eerste in de set-upmaand.' : 'Vooraf ingepland in de retainer.'); }
 const B_PLATFORMS = () => calcAll().B.act.map(k=>({meta:'Meta', tiktok:'TikTok', linkedin:'LinkedIn', google:'Google'})[k.id] || k.naam);
 
 async function buildPdf(parts){
@@ -2226,17 +2239,17 @@ async function buildPdf(parts){
   // In het volledige voorstel staan set-up, content en licenties elk apart, met een eigen
   // subtotaal; de samenvatting telt ze op per moment van betalen. In de bijlagen blijft
   // de eerste contentshoot onderdeel van de set-up, zoals in de editor.
-  const isCo = r => r[2]===CP.shoot.code || (su.co.id!=='jr' && r[2]===su.co.code);
-  const suRows = full ? su.rows.filter(r=>!isCo(r)) : su.rows;
-  const coRows = full ? su.rows.filter(r=>isCo(r) && r[1]>0) : [];
-  const coSub = coRows.reduce((a,r)=>a+r[1],0);
-  const setupNet = A.setupNet - coSub;
+  const suRows = su.rows;
+  const coRows = su.coRows.filter(r=>r[1]>0);
+  const coSub = A.contentNet;
+  const setupNet = A.setupNet;
   const coNaam = r => r[2]===CP.shoot.code ? 'Eerste '+soortNaam().toLowerCase()+', in de set-upmaand' : r[0];
+  const partnerNaam = () => cJr() ? (S.cnt.partner||'').trim() : '';
   // Prijsblok (zie de CSS bij .pp-blok). Labels en bedragen komen als HTML binnen.
   const regel = (l, a, o) => Object.assign({l, a}, o||{});
   const blok = (titel, rechts, regels, voet) => '<div class="pp-blok"><div class="pp-blok-b"><div class="pp-blok-h"><b>'+esc(titel)+'</b><span>'+esc(rechts||'')+'</span></div><ul class="pp-dl">'
     +regels.map(r=>'<li'+(r.off?' class="off"':r.disc?' class="disc"':'')+'><i></i><span>'+r.l+(r.sub?'<small>'+r.sub+'</small>':'')+'</span><span>'+r.a+'</span></li>').join('')+'</ul></div>'
-    +(voet?'<div class="pp-blok-f"><div class="pp-blok-t'+(voet.maand?' maand':'')+'"><b>'+esc(voet.l)+'</b><span>'+voet.a+'</span></div>'+(S.btw&&voet.incl!=null?'<div class="pp-blok-i"><span>Inclusief 21% btw</span><span>'+eur2(incl(voet.incl))+'</span></div>':'')+'</div>':'')+'</div>';
+    +(voet?'<div class="pp-blok-f"><div class="pp-blok-t'+(voet.maand?' maand':'')+'"><b>'+esc(voet.l)+'</b><span>'+(voet.was?'<s>'+voet.was+'</s>':'')+voet.a+'</span></div>'+(S.btw&&voet.incl!=null?'<div class="pp-blok-i"><span>Inclusief 21% btw</span><span>'+eur2(incl(voet.incl))+'</span></div>':'')+'</div>':'')+'</div>';
   const prijsblok = (b, terms) => '<div>'+b+(terms?'<p class="pp-bterms">'+terms+'</p>':'')+'</div>';
   const platNaam = k => ({meta:'Meta', tiktok:'TikTok', linkedin:'LinkedIn', google:'Google'})[k.id] || k.naam;
   const budgetRegels = () => (B.off||!B.act.length ? [] : (S.budget.vrij && B.act.length>1
@@ -2244,14 +2257,21 @@ async function buildPdf(parts){
       : B.act.map(k=>regel('Advertentiebudget'+(B.act.length>1?' '+esc(k.naam):''), eur(B.budgets[k.id]), {sub: A.viaJr ? 'via James Robinson' : 'rechtstreeks aan '+esc(platNaam(k))}))))
     .concat(A.opslag?[regel('Opslag advertentiebudget, '+CAT.maand.opslagPct+'%', eur(A.opslag), {sub:'via James Robinson'})]:[])
     .concat(A.link?[regel('Linkbuildingbudget', eur(A.link))]:[]);
-  const maandKorting = () => K.maandL.map(m=>regel(esc(m.label), eurPdf(-m.bedrag), {disc:true}));
+  const hoofd = t => t.charAt(0).toUpperCase()+t.slice(1);
+  const kRegel = d => regel(esc(hoofd(d.label)), eurPdf(-d.bedrag), {disc:true, sub: d.voorwaarde ? esc(d.voorwaarde) : ''});
+  const maandKorting = () => K.maandL.map(kRegel);
+  const setupKorting = () => K.setupL.map(kRegel);
+  const contentKorting = () => K.contentL.map(kRegel);
+  // Een korting met voorwaarde: de voorwaarde staat onder de regel, en in de toelichting dat de korting anders vervalt.
+  const kVoorwaarde = L => L.some(d=>d.voorwaarde) ? ' Een korting met een voorwaarde geldt alleen als aan die voorwaarde is voldaan; anders vervalt hij en gelden de bedragen zonder korting.' : '';
+  const maandWas = () => K.maandL.length ? eur(A.monthlyNow + K.maandL.reduce((a,m)=>a+m.bedrag,0)) : null;
   const losShoot = () => cJr() && S.cnt.afreken==='los' && shootPrijs();
   const volgendeShoots = () => losShoot() ? [regel('Volgende '+soortNaam().toLowerCase()+'s, als indicatie '+keerTxt(shootFreq()), eur(shootPrijs())+' per shoot', {off:true, sub:'in overleg, niet in dit totaal'})] : [];
   const laterSetups = () => later().map(k=>regel(esc(k.naam)+' set-up', 'later', {off:true}));
-  const setupRegels = () => suRows.map(([n,p,c,t])=>regel(esc(n), rowAmt(p,t), t==='ret'?{off:true}:null)).concat(K.setupL.map(d=>regel(esc(d.label), eurPdf(-d.bedrag), {disc:true})));
+  const setupRegels = () => suRows.map(([n,p,c,t])=>regel(esc(n), rowAmt(p,t), t==='ret'?{off:true}:null)).concat(setupKorting());
   const licRegels = () => su.jr.map(x=>regel(esc(x[0].replace(/^Licentie /,'')), eur(x[1]))).concat(su.partner.map(x=>regel(esc(x[0]), esc(x[1]), {off:true, sub:'rechtstreeks via de leverancier'})));
-  const sumCo = () => prijsblok(blok('Content', 'Eenmalig', coRows.map(r=>regel(esc(coNaam(r)), eur(r[1]))).concat(volgendeShoots()), {l:'Subtotaal', a:eur(coSub), incl:coSub}),
-    btwNote()+' Gefactureerd in de set-upmaand.'+(losShoot()?' Nieuwe shoots plannen we altijd in overleg.':''));
+  const sumCo = () => prijsblok(blok('Content', 'Eenmalig', coRows.map(r=>regel(esc(coNaam(r)), eur(r[1]), partnerNaam()?{sub:'met '+esc(partnerNaam())}:null)).concat(contentKorting(), volgendeShoots()), {l:'Subtotaal', a:eur(coSub), was: K.contentDisc ? eur(coSub + K.contentDisc) : null, incl:coSub}),
+    btwNote()+' Gefactureerd in de set-upmaand.'+(losShoot()?' Nieuwe shoots plannen we altijd in overleg.':'')+kVoorwaarde(K.contentL));
   const budgetCard = () => card('Advertentiebudget', eur(B.total)+'<small>per maand</small>', [
     ['Wat het is', 'Hiermee betalen we de advertenties zelf. Het gaat één-op-één naar '+joinNl(B_PLATFORMS())+'.'],
     ['Hoe het betaald wordt', A.viaJr ? 'Het loopt via James Robinson: we factureren het per maand, met '+CAT.maand.opslagPct+'% opslag voor de administratie.' : joinNl(B_PLATFORMS())+' '+(B_PLATFORMS().length>1?'brengen':'brengt')+' het rechtstreeks bij jullie in rekening, via jullie eigen advertentieaccount. Het loopt dus niet via James Robinson, en wij rekenen er niets op.'],
@@ -2268,9 +2288,14 @@ async function buildPdf(parts){
     add('<div>'+kop('Hoe dit voorstel is opgebouwd')+card('Vier onderdelen', '', delen, false)+'</div>');
   }
   // ---- zo hebben we jullie begrepen ----
+  // Zijn er doelen of cijfers, dan opent dat hoofdstuk een nieuwe pagina en staat
+  // "Zo hebben we jullie begrepen" daaronder. Anders blijft het op de openingspagina.
+  const doelenEcht = parts.includes('doelen') && (heeftCijfers() || Object.entries(S.fases||{}).some(([k,v])=>!/l$/.test(k) && num(v)!=null && num(v)>0));
+  let begrepen = '';
   if(parts.includes('begrepen')){
     const T = S.tekst || {}; const rijen = [['Wie jullie zijn', T.bedrijf],['Jullie klanten', T.klanten],['Werkgebied', T.werkgebied],['Waar jullie tegenaan lopen', T.uitdagingen],['Waarom nu', T.nu]].filter(r=>String(r[1]||'').trim());
-    if(rijen.length) add('<div>'+kop('Zo hebben we jullie begrepen')+card(handelsNaam(), '', rijen.map(r=>[r[0], String(r[1]).trim()]), false)+'</div>');
+    if(rijen.length) begrepen = '<div>'+kop('Zo hebben we jullie begrepen')+card(handelsNaam(), '', rijen.map(r=>[r[0], String(r[1]).trim()]), false)+'</div>';
+    if(begrepen && !doelenEcht) add(begrepen);
   }
   if(parts.includes('doelen')){
     const C = S.cijfers, rows = []; const t = TYPES.find(x=>x.id===S.type);
@@ -2290,9 +2315,7 @@ async function buildPdf(parts){
       rows.push(['Doel '+txt+(S.fases[g+'l']?' · '+esc(S.fases[g+'l']):''), eur(t)+' omzet per maand'+det+(num(S.fases[g+'m'])?', binnen '+nf(num(S.fases[g+'m']))+' maanden':'')]); });
     if(isAanv()){ fz('l1','l1l','l1m','fase 1'); fz('l2','l2l','l2m','fase 2'); }
     if(S.type==='beter'){ fz('k1','k1l','k1m','fase 1'); fz('k2','k2l','k2m','fase 2'); }
-    const echt = heeftCijfers() || Object.entries(S.fases||{}).some(([k,v])=>!/l$/.test(k) && num(v)!=null && num(v)>0);
-    if(echt){ nieuwePagina(); }
-    if(echt) add('<div>'+h2('Waar jullie nu staan en wat jullie willen bereiken', true)+kv(rows)+'</div>');
+    if(doelenEcht){ nieuwePagina(); add('<div>'+h2('Waar jullie nu staan en wat jullie willen bereiken', true)+card('Cijfers en doelen', '', rows.map(r=>r.map(h=>{ const d = el('div'); d.innerHTML = h; return d.textContent; })), false)+'</div>'); if(begrepen) add(begrepen); }
   }
 
   // ---- onze werkwijze ----
@@ -2320,15 +2343,15 @@ async function buildPdf(parts){
     if(contentRet()) add(card('Contentshoots', eur(contentMaand())+'<small>per maand</small>', [['Wat', 'Een shoot '+shootWat()+', '+keerTxt(shootFreq())+'. De eerste in de set-upmaand, zodat we snel live kunnen.'],['Wat we doen', CP.wie[2].desc],['Waarom vast', 'Vooraf ingepland is '+CP.vastKorting+'% voordeliger dan los: '+eur(contentBesparing())+' per jaar minder.']], true));
     if(!B.off && B.act.length) add(budgetCard());
     const sch = K.schema.length>1 ? ' '+K.schema.map(x=>(x.tot?'Maand '+x.van+(x.tot>x.van?' tot '+x.tot:'')+': ':'Daarna: ')+eur(x.ret+B.total+A.link+A.opslag)+' per maand').join(' · ')+'.' : '';
-    add(prijsblok(blok('Maandpakket', 'Per maand, na de set-upmaand', B.ret.lines.map(l=>regel(esc(l[0]), eur(l[1]))).concat(maandKorting(), budgetRegels()), {l:'Subtotaal per maand', a:eur(A.monthlyNow), maand:true, incl:A.monthlyNow}),
-      btwNote()+sch+(B.off||!B.act.length||B.teLaag?'':' Het advertentiebudget is minimaal even hoog als het beheer van de kanalen.')+(B.off||!B.act.length||A.viaJr?'':' Het advertentiebudget betalen jullie rechtstreeks aan '+joinNl(B_PLATFORMS())+'; het loopt niet via James Robinson.')+' Het maandpakket start na de set-upmaand en is maandelijks opzegbaar.'));
+    add(prijsblok(blok('Maandpakket', 'Per maand, na de set-upmaand', B.ret.lines.map(l=>regel(esc(l[0]), eur(l[1]))).concat(maandKorting(), budgetRegels()), {l:'Subtotaal per maand', a:eur(A.monthlyNow), was:maandWas(), maand:true, incl:A.monthlyNow}),
+      btwNote()+sch+kVoorwaarde(K.maandL)+(B.off||!B.act.length||B.teLaag?'':' Het advertentiebudget is minimaal even hoog als het beheer van de kanalen.')+(B.off||!B.act.length||A.viaJr?'':' Het advertentiebudget betalen jullie rechtstreeks aan '+joinNl(B_PLATFORMS())+'; het loopt niet via James Robinson.')+' Het maandpakket start na de set-upmaand en is maandelijks opzegbaar.'));
   }
 
   // ---- content ----
   if(parts.includes('content')){
     if(cJr() || su.co) nieuwePagina();
     if(cJr()){
-      add('<div>'+h2('Content', true)+intro('Content is de brandstof van de campagnes. We plannen geen shoot om een shoot te plannen: elke shoot moet bijdragen aan de commerciële doelen. Mooi en on-brand, maar vooral effectief. Wij begeleiden het hele traject, van plan en regie tot montage en de advertenties in de formaten van elk kanaal.')+'</div>');
+      add('<div>'+h2('Content', true)+intro('Content is de brandstof van de campagnes. We plannen geen shoot om een shoot te plannen: elke shoot moet bijdragen aan de commerciële doelen. Mooi en on-brand, maar vooral effectief. Wij begeleiden het hele traject, van plan en regie tot montage en de advertenties in de formaten van elk kanaal.'+(partnerNaam()?' De shoots maken we samen met '+partnerNaam()+'.':''))+'</div>');
       const los = S.cnt.afreken==='los'; const p = shootPrijs();
       const rijen = [['Wat', shootDoel()],['Duur', shootDuur()],['Wie', partnerTxt()],['Wanneer', 'De eerste shoot plannen we in de set-upmaand, zodat we snel live kunnen.'+(los?' Die staat op de eerste factuur.':'')],
         ['Hoe vaak', 'Als indicatie '+keerTxt(shootFreq())+'. Wanneer nieuwe content nodig is, geven we aan tijdens het marketingoverleg.'],
@@ -2354,11 +2377,9 @@ async function buildPdf(parts){
     const cn = capiNu(); if(cn.length) add('<div class="pp-later" style="border-style:solid;border-color:#E5E5E9"><div class="pp-row" style="margin:0"><span>De Conversions API, uitgelegd</span><span style="font-size:11px;font-weight:300;color:#636466">geldt voor '+esc(joinNl(cn.map(c=>c.naam)))+'</span></div>'+subs(CAT.capiUitleg)+'</div>');
     if(S.web.cookie){ const c = CAT.setup.cookie; add(card(c.naam+' set-up', eur(c.prijs)+'<small>eenmalig</small>', [['Waarom',c.why],['Wat we doen',c.desc],['Licentie',CAT.licenties[c.lic].txt]], true, 'cookie')); }
     CAT.setup.web.filter(o=>S.web[o.id]).forEach(o=>add(card(o.naam, eur(o.prijs)+'<small>eenmalig</small>', [['Wat we doen',o.desc]], true)));
-    if(full){} else if(su.co.id!=='jr') add(card('Content: '+su.co.kort, eur(su.co.prijs)+'<small>eenmalig</small>', [[su.co.label||'Wat we doen', su.co.desc]], su.co.prijs>0));
-    else add(card('Eerste '+soortNaam().toLowerCase(), (S.cnt.afreken==='los' ? eur(su.coPrijs)+'<small>eenmalig</small>' : 'via de retainer'), [['Wat', 'De eerste '+soortNaam().toLowerCase()+' ('+duurNaam()+'), in de set-upmaand. Zo hebben we beeld voor de eerste advertenties. Meer hierover bij Content.'],['Wie', partnerTxt()]], S.cnt.afreken==='los'));
     su.cad.forEach(c=>add(card('Extra: '+c.naam, (c.prijs?eur(c.prijs):'gratis')+'<small>normaal '+eur(c.normaal)+'</small>', [['Wat het is', c.desc]].concat(c.oms?[['Waarom', c.oms]]:[]), true)));
-    const st = [btwNote(), 'Eenmalig. De set-up voeren we uit in de maand voor livegang.']; if(!full && su.jrTotal) st.push('Daarnaast '+eur(su.jrTotal)+' per jaar aan licenties via James Robinson, vooruit gefactureerd.');
-    add(prijsblok(blok('Marketing Set-up', 'Eenmalig', setupRegels().concat(laterSetups()), {l: full ? 'Subtotaal' : 'Totaal eenmalig', a:eur(setupNet), incl:setupNet}), st.join(' ')));
+    const st = [btwNote(), 'Eenmalig. De set-up voeren we uit in de maand voor livegang.'+kVoorwaarde(K.setupL)]; if(!full && su.jrTotal) st.push('Daarnaast '+eur(su.jrTotal)+' per jaar aan licenties via James Robinson, vooruit gefactureerd.');
+    add(prijsblok(blok('Marketing Set-up', 'Eenmalig', setupRegels().concat(laterSetups()), {l: full ? 'Subtotaal' : 'Totaal eenmalig', a:eur(setupNet), was: K.setupDisc ? eur(setupNet + K.setupDisc) : null, incl:setupNet}), st.join(' ')));
   }
   if(parts.includes('licenties')){
     if(su.jr.length || su.partner.length){
@@ -2394,24 +2415,23 @@ async function buildPdf(parts){
   }
   if(parts.includes('samen')){
     nieuwePagina();
-    const eenmalig = setupNet + coSub, eerst = setupNet + coSub + su.jrTotal;
-    const coKort = coRows.map(r=>regel(esc(coNaam(r).replace(/, in de set-upmaand$/,'')), eur(r[1])));
+    // Chronologisch: wat de klant in de set-upmaand betaalt, daarna per maand, daarna per jaar.
+    // Elk bedrag staat maar één keer, zodat niemand de blokken bij elkaar optelt.
+    const eerst = A.first;
+    const coKort = coRows.map(r=>regel(esc(coNaam(r).replace(/, in de set-upmaand$/,'')), eur(r[1]), partnerNaam()?{sub:'met '+esc(partnerNaam())}:null)).concat(contentKorting());
     const blokken = [
-      blok('Eenmalig', 'In de set-upmaand', [regel('Marketing Set-up', eur(setupNet))].concat(coKort), {l:'Totaal eenmalig', a:eur(eenmalig), incl:eenmalig}),
-      blok('Per maand', 'Na de set-upmaand', [regel('Marketing Partnership', eur(B.ret.total), {sub: esc(joinNl(B.ret.lines.map(l=>l[0])))})].concat(maandKorting(), budgetRegels()), {l:'Totaal per maand', a:eur(A.monthlyNow), maand:true, incl:A.monthlyNow})
+      blok('In de set-upmaand', 'Eerste factuur', [regel('Marketing Set-up', eur(setupNet + K.setupDisc))].concat(setupKorting(), coKort, su.jrTotal?[regel('Licenties, eerste jaar', eur(su.jrTotal))]:[]), {l:'Totaal eerste factuur', a:eur(eerst), was: (K.setupDisc+K.contentDisc) ? eur(eerst + K.setupDisc + K.contentDisc) : null, incl:eerst}),
+      blok('Daarna per maand', 'Na de set-upmaand', [regel('Marketing Partnership', eur(B.ret.total), {sub: esc(joinNl(B.ret.lines.map(l=>l[0])))})].concat(maandKorting(), budgetRegels()), {l:'Totaal per maand', a:eur(A.monthlyNow), was:maandWas(), maand:true, incl:A.monthlyNow})
     ];
-    if(su.jr.length || su.partner.length) blokken.push(blok('Licenties', 'Per jaar', licRegels(), su.jrTotal ? {l:'Per jaar, via James Robinson', a:eur(su.jrTotal), incl:su.jrTotal} : null));
-    blokken.push(blok('In de set-upmaand', 'Eerste factuur', [regel('Marketing Set-up', eur(setupNet))].concat(coKort, su.jrTotal?[regel('Licenties, eerste jaar', eur(su.jrTotal))]:[],
-      [regel('Marketing Partnership', eur(A.retNow), {off:true, sub:'na de set-upmaand, niet in dit totaal'})],
-      (!B.off && B.act.length && !A.viaJr) ? [regel('Advertentiebudget', eur(B.total), {off:true, sub:'rechtstreeks aan '+esc(joinNl(B_PLATFORMS()))+', niet op onze factuur'})] : []),
-      {l:'Totaal eerste factuur', a:eur(eerst), incl:eerst}));
+    const jaarRegels = su.jr.map(x=>regel(esc(x[0].replace(/^Licentie /,'')), eur(x[1]))).concat(volgendeShoots());
+    if(jaarRegels.length) blokken.push(blok('Daarna per jaar', su.jrTotal ? 'Licenties vanaf het tweede jaar' : 'Indicatie', jaarRegels, su.jrTotal ? {l:'Per jaar, via James Robinson', a:eur(su.jrTotal), incl:su.jrTotal} : null));
     const t = [S.btw?'Bedragen exclusief btw, tenzij anders vermeld.':'Alle bedragen exclusief btw.'];
     if(K.schema.length>1) t.push(K.schema.map(x=>(x.tot?'Maand '+x.van+(x.tot>x.van?' tot '+x.tot:'')+': ':'Daarna: ')+eur(x.ret+B.total+A.link+A.opslag)+' per maand').join(' · ')+'.');
     if(A.viaJr) t.push('Het advertentiebudget loopt via James Robinson: we factureren het per maand, inclusief '+CAT.maand.opslagPct+'% opslag.'); else if(!B.off && B.act.length) t.push('Het advertentiebudget betalen jullie rechtstreeks aan '+joinNl(B_PLATFORMS())+'; het loopt niet via James Robinson.');
-    if(su.partner.length || opts.length) t.push('Licenties via leveranciers en optionele extra\'s komen er los bij.'); if(losShoot()) t.push('Volgende '+soortNaam().toLowerCase()+'s: als indicatie '+keerTxt(shootFreq())+', '+eur(shootPrijs())+' per shoot, altijd in overleg.'); t.push('Het maandpakket start na de set-upmaand en is maandelijks opzegbaar.');
-    // Twee kolommen: eenmalig naast per maand, licenties naast de eerste factuur.
-    add('<div>'+h2('Samengevat', true)+'<div class="pp-bgrid">'+blokken[0]+blokken[1]+'</div></div>');
-    add('<div><div class="pp-bgrid">'+blokken.slice(2).join('')+'</div><p class="pp-bterms">'+t.join(' ')+'</p></div>');
+    if(kVoorwaarde(K.setupL.concat(K.contentL, K.maandL))) t.push(kVoorwaarde(K.setupL.concat(K.contentL, K.maandL)).trim());
+    if(su.partner.length || opts.length) t.push('Licenties via leveranciers en optionele extra\'s komen er los bij.'); if(losShoot()) t.push('Nieuwe shoots plannen we altijd in overleg.'); t.push('Het maandpakket start na de set-upmaand en is maandelijks opzegbaar.');
+    add('<div>'+h2('Samengevat', true)+intro('Wat jullie betalen, en wanneer.')+blokken[0]+'</div>');
+    blokken.slice(1).forEach((b,i,arr)=>add(i===arr.length-1 ? prijsblok(b, t.join(' ')) : '<div>'+b+'</div>'));
   }
 
   // ---- persoonlijk bericht ----
