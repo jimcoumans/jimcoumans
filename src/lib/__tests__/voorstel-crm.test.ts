@@ -8,13 +8,15 @@ import { test, after } from 'node:test'
 import assert from 'node:assert/strict'
 import { eq, inArray } from 'drizzle-orm'
 import { db, client } from '../../db'
-import { organizations, contacts, competitors, organizationGoals, organizationAudiences, activities } from '../../db/schema'
+import { organizations, contacts, competitors, organizationGoals, organizationAudiences, activities, proposals } from '../../db/schema'
+import { voorstellenVoorBedrijf } from '../voorstellen'
 import { aanvulling, isMobiel, koppelAanCrm } from '../voorstel-crm'
 
 const suffix = Date.now()
 const orgs: string[] = []
 
 after(async () => {
+  await db.delete(proposals).where(eq(proposals.id, `vc-dossier-${suffix}`))
   if (orgs.length) await db.delete(organizations).where(inArray(organizations.id, orgs))
   await client.end()
 })
@@ -150,4 +152,22 @@ test('profiel: velden aanvullen, lijsten toevoegen zonder dubbelen, notitie bijw
   assert.equal(notities.length, 1)
   assert.equal(notities[0]!.body, 'Tweede versie')
   assert.equal((await db.select().from(organizationGoals).where(eq(organizationGoals.organizationId, org!.id))).length, 2)
+})
+
+test('logo gaat mee als het bedrijf er nog geen heeft, en het voorstel is terug te vinden', async () => {
+  // Een PNG van 1 bij 1 pixel.
+  const png = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='
+  await db.insert(proposals).values({ id: `vc-dossier-${suffix}`, naam: `Logo ${suffix}`, staat: {} })
+  const k = await koppelAanCrm({ dossierId: `vc-dossier-${suffix}`, bedrijf: { naam: `Logo ${suffix}` }, profiel: { logo: png } })
+  orgs.push(k.organizationId)
+  const [org] = await db.select().from(organizations).where(eq(organizations.id, k.organizationId))
+  assert.ok(org!.logoImageId, 'logo opgeslagen')
+
+  const voor = await voorstellenVoorBedrijf(k.organizationId)
+  assert.deepEqual(voor.map((v) => v.id), [`vc-dossier-${suffix}`])
+
+  // Een tweede logo vervangt het bestaande niet.
+  await koppelAanCrm({ organizationId: k.organizationId, bedrijf: { naam: `Logo ${suffix}` }, profiel: { logo: png } })
+  const [na] = await db.select().from(organizations).where(eq(organizations.id, k.organizationId))
+  assert.equal(na!.logoImageId, org!.logoImageId)
 })

@@ -18,8 +18,9 @@
 
 import { and, eq, sql } from 'drizzle-orm'
 import { db } from '@/db'
-import { activities, competitors, contacts, organizationAudiences, organizationGoals, organizations } from '@/db/schema'
+import { activities, competitors, contacts, organizationAudiences, organizationGoals, organizations, proposals } from '@/db/schema'
 import { uniekeSlug } from './admin'
+import { bewaarAfbeelding } from './afbeeldingen'
 import { createContact } from './crm'
 import { splitsNaam, volledigeNaam } from './namen'
 
@@ -34,6 +35,8 @@ export type CrmInvoer = {
   profiel?: CrmProfiel | null
   /** Wie koppelt; komt op de notitie in de tijdlijn. */
   userId?: string | null
+  /** Het dossier in de generator: dat krijgt het bedrijf, zodat je het voorstel vanaf de bedrijfspagina terugvindt. */
+  dossierId?: string | null
 }
 
 export type CrmProfiel = {
@@ -56,6 +59,8 @@ export type CrmProfiel = {
    * iets wat iemand in het CRM heeft verwijderd niet vanzelf terug.
    */
   lijsten?: { doelgroep?: string; concurrenten?: { naam: string; website?: string; notitie?: string }[]; doelen?: string[] } | null
+  /** Het logo uit de generator, als data-URL (PNG of JPEG). Alleen meegestuurd als het veranderd is. */
+  logo?: string | null
   /** De intake en het plan als notitie op de tijdlijn. Eén notitie per dossier, die bijgewerkt wordt. */
   notitie?: { onderwerp: string; tekst: string; id?: string | null } | null
 }
@@ -185,6 +190,22 @@ export async function koppelAanCrm(inv: CrmInvoer): Promise<CrmKoppeling> {
     if (bron && !org.leadSource) erbij.leadSource = bron
     if (Object.keys(erbij).length) {
       await db.update(organizations).set({ ...erbij, updatedAt: new Date() }).where(eq(organizations.id, org.id))
+    }
+  }
+
+  /* --- Het logo: alleen als het bedrijf er nog geen heeft --- */
+  const logo = schoon(p.logo)
+  if (logo && !org.logoImageId) {
+    const m = /^data:(image\/(?:png|jpeg|webp));base64,([A-Za-z0-9+/=]+)$/.exec(logo)
+    if (m) {
+      const bytes = Buffer.from(m[2]!, 'base64')
+      const ext = m[1] === 'image/png' ? 'png' : m[1] === 'image/webp' ? 'webp' : 'jpg'
+      // Lukt het niet (te groot, raar formaat), dan gaat de rest van de koppeling gewoon door.
+      try {
+        await bewaarAfbeelding(new File([bytes], `logo.${ext}`, { type: m[1]! }), { soort: 'klant', id: org.id }, inv.userId ?? null)
+      } catch {
+        /* het logo is een extraatje; geen reden om de koppeling te laten mislukken */
+      }
     }
   }
 
@@ -324,6 +345,10 @@ export async function koppelAanCrm(inv: CrmInvoer): Promise<CrmKoppeling> {
         .returning({ id: activities.id })
       notitieId = nieuw?.id ?? null
     }
+  }
+
+  if (inv.dossierId) {
+    await db.update(proposals).set({ organizationId: org.id }).where(eq(proposals.id, inv.dossierId))
   }
 
   return {

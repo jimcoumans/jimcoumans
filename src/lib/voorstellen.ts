@@ -157,3 +157,18 @@ export async function lijstOpstellers(): Promise<Opsteller[]> {
     .orderBy(asc(users.firstName), asc(users.name), asc(users.email))
   return rijen.filter((r) => isActief(r)).map(naarOpsteller)
 }
+
+/** Voorstellen die aan dit bedrijf in het CRM gekoppeld zijn, nieuwste eerst. */
+export async function voorstellenVoorBedrijf(organizationId: string) {
+  const rijen = await db
+    .select({
+      id: proposals.id,
+      naam: proposals.naam,
+      bijgewerkt: proposals.updatedAt,
+      door: sql<string | null>`${proposals.staat}->'offerte'->>'door'`,
+    })
+    .from(proposals)
+    .where(eq(proposals.organizationId, organizationId))
+    .orderBy(desc(proposals.updatedAt))
+  return rijen.map((r) => ({ id: r.id, naam: r.naam, door: r.door ?? '', bijgewerkt: r.bijgewerkt }))
+}

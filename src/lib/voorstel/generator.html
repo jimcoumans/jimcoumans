@@ -930,7 +930,7 @@ img.ico{object-fit:contain;border-radius:4px}
       <div class="dossier">
         <div class="ssub">Dossier</div>
         <select id="d-kies" aria-label="Dossier kiezen"></select>
-        <div class="dbtns" style="margin-top:8px"><button class="ghost" type="button" id="d-save">Opslaan</button><button class="ghost" type="button" id="d-new">Nieuw</button><button class="ghost" type="button" id="d-brief">Briefing</button><button class="ghost" type="button" id="d-json">Als bestand</button><button class="ghost" type="button" id="d-del">Verwijderen</button></div>
+        <div class="dbtns" style="margin-top:8px"><button class="ghost" type="button" id="d-save">Opslaan</button><button class="ghost" type="button" id="d-new">Nieuw</button><button class="ghost" type="button" id="d-brief">Briefing</button><button class="ghost" type="button" id="d-json">Als bestand</button><label class="ghost" style="cursor:pointer">Bestand inlezen<input type="file" id="d-lees" accept=".json,application/json" hidden></label><button class="ghost" type="button" id="d-del">Verwijderen</button></div>
         <p class="note" id="d-status" style="margin:8px 0 0"></p>
       </div>
       <button class="ghost" type="button" id="reset">Keuzes terugzetten</button>
@@ -1854,10 +1854,10 @@ function tekstPrompt(){
   return [
     'Je schrijft voor James Robinson, een performance-marketingbureau uit Hulsberg (Zuid-Limburg), de teksten voor een voorstel aan een nieuwe klant: '+handelsNaam()+'.',
     'Schrijf in het Nederlands, in de je/jullie-vorm naar de klant. Menselijk, direct, zelfverzekerd en nuchter. Korte zinnen. Geen jargon, geen holle marketingtaal, geen superlatieven, geen gedachtestreepjes. Sentence case. Verzin geen cijfers, namen of feiten die niet in de gegevens staan.',
-    'Het doel van het deel "Zo hebben we jullie begrepen": de klant moet denken "ze hebben naar me geluisterd en ze snappen me". Gebruik wat de klant zelf vertelde, in je eigen woorden, warm maar feitelijk. Noem nooit interne inschattingen of twijfels over de klant. De notities en het gespreksverslag gebruik je alleen voor het persoonlijke slot.',
+    'Het doel van het deel "Zo hebben we jullie begrepen": de klant moet denken "ze hebben naar me geluisterd en ze snappen me". Gebruik wat de klant zelf vertelde, in je eigen woorden, warm maar feitelijk. Noem nooit interne inschattingen of twijfels over de klant. De notities en het gespreksverslag gebruik je alleen voor de persoonlijke brief.',
     '',
     'Geef ALLEEN een JSON-object terug, zonder uitleg ervoor of erna, in deze vorm:',
-    JSON.stringify({begrepen:{bedrijf:'2 tot 4 zinnen over wie ze zijn en wat ze doen', klanten:'2 tot 3 zinnen over hun ideale klant en waarom die voor hen kiest', werkgebied:'1 of 2 zinnen', uitdagingen:'2 tot 3 zinnen over waar ze tegenaan lopen', nu:'1 tot 3 zinnen over waarom ze nu aan de slag willen'}, campagnes:Object.fromEntries(kan.map(k=>[k.kanaal, {waarom:'2 tot 3 zinnen waarom deze opzet met '+k.campagnes.length+' campagne(s)', lijst:k.campagnes.map(c=>'2 zinnen over de campagne met insteek: '+c)}])), later:Object.fromEntries(lat.map(x=>[x.id, '1 of 2 zinnen waarom '+x.naam+' later interessant kan worden voor deze klant'])), aanpak:'100 tot 130 woorden: waarom deze aanpak', persoonlijk:'2 tot 4 zinnen persoonlijk slot op basis van de notities en het gesprek, bijvoorbeeld over de startdatum. Leeg laten als er niets persoonlijks in de gegevens staat.'}, null, 2),
+    JSON.stringify({begrepen:{bedrijf:'2 tot 4 zinnen over wie ze zijn en wat ze doen', klanten:'2 tot 3 zinnen over hun ideale klant en waarom die voor hen kiest', werkgebied:'1 of 2 zinnen', uitdagingen:'2 tot 3 zinnen over waar ze tegenaan lopen', nu:'1 tot 3 zinnen over waarom ze nu aan de slag willen'}, campagnes:Object.fromEntries(kan.map(k=>[k.kanaal, {waarom:'2 tot 3 zinnen waarom deze opzet met '+k.campagnes.length+' campagne(s)', lijst:k.campagnes.map(c=>'2 zinnen over de campagne met insteek: '+c)}])), later:Object.fromEntries(lat.map(x=>[x.id, '1 of 2 zinnen waarom '+x.naam+' later interessant kan worden voor deze klant'])), aanpak:'100 tot 130 woorden: waarom deze aanpak', persoonlijk:'de volledige persoonlijke brief, 4 tot 7 zinnen, zonder aanhef en zonder groet: in de ik-vorm van degene die het voorstel opstelt, op basis van het gesprek en de notities (bijvoorbeeld de startdatum). Verzin niets wat niet in de gegevens staat.'}, null, 2),
     'Het deel "aanpak" (100 tot 130 woorden) legt uit waarom we voor deze kanalen kiezen, waarom we hiermee beginnen, waarom andere kanalen pas later komen en hoe de aanpak bijdraagt aan het commerciële doel van de klant. We beginnen vaak met adverteren, omdat dat het snelst laat zien wat werkt; zeg dat alleen als het voor deze klant zo is. Gebruik alleen gegevens uit het dossier en de gekozen dienstverlening. Geen verzonnen resultaten, conversiecijfers of beloftes. Schrijf "adverteren", niet "paid advertising".',
     'Laat een veld leeg ("") als de gegevens er niets over zeggen.',
     '',
@@ -2499,13 +2499,17 @@ async function buildPdf(parts){
   }
 
   // ---- persoonlijk bericht ----
-  if(parts.includes('persoonlijk')){
+  // De brief is volledig de persoonlijke tekst: alleen aanhef, groet en ondertekening staan vast.
+  // Zonder tekst geen brief.
+  if(parts.includes('persoonlijk') && String((S.tekst||{}).persoonlijk||'').trim()){
     body = newPage(); const au = auteur(); const naam = (S.offerte.door||'').trim();
-    const pers = String((S.tekst||{}).persoonlijk||'').trim();
+    // Aanhef en groet zet de generator er zelf bij; staan ze ook in de tekst, dan halen we ze daar weg.
+    const pers = String((S.tekst||{}).persoonlijk||'').trim()
+      .replace(/^(beste|hoi|hallo|dag|geachte)\b[^\n,]{0,40},[ \t]*\n+/i, '')
+      .replace(/\n+\s*(met vriendelijke groet|met hartelijke groet|vriendelijke groet|groet|groeten|hartelijke groet)\b[\s\S]*$/i, '').trim();
     let h = '<div class="pp-brief"><h2 class="pp-h2" style="margin:0!important">Tot slot</h2><p>Beste '+esc((S.contact.naam||'').trim().split(' ')[0] || handelsNaam())+',</p>';
-    h += '<p>Bedankt voor het fijne gesprek en het vertrouwen om met ons mee te denken. In dit voorstel staat hoe wij '+esc(handelsNaam())+' willen laten groeien: concreet, meetbaar en zonder verrassingen achteraf.</p>';
     if(pers) pers.split(/\n{2,}/).forEach(p=>{ h += '<p>'+esc(p.trim()).replace(/\n/g,'<br>')+'</p>'; });
-    h += '<p>Heb je vragen, of wil je iets anders zien? Bel of mail me gerust. Dan lopen we het samen door.</p><p style="margin-top:6px">Met vriendelijke groet,</p>';
+    h += '<p style="margin-top:6px">Met vriendelijke groet,</p>';
     h += '<div class="pp-sign"><div class="pp-sig"><div><div class="pp-signaam">'+esc(naam||'James Robinson')+'</div>'+(au.functie?'<div class="pp-sigsub">'+esc(au.functie)+' · James Robinson</div>':'<div class="pp-sigsub">James Robinson</div>')+(au.telefoon||au.email?'<div class="pp-sigsub">'+[au.telefoon, au.email].filter(Boolean).map(esc).join(' · ')+'</div>':'')+'</div></div></div></div>';
     add(h);
   }
@@ -2584,12 +2588,14 @@ const crmInvoer = () => { const i = S.intake||{}, o = S.online||{}, b = S.bedrij
 async function koppelCrm(){
   if(crmBezig || !String(S.bedrijf.naam||'').trim() || !S.dossierId) return; const inv = crmInvoer(); const sig = JSON.stringify(inv);
   const lijsten = crmLijsten(); const lijstSig = JSON.stringify(lijsten); const vorig = S.crm||{};
-  if(vorig.sig===sig && vorig.lijstSig===lijstSig) return; crmBezig = true;
+  const lSig = S.bedrijf.logo ? S.bedrijf.logo.length+':'+S.bedrijf.logo.slice(-40) : '';
+  if(vorig.sig===sig && vorig.lijstSig===lijstSig && (vorig.logoSig||'')===lSig) return; crmBezig = true;
   // Lijsten alleen meesturen als ze in de generator veranderd zijn: wat in het CRM is verwijderd, komt dan niet terug.
   inv.profiel.lijsten = vorig.lijstSig===lijstSig ? null : lijsten; inv.profiel.notitie.id = vorig.notitieId||null;
-  try{ const r = await fetch('/api/voorstellen/crm', {method:'POST', credentials:'same-origin', headers:{'Content-Type':'application/json'}, body: JSON.stringify(Object.assign({organizationId:vorig.organizationId||null, contactId:vorig.contactId||null}, inv))});
+  const logo = S.bedrijf.logo||''; const logoSig = logo ? logo.length+':'+logo.slice(-40) : ''; inv.profiel.logo = logoSig && vorig.logoSig!==logoSig ? logo : null;
+  try{ const r = await fetch('/api/voorstellen/crm', {method:'POST', credentials:'same-origin', headers:{'Content-Type':'application/json'}, body: JSON.stringify(Object.assign({organizationId:vorig.organizationId||null, contactId:vorig.contactId||null, dossierId:S.dossierId}, inv))});
     const j = await r.json(); if(!j || !j.ok){ crmStatus('Koppelen aan het CRM lukte niet'+(j&&j.error?': '+j.error:'.')); return; }
-    S.crm = {organizationId:j.organizationId, slug:j.organisatieSlug, bedrijf:j.organisatieNaam, contactId:j.contactId, contact:j.contactNaam, notitieId:j.notitieId||null, sig, lijstSig};
+    S.crm = {organizationId:j.organizationId, slug:j.organisatieSlug, bedrijf:j.organisatieNaam, contactId:j.contactId, contact:j.contactNaam, notitieId:j.notitieId||null, sig, lijstSig, logoSig};
     try{ localStorage.setItem('jr-voorstel-v2', JSON.stringify(S)); }catch(e){} renderCrm(); planOpslaan();
   }catch(e){ crmStatus('Koppelen aan het CRM lukte niet. Het wordt bij de volgende wijziging opnieuw geprobeerd.'); }
   finally{ crmBezig = false; } }
@@ -2639,6 +2645,16 @@ $('d-del').addEventListener('click', async ()=>{ if(!DB || !S.dossierId) return;
   if(Date.now()-wegKlik>4000){ wegKlik = Date.now(); dStatus('Dossier '+handelsNaam()+' verwijderen uit de database? Klik nogmaals op Verwijderen.'); return; }
   const id = S.dossierId; try{ await DB.collection('dossiers').doc(id).delete(); S.dossierId = ''; save(); render(); dStatus('Verwijderd uit de database. Wat op het scherm staat, blijft tot je een ander dossier kiest.'); }
   catch(e){ dStatus('Verwijderen lukte niet ('+((e&&e.code)||'onbekend')+').'); } });
+/* Een dossier uit een bestand: een export ("Als bestand") of een dossier uit de oude generator op claude.ai.
+   Het wordt een nieuw dossier in de Wallet; een bestaand dossier wordt nooit overschreven. */
+$('d-lees').addEventListener('change', async e=>{ const f = e.target.files && e.target.files[0]; e.target.value = ''; if(!f) return;
+  try{ const j = JSON.parse(await f.text()); const st = j && (j.staat || (j.data && j.data.staat) || (j.bedrijf && j.ch ? j : null));
+    if(!st || !st.bedrijf){ dStatus('Dit bestand is geen dossier van de voorstelgenerator.'); return; }
+    clearTimeout(dbTimer); if(S.dossierId) await dbOpslaan();
+    S = vanOpslag(JSON.parse(JSON.stringify(st))); S.dossierId = ''; delete S.crm; dbLaatst = ''; builtType = null;
+    ['kortingen','cadeaus','concurrenten','schans'].forEach(x=>$(x).dataset.sig=''); save(); renderSub(); render(); if(typeof vulOpstellers==='function') vulOpstellers();
+    dStatus('Ingelezen: '+handelsNaam()+'. Het wordt als nieuw dossier opgeslagen.'); }
+  catch(err){ dStatus('Dit bestand kon niet worden gelezen.'); } });
 $('d-brief').addEventListener('click',()=>bewaar('Briefing - '+bestandNaam()+'.md', briefingMd()));
 $('d-json').addEventListener('click',()=>bewaar('Dossier - '+bestandNaam()+'.json', JSON.stringify({type:'jr-dossier', versie:2, opgeslagen:new Date().toISOString(), staat:S, subdoelen:SUBEIGEN}, null, 2)));
 if(window.claude && window.claude.use){ window.claude.use('downloads').then(d=>{ downloads=d; }).catch(()=>{}); }
@@ -2652,7 +2668,7 @@ $('f-tekst').innerHTML = '<div class="fhead"><span>Zo hebben we jullie begrepen<
   '<div class="fhead"><span>Wat we nu gaan doen</span></div>'+
   frow('t-aanpak','Waarom deze aanpak','100 tot 130 woorden. Waarom deze kanalen, waarom we hiermee beginnen, wat later komt en hoe het bijdraagt aan het doel. Alleen uit het dossier.',ta('t-aanpak',6))+
   '<div class="fhead"><span>Persoonlijk bericht</span></div>'+
-  frow('t-persoonlijk','Persoonlijk deel','Na de algemene tekst. Bijvoorbeeld over de startdatum die jullie bespraken.',ta('t-persoonlijk',4));
+  frow('t-persoonlijk','Persoonlijke brief','De hele brieftekst onder "Beste …,". Aanhef, groet en ondertekening komen er vanzelf bij. Leeg: geen brief.',ta('t-persoonlijk',7));
 bindForm('f-tekst','tekst','t-');
 $('f-auteur').innerHTML = frow('au-naam-r','Naam','Uit Offertegegevens.','<span id="au-naam" style="font-weight:400"></span>')+
   frow('au-foto-r','Foto','','<img id="au-foto-prev" alt="" style="width:48px;height:48px;border-radius:50%;object-fit:cover" hidden><span id="au-foto-leeg" class="note" style="margin:0">Geen profielfoto</span>')+
