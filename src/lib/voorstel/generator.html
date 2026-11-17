@@ -472,7 +472,6 @@ img.ico{object-fit:contain;border-radius:4px}
 .pp-schild{width:26px;height:33px;color:#1C1C1E;flex:none;display:block}
 .pp-logo{font-weight:400;letter-spacing:.16em;font-size:11px}
 .pp-logo span{letter-spacing:0;font-weight:300}
-.pp-quote{font-size:24px;font-weight:400;letter-spacing:-.015em;margin:2px 0 10px;color:#1C1C1E}
 .pp-cover{position:relative;padding:0!important;color:#FFFFFF;background:#111}
 .pp-cover-bg{position:absolute;inset:0;background-size:cover;background-position:60% 50%}
 .pp-cover-in{position:relative;height:100%;display:flex;flex-direction:column;justify-content:space-between;padding:64px 64px 56px}
@@ -497,18 +496,18 @@ img.ico{object-fit:contain;border-radius:4px}
 .pp-signaam{font-size:16px;font-weight:400}
 .pp-sigsub{font-size:12.5px;color:#636466}
 
-/* Typografie van het voorstel.
-   Regel: hoofdstuktitels (h1, h2) in JR-blauw; alles daaronder (titels van
-   blokken, samenvattingen, het citaat) in zwart. Nadruk in Regular, tekst Light.
-   Eén blauw: #007AFF. Gemarkeerde blokken krijgen een rand in dat blauw en
-   een lichte tint ervan als achtergrond. */
-.pp-h1,.pp-h2{color:#007AFF!important}
-.pp-sumkop,.pp-quote{color:#1C1C1E!important}
-.pp-sumkop{font-size:17px;font-weight:400;margin-bottom:10px}
+/* Typografie van het voorstel: drie niveaus, overal hetzelfde.
+   1. Hoofdstuktitel: 24px, Regular, JR-blauw. Eén per hoofdstuk, geen labels erboven.
+   2. Bloktitel (kaart of samenvatting): 16px, Regular, zwart.
+   3. Rij-label in een kaart: 12.5px, Regular, zwart; de uitleg ernaast Light, grijs.
+   Lopende tekst onder een hoofdstuktitel: 15px, grijs.
+   Blauw komt alleen terug in hoofdstuktitels en in het bedrag dat de klant betaalt.
+   Vlakken: wit met grijze rand = uitleg; grijs vlak = wat het kost;
+   gestippelde rand = zit niet in dit voorstel (later interessant). */
+.pp-h1,.pp-h2{color:#007AFF!important;font-size:24px!important;line-height:1.15!important;margin:0 0 12px!important}
+.pp-sumkop{color:#1C1C1E!important;font-size:16px;font-weight:400;margin-bottom:10px}
 .pp-row > span:first-child{color:#1C1C1E}
-.pp-card.on{border-color:#007AFF!important;background:#EDF5FF!important}
-.pp-card.on .pp-subs{border-top-color:#C2DDFF!important}
-.pp-card.on .pp-subs li{border-top-color:#D6E8FF!important}
+.pp-lead{margin-top:0!important}
 .pp-row,.pp-subs b,.pp-bold,.pp-total b,.pp-meta b,.pp-eyebrow,.pp-signaam{font-weight:400!important}
 .pp-total span{font-weight:400!important}
 .pp-page b,.pp-page strong{font-weight:400}
@@ -2135,8 +2134,10 @@ function voorblad(root, pages, klant, datum){
 const heeftCijfers = () => Object.entries(S.cijfers||{}).some(([k,v])=>k!=='freq' && k!=='margeSoort' && num(v)!=null && num(v)>0);
 const soortNaam = () => ({foto:'Fotoshoot', video:'Videoshoot', beide:'Foto- en videoshoot'})[S.cnt.soort] || 'Contentshoot';
 const duurNaam = () => ((CP.duur.find(x=>x[0]===S.cnt.duur)||CP.duur[0])[1]).toLowerCase();
-const shootTitel = () => soortNaam()+', '+duurNaam();
-const shootDoel = () => S.cnt.soort==='video' ? 'Een videoshoot van een '+duurNaam()+'. Krachtige video\'s voor de campagnes, die de doelgroep aanspreken en bijdragen aan de commerciële doelen.' : S.cnt.soort==='foto' ? 'Een fotoshoot van een '+duurNaam()+'. Sterke beelden voor de campagnes, die de doelgroep aanspreken en bijdragen aan de commerciële doelen.' : 'Een shoot van een '+duurNaam()+' met foto en video. Beeld voor de campagnes dat de doelgroep aanspreekt en bijdraagt aan de commerciële doelen.';
+const shootTitel = () => soortNaam();
+const shootDuur = () => { const w = S.cnt.soort==='video' ? 'filmen' : S.cnt.soort==='foto' ? 'fotograferen' : 'filmen en fotograferen';
+  return (S.cnt.duur==='dag' ? 'Een hele dag '+w+'.' : 'Een dagdeel: 4 uur '+w+'.')+' Daarmee verwachten we genoeg materiaal te maken voor de advertenties die nodig zijn.'; };
+const shootDoel = () => S.cnt.soort==='video' ? 'Krachtige video\'s voor de campagnes, die de doelgroep aanspreken en bijdragen aan de commerciële doelen.' : S.cnt.soort==='foto' ? 'Sterke beelden voor de campagnes, die de doelgroep aanspreken en bijdragen aan de commerciële doelen.' : 'Foto en video voor de campagnes, die de doelgroep aanspreken en bijdragen aan de commerciële doelen.';
 const partnerTxt = () => { const n = (S.cnt.partner||'').trim(), o = (S.cnt.partnerOms||'').trim(); return (n ? 'We werken hiervoor samen met '+n+(o?', '+o.replace(/^[A-Z]/, c=>c.toLowerCase()).replace(/\.$/,''):'')+'.' : 'We werken hiervoor samen met een gespecialiseerde partner uit de regio.')+' Wij regisseren en begeleiden het hele traject.'; };
 function contentKort(){ if(!cJr()) return (CP.wie.find(o=>o.id===S.cnt.wie)||{}).naam || 'Content';
   return soortNaam()+' ('+duurNaam()+'), als indicatie '+keerTxt(shootFreq())+'. '+(S.cnt.afreken==='los' ? 'Als losse post, buiten de retainer. De eerste in de set-upmaand.' : 'Vooraf ingepland in de retainer.'); }
@@ -2153,7 +2154,7 @@ async function buildPdf(parts){
   let body = newPage();
   function add(html){ const w = el('div'); w.innerHTML = html; const node = w.firstElementChild; body.append(node); if(body.scrollHeight > body.clientHeight + 1 && body.children.length > 1){ node.remove(); body = newPage(); body.append(node); } }
   const subs = lines => '<ul class="pp-subs">'+subsLi(lines)+'</ul>';
-  const card = (title, price, lines, on, ic) => '<div class="pp-card'+(on?' on':'')+'"><div class="pp-row"><span>'+(ic?ico(ic):'')+esc(title)+'</span><span>'+price+'</span></div>'+(lines&&lines.length?subs(lines):'<div style="height:8px"></div>')+'</div>';
+  const card = (title, price, lines, on, ic) => '<div class="pp-card"><div class="pp-row"><span>'+(ic?ico(ic):'')+esc(title)+'</span><span>'+price+'</span></div>'+(lines&&lines.length?subs(lines):'<div style="height:8px"></div>')+'</div>';
   const h2 = (t, withNext) => withNext ? '<h2 class="pp-h2" style="margin-bottom:14px">'+esc(t)+'</h2>' : '<h2 class="pp-h2">'+esc(t)+'</h2>';
   const pincl = b => '<div class="pp-bold pp-incl"><span>Inclusief 21% btw</span><span>'+b+'</span></div>';
   const pdisc = (a,b) => '<div class="pp-bold pp-disc"><span>'+a+'</span><span>'+b+'</span></div>';
@@ -2165,17 +2166,19 @@ async function buildPdf(parts){
 
 
   const intro = t => '<p class="pp-lead" style="margin:0 0 14px">'+esc(t)+'</p>';
+  // Een hoofdstuk begint op een nieuwe pagina (alleen in het volledige voorstel).
+  const nieuwePagina = () => { if(full && body.children.length) body = newPage(); };
   const budgetCard = () => card('Advertentiebudget', eur(B.total)+'<small>per maand</small>', [
     ['Wat het is', 'Dit budget gaat direct en één-op-één naar '+joinNl(B_PLATFORMS())+'. Daarmee betalen we de advertenties zelf.'+(A.viaJr?' Het loopt via James Robinson, met '+CAT.maand.opslagPct+'% opslag voor de administratie.':' Wij rekenen er niets op.')],
     ['Ons doel', 'Zoveel mogelijk resultaat halen uit het beschikbare budget.'],
     ['Bijsturen', 'Tijdens de samenwerking kunnen we adviseren om het budget te verhogen, te verlagen of anders te verdelen over de kanalen. Dat advies onderbouwen we altijd met cijfers.']], false);
   if(!full){
-    if(parts[0]==='setup') add('<div><p class="pp-eyebrow">Bijlage</p><h1 class="pp-h1">Opbouw van de Marketing Set-up</h1><p class="pp-lead">De Marketing Set-up is alles wat klaar moet staan voordat jullie campagnes live gaan. We hebben hieronder per onderdeel uitgewerkt wat we doen binnen de Marketing Set-up en welke investering hiervoor nodig is.</p></div>');
-    else add('<div><p class="pp-eyebrow">Bijlage</p><h1 class="pp-h1">Opbouw van het maandpakket</h1><p class="pp-lead">Na de Marketing Set-up gaat het maandpakket in. We hebben hieronder uitgewerkt wat we elke maand doen en welke investering daarvoor nodig is.</p></div>');
+    if(parts[0]==='setup') add('<div><h1 class="pp-h1">Opbouw van de Marketing Set-up</h1><p class="pp-lead">De Marketing Set-up is alles wat klaar moet staan voordat jullie campagnes live gaan. We hebben hieronder per onderdeel uitgewerkt wat we doen binnen de Marketing Set-up en welke investering hiervoor nodig is.</p></div>');
+    else add('<div><h1 class="pp-h1">Opbouw van het maandpakket</h1><p class="pp-lead">Na de Marketing Set-up gaat het maandpakket in. We hebben hieronder uitgewerkt wat we elke maand doen en welke investering daarvoor nodig is.</p></div>');
   }
   // ---- introductie ----
   if(parts.includes('intro')){
-    add('<div><p class="pp-eyebrow">Voorstel</p><h1 class="pp-h1">Voorstel voor '+esc(handelsNaam())+'</h1><p class="pp-lead">Dit voorstel hebben we opgesteld op basis van wat jullie ons vertelden en wat we zelf hebben onderzocht. Transparantie vinden we belangrijk. Daarom laten we per onderdeel zien wat we doen, wat het kost en hoe we tot dit voorstel zijn gekomen.</p></div>');
+    add('<div><h1 class="pp-h1">Voorstel voor '+esc(handelsNaam())+'</h1><p class="pp-lead">Dit voorstel hebben we opgesteld op basis van wat jullie ons vertelden en wat we zelf hebben onderzocht. Transparantie vinden we belangrijk. Daarom laten we per onderdeel zien wat we doen, wat het kost en hoe we tot dit voorstel zijn gekomen.</p></div>');
     const delen = [['Marketing Set-up','Eenmalig. Alles klaarzetten om vanaf de start goed te meten, te adviseren en te handelen op basis van feiten, cijfers en data.'],['Marketing retainer','Per maand. Ons werk van elke maand: de kanalen beheren, bijsturen en samen de cijfers bespreken.'],['Licenties','Waar nodig. De tools die nodig zijn om alles goed neer te zetten en volledig te meten.'],['Content','Onze aanpak voor beeld en video: de brandstof van de campagnes.']];
     add('<div>'+h2('Hoe dit voorstel is opgebouwd', true)+card('Vier onderdelen', '', delen, false)+'</div>');
   }
@@ -2203,16 +2206,19 @@ async function buildPdf(parts){
     if(isAanv()){ fz('l1','l1l','l1m','fase 1'); fz('l2','l2l','l2m','fase 2'); }
     if(S.type==='beter'){ fz('k1','k1l','k1m','fase 1'); fz('k2','k2l','k2m','fase 2'); }
     const echt = heeftCijfers() || Object.entries(S.fases||{}).some(([k,v])=>!/l$/.test(k) && num(v)!=null && num(v)>0);
+    if(echt){ nieuwePagina(); }
     if(echt) add('<div>'+h2('Waar jullie nu staan en wat jullie willen bereiken', true)+kv(rows)+'</div>');
   }
 
   // ---- onze werkwijze ----
   if(parts.includes('werkwijze')){
-    add('<div>'+h2('Onze werkwijze', true)+'<p class="pp-quote">Momentum first. Mastery later.</p><p class="pp-lead" style="margin:0">We beginnen met adverteren. Niet omdat we blind zijn voor de rest, maar omdat betaald adverteren met afstand de snelste manier is om bekendheid en bezoekers op te bouwen, data te verzamelen en keuzes te maken op basis van cijfers en feiten in plaats van onderbuikgevoel. Zien we in de data kansen in andere onderdelen, zoals SEO, CRO of e-mailmarketing, dan voegen we die toe aan de mix.</p></div>');
+    nieuwePagina();
+    add('<div>'+h2('Onze werkwijze', true)+'<p class="pp-lead" style="margin:0">Momentum first. Mastery later. We beginnen met adverteren. Niet omdat we blind zijn voor de rest, maar omdat betaald adverteren met afstand de snelste manier is om bekendheid en bezoekers op te bouwen, data te verzamelen en keuzes te maken op basis van cijfers en feiten in plaats van onderbuikgevoel. Zien we in de data kansen in andere onderdelen, zoals SEO, CRO of e-mailmarketing, dan voegen we die toe aan de mix.</p></div>');
     add(card('Zo werken we samen', '', [['Marketingoverleg','Elke maand, bij jullie op locatie of bij ons op kantoor. We bespreken wat we deden en wat het opleverde, waar we mee bezig zijn en welke kansen we zien. Ook advertentiebudget en content komen daar aan bod.'],['Realtime dashboard','In de set-up zetten we een dashboard op waarin jullie altijd zien wat jullie marketing oplevert. Zo concreet en expliciet mogelijk.'],['Ons doel','Zorgen dat marketing zoveel mogelijk oplevert. Marketing moet geld opleveren; doet het dat niet, dan is het geen performance marketing maar een hobby.']], false));
   }
   // ---- wat we nu gaan doen ----
   if(parts.includes('plan')){
+    nieuwePagina();
     let kop = '<div>'+h2('Wat we nu gaan doen', true)+intro('Dit is wat er vanaf de start gebeurt. Wat later interessant kan worden, staat verderop in dit voorstel.');
     nuAds().forEach((k,i)=>{ const L = campLijst(k); const rijen = L.map((c,j)=>['Campagne '+(j+1)+' · '+c.label.split(',')[0], c.tekst]); const w = campWaarom(k); if(w) rijen.push(['Waarom deze opzet', w]);
       const c = card(k.naam+' · '+L.length+' campagne'+(L.length>1?'s':''), '', rijen, true, k.id); add(i===0 ? kop+c+'</div>' : c); if(i===0) kop = ''; });
@@ -2222,6 +2228,7 @@ async function buildPdf(parts){
     if(A.link) add(card('Linkbuilding', '', [['Wat', eur(A.link)+' budget per maand, zodat jullie beter gevonden worden in Google.']], false));
   }
   if(parts.includes('maand')){
+    nieuwePagina();
     add('<div>'+h2('Het maandpakket', true)+(full?intro('Het maandpakket is ons werk van elke maand: de basis die elke samenwerking nodig heeft, en het beheer van de kanalen die nu draaien. Het gaat in na de set-upmaand en is maandelijks opzegbaar.'):'')+card(CAT.maand.basis.naam, eur(CAT.maand.basis.prijs)+'<small>per maand</small>', [['Waarom', CAT.maand.basis.desc]].concat(CAT.maand.basis.onderdelen), false)+'</div>');
     B.act.forEach(k=>{ const n = camps(k); add(card(k.naam+(n>1?', '+n+' campagnes':''), eur(CAT.maand.kanaal.prijs+(n-1)*CAT.maand.campagne.prijs)+'<small>per maand</small>', CAT.maand.kanaal.onderdelen.concat(n>1?[['Extra campagnes', (n-1)+' extra campagne'+(n>2?'s':'')+', elk + '+eur(CAT.maand.campagne.prijs)+' per maand.']]:[]), true, k.id)); const st = S.budget.vrij ? 0 : staffel(B.budgets[k.id]); if(st) add(card(k.naam+': budget boven '+eur(CAT.maand.grens), '+ '+eur(st)+'<small>per maand</small>', [['Waarom','Een hoger budget vraagt meer beheer. Het kanaaltarief geldt tot '+eur(CAT.maand.grens)+' per maand; daarboven + '+eur(CAT.maand.staffel.prijs)+' per extra '+eur(CAT.maand.grens)+'.']], true)); });
     if(S.ch.email) add(card('E-mailmarketing', eur(mails()*CAT.maand.mailing.prijs)+'<small>per maand</small>', [['Mailings', mailTxt(mails())+': tekst, opmaak en verzending naar jullie lijst, in jullie huisstijl.'],['Licentie', CAT.licenties['LIC-MAILERLITE'].txt]], true, 'email'));
@@ -2235,10 +2242,11 @@ async function buildPdf(parts){
 
   // ---- content ----
   if(parts.includes('content')){
+    if(cJr() || su.co) nieuwePagina();
     if(cJr()){
       add('<div>'+h2('Content', true)+intro('Content is de brandstof van de campagnes. We plannen geen shoot om een shoot te plannen: elke shoot moet bijdragen aan de commerciële doelen. Mooi en on-brand, maar vooral effectief. Wij begeleiden het hele traject, van plan en regie tot montage en de advertenties in de formaten van elk kanaal.')+'</div>');
       const los = S.cnt.afreken==='los'; const p = shootPrijs();
-      const rijen = [['Wat', shootDoel()],['Wie', partnerTxt()],['Wanneer', 'De eerste shoot plannen we in de set-upmaand, zodat we snel live kunnen.'+(los?' Die staat op de eerste factuur.':'')],
+      const rijen = [['Wat', shootDoel()],['Duur', shootDuur()],['Wie', partnerTxt()],['Wanneer', 'De eerste shoot plannen we in de set-upmaand, zodat we snel live kunnen.'+(los?' Die staat op de eerste factuur.':'')],
         ['Hoe vaak', 'Als indicatie '+keerTxt(shootFreq())+'. Wanneer nieuwe content nodig is, geven we aan tijdens het marketingoverleg.'],
         ['Afrekenen', los ? 'Per shoot, als los project buiten de retainer. Zo kunnen we in overleg bijsturen.' : 'Vooraf ingepland en verrekend in de retainer: '+CP.vastKorting+'% voordeliger dan los.']];
       add(card(shootTitel(), los ? (p?eur(p)+'<small>per shoot</small>':'') : eur(contentMaand())+'<small>per maand</small>', rijen, true));
@@ -2248,15 +2256,17 @@ async function buildPdf(parts){
   }
   const opts = CAT.opties.filter(optOn);
   if(parts.includes('opties') && opts.length){
+    nieuwePagina();
     opts.forEach((o,i)=>add((i===0?'<div>'+h2('Optionele tools', true)+intro('Tools die het resultaat versterken. Ze tellen niet mee in de totalen; zeg het als jullie ze erbij willen.'):'<div>')+card(o.naam, (o.prijs?eur(o.prijs):'geen set-upkosten')+'<small>'+(o.prijs?'eenmalig':'')+'</small>', [['Wat het doet',o.desc],['Licentie',CAT.licenties[o.lic].txt]], false, o.id)+'</div>'));
   }
   if(parts.includes('setup')){
-    const basisCard = card('Basis', eur(CAT.setup.basis.prijs)+'<small>eenmalig</small>', CAT.setup.basis.onderdelen, false);
+    nieuwePagina();
+    const basisCard = card('Basis set-up', eur(CAT.setup.basis.prijs)+'<small>eenmalig</small>', CAT.setup.basis.onderdelen, false);
     if(full) add('<div>'+h2('Marketing Set-up', true)+intro('De Marketing Set-up is het fundament. Eenmalig zetten we alles klaar wat nodig is om vanaf de start goed te meten, te adviseren en bij te sturen op basis van cijfers: accounts, meting, doelgroepen, het dashboard en de eerste campagnes. We voeren de set-up uit in de maand voor livegang.')+basisCard+'</div>');
     else add('<div>'+h2('In deze Marketing Set-up', true)+basisCard+'</div>');
-    setupKan().forEach(k=>add(card(k.naam, eur(k.setup.prijs)+'<small>eenmalig</small>', regelsVan(k), true, k.id)));
+    setupKan().forEach(k=>add(card(k.naam+' set-up', eur(k.setup.prijs)+'<small>eenmalig</small>', regelsVan(k), true, k.id)));
     const cn = capiNu(); if(cn.length) add('<div class="pp-later" style="border-style:solid;border-color:#E5E5E9"><div class="pp-row" style="margin:0"><span>De Conversions API, uitgelegd</span><span style="font-size:11px;font-weight:300;color:#636466">geldt voor '+esc(joinNl(cn.map(c=>c.naam)))+'</span></div>'+subs(CAT.capiUitleg)+'</div>');
-    if(S.web.cookie){ const c = CAT.setup.cookie; add(card(c.naam, eur(c.prijs)+'<small>eenmalig</small>', [['Waarom',c.why],['Wat we doen',c.desc],['Licentie',CAT.licenties[c.lic].txt]], true, 'cookie')); }
+    if(S.web.cookie){ const c = CAT.setup.cookie; add(card(c.naam+' set-up', eur(c.prijs)+'<small>eenmalig</small>', [['Waarom',c.why],['Wat we doen',c.desc],['Licentie',CAT.licenties[c.lic].txt]], true, 'cookie')); }
     CAT.setup.web.filter(o=>S.web[o.id]).forEach(o=>add(card(o.naam, eur(o.prijs)+'<small>eenmalig</small>', [['Wat we doen',o.desc]], true)));
     if(su.co.id!=='jr') add(card('Content: '+su.co.kort, eur(su.co.prijs)+'<small>eenmalig</small>', [[su.co.label||'Wat we doen', su.co.desc]], su.co.prijs>0));
     else add(card('Eerste '+soortNaam().toLowerCase(), (S.cnt.afreken==='los' ? eur(su.coPrijs)+'<small>eenmalig</small>' : 'via de retainer'), [['Wat', 'De eerste '+soortNaam().toLowerCase()+' ('+duurNaam()+'), in de set-upmaand. Zo hebben we beeld voor de eerste advertenties. Meer hierover bij Content.'],['Wie', partnerTxt()]], S.cnt.afreken==='los'));
@@ -2270,8 +2280,9 @@ async function buildPdf(parts){
   }
   if(parts.includes('licenties')){
     if(su.jr.length || su.partner.length){
+      nieuwePagina();
       if(full) add('<div>'+h2('Licenties', true)+intro('Sommige onderdelen hebben een licentie nodig om goed te werken en alles volledig te kunnen meten. Licenties via James Robinson factureren we in de set-upmaand en daarna elk jaar vooruit. Andere lopen rechtstreeks via de leverancier.')+'</div>');
-      let rec = '<div class="pp-sum" style="background:#FFFFFF;border:1px solid #E5E5E9"><div class="pp-sumkop" style="margin-bottom:6px">Licenties</div>';
+      let rec = '<div class="pp-sum"><div class="pp-sumkop" style="margin-bottom:6px">Licenties</div>';
       if(su.jr.length){ rec += '<div class="pp-terms" style="margin:4px 0 6px;font-weight:500">Via James Robinson</div><ul class="pp-lines">'+su.jr.map(x=>'<li><span>'+esc(x[0])+'</span><span>'+esc(x[2])+'</span></li>').join('')+'</ul><div class="pp-bold" style="border-top:1px solid #E5E5E9;padding-top:8px;margin-top:8px"><span>Totaal per jaar</span><span>'+eur(su.jrTotal)+'</span></div><div class="pp-terms" style="margin-top:6px">We factureren deze licenties in de set-upmaand en daarna elk jaar vooruit.</div>'; }
       if(su.partner.length) rec += '<div class="pp-terms" style="margin:12px 0 6px;font-weight:500">Rechtstreeks bij de leverancier</div><ul class="pp-lines">'+su.partner.map(x=>'<li><span>'+esc(x[0])+'</span><span>'+esc(x[1])+'</span></li>').join('')+'</ul>';
       const n = ['Exclusief btw.']; if(su.partner.length) n.push('Tarieven van leveranciers kunnen wijzigen; de actuele prijzen staan op hun website.'); if(K.setupDisc) n.push('De korting geldt niet voor licenties.');
@@ -2279,6 +2290,7 @@ async function buildPdf(parts){
     }
   }
   if(parts.includes('onder') && !B.off && B.act.length && heeftCijfers()){
+    nieuwePagina();
     const dlp = doelLijn(R); if(dlp) add('<div>'+h2('Hoe we tot dit voorstel komen', true)+'<div class="pp-card">'+dlp+'</div></div>');
     oCards(onderHtml(R), dlp ? null : h2('Hoe we tot dit voorstel komen'));
     const b = CAT.bench[routeOf()];
@@ -2291,6 +2303,7 @@ async function buildPdf(parts){
   if(parts.includes('later')){
     const L = later(), X = laterExtra();
     if(L.length || X.length){
+      nieuwePagina();
       add('<div>'+h2('Later interessant', true)+intro('Deze onderdelen zitten nu niet in het voorstel, maar kunnen later interessant worden. We voegen ze pas toe als de cijfers laten zien dat er kansen liggen, en altijd eerst in overleg met jullie.')+'</div>');
       L.forEach(k=>{ const lm = num(S.laterM[k.id]); const fee = kanaalFee(k);
         const erbij = 'Wat er dan bij komt: eenmalig een set-up van '+eur(k.setup.prijs)+(fee?' en '+eur(fee)+' per maand voor het beheer':'')+(isCapi(k)?', plus '+E+'153 per jaar voor de Conversions API':'')+(k.ads?'. Het advertentiebudget bepalen we dan samen.':'.');
@@ -2299,6 +2312,7 @@ async function buildPdf(parts){
     }
   }
   if(parts.includes('samen')){
+    nieuwePagina();
     let s = '<div class="pp-sum"><div class="pp-sumkop">Wat jullie betalen</div>'+
       prow('Marketing Set-up, eenmalig', eur(A.setupNet), true)+(su.jrTotal?prow('Licenties eerste jaar, via James Robinson', eur(su.jrTotal), true):'')+
       '<div class="pp-total sec"><b>In de set-upmaand</b><span>'+eur(A.first)+'</span></div>'+(S.btw?pincl(eur2(incl(A.first))):'')+
@@ -2315,7 +2329,7 @@ async function buildPdf(parts){
   if(parts.includes('persoonlijk')){
     body = newPage(); const au = auteur(); const naam = (S.offerte.door||'').trim();
     const pers = String((S.tekst||{}).persoonlijk||'').trim();
-    let h = '<div class="pp-brief"><p class="pp-eyebrow">Tot slot</p><h2 class="pp-h1" style="font-size:30px">Beste '+esc((S.contact.naam||'').trim().split(' ')[0] || handelsNaam())+',</h2>';
+    let h = '<div class="pp-brief"><h2 class="pp-h2" style="margin:0!important">Tot slot</h2><p>Beste '+esc((S.contact.naam||'').trim().split(' ')[0] || handelsNaam())+',</p>';
     h += '<p>Bedankt voor het fijne gesprek en het vertrouwen om met ons mee te denken. In dit voorstel staat hoe wij '+esc(handelsNaam())+' willen laten groeien: concreet, meetbaar en zonder verrassingen achteraf.</p>';
     if(pers) pers.split(/\n{2,}/).forEach(p=>{ h += '<p>'+esc(p.trim()).replace(/\n/g,'<br>')+'</p>'; });
     h += '<p>Heb je vragen, of wil je iets anders zien? Bel of mail me gerust. Dan lopen we het samen door.</p><p style="margin-top:6px">Met vriendelijke groet,</p>';
