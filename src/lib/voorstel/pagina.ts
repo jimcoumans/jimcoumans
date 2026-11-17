@@ -59,7 +59,10 @@ export const SHIM = `(function(){
   } };
 })();`
 
-const TERUG = `<div style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:13px;background:#1C1C1E;color:#fff;padding:8px 16px;display:flex;justify-content:space-between;gap:12px;align-items:center"><a href="/beheer" style="color:#fff;text-decoration:none">← Terug naar het beheer</a><span style="color:#ADADB2">Voorstelgenerator · dossiers staan in de Wallet</span></div>`
+/** Welke versie er draait: de commit van de build (Netlify zet COMMIT_REF). Zo zie je of een wijziging live staat. */
+export const VERSIE = (process.env.GENERATOR_VERSIE || 'lokaal').slice(0, 7)
+
+const TERUG = `<div style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:13px;background:#1C1C1E;color:#fff;padding:8px 16px;display:flex;justify-content:space-between;gap:12px;align-items:center"><a href="/beheer/voorstellen" style="color:#fff;text-decoration:none">← Alle voorstellen</a><span style="color:#ADADB2">Voorstelgenerator · versie ${VERSIE}</span></div>`
 
 /** De generator met de vervanger en een terugbalk erin. */
 export function zetIn(html: string): string {

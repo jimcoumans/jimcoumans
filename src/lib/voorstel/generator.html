@@ -620,8 +620,9 @@ img.ico{object-fit:contain;border-radius:4px}
         </section>
         <section class="group">
           <h2>Contactpersoon</h2>
-          <p class="gsub">Aan wie de offerte is gericht.</p>
+          <p class="gsub">Aan wie de offerte is gericht. Bedrijf en contactpersoon komen vanzelf in het CRM zodra het voorstel is opgeslagen; wat daar al staat, wordt aangevuld en nooit overschreven.</p>
           <div class="form" id="f-contact"></div>
+          <p class="note" id="crm-status" style="margin:10px 0 0" hidden></p>
         </section>
         <section class="group">
           <h2>Facturatie</h2>
@@ -1130,7 +1131,7 @@ const DEFAULTS = {
   online:{website:'', facebook:'', instagram:'', linkedin:'', youtube:'', tiktok:'', gbp:''},
   contact:{naam:'', functie:'', email:'', telefoon:''},
   factuur:{email:'', tav:'', referentie:''},
-  offerte:{nummer:'', datum:today, door:'Jim Coumans', geldig:'30'},
+  offerte:{nummer:'', datum:today, door:'', geldig:'30'},
   dossierId:'', btw:false, type:'omzet', eenheden:[], verkoopNu:['webshop'], verkoop:['webshop'], sub:[],
   intake:{omschrijving:'', aanbod:'', usp:'', uitdagingen:'', prijs:'', opgericht:'', medewerkers:'', vestigingen:'', seizoen:'', doelgroep:'', werkgebied:'', bron:'', bronVia:'', aanleiding:'', verwachting:'', eerder:'', werkte:'', budgetNu:'', wieMkt:'', beslisser:'', opvolger:'', opvolgtijd:'', capaciteit:'', huisstijl:'', beeld:'', toon:'', inschatting:'', notities:'', verslag:''},
   concurrenten:[], fit:{}, bronTekst:'',
@@ -1842,7 +1843,7 @@ async function laadOpstellers(){
 function renderAuteur(){ const a = auteur(); ['functie','telefoon','email'].forEach(k=>{ const x = $('au-'+k); if(x) x.textContent = a[k] || 'niet ingevuld'; });
   const fp = $('au-foto-prev'); if(fp){ fp.hidden = !a.foto; if(a.foto) fp.src = a.foto; $('au-foto-leeg').hidden = !!a.foto; }
   if($('o-door') && $('o-door').value !== (S.offerte.door||'').trim()) vulOpstellers();
-  const vn = $('au-visie'); if(vn){ const o = opsteller(S.offerte.door); vn.textContent = !OPSTELLERS.length || !o ? '' : o.foto ? 'Foto gevonden: staat bij de quote op de visiepagina.' : 'Geen profielfoto gevonden. Voeg die toe bij Beheer → Medewerkers; dan staat hij bij de quote op de visiepagina.'; vn.hidden = !vn.textContent; }
+  renderCrm(); const vn = $('au-visie'); if(vn){ const o = opsteller(S.offerte.door); vn.textContent = !OPSTELLERS.length || !o ? '' : o.foto ? 'Foto gevonden: staat bij de quote op de visiepagina.' : 'Geen profielfoto gevonden. Voeg die toe bij Beheer → Medewerkers; dan staat hij bij de quote op de visiepagina.'; vn.hidden = !vn.textContent; }
   $('au-naam').textContent = (S.offerte.door||'').trim() || 'nog niemand ingevuld bij Offertegegevens';
  }
 
@@ -2551,11 +2552,48 @@ function dossierBody(){ return {naam: handelsNaam(), bedrijfsnaam: S.bedrijf.naa
 async function dbOpslaan(){
   if(!DB || !S.dossierId || dbBezig) return; const body = dossierBody(); const sig = JSON.stringify(body.staat); if(sig===dbLaatst) return;
   dbBezig = true; dStatus('Wordt opgeslagen…');
-  try{ await DB.collection('dossiers').doc(S.dossierId).set(body); dbLaatst = sig; dStatus('Opgeslagen om '+new Date().toLocaleTimeString('nl-NL',{hour:'2-digit',minute:'2-digit'})+'.'); }
+  try{ await DB.collection('dossiers').doc(S.dossierId).set(body); dbLaatst = sig; dStatus('Opgeslagen om '+new Date().toLocaleTimeString('nl-NL',{hour:'2-digit',minute:'2-digit'})+'.'); planCrm(); }
   catch(e){ dStatus(e && e.code==='quota_exceeded' ? 'De database is vol. Verwijder oude dossiers.' : 'Opslaan lukte niet ('+((e&&e.code)||'onbekend')+'). Probeer het zo opnieuw.'); }
   finally{ dbBezig = false; if(JSON.stringify(S)!==dbLaatst) planOpslaan(); }
 }
-function planOpslaan(){ if(!DB || !S.dossierId) return; clearTimeout(dbTimer); dbTimer = setTimeout(dbOpslaan, 1500); }
+/* Automatisch opslaan: zodra er een bedrijfsnaam is, krijgt het dossier een eigen id en staat het in de
+   Wallet. Altijd met een willekeurig achtervoegsel, zodat een nieuw dossier nooit een bestaand overschrijft. */
+/* ---- CRM: bedrijf en contactpersoon in de Wallet (aanvullen, nooit overschrijven) ---- */
+let crmBezig = false, crmTimer = null;
+/* Pas koppelen als er even niet getypt wordt (of je de tab verlaat): anders komt een half getypte naam in het CRM. */
+function planCrm(){ clearTimeout(crmTimer); crmTimer = setTimeout(koppelCrm, 20000); }
+window.addEventListener('hashchange', ()=>{ if(crmTimer){ clearTimeout(crmTimer); crmTimer = null; koppelCrm(); } });
+const crmInvoer = () => ({ bedrijf:{naam:S.bedrijf.naam||'', handelsnaam:handelsNaam(), plaats:S.bedrijf.plaats||'', website:(S.online||{}).website||'', telefoon:S.bedrijf.telefoon||'', email:S.bedrijf.email||'', kvk:S.bedrijf.kvk||''}, contact:{naam:S.contact.naam||'', functie:S.contact.functie||'', email:S.contact.email||'', telefoon:S.contact.telefoon||''} });
+async function koppelCrm(){
+  if(crmBezig || !String(S.bedrijf.naam||'').trim() || !S.dossierId) return; const inv = crmInvoer(); const sig = JSON.stringify(inv);
+  if(S.crm && S.crm.sig===sig) return; crmBezig = true;
+  try{ const r = await fetch('/api/voorstellen/crm', {method:'POST', credentials:'same-origin', headers:{'Content-Type':'application/json'}, body: JSON.stringify(Object.assign({organizationId:(S.crm||{}).organizationId||null, contactId:(S.crm||{}).contactId||null}, inv))});
+    const j = await r.json(); if(!j || !j.ok){ crmStatus('Koppelen aan het CRM lukte niet'+(j&&j.error?': '+j.error:'.')); return; }
+    S.crm = {organizationId:j.organizationId, slug:j.organisatieSlug, bedrijf:j.organisatieNaam, contactId:j.contactId, contact:j.contactNaam, sig};
+    try{ localStorage.setItem('jr-voorstel-v2', JSON.stringify(S)); }catch(e){} renderCrm(); planOpslaan();
+  }catch(e){ crmStatus('Koppelen aan het CRM lukte niet. Het wordt bij de volgende wijziging opnieuw geprobeerd.'); }
+  finally{ crmBezig = false; } }
+const crmStatus = t => { const n = $('crm-status'); if(n){ n.innerHTML = esc(t); n.hidden = !t; } };
+function renderCrm(){ const c = S.crm; const n = $('crm-status'); if(!n) return; if(!c || !c.organizationId){ n.hidden = true; return; }
+  n.innerHTML = 'In het CRM: <a href="/beheer/klanten/'+encodeURIComponent(c.slug||'')+'" target="_top">'+esc(c.bedrijf||'bedrijf')+'</a>'+(c.contactId?' · <a href="/beheer/crm/'+encodeURIComponent(c.contactId)+'" target="_top">'+esc(c.contact||'contactpersoon')+'</a>':''); n.hidden = false; }
+function planOpslaan(){ if(!DB) return;
+  if(!S.dossierId){ if(!String(S.bedrijf.naam||'').trim()) return; S.dossierId = slug(handelsNaam())+'-'+Math.random().toString(36).slice(2,6); try{ localStorage.setItem('jr-voorstel-v2', JSON.stringify(S)); }catch(e){} }
+  clearTimeout(dbTimer); dbTimer = setTimeout(dbOpslaan, 1500); }
+async function openDossier(id){
+  clearTimeout(dbTimer); if(S.dossierId && S.dossierId!==id) await dbOpslaan();
+  try{ const snap = await DB.collection('dossiers').doc(id).get(); if(!snap.exists){ dStatus('Dit dossier bestaat niet meer.'); return; }
+    S = vanOpslag(JSON.parse(JSON.stringify(snap.data().staat))); S.dossierId = id; dbLaatst = JSON.stringify(S);
+    builtType = null; ['kortingen','cadeaus','concurrenten','schans'].forEach(x=>$(x).dataset.sig=''); save(); renderSub(); render(); if(typeof laadOpstellers==='function') vulOpstellers(); dStatus('Geopend: '+(snap.data().naam||id)+'.'); koppelCrm(); }
+  catch(err){ dStatus('Openen lukte niet ('+((err&&err.code)||'onbekend')+').'); } }
+async function nieuwDossier(){
+  clearTimeout(dbTimer); if(S.dossierId) await dbOpslaan();
+  S = clone(DEFAULTS); dbLaatst = ''; builtType = null; ['kortingen','cadeaus','concurrenten','schans'].forEach(x=>$(x).dataset.sig='');
+  const ik = (typeof OPSTELLERS!=='undefined') ? OPSTELLERS.find(o=>o.id===IK) : null; if(ik) S.offerte.door = ik.naam;
+  save(); renderSub(); render(); if(typeof vulOpstellers==='function') vulOpstellers(); location.hash = '#bedrijf'; dStatus('Nieuw voorstel. Het wordt opgeslagen zodra de bedrijfsnaam er staat.'); }
+/* Vanuit het overzicht: ?dossier=<id> opent dat dossier, ?nieuw=1 begint een nieuw voorstel. */
+async function vanuitOverzicht(){ const q = new URLSearchParams(location.search); const id = q.get('dossier'), nieuw = q.get('nieuw');
+  if(!id && !nieuw) return; history.replaceState(null, '', location.pathname + (nieuw ? '#bedrijf' : (location.hash||'#bedrijf')));
+  if(nieuw) await nieuwDossier(); else if(id && id!==S.dossierId) await openDossier(id); }
 function renderDossiers(){
   const sl = $('d-kies'); const opts = ['<option value="">'+(S.dossierId?'Kies een dossier':'Huidig dossier, nog niet opgeslagen')+'</option>'].concat(DOSSIERS.map(d=>'<option value="'+esc(d.id)+'">'+esc(d.naam||d.id)+(d.plaats?' · '+esc(d.plaats):'')+'</option>'));
   const h = opts.join(''); if(sl.dataset.h!==h){ sl.innerHTML = h; sl.dataset.h = h; } sl.value = S.dossierId && DOSSIERS.some(d=>d.id===S.dossierId) ? S.dossierId : '';
@@ -2568,21 +2606,15 @@ if(window.claude && window.claude.use){
     db.collection('dossiers').orderBy('bijgewerkt','desc').onSnapshot(snap=>{ clearTimeout(tm); DOSSIERS = snap.docs.map(d=>{ const x = d.data()||{}; return {id:d.id, naam:x.naam, plaats:x.plaats, bijgewerkt:x.bijgewerkt}; }); renderDossiers(); }, e=>{ clearTimeout(tm); dStatus('Database niet bereikbaar ('+e.code+').'); });
     db.doc('instellingen/auteurs').onSnapshot(snap=>{ const l = snap.exists && (snap.data()||{}).lijst; if(l && typeof l==='object'){ AUTEURS = l; try{ localStorage.setItem('jr-auteurs', JSON.stringify(AUTEURS)); }catch(e){} renderAuteur(); } }, ()=>{});
     db.doc('instellingen/subdoelen').onSnapshot(snap=>{ const l = snap.exists && Array.isArray((snap.data()||{}).lijst) ? snap.data().lijst.map(String) : null; if(l){ SUBEIGEN = l; try{ localStorage.setItem(SUBKEY, JSON.stringify(SUBEIGEN)); }catch(e){} renderSub(); } }, ()=>{});
-    renderDossiers(); }).catch(()=>{});
+    renderDossiers(); vanuitOverzicht().then(()=>{ if(S.dossierId) koppelCrm(); else planOpslaan(); }); }).catch(()=>{});
 } else dStatus('Database werkt in de gepubliceerde pagina op claude.ai. Nu alleen in deze browser.');
 $('d-save').addEventListener('click', async ()=>{ if(!DB) return; if(!S.bedrijf.naam){ dStatus('Vul eerst de bedrijfsnaam in.'); return; }
   let id = slug(handelsNaam()); if(DOSSIERS.some(d=>d.id===id)) id += '-'+Math.random().toString(36).slice(2,6);
   S.dossierId = id; save(); dbLaatst = ''; await dbOpslaan(); renderDossiers(); });
-$('d-kies').addEventListener('change', async e=>{ const id = e.target.value; if(!id || !DB || id===S.dossierId) return;
-  clearTimeout(dbTimer); if(S.dossierId) await dbOpslaan();
-  try{ const snap = await DB.collection('dossiers').doc(id).get(); if(!snap.exists){ dStatus('Dit dossier bestaat niet meer.'); return; }
-    S = vanOpslag(JSON.parse(JSON.stringify(snap.data().staat))); S.dossierId = id; dbLaatst = JSON.stringify(S);
-    builtType = null; ['kortingen','cadeaus','concurrenten','schans'].forEach(x=>$(x).dataset.sig=''); save(); renderSub(); render(); dStatus('Geopend: '+(snap.data().naam||id)+'.'); }
-  catch(err){ dStatus('Openen lukte niet ('+((err&&err.code)||'onbekend')+').'); } });
+$('d-kies').addEventListener('change', async e=>{ const id = e.target.value; if(!id || !DB || id===S.dossierId) return; await openDossier(id); });
 $('d-new').addEventListener('click', async ()=>{
   if(!S.dossierId && S.bedrijf.naam && Date.now()-nieuwKlik>4000){ nieuwKlik = Date.now(); dStatus('Dit dossier is nog niet opgeslagen en verdwijnt. Klik nogmaals op Nieuw om door te gaan.'); return; }
-  clearTimeout(dbTimer); if(S.dossierId) await dbOpslaan();
-  S = clone(DEFAULTS); dbLaatst = ''; builtType = null; ['kortingen','cadeaus','concurrenten','schans'].forEach(x=>$(x).dataset.sig=''); save(); renderSub(); render(); location.hash = '#bedrijf'; dStatus('Nieuw dossier. Sla het op zodra de bedrijfsnaam er staat.'); });
+  await nieuwDossier(); });
 $('d-del').addEventListener('click', async ()=>{ if(!DB || !S.dossierId) return;
   if(Date.now()-wegKlik>4000){ wegKlik = Date.now(); dStatus('Dossier '+handelsNaam()+' verwijderen uit de database? Klik nogmaals op Verwijderen.'); return; }
   const id = S.dossierId; try{ await DB.collection('dossiers').doc(id).delete(); S.dossierId = ''; save(); render(); dStatus('Verwijderd uit de database. Wat op het scherm staat, blijft tot je een ander dossier kiest.'); }
