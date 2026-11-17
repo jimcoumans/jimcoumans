@@ -4,9 +4,11 @@
    hele team bij dezelfde dossiers kan.
    ------------------------------------------------------------------------- */
 
-import { desc, eq } from 'drizzle-orm'
+import { and, asc, desc, eq, inArray, isNull } from 'drizzle-orm'
 import { db } from '@/db'
-import { proposalSettings, proposals } from '@/db/schema'
+import { proposalSettings, proposals, users } from '@/db/schema'
+import { afbeeldingUrl } from './afbeeldingen'
+import { volledigeNaam } from './namen'
 
 export const ID_FORMAAT = /^[a-z0-9][a-z0-9-]{0,80}$/
 
@@ -74,4 +76,72 @@ export async function bewaarInstelling(key: string, data: unknown): Promise<void
     .insert(proposalSettings)
     .values({ key, data })
     .onConflictDoUpdate({ target: proposalSettings.key, set: { data, updatedAt: new Date() } })
+}
+
+/* -------------------------------------------------------------------------
+   Wie een voorstel opstelt. De gegevens komen uit het profiel bij Beheer →
+   Medewerkers, zodat er één plek is om ze bij te houden. Uit dienst is uit
+   de lijst.
+   ------------------------------------------------------------------------- */
+
+export type Opsteller = {
+  id: string
+  naam: string
+  functie: string
+  telefoon: string
+  email: string
+  foto: string | null
+}
+
+type OpstellerRij = {
+  id: string
+  email: string
+  name: string | null
+  firstName: string | null
+  infix: string | null
+  lastName: string | null
+  jobTitle: string | null
+  phone: string | null
+  mobile: string | null
+  avatarImageId: string | null
+  endedOn: Date | null
+}
+
+/** Een medewerker zoals de generator hem nodig heeft. Mobiel gaat voor vast. */
+export function naarOpsteller(r: OpstellerRij): Opsteller {
+  const naam = volledigeNaam(r) || r.name?.trim() || r.email
+  return {
+    id: r.id,
+    naam,
+    functie: r.jobTitle?.trim() ?? '',
+    telefoon: (r.mobile?.trim() || r.phone?.trim()) ?? '',
+    email: r.email,
+    foto: afbeeldingUrl(r.avatarImageId),
+  }
+}
+
+/** Actief: nog in dienst, of de einddatum ligt in de toekomst. */
+export function isActief(r: { endedOn: Date | null }, nu: Date = new Date()): boolean {
+  return r.endedOn === null || r.endedOn > nu
+}
+
+export async function lijstOpstellers(): Promise<Opsteller[]> {
+  const rijen = await db
+    .select({
+      id: users.id,
+      email: users.email,
+      name: users.name,
+      firstName: users.firstName,
+      infix: users.infix,
+      lastName: users.lastName,
+      jobTitle: users.jobTitle,
+      phone: users.phone,
+      mobile: users.mobile,
+      avatarImageId: users.avatarImageId,
+      endedOn: users.endedOn,
+    })
+    .from(users)
+    .where(and(isNull(users.organizationId), inArray(users.role, ['staff', 'admin'])))
+    .orderBy(asc(users.firstName), asc(users.name), asc(users.email))
+  return rijen.filter((r) => isActief(r)).map(naarOpsteller)
 }
