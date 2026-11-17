@@ -61,3 +61,8 @@ export function formatDate(d: Date | string | null | undefined, tz: string = DEF
 export function todayIn(tz: string = DEFAULT_TZ, now = new Date()): string {
   return new Intl.DateTimeFormat('en-CA', { timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit' }).format(now)
 }
+
+/** Huidige tijd in ms (los gehouden zodat server components niet direct Date.now() aanroepen). */
+export function nowMs(): number {
+  return Date.now()
+}

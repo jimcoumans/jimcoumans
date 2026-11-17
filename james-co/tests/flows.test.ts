@@ -93,8 +93,8 @@ describe('volledige keten verzoek → voorstel → akkoord → bevestiging', () 
     assert.equal(again.status, 'already_approved', 'herhaalde klik maakt geen tweede akkoord')
     assert.equal(again.approvalId, res.approvalId)
     await rejects(approveProposal(memberA, { proposalId, optionId: optionIds[1]!, snapshotHash, termsAccepted: true }), 'already_approved')
-    const [{ n }] = await withSystem((tx) => tx<{ n: number }[]>`select count(*)::int as n from approvals where proposal_id = ${proposalId}`) as [{ n: number }]
-    assert.equal(n, 1)
+    const counts = await withSystem((tx) => tx<{ n: number }[]>`select count(*)::int as n from approvals where proposal_id = ${proposalId}`)
+    assert.equal(counts[0]!.n, 1)
 
     const diner = await addBooking(concierge, requestId, { title: 'Diner', supplierName: 'Voorbeeldrestaurant (fictief)', date: '2026-12-04', time: '20:00' })
     const taxi = await addBooking(concierge, requestId, { title: 'Vervoer', supplierName: 'Voorbeeldvervoer (fictief)' })
