@@ -497,11 +497,18 @@ img.ico{object-fit:contain;border-radius:4px}
 .pp-signaam{font-size:16px;font-weight:400}
 .pp-sigsub{font-size:12.5px;color:#636466}
 
-/* Feedback Jim: koppen in JR-blauw, "vet" is Regular, lopende tekst Light */
-.pp-h1,.pp-h2,.pp-sumkop,.pp-quote{color:#007AFF!important}
+/* Typografie van het voorstel.
+   Regel: hoofdstuktitels (h1, h2) in JR-blauw; alles daaronder (titels van
+   blokken, samenvattingen, het citaat) in zwart. Nadruk in Regular, tekst Light.
+   Eén blauw: #007AFF. Gemarkeerde blokken krijgen een rand in dat blauw en
+   een lichte tint ervan als achtergrond. */
+.pp-h1,.pp-h2{color:#007AFF!important}
+.pp-sumkop,.pp-quote{color:#1C1C1E!important}
 .pp-sumkop{font-size:17px;font-weight:400;margin-bottom:10px}
-.pp-row > span:first-child{color:#007AFF}
-.pp-card.on .pp-row > span:first-child{color:#005CBF}
+.pp-row > span:first-child{color:#1C1C1E}
+.pp-card.on{border-color:#007AFF!important;background:#EDF5FF!important}
+.pp-card.on .pp-subs{border-top-color:#C2DDFF!important}
+.pp-card.on .pp-subs li{border-top-color:#D6E8FF!important}
 .pp-row,.pp-subs b,.pp-bold,.pp-total b,.pp-meta b,.pp-eyebrow,.pp-signaam{font-weight:400!important}
 .pp-total span{font-weight:400!important}
 .pp-page b,.pp-page strong{font-weight:400}
