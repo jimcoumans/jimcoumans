@@ -59,7 +59,7 @@ export async function verwijderDossier(id: string): Promise<void> {
   await db.delete(proposals).where(eq(proposals.id, id))
 }
 
-const INSTELLINGEN = new Set(['subdoelen'])
+const INSTELLINGEN = new Set(['subdoelen', 'auteurs'])
 
 export async function leesInstelling(key: string): Promise<unknown | null> {
   if (!INSTELLINGEN.has(key)) return null
