@@ -8,7 +8,7 @@ import { test, after } from 'node:test'
 import assert from 'node:assert/strict'
 import { eq, inArray } from 'drizzle-orm'
 import { db, client } from '../../db'
-import { organizations, contacts } from '../../db/schema'
+import { organizations, contacts, competitors, organizationGoals, organizationAudiences, activities } from '../../db/schema'
 import { aanvulling, isMobiel, koppelAanCrm } from '../voorstel-crm'
 
 const suffix = Date.now()
@@ -96,4 +96,58 @@ test('een eerdere koppeling geldt niet meer als de naam is veranderd', async () 
   orgs.push(daarna.organizationId)
   assert.notEqual(daarna.organizationId, eerst.organizationId)
   assert.equal(daarna.contactNaam, 'Lars Huijdts')
+})
+
+test('profiel: velden aanvullen, lijsten toevoegen zonder dubbelen, notitie bijwerken', async () => {
+  const [org] = await db
+    .insert(organizations)
+    .values({ slug: `vp-${suffix}`, name: `Profiel ${suffix}`, status: 'prospect', industry: 'Horeca' })
+    .returning()
+  orgs.push(org!.id)
+  await db.insert(competitors).values({ organizationId: org!.id, name: 'Bestaande Concurrent' })
+
+  const profiel = {
+    branche: 'Retail',
+    straat: 'Hoofdstraat 1',
+    instagram: 'https://instagram.com/profiel',
+    medewerkers: '12',
+    hoofddoel: 'omzet',
+    bron: 'referral',
+    regio: 'Zuid-Limburg',
+    lijsten: {
+      doelgroep: 'Liefhebbers tussen 35 en 65',
+      concurrenten: [{ naam: 'bestaande concurrent' }, { naam: 'Nieuwe Concurrent', website: 'https://nieuw.example' }],
+      doelen: ['Fase 1: € 12.000 omzet per maand, binnen 6 maanden', 'Hogere orderwaarde'],
+    },
+    notitie: { onderwerp: 'Voorstel: intake en plan', tekst: 'Eerste versie' },
+  }
+  const k = await koppelAanCrm({ bedrijf: { naam: `Profiel ${suffix}` }, contact: null, profiel })
+
+  const [na] = await db.select().from(organizations).where(eq(organizations.id, org!.id))
+  assert.equal(na!.industry, 'Horeca', 'branche blijft staan')
+  assert.equal(na!.addressLine, 'Hoofdstraat 1')
+  assert.equal(na!.instagramUrl, 'https://instagram.com/profiel')
+  assert.equal(na!.employeeCount, 12)
+  assert.equal(na!.mainGoal, 'omzet')
+  assert.equal(na!.leadSource, 'referral')
+
+  const conc = await db.select().from(competitors).where(eq(competitors.organizationId, org!.id))
+  assert.equal(conc.length, 2, 'bestaande concurrent niet dubbel')
+  const doelen = await db.select().from(organizationGoals).where(eq(organizationGoals.organizationId, org!.id))
+  assert.equal(doelen.length, 2)
+  const groepen = await db.select().from(organizationAudiences).where(eq(organizationAudiences.organizationId, org!.id))
+  assert.equal(groepen.length, 1)
+  assert.equal(groepen[0]!.description, 'Liefhebbers tussen 35 en 65')
+
+  // Tweede keer: zelfde lijsten, bijgewerkte notitie. Niets dubbel, notitie bijgewerkt.
+  const k2 = await koppelAanCrm({
+    organizationId: k.organizationId,
+    bedrijf: { naam: `Profiel ${suffix}` },
+    profiel: { ...profiel, notitie: { onderwerp: 'Voorstel: intake en plan', tekst: 'Tweede versie', id: k.notitieId } },
+  })
+  assert.equal(k2.notitieId, k.notitieId)
+  const notities = await db.select().from(activities).where(eq(activities.organizationId, org!.id))
+  assert.equal(notities.length, 1)
+  assert.equal(notities[0]!.body, 'Tweede versie')
+  assert.equal((await db.select().from(organizationGoals).where(eq(organizationGoals.organizationId, org!.id))).length, 2)
 })

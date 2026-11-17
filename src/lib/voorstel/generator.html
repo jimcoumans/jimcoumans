@@ -620,7 +620,7 @@ img.ico{object-fit:contain;border-radius:4px}
         </section>
         <section class="group">
           <h2>Contactpersoon</h2>
-          <p class="gsub">Aan wie de offerte is gericht. Bedrijf en contactpersoon komen vanzelf in het CRM zodra het voorstel is opgeslagen; wat daar al staat, wordt aangevuld en nooit overschreven.</p>
+          <p class="gsub">Aan wie de offerte is gericht. Bedrijf, contactpersoon, doelgroep, concurrenten, doelen en de intake komen vanzelf in het CRM zodra het voorstel is opgeslagen. Wat daar al staat, wordt aangevuld en nooit overschreven.</p>
           <div class="form" id="f-contact"></div>
           <p class="note" id="crm-status" style="margin:10px 0 0" hidden></p>
         </section>
@@ -2563,13 +2563,33 @@ let crmBezig = false, crmTimer = null;
 /* Pas koppelen als er even niet getypt wordt (of je de tab verlaat): anders komt een half getypte naam in het CRM. */
 function planCrm(){ clearTimeout(crmTimer); crmTimer = setTimeout(koppelCrm, 20000); }
 window.addEventListener('hashchange', ()=>{ if(crmTimer){ clearTimeout(crmTimer); crmTimer = null; koppelCrm(); } });
-const crmInvoer = () => ({ bedrijf:{naam:S.bedrijf.naam||'', handelsnaam:handelsNaam(), plaats:S.bedrijf.plaats||'', website:(S.online||{}).website||'', telefoon:S.bedrijf.telefoon||'', email:S.bedrijf.email||'', kvk:S.bedrijf.kvk||''}, contact:{naam:S.contact.naam||'', functie:S.contact.functie||'', email:S.contact.email||'', telefoon:S.contact.telefoon||''} });
+/* De doelen zoals in het voorstel, als losse regels voor het CRM. Alleen wat expliciet is ingevuld. */
+function doelTitels(){ const uit = []; const F = S.fases||{}; const bin = m => num(F[m]) ? ', binnen '+nf(num(F[m]))+' maanden' : '';
+  if(S.type==='omzet') [['g1','Fase 1'],['g2','Fase 2']].forEach(([g,t])=>{ const v = goalOm(g); if(v) uit.push(t+(F[g+'l']?' · '+F[g+'l']:'')+': '+eur(v)+' omzet per maand'+bin(g+'m')); });
+  const fz = (g, l, m, t, wat) => { if(num(F[g])) uit.push(t+(F[l]?' · '+F[l]:'')+': '+wat(num(F[g]))+' per maand'+bin(m)); };
+  if(isAanv()){ fz('l1','l1l','l1m','Fase 1', v=>nf(v)+' '+EM()); fz('l2','l2l','l2m','Fase 2', v=>nf(v)+' '+EM()); }
+  if(S.type==='beter'){ fz('k1','k1l','k1m','Fase 1', v=>pf(v)+' wordt klant'); fz('k2','k2l','k2m','Fase 2', v=>pf(v)+' wordt klant'); }
+  (S.sub||[]).forEach(x=>{ if(String(x||'').trim()) uit.push(String(x).trim()); });
+  return uit; }
+const HOOFDDOEL_CRM = {omzet:'omzet', aanvragen:'aanvragen', reserveringen:'reserveringen', bereik:'naamsbekendheid', beter:'aanvragen'};
+const BRON_CRM = {'Google':'inbound', 'Social media':'inbound', 'Aanbeveling':'referral', 'Netwerk of event':'network', 'Eerdere samenwerking':'network', 'Anders':'other'};
+function crmLijsten(){ const i = S.intake||{};
+  return { doelgroep: i.doelgroep||'', concurrenten: (S.concurrenten||[]).filter(c=>c && String(c.naam||'').trim()).map(c=>({naam:c.naam, website:c.web||'', notitie:c.noot||''})), doelen: doelTitels() }; }
+const crmInvoer = () => { const i = S.intake||{}, o = S.online||{}, b = S.bedrijf;
+  return { bedrijf:{naam:b.naam||'', handelsnaam:handelsNaam(), plaats:b.plaats||'', website:o.website||'', telefoon:b.telefoon||'', email:b.email||'', kvk:b.kvk||''},
+    contact:{naam:S.contact.naam||'', functie:S.contact.functie||'', email:S.contact.email||'', telefoon:S.contact.telefoon||''},
+    profiel:{ straat:b.straat||'', postcode:b.postcode||'', btwnr:b.btwnr||'', branche:brancheTxt()||'', facebook:o.facebook||'', instagram:o.instagram||'', linkedin:o.linkedin||'', youtube:o.youtube||'', tiktok:o.tiktok||'',
+      medewerkers:i.medewerkers||'', kernactiviteit:String(i.aanbod||'').split(/(?<=[.!?])\s/)[0].slice(0,240), hoofddoel:HOOFDDOEL_CRM[S.type]||'', bron:BRON_CRM[i.bron]||'',
+      notitie:{ onderwerp:'Voorstel: intake en plan', tekst:briefingMd() } } }; };
 async function koppelCrm(){
   if(crmBezig || !String(S.bedrijf.naam||'').trim() || !S.dossierId) return; const inv = crmInvoer(); const sig = JSON.stringify(inv);
-  if(S.crm && S.crm.sig===sig) return; crmBezig = true;
-  try{ const r = await fetch('/api/voorstellen/crm', {method:'POST', credentials:'same-origin', headers:{'Content-Type':'application/json'}, body: JSON.stringify(Object.assign({organizationId:(S.crm||{}).organizationId||null, contactId:(S.crm||{}).contactId||null}, inv))});
+  const lijsten = crmLijsten(); const lijstSig = JSON.stringify(lijsten); const vorig = S.crm||{};
+  if(vorig.sig===sig && vorig.lijstSig===lijstSig) return; crmBezig = true;
+  // Lijsten alleen meesturen als ze in de generator veranderd zijn: wat in het CRM is verwijderd, komt dan niet terug.
+  inv.profiel.lijsten = vorig.lijstSig===lijstSig ? null : lijsten; inv.profiel.notitie.id = vorig.notitieId||null;
+  try{ const r = await fetch('/api/voorstellen/crm', {method:'POST', credentials:'same-origin', headers:{'Content-Type':'application/json'}, body: JSON.stringify(Object.assign({organizationId:vorig.organizationId||null, contactId:vorig.contactId||null}, inv))});
     const j = await r.json(); if(!j || !j.ok){ crmStatus('Koppelen aan het CRM lukte niet'+(j&&j.error?': '+j.error:'.')); return; }
-    S.crm = {organizationId:j.organizationId, slug:j.organisatieSlug, bedrijf:j.organisatieNaam, contactId:j.contactId, contact:j.contactNaam, sig};
+    S.crm = {organizationId:j.organizationId, slug:j.organisatieSlug, bedrijf:j.organisatieNaam, contactId:j.contactId, contact:j.contactNaam, notitieId:j.notitieId||null, sig, lijstSig};
     try{ localStorage.setItem('jr-voorstel-v2', JSON.stringify(S)); }catch(e){} renderCrm(); planOpslaan();
   }catch(e){ crmStatus('Koppelen aan het CRM lukte niet. Het wordt bij de volgende wijziging opnieuw geprobeerd.'); }
   finally{ crmBezig = false; } }

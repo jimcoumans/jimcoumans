@@ -18,7 +18,7 @@
 
 import { and, eq, sql } from 'drizzle-orm'
 import { db } from '@/db'
-import { contacts, organizations } from '@/db/schema'
+import { activities, competitors, contacts, organizationAudiences, organizationGoals, organizations } from '@/db/schema'
 import { uniekeSlug } from './admin'
 import { createContact } from './crm'
 import { splitsNaam, volledigeNaam } from './namen'
@@ -30,7 +30,38 @@ export type CrmInvoer = {
   contactId?: string | null
   bedrijf: { naam: string; handelsnaam?: string; plaats?: string; website?: string; telefoon?: string; email?: string; kvk?: string }
   contact?: { naam?: string; functie?: string; email?: string; telefoon?: string } | null
+  /** Wat verder in het dossier staat. Alles optioneel; wat ontbreekt, laten we met rust. */
+  profiel?: CrmProfiel | null
+  /** Wie koppelt; komt op de notitie in de tijdlijn. */
+  userId?: string | null
 }
+
+export type CrmProfiel = {
+  straat?: string
+  postcode?: string
+  btwnr?: string
+  branche?: string
+  facebook?: string
+  instagram?: string
+  linkedin?: string
+  youtube?: string
+  tiktok?: string
+  medewerkers?: string | number
+  kernactiviteit?: string
+  regio?: string
+  hoofddoel?: string
+  bron?: string
+  /**
+   * Lijsten: alleen meegestuurd als ze in de generator zijn veranderd. Zo komt
+   * iets wat iemand in het CRM heeft verwijderd niet vanzelf terug.
+   */
+  lijsten?: { doelgroep?: string; concurrenten?: { naam: string; website?: string; notitie?: string }[]; doelen?: string[] } | null
+  /** De intake en het plan als notitie op de tijdlijn. Eén notitie per dossier, die bijgewerkt wordt. */
+  notitie?: { onderwerp: string; tekst: string; id?: string | null } | null
+}
+
+const DOELEN = ['aanvragen', 'reserveringen', 'omzet', 'naamsbekendheid'] as const
+const BRONNEN = ['referral', 'network', 'inbound', 'outbound', 'partner', 'event', 'other'] as const
 
 export type CrmKoppeling = {
   organizationId: string
@@ -40,6 +71,8 @@ export type CrmKoppeling = {
   contactId: string | null
   contactNaam: string | null
   nieuwContact: boolean
+  /** De notitie op de tijdlijn, om de volgende keer bij te werken in plaats van een nieuwe te maken. */
+  notitieId: string | null
 }
 
 const schoon = (v: unknown): string => (typeof v === 'string' ? v.trim() : '')
@@ -84,13 +117,29 @@ export async function koppelAanCrm(inv: CrmInvoer): Promise<CrmKoppeling> {
       .limit(1)
   }
   let nieuwBedrijf = false
+  const p = inv.profiel ?? {}
   const bedrijfsVelden = {
     city: schoon(inv.bedrijf.plaats),
     website: schoon(inv.bedrijf.website),
     phone: schoon(inv.bedrijf.telefoon),
     email: schoon(inv.bedrijf.email).toLowerCase(),
     kvkNumber: schoon(inv.bedrijf.kvk),
+    addressLine: schoon(p.straat),
+    postalCode: schoon(p.postcode),
+    vatNumber: schoon(p.btwnr),
+    industry: schoon(p.branche),
+    facebookUrl: schoon(p.facebook),
+    instagramUrl: schoon(p.instagram),
+    linkedinUrl: schoon(p.linkedin),
+    youtubeUrl: schoon(p.youtube),
+    tiktokUrl: schoon(p.tiktok),
+    coreActivity: schoon(p.kernactiviteit),
+    region: schoon(p.regio),
   }
+  // Velden die geen tekst zijn: ook alleen invullen als ze leeg zijn.
+  const medewerkers = Number(String(p.medewerkers ?? '').replace(/[^0-9]/g, '')) || null
+  const hoofddoel = (DOELEN as readonly string[]).includes(schoon(p.hoofddoel)) ? (schoon(p.hoofddoel) as (typeof DOELEN)[number]) : null
+  const bron = (BRONNEN as readonly string[]).includes(schoon(p.bron)) ? (schoon(p.bron) as (typeof BRONNEN)[number]) : null
   if (!org) {
     ;[org] = await db
       .insert(organizations)
@@ -103,15 +152,37 @@ export async function koppelAanCrm(inv: CrmInvoer): Promise<CrmKoppeling> {
         phone: bedrijfsVelden.phone || null,
         email: bedrijfsVelden.email || null,
         kvkNumber: bedrijfsVelden.kvkNumber || null,
+        addressLine: bedrijfsVelden.addressLine || null,
+        postalCode: bedrijfsVelden.postalCode || null,
+        vatNumber: bedrijfsVelden.vatNumber || null,
+        industry: bedrijfsVelden.industry || null,
+        facebookUrl: bedrijfsVelden.facebookUrl || null,
+        instagramUrl: bedrijfsVelden.instagramUrl || null,
+        linkedinUrl: bedrijfsVelden.linkedinUrl || null,
+        youtubeUrl: bedrijfsVelden.youtubeUrl || null,
+        tiktokUrl: bedrijfsVelden.tiktokUrl || null,
+        coreActivity: bedrijfsVelden.coreActivity || null,
+        region: bedrijfsVelden.region || null,
+        employeeCount: medewerkers,
+        mainGoal: hoofddoel,
+        leadSource: bron,
       })
       .returning()
     if (!org) throw new CrmKoppelFout('Het bedrijf kon niet in het CRM worden gezet.')
     nieuwBedrijf = true
   } else {
-    const erbij = aanvulling(
-      { city: org.city, website: org.website, phone: org.phone, email: org.email, kvkNumber: org.kvkNumber },
+    const erbij: Record<string, unknown> = aanvulling(
+      {
+        city: org.city, website: org.website, phone: org.phone, email: org.email, kvkNumber: org.kvkNumber,
+        addressLine: org.addressLine, postalCode: org.postalCode, vatNumber: org.vatNumber, industry: org.industry,
+        facebookUrl: org.facebookUrl, instagramUrl: org.instagramUrl, linkedinUrl: org.linkedinUrl,
+        youtubeUrl: org.youtubeUrl, tiktokUrl: org.tiktokUrl, coreActivity: org.coreActivity, region: org.region,
+      },
       bedrijfsVelden,
     )
+    if (medewerkers && org.employeeCount == null) erbij.employeeCount = medewerkers
+    if (hoofddoel && !org.mainGoal) erbij.mainGoal = hoofddoel
+    if (bron && !org.leadSource) erbij.leadSource = bron
     if (Object.keys(erbij).length) {
       await db.update(organizations).set({ ...erbij, updatedAt: new Date() }).where(eq(organizations.id, org.id))
     }
@@ -185,7 +256,78 @@ export async function koppelAanCrm(inv: CrmInvoer): Promise<CrmKoppeling> {
     }
   }
 
+  /* --- Doelgroep, concurrenten en doelen: toevoegen wat er nog niet staat --- */
+  const lijsten = p.lijsten
+  if (lijsten) {
+    const doelgroep = schoon(lijsten.doelgroep)
+    if (doelgroep) {
+      const [ideaal] = await db
+        .select()
+        .from(organizationAudiences)
+        .where(and(eq(organizationAudiences.organizationId, org.id), sql`lower(${organizationAudiences.name}) = 'ideale klant'`))
+        .limit(1)
+      if (!ideaal) {
+        await db.insert(organizationAudiences).values({ organizationId: org.id, name: 'Ideale klant', description: doelgroep })
+      } else if (!schoon(ideaal.description)) {
+        await db.update(organizationAudiences).set({ description: doelgroep }).where(eq(organizationAudiences.id, ideaal.id))
+      }
+    }
+    const bekendeConcurrenten = new Set(
+      (await db.select({ naam: competitors.name }).from(competitors).where(eq(competitors.organizationId, org.id))).map((r) => r.naam.trim().toLowerCase()),
+    )
+    for (const k of lijsten.concurrenten ?? []) {
+      const kn = schoon(k?.naam)
+      if (!kn || bekendeConcurrenten.has(kn.toLowerCase())) continue
+      await db.insert(competitors).values({
+        organizationId: org.id,
+        name: kn,
+        website: schoon(k.website) || null,
+        notes: schoon(k.notitie) || null,
+        createdByUserId: inv.userId ?? null,
+      })
+      bekendeConcurrenten.add(kn.toLowerCase())
+    }
+    const bekendeDoelen = new Set(
+      (await db.select({ titel: organizationGoals.title }).from(organizationGoals).where(eq(organizationGoals.organizationId, org.id))).map((r) => r.titel.trim().toLowerCase()),
+    )
+    for (const d of lijsten.doelen ?? []) {
+      const titel = schoon(d)
+      if (!titel || bekendeDoelen.has(titel.toLowerCase())) continue
+      await db.insert(organizationGoals).values({ organizationId: org.id, title: titel, createdByUserId: inv.userId ?? null })
+      bekendeDoelen.add(titel.toLowerCase())
+    }
+  }
+
+  /* --- De intake en het plan als notitie op de tijdlijn ---
+     Eén notitie per dossier. Bestaat hij nog (zelfde bedrijf, zelfde onderwerp), dan
+     werken we hem bij: het is onze eigen samenvatting, geen notitie van een collega. */
+  let notitieId: string | null = null
+  const n = p.notitie
+  if (n && schoon(n.tekst) && schoon(n.onderwerp)) {
+    let bestaande: typeof activities.$inferSelect | undefined
+    if (n.id) {
+      ;[bestaande] = await db
+        .select()
+        .from(activities)
+        .where(and(eq(activities.id, n.id), eq(activities.organizationId, org.id), eq(activities.subject, schoon(n.onderwerp))))
+        .limit(1)
+    }
+    if (bestaande) {
+      if (bestaande.body !== n.tekst) {
+        await db.update(activities).set({ body: n.tekst, contactId: contactId ?? bestaande.contactId, updatedAt: new Date() }).where(eq(activities.id, bestaande.id))
+      }
+      notitieId = bestaande.id
+    } else {
+      const [nieuw] = await db
+        .insert(activities)
+        .values({ organizationId: org.id, contactId, userId: inv.userId ?? null, kind: 'note', subject: schoon(n.onderwerp), body: n.tekst })
+        .returning({ id: activities.id })
+      notitieId = nieuw?.id ?? null
+    }
+  }
+
   return {
+    notitieId,
     organizationId: org.id,
     organisatieNaam: org.name,
     organisatieSlug: org.slug,
