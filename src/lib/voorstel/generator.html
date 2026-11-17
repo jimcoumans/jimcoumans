@@ -537,18 +537,15 @@ img.ico{object-fit:contain;border-radius:4px}
 .pp-dl li small{display:block;font-size:11px;color:#8E8E93;margin-top:1px}
 .pp-dl li.off{color:#8E8E93}
 .pp-dl li.off i{background:transparent;box-shadow:inset 0 0 0 1.4px #ADADB2}
-.pp-dl li.disc{color:#1E7A3A}
-.pp-dl li.disc i{background:#25AD42}
+.pp-dl li.disc{color:#007AFF}
+.pp-dl li.disc i{background:#007AFF}
+.pp-blok-t s{font-size:15px;color:#8E8E93;margin-right:10px;letter-spacing:0}
 .pp-blok-f{background:#F2F2F7;padding:13px 18px 14px}
 .pp-blok-t{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
 .pp-blok-t b{font-size:15px;font-weight:400!important;color:#1C1C1E}
 .pp-blok-t span{font-size:26px;font-weight:400;letter-spacing:-.01em;color:#1C1C1E;white-space:nowrap}
 .pp-blok-t.maand span{color:#007AFF}
 .pp-blok-i{display:flex;justify-content:space-between;gap:12px;font-size:12px;font-weight:300;color:#636466;margin-top:4px}
-.pp-bgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
-.pp-bgrid > :only-child{grid-column:1/-1}
-.pp-bgrid .pp-blok{display:flex;flex-direction:column}
-.pp-bgrid .pp-blok-b{flex:1}
 .pp-bterms{font-size:11.5px;font-weight:300;color:#636466;margin:8px 18px 0;line-height:1.5}
 .pp-sec{font-size:20px;font-weight:400;line-height:1.2;letter-spacing:-.01em;color:#1C1C1E;margin:26px 0 12px}
 .pp-sumkop{color:#1C1C1E!important;font-size:16px;font-weight:400;margin-bottom:10px}
@@ -558,7 +555,7 @@ img.ico{object-fit:contain;border-radius:4px}
 .pp-total span{font-weight:400!important}
 .pp-page b,.pp-page strong{font-weight:400}
 .pp-page [style*="font-weight:500"],.pp-page [style*="font-weight:700"],.pp-page [style*="font-weight: 500"]{font-weight:400!important}
-.pp-head2{align-items:center}
+.pp-head2{align-items:center;padding-left:18px;padding-right:18px}
 .pp-head2 .pp-client{gap:12px}
 .pp-head2 .pp-cicon{width:30px;height:30px}
 .pp-knaam{font-size:13px;font-weight:400;color:#1C1C1E}
@@ -2236,7 +2233,7 @@ async function buildPdf(parts){
   const regel = (l, a, o) => Object.assign({l, a}, o||{});
   const blok = (titel, rechts, regels, voet) => '<div class="pp-blok"><div class="pp-blok-b"><div class="pp-blok-h"><b>'+esc(titel)+'</b><span>'+esc(rechts||'')+'</span></div><ul class="pp-dl">'
     +regels.map(r=>'<li'+(r.off?' class="off"':r.disc?' class="disc"':'')+'><i></i><span>'+r.l+(r.sub?'<small>'+r.sub+'</small>':'')+'</span><span>'+r.a+'</span></li>').join('')+'</ul></div>'
-    +(voet?'<div class="pp-blok-f"><div class="pp-blok-t'+(voet.maand?' maand':'')+'"><b>'+esc(voet.l)+'</b><span>'+voet.a+'</span></div>'+(S.btw&&voet.incl!=null?'<div class="pp-blok-i"><span>Inclusief 21% btw</span><span>'+eur2(incl(voet.incl))+'</span></div>':'')+'</div>':'')+'</div>';
+    +(voet?'<div class="pp-blok-f"><div class="pp-blok-t'+(voet.maand?' maand':'')+'"><b>'+esc(voet.l)+'</b><span>'+(voet.was?'<s>'+voet.was+'</s>':'')+voet.a+'</span></div>'+(S.btw&&voet.incl!=null?'<div class="pp-blok-i"><span>Inclusief 21% btw</span><span>'+eur2(incl(voet.incl))+'</span></div>':'')+'</div>':'')+'</div>';
   const prijsblok = (b, terms) => '<div>'+b+(terms?'<p class="pp-bterms">'+terms+'</p>':'')+'</div>';
   const platNaam = k => ({meta:'Meta', tiktok:'TikTok', linkedin:'LinkedIn', google:'Google'})[k.id] || k.naam;
   const budgetRegels = () => (B.off||!B.act.length ? [] : (S.budget.vrij && B.act.length>1
@@ -2244,11 +2241,14 @@ async function buildPdf(parts){
       : B.act.map(k=>regel('Advertentiebudget'+(B.act.length>1?' '+esc(k.naam):''), eur(B.budgets[k.id]), {sub: A.viaJr ? 'via James Robinson' : 'rechtstreeks aan '+esc(platNaam(k))}))))
     .concat(A.opslag?[regel('Opslag advertentiebudget, '+CAT.maand.opslagPct+'%', eur(A.opslag), {sub:'via James Robinson'})]:[])
     .concat(A.link?[regel('Linkbuildingbudget', eur(A.link))]:[]);
-  const maandKorting = () => K.maandL.map(m=>regel(esc(m.label), eurPdf(-m.bedrag), {disc:true}));
+  const hoofd = t => t.charAt(0).toUpperCase()+t.slice(1);
+  const maandKorting = () => K.maandL.map(m=>regel(esc(hoofd(m.label)), eurPdf(-m.bedrag), {disc:true}));
+  const setupKorting = () => K.setupL.map(d=>regel(esc(hoofd(d.label)), eurPdf(-d.bedrag), {disc:true}));
+  const maandWas = () => K.maandL.length ? eur(A.monthlyNow + K.maandL.reduce((a,m)=>a+m.bedrag,0)) : null;
   const losShoot = () => cJr() && S.cnt.afreken==='los' && shootPrijs();
   const volgendeShoots = () => losShoot() ? [regel('Volgende '+soortNaam().toLowerCase()+'s, als indicatie '+keerTxt(shootFreq()), eur(shootPrijs())+' per shoot', {off:true, sub:'in overleg, niet in dit totaal'})] : [];
   const laterSetups = () => later().map(k=>regel(esc(k.naam)+' set-up', 'later', {off:true}));
-  const setupRegels = () => suRows.map(([n,p,c,t])=>regel(esc(n), rowAmt(p,t), t==='ret'?{off:true}:null)).concat(K.setupL.map(d=>regel(esc(d.label), eurPdf(-d.bedrag), {disc:true})));
+  const setupRegels = () => suRows.map(([n,p,c,t])=>regel(esc(n), rowAmt(p,t), t==='ret'?{off:true}:null)).concat(setupKorting());
   const licRegels = () => su.jr.map(x=>regel(esc(x[0].replace(/^Licentie /,'')), eur(x[1]))).concat(su.partner.map(x=>regel(esc(x[0]), esc(x[1]), {off:true, sub:'rechtstreeks via de leverancier'})));
   const sumCo = () => prijsblok(blok('Content', 'Eenmalig', coRows.map(r=>regel(esc(coNaam(r)), eur(r[1]))).concat(volgendeShoots()), {l:'Subtotaal', a:eur(coSub), incl:coSub}),
     btwNote()+' Gefactureerd in de set-upmaand.'+(losShoot()?' Nieuwe shoots plannen we altijd in overleg.':''));
@@ -2268,9 +2268,14 @@ async function buildPdf(parts){
     add('<div>'+kop('Hoe dit voorstel is opgebouwd')+card('Vier onderdelen', '', delen, false)+'</div>');
   }
   // ---- zo hebben we jullie begrepen ----
+  // Zijn er doelen of cijfers, dan opent dat hoofdstuk een nieuwe pagina en staat
+  // "Zo hebben we jullie begrepen" daaronder. Anders blijft het op de openingspagina.
+  const doelenEcht = parts.includes('doelen') && (heeftCijfers() || Object.entries(S.fases||{}).some(([k,v])=>!/l$/.test(k) && num(v)!=null && num(v)>0));
+  let begrepen = '';
   if(parts.includes('begrepen')){
     const T = S.tekst || {}; const rijen = [['Wie jullie zijn', T.bedrijf],['Jullie klanten', T.klanten],['Werkgebied', T.werkgebied],['Waar jullie tegenaan lopen', T.uitdagingen],['Waarom nu', T.nu]].filter(r=>String(r[1]||'').trim());
-    if(rijen.length) add('<div>'+kop('Zo hebben we jullie begrepen')+card(handelsNaam(), '', rijen.map(r=>[r[0], String(r[1]).trim()]), false)+'</div>');
+    if(rijen.length) begrepen = '<div>'+kop('Zo hebben we jullie begrepen')+card(handelsNaam(), '', rijen.map(r=>[r[0], String(r[1]).trim()]), false)+'</div>';
+    if(begrepen && !doelenEcht) add(begrepen);
   }
   if(parts.includes('doelen')){
     const C = S.cijfers, rows = []; const t = TYPES.find(x=>x.id===S.type);
@@ -2290,9 +2295,7 @@ async function buildPdf(parts){
       rows.push(['Doel '+txt+(S.fases[g+'l']?' · '+esc(S.fases[g+'l']):''), eur(t)+' omzet per maand'+det+(num(S.fases[g+'m'])?', binnen '+nf(num(S.fases[g+'m']))+' maanden':'')]); });
     if(isAanv()){ fz('l1','l1l','l1m','fase 1'); fz('l2','l2l','l2m','fase 2'); }
     if(S.type==='beter'){ fz('k1','k1l','k1m','fase 1'); fz('k2','k2l','k2m','fase 2'); }
-    const echt = heeftCijfers() || Object.entries(S.fases||{}).some(([k,v])=>!/l$/.test(k) && num(v)!=null && num(v)>0);
-    if(echt){ nieuwePagina(); }
-    if(echt) add('<div>'+h2('Waar jullie nu staan en wat jullie willen bereiken', true)+kv(rows)+'</div>');
+    if(doelenEcht){ nieuwePagina(); add('<div>'+h2('Waar jullie nu staan en wat jullie willen bereiken', true)+card('Cijfers en doelen', '', rows.map(r=>r.map(h=>{ const d = el('div'); d.innerHTML = h; return d.textContent; })), false)+'</div>'); if(begrepen) add(begrepen); }
   }
 
   // ---- onze werkwijze ----
@@ -2320,7 +2323,7 @@ async function buildPdf(parts){
     if(contentRet()) add(card('Contentshoots', eur(contentMaand())+'<small>per maand</small>', [['Wat', 'Een shoot '+shootWat()+', '+keerTxt(shootFreq())+'. De eerste in de set-upmaand, zodat we snel live kunnen.'],['Wat we doen', CP.wie[2].desc],['Waarom vast', 'Vooraf ingepland is '+CP.vastKorting+'% voordeliger dan los: '+eur(contentBesparing())+' per jaar minder.']], true));
     if(!B.off && B.act.length) add(budgetCard());
     const sch = K.schema.length>1 ? ' '+K.schema.map(x=>(x.tot?'Maand '+x.van+(x.tot>x.van?' tot '+x.tot:'')+': ':'Daarna: ')+eur(x.ret+B.total+A.link+A.opslag)+' per maand').join(' · ')+'.' : '';
-    add(prijsblok(blok('Maandpakket', 'Per maand, na de set-upmaand', B.ret.lines.map(l=>regel(esc(l[0]), eur(l[1]))).concat(maandKorting(), budgetRegels()), {l:'Subtotaal per maand', a:eur(A.monthlyNow), maand:true, incl:A.monthlyNow}),
+    add(prijsblok(blok('Maandpakket', 'Per maand, na de set-upmaand', B.ret.lines.map(l=>regel(esc(l[0]), eur(l[1]))).concat(maandKorting(), budgetRegels()), {l:'Subtotaal per maand', a:eur(A.monthlyNow), was:maandWas(), maand:true, incl:A.monthlyNow}),
       btwNote()+sch+(B.off||!B.act.length||B.teLaag?'':' Het advertentiebudget is minimaal even hoog als het beheer van de kanalen.')+(B.off||!B.act.length||A.viaJr?'':' Het advertentiebudget betalen jullie rechtstreeks aan '+joinNl(B_PLATFORMS())+'; het loopt niet via James Robinson.')+' Het maandpakket start na de set-upmaand en is maandelijks opzegbaar.'));
   }
 
@@ -2358,7 +2361,7 @@ async function buildPdf(parts){
     else add(card('Eerste '+soortNaam().toLowerCase(), (S.cnt.afreken==='los' ? eur(su.coPrijs)+'<small>eenmalig</small>' : 'via de retainer'), [['Wat', 'De eerste '+soortNaam().toLowerCase()+' ('+duurNaam()+'), in de set-upmaand. Zo hebben we beeld voor de eerste advertenties. Meer hierover bij Content.'],['Wie', partnerTxt()]], S.cnt.afreken==='los'));
     su.cad.forEach(c=>add(card('Extra: '+c.naam, (c.prijs?eur(c.prijs):'gratis')+'<small>normaal '+eur(c.normaal)+'</small>', [['Wat het is', c.desc]].concat(c.oms?[['Waarom', c.oms]]:[]), true)));
     const st = [btwNote(), 'Eenmalig. De set-up voeren we uit in de maand voor livegang.']; if(!full && su.jrTotal) st.push('Daarnaast '+eur(su.jrTotal)+' per jaar aan licenties via James Robinson, vooruit gefactureerd.');
-    add(prijsblok(blok('Marketing Set-up', 'Eenmalig', setupRegels().concat(laterSetups()), {l: full ? 'Subtotaal' : 'Totaal eenmalig', a:eur(setupNet), incl:setupNet}), st.join(' ')));
+    add(prijsblok(blok('Marketing Set-up', 'Eenmalig', setupRegels().concat(laterSetups()), {l: full ? 'Subtotaal' : 'Totaal eenmalig', a:eur(setupNet), was: K.setupDisc ? eur(setupNet + K.setupDisc) : null, incl:setupNet}), st.join(' ')));
   }
   if(parts.includes('licenties')){
     if(su.jr.length || su.partner.length){
@@ -2394,24 +2397,22 @@ async function buildPdf(parts){
   }
   if(parts.includes('samen')){
     nieuwePagina();
-    const eenmalig = setupNet + coSub, eerst = setupNet + coSub + su.jrTotal;
+    // Chronologisch: wat de klant in de set-upmaand betaalt, daarna per maand, daarna per jaar.
+    // Elk bedrag staat maar één keer, zodat niemand de blokken bij elkaar optelt.
+    const eerst = setupNet + coSub + su.jrTotal;
     const coKort = coRows.map(r=>regel(esc(coNaam(r).replace(/, in de set-upmaand$/,'')), eur(r[1])));
     const blokken = [
-      blok('Eenmalig', 'In de set-upmaand', [regel('Marketing Set-up', eur(setupNet))].concat(coKort), {l:'Totaal eenmalig', a:eur(eenmalig), incl:eenmalig}),
-      blok('Per maand', 'Na de set-upmaand', [regel('Marketing Partnership', eur(B.ret.total), {sub: esc(joinNl(B.ret.lines.map(l=>l[0])))})].concat(maandKorting(), budgetRegels()), {l:'Totaal per maand', a:eur(A.monthlyNow), maand:true, incl:A.monthlyNow})
+      blok('In de set-upmaand', 'Eerste factuur', [regel('Marketing Set-up', eur(setupNet + K.setupDisc))].concat(setupKorting(), coKort, su.jrTotal?[regel('Licenties, eerste jaar', eur(su.jrTotal))]:[]), {l:'Totaal eerste factuur', a:eur(eerst), was: K.setupDisc ? eur(eerst + K.setupDisc) : null, incl:eerst}),
+      blok('Daarna per maand', 'Na de set-upmaand', [regel('Marketing Partnership', eur(B.ret.total), {sub: esc(joinNl(B.ret.lines.map(l=>l[0])))})].concat(maandKorting(), budgetRegels()), {l:'Totaal per maand', a:eur(A.monthlyNow), was:maandWas(), maand:true, incl:A.monthlyNow})
     ];
-    if(su.jr.length || su.partner.length) blokken.push(blok('Licenties', 'Per jaar', licRegels(), su.jrTotal ? {l:'Per jaar, via James Robinson', a:eur(su.jrTotal), incl:su.jrTotal} : null));
-    blokken.push(blok('In de set-upmaand', 'Eerste factuur', [regel('Marketing Set-up', eur(setupNet))].concat(coKort, su.jrTotal?[regel('Licenties, eerste jaar', eur(su.jrTotal))]:[],
-      [regel('Marketing Partnership', eur(A.retNow), {off:true, sub:'na de set-upmaand, niet in dit totaal'})],
-      (!B.off && B.act.length && !A.viaJr) ? [regel('Advertentiebudget', eur(B.total), {off:true, sub:'rechtstreeks aan '+esc(joinNl(B_PLATFORMS()))+', niet op onze factuur'})] : []),
-      {l:'Totaal eerste factuur', a:eur(eerst), incl:eerst}));
+    const jaarRegels = su.jr.map(x=>regel(esc(x[0].replace(/^Licentie /,'')), eur(x[1]))).concat(volgendeShoots());
+    if(jaarRegels.length) blokken.push(blok('Daarna per jaar', su.jrTotal ? 'Licenties vanaf het tweede jaar' : 'Indicatie', jaarRegels, su.jrTotal ? {l:'Per jaar, via James Robinson', a:eur(su.jrTotal), incl:su.jrTotal} : null));
     const t = [S.btw?'Bedragen exclusief btw, tenzij anders vermeld.':'Alle bedragen exclusief btw.'];
     if(K.schema.length>1) t.push(K.schema.map(x=>(x.tot?'Maand '+x.van+(x.tot>x.van?' tot '+x.tot:'')+': ':'Daarna: ')+eur(x.ret+B.total+A.link+A.opslag)+' per maand').join(' · ')+'.');
     if(A.viaJr) t.push('Het advertentiebudget loopt via James Robinson: we factureren het per maand, inclusief '+CAT.maand.opslagPct+'% opslag.'); else if(!B.off && B.act.length) t.push('Het advertentiebudget betalen jullie rechtstreeks aan '+joinNl(B_PLATFORMS())+'; het loopt niet via James Robinson.');
-    if(su.partner.length || opts.length) t.push('Licenties via leveranciers en optionele extra\'s komen er los bij.'); if(losShoot()) t.push('Volgende '+soortNaam().toLowerCase()+'s: als indicatie '+keerTxt(shootFreq())+', '+eur(shootPrijs())+' per shoot, altijd in overleg.'); t.push('Het maandpakket start na de set-upmaand en is maandelijks opzegbaar.');
-    // Twee kolommen: eenmalig naast per maand, licenties naast de eerste factuur.
-    add('<div>'+h2('Samengevat', true)+'<div class="pp-bgrid">'+blokken[0]+blokken[1]+'</div></div>');
-    add('<div><div class="pp-bgrid">'+blokken.slice(2).join('')+'</div><p class="pp-bterms">'+t.join(' ')+'</p></div>');
+    if(su.partner.length || opts.length) t.push('Licenties via leveranciers en optionele extra\'s komen er los bij.'); if(losShoot()) t.push('Nieuwe shoots plannen we altijd in overleg.'); t.push('Het maandpakket start na de set-upmaand en is maandelijks opzegbaar.');
+    add('<div>'+h2('Samengevat', true)+intro('Wat jullie betalen, en wanneer.')+blokken[0]+'</div>');
+    blokken.slice(1).forEach((b,i,arr)=>add(i===arr.length-1 ? prijsblok(b, t.join(' ')) : '<div>'+b+'</div>'));
   }
 
   // ---- persoonlijk bericht ----
