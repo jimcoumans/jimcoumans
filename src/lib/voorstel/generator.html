@@ -547,6 +547,18 @@ img.ico{object-fit:contain;border-radius:4px}
 .pp-blok-t.maand span{color:#007AFF}
 .pp-blok-i{display:flex;justify-content:space-between;gap:12px;font-size:12px;font-weight:300;color:#636466;margin-top:4px}
 .pp-bterms{font-size:11.5px;font-weight:300;color:#636466;margin:8px 18px 0;line-height:1.5}
+/* Visiepagina: redactioneel, zonder kaders. Een uitspraak van Jim, met naam en foto. */
+.pp-visie{padding:0 18px}
+.pp-visie p{font-size:15px;line-height:1.6;font-weight:300;color:#1C1C1E;margin:0 0 10px;max-width:640px}
+.pp-visie .pp-visie-open{font-size:24px;line-height:1.25;font-weight:400;letter-spacing:-.01em;margin:0 0 12px}
+.pp-visie h3{font-size:20px;font-weight:400;line-height:1.2;letter-spacing:-.01em;color:#1C1C1E;margin:20px 0 6px}
+.pp-visie .pp-visie-slot{font-size:24px;line-height:1.25;font-weight:400;letter-spacing:-.01em;margin:22px 0 0}
+.pp-visie-voet{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:16px;padding-top:16px;border-top:1px solid #E5E5E9}
+.pp-visie-wit{font-size:36px;line-height:1;letter-spacing:-.025em;color:#007AFF;font-weight:400}
+.pp-visie-door{display:flex;align-items:center;gap:12px;text-align:right}
+.pp-visie-door img{width:52px;height:52px;border-radius:50%;object-fit:cover;display:block}
+.pp-visie-door b{display:block;font-size:15px;font-weight:400!important;color:#1C1C1E}
+.pp-visie-door span{display:block;font-size:12px;font-weight:300;color:#636466}
 .pp-sec{font-size:20px;font-weight:400;line-height:1.2;letter-spacing:-.01em;color:#1C1C1E;margin:26px 0 12px}
 .pp-sumkop{color:#1C1C1E!important;font-size:16px;font-weight:400;margin-bottom:10px}
 .pp-row > span:first-child{color:#1C1C1E}
@@ -1120,7 +1132,7 @@ const DEFAULTS = {
   ch:{meta:true, tiktok:true, linkedin:false, google:false, email:false}, later:{google:true}, laterM:{}, laterB:{},
   camp:{}, mail:1, cnt:{wie:'jr', freq:4, soort:'beide', duur:'dagdeel', prijs:'', afreken:'vast', partner:'', partnerOms:''},
   campIn:{}, laterWhy:{}, laterExtra:{},
-  tekst:{bedrijf:'', klanten:'', werkgebied:'', uitdagingen:'', nu:'', persoonlijk:''},
+  tekst:{bedrijf:'', klanten:'', werkgebied:'', uitdagingen:'', nu:'', aanpak:'', persoonlijk:''},
   budgetOn:true, budgetJr:false, budget:{total:'', split:{}, vrij:true}, linkOn:false, link:'500',
   su:{}, web:{cookie:true},
   opt:{}, kortingen:[], cadeaus:[], losse:false, onderPdf:true,
@@ -1808,6 +1820,7 @@ function saveAuteur(patch){ const n = (S.offerte.door||'').trim(); if(!n) return
   try{ localStorage.setItem('jr-auteurs', JSON.stringify(AUTEURS)); }catch(e){} if(typeof DB!=='undefined' && DB) DB.doc('instellingen/auteurs').set({lijst:AUTEURS}).catch(()=>{}); }
 function verklein(file, max, type){ return new Promise((ok, nee)=>{ const r = new FileReader(); r.onerror = nee; r.onload = ()=>{ const im = new Image(); im.onerror = nee; im.onload = ()=>{ const f = Math.min(1, max/Math.max(im.width, im.height)); const c = document.createElement('canvas'); c.width = Math.round(im.width*f); c.height = Math.round(im.height*f); c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); ok(c.toDataURL(type, 0.88)); }; im.src = r.result; }; r.readAsDataURL(file); }); }
 function renderAuteur(){ const a = auteur(); ['functie','telefoon','email'].forEach(k=>setVal('au-'+k, a[k]||''));
+  const fp = $('au-foto-prev'); if(fp){ fp.hidden = !a.foto; if(a.foto) fp.src = a.foto; $('au-foto-del').hidden = !a.foto; }
   $('au-naam').textContent = (S.offerte.door||'').trim() || 'nog niemand ingevuld bij Offertegegevens';
  }
 
@@ -1821,7 +1834,8 @@ function tekstPrompt(){
     'Het doel van het deel "Zo hebben we jullie begrepen": de klant moet denken "ze hebben naar me geluisterd en ze snappen me". Gebruik wat de klant zelf vertelde, in je eigen woorden, warm maar feitelijk. Noem nooit interne inschattingen of twijfels over de klant. De notities en het gespreksverslag gebruik je alleen voor het persoonlijke slot.',
     '',
     'Geef ALLEEN een JSON-object terug, zonder uitleg ervoor of erna, in deze vorm:',
-    JSON.stringify({begrepen:{bedrijf:'2 tot 4 zinnen over wie ze zijn en wat ze doen', klanten:'2 tot 3 zinnen over hun ideale klant en waarom die voor hen kiest', werkgebied:'1 of 2 zinnen', uitdagingen:'2 tot 3 zinnen over waar ze tegenaan lopen', nu:'1 tot 3 zinnen over waarom ze nu aan de slag willen'}, campagnes:Object.fromEntries(kan.map(k=>[k.kanaal, {waarom:'2 tot 3 zinnen waarom deze opzet met '+k.campagnes.length+' campagne(s)', lijst:k.campagnes.map(c=>'2 zinnen over de campagne met insteek: '+c)}])), later:Object.fromEntries(lat.map(x=>[x.id, '1 of 2 zinnen waarom '+x.naam+' later interessant kan worden voor deze klant'])), persoonlijk:'2 tot 4 zinnen persoonlijk slot op basis van de notities en het gesprek, bijvoorbeeld over de startdatum. Leeg laten als er niets persoonlijks in de gegevens staat.'}, null, 2),
+    JSON.stringify({begrepen:{bedrijf:'2 tot 4 zinnen over wie ze zijn en wat ze doen', klanten:'2 tot 3 zinnen over hun ideale klant en waarom die voor hen kiest', werkgebied:'1 of 2 zinnen', uitdagingen:'2 tot 3 zinnen over waar ze tegenaan lopen', nu:'1 tot 3 zinnen over waarom ze nu aan de slag willen'}, campagnes:Object.fromEntries(kan.map(k=>[k.kanaal, {waarom:'2 tot 3 zinnen waarom deze opzet met '+k.campagnes.length+' campagne(s)', lijst:k.campagnes.map(c=>'2 zinnen over de campagne met insteek: '+c)}])), later:Object.fromEntries(lat.map(x=>[x.id, '1 of 2 zinnen waarom '+x.naam+' later interessant kan worden voor deze klant'])), aanpak:'100 tot 130 woorden: waarom deze aanpak', persoonlijk:'2 tot 4 zinnen persoonlijk slot op basis van de notities en het gesprek, bijvoorbeeld over de startdatum. Leeg laten als er niets persoonlijks in de gegevens staat.'}, null, 2),
+    'Het deel "aanpak" (100 tot 130 woorden) legt uit waarom we voor deze kanalen kiezen, waarom we hiermee beginnen, waarom andere kanalen pas later komen en hoe de aanpak bijdraagt aan het commerciële doel van de klant. We beginnen vaak met adverteren, omdat dat het snelst laat zien wat werkt; zeg dat alleen als het voor deze klant zo is. Gebruik alleen gegevens uit het dossier en de gekozen dienstverlening. Geen verzonnen resultaten, conversiecijfers of beloftes. Schrijf "adverteren", niet "paid advertising".',
     'Laat een veld leeg ("") als de gegevens er niets over zeggen.',
     '',
     '## Gegevens uit het dossier',
@@ -1830,7 +1844,7 @@ function tekstPrompt(){
 }
 function zetTeksten(r){ let n = 0; if(!r || typeof r!=='object') return 0;
   const vul = (obj, k, v) => { v = typeof v==='string' ? v.trim() : ''; if(!v) return; obj[k] = v; n++; };
-  const b = r.begrepen || {}; ['bedrijf','klanten','werkgebied','uitdagingen','nu'].forEach(k=>vul(S.tekst, k, b[k])); vul(S.tekst, 'persoonlijk', r.persoonlijk);
+  const b = r.begrepen || {}; ['bedrijf','klanten','werkgebied','uitdagingen','nu'].forEach(k=>vul(S.tekst, k, b[k])); vul(S.tekst, 'persoonlijk', r.persoonlijk); vul(S.tekst, 'aanpak', r.aanpak);
   Object.entries(r.campagnes||{}).forEach(([id, c])=>{ const k = KAN.find(x=>x.id===id); if(!k || !c) return; const o = S.campIn[id] = S.campIn[id] || {lijst:[], waarom:''}; if(!Array.isArray(o.lijst)) o.lijst = [];
     vul(o, 'waarom', c.waarom); (Array.isArray(c.lijst)?c.lijst:[]).forEach((t, i)=>{ o.lijst[i] = o.lijst[i] || {}; vul(o.lijst[i], 'tekst', t); }); const box = $('campin-'+id); if(box) box.dataset.sig = ''; });
   Object.entries(r.later||{}).forEach(([id, t])=>vul(S.laterWhy, id, t));
@@ -2210,6 +2224,22 @@ function contentKort(){ if(!cJr()) return (CP.wie.find(o=>o.id===S.cnt.wie)||{})
   return soortNaam()+' ('+duurNaam()+'), als indicatie '+keerTxt(shootFreq())+(pn?', in samenwerking met '+pn:'')+'. '+(S.cnt.afreken==='los' ? 'Als losse post, buiten de retainer. De eerste in de set-upmaand.' : 'Vooraf ingepland in de retainer.'); }
 const B_PLATFORMS = () => calcAll().B.act.map(k=>({meta:'Meta', tiktok:'TikTok', linkedin:'LinkedIn', google:'Google'})[k.id] || k.naam);
 
+/* De visie van James Robinson, als uitspraak van Jim. Vaste tekst: niet aanpassen per klant. */
+const VISIE_AUTEUR = 'Jim Coumans';
+const VISIE_TEKST = [
+  '<p class="pp-visie-open">Marketing moet geld opleveren. Punt.</p>',
+  '<p>Marketing is geen doel op zich, maar een middel om je bedrijf te laten groeien: meer klanten, meer omzet en uiteindelijk meer winst. Likes, volgers en impressies betalen de rekeningen niet.</p>',
+  '<h3>Het speelveld verandert sneller dan ooit</h3>',
+  '<p>Organisch bereik is beperkt. Meta, Google, LinkedIn en TikTok bepalen steeds meer wie je bereikt, en ze verdienen aan advertentiebudgetten. Daar kun je tegen vechten, of je kunt er zelf van profiteren. Wij kiezen voor het laatste: adverteerders blijven alleen betalen als campagnes resultaat opleveren, dus hun belang loopt grotendeels gelijk op met dat van jou. Ondertussen verandert AI de spelregels opnieuw. Wij volgen dat op de voet en zitten er bovenop.</p>',
+  '<h3>Momentum first. Mastery later.</h3>',
+  '<p>We beginnen waar we het snelst resultaat verwachten. Vaak is dat adverteren: gericht de juiste mensen bereiken, boodschappen testen en snel zien wat werkt. SEO, e-mailmarketing en websiteoptimalisatie voegen we toe zodra ze echt iets bijdragen. Niet alles tegelijk, wel op het juiste moment.</p>',
+  '<h3>Drie dingen moeten kloppen</h3>',
+  '<p>Adverteren rust op drie pijlers. Meetbaarheid: weten wat werkt en wat het oplevert. Content: sterk, on-brand beeld dat mensen een reden geeft om voor jou te kiezen. En advertentiebudget: genoeg om de juiste mensen te bereiken, te leren en op te schalen.</p>',
+  '<h3>Geen magie. Wel een systeem.</h3>',
+  '<p>Er bestaat geen knop voor gegarandeerd meer klanten. Marketing vraagt kennis, creativiteit, tijd en geld. We testen, meten, leren en sturen bij. En als de resultaten erom vragen, kijken we verder dan waar we mee begonnen.</p>',
+  '<p class="pp-visie-slot">Het doel staat vast. De weg ernaartoe niet.</p>'
+].join('');
+
 async function buildPdf(parts){
   const A = calcAll(); const B = A.B, su = A.su, K = A.K; const R = onderCalc(A);
   const klant = klantNaam();
@@ -2230,6 +2260,7 @@ async function buildPdf(parts){
   const kv = rows => '<div class="pp-card" style="padding-bottom:12px">'+rows.map((r,i)=>'<div style="display:flex;justify-content:space-between;gap:16px;padding:7px 0;'+(i?'border-top:1px solid #E5E5E9;':'')+'font-size:13px"><span>'+r[0]+'</span><span style="font-weight:500;text-align:right">'+r[1]+'</span></div>').join('')+'</div>';
   const oCards = (html, kop) => { const tmp = el('div'); tmp.innerHTML = html; Array.from(tmp.children).forEach((ch,i)=>{ ch.className='pp-card'; ch.style.paddingBottom='12px'; ch.querySelectorAll('.orow').forEach(r=>{ r.style.cssText='display:flex;justify-content:space-between;gap:16px;padding:6px 0;border-top:1px solid #E5E5E9;font-size:12.5px'; }); const h=ch.querySelector('h3'); if(h) h.style.cssText='font-size:15px;font-weight:500;margin:0 0 6px'; ch.querySelectorAll('.omsg').forEach(p=>p.style.cssText='font-size:12.5px;margin:10px 0 0;line-height:1.55'); ch.querySelectorAll('.note').forEach(p=>p.style.cssText='color:#636466;font-size:11px'); ch.querySelectorAll('.st').forEach(s=>{ const map={ok:['#E3F4E8','#1E7A3A'],mid:['#FFF4E0','#8A5300'],bad:['#FCE4E2','#B42318']}; const k=['ok','mid','bad'].find(x=>s.classList.contains(x)); s.style.cssText='display:inline-block;font-size:11px;font-weight:500;padding:2px 8px;border-radius:999px;background:'+map[k][0]+';color:'+map[k][1]; }); add(i===0 && kop ? '<div>'+kop+ch.outerHTML+'</div>' : ch.outerHTML); }); };
   const full = parts.includes('intro');
+  const metAds = nuAds().length > 0; // drie pijlers alleen noemen als er nu geadverteerd wordt
   const btwNote = () => S.btw ? 'Bedragen exclusief btw, tenzij anders vermeld.' : 'Exclusief btw.';
 
 
@@ -2273,7 +2304,7 @@ async function buildPdf(parts){
   const sumCo = () => prijsblok(blok('Content', 'Eenmalig', coRows.map(r=>regel(esc(coNaam(r)), eur(r[1]), partnerNaam()?{sub:'In samenwerking met '+esc(partnerNaam())}:null)).concat(contentKorting(), volgendeShoots()), {l:'Subtotaal', a:eur(coSub), was: K.contentDisc ? eur(coSub + K.contentDisc) : null, incl:coSub}),
     btwNote()+' Gefactureerd in de set-upmaand.'+(losShoot()?' Nieuwe shoots plannen we altijd in overleg.':'')+kVoorwaarde(K.contentL));
   const budgetCard = () => card('Advertentiebudget', eur(B.total)+'<small>per maand</small>', [
-    ['Wat het is', 'Hiermee betalen we de advertenties zelf. Het gaat één-op-één naar '+joinNl(B_PLATFORMS())+'.'],
+    ['Wat het is', (metAds?'Een van de drie pijlers onder adverteren. ':'')+'Hiermee betalen we de advertenties zelf. Het gaat één-op-één naar '+joinNl(B_PLATFORMS())+'.'],
     ['Hoe het betaald wordt', A.viaJr ? 'Het loopt via James Robinson: we factureren het per maand, met '+CAT.maand.opslagPct+'% opslag voor de administratie.' : joinNl(B_PLATFORMS())+' '+(B_PLATFORMS().length>1?'brengen':'brengt')+' het rechtstreeks bij jullie in rekening, via jullie eigen advertentieaccount. Het loopt dus niet via James Robinson, en wij rekenen er niets op.'],
     ['Ons doel', 'Zoveel mogelijk resultaat halen uit het beschikbare budget.'],
     ['Bijsturen', 'Tijdens de samenwerking kunnen we adviseren om het budget te verhogen, te verlagen of anders te verdelen over de kanalen. Dat advies onderbouwen we altijd met cijfers.']], false);
@@ -2283,9 +2314,10 @@ async function buildPdf(parts){
   }
   // ---- introductie ----
   if(parts.includes('intro')){
-    add('<div><h1 class="pp-h1">Voorstel voor '+esc(handelsNaam())+'</h1><p class="pp-lead">Dit voorstel hebben we opgesteld op basis van wat jullie ons vertelden en wat we zelf hebben onderzocht. Transparantie vinden we belangrijk. Daarom laten we per onderdeel zien wat we doen, wat het kost en hoe we tot dit voorstel zijn gekomen.</p></div>');
+    // Vaste introductie van James Robinson (één keer, geen tweede introtekst eronder).
+    add('<div><h1 class="pp-h1">Voorstel voor '+esc(handelsNaam())+'</h1><p class="pp-lead" style="margin-bottom:10px!important">Wij geloven dat marketing maar één doel heeft: bijdragen aan het commerciële succes van jullie bedrijf.</p><p class="pp-lead" style="margin-bottom:10px!important">Daarom beginnen we niet met de vraag welke marketingdiensten jullie nodig hebben, maar met de vraag waar we het meeste resultaat kunnen halen.</p><p class="pp-lead">We beginnen waar de kansen liggen, meten wat werkt en bouwen van daaruit verder. Met vakmanschap, sterke content en data.</p></div>');
     const delen = [['Maandpakket','Per maand. Ons werk van elke maand: de kanalen beheren, bijsturen en samen de cijfers bespreken. Plus het advertentiebudget.'],['Content','Onze aanpak voor beeld en video: de brandstof van de campagnes.'],['Marketing Set-up','Eenmalig. Alles klaarzetten om vanaf de start goed te meten, te adviseren en te handelen op basis van feiten, cijfers en data.'],['Licenties','Waar nodig. De tools die nodig zijn om alles goed neer te zetten en volledig te meten.']];
-    add('<div>'+kop('Hoe dit voorstel is opgebouwd')+card('Vier onderdelen', '', delen, false)+'</div>');
+    add('<div>'+kop('Hoe dit voorstel is opgebouwd')+intro('Per onderdeel laten we zien wat we doen, wat het kost en hoe we tot dit voorstel zijn gekomen.')+card('Vier onderdelen', '', delen, false)+'</div>');
   }
   // ---- zo hebben we jullie begrepen ----
   // Zijn er doelen of cijfers, dan opent dat hoofdstuk een nieuwe pagina en staat
@@ -2318,16 +2350,25 @@ async function buildPdf(parts){
     if(doelenEcht){ nieuwePagina(); add('<div>'+h2('Waar jullie nu staan en wat jullie willen bereiken', true)+card('Cijfers en doelen', '', rows.map(r=>r.map(h=>{ const d = el('div'); d.innerHTML = h; return d.textContent; })), false)+'</div>'); if(begrepen) add(begrepen); }
   }
 
+  // ---- onze visie: vaste tekst, wordt niet door AI herschreven ----
+  if(parts.includes('visie')){
+    nieuwePagina();
+    const jim = AUTEURS[VISIE_AUTEUR] || {};
+    add('<div>'+h2('Zo kijken wij naar marketing', true)+'<div class="pp-visie">'+VISIE_TEKST+
+      '<div class="pp-visie-voet"><div class="pp-visie-wit">Whatever it takes.</div><div class="pp-visie-door"><div><b>'+esc(VISIE_AUTEUR)+'</b><span>'+esc((jim.functie||'Mede-eigenaar').trim())+', James Robinson</span></div>'+(jim.foto?'<img src="'+jim.foto+'" alt="">':'')+'</div></div></div></div>');
+  }
+
   // ---- onze werkwijze ----
   if(parts.includes('werkwijze')){
     nieuwePagina();
-    add('<div>'+h2('Onze werkwijze', true)+'<p class="pp-lead" style="margin:0">Momentum first. Mastery later. We beginnen met adverteren. Niet omdat we blind zijn voor de rest, maar omdat betaald adverteren met afstand de snelste manier is om bekendheid en bezoekers op te bouwen, data te verzamelen en keuzes te maken op basis van cijfers en feiten in plaats van onderbuikgevoel. Zien we in de data kansen in andere onderdelen, zoals SEO, CRO of e-mailmarketing, dan voegen we die toe aan de mix.</p></div>');
-    add(card('Zo werken we samen', '', [['Marketingoverleg','Elke maand, bij jullie op locatie of bij ons op kantoor. We bespreken wat we deden en wat het opleverde, waar we mee bezig zijn en welke kansen we zien. Ook advertentiebudget en content komen daar aan bod.'],['Realtime dashboard','In de set-up zetten we een dashboard op waarin jullie altijd zien wat jullie marketing oplevert. Zo concreet en expliciet mogelijk.'],['Ons doel','Zorgen dat marketing zoveel mogelijk oplevert. Marketing moet geld opleveren; doet het dat niet, dan is het geen performance marketing maar een hobby.']], false));
+    add('<div>'+h2('Onze werkwijze', true)+'<p class="pp-lead" style="margin:0">We houden het graag overzichtelijk. We maken vooraf duidelijke afspraken, bespreken regelmatig de resultaten en laten zien waar we mee bezig zijn. Zo weten jullie wat we doen, waarom we het doen en wat het oplevert.</p></div>');
+    add(card('Zo werken we samen', '', [['Marketingoverleg','Elke maand, bij jullie op locatie of bij ons op kantoor. We bespreken wat we deden en wat het opleverde, waar we mee bezig zijn en welke kansen we zien. Ook advertentiebudget en content komen daar aan bod.'],['Realtime dashboard','In de set-up zetten we een dashboard op waarin jullie altijd zien wat jullie marketing oplevert. Zo concreet en expliciet mogelijk.'],['Communicatie en aanspreekpunt','Eén adres voor al jullie vragen: support@jamesrobinson.nl. Antwoord binnen één werkdag, van wie erover gaat.'],['Rapportage en optimalisatie','Wat we doen en wat het oplevert, zien jullie in het dashboard. Op basis van die cijfers sturen we campagnes, budgetten en boodschappen continu bij.']], false));
   }
   // ---- wat we nu gaan doen ----
   if(parts.includes('plan')){
     nieuwePagina();
-    let kop = '<div>'+h2('Wat we nu gaan doen', true)+intro('Dit is wat er vanaf de start gebeurt. Wat later interessant kan worden, staat verderop in dit voorstel.');
+    const aanpak = String((S.tekst||{}).aanpak||'').trim();
+    let kop = '<div>'+h2('Wat we nu gaan doen', true)+intro('Dit is wat er vanaf de start gebeurt. Wat later interessant kan worden, staat verderop in dit voorstel.')+(aanpak ? '<h3 class="pp-sec" style="margin-top:4px">Waarom deze aanpak</h3>'+aanpak.split(/\n{2,}/).map(a=>intro(a.trim())).join('') : '');
     nuAds().forEach((k,i)=>{ const L = campLijst(k); const rijen = L.map((c,j)=>['Campagne '+(j+1)+' · '+c.label.split(',')[0], c.tekst]); const w = campWaarom(k); if(w) rijen.push(['Waarom deze opzet', w]);
       const c = card(k.naam+', '+L.length+' campagne'+(L.length>1?'s':''), '', rijen, true, k.id); add(i===0 ? kop+c+'</div>' : c); if(i===0) kop = ''; });
     if(kop) add(kop+'</div>');
@@ -2337,7 +2378,7 @@ async function buildPdf(parts){
   }
   if(parts.includes('maand')){
     nieuwePagina();
-    add('<div>'+h2('Maandpakket', true)+(full?intro('Het maandpakket is ons werk van elke maand: de basis die elke samenwerking nodig heeft, en het beheer van de kanalen die nu draaien. Het gaat in na de set-upmaand en is maandelijks opzegbaar.'):'')+card(CAT.maand.basis.naam, eur(CAT.maand.basis.prijs)+'<small>per maand</small>', [['Waarom', CAT.maand.basis.desc]].concat(CAT.maand.basis.onderdelen), true)+'</div>');
+    add('<div>'+h2('Maandpakket', true)+(full?intro('Het maandpakket is ons werk van elke maand: de basis die elke samenwerking nodig heeft, en het beheer van de kanalen die nu draaien. Het gaat in na de set-upmaand en is maandelijks opzegbaar.'):'')+card(CAT.maand.basis.naam, eur(CAT.maand.basis.prijs)+'<small>per maand</small>', parts.includes('werkwijze') ? [['Wat het is', CAT.maand.basis.desc+' Hoe dat werkt, staat bij Onze werkwijze.']] : [['Waarom', CAT.maand.basis.desc]].concat(CAT.maand.basis.onderdelen), true)+'</div>');
     B.act.forEach(k=>{ const n = camps(k); add(card(k.naam+(n>1?', '+n+' campagnes':''), eur(CAT.maand.kanaal.prijs+(n-1)*CAT.maand.campagne.prijs)+'<small>per maand</small>', CAT.maand.kanaal.onderdelen.concat(n>1?[['Extra campagnes', (n-1)+' extra campagne'+(n>2?'s':'')+', elk + '+eur(CAT.maand.campagne.prijs)+' per maand.']]:[]), true, k.id)); const st = S.budget.vrij ? 0 : staffel(B.budgets[k.id]); if(st) add(card(k.naam+': budget boven '+eur(CAT.maand.grens), '+ '+eur(st)+'<small>per maand</small>', [['Waarom','Een hoger budget vraagt meer beheer. Het kanaaltarief geldt tot '+eur(CAT.maand.grens)+' per maand; daarboven + '+eur(CAT.maand.staffel.prijs)+' per extra '+eur(CAT.maand.grens)+'.']], true)); });
     if(S.ch.email) add(card('E-mailmarketing', eur(mails()*CAT.maand.mailing.prijs)+'<small>per maand</small>', [['Mailings', mailTxt(mails())+': tekst, opmaak en verzending naar jullie lijst, in jullie huisstijl.'],['Licentie', CAT.licenties['LIC-MAILERLITE'].txt]], true, 'email'));
     if(contentRet()) add(card('Contentshoots', eur(contentMaand())+'<small>per maand</small>', [['Wat', 'Een shoot '+shootWat()+', '+keerTxt(shootFreq())+'. De eerste in de set-upmaand, zodat we snel live kunnen.'],['Wat we doen', CP.wie[2].desc],['Waarom vast', 'Vooraf ingepland is '+CP.vastKorting+'% voordeliger dan los: '+eur(contentBesparing())+' per jaar minder.']], true));
@@ -2351,7 +2392,7 @@ async function buildPdf(parts){
   if(parts.includes('content')){
     if(cJr() || su.co) nieuwePagina();
     if(cJr()){
-      add('<div>'+h2('Content', true)+intro('Content is de brandstof van de campagnes. We plannen geen shoot om een shoot te plannen: elke shoot moet bijdragen aan de commerciële doelen. Mooi en on-brand, maar vooral effectief. Wij begeleiden het hele traject, van plan en regie tot montage en de advertenties in de formaten van elk kanaal.'+(partnerNaam()?' De shoots maken we in samenwerking met '+partnerNaam()+'.':''))+'</div>');
+      add('<div>'+h2('Content', true)+intro((metAds?'Sterke, on-brand content is een van de drie pijlers onder adverteren: de brandstof van de campagnes.':'Content is de brandstof van de campagnes.')+' We plannen geen shoot om een shoot te plannen: elke shoot moet bijdragen aan de commerciële doelen. Mooi en on-brand, maar vooral effectief. Wij begeleiden het hele traject, van plan en regie tot montage en de advertenties in de formaten van elk kanaal.'+(partnerNaam()?' De shoots maken we in samenwerking met '+partnerNaam()+'.':''))+'</div>');
       const los = S.cnt.afreken==='los'; const p = shootPrijs();
       const rijen = [['Wat', shootDoel()],['Duur', shootDuur()],['Wie', partnerTxt()],['Wanneer', 'De eerste shoot plannen we in de set-upmaand, zodat we snel live kunnen.'+(los?' Die staat op de eerste factuur.':'')],
         ['Hoe vaak', 'Als indicatie '+keerTxt(shootFreq())+'. Wanneer nieuwe content nodig is, geven we aan tijdens het marketingoverleg.'],
@@ -2359,7 +2400,7 @@ async function buildPdf(parts){
       add(card(shootTitel(), los ? (p?eur(p)+'<small>per shoot</small>':'') : eur(contentMaand())+'<small>per maand</small>', rijen, true));
       if(coSub) add(sumCo());
     } else if(su.co){
-      add('<div>'+h2('Content', true)+intro('Content is de brandstof van de campagnes. Hieronder staat hoe we dat met jullie aanpakken.')+card('Content: '+su.co.kort, su.co.prijs?eur(su.co.prijs)+'<small>eenmalig</small>':'', [[su.co.label||'Wat we doen', su.co.desc]], su.co.prijs>0)+'</div>');
+      add('<div>'+h2('Content', true)+intro((metAds?'Sterke, on-brand content is een van de drie pijlers onder adverteren: de brandstof van de campagnes.':'Content is de brandstof van de campagnes.')+' Hieronder staat hoe we dat met jullie aanpakken.')+card('Content: '+su.co.kort, su.co.prijs?eur(su.co.prijs)+'<small>eenmalig</small>':'', [[su.co.label||'Wat we doen', su.co.desc]], su.co.prijs>0)+'</div>');
       if(coSub) add(sumCo());
     }
   }
@@ -2371,7 +2412,7 @@ async function buildPdf(parts){
   if(parts.includes('setup')){
     nieuwePagina();
     const basisCard = card('Basis set-up', eur(CAT.setup.basis.prijs)+'<small>eenmalig</small>', CAT.setup.basis.onderdelen, true);
-    if(full) add('<div>'+h2('Marketing Set-up', true)+intro('De Marketing Set-up is het fundament. Eenmalig zetten we alles klaar wat nodig is om vanaf de start goed te meten, te adviseren en bij te sturen op basis van cijfers: accounts, meting, doelgroepen, het dashboard en de eerste campagnes. We voeren de set-up uit in de maand voor livegang.')+basisCard+'</div>');
+    if(full) add('<div>'+h2('Marketing Set-up', true)+intro((metAds?'Meetbaarheid is een van de drie pijlers onder adverteren. ':'')+'De Marketing Set-up is het fundament. Eenmalig zetten we alles klaar wat nodig is om vanaf de start goed te meten, te adviseren en bij te sturen op basis van cijfers: accounts, meting, doelgroepen, het dashboard en de eerste campagnes. We voeren de set-up uit in de maand voor livegang.')+basisCard+'</div>');
     else add('<div>'+h2('In deze Marketing Set-up', true)+basisCard+'</div>');
     setupKan().forEach(k=>add(card(k.naam+' set-up', eur(k.setup.prijs)+'<small>eenmalig</small>', regelsVan(k), true, k.id)));
     const cn = capiNu(); if(cn.length) add('<div class="pp-later" style="border-style:solid;border-color:#E5E5E9"><div class="pp-row" style="margin:0"><span>De Conversions API, uitgelegd</span><span style="font-size:11px;font-weight:300;color:#636466">geldt voor '+esc(joinNl(cn.map(c=>c.naam)))+'</span></div>'+subs(CAT.capiUitleg)+'</div>');
@@ -2450,7 +2491,7 @@ async function buildPdf(parts){
   try{ for(let i=0;i<pages.length;i++){ const canvas = await window.html2canvas(pages[i], {scale:2.5, backgroundColor:'#FFFFFF', logging:false}); if(i>0) doc.addPage(); doc.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, 210, 297, undefined, 'FAST'); } } finally { root.remove(); }
   return doc;
 }
-const PARTS = { all:['intro','begrepen','doelen','werkwijze','plan','maand','content','opties','setup','licenties','onder','later','samen','persoonlijk'], setup:['setup','licenties','opties'], mp:['maand','content','onder','later'] };
+const PARTS = { all:['intro','begrepen','doelen','visie','werkwijze','plan','maand','content','opties','setup','licenties','onder','later','samen','persoonlijk'], setup:['setup','licenties','opties'], mp:['maand','content','onder','later'] };
 window.__jrBuildPdf = k => buildPdf(PARTS[k||'all']);
 window.__jrBriefing = () => briefingMd(); window.__jrState = () => S;
 let downloads = null;
@@ -2534,13 +2575,18 @@ $('f-tekst').innerHTML = '<div class="fhead"><span>Zo hebben we jullie begrepen<
   frow('t-werkgebied','Werkgebied','',ta('t-werkgebied',2))+
   frow('t-uitdagingen','Waar jullie tegenaan lopen','',ta('t-uitdagingen',3))+
   frow('t-nu','Waarom nu','',ta('t-nu',2))+
+  '<div class="fhead"><span>Wat we nu gaan doen</span></div>'+
+  frow('t-aanpak','Waarom deze aanpak','100 tot 130 woorden. Waarom deze kanalen, waarom we hiermee beginnen, wat later komt en hoe het bijdraagt aan het doel. Alleen uit het dossier.',ta('t-aanpak',6))+
   '<div class="fhead"><span>Persoonlijk bericht</span></div>'+
   frow('t-persoonlijk','Persoonlijk deel','Na de algemene tekst. Bijvoorbeeld over de startdatum die jullie bespraken.',ta('t-persoonlijk',4));
 bindForm('f-tekst','tekst','t-');
 $('f-auteur').innerHTML = frow('au-naam-r','Naam','Uit Offertegegevens.','<span id="au-naam" style="font-weight:400"></span>')+
+  frow('au-foto','Foto','Vierkant werkt het best. Staat bij de visiepagina als het jouw voorstel is, of als Jim Coumans een foto heeft.','<div style="display:flex;align-items:center;gap:12px"><img id="au-foto-prev" alt="" style="width:48px;height:48px;border-radius:50%;object-fit:cover" hidden><label class="ghost lg-btn">Kies foto<input type="file" id="au-foto" accept="image/*" hidden></label><button type="button" class="linkbtn" id="au-foto-del" hidden>Verwijderen</button></div>')+
   frow('au-functie','Functie','',tin('au-functie'))+frow('au-telefoon','Telefoon','',tin('au-telefoon','','tel'))+frow('au-email','E-mail','',tin('au-email','','email'))+
   '';
 ['functie','telefoon','email'].forEach(k=>$('au-'+k).addEventListener('input', e=>{ saveAuteur({[k]: e.target.value}); }));
+$('au-foto').addEventListener('change', async e=>{ const f = e.target.files && e.target.files[0]; if(!f) return; try{ saveAuteur({foto: await verklein(f, 320, 'image/jpeg')}); renderAuteur(); }catch(x){} e.target.value = ''; });
+$('au-foto-del').addEventListener('click', ()=>{ saveAuteur({foto: ''}); renderAuteur(); });
 $('o-door').addEventListener('input', ()=>renderAuteur());
 $('tx-ai').addEventListener('click', async ()=>{ const btn = $('tx-ai');
   if(!SAMPLE){ txNote('AI is in het portaal nog niet ingesteld. Kopieer de opdracht voor ChatGPT en plak het antwoord hieronder.'); return; }
