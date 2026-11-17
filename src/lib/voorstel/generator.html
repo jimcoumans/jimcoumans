@@ -496,6 +496,21 @@ img.ico{object-fit:contain;border-radius:4px}
 .pp-foto{width:56px;height:56px;border-radius:50%;object-fit:cover;display:block}
 .pp-signaam{font-size:16px;font-weight:400}
 .pp-sigsub{font-size:12.5px;color:#636466}
+
+/* Feedback Jim: koppen in JR-blauw, "vet" is Regular, lopende tekst Light */
+.pp-h1,.pp-h2,.pp-sumkop,.pp-quote{color:#007AFF!important}
+.pp-sumkop{font-size:17px;font-weight:400;margin-bottom:10px}
+.pp-row > span:first-child{color:#007AFF}
+.pp-card.on .pp-row > span:first-child{color:#005CBF}
+.pp-row,.pp-subs b,.pp-bold,.pp-total b,.pp-meta b,.pp-eyebrow,.pp-signaam{font-weight:400!important}
+.pp-total span{font-weight:400!important}
+.pp-page b,.pp-page strong{font-weight:400}
+.pp-page [style*="font-weight:500"],.pp-page [style*="font-weight:700"],.pp-page [style*="font-weight: 500"]{font-weight:400!important}
+.pp-head2{align-items:center}
+.pp-head2 .pp-client{gap:12px}
+.pp-head2 .pp-cicon{width:30px;height:30px}
+.pp-knaam{font-size:13px;font-weight:400;color:#1C1C1E}
+.pp-head2 .pp-meta{font-size:12px}
 </style>
 <div class="wrap">
   <header class="top">
@@ -767,7 +782,7 @@ img.ico{object-fit:contain;border-radius:4px}
         </section>
         <section class="group">
           <h2>Opgesteld door</h2>
-          <p class="gsub">Foto, functie en handtekening onder het persoonlijke bericht. Je vult ze één keer in per persoon; daarna staan ze klaar voor elk voorstel.</p>
+          <p class="gsub">Naam, functie en contactgegevens onder het persoonlijke bericht. Je vult ze één keer in per persoon; daarna staan ze klaar voor elk voorstel.</p>
           <div class="form" id="f-auteur"></div>
         </section>
         <section class="group">
@@ -1037,7 +1052,7 @@ const DEFAULTS = {
   intake:{omschrijving:'', aanbod:'', usp:'', uitdagingen:'', prijs:'', opgericht:'', medewerkers:'', vestigingen:'', seizoen:'', doelgroep:'', werkgebied:'', bron:'', bronVia:'', aanleiding:'', verwachting:'', eerder:'', werkte:'', budgetNu:'', wieMkt:'', beslisser:'', opvolger:'', opvolgtijd:'', capaciteit:'', huisstijl:'', beeld:'', toon:'', inschatting:'', notities:'', verslag:''},
   concurrenten:[], fit:{}, bronTekst:'',
   cijfers:{base:'', baseW:'', baseS:'', aov:'', cr:'', margeSoort:'', marge:'', baseL:'', waarde:'', score:'', doelgroep:'', freq:'3'},
-  fases:{g1_webshop:'7500', g1_winkel:'', g1_socials:'', g1l:'Break-even', g1m:'', g2_webshop:'20000', g2_winkel:'', g2_socials:'', g2l:'Structureel', g2m:'', l1:'', l1l:'', l1m:'', l2:'', l2l:'', l2m:'', k1:'', k1l:'', k1m:'', k2:'', k2l:'', k2m:''},
+  fases:{g1_webshop:'', g1_winkel:'', g1_socials:'', g1l:'', g1m:'', g2_webshop:'', g2_winkel:'', g2_socials:'', g2l:'', g2m:'', l1:'', l1l:'', l1m:'', l2:'', l2l:'', l2m:'', k1:'', k1l:'', k1m:'', k2:'', k2l:'', k2m:''},
   ch:{meta:true, tiktok:true, linkedin:false, google:false, email:false}, later:{google:true}, laterM:{}, laterB:{},
   camp:{}, mail:1, cnt:{wie:'jr', freq:4, soort:'beide', duur:'dagdeel', prijs:'', afreken:'vast', partner:'', partnerOms:''},
   campIn:{}, laterWhy:{}, laterExtra:{},
@@ -1519,7 +1534,7 @@ $('f-contact').innerHTML = frow('p-naam','Naam','',tin('p-naam'))+frow('p-functi
 bindForm('f-contact','contact','p-');
 $('f-factuur').innerHTML = frow('i-email','Factuuradres e-mail','Waar de facturen naartoe gaan.',tin('i-email','','email'))+frow('i-tav','Ter attentie van','',tin('i-tav'))+frow('i-referentie','Referentie of inkoopnummer',K('Als {k} die op de factuur wil.'),tin('i-referentie'));
 bindForm('f-factuur','factuur','i-');
-$('f-offerte').innerHTML = frow('o-nummer','Offertenummer','Zoals in Moneybird.',tin('o-nummer'))+frow('o-datum','Datum','',tin('o-datum','','date'))+frow('o-geldig','Geldig','Aantal dagen.',nin('o-geldig',1))+frow('o-door','Opgesteld door','',tin('o-door'))+
+$('f-offerte').innerHTML = '<div hidden>'+tin('o-nummer')+'</div>'+frow('o-datum','Datum','',tin('o-datum','','date'))+frow('o-geldig','Geldig','Aantal dagen.',nin('o-geldig',1))+frow('o-door','Opgesteld door','',tin('o-door'))+
   '<div class="frow"><span class="fl">Btw tonen<span class="fh">Totalen ook inclusief 21% btw.</span></span><label class="laterchk" style="padding-left:0"><input type="checkbox" id="o-btw"> Ja, toon ook inclusief btw</label></div>';
 bindForm('f-offerte','offerte','o-');
 $('o-btw').addEventListener('change',e=>{ S.btw=e.target.checked; save(); render(); });
@@ -1727,7 +1742,7 @@ function saveAuteur(patch){ const n = (S.offerte.door||'').trim(); if(!n) return
 function verklein(file, max, type){ return new Promise((ok, nee)=>{ const r = new FileReader(); r.onerror = nee; r.onload = ()=>{ const im = new Image(); im.onerror = nee; im.onload = ()=>{ const f = Math.min(1, max/Math.max(im.width, im.height)); const c = document.createElement('canvas'); c.width = Math.round(im.width*f); c.height = Math.round(im.height*f); c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); ok(c.toDataURL(type, 0.88)); }; im.src = r.result; }; r.readAsDataURL(file); }); }
 function renderAuteur(){ const a = auteur(); ['functie','telefoon','email'].forEach(k=>setVal('au-'+k, a[k]||''));
   $('au-naam').textContent = (S.offerte.door||'').trim() || 'nog niemand ingevuld bij Offertegegevens';
-  $('au-foto-p').hidden = !a.foto; if(a.foto) $('au-foto-p').src = a.foto; $('au-hand-p').hidden = !a.handtekening; if(a.handtekening) $('au-hand-p').src = a.handtekening; }
+ }
 
 /* ---- AI: de teksten schrijven, of de opdracht klaarzetten voor een andere AI ---- */
 function tekstPrompt(){
@@ -2107,7 +2122,7 @@ function voorblad(root, pages, klant, datum){
   pg.innerHTML = '<div class="pp-cover-bg" style="background-image:url('+VOORBLAD_BEELD+')"></div><div class="pp-cover-in">'+
     '<div class="pp-cover-top"><div class="pp-brand">'+SCHILD+'<div class="pp-logo">JAMES ROBINSON<span>Performance Agency</span></div></div></div>'+
     '<div class="pp-cover-mid">'+(ic?'<div class="pp-duo">'+SCHILD+'<span class="pp-x"></span><img src="'+ic+'" alt=""></div>':'')+'<p class="pp-cover-eyebrow">Voorstel</p><h1 class="pp-cover-h1">'+esc(handelsNaam())+'</h1><p class="pp-cover-lead">Momentum first. Mastery later.</p></div>'+
-    '<div class="pp-cover-foot"><span>'+[datum?'Hulsberg, '+esc(datum):'', S.offerte.nummer?'Bij offerte '+esc(S.offerte.nummer):''].filter(Boolean).join('<br>')+'</span><span style="text-align:right">'+(naam?'Opgesteld door<br>'+esc(naam):'')+'</span></div></div>';
+    '<div class="pp-cover-foot"><span>'+(datum?'Hulsberg, '+esc(datum):'')+'</span><span style="text-align:right">'+(naam?'Opgesteld door<br>'+esc(naam):'')+'</span></div></div>';
   root.append(pg); pages.push(pg);
 }
 const heeftCijfers = () => Object.entries(S.cijfers||{}).some(([k,v])=>k!=='freq' && k!=='margeSoort' && num(v)!=null && num(v)>0);
@@ -2125,8 +2140,8 @@ async function buildPdf(parts){
   const klant = klantNaam();
   const datum = S.offerte.datum ? new Date(S.offerte.datum+'T12:00:00').toLocaleDateString('nl-NL',{day:'numeric',month:'long',year:'numeric'}) : '';
   const root = el('div','pp-root'); root.setAttribute('aria-hidden','true'); document.body.append(root);
-  const pages = []; const meta = ['<b>'+esc(klant)+'</b>']; if(S.offerte.nummer) meta.push('Bij offerte '+esc(S.offerte.nummer)); if(datum) meta.push('Hulsberg, '+esc(datum));
-  function newPage(){ const pg = el('div','pp-page'); pg.innerHTML = '<div class="pp-head"><div class="pp-brand">'+SCHILD+'<div class="pp-logo">JAMES ROBINSON<span>Performance Agency</span></div></div><div class="pp-client">'+(klantIcoon()?'<img class="pp-cicon" src="'+klantIcoon()+'" alt="">':'')+'<div class="pp-meta">'+meta.join('<br>')+'</div></div></div><div class="pp-body"></div>'; root.append(pg); pages.push(pg); return pg.querySelector('.pp-body'); }
+  const pages = []; const meta = [];
+  function newPage(){ const pg = el('div','pp-page'); pg.innerHTML = '<div class="pp-head pp-head2"><div class="pp-client">'+(klantIcoon()?'<img class="pp-cicon" src="'+klantIcoon()+'" alt="">':'')+'<span class="pp-knaam">'+esc(klant)+'</span></div><div class="pp-meta">'+(datum?esc(datum):'')+'</div></div><div class="pp-body"></div>'; root.append(pg); pages.push(pg); return pg.querySelector('.pp-body'); }
   if(parts.includes('intro')) voorblad(root, pages, klant, datum);
   let body = newPage();
   function add(html){ const w = el('div'); w.innerHTML = html; const node = w.firstElementChild; body.append(node); if(body.scrollHeight > body.clientHeight + 1 && body.children.length > 1){ node.remove(); body = newPage(); body.append(node); } }
@@ -2180,7 +2195,8 @@ async function buildPdf(parts){
       rows.push(['Doel '+txt+(S.fases[g+'l']?' · '+esc(S.fases[g+'l']):''), eur(t)+' omzet per maand'+det+(num(S.fases[g+'m'])?', binnen '+nf(num(S.fases[g+'m']))+' maanden':'')]); });
     if(isAanv()){ fz('l1','l1l','l1m','fase 1'); fz('l2','l2l','l2m','fase 2'); }
     if(S.type==='beter'){ fz('k1','k1l','k1m','fase 1'); fz('k2','k2l','k2m','fase 2'); }
-    add('<div>'+h2('Waar jullie nu staan en wat jullie willen bereiken', true)+kv(rows)+'</div>');
+    const echt = heeftCijfers() || Object.entries(S.fases||{}).some(([k,v])=>!/l$/.test(k) && num(v)!=null && num(v)>0);
+    if(echt) add('<div>'+h2('Waar jullie nu staan en wat jullie willen bereiken', true)+kv(rows)+'</div>');
   }
 
   // ---- onze werkwijze ----
@@ -2204,7 +2220,7 @@ async function buildPdf(parts){
     if(S.ch.email) add(card('E-mailmarketing', eur(mails()*CAT.maand.mailing.prijs)+'<small>per maand</small>', [['Mailings', mailTxt(mails())+': tekst, opmaak en verzending naar jullie lijst, in jullie huisstijl.'],['Licentie', CAT.licenties['LIC-MAILERLITE'].txt]], true, 'email'));
     if(contentRet()) add(card('Contentshoots', eur(contentMaand())+'<small>per maand</small>', [['Wat', 'Een shoot '+shootWat()+', '+keerTxt(shootFreq())+'. De eerste in de set-upmaand, zodat we snel live kunnen.'],['Wat we doen', CP.wie[2].desc],['Waarom vast', 'Vooraf ingepland is '+CP.vastKorting+'% voordeliger dan los: '+eur(contentBesparing())+' per jaar minder.']], true));
     if(!B.off && B.act.length) add(budgetCard());
-    let s = '<div class="pp-sum"><div style="font-size:17px;font-weight:700;margin-bottom:10px">Jullie maandpakket</div><ul class="pp-lines">'+B.ret.lines.map(l=>'<li><span>'+esc(l[0])+'</span><span>'+eur(l[1])+'</span></li>').join('')+'</ul><div class="pp-split"></div>'+prow('Marketing Partnership', eur(B.ret.total), true)+K.maandL.map(m=>pdisc(esc(m.label), eurPdf(-m.bedrag))).join('')+(B.off||!B.act.length ? '' : (S.budget.vrij && B.act.length>1 ? prow('Advertentiebudget, verdeeld over '+esc(joinNl(B.act.map(k=>k.naam)))+'', eur(B.total)) : B.act.map(k=>prow('Advertentiebudget '+esc(k.naam)+'', eur(B.budgets[k.id]))).join('')))+(A.opslag?prow('Opslag advertentiebudget via James Robinson, '+CAT.maand.opslagPct+'%', eur(A.opslag)):'')+(A.link?prow('Linkbuildingbudget', eur(A.link)):'')+
+    let s = '<div class="pp-sum"><div class="pp-sumkop">Jullie maandpakket</div><ul class="pp-lines">'+B.ret.lines.map(l=>'<li><span>'+esc(l[0])+'</span><span>'+eur(l[1])+'</span></li>').join('')+'</ul><div class="pp-split"></div>'+prow('Marketing Partnership', eur(B.ret.total), true)+K.maandL.map(m=>pdisc(esc(m.label), eurPdf(-m.bedrag))).join('')+(B.off||!B.act.length ? '' : (S.budget.vrij && B.act.length>1 ? prow('Advertentiebudget, verdeeld over '+esc(joinNl(B.act.map(k=>k.naam)))+'', eur(B.total)) : B.act.map(k=>prow('Advertentiebudget '+esc(k.naam)+'', eur(B.budgets[k.id]))).join('')))+(A.opslag?prow('Opslag advertentiebudget via James Robinson, '+CAT.maand.opslagPct+'%', eur(A.opslag)):'')+(A.link?prow('Linkbuildingbudget', eur(A.link)):'')+
       '<div class="pp-total"><b>Investering per maand</b><span>'+eur(A.monthlyNow)+'</span></div>'+(S.btw?pincl(eur2(incl(A.monthlyNow))):'');
     const sch = K.schema.length>1 ? ' '+K.schema.map(x=>(x.tot?'Maand '+x.van+(x.tot>x.van?' tot '+x.tot:'')+': ':'Daarna: ')+eur(x.ret+B.total+A.link+A.opslag)+' per maand').join(' · ')+'.' : '';
     s += '<div class="pp-terms">'+btwNote()+sch+(B.off||!B.act.length||B.teLaag?'':' Het advertentiebudget is minimaal even hoog als het beheer van de kanalen.')+' Het maandpakket start na de set-upmaand en is maandelijks opzegbaar.</div></div>'; add(s);
@@ -2238,7 +2254,7 @@ async function buildPdf(parts){
     if(su.co.id!=='jr') add(card('Content: '+su.co.kort, eur(su.co.prijs)+'<small>eenmalig</small>', [[su.co.label||'Wat we doen', su.co.desc]], su.co.prijs>0));
     else add(card('Eerste '+soortNaam().toLowerCase(), (S.cnt.afreken==='los' ? eur(su.coPrijs)+'<small>eenmalig</small>' : 'via de retainer'), [['Wat', 'De eerste '+soortNaam().toLowerCase()+' ('+duurNaam()+'), in de set-upmaand. Zo hebben we beeld voor de eerste advertenties. Meer hierover bij Content.'],['Wie', partnerTxt()]], S.cnt.afreken==='los'));
     su.cad.forEach(c=>add(card('Extra: '+c.naam, (c.prijs?eur(c.prijs):'gratis')+'<small>normaal '+eur(c.normaal)+'</small>', [['Wat het is', c.desc]].concat(c.oms?[['Waarom', c.oms]]:[]), true)));
-    let s = '<div class="pp-sum"><div style="font-size:17px;font-weight:700;margin-bottom:10px">Marketing Set-up</div><ul class="pp-lines">'+su.rows.map(([n,p,c,t])=>'<li><span>'+esc(n)+'</span><span>'+rowAmt(p,t)+'</span></li>').join('')+'</ul><div class="pp-split"></div>';
+    let s = '<div class="pp-sum"><div class="pp-sumkop">Marketing Set-up</div><ul class="pp-lines">'+su.rows.map(([n,p,c,t])=>'<li><span>'+esc(n)+'</span><span>'+rowAmt(p,t)+'</span></li>').join('')+'</ul><div class="pp-split"></div>';
     if(K.setupDisc) s += prow('Normaal', eur(su.sub), true)+K.setupL.map(d=>pdisc(esc(d.label), eurPdf(-d.bedrag))).join('');
     if(su.jrTotal){ s += (K.setupDisc?'<div class="pp-split"></div>':'')+prow('Set-up, eenmalig', eur(A.setupNet), true)+(su.jrTotal?prow('Licenties eerste jaar, via James Robinson', eur(su.jrTotal), true):'')+'<div class="pp-total sec"><b>Jullie betalen in de set-upmaand</b><span>'+eur(A.first)+'</span></div>'; if(S.btw) s += pincl(eur2(incl(A.first))); }
     else { s += '<div class="pp-total sec"><b>'+(K.setupDisc?'Jullie betalen':'Totaal')+'</b><span>'+eur(A.setupNet)+'</span></div>'; if(S.btw) s += pincl(eur2(incl(A.setupNet))); }
@@ -2248,7 +2264,7 @@ async function buildPdf(parts){
   if(parts.includes('licenties')){
     if(su.jr.length || su.partner.length){
       if(full) add('<div>'+h2('Licenties', true)+intro('Sommige onderdelen hebben een licentie nodig om goed te werken en alles volledig te kunnen meten. Licenties via James Robinson factureren we in de set-upmaand en daarna elk jaar vooruit. Andere lopen rechtstreeks via de leverancier.')+'</div>');
-      let rec = '<div class="pp-sum" style="background:#FFFFFF;border:1px solid #E5E5E9"><div style="font-size:17px;font-weight:700;margin-bottom:6px">Licenties</div>';
+      let rec = '<div class="pp-sum" style="background:#FFFFFF;border:1px solid #E5E5E9"><div class="pp-sumkop" style="margin-bottom:6px">Licenties</div>';
       if(su.jr.length){ rec += '<div class="pp-terms" style="margin:4px 0 6px;font-weight:500">Via James Robinson</div><ul class="pp-lines">'+su.jr.map(x=>'<li><span>'+esc(x[0])+'</span><span>'+esc(x[2])+'</span></li>').join('')+'</ul><div class="pp-bold" style="border-top:1px solid #E5E5E9;padding-top:8px;margin-top:8px"><span>Totaal per jaar</span><span>'+eur(su.jrTotal)+'</span></div><div class="pp-terms" style="margin-top:6px">We factureren deze licenties in de set-upmaand en daarna elk jaar vooruit.</div>'; }
       if(su.partner.length) rec += '<div class="pp-terms" style="margin:12px 0 6px;font-weight:500">Rechtstreeks bij de leverancier</div><ul class="pp-lines">'+su.partner.map(x=>'<li><span>'+esc(x[0])+'</span><span>'+esc(x[1])+'</span></li>').join('')+'</ul>';
       const n = ['Exclusief btw.']; if(su.partner.length) n.push('Tarieven van leveranciers kunnen wijzigen; de actuele prijzen staan op hun website.'); if(K.setupDisc) n.push('De korting geldt niet voor licenties.');
@@ -2276,7 +2292,7 @@ async function buildPdf(parts){
     }
   }
   if(parts.includes('samen')){
-    let s = '<div class="pp-sum"><div style="font-size:17px;font-weight:700;margin-bottom:10px">Wat jullie betalen</div>'+
+    let s = '<div class="pp-sum"><div class="pp-sumkop">Wat jullie betalen</div>'+
       prow('Marketing Set-up, eenmalig', eur(A.setupNet), true)+(su.jrTotal?prow('Licenties eerste jaar, via James Robinson', eur(su.jrTotal), true):'')+
       '<div class="pp-total sec"><b>In de set-upmaand</b><span>'+eur(A.first)+'</span></div>'+(S.btw?pincl(eur2(incl(A.first))):'')+
       '<div class="pp-split"></div>'+prow('Marketing Partnership', eur(B.ret.total), true)+K.maandL.map(m=>pdisc(esc(m.label), eurPdf(-m.bedrag))).join('')+(B.off||!B.act.length?'':prow('Advertentiebudget', eur(B.total)))+(A.opslag?prow('Opslag advertentiebudget via James Robinson, '+CAT.maand.opslagPct+'%', eur(A.opslag)):'')+(A.link?prow('Linkbuildingbudget', eur(A.link)):'')+
@@ -2296,7 +2312,7 @@ async function buildPdf(parts){
     h += '<p>Bedankt voor het fijne gesprek en het vertrouwen om met ons mee te denken. In dit voorstel staat hoe wij '+esc(handelsNaam())+' willen laten groeien: concreet, meetbaar en zonder verrassingen achteraf.</p>';
     if(pers) pers.split(/\n{2,}/).forEach(p=>{ h += '<p>'+esc(p.trim()).replace(/\n/g,'<br>')+'</p>'; });
     h += '<p>Heb je vragen, of wil je iets anders zien? Bel of mail me gerust. Dan lopen we het samen door.</p><p style="margin-top:6px">Met vriendelijke groet,</p>';
-    h += '<div class="pp-sign">'+(au.handtekening?'<img class="pp-hand" src="'+au.handtekening+'" alt="">':'')+'<div class="pp-sig">'+(au.foto?'<img class="pp-foto" src="'+au.foto+'" alt="">':'')+'<div><div class="pp-signaam">'+esc(naam||'James Robinson')+'</div>'+(au.functie?'<div class="pp-sigsub">'+esc(au.functie)+' · James Robinson</div>':'<div class="pp-sigsub">James Robinson</div>')+(au.telefoon||au.email?'<div class="pp-sigsub">'+[au.telefoon, au.email].filter(Boolean).map(esc).join(' · ')+'</div>':'')+'</div></div></div></div>';
+    h += '<div class="pp-sign"><div class="pp-sig"><div><div class="pp-signaam">'+esc(naam||'James Robinson')+'</div>'+(au.functie?'<div class="pp-sigsub">'+esc(au.functie)+' · James Robinson</div>':'<div class="pp-sigsub">James Robinson</div>')+(au.telefoon||au.email?'<div class="pp-sigsub">'+[au.telefoon, au.email].filter(Boolean).map(esc).join(' · ')+'</div>':'')+'</div></div></div></div>';
     add(h);
   }
 
@@ -2393,11 +2409,8 @@ $('f-tekst').innerHTML = '<div class="fhead"><span>Zo hebben we jullie begrepen<
 bindForm('f-tekst','tekst','t-');
 $('f-auteur').innerHTML = frow('au-naam-r','Naam','Uit Offertegegevens.','<span id="au-naam" style="font-weight:400"></span>')+
   frow('au-functie','Functie','',tin('au-functie'))+frow('au-telefoon','Telefoon','',tin('au-telefoon','','tel'))+frow('au-email','E-mail','',tin('au-email','','email'))+
-  frow('au-foto','Foto','Vierkant werkt het best.','<input type="file" id="au-foto" accept="image/png,image/jpeg,image/webp"><img id="au-foto-p" alt="" hidden style="width:64px;height:64px;border-radius:50%;object-fit:cover;margin-top:8px">')+
-  frow('au-hand','Handtekening','Een scan of foto op wit, liefst als PNG.','<input type="file" id="au-hand" accept="image/png,image/jpeg,image/webp"><img id="au-hand-p" alt="" hidden style="max-width:200px;max-height:70px;margin-top:8px">');
+  '';
 ['functie','telefoon','email'].forEach(k=>$('au-'+k).addEventListener('input', e=>{ saveAuteur({[k]: e.target.value}); }));
-$('au-foto').addEventListener('change', async e=>{ const f = e.target.files[0]; if(!f) return; try{ saveAuteur({foto: await verklein(f, 320, 'image/jpeg')}); renderAuteur(); }catch(err){} });
-$('au-hand').addEventListener('change', async e=>{ const f = e.target.files[0]; if(!f) return; try{ saveAuteur({handtekening: await verklein(f, 600, 'image/png')}); renderAuteur(); }catch(err){} });
 $('o-door').addEventListener('input', ()=>renderAuteur());
 $('tx-ai').addEventListener('click', async ()=>{ const btn = $('tx-ai');
   if(!SAMPLE){ txNote('AI is in het portaal nog niet ingesteld. Kopieer de opdracht voor ChatGPT en plak het antwoord hieronder.'); return; }
