@@ -1,5 +1,6 @@
 import { redirect, notFound } from 'next/navigation'
 import { getSessionUser } from '@/lib/auth'
+import { voorstellenVoorBedrijf } from '@/lib/voorstellen'
 import { getOrganizationBySlug, listStaff } from '@/lib/admin'
 import { listActiveServices } from '@/lib/services'
 import { getWalletEntries, getReversedEntryIds } from '@/lib/ledger'
@@ -121,11 +122,12 @@ export default async function KlantPage({
     getTijdlijn(klant.organization.id, { limiet: 40 }),
     laatsteContact(klant.organization.id),
   ])
-  const [klantreis, profiel, eigenaren, merk] = await Promise.all([
+  const [klantreis, profiel, eigenaren, merk, voorstellen] = await Promise.all([
     getKlantreis(klant.organization.id),
     getProfiel(klant.organization.id),
     listOwners(klant.organization.id),
     merkTelling(klant.organization.id),
+    voorstellenVoorBedrijf(klant.organization.id),
   ])
   const vandaag = new Date().toISOString().slice(0, 10)
   const vast = contacten.find((c) => c.isPrimary)
@@ -242,6 +244,25 @@ export default async function KlantPage({
                 </p>
               </div>
             </section>
+            {voorstellen.length > 0 && (
+              <section>
+                <SectieKop titel="Voorstellen" uitleg="Gemaakt met de voorstelgenerator. Klik om verder te gaan." />
+                <ul className="space-y-2">
+                  {voorstellen.map((v) => (
+                    <li key={v.id}>
+                      {/* Een gewone link: de generator is een losse pagina, geen route van de app. */}
+                      <a
+                        href={`/beheer/voorstellen/generator?dossier=${encodeURIComponent(v.id)}`}
+                        className="hover:border-jr-blue flex flex-wrap items-baseline justify-between gap-x-4 rounded-xl border border-transparent bg-white p-4 shadow-sm transition-colors"
+                      >
+                        <span className="text-sm">{v.naam || v.id}{v.door ? <span className="text-xs text-gray-600"> · opgesteld door {v.door}</span> : null}</span>
+                        <span className="text-xs text-gray-500">bijgewerkt {formatDate(v.bijgewerkt)}</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
             {/* Pas naast elkaar als er echt ruimte is; anders wordt de
                 tijdlijn een smalle kolom met afgebroken regels. */}
             <div className="grid items-start gap-8 2xl:grid-cols-[minmax(0,1fr)_minmax(0,440px)]">

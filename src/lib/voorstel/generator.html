@@ -930,7 +930,7 @@ img.ico{object-fit:contain;border-radius:4px}
       <div class="dossier">
         <div class="ssub">Dossier</div>
         <select id="d-kies" aria-label="Dossier kiezen"></select>
-        <div class="dbtns" style="margin-top:8px"><button class="ghost" type="button" id="d-save">Opslaan</button><button class="ghost" type="button" id="d-new">Nieuw</button><button class="ghost" type="button" id="d-brief">Briefing</button><button class="ghost" type="button" id="d-json">Als bestand</button><button class="ghost" type="button" id="d-del">Verwijderen</button></div>
+        <div class="dbtns" style="margin-top:8px"><button class="ghost" type="button" id="d-save">Opslaan</button><button class="ghost" type="button" id="d-new">Nieuw</button><button class="ghost" type="button" id="d-brief">Briefing</button><button class="ghost" type="button" id="d-json">Als bestand</button><label class="ghost" style="cursor:pointer">Bestand inlezen<input type="file" id="d-lees" accept=".json,application/json" hidden></label><button class="ghost" type="button" id="d-del">Verwijderen</button></div>
         <p class="note" id="d-status" style="margin:8px 0 0"></p>
       </div>
       <button class="ghost" type="button" id="reset">Keuzes terugzetten</button>
@@ -2584,12 +2584,14 @@ const crmInvoer = () => { const i = S.intake||{}, o = S.online||{}, b = S.bedrij
 async function koppelCrm(){
   if(crmBezig || !String(S.bedrijf.naam||'').trim() || !S.dossierId) return; const inv = crmInvoer(); const sig = JSON.stringify(inv);
   const lijsten = crmLijsten(); const lijstSig = JSON.stringify(lijsten); const vorig = S.crm||{};
-  if(vorig.sig===sig && vorig.lijstSig===lijstSig) return; crmBezig = true;
+  const lSig = S.bedrijf.logo ? S.bedrijf.logo.length+':'+S.bedrijf.logo.slice(-40) : '';
+  if(vorig.sig===sig && vorig.lijstSig===lijstSig && (vorig.logoSig||'')===lSig) return; crmBezig = true;
   // Lijsten alleen meesturen als ze in de generator veranderd zijn: wat in het CRM is verwijderd, komt dan niet terug.
   inv.profiel.lijsten = vorig.lijstSig===lijstSig ? null : lijsten; inv.profiel.notitie.id = vorig.notitieId||null;
-  try{ const r = await fetch('/api/voorstellen/crm', {method:'POST', credentials:'same-origin', headers:{'Content-Type':'application/json'}, body: JSON.stringify(Object.assign({organizationId:vorig.organizationId||null, contactId:vorig.contactId||null}, inv))});
+  const logo = S.bedrijf.logo||''; const logoSig = logo ? logo.length+':'+logo.slice(-40) : ''; inv.profiel.logo = logoSig && vorig.logoSig!==logoSig ? logo : null;
+  try{ const r = await fetch('/api/voorstellen/crm', {method:'POST', credentials:'same-origin', headers:{'Content-Type':'application/json'}, body: JSON.stringify(Object.assign({organizationId:vorig.organizationId||null, contactId:vorig.contactId||null, dossierId:S.dossierId}, inv))});
     const j = await r.json(); if(!j || !j.ok){ crmStatus('Koppelen aan het CRM lukte niet'+(j&&j.error?': '+j.error:'.')); return; }
-    S.crm = {organizationId:j.organizationId, slug:j.organisatieSlug, bedrijf:j.organisatieNaam, contactId:j.contactId, contact:j.contactNaam, notitieId:j.notitieId||null, sig, lijstSig};
+    S.crm = {organizationId:j.organizationId, slug:j.organisatieSlug, bedrijf:j.organisatieNaam, contactId:j.contactId, contact:j.contactNaam, notitieId:j.notitieId||null, sig, lijstSig, logoSig};
     try{ localStorage.setItem('jr-voorstel-v2', JSON.stringify(S)); }catch(e){} renderCrm(); planOpslaan();
   }catch(e){ crmStatus('Koppelen aan het CRM lukte niet. Het wordt bij de volgende wijziging opnieuw geprobeerd.'); }
   finally{ crmBezig = false; } }
@@ -2639,6 +2641,16 @@ $('d-del').addEventListener('click', async ()=>{ if(!DB || !S.dossierId) return;
   if(Date.now()-wegKlik>4000){ wegKlik = Date.now(); dStatus('Dossier '+handelsNaam()+' verwijderen uit de database? Klik nogmaals op Verwijderen.'); return; }
   const id = S.dossierId; try{ await DB.collection('dossiers').doc(id).delete(); S.dossierId = ''; save(); render(); dStatus('Verwijderd uit de database. Wat op het scherm staat, blijft tot je een ander dossier kiest.'); }
   catch(e){ dStatus('Verwijderen lukte niet ('+((e&&e.code)||'onbekend')+').'); } });
+/* Een dossier uit een bestand: een export ("Als bestand") of een dossier uit de oude generator op claude.ai.
+   Het wordt een nieuw dossier in de Wallet; een bestaand dossier wordt nooit overschreven. */
+$('d-lees').addEventListener('change', async e=>{ const f = e.target.files && e.target.files[0]; e.target.value = ''; if(!f) return;
+  try{ const j = JSON.parse(await f.text()); const st = j && (j.staat || (j.data && j.data.staat) || (j.bedrijf && j.ch ? j : null));
+    if(!st || !st.bedrijf){ dStatus('Dit bestand is geen dossier van de voorstelgenerator.'); return; }
+    clearTimeout(dbTimer); if(S.dossierId) await dbOpslaan();
+    S = vanOpslag(JSON.parse(JSON.stringify(st))); S.dossierId = ''; delete S.crm; dbLaatst = ''; builtType = null;
+    ['kortingen','cadeaus','concurrenten','schans'].forEach(x=>$(x).dataset.sig=''); save(); renderSub(); render(); if(typeof vulOpstellers==='function') vulOpstellers();
+    dStatus('Ingelezen: '+handelsNaam()+'. Het wordt als nieuw dossier opgeslagen.'); }
+  catch(err){ dStatus('Dit bestand kon niet worden gelezen.'); } });
 $('d-brief').addEventListener('click',()=>bewaar('Briefing - '+bestandNaam()+'.md', briefingMd()));
 $('d-json').addEventListener('click',()=>bewaar('Dossier - '+bestandNaam()+'.json', JSON.stringify({type:'jr-dossier', versie:2, opgeslagen:new Date().toISOString(), staat:S, subdoelen:SUBEIGEN}, null, 2)));
 if(window.claude && window.claude.use){ window.claude.use('downloads').then(d=>{ downloads=d; }).catch(()=>{}); }
