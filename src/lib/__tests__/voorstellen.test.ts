@@ -47,5 +47,5 @@ test('de generator krijgt de vervanger vóór zijn eigen script', async () => {
   const shim = html.indexOf('window.claude = { use')
   const eigen = html.indexOf("window.claude.use('db')")
   assert.ok(shim > 0 && eigen > shim)
-  assert.ok(html.includes('Terug naar het beheer'))
+  assert.ok(html.includes('Alle voorstellen'))
 })

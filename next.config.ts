@@ -2,6 +2,8 @@ import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // De commit van de build, voor het versienummer in de voorstelgenerator.
+  env: { GENERATOR_VERSIE: (process.env.COMMIT_REF ?? 'lokaal').slice(0, 7) },
   experimental: {
     // Documenten (cv, kopie ID, loonheffingsformulier) gaan via een server action.
     // Standaard is 1 MB; Netlify neemt tot 6 MB per verzoek aan. Per bestand houden

@@ -4,7 +4,7 @@
    hele team bij dezelfde dossiers kan.
    ------------------------------------------------------------------------- */
 
-import { and, asc, desc, eq, inArray, isNull } from 'drizzle-orm'
+import { and, asc, desc, eq, inArray, isNull, sql } from 'drizzle-orm'
 import { db } from '@/db'
 import { proposalSettings, proposals, users } from '@/db/schema'
 import { afbeeldingUrl } from './afbeeldingen'
@@ -25,10 +25,17 @@ const tekst = (v: unknown, max = 300): string | null => {
 /** De lijst voor de keuzelijst in de generator, nieuwste eerst. */
 export async function lijstDossiers() {
   const rijen = await db
-    .select({ id: proposals.id, naam: proposals.naam, plaats: proposals.plaats, bijgewerkt: proposals.updatedAt })
+    .select({
+      id: proposals.id,
+      naam: proposals.naam,
+      plaats: proposals.plaats,
+      bijgewerkt: proposals.updatedAt,
+      // Wie het opstelt staat in de staat van de generator; voor het overzicht is dat genoeg.
+      door: sql<string | null>`${proposals.staat}->'offerte'->>'door'`,
+    })
     .from(proposals)
     .orderBy(desc(proposals.updatedAt))
-  return rijen.map((r) => ({ id: r.id, naam: r.naam, plaats: r.plaats, bijgewerkt: r.bijgewerkt.toISOString() }))
+  return rijen.map((r) => ({ id: r.id, naam: r.naam, plaats: r.plaats, door: r.door ?? '', bijgewerkt: r.bijgewerkt.toISOString() }))
 }
 
 export async function leesDossier(id: string) {
