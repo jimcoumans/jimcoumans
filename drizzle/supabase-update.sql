@@ -3501,3 +3501,42 @@ BEGIN
   END IF;
 END $jr_0054_voorstelgenerator$;
 
+-- ---------------------------------------------------------------------------
+-- 0055_voorstel_profiel
+-- ---------------------------------------------------------------------------
+
+DO $jr_0055_voorstel_profiel$
+BEGIN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = 'af5ea856e591f45d088a169a091d5f51dc6cfc8f1b0f59a259e18a6e5c0673a2') THEN
+    RAISE NOTICE 'Overgeslagen: 0055_voorstel_profiel stond er al.';
+  ELSE
+    ALTER TABLE "users" ADD COLUMN "sell_rate_cents" integer;
+
+    ALTER TABLE "users" ADD COLUMN "voorstel_profiel" jsonb;
+
+    -- De verkooptarieven zoals Jim ze opgaf (18 november 2026). Alleen invullen waar
+    -- nog niets staat, en alleen bij medewerkers (geen organisatie). Gezocht op de
+    -- volledige naam of op de naam die bij het account staat.
+    UPDATE "users" SET "sell_rate_cents" = 12500
+    WHERE "organization_id" IS NULL AND "sell_rate_cents" IS NULL
+      AND lower(coalesce(nullif(concat_ws(' ', "first_name", "infix", "last_name"), ''), "name", '')) IN ('jim coumans', 'jim kikken', 'stan doyen', 'gino smits');
+
+    UPDATE "users" SET "sell_rate_cents" = 10000
+    WHERE "organization_id" IS NULL AND "sell_rate_cents" IS NULL
+      AND lower(coalesce(nullif(concat_ws(' ', "first_name", "infix", "last_name"), ''), "name", '')) IN ('alex grau', 'daan voncken', 'jordy knubben');
+
+    -- Afwijkende tarieven die in een voorstel gekozen kunnen worden.
+    UPDATE "users" SET "voorstel_profiel" = '{"tarieven":[15000]}'::jsonb
+    WHERE "organization_id" IS NULL AND "voorstel_profiel" IS NULL
+      AND lower(coalesce(nullif(concat_ws(' ', "first_name", "infix", "last_name"), ''), "name", '')) IN ('jim coumans', 'jim kikken', 'stan doyen');
+
+    UPDATE "users" SET "voorstel_profiel" = '{"tarieven":[7500]}'::jsonb
+    WHERE "organization_id" IS NULL AND "voorstel_profiel" IS NULL
+      AND lower(coalesce(nullif(concat_ws(' ', "first_name", "infix", "last_name"), ''), "name", '')) = 'jordy knubben';
+
+    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+    VALUES ('af5ea856e591f45d088a169a091d5f51dc6cfc8f1b0f59a259e18a6e5c0673a2', 1795019770969);
+    RAISE NOTICE 'Toegepast: 0055_voorstel_profiel.';
+  END IF;
+END $jr_0055_voorstel_profiel$;
+

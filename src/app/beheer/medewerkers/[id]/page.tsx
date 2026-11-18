@@ -4,7 +4,8 @@ import { getTeamlid, formatContractUren, AFDELINGEN } from '@/lib/team'
 import { getFiguresByEmployee } from '@/lib/reports'
 import { AppShell } from '@/components/AppShell'
 import { ActionForm, Check, Field, Select, TextArea } from '@/components/ActionForm'
-import { bewerkMedewerkerprofiel, bewerkUurkostprijs } from '../../medewerker-actions'
+import { bewerkMedewerkerprofiel, bewerkUurkostprijs, bewerkVerkooptarief, bewerkVoorstelprofiel } from '../../medewerker-actions'
+import { normaliseerProfiel } from '@/lib/voorstel-profiel'
 import { formatEuro } from '@/lib/money'
 import { formatDate, formatDateInput, MAANDNAMEN } from '@/lib/dates'
 import { AANHEF_LABELS } from '@/lib/namen'
@@ -518,6 +519,15 @@ export default async function MedewerkerPage({
         </div>
       </div>
 
+      <VoorstelProfielBlok
+        userId={lid.id}
+        naam={lid.firstName ?? lid.name ?? 'je collega'}
+        profielRuw={lid.voorstelProfiel}
+        tariefCents={lid.sellRateCents}
+        magBewerken={isBeheerder || isZelf}
+        beheerder={isBeheerder}
+      />
+
       {dossierGegevens && (
         <div className="mt-6 space-y-6">
           <Persoonsdossier van={{ userId: lid.id }} start={{ roepnaam: lid.firstName }} gegevens={persoonlijk} iban={iban} ibanFout={ibanFout} sleutel={heeftSleutel()} />
@@ -548,5 +558,80 @@ export default async function MedewerkerPage({
         </p>
       )}
     </AppShell>
+  )
+}
+
+const euro = (c: number) => (c / 100).toFixed(2).replace('.', ',').replace(/,00$/, '')
+
+/**
+ * Het profiel voor voorstellen: wat op de onepager in een voorstel komt, en het
+ * verkooptarief. Lijsten: één punt per regel.
+ */
+function VoorstelProfielBlok({
+  userId,
+  naam,
+  profielRuw,
+  tariefCents,
+  magBewerken,
+  beheerder,
+}: {
+  userId: string
+  naam: string
+  profielRuw: unknown
+  tariefCents: number | null
+  magBewerken: boolean
+  beheerder: boolean
+}) {
+  const p = normaliseerProfiel(profielRuw)
+  const regels = (l: string[]) => l.join('\n')
+  const tarief = tariefCents ? `€ ${euro(tariefCents)} per uur` : 'nog niet ingevuld'
+  const afwijkend = p.tarieven.map((c) => `€ ${euro(c)}`).join(', ')
+
+  return (
+    <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
+      <section className="rounded-xl bg-white p-6 shadow-sm">
+        <h2 className="mb-1 text-base">Profiel voor voorstellen</h2>
+        <p className="mb-4 text-xs text-gray-500">
+          Dit komt op de onepager als {naam} in een voorstel staat. Lijsten: één punt per regel. Schrijf in de ik-vorm.
+        </p>
+        {!magBewerken ? (
+          <p className="text-sm text-gray-600">Dit profiel houdt {naam} zelf bij, samen met een beheerder.</p>
+        ) : (
+          <ActionForm action={bewerkVoorstelprofiel} submitLabel="Opslaan" resetOnSuccess={false}>
+            <input type="hidden" name="userId" value={userId} />
+            <TextArea label="Korte introductie" name="intro" rows={4} defaultValue={p.intro} hint="Drie of vier zinnen: wie je bent en waar je klanten mee helpt." />
+            <Field label="Quote" name="quote" defaultValue={p.quote} hint="Eén zin die iets over jou zegt." />
+            <TextArea label="Expertise" name="expertise" rows={4} defaultValue={regels(p.expertise)} hint="Drie tot vijf punten." />
+            <TextArea label="Vaardigheden" name="vaardigheden" rows={4} defaultValue={regels(p.vaardigheden)} hint="Tools en vaardigheden, bijvoorbeeld Google Ads, Meta, strategie." />
+            <TextArea label="Sterktes" name="sterktes" rows={4} defaultValue={regels(p.sterktes)} />
+            <TextArea label="Aandachtspunten (intern)" name="aandachtspunten" rows={3} defaultValue={regels(p.aandachtspunten)} hint="Alleen voor het team. Komt nooit in een voorstel." />
+            <TextArea label="Werkervaring" name="werkervaring" rows={4} defaultValue={regels(p.werkervaring)} hint="Per regel: periode · functie, werkgever. Bijvoorbeeld: 2018 – nu · Oprichter, James Robinson." />
+            <TextArea label="Opleiding" name="opleiding" rows={3} defaultValue={regels(p.opleiding)} />
+            <TextArea label="Talen" name="talen" rows={2} defaultValue={regels(p.talen)} />
+            <TextArea label="Certificeringen" name="certificeringen" rows={2} defaultValue={regels(p.certificeringen)} />
+            <TextArea label="Relevante klanten" name="klanten" rows={3} defaultValue={regels(p.klanten)} hint="Alleen klanten die genoemd mogen worden." />
+          </ActionForm>
+        )}
+      </section>
+
+      <section className="h-fit rounded-xl bg-white p-6 shadow-sm">
+        <h2 className="mb-1 text-base">Verkooptarief</h2>
+        <p className="mb-3 text-xs text-gray-500">
+          Wat een uur van {naam} een klant kost, voor consultancy op uurbasis. Het hele team ziet dit, want het staat in voorstellen. Los van de uurkostprijs.
+        </p>
+        {beheerder ? (
+          <ActionForm action={bewerkVerkooptarief} submitLabel="Opslaan" resetOnSuccess={false}>
+            <input type="hidden" name="userId" value={userId} />
+            <Field label="Standaard per uur" name="verkooptarief" defaultValue={tariefCents ? euro(tariefCents) : ''} placeholder="125" />
+            <Field label="Afwijkende tarieven" name="afwijkend" defaultValue={p.tarieven.map(euro).join('; ')} placeholder="150; 75" hint="Te kiezen in een voorstel, naast het standaardtarief. Scheiden met een puntkomma." />
+          </ActionForm>
+        ) : (
+          <p className="text-sm">
+            {tarief}
+            {afwijkend ? <span className="text-gray-600"> · ook {afwijkend}</span> : null}
+          </p>
+        )}
+      </section>
+    </div>
   )
 }

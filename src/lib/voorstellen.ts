@@ -9,6 +9,7 @@ import { db } from '@/db'
 import { proposalSettings, proposals, users } from '@/db/schema'
 import { afbeeldingUrl } from './afbeeldingen'
 import { volledigeNaam } from './namen'
+import { normaliseerProfiel, voorVoorstel, type VoorstelProfiel } from './voorstel-profiel'
 
 export const ID_FORMAAT = /^[a-z0-9][a-z0-9-]{0,80}$/
 
@@ -100,6 +101,12 @@ export type Opsteller = {
   foto: string | null
   /** Eigenaar van James Robinson. */
   eigenaar: boolean
+  /** Verkooptarief per uur in centen; null als het nog niet is ingevuld. */
+  tariefCents: number | null
+  /** Afwijkende tarieven in centen, te kiezen in een voorstel. */
+  tarieven: number[]
+  /** Het profiel voor de onepager, zonder de interne aandachtspunten. */
+  profiel: Omit<VoorstelProfiel, 'aandachtspunten'>
 }
 
 type OpstellerRij = {
@@ -114,6 +121,8 @@ type OpstellerRij = {
   mobile: string | null
   avatarImageId: string | null
   isOwner?: boolean
+  sellRateCents?: number | null
+  voorstelProfiel?: unknown
   endedOn: Date | null
 }
 
@@ -128,6 +137,9 @@ export function naarOpsteller(r: OpstellerRij): Opsteller {
     email: r.email,
     foto: afbeeldingUrl(r.avatarImageId),
     eigenaar: r.isOwner === true,
+    tariefCents: r.sellRateCents ?? null,
+    tarieven: normaliseerProfiel(r.voorstelProfiel).tarieven,
+    profiel: voorVoorstel(normaliseerProfiel(r.voorstelProfiel)),
   }
 }
 
@@ -150,6 +162,8 @@ export async function lijstOpstellers(): Promise<Opsteller[]> {
       mobile: users.mobile,
       avatarImageId: users.avatarImageId,
       isOwner: users.isOwner,
+      sellRateCents: users.sellRateCents,
+      voorstelProfiel: users.voorstelProfiel,
       endedOn: users.endedOn,
     })
     .from(users)
