@@ -579,6 +579,35 @@ img.ico{object-fit:contain;border-radius:4px}
 .pp-head2 .pp-cicon{width:30px;height:30px}
 .pp-knaam{font-size:13px;font-weight:400;color:#1C1C1E}
 .pp-head2 .pp-meta{font-size:12px}
+/* Onepager per medewerker */
+.op{display:flex;flex-direction:column;gap:18px;flex:1}
+.op-hero{display:flex;align-items:center;gap:24px;background:#007AFF;color:#FFFFFF;border-radius:22px;padding:26px 28px}
+.op-hero img,.op-init{width:124px;height:124px;border-radius:50%;object-fit:cover;flex:none;border:3px solid rgba(255,255,255,.9);display:block}
+.op-init{display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.18);font-size:40px;font-weight:300;box-sizing:border-box}
+.op-eyebrow{font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;margin:0 0 8px;color:rgba(255,255,255,.8);font-weight:400}
+.op-wie h2{font-size:38px;line-height:1.02;letter-spacing:-.025em;font-weight:400;margin:0;color:#FFFFFF}
+.op-functie{font-size:15px;font-weight:300;margin:8px 0 0;color:rgba(255,255,255,.88)}
+.op-quote{margin:4px 0 0;padding:0 4px;font-size:25px;line-height:1.2;letter-spacing:-.015em;font-weight:400;color:#007AFF}
+.op-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:30px;padding:0 4px}
+.op-grid > div{display:flex;flex-direction:column;gap:18px}
+.op-sec h3,.op-klanten h3{font-size:15px;font-weight:400;color:#007AFF;margin:0 0 8px;letter-spacing:0}
+.op-sec p{margin:0 0 8px;font-size:13.5px;line-height:1.55;font-weight:300}
+.op-ul{list-style:none;margin:0;padding:0;display:grid;gap:6px;font-size:13px;font-weight:300;line-height:1.4}
+.op-ul li{display:grid;grid-template-columns:7px minmax(0,1fr);gap:10px}
+.op-ul li i{width:7px;height:7px;border-radius:50%;background:#007AFF;margin-top:.45em}
+.op-chips{display:flex;flex-wrap:wrap;gap:6px}
+.op-chips span{font-size:12px;font-weight:300;background:#E2EBF3;color:#1C1C1E;border-radius:999px;padding:4px 11px}
+.op-erv{list-style:none;margin:0;padding:0;display:grid;gap:9px;font-size:13px;font-weight:300;line-height:1.4}
+.op-erv li small{display:block;font-size:11px;color:#8E8E93;margin-bottom:1px}
+.op-klanten{padding:14px 4px 0;border-top:1px solid #E5E5E9}
+.op-klanten p{margin:0;font-size:13px;font-weight:300;line-height:1.55}
+.op-voet{display:flex;justify-content:space-between;gap:24px;background:#F2F2F7;border-radius:16px;padding:14px 20px;margin-top:auto}
+.op-voet small{display:block;font-size:11px;color:#8E8E93;font-weight:300}
+.op-voet span{font-size:15px;font-weight:400}
+.op-voet > div:last-child{text-align:right}
+.pp-body:has(> .op){padding-bottom:4px}
+.losn-wrap{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:13px;color:var(--muted)}
+.item .losn-wrap input{position:static;opacity:1;width:80px;height:auto}
 </style>
 <div class="wrap">
   <header class="top">
@@ -598,6 +627,7 @@ img.ico{object-fit:contain;border-radius:4px}
     <a href="#plan" id="tab-plan">4 · Plan</a>
     <a href="#content" id="tab-content">5 · Content</a>
     <a href="#setup" id="tab-setup">6 · Marketing Set-up</a>
+    <a href="#uren" id="tab-uren">7 · Uren en producten</a>
     <a href="#offerte" id="tab-offerte">7 · Offerte</a>
     <a href="#afronden" id="tab-afronden">8 · Afronden</a>
     <a href="#toegangen" id="tab-toegangen">9 · Toegangen</a>
@@ -608,6 +638,11 @@ img.ico{object-fit:contain;border-radius:4px}
 
       <!-- ===================== 1 · BEDRIJF ===================== -->
       <div class="groups" id="view-bedrijf">
+        <section class="group">
+          <h2>Wat zit er in dit voorstel?</h2>
+          <p class="gsub">Eén of meer onderdelen, ook samen. De bladen, de totalen en de PDF passen zich aan.</p>
+          <div class="items" id="delen"></div>
+        </section>
         <section class="group">
           <h2>Bedrijf</h2>
           <p class="gsub">Voor de offerte en de administratie. Straks in het portaal vult AI dit aan vanaf de website.</p>
@@ -798,6 +833,25 @@ img.ico{object-fit:contain;border-radius:4px}
         <div class="nextbar"><a class="btn" href="#offerte">Naar de offerte</a></div>
       </div>
 
+      <!-- ===================== UREN EN PRODUCTEN ===================== -->
+      <div class="groups" id="view-uren" hidden>
+        <section class="group" id="sec-cons">
+          <h2>Consultancy</h2>
+          <p class="gsub">Persoonsgebonden inzet op uurbasis. Per persoon: hoeveel uur, tegen welk tarief en in welke vorm. Het tarief komt uit het profiel bij <a href="/beheer/medewerkers" target="_top">Beheer → Medewerkers</a>.</p>
+          <div id="cons" style="display:grid;gap:10px"></div>
+          <button type="button" class="ghost" id="cons-add" style="margin-top:10px">+ Persoon toevoegen</button>
+          <p class="note" id="cons-vw" style="margin:12px 0 0"></p>
+        </section>
+        <section class="group" id="sec-los">
+          <h2>Losse producten</h2>
+          <p class="gsub">Eenmalig, met een vaste prijs vooraf. Kies uit de catalogus of voeg een eigen product toe.</p>
+          <div class="items" id="los-cat"></div>
+          <div id="los-eigen" style="display:grid;gap:10px;margin-top:10px"></div>
+          <button type="button" class="ghost" id="los-add" style="margin-top:10px">+ Eigen product toevoegen</button>
+        </section>
+        <div class="nextbar"><a class="btn" href="#offerte">Naar de offerte</a></div>
+      </div>
+
       <!-- ===================== 5 · OFFERTE ===================== -->
       <div class="groups" id="view-offerte" hidden>
         <section class="group">
@@ -869,6 +923,7 @@ img.ico{object-fit:contain;border-radius:4px}
             <div style="display:flex;gap:8px;flex-wrap:wrap">
               <button class="ghost" type="button" id="pdf-setup">Alleen Marketing Set-up</button>
               <button class="ghost" type="button" id="pdf-mp">Alleen maandpakket</button>
+              <button class="ghost" type="button" id="pdf-team" hidden>Alleen profielpagina's</button>
             </div>
             <p class="note" id="pdf-note" hidden></p>
           </div>
@@ -917,6 +972,20 @@ img.ico{object-fit:contain;border-radius:4px}
           <ul class="lines" id="l-lines"></ul>
         </div>
         <div class="sumc-f small-tot" id="licfoot"><div class="total"><b>Per jaar, via James Robinson</b><span class="amt" id="licamt">€ 0</span></div><div class="incl" id="licinclrow" hidden><span>Inclusief 21% btw</span><span id="licinclamt"></span></div></div>
+      </div>
+      <div class="sumc" id="consrow" hidden>
+        <div class="sumc-b">
+          <div class="sumc-h"><b>Consultancy</b><span>Op uurbasis</span></div>
+          <ul class="lines" id="cons-lines"></ul>
+        </div>
+        <div class="sumc-f small-tot" id="consfoot"></div>
+      </div>
+      <div class="sumc" id="losrow" hidden>
+        <div class="sumc-b">
+          <div class="sumc-h"><b>Losse producten</b><span>Eenmalig</span></div>
+          <ul class="lines" id="los-lines"></ul>
+        </div>
+        <div class="sumc-f small-tot"><div class="total"><b>Totaal losse producten</b><span class="amt" id="losamt">€ 0</span></div></div>
       </div>
       <div class="sumc first">
         <div class="sumc-b"><div class="sumc-h"><b>In de set-upmaand</b><span>Eerste factuur</span></div><ul class="lines" id="f-lines"></ul></div>
@@ -1144,13 +1213,15 @@ const DEFAULTS = {
   budgetOn:true, budgetJr:false, budget:{total:'', split:{}, vrij:true}, linkOn:false, link:'500',
   su:{}, web:{cookie:true},
   opt:{}, kortingen:[], cadeaus:[], losse:false, onderPdf:true,
+  delen:{mp:true, cons:false, los:false}, cons:[], losItems:{}, losEigen:[],
   acc:{metabm:'opzetten', web:'aanwezig', shop:'aanwezig', dash:'opzetten'}
 };
 const clone = o => JSON.parse(JSON.stringify(o));
 let S = clone(DEFAULTS);
 /* Een opgeslagen dossier (localStorage of .json) omzetten naar de huidige vorm. */
 function vanOpslag(s){ let S;
-  S = Object.assign(clone(DEFAULTS), s); ['bedrijf','online','contact','factuur','offerte','cijfers','fases','budget','intake'].forEach(k=>{ S[k] = Object.assign(clone(DEFAULTS[k]), s[k]||{}); });
+  S = Object.assign(clone(DEFAULTS), s); ['bedrijf','online','contact','factuur','offerte','cijfers','fases','budget','intake','delen'].forEach(k=>{ S[k] = Object.assign(clone(DEFAULTS[k]), s[k]||{}); });
+    if(!Array.isArray(S.cons)) S.cons = []; if(!Array.isArray(S.losEigen)) S.losEigen = []; if(!S.losItems || typeof S.losItems!=='object') S.losItems = {};
     if(s.bedrijf && s.bedrijf.website && !S.online.website) S.online.website = s.bedrijf.website; delete S.bedrijf.website;
     S.cnt = Object.assign(clone(DEFAULTS.cnt), s.cnt||{});
     if(!s.cnt && s.content) S.cnt.wie = {bestaand:'klant', partner:'partner', productie:'jr'}[s.content] || 'jr';
@@ -1396,7 +1467,8 @@ function calcAll(){
   const viaJr = !!S.budgetJr && !B.off && B.act.length>0 && B.total>0;
   const opslag = viaJr ? Math.round(B.total*CAT.maand.opslagPct/100) : 0, budgetFactuur = viaJr ? B.total+opslag : 0;
   const monthlyNow = retNow + B.total + link + opslag; const monthlyLater = retLater + B.total + link + opslag;
-  return {B, su, link, K, setupNet, contentNet, retNow, retLater, monthlyNow, monthlyLater, viaJr, opslag, budgetFactuur, first: setupNet + contentNet + su.jrTotal};
+  const cons = deelAan('cons') ? consCalc() : {rows:[], bundel:0, maand:0}; const los = deelAan('los') ? losCalc() : {rows:[], total:0};
+  return {B, su, link, K, setupNet, contentNet, retNow, retLater, monthlyNow, monthlyLater, viaJr, opslag, budgetFactuur, first: setupNet + contentNet + su.jrTotal, cons, los};
 }
 function onderCalc(A){
   const {B, su, link} = A; const act = B.act, budgets = B.budgets, adb = B.total;
@@ -1536,7 +1608,7 @@ function benchRows(R){
 }
 
 /* ============================ OPBOUW ============================ */
-const VIEWS = ['bedrijf','intake','doelen','plan','content','setup','offerte','afronden','toegangen'];
+const VIEWS = ['bedrijf','intake','doelen','plan','content','setup','uren','offerte','afronden','toegangen'];
 function showView(){
   const v = VIEWS.find(x=>location.hash==='#'+x) || 'bedrijf';
   VIEWS.forEach(t=>{ $('view-'+t).hidden = v!==t; const a=$('tab-'+t); if(t===v) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current'); });
@@ -2066,6 +2138,228 @@ ACC.forEach(([cat,rows])=>{
   $('acc').append(fs);
 });
 
+/* ============================ ONDERDELEN, CONSULTANCY EN LOSSE PRODUCTEN ============================
+   Een voorstel bestaat uit één of meer onderdelen: de Marketing Partnership, consultancy op uurbasis
+   en losse producten. Ze kunnen samen in één voorstel.
+
+   Consultancy is persoonsgebonden inzet: per persoon een aantal uur tegen het verkooptarief uit het
+   profiel (Beheer → Medewerkers). Twee vormen:
+   - urenbundel: bij akkoord gefactureerd, 100% vooraf. De uren verlopen niet.
+   - maandinzet: een vast aantal uur per maand, maandelijks opzegbaar, met een maandelijkse
+     urenrapportage. Meer uren dan afgesproken volgen op een eindfactuur.
+   Elk bedrag staat één keer in de samenvatting, met wanneer het gefactureerd wordt. */
+const DELEN = [
+  ['mp','Marketing Partnership','Set-up, maandpakket, content en advertentiebudget. Maandelijks opzegbaar.'],
+  ['cons','Consultancy','Persoonsgebonden inzet op uurbasis: een urenbundel of een vast aantal uur per maand.'],
+  ['los','Losse producten','Eenmalige producten met een vaste prijs vooraf.']
+];
+/* Hoofdstukken en bladen die alleen bij de Marketing Partnership horen. */
+const MP_DELEN = ['doelen','werkwijze','plan','maand','content','opties','setup','licenties','onder','later'];
+const MP_VIEWS = ['doelen','plan','content','setup','offerte','toegangen'];
+const TABNAAM = {bedrijf:'Bedrijf', intake:'Intake', doelen:'Doelen', plan:'Plan', content:'Content', setup:'Marketing Set-up', uren:'Uren en producten', offerte:'Offerte', afronden:'Afronden', toegangen:'Toegangen'};
+const NAAR = {intake:'de intake', doelen:'de doelen', plan:'het plan', content:'de content', setup:'de Marketing Set-up', uren:'uren en producten', offerte:'de offerte', afronden:'afronden', toegangen:'de toegangen'};
+const TELWOORD = ['Eén onderdeel','Twee onderdelen','Drie onderdelen','Vier onderdelen','Vijf onderdelen','Zes onderdelen'];
+const deelAan = k => !!(S.delen||{})[k];
+const VORMEN = {
+  bundel: {naam:'Urenbundel', kort:'urenbundel', blok:'Consultancy, urenbundel', wanneer:'Bij akkoord, 100% vooraf'},
+  maand: {naam:'Maandinzet', kort:'per maand', blok:'Consultancy, maandinzet', wanneer:'Per maand, maandelijks opzegbaar'}
+};
+const CONS_VW = {
+  bundel: 'We factureren de urenbundel bij akkoord, 100% vooraf. De uren verlopen niet.',
+  maand: 'Een vast aantal uur per maand, maandelijks gefactureerd en maandelijks opzegbaar. Elke maand krijgen jullie een urenrapportage. Gaan we in een maand over de afgesproken uren heen, dan volgen de extra uren tegen hetzelfde tarief op een eindfactuur.'
+};
+const uurTxt = n => String(Math.round(n*100)/100).replace('.',',')+' uur';
+const persoon = id => (OPSTELLERS||[]).find(o=>o.id===id) || null;
+/* Het standaardtarief eerst, dan de afwijkende tarieven. In euro's. */
+const tarievenVan = p => p ? [...new Set([p.tariefCents].concat(p.tarieven||[]).filter(x=>x>0).map(x=>x/100))] : [];
+
+function consCalc(){
+  const rows = (S.cons||[]).map(r=>{ const p = persoon(r.wie); const uren = Math.max(0, num(r.uren)||0), tarief = Math.max(0, num(r.tarief)||0);
+    return {r, p, naam: p ? p.naam : (r.naam||''), uren, tarief, vorm: r.vorm==='maand' ? 'maand' : 'bundel', wat: String(r.wat||'').trim(), bedrag: uren*tarief}; })
+    .filter(x=>x.naam && x.uren>0 && x.tarief>0);
+  const som = v => rows.filter(x=>x.vorm===v).reduce((a,x)=>a+x.bedrag, 0);
+  return {rows, bundel: som('bundel'), maand: som('maand')};
+}
+function losCalc(){
+  const rows = [];
+  CAT.losse.forEach(o=>{ const n = num((S.losItems||{})[o.code]); if(n && n>0) rows.push({naam:o.naam, desc:o.desc, prijs:o.prijs, aantal:n, bedrag:o.prijs*n}); });
+  (S.losEigen||[]).forEach(o=>{ const pr = num(o.prijs), n = num(o.aantal)||1; if(String(o.naam||'').trim() && pr!=null && pr>=0 && n>0) rows.push({naam:String(o.naam).trim(), desc:String(o.desc||'').trim(), prijs:pr, aantal:n, bedrag:pr*n}); });
+  return {rows, total: rows.reduce((a,x)=>a+x.bedrag, 0)};
+}
+const consIntro = C => 'Op uurbasis. Persoonsgebonden inzet van '+joinNl([...new Set(C.rows.map(x=>x.naam))])+'.';
+const consRegel = x => ({l: esc(x.naam)+(x.p && x.p.functie ? ', '+esc(lc(x.p.functie)) : ''), a: eur(x.bedrag), sub: uurTxt(x.uren)+(x.vorm==='maand'?' per maand':'')+' × '+eur(x.tarief)+' per uur'+(x.wat ? '<br>'+esc(x.wat) : '')});
+const losRegel = x => ({l: esc(x.naam)+(x.aantal!==1 ? ' × '+String(x.aantal).replace('.',',') : ''), a: eur(x.bedrag), sub: x.desc ? esc(x.desc) : ''});
+
+/* Samengevat: de blokken en voorwaarden die consultancy en losse producten toevoegen. */
+function extraBlokken(A, blok, regel){
+  const C = A.cons, LO = A.los, uit = [];
+  const r = x => regel(x.l, x.a, {sub: x.sub});
+  ['bundel','maand'].forEach(v=>{ const rr = C.rows.filter(x=>x.vorm===v); if(!rr.length) return; const tot = v==='maand' ? C.maand : C.bundel;
+    uit.push(blok(VORMEN[v].blok, VORMEN[v].wanneer, rr.map(consRegel).map(r), {l: v==='maand' ? 'Totaal per maand' : 'Totaal urenbundel', a:eur(tot), maand: v==='maand', incl:tot})); });
+  if(LO.rows.length) uit.push(blok('Losse producten', 'Eenmalig, vaste prijs vooraf', LO.rows.map(losRegel).map(r), {l:'Totaal losse producten', a:eur(LO.total), incl:LO.total}));
+  return uit;
+}
+function extraVoorwaarden(A){
+  const t = [];
+  ['bundel','maand'].forEach(v=>{ if(A.cons.rows.some(x=>x.vorm===v)) t.push(VORMEN[v].naam+': '+CONS_VW[v].charAt(0).toLowerCase()+CONS_VW[v].slice(1)); });
+  return t;
+}
+
+/* Wie een profielpagina krijgt: iedereen bij Consultancy, één keer, tenzij uitgezet. */
+function teamVoorPdf(A){
+  const gezien = new Set(), uit = [];
+  A.cons.rows.forEach(x=>{ if(x.r.pager===false || !x.p || gezien.has(x.p.id)) return; gezien.add(x.p.id);
+    uit.push({naam:x.p.naam, functie:x.p.functie, email:x.p.email, telefoon:x.p.telefoon, foto:x.p.foto, profiel:x.p.profiel||{}, tarief:x.tarief}); });
+  return uit;
+}
+const initialen = n => String(n||'').split(/\s+/).filter(Boolean).map(w=>w[0]).filter(c=>/[A-ZÀ-Ý]/.test(c)).slice(0,2).join('') || '·';
+
+/* De profielpagina: één A4 per persoon, in de huisstijl. Lege velden laten we weg. */
+function onepagerHtml(m){
+  const P = m.profiel || {}; const L = a => Array.isArray(a) ? a.filter(Boolean) : [];
+  const sec = (t, inner) => inner ? '<div class="op-sec"><h3>'+esc(t)+'</h3>'+inner+'</div>' : '';
+  const ul = a => L(a).length ? '<ul class="op-ul">'+L(a).map(x=>'<li><i></i><span>'+esc(x)+'</span></li>').join('')+'</ul>' : '';
+  const chips = a => L(a).length ? '<div class="op-chips">'+L(a).map(x=>'<span>'+esc(x)+'</span>').join('')+'</div>' : '';
+  const erv = a => L(a).length ? '<ul class="op-erv">'+L(a).map(x=>{ const d = String(x).split(' · '); return d.length>1 ? '<li><small>'+esc(d[0])+'</small><span>'+esc(d.slice(1).join(' · '))+'</span></li>' : '<li><span>'+esc(x)+'</span></li>'; }).join('')+'</ul>' : '';
+  const voornaam = String(m.naam||'').split(' ')[0];
+  const quote = String(P.quote||'').trim().replace(/^[“"'‘]+|[”"'’]+$/g,'');
+  const intro = String(P.intro||'').trim();
+  const contact = [m.email, m.telefoon].filter(Boolean).map(esc).join(' · ');
+  return '<div class="op">'+
+    '<div class="op-hero">'+(m.foto ? '<img src="'+m.foto+'" alt="">' : '<div class="op-init">'+esc(initialen(m.naam))+'</div>')+
+      '<div class="op-wie"><p class="op-eyebrow">Jouw team</p><h2>'+esc(m.naam)+'</h2>'+(m.functie ? '<p class="op-functie">'+esc(m.functie)+' · James Robinson</p>' : '')+'</div></div>'+
+    (quote ? '<blockquote class="op-quote">“'+esc(quote)+'”</blockquote>' : '')+
+    '<div class="op-grid"><div>'+sec('Over '+voornaam, intro ? intro.split(/\n{2,}/).map(t=>'<p>'+esc(t).replace(/\n/g,'<br>')+'</p>').join('') : '')+sec('Expertise', ul(P.expertise))+sec('Vaardigheden', chips(P.vaardigheden))+'</div>'+
+      '<div>'+sec('Ervaring', erv(P.werkervaring))+sec('Opleiding', erv(P.opleiding))+sec('Talen', chips(P.talen))+sec('Certificeringen', ul(P.certificeringen))+'</div></div>'+
+    (L(P.klanten).length ? '<div class="op-klanten"><h3>Werkte onder meer voor</h3><p>'+L(P.klanten).map(esc).join(' · ')+'</p></div>' : '')+
+    ((m.tarief || contact) ? '<div class="op-voet"><div><small>Tarief</small><span>'+(m.tarief ? eur(m.tarief)+' per uur' : '')+'</span></div><div><small>Contact</small><span>'+contact+'</span></div></div>' : '')+
+  '</div>';
+}
+
+/* ---- Editor: onderdelen ---- */
+(function(){ const root = $('delen');
+  DELEN.forEach(([id, naam, desc])=>{ const lab = el('label','item'); lab.dataset.id = id;
+    const inp = document.createElement('input'); inp.type = 'checkbox'; inp.id = 'deel-'+id;
+    inp.addEventListener('change',()=>{ S.delen = Object.assign({}, S.delen, {[id]: inp.checked}); if(!DELEN.some(([k])=>S.delen[k])) S.delen.mp = true; save(); render(); });
+    const b = el('div'); b.append(el('div','iname',esc(naam)), el('div','idesc',esc(desc)));
+    lab.append(inp, el('span','sw'), b, el('div','price')); root.append(lab); });
+})();
+
+/* ---- Editor: losse producten uit de catalogus ---- */
+(function(){ const root = $('los-cat');
+  CAT.losse.forEach(o=>{ const lab = el('label','item'); lab.dataset.code = o.code;
+    const inp = document.createElement('input'); inp.type = 'checkbox'; inp.id = 'los-'+o.code;
+    inp.addEventListener('change',()=>{ S.losItems = Object.assign({}, S.losItems); if(inp.checked) S.losItems[o.code] = '1'; else delete S.losItems[o.code]; save(); render(); });
+    const b = el('div'); b.append(el('div','iname',esc(o.naam)), el('div','idesc',esc(o.desc)));
+    const w = el('div','losn-wrap','<span>Aantal</span>'); w.hidden = true;
+    const n = document.createElement('input'); n.type = 'number'; n.min = '1'; n.step = '1'; n.id = 'losn-'+o.code; n.setAttribute('aria-label','Aantal '+o.naam);
+    n.addEventListener('input',()=>{ if(num(n.value)>0){ S.losItems = Object.assign({}, S.losItems, {[o.code]: n.value}); save(); render(); } });
+    w.append(n); b.append(w);
+    lab.append(inp, el('span','sw'), b, el('div','price', eur(o.prijs))); root.append(lab); });
+})();
+$('los-add').addEventListener('click',()=>{ S.losEigen.push({naam:'', desc:'', prijs:'', aantal:'1'}); save(); render(); });
+$('cons-add').addEventListener('click',()=>{ S.cons.push({wie:'', naam:'', uren:'', tarief:'', vorm:'bundel', wat:'', pager:true}); save(); render(); });
+
+function renderLosEigen(){
+  const wrap = $('los-eigen'); const sig = String(S.losEigen.length);
+  if(wrap.dataset.sig !== sig){ wrap.dataset.sig = sig;
+    wrap.innerHTML = S.losEigen.map((o,i)=>'<div class="form"><div class="fhead">Eigen product '+(i+1)+'<button type="button" class="linkbtn" data-del="'+i+'">Verwijderen</button></div>'+
+      frow('lpn-'+i,'Product','',tin('lpn-'+i,'Bijvoorbeeld: privacyverklaring'))+frow('lpd-'+i,'Omschrijving','Wat de klant krijgt.',tin('lpd-'+i))+
+      frow('lpp-'+i,'Prijs','Per stuk, exclusief btw.',nin('lpp-'+i,25))+frow('lpa-'+i,'Aantal','',nin('lpa-'+i,1))+'</div>').join('');
+    S.losEigen.forEach((o,i)=>{ [['lpn-','naam'],['lpd-','desc'],['lpp-','prijs'],['lpa-','aantal']].forEach(([p,f])=>{ $(p+i).addEventListener('input',e=>{ S.losEigen[i][f] = e.target.value; save(); render(); }); }); });
+    wrap.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>{ S.losEigen.splice(Number(b.dataset.del),1); save(); render(); }));
+  }
+  S.losEigen.forEach((o,i)=>{ setVal('lpn-'+i, o.naam); setVal('lpd-'+i, o.desc); setVal('lpp-'+i, o.prijs); setVal('lpa-'+i, o.aantal); });
+}
+
+function renderCons(){
+  const wrap = $('cons'); const lijst = OPSTELLERS || [];
+  const sig = JSON.stringify([S.cons.length, lijst.map(o=>o.id)]);
+  if(wrap.dataset.sig !== sig){ wrap.dataset.sig = sig;
+    wrap.innerHTML = S.cons.map((r,i)=>'<div class="form"><div class="fhead">Persoon '+(i+1)+'<button type="button" class="linkbtn" data-del="'+i+'">Verwijderen</button></div>'+
+      frow('csw-'+i,'Wie','Uit Beheer → Medewerkers.','<select id="csw-'+i+'"><option value="">Kies een collega</option>'+lijst.map(o=>'<option value="'+esc(o.id)+'">'+esc(o.naam)+'</option>').join('')+(r.wie && !persoon(r.wie) && r.naam ? '<option value="'+esc(r.wie)+'">'+esc(r.naam)+'</option>' : '')+'</select>')+
+      frow('csv-'+i,'Vorm','','<select id="csv-'+i+'"><option value="bundel">Urenbundel: eenmalig, 100% vooraf</option><option value="maand">Maandinzet: per maand, maandelijks opzegbaar</option></select>')+
+      frow('csu-'+i,'Uren','Bij maandinzet: het aantal uur per maand.',nin('csu-'+i,0.5))+
+      '<div class="frow"><label class="fl" for="cst-'+i+'">Tarief per uur<span class="fh">Uit het profiel. Kies een ander tarief of vul zelf een bedrag in.</span></label><div class="fi2" style="display:flex;gap:8px"><select id="cst-'+i+'"></select><input type="number" min="0" step="5" id="csa-'+i+'" style="max-width:110px" aria-label="Eigen tarief per uur"></div></div>'+
+      frow('csx-'+i,'Waarvoor','Optioneel. Bijvoorbeeld: strategische sparring en aansluiten bij overleggen.',tin('csx-'+i))+
+      '<label class="laterchk" style="padding-left:0;margin-top:4px"><input type="checkbox" id="csp-'+i+'"> Profielpagina in het voorstel</label></div>').join('');
+    S.cons.forEach((r,i)=>{
+      $('csw-'+i).addEventListener('change',e=>{ const p = persoon(e.target.value); r.wie = e.target.value; r.naam = p ? p.naam : ''; r.eigenTarief = false; r.tarief = p ? String(tarievenVan(p)[0]||'') : ''; save(); render(); });
+      $('csv-'+i).addEventListener('change',e=>{ r.vorm = e.target.value; save(); render(); });
+      $('csu-'+i).addEventListener('input',e=>{ r.uren = e.target.value; save(); render(); });
+      $('cst-'+i).addEventListener('change',e=>{ if(e.target.value==='anders'){ r.eigenTarief = true; } else { r.eigenTarief = false; r.tarief = e.target.value; } save(); render(); if(r.eigenTarief) $('csa-'+i).focus(); });
+      $('csa-'+i).addEventListener('input',e=>{ r.tarief = e.target.value; save(); render(); });
+      $('csx-'+i).addEventListener('input',e=>{ r.wat = e.target.value; save(); render(); });
+      $('csp-'+i).addEventListener('change',e=>{ r.pager = e.target.checked; save(); render(); });
+    });
+    wrap.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>{ S.cons.splice(Number(b.dataset.del),1); save(); render(); }));
+  }
+  S.cons.forEach((r,i)=>{ const p = persoon(r.wie); const opts = tarievenVan(p); const t = num(r.tarief);
+    const anders = !!r.eigenTarief || (t!=null && !opts.includes(t)) || !opts.length;
+    const sel = $('cst-'+i); const html = opts.map(x=>'<option value="'+x+'">'+eur(x)+' per uur'+(x===opts[0]?' (standaard)':'')+'</option>').join('')+'<option value="anders">Ander tarief</option>';
+    if(sel.dataset.sig !== html){ sel.innerHTML = html; sel.dataset.sig = html; }
+    sel.value = anders ? 'anders' : String(t); $('csa-'+i).hidden = !anders; if(anders) setVal('csa-'+i, r.tarief);
+    setVal('csw-'+i, r.wie); setVal('csv-'+i, r.vorm==='maand'?'maand':'bundel'); setVal('csu-'+i, r.uren); setVal('csx-'+i, r.wat||''); $('csp-'+i).checked = r.pager!==false; });
+}
+
+/* Na render(): bladen, totalen en controles bij de gekozen onderdelen. */
+function renderDelen(A, R){
+  const D = S.delen || {};
+  DELEN.forEach(([id])=>{ const l = document.querySelector('#delen .item[data-id="'+id+'"]'); const on = !!D[id]; l.classList.toggle('on', on); l.querySelector('input').checked = on; });
+  const zicht = v => v==='uren' ? !!(D.cons || D.los) : MP_VIEWS.includes(v) ? !!D.mp : true;
+  let n = 0; VIEWS.forEach(v=>{ const a = $('tab-'+v); const z = zicht(v); a.hidden = !z; if(z){ n++; const t = n+' · '+TABNAAM[v]; if(a.textContent!==t) a.textContent = t; } });
+  VIEWS.forEach((v,i)=>{ const nb = document.querySelector('#view-'+v+' .nextbar a.btn'); if(!nb) return; const nxt = VIEWS.slice(i+1).find(zicht);
+    nb.parentElement.hidden = !nxt; if(nxt){ nb.setAttribute('href', '#'+nxt); const t = 'Naar '+NAAR[nxt]; if(nb.textContent!==t) nb.textContent = t; } });
+  $('sec-cons').hidden = !D.cons; $('sec-los').hidden = !D.los;
+  renderCons(); renderLosEigen();
+  CAT.losse.forEach(o=>{ const l = document.querySelector('#los-cat .item[data-code="'+o.code+'"]'); const v = (S.losItems||{})[o.code]; const on = num(v)>0;
+    l.classList.toggle('on', on); $('los-'+o.code).checked = on; l.querySelector('.losn-wrap').hidden = !on; setVal('losn-'+o.code, on ? v : ''); });
+  const C = A.cons, LO = A.los;
+  const vormen = ['bundel','maand'].filter(v=>C.rows.some(x=>x.vorm===v));
+  $('cons-vw').textContent = vormen.map(v=>VORMEN[v].naam+': '+CONS_VW[v].charAt(0).toLowerCase()+CONS_VW[v].slice(1)).join(' ');
+  $('cons-vw').hidden = !vormen.length;
+
+  // Rechterkolom
+  [$('s-lines').closest('.sumc'), $('m-lines').closest('.sumc'), $('f-lines').closest('.sumc')].forEach(b=>{ b.hidden = !D.mp; });
+  if(!D.mp){ $('corow').hidden = true; $('licrow').hidden = true; }
+  const sli = (ul, label, amt, cls) => { const li = el('li', cls||null); li.innerHTML = '<span class="bul" aria-hidden="true"></span><span>'+label+'</span><span>'+amt+'</span>'; ul.append(li); };
+  const CLn = $('cons-lines'); CLn.innerHTML = '';
+  C.rows.forEach(x=>sli(CLn, esc(x.naam)+'<small>'+uurTxt(x.uren)+(x.vorm==='maand'?' per maand':'')+' × '+eur(x.tarief)+', '+VORMEN[x.vorm].kort+'</small>', eur(x.bedrag)));
+  $('consrow').hidden = !C.rows.length;
+  $('consfoot').innerHTML = (C.bundel ? '<div class="total"><b>Urenbundel, bij akkoord</b><span class="amt">'+eur(C.bundel)+'</span></div>' : '')+(C.maand ? '<div class="total"><b>Maandinzet, per maand</b><span class="amt">'+eur(C.maand)+'</span></div>' : '');
+  const LL = $('los-lines'); LL.innerHTML = '';
+  LO.rows.forEach(x=>sli(LL, esc(x.naam)+(x.aantal!==1?'<small>'+String(x.aantal).replace('.',',')+' × '+eur(x.prijs)+'</small>':''), eur(x.bedrag)));
+  $('losrow').hidden = !LO.rows.length; $('losamt').textContent = eur(LO.total);
+  const extra = extraVoorwaarden(A);
+  if(!D.mp) $('terms').innerHTML = [S.btw?'Bedragen exclusief btw, tenzij anders vermeld.':'Alle bedragen exclusief btw.'].concat(extra).map(x=>'<li>'+esc(x)+'</li>').join('');
+  else if(extra.length) $('terms').insertAdjacentHTML('beforeend', extra.map(x=>'<li>'+esc(x)+'</li>').join(''));
+  if(D.mp && (C.rows.length || LO.rows.length)){
+    const r = (a,b,cls) => '<div class="orow'+(cls?' '+cls:'')+'"><span>'+a+'</span><span>'+b+'</span></div>';
+    let h = '';
+    vormen.forEach(v=>{ const rr = C.rows.filter(x=>x.vorm===v); h += '<div class="ocard"><h3>'+esc(VORMEN[v].blok)+', '+lc(VORMEN[v].wanneer)+'</h3>'+rr.map(x=>r(esc(x.naam)+' <small class="tnorm">'+uurTxt(x.uren)+' × '+eur(x.tarief)+'</small>', eur(x.bedrag))).join('')+r('<b>Totaal</b>','<b>'+eur(v==='maand'?C.maand:C.bundel)+'</b>','tsum')+'</div>'; });
+    if(LO.rows.length) h += '<div class="ocard"><h3>Losse producten, eenmalig</h3>'+LO.rows.map(x=>r(esc(x.naam)+(x.aantal!==1?' × '+String(x.aantal).replace('.',','):''), eur(x.bedrag))).join('')+r('<b>Totaal</b>','<b>'+eur(LO.total)+'</b>','tsum')+'</div>';
+    $('totaal').insertAdjacentHTML('beforeend', h);
+  }
+
+  // PDF-knoppen
+  $('pdf-setup').hidden = !D.mp; $('pdf-mp').hidden = !D.mp; $('pdf-team').hidden = !teamVoorPdf(A).length;
+
+  // Controles
+  const chk = [];
+  if(D.cons){
+    if(!(S.cons||[]).length) chk.push(['bad','Consultancy staat aan, maar er staat nog niemand bij. Voeg een persoon toe op het blad Uren en producten.']);
+    (S.cons||[]).forEach((r,i)=>{ const wie = r.naam || 'Persoon '+(i+1);
+      if(!r.wie) chk.push(['bad','Consultancy, persoon '+(i+1)+': kies wie het is.']);
+      else if(!(num(r.uren)>0)) chk.push(['bad','Consultancy, '+wie+': vul het aantal uur in.']);
+      else if(!(num(r.tarief)>0)) chk.push(['bad','Consultancy, '+wie+': vul een tarief in. In het profiel bij Beheer → Medewerkers staat nog geen verkooptarief.']);
+      const p = persoon(r.wie); if(p && r.pager!==false){ const P = p.profiel||{}; if(!String(P.intro||'').trim()) chk.push(['mid', wie+': de profielpagina heeft nog geen introductie. Vul die aan bij Beheer → Medewerkers.']); if(!p.foto) chk.push(['mid', wie+': de profielpagina heeft nog geen foto.']); } });
+  }
+  if(D.los && !LO.rows.length) chk.push(['bad','Losse producten staat aan, maar er is nog niets gekozen.']);
+  if(D.los) (S.losEigen||[]).forEach((o,i)=>{ const nm = String(o.naam||'').trim() || 'Eigen product '+(i+1); if(!String(o.naam||'').trim()) chk.push(['bad', nm+': vul de naam in.']); else if(num(o.prijs)==null) chk.push(['bad', nm+': vul een prijs in. Zonder prijs staat het niet in het voorstel.']); });
+  const lijst = (D.mp ? R.checks : []).concat(chk);
+  if(!D.mp || chk.length) $('checks').innerHTML = '<h3>Controles</h3>' + (lijst.length ? '<div class="chk-list">'+lijst.map(c=>'<div><span class="st '+c[0]+'">'+(c[0]==='bad'?'let op':'check')+'</span><span>'+esc(c[1])+'</span></div>').join('')+'</div>' : '<div class="chk-list"><div><span class="st ok">in orde</span><span>Alles is ingevuld.</span></div></div>');
+}
+
 /* ============================ RENDER ============================ */
 function renderMeta(){
   $('m-klant').textContent = handelsNaam();
@@ -2189,6 +2483,7 @@ function render(){
   $('terms').innerHTML = t.map(x=>'<li>'+esc(x)+'</li>').join('');
   renderTotaal(A, opt); fillK(); if(typeof renderDossiers==='function') renderDossiers();
   $('checks').innerHTML = '<h3>Controles</h3>' + (R.checks.length ? '<div class="chk-list">'+R.checks.map(c=>'<div><span class="st '+c[0]+'">'+(c[0]==='bad'?'let op':'check')+'</span><span>'+esc(c[1])+'</span></div>').join('')+'</div>' : '<div class="chk-list"><div><span class="st ok">in orde</span><span>Kanaal, budget en leerfase kloppen.</span></div></div>');
+  renderDelen(A, R);
 }
 function contentTxt(){
   if(S.cnt.wie==='klant') return 'Jullie leveren de content aan; wij maken er de advertenties van.';
@@ -2265,6 +2560,7 @@ const VISIE_TEKST = [
 
 async function buildPdf(parts){
   const A = calcAll(); const B = A.B, su = A.su, K = A.K; const R = onderCalc(A);
+  if(!deelAan('mp')) parts = parts.filter(p=>!MP_DELEN.includes(p));
   const klant = klantNaam();
   const datum = S.offerte.datum ? new Date(S.offerte.datum+'T12:00:00').toLocaleDateString('nl-NL',{day:'numeric',month:'long',year:'numeric'}) : '';
   const root = el('div','pp-root'); root.setAttribute('aria-hidden','true'); document.body.append(root);
@@ -2331,7 +2627,7 @@ async function buildPdf(parts){
     ['Hoe het betaald wordt', A.viaJr ? 'Het loopt via James Robinson: we factureren het per maand, met '+CAT.maand.opslagPct+'% opslag voor de administratie.' : joinNl(B_PLATFORMS())+' '+(B_PLATFORMS().length>1?'brengen':'brengt')+' het rechtstreeks bij jullie in rekening, via jullie eigen advertentieaccount. Het loopt dus niet via James Robinson, en wij rekenen er niets op.'],
     ['Ons doel', 'Zoveel mogelijk resultaat halen uit het beschikbare budget.'],
     ['Bijsturen', 'Tijdens de samenwerking kunnen we adviseren om het budget te verhogen, te verlagen of anders te verdelen over de kanalen. Dat advies onderbouwen we altijd met cijfers.']], false);
-  if(!full){
+  if(!full && parts[0]!=='team'){
     if(parts[0]==='setup') add('<div><h1 class="pp-h1">Opbouw van de Marketing Set-up</h1><p class="pp-lead">De Marketing Set-up is alles wat klaar moet staan voordat jullie campagnes live gaan. We hebben hieronder per onderdeel uitgewerkt wat we doen binnen de Marketing Set-up en welke investering hiervoor nodig is.</p></div>');
     else add('<div><h1 class="pp-h1">Opbouw van het maandpakket</h1><p class="pp-lead">Na de Marketing Set-up gaat het maandpakket in. We hebben hieronder uitgewerkt wat we elke maand doen en welke investering daarvoor nodig is.</p></div>');
   }
@@ -2339,8 +2635,9 @@ async function buildPdf(parts){
   if(parts.includes('intro')){
     // Vaste introductie van James Robinson (één keer, geen tweede introtekst eronder).
     add('<div><h1 class="pp-h1">Voorstel voor '+esc(handelsNaam())+'</h1><p class="pp-lead" style="margin-bottom:10px!important">Wij geloven dat marketing maar één doel heeft: bijdragen aan het commerciële succes van jullie bedrijf.</p><p class="pp-lead" style="margin-bottom:10px!important">Daarom beginnen we niet met de vraag welke marketingdiensten jullie nodig hebben, maar met de vraag waar we het meeste resultaat kunnen halen.</p><p class="pp-lead">We beginnen waar de kansen liggen, meten wat werkt en bouwen van daaruit verder. Met vakmanschap, sterke content en data.</p></div>');
-    const delen = [['Maandpakket','Per maand. Ons werk van elke maand: de kanalen beheren, bijsturen en samen de cijfers bespreken. Plus het advertentiebudget.'],['Content','Onze aanpak voor beeld en video: de brandstof van de campagnes.'],['Marketing Set-up','Eenmalig. Alles klaarzetten om vanaf de start goed te meten, te adviseren en te handelen op basis van feiten, cijfers en data.'],['Licenties','Waar nodig. De tools die nodig zijn om alles goed neer te zetten en volledig te meten.']];
-    add('<div>'+kop('Hoe dit voorstel is opgebouwd')+intro('Per onderdeel laten we zien wat we doen, wat het kost en hoe we tot dit voorstel zijn gekomen.')+card('Vier onderdelen', '', delen, false)+'</div>');
+    const delen = (deelAan('mp') ? [['Maandpakket','Per maand. Ons werk van elke maand: de kanalen beheren, bijsturen en samen de cijfers bespreken. Plus het advertentiebudget.'],['Content','Onze aanpak voor beeld en video: de brandstof van de campagnes.'],['Marketing Set-up','Eenmalig. Alles klaarzetten om vanaf de start goed te meten, te adviseren en te handelen op basis van feiten, cijfers en data.'],['Licenties','Waar nodig. De tools die nodig zijn om alles goed neer te zetten en volledig te meten.']] : [])
+      .concat(A.cons.rows.length ? [['Consultancy', consIntro(A.cons)]] : [], A.los.rows.length ? [['Losse producten','Eenmalig, met een vaste prijs vooraf.']] : []);
+    add('<div>'+kop('Hoe dit voorstel is opgebouwd')+intro('Per onderdeel laten we zien wat we doen, wat het kost en hoe we tot dit voorstel zijn gekomen.')+card(TELWOORD[delen.length-1] || 'Onderdelen', '', delen, false)+'</div>');
   }
   // ---- zo hebben we jullie begrepen ----
   // Zijn er doelen of cijfers, dan opent dat hoofdstuk een nieuwe pagina en staat
@@ -2453,6 +2750,22 @@ async function buildPdf(parts){
       add(prijsblok(blok('Licenties', 'Per jaar', licRegels(), su.jrTotal ? {l:'Subtotaal per jaar, via James Robinson', a:eur(su.jrTotal), incl:su.jrTotal} : null), n.join(' ')));
     }
   }
+  // ---- consultancy, profielpagina's en losse producten ----
+  if(parts.includes('cons') && A.cons.rows.length){
+    nieuwePagina();
+    const C = A.cons; const vormen = ['bundel','maand'].filter(v=>C.rows.some(x=>x.vorm===v));
+    add('<div>'+h2('Consultancy', true)+intro('Persoonsgebonden inzet: onze mensen werken op uurbasis met jullie mee. Om mee te denken, aan te sluiten bij een overleg of een vraagstuk uit te werken. Hieronder staat wie, hoeveel uur en hoe we het afrekenen.')+'</div>');
+    add(card('Zo werkt het', '', vormen.map(v=>[VORMEN[v].naam, CONS_VW[v]]), false));
+    vormen.forEach(v=>{ const rr = C.rows.filter(x=>x.vorm===v), tot = v==='maand' ? C.maand : C.bundel;
+      add(prijsblok(blok(VORMEN[v].blok, VORMEN[v].wanneer, rr.map(consRegel), {l: v==='maand' ? 'Totaal per maand' : 'Totaal urenbundel', a:eur(tot), maand: v==='maand', incl:tot}), btwNote())); });
+  }
+  if(parts.includes('team')){
+    teamVoorPdf(A).forEach(m=>{ if(body.children.length) body = newPage(); add(onepagerHtml(m)); });
+  }
+  if(parts.includes('los') && A.los.rows.length){
+    nieuwePagina();
+    add('<div>'+h2('Losse producten', true)+intro('Eenmalige producten met een vaste prijs vooraf.')+prijsblok(blok('Losse producten', 'Eenmalig', A.los.rows.map(losRegel), {l:'Totaal losse producten', a:eur(A.los.total), incl:A.los.total}), btwNote())+'</div>');
+  }
   if(parts.includes('onder') && S.onderPdf!==false && !B.off && B.act.length && heeftCijfers()){
     nieuwePagina();
     const dlp = doelLijn(R); if(dlp) add('<div>'+h2('Hoe we tot dit voorstel komen', true)+'<div class="pp-card">'+dlp+'</div></div>');
@@ -2483,19 +2796,26 @@ async function buildPdf(parts){
     // Elk bedrag staat maar één keer, zodat niemand de blokken bij elkaar optelt.
     const eerst = A.first;
     const coKort = coRows.map(r=>regel(esc(coNaam(r).replace(/, in de set-upmaand$/,'')), eur(r[1]), partnerNaam()?{sub:'In samenwerking met '+esc(partnerNaam())}:null)).concat(contentKorting());
-    const blokken = [
+    const mp = deelAan('mp');
+    const blokken = !mp ? [] : [
       blok('In de set-upmaand', 'Eerste factuur', [regel('Marketing Set-up', eur(setupNet + K.setupDisc))].concat(setupKorting(), coKort, su.jrTotal?[regel('Licenties, eerste jaar', eur(su.jrTotal))]:[]), {l:'Totaal eerste factuur', a:eur(eerst), was: (K.setupDisc+K.contentDisc) ? eur(eerst + K.setupDisc + K.contentDisc) : null, incl:eerst}),
       blok('Daarna per maand', 'Na de set-upmaand', [regel('Marketing Partnership', eur(B.ret.total), {sub: esc(joinNl(B.ret.lines.map(l=>l[0])))})].concat(maandKorting(), budgetRegels()), {l:'Totaal per maand', a:eur(A.monthlyNow), was:maandWas(), maand:true, incl:A.monthlyNow})
     ];
     const jaarRegels = su.jr.map(x=>regel(esc(x[0].replace(/^Licentie /,'')), eur(x[1]))).concat(volgendeShoots());
-    if(jaarRegels.length) blokken.push(blok('Daarna per jaar', su.jrTotal ? 'Licenties vanaf het tweede jaar' : 'Indicatie', jaarRegels, su.jrTotal ? {l:'Per jaar, via James Robinson', a:eur(su.jrTotal), incl:su.jrTotal} : null));
+    if(mp && jaarRegels.length) blokken.push(blok('Daarna per jaar', su.jrTotal ? 'Licenties vanaf het tweede jaar' : 'Indicatie', jaarRegels, su.jrTotal ? {l:'Per jaar, via James Robinson', a:eur(su.jrTotal), incl:su.jrTotal} : null));
     const t = [S.btw?'Bedragen exclusief btw, tenzij anders vermeld.':'Alle bedragen exclusief btw.'];
+    if(mp){
     if(K.schema.length>1) t.push(K.schema.map(x=>(x.tot?'Maand '+x.van+(x.tot>x.van?' tot '+x.tot:'')+': ':'Daarna: ')+eur(x.ret+B.total+A.link+A.opslag)+' per maand').join(' · ')+'.');
     if(A.viaJr) t.push('Het advertentiebudget loopt via James Robinson: we factureren het per maand, inclusief '+CAT.maand.opslagPct+'% opslag.'); else if(!B.off && B.act.length) t.push('Het advertentiebudget betalen jullie rechtstreeks aan '+joinNl(B_PLATFORMS())+'; het loopt niet via James Robinson.');
     if(kVoorwaarde(K.setupL.concat(K.contentL, K.maandL))) t.push(kVoorwaarde(K.setupL.concat(K.contentL, K.maandL)).trim());
     if(su.partner.length || opts.length) t.push('Licenties via leveranciers en optionele extra\'s komen er los bij.'); if(losShoot()) t.push('Nieuwe shoots plannen we altijd in overleg.'); t.push('Het maandpakket start na de set-upmaand en is maandelijks opzegbaar.');
-    add('<div>'+h2('Samengevat', true)+intro('Wat jullie betalen, en wanneer.')+blokken[0]+'</div>');
+    }
+    blokken.push(...extraBlokken(A, blok, regel));
+    t.push(...extraVoorwaarden(A));
+    if(blokken.length){
+    add('<div>'+h2('Samengevat', true)+intro('Wat jullie betalen, en wanneer.')+(blokken.length===1 ? prijsblok(blokken[0], t.join(' ')) : blokken[0])+'</div>');
     blokken.slice(1).forEach((b,i,arr)=>add(i===arr.length-1 ? prijsblok(b, t.join(' ')) : '<div>'+b+'</div>'));
+    }
   }
 
   // ---- persoonlijk bericht ----
@@ -2518,7 +2838,7 @@ async function buildPdf(parts){
   try{ for(let i=0;i<pages.length;i++){ const canvas = await window.html2canvas(pages[i], {scale:2.5, backgroundColor:'#FFFFFF', logging:false}); if(i>0) doc.addPage(); doc.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, 210, 297, undefined, 'FAST'); } } finally { root.remove(); }
   return doc;
 }
-const PARTS = { all:['intro','begrepen','doelen','visie','werkwijze','plan','maand','content','opties','setup','licenties','onder','later','samen','persoonlijk'], setup:['setup','licenties','opties'], mp:['maand','content','onder','later'] };
+const PARTS = { team:['team'], all:['intro','begrepen','doelen','visie','werkwijze','plan','maand','content','opties','setup','licenties','cons','team','los','onder','later','samen','persoonlijk'], setup:['setup','licenties','opties'], mp:['maand','content','onder','later'] };
 window.__jrBuildPdf = k => buildPdf(PARTS[k||'all']);
 window.__jrBriefing = () => briefingMd(); window.__jrState = () => S;
 let downloads = null;
@@ -2689,7 +3009,8 @@ $('tx-plak-btn').addEventListener('click', ()=>{ try{ const n = zetTeksten(leesJ
 const pdfNote = $('pdf-note');
 async function doPdf(kind, btn, name){
   pdfNote.hidden = true;
-  if(!nuAds().length && !contentRet() && !S.linkOn && kind!=='setup'){ pdfNote.textContent='Kies eerst wat we per maand doen.'; pdfNote.hidden=false; return; }
+  if(kind==='team' && !teamVoorPdf(calcAll()).length){ pdfNote.textContent='Er staat nog niemand bij Consultancy met een profielpagina.'; pdfNote.hidden=false; return; }
+  if(deelAan('mp') && kind!=='team' && !nuAds().length && !contentRet() && !S.linkOn && kind!=='setup'){ pdfNote.textContent='Kies eerst wat we per maand doen.'; pdfNote.hidden=false; return; }
   if(!window.jspdf || !window.html2canvas){ pdfNote.textContent='De PDF-module is niet geladen. Herlaad de pagina en probeer het opnieuw.'; pdfNote.hidden=false; return; }
   if(!downloads){ pdfNote.textContent='Opslaan werkt in de gepubliceerde pagina op claude.ai.'; pdfNote.hidden=false; return; }
   const old = btn.textContent; btn.disabled = true; btn.textContent = 'PDF maken…';
@@ -2701,6 +3022,7 @@ async function doPdf(kind, btn, name){
 $('pdf-all').addEventListener('click', e=>doPdf('all', e.currentTarget, 'Voorstel'));
 $('pdf-setup').addEventListener('click', e=>doPdf('setup', e.currentTarget, 'Marketing Set-up'));
 $('pdf-mp').addEventListener('click', e=>doPdf('mp', e.currentTarget, 'Maandpakket'));
+$('pdf-team').addEventListener('click', e=>doPdf('team', e.currentTarget, 'Profielpagina\'s'));
 
 showView();
 render();
