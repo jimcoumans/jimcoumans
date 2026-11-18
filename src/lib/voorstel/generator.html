@@ -579,33 +579,12 @@ img.ico{object-fit:contain;border-radius:4px}
 .pp-head2 .pp-cicon{width:30px;height:30px}
 .pp-knaam{font-size:13px;font-weight:400;color:#1C1C1E}
 .pp-head2 .pp-meta{font-size:12px}
-/* Onepager per medewerker */
-.op{display:flex;flex-direction:column;gap:18px;flex:1}
-.op-hero{display:flex;align-items:center;gap:24px;background:#007AFF;color:#FFFFFF;border-radius:22px;padding:26px 28px}
-.op-hero img,.op-init{width:124px;height:124px;border-radius:50%;object-fit:cover;flex:none;border:3px solid rgba(255,255,255,.9);display:block}
-.op-init{display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.18);font-size:40px;font-weight:300;box-sizing:border-box}
-.op-eyebrow{font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;margin:0 0 8px;color:rgba(255,255,255,.8);font-weight:400}
-.op-wie h2{font-size:38px;line-height:1.02;letter-spacing:-.025em;font-weight:400;margin:0;color:#FFFFFF}
-.op-functie{font-size:15px;font-weight:300;margin:8px 0 0;color:rgba(255,255,255,.88)}
-.op-quote{margin:4px 0 0;padding:0 4px;font-size:25px;line-height:1.2;letter-spacing:-.015em;font-weight:400;color:#007AFF}
-.op-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:30px;padding:0 4px}
-.op-grid > div{display:flex;flex-direction:column;gap:18px}
-.op-sec h3,.op-klanten h3{font-size:15px;font-weight:400;color:#007AFF;margin:0 0 8px;letter-spacing:0}
-.op-sec p{margin:0 0 8px;font-size:13.5px;line-height:1.55;font-weight:300}
-.op-ul{list-style:none;margin:0;padding:0;display:grid;gap:6px;font-size:13px;font-weight:300;line-height:1.4}
-.op-ul li{display:grid;grid-template-columns:7px minmax(0,1fr);gap:10px}
-.op-ul li i{width:7px;height:7px;border-radius:50%;background:#007AFF;margin-top:.45em}
-.op-chips{display:flex;flex-wrap:wrap;gap:6px}
-.op-chips span{font-size:12px;font-weight:300;background:#E2EBF3;color:#1C1C1E;border-radius:999px;padding:4px 11px}
-.op-erv{list-style:none;margin:0;padding:0;display:grid;gap:9px;font-size:13px;font-weight:300;line-height:1.4}
-.op-erv li small{display:block;font-size:11px;color:#8E8E93;margin-bottom:1px}
-.op-klanten{padding:14px 4px 0;border-top:1px solid #E5E5E9}
-.op-klanten p{margin:0;font-size:13px;font-weight:300;line-height:1.55}
-.op-voet{display:flex;justify-content:space-between;gap:24px;background:#F2F2F7;border-radius:16px;padding:14px 20px;margin-top:auto}
-.op-voet small{display:block;font-size:11px;color:#8E8E93;font-weight:300}
-.op-voet span{font-size:15px;font-weight:400}
-.op-voet > div:last-child{text-align:right}
-.pp-body:has(> .op){padding-bottom:4px}
+/* Profielpagina: dezelfde bouwstenen als de rest van het voorstel (pp-h2, pp-lead, pp-card) */
+.pp-persoon{display:flex;gap:22px;align-items:flex-start;padding:0 18px 10px}
+.pp-persoon > img,.pp-persoon .pp-init{width:84px;height:84px;border-radius:50%;object-fit:cover;flex:none;display:block}
+.pp-persoon .pp-init{display:flex;align-items:center;justify-content:center;background:#E2EBF3;color:#007AFF;font-size:28px;font-weight:300}
+.pp-persoon .pp-quote{font-size:20px;font-weight:400;line-height:1.25;letter-spacing:-.01em;color:#1C1C1E;margin:2px 0 10px}
+.pp-persoon .pp-lead{margin:0 0 8px!important;padding:0!important}
 .losn-wrap{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:13px;color:var(--muted)}
 .item .losn-wrap input{position:static;opacity:1;width:80px;height:auto}
 </style>
@@ -2214,26 +2193,26 @@ function teamVoorPdf(A){
 }
 const initialen = n => String(n||'').split(/\s+/).filter(Boolean).map(w=>w[0]).filter(c=>/[A-ZÀ-Ý]/.test(c)).slice(0,2).join('') || '·';
 
-/* De profielpagina: één A4 per persoon, in de huisstijl. Lege velden laten we weg. */
+/* De profielpagina: één A4 per persoon, opgebouwd uit dezelfde onderdelen als de rest van
+   het voorstel: hoofdstuktitel, introductie en kaarten met regels. Lege velden laten we weg.
+   Geeft losse blokken terug, zodat de pagina-opbouw ze één voor één kan plaatsen. */
 function onepagerHtml(m){
-  const P = m.profiel || {}; const L = a => Array.isArray(a) ? a.filter(Boolean) : [];
-  const sec = (t, inner) => inner ? '<div class="op-sec"><h3>'+esc(t)+'</h3>'+inner+'</div>' : '';
-  const ul = a => L(a).length ? '<ul class="op-ul">'+L(a).map(x=>'<li><i></i><span>'+esc(x)+'</span></li>').join('')+'</ul>' : '';
-  const chips = a => L(a).length ? '<div class="op-chips">'+L(a).map(x=>'<span>'+esc(x)+'</span>').join('')+'</div>' : '';
-  const erv = a => L(a).length ? '<ul class="op-erv">'+L(a).map(x=>{ const d = String(x).split(' · '); return d.length>1 ? '<li><small>'+esc(d[0])+'</small><span>'+esc(d.slice(1).join(' · '))+'</span></li>' : '<li><span>'+esc(x)+'</span></li>'; }).join('')+'</ul>' : '';
-  const voornaam = String(m.naam||'').split(' ')[0];
+  const P = m.profiel || {}; const L = a => Array.isArray(a) ? a.map(x=>String(x||'').trim()).filter(Boolean) : [];
   const quote = String(P.quote||'').trim().replace(/^[“"'‘]+|[”"'’]+$/g,'');
   const intro = String(P.intro||'').trim();
-  const contact = [m.email, m.telefoon].filter(Boolean).map(esc).join(' · ');
-  return '<div class="op">'+
-    '<div class="op-hero">'+(m.foto ? '<img src="'+m.foto+'" alt="">' : '<div class="op-init">'+esc(initialen(m.naam))+'</div>')+
-      '<div class="op-wie"><p class="op-eyebrow">Jouw team</p><h2>'+esc(m.naam)+'</h2>'+(m.functie ? '<p class="op-functie">'+esc(m.functie)+' · James Robinson</p>' : '')+'</div></div>'+
-    (quote ? '<blockquote class="op-quote">“'+esc(quote)+'”</blockquote>' : '')+
-    '<div class="op-grid"><div>'+sec('Over '+voornaam, intro ? intro.split(/\n{2,}/).map(t=>'<p>'+esc(t).replace(/\n/g,'<br>')+'</p>').join('') : '')+sec('Expertise', ul(P.expertise))+sec('Vaardigheden', chips(P.vaardigheden))+'</div>'+
-      '<div>'+sec('Ervaring', erv(P.werkervaring))+sec('Opleiding', erv(P.opleiding))+sec('Talen', chips(P.talen))+sec('Certificeringen', ul(P.certificeringen))+'</div></div>'+
-    (L(P.klanten).length ? '<div class="op-klanten"><h3>Werkte onder meer voor</h3><p>'+L(P.klanten).map(esc).join(' · ')+'</p></div>' : '')+
-    ((m.tarief || contact) ? '<div class="op-voet"><div><small>Tarief</small><span>'+(m.tarief ? eur(m.tarief)+' per uur' : '')+'</span></div><div><small>Contact</small><span>'+contact+'</span></div></div>' : '')+
-  '</div>';
+  const rij = (label, html) => html ? '<li><b>'+esc(label)+'</b><span>'+html+'</span></li>' : '';
+  const regels = a => L(a).map(esc).join('<br>');
+  const komma = a => esc(L(a).join(', '));
+  const kaart = (titel, rechts, rijen, on) => rijen ? '<div class="pp-card'+(on?' on':'')+'"><div class="pp-row"><span>'+esc(titel)+'</span><span>'+rechts+'</span></div><ul class="pp-subs">'+rijen+'</ul></div>' : '';
+  const kop = '<div><h2 class="pp-h2">'+esc(m.naam)+'</h2><div class="pp-persoon">'+
+    (m.foto ? '<img src="'+m.foto+'" alt="">' : '<div class="pp-init">'+esc(initialen(m.naam))+'</div>')+
+    '<div>'+(quote ? '<p class="pp-quote">“'+esc(quote)+'”</p>' : '')+
+    (intro ? intro.split(/\n{2,}/).map(t=>'<p class="pp-lead">'+esc(t).replace(/\n/g,'<br>')+'</p>').join('') : '')+'</div></div></div>';
+  const profiel = kaart((m.functie ? m.functie+', ' : '')+'James Robinson', m.tarief ? eur(m.tarief)+'<small>per uur</small>' : '',
+    rij('Expertise', regels(P.expertise))+rij('Vaardigheden', komma(P.vaardigheden))+rij('Ervaring', regels(P.werkervaring))+rij('Opleiding', regels(P.opleiding))+
+    rij('Talen', komma(P.talen))+rij('Certificeringen', regels(P.certificeringen))+rij('Werkte onder meer voor', komma(P.klanten)), true);
+  const contact = kaart('Contact', '', rij('E-mail', m.email ? esc(m.email) : '')+rij('Telefoon', m.telefoon ? esc(m.telefoon) : ''), false);
+  return [kop, profiel, contact].filter(Boolean);
 }
 
 /* ---- Editor: onderdelen ---- */
@@ -2760,7 +2739,7 @@ async function buildPdf(parts){
       add(prijsblok(blok(VORMEN[v].blok, VORMEN[v].wanneer, rr.map(consRegel), {l: v==='maand' ? 'Totaal per maand' : 'Totaal urenbundel', a:eur(tot), maand: v==='maand', incl:tot}), btwNote())); });
   }
   if(parts.includes('team')){
-    teamVoorPdf(A).forEach(m=>{ if(body.children.length) body = newPage(); add(onepagerHtml(m)); });
+    teamVoorPdf(A).forEach(m=>{ if(body.children.length) body = newPage(); onepagerHtml(m).forEach(add); });
   }
   if(parts.includes('los') && A.los.rows.length){
     nieuwePagina();
