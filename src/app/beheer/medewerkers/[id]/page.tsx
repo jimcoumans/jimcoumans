@@ -4,7 +4,7 @@ import { getTeamlid, formatContractUren, AFDELINGEN } from '@/lib/team'
 import { getFiguresByEmployee } from '@/lib/reports'
 import { AppShell } from '@/components/AppShell'
 import { ActionForm, Check, Field, Select, TextArea } from '@/components/ActionForm'
-import { bewerkMedewerkerprofiel, bewerkUurkostprijs, bewerkVerkooptarief, bewerkVoorstelprofiel } from '../../medewerker-actions'
+import { bewerkInternProfiel, bewerkMedewerkerprofiel, bewerkUurkostprijs, bewerkVerkooptarief, bewerkVoorstelprofiel } from '../../medewerker-actions'
 import { normaliseerProfiel } from '@/lib/voorstel-profiel'
 import { formatEuro } from '@/lib/money'
 import { formatDate, formatDateInput, MAANDNAMEN } from '@/lib/dates'
@@ -603,8 +603,6 @@ function VoorstelProfielBlok({
             <Field label="Quote" name="quote" defaultValue={p.quote} hint="Eén zin die iets over jou zegt." />
             <TextArea label="Expertise" name="expertise" rows={4} defaultValue={regels(p.expertise)} hint="Drie tot vijf punten." />
             <TextArea label="Vaardigheden" name="vaardigheden" rows={4} defaultValue={regels(p.vaardigheden)} hint="Tools en vaardigheden, bijvoorbeeld Google Ads, Meta, strategie." />
-            <TextArea label="Sterktes" name="sterktes" rows={4} defaultValue={regels(p.sterktes)} />
-            <TextArea label="Aandachtspunten (intern)" name="aandachtspunten" rows={3} defaultValue={regels(p.aandachtspunten)} hint="Alleen voor het team. Komt nooit in een voorstel." />
             <TextArea label="Werkervaring" name="werkervaring" rows={4} defaultValue={regels(p.werkervaring)} hint="Per regel: periode · functie, werkgever. Bijvoorbeeld: 2018 – nu · Oprichter, James Robinson." />
             <TextArea label="Opleiding" name="opleiding" rows={3} defaultValue={regels(p.opleiding)} />
             <TextArea label="Talen" name="talen" rows={2} defaultValue={regels(p.talen)} />
@@ -614,6 +612,7 @@ function VoorstelProfielBlok({
         )}
       </section>
 
+      <div className="space-y-6">
       <section className="h-fit rounded-xl bg-white p-6 shadow-sm">
         <h2 className="mb-1 text-base">Verkooptarief</h2>
         <p className="mb-3 text-xs text-gray-500">
@@ -632,6 +631,24 @@ function VoorstelProfielBlok({
           </p>
         )}
       </section>
+
+      {beheerder && (
+        <section className="h-fit rounded-xl bg-white p-6 shadow-sm">
+          <h2 className="mb-1 text-base">Intern profiel</h2>
+          <p className="mb-4 text-xs text-gray-500">
+            Alleen beheerders zien dit, {naam} zelf niet. Komt nooit in een voorstel. Lijsten: één punt per regel.
+          </p>
+          <ActionForm action={bewerkInternProfiel} submitLabel="Opslaan" resetOnSuccess={false}>
+            <input type="hidden" name="userId" value={userId} />
+            <TextArea label="Sterk in" name="sterktes" rows={4} defaultValue={regels(p.sterktes)} />
+            <TextArea label="Wil en ambitie" name="ambitie" rows={3} defaultValue={regels(p.ambitie)} />
+            <TextArea label="Geeft energie" name="energie" rows={3} defaultValue={regels(p.energie)} />
+            <TextArea label="Kost energie en aandachtspunten" name="aandachtspunten" rows={4} defaultValue={regels(p.aandachtspunten)} />
+            <Field label="Bron" name="bron" defaultValue={p.bron} hint="Van wie komt dit en hoe zeker is het? Bijvoorbeeld: observaties van Jim K, nog met de collega bespreken." />
+          </ActionForm>
+        </section>
+      )}
+      </div>
     </div>
   )
 }

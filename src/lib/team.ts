@@ -4,7 +4,7 @@ import { users, organizationOwners, organizations, subscriptions } from '@/db/sc
 import type { User } from '@/db/schema'
 import type { Aanhef } from './namen'
 import { leeftijdOpVerjaardag } from './leeftijd'
-import { normaliseerProfiel } from './voorstel-profiel'
+import { metEigenDeel, metInternDeel, normaliseerProfiel } from './voorstel-profiel'
 
 /* -------------------------------------------------------------------------
    Het team.
@@ -193,12 +193,17 @@ export async function updateTeamlid(userId: string, patch: TeamlidPatch): Promis
  * Het profiel voor voorstellen. De tarieven daarin zet alleen een beheerder;
  * zonder beheerdersrechten blijven de bestaande tarieven staan.
  */
-export async function updateVoorstelProfiel(userId: string, invoer: unknown, beheerder: boolean): Promise<void> {
+export async function updateVoorstelProfiel(userId: string, invoer: unknown): Promise<void> {
   const [bestaand] = await db.select({ profiel: users.voorstelProfiel }).from(users).where(eq(users.id, userId)).limit(1)
   if (!bestaand) throw new TeamError('Collega niet gevonden.')
-  const nieuw = normaliseerProfiel(invoer)
-  if (!beheerder) nieuw.tarieven = normaliseerProfiel(bestaand.profiel).tarieven
-  await db.update(users).set({ voorstelProfiel: nieuw }).where(eq(users.id, userId))
+  await db.update(users).set({ voorstelProfiel: metEigenDeel(normaliseerProfiel(bestaand.profiel), invoer) }).where(eq(users.id, userId))
+}
+
+/** Het interne profiel. Alleen een beheerder; de actie controleert dat. */
+export async function updateInternProfiel(userId: string, invoer: unknown): Promise<void> {
+  const [bestaand] = await db.select({ profiel: users.voorstelProfiel }).from(users).where(eq(users.id, userId)).limit(1)
+  if (!bestaand) throw new TeamError('Collega niet gevonden.')
+  await db.update(users).set({ voorstelProfiel: metInternDeel(normaliseerProfiel(bestaand.profiel), invoer) }).where(eq(users.id, userId))
 }
 
 /** Het verkooptarief: wat een uur van deze collega een klant kost. Alleen een beheerder. */

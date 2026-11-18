@@ -5,10 +5,10 @@
    ervaring en de rest van wat op een cv staat. Iedereen houdt zijn eigen
    profiel bij op Beheer → Medewerkers; een beheerder kan alles.
 
-   Twee velden zijn anders:
-   - aandachtspunten zijn intern. Ze staan in het profiel omdat ze bij de
-     persoon horen, maar komen nooit in een voorstel en gaan ook niet naar
-     de generator.
+   Twee delen zijn anders:
+   - het interne profiel (sterk in, ambitie, wat energie geeft en kost, de
+     bron). Dat ziet en wijzigt alleen een beheerder; de collega zelf niet.
+     Het komt nooit in een voorstel en gaat ook niet naar de generator.
    - tarieven (afwijkende verkooptarieven, naast het standaardtarief) zet
      alleen een beheerder.
    ------------------------------------------------------------------------- */
@@ -18,9 +18,16 @@ export type VoorstelProfiel = {
   quote: string
   expertise: string[]
   vaardigheden: string[]
+  /** Intern, alleen beheerders: nooit in een voorstel. */
   sterktes: string[]
-  /** Intern: nooit in een voorstel. */
+  /** Intern, alleen beheerders. */
+  ambitie: string[]
+  /** Intern, alleen beheerders: wat energie geeft. */
+  energie: string[]
+  /** Intern, alleen beheerders: wat energie kost, en aandachtspunten. */
   aandachtspunten: string[]
+  /** Intern, alleen beheerders: van wie het interne profiel komt en hoe zeker het is. */
+  bron: string
   werkervaring: string[]
   opleiding: string[]
   talen: string[]
@@ -37,7 +44,10 @@ export const LEEG_PROFIEL: VoorstelProfiel = {
   expertise: [],
   vaardigheden: [],
   sterktes: [],
+  ambitie: [],
+  energie: [],
   aandachtspunten: [],
+  bron: '',
   werkervaring: [],
   opleiding: [],
   talen: [],
@@ -46,18 +56,19 @@ export const LEEG_PROFIEL: VoorstelProfiel = {
   tarieven: [],
 }
 
-/** De lijstvelden, in de volgorde van het formulier. Eén regel is één punt. */
+/** De lijstvelden die de collega zelf bijhoudt, in de volgorde van het formulier. Eén regel is één punt. */
 export const LIJSTEN = [
   'expertise',
   'vaardigheden',
-  'sterktes',
-  'aandachtspunten',
   'werkervaring',
   'opleiding',
   'talen',
   'certificeringen',
   'klanten',
 ] as const
+
+/** De interne lijstvelden: alleen een beheerder ziet en wijzigt ze. */
+export const INTERNE_LIJSTEN = ['sterktes', 'ambitie', 'energie', 'aandachtspunten'] as const
 
 const tekst = (v: unknown, max: number): string => (typeof v === 'string' ? v.trim().slice(0, max) : '')
 
@@ -79,13 +90,27 @@ export function tarieven(v: unknown): number[] {
 /** Maakt van wat er in de database of een formulier staat altijd een volledig, schoon profiel. */
 export function normaliseerProfiel(v: unknown): VoorstelProfiel {
   const o = v && typeof v === 'object' ? (v as Record<string, unknown>) : {}
-  const uit: VoorstelProfiel = { ...LEEG_PROFIEL, intro: tekst(o.intro, 1200), quote: tekst(o.quote, 240), tarieven: tarieven(o.tarieven) }
-  for (const k of LIJSTEN) uit[k] = lijst(o[k])
+  const uit: VoorstelProfiel = { ...LEEG_PROFIEL, intro: tekst(o.intro, 1200), quote: tekst(o.quote, 240), tarieven: tarieven(o.tarieven), bron: tekst(o.bron, 400) }
+  for (const k of [...LIJSTEN, ...INTERNE_LIJSTEN]) uit[k] = lijst(o[k])
   return uit
 }
 
-/** Wat de generator mag zien: alles behalve de interne aandachtspunten. */
-export function voorVoorstel(p: VoorstelProfiel): Omit<VoorstelProfiel, 'aandachtspunten'> {
-  const { aandachtspunten: _intern, ...rest } = p
+/** Wat een collega zelf mag wijzigen. Het interne deel en de tarieven blijven zoals ze waren. */
+export function metEigenDeel(bestaand: VoorstelProfiel, invoer: unknown): VoorstelProfiel {
+  const nieuw = normaliseerProfiel(invoer)
+  return { ...bestaand, intro: nieuw.intro, quote: nieuw.quote, ...Object.fromEntries(LIJSTEN.map((k) => [k, nieuw[k]])) }
+}
+
+/** Het interne deel, door een beheerder. De rest blijft zoals het was. */
+export function metInternDeel(bestaand: VoorstelProfiel, invoer: unknown): VoorstelProfiel {
+  const nieuw = normaliseerProfiel(invoer)
+  return { ...bestaand, bron: nieuw.bron, ...Object.fromEntries(INTERNE_LIJSTEN.map((k) => [k, nieuw[k]])) }
+}
+
+export type ProfielVoorVoorstel = Omit<VoorstelProfiel, (typeof INTERNE_LIJSTEN)[number] | 'bron'>
+
+/** Wat de generator mag zien: alles behalve het interne profiel. */
+export function voorVoorstel(p: VoorstelProfiel): ProfielVoorVoorstel {
+  const { sterktes: _a, ambitie: _b, energie: _c, aandachtspunten: _d, bron: _e, ...rest } = p
   return rest
 }

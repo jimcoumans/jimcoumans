@@ -4,8 +4,8 @@ import { revalidatePath } from 'next/cache'
 import { requireStaff } from '@/lib/auth'
 import { describeDbError } from '@/lib/db-errors'
 import { parseAmountToCents } from '@/lib/money'
-import { parseContractUren, setHourlyCost, setVerkooptarief, updateTeamlid, updateVoorstelProfiel, TeamError } from '@/lib/team'
-import { LIJSTEN } from '@/lib/voorstel-profiel'
+import { parseContractUren, setHourlyCost, setVerkooptarief, updateInternProfiel, updateTeamlid, updateVoorstelProfiel, TeamError } from '@/lib/team'
+import { INTERNE_LIJSTEN, LIJSTEN } from '@/lib/voorstel-profiel'
 import { volledigeNaam, type Aanhef } from '@/lib/namen'
 
 const AANHEF_WAARDEN: readonly Aanhef[] = ['heer', 'mevrouw', 'neutraal']
@@ -175,7 +175,21 @@ export async function bewerkVoorstelprofiel(formData: FormData): Promise<ActionR
   const invoer: Record<string, unknown> = { intro: tekst(formData, 'intro'), quote: tekst(formData, 'quote') }
   for (const k of LIJSTEN) invoer[k] = String(formData.get(k) ?? '')
   return veilig(async () => {
-    await updateVoorstelProfiel(userId, invoer, beheerder)
+    await updateVoorstelProfiel(userId, invoer)
+    revalidatePath(`/beheer/medewerkers/${userId}`)
+  })
+}
+
+/** Het interne profiel: sterktes, ambitie, energie en aandachtspunten. Alleen een beheerder, ook niet de collega zelf. */
+export async function bewerkInternProfiel(formData: FormData): Promise<ActionResult> {
+  const staff = await requireStaff()
+  if (staff.role !== 'admin') return { ok: false, error: 'Alleen een beheerder kan het interne profiel aanpassen.' }
+  const userId = tekst(formData, 'userId')
+  if (!userId) return { ok: false, error: 'Onbekende collega.' }
+  const invoer: Record<string, unknown> = { bron: tekst(formData, 'bron') }
+  for (const k of INTERNE_LIJSTEN) invoer[k] = String(formData.get(k) ?? '')
+  return veilig(async () => {
+    await updateInternProfiel(userId, invoer)
     revalidatePath(`/beheer/medewerkers/${userId}`)
   })
 }

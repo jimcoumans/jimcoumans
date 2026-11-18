@@ -1149,7 +1149,7 @@ export const users = pgTable(
      */
     sellRateCents: integer('sell_rate_cents'),
     /**
-     * Het profiel voor voorstellen: intro, expertise, ervaring, quote, sterktes
+     * Het profiel voor voorstellen: intro, expertise, ervaring, quote
      * en de rest van wat op een cv staat. Eén document, omdat het in de
      * onepager als geheel terugkomt en de velden nog zullen groeien. Wat erin
      * mag, staat in src/lib/voorstel-profiel.ts.

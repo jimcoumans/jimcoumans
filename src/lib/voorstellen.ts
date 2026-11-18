@@ -9,7 +9,7 @@ import { db } from '@/db'
 import { proposalSettings, proposals, users } from '@/db/schema'
 import { afbeeldingUrl } from './afbeeldingen'
 import { volledigeNaam } from './namen'
-import { normaliseerProfiel, voorVoorstel, type VoorstelProfiel } from './voorstel-profiel'
+import { normaliseerProfiel, voorVoorstel, type ProfielVoorVoorstel } from './voorstel-profiel'
 
 export const ID_FORMAAT = /^[a-z0-9][a-z0-9-]{0,80}$/
 
@@ -105,8 +105,8 @@ export type Opsteller = {
   tariefCents: number | null
   /** Afwijkende tarieven in centen, te kiezen in een voorstel. */
   tarieven: number[]
-  /** Het profiel voor de onepager, zonder de interne aandachtspunten. */
-  profiel: Omit<VoorstelProfiel, 'aandachtspunten'>
+  /** Het profiel voor de onepager, zonder het interne profiel. */
+  profiel: ProfielVoorVoorstel
 }
 
 type OpstellerRij = {
