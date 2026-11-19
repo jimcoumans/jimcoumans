@@ -4,7 +4,8 @@ import { revalidatePath } from 'next/cache'
 import { requireStaff } from '@/lib/auth'
 import { describeDbError } from '@/lib/db-errors'
 import { parseAmountToCents } from '@/lib/money'
-import { parseContractUren, setHourlyCost, updateTeamlid, TeamError } from '@/lib/team'
+import { parseContractUren, setHourlyCost, setVerkooptarief, updateInternProfiel, updateTeamlid, updateVoorstelProfiel, TeamError } from '@/lib/team'
+import { INTERNE_LIJSTEN, LIJSTEN } from '@/lib/voorstel-profiel'
 import { volledigeNaam, type Aanhef } from '@/lib/namen'
 
 const AANHEF_WAARDEN: readonly Aanhef[] = ['heer', 'mevrouw', 'neutraal']
@@ -158,6 +159,63 @@ export async function bewerkUurkostprijs(formData: FormData): Promise<ActionResu
 
   return veilig(async () => {
     await setHourlyCost(userId, cents)
+    revalidatePath(`/beheer/medewerkers/${userId}`)
+  })
+}
+
+/** Het profiel voor voorstellen: je eigen, of als beheerder dat van een collega. */
+export async function bewerkVoorstelprofiel(formData: FormData): Promise<ActionResult> {
+  const staff = await requireStaff()
+  const userId = tekst(formData, 'userId')
+  if (!userId) return { ok: false, error: 'Onbekende collega.' }
+  const beheerder = staff.role === 'admin'
+  if (!beheerder && userId !== staff.id) {
+    return { ok: false, error: 'Je kunt alleen je eigen profiel bijwerken. Vraag een beheerder om het profiel van een collega.' }
+  }
+  const invoer: Record<string, unknown> = { intro: tekst(formData, 'intro'), quote: tekst(formData, 'quote') }
+  for (const k of LIJSTEN) invoer[k] = String(formData.get(k) ?? '')
+  return veilig(async () => {
+    await updateVoorstelProfiel(userId, invoer)
+    revalidatePath(`/beheer/medewerkers/${userId}`)
+  })
+}
+
+/** Het interne profiel: sterktes, ambitie, energie en aandachtspunten. Alleen een beheerder, ook niet de collega zelf. */
+export async function bewerkInternProfiel(formData: FormData): Promise<ActionResult> {
+  const staff = await requireStaff()
+  if (staff.role !== 'admin') return { ok: false, error: 'Alleen een beheerder kan het interne profiel aanpassen.' }
+  const userId = tekst(formData, 'userId')
+  if (!userId) return { ok: false, error: 'Onbekende collega.' }
+  const invoer: Record<string, unknown> = { bron: tekst(formData, 'bron') }
+  for (const k of INTERNE_LIJSTEN) invoer[k] = String(formData.get(k) ?? '')
+  return veilig(async () => {
+    await updateInternProfiel(userId, invoer)
+    revalidatePath(`/beheer/medewerkers/${userId}`)
+  })
+}
+
+/** Het verkooptarief en de afwijkende tarieven. Alleen een beheerder. */
+export async function bewerkVerkooptarief(formData: FormData): Promise<ActionResult> {
+  const staff = await requireStaff()
+  if (staff.role !== 'admin') return { ok: false, error: 'Alleen een beheerder kan het verkooptarief aanpassen.' }
+  const userId = tekst(formData, 'userId')
+  if (!userId) return { ok: false, error: 'Onbekende collega.' }
+
+  const bedrag = tekst(formData, 'verkooptarief')
+  let cents: number | null = null
+  if (bedrag !== '') {
+    cents = parseAmountToCents(bedrag)
+    if (cents === null || cents <= 0) return { ok: false, error: 'Dat tarief begrijp ik niet. Schrijf het als 125 of 125,00.' }
+  }
+  // Afwijkende tarieven: gescheiden door komma's of puntkomma's, bijvoorbeeld "150" of "75; 150".
+  const afwijkend: number[] = []
+  for (const deel of tekst(formData, 'afwijkend').split(/[;\n]|,(?=\s)|\s+en\s+/).map((d) => d.trim()).filter(Boolean)) {
+    const c = parseAmountToCents(deel)
+    if (c === null || c <= 0) return { ok: false, error: `Het afwijkende tarief "${deel}" begrijp ik niet. Schrijf bijvoorbeeld: 150; 75` }
+    afwijkend.push(c)
+  }
+  return veilig(async () => {
+    await setVerkooptarief(userId, cents, afwijkend)
     revalidatePath(`/beheer/medewerkers/${userId}`)
   })
 }

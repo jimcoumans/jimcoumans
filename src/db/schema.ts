@@ -1142,6 +1142,19 @@ export const users = pgTable(
      * hoort niet op een scherm dat het hele team openslaat.
      */
     hourlyCostCents: integer('hourly_cost_cents'),
+    /**
+     * Wat een uur van deze collega een klant kost, in centen: het verkooptarief
+     * voor consultancy op uurbasis. Anders dan de kostprijs hierboven mag het
+     * hele team dit zien, want het staat in voorstellen.
+     */
+    sellRateCents: integer('sell_rate_cents'),
+    /**
+     * Het profiel voor voorstellen: intro, expertise, ervaring, quote
+     * en de rest van wat op een cv staat. Eén document, omdat het in de
+     * onepager als geheel terugkomt en de velden nog zullen groeien. Wat erin
+     * mag, staat in src/lib/voorstel-profiel.ts.
+     */
+    voorstelProfiel: jsonb('voorstel_profiel'),
 
     firstName: text('first_name'),
     infix: text('infix'),
