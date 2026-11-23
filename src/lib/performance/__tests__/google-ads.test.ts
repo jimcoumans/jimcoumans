@@ -98,8 +98,12 @@ describe('fouten', () => {
   it('noemt de variabele bij een verkeerde developer token', () => {
     assert.match(leesGoogleAdsFout(401, met({ authenticationError: 'DEVELOPER_TOKEN_INVALID' })).message, /GOOGLE_ADS_DEVELOPER_TOKEN/)
   })
-  it('valt terug op de melding van Google', () => {
+  it('valt terug op de melding van Google, met de geneste details erbij', () => {
     assert.match(leesGoogleAdsFout(500, { error: { message: 'Internal error' } }).message, /fout 500: Internal error/)
     assert.match(leesGoogleAdsFout(404, null).message, /klant-ID niet/)
+    const f = leesGoogleAdsFout(403, {
+      error: { message: 'The caller does not have permission', details: [{ errors: [{ errorCode: { quotaError: 'RESOURCE_EXHAUSTED' }, message: 'Too many requests' }] }] },
+    })
+    assert.match(f.message, /The caller does not have permission · RESOURCE_EXHAUSTED · Too many requests/)
   })
 })
