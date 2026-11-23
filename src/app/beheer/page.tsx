@@ -36,16 +36,24 @@ export default async function DashboardPage() {
 
   /* Achter elkaar, en onthouden voor een minuut.
 
-     Twee dingen die hier samenkomen. Elke query kost vanaf de server zo'n
-     honderd milliseconde reistijd, en deze database accepteert geen handvol
+     Twee dingen die hier samenkomen. Elke query is vanaf de server een
+     netwerkronde naar de database, en deze database accepteert geen handvol
      verbindingen tegelijk (gemeten: bij vijf loopt hij vast). Alles wat
      hieronder staat gaat dus achter elkaar over een verbinding.
 
-     Dat zou elke keer twee seconden kosten, ook als er niets veranderd is.
-     Daarom onthoudt metGeheugen het antwoord een minuut. Wie het dashboard
-     opent terwijl een collega dat net deed, krijgt het uit het geheugen en
-     ziet het meteen. Deze cijfers veranderen niet van seconde tot seconde,
-     dus een minuut speling kan niemand iets schelen.
+     Hoe duur zo'n ronde is, hing lang af van iets wat niet in de code stond:
+     de Netlify-functies draaiden in Ohio en de database staat in Frankfurt.
+     Dat kostte zo'n honderd milliseconde per query, en dit dashboard daarmee
+     twee seconden of meer. Sinds 23 november 2026 draaien de functies ook in
+     Frankfurt (Netlify → Functions → Region) en is een ronde enkele
+     milliseconden. Het dashboard ging daarmee van bijna negen seconden koud
+     naar onder de seconde, zonder codewijziging.
+
+     De volgorde en het geheugen hieronder stammen uit de Ohio-tijd. Ze doen
+     nog steeds geen kwaad: achter elkaar beschermt de pooler, en metGeheugen
+     onthoudt het antwoord een minuut zodat collega's die kort na elkaar
+     kijken het meteen krijgen. Deze cijfers veranderen niet van seconde tot
+     seconde, dus een minuut speling kan niemand iets schelen.
 
      De oorspronkelijke opzet stond hier met Promise.all.
 
@@ -57,10 +65,9 @@ export default async function DashboardPage() {
      bijna niets. Vanaf een serverless functie liep deze pagina daarop vast en
      kreeg de bezoeker een 502 zonder foutmelding.
 
-     Achter elkaar kost dit de som van de rondes in plaats van het risico dat
-     de helft blijft wachten op een verbinding. Bij tien overzichten van een
-     paar honderd milliseconde is dat een paar seconden; een 502 is de hele
-     pagina. */
+     Wil je dit ooit weer deels parallel doen, dan is de pooler de grens om in
+     de gaten te houden, niet de reistijd. Voelt een scherm traag, controleer
+     dan eerst of de functieregio nog op Frankfurt staat. */
   const overall = await metGeheugen('dash:overall', getOverallFigures)
   const mrr = await metGeheugen('dash:mrr', getMonthlyRecurringCents)
   const maandbudget = await metGeheugen('dash:budget', getMonthlyBudgetCents)

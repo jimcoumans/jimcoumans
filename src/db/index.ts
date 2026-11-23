@@ -26,9 +26,16 @@ const globalForDb = globalThis as unknown as {
    over zijn tijdslimiet duwde. Elke wijziging hier heeft de site opnieuw
    platgelegd zonder het echte probleem te raken.
 
+   Die zesentachtig rondes deden zo'n pijn omdat de functies toen in Ohio
+   draaiden en de database in Frankfurt staat: honderd milliseconde per
+   ronde. Sinds 23 november 2026 staat de functieregio van Netlify op
+   Frankfurt en kost een ronde enkele milliseconden. Dat is een instelling in
+   Netlify, niet in deze repo, dus hij staat nergens in de code.
+
    De instellingen hieronder zijn de instellingen waarmee het werkte. Wijzig
-   ze niet op een vermoeden. Is een pagina traag, tel dan eerst hoeveel
-   queries hij doet met npm run tel:queries — daar zit het bijna altijd.
+   ze niet op een vermoeden. Is een pagina traag, controleer dan eerst of de
+   functieregio nog op Frankfurt staat, en tel daarna hoeveel queries hij doet
+   met npm run tel:queries — daar zit het bijna altijd.
    ------------------------------------------------------------------------- */
 
 /** Voor npm run tel:queries. Werkt alleen lokaal; zie de debug-optie. */

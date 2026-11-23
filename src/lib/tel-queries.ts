@@ -3,24 +3,34 @@
  *
  * Draaien met: npm run tel:queries
  *
- * Dit bestaat omdat het verschil tussen lokaal en live hier enorm is. Op een
- * database die op dezelfde machine staat kost een query bijna niets, dus een
- * pagina met negentig queries voelt lokaal snel aan. Vanaf de server is elke
- * query een netwerkronde van zo'n honderd milliseconde, en dan is diezelfde
- * pagina negen seconden bezig en wordt hij afgekapt met een 502.
+ * Dit bestaat omdat het verschil tussen lokaal en live hier enorm kan zijn.
+ * Op een database die op dezelfde machine staat kost een query bijna niets,
+ * dus een pagina met negentig queries voelt lokaal snel aan. Vanaf de server
+ * is elke query een netwerkronde, en hoe duur die is hangt af van waar de
+ * server staat ten opzichte van de database.
  *
- * Precies dat is een keer gebeurd: het partneroverzicht deed twee queries per
- * partner, wat bij drieenveertig partners zesentachtig netwerkrondes opleverde.
- * Lokaal acht milliseconden, live onbruikbaar. Zonder tellen zie je dat niet
- * aankomen — je ziet het pas als de site eruit ligt.
+ * Tot 23 november 2026 draaiden de Netlify-functies in Ohio en de database in
+ * Frankfurt: zo'n honderd milliseconde per query. Een pagina met negentig
+ * queries was dan negen seconden bezig en werd afgekapt met een 502. Precies
+ * dat is een keer gebeurd: het partneroverzicht deed twee queries per partner,
+ * wat bij drieenveertig partners zesentachtig netwerkrondes opleverde. Lokaal
+ * acht milliseconden, live onbruikbaar.
  *
- * Vuistregel: onder de tien queries per scherm is prima, boven de dertig gaat
- * het pijn doen, boven de tachtig valt hij om.
+ * Sindsdien draaien de functies ook in Frankfurt (Netlify → Functions →
+ * Region) en kost een ronde enkele milliseconden. Het aantal queries telt nog
+ * steeds, maar de drempel ligt een factor twintig hoger. Zie je in de uitkomst
+ * hieronder opeens weer seconden, controleer dan eerst die regio-instelling.
+ *
+ * Vuistregel per scherm blijft: hoe minder, hoe beter. Honderd queries is
+ * slordig, ook als het snel is.
  */
 /** Telt hoeveel queries elke pagina doet. Lokaal draaien: npx tsx tel-queries.ts */
 import { client, nulQueryTeller, queryTeller } from '../db'
 
-const LATENTIE_MS = 99 // gemeten op de live omgeving
+/* Reistijd per query vanaf de live omgeving. De oude waarde was 99, gemeten
+   vanuit Ohio. Vijf is een voorzichtige schatting voor Frankfurt → Frankfurt
+   via de Supabase-pooler; meet hem opnieuw als je het precies wilt weten. */
+const LATENTIE_MS = 5
 
 async function meet(naam: string, doe: () => Promise<unknown>) {
   nulQueryTeller()

@@ -114,11 +114,13 @@ export type PijplijnFilter = {
 /**
  * Alle deals met wat erbij hoort, in één query.
  *
- * Eén query en geen vier: elke query is vanaf de server een netwerkronde van
- * bijna honderd milliseconde. Een bord dat per deal de klant, de
+ * Eén query en geen vier: elke query is vanaf de server een netwerkronde.
+ * Toen de functies nog in Ohio draaiden was dat bijna honderd milliseconde
+ * per ronde; sinds 23 november 2026 staan ze in Frankfurt en is het enkele
+ * milliseconden, maar het principe blijft. Een bord dat per deal de klant, de
  * contactpersoon en de eigenaar erbij haalt zou bij dertig deals negentig
- * rondes doen en over de tijdslimiet gaan. Dat is hier eerder gebeurd en het
- * levert een 502 op zonder foutmelding.
+ * rondes doen. Dat ging hier eerder over de tijdslimiet en leverde een 502 op
+ * zonder foutmelding.
  */
 export async function listDeals(
   filter: PijplijnFilter = {},
