@@ -7,6 +7,8 @@ import { ActionForm } from '@/components/ActionForm'
 import { Menu } from '@/components/Menu'
 import { alleKeuzes, gebruikPerVerbinding, listVerbindingen, oauthInstellingen, terugUrl } from '@/lib/performance/oauth'
 import { serviceaccountAdres } from '@/lib/performance/google'
+import { googleAdsInstellingen } from '@/lib/performance/google-ads'
+import { metaInstellingen } from '@/lib/performance/meta'
 import { verbindingLoskoppelen, keuzesVerversen } from '../koppelingen-actions'
 import { formatDate } from '@/lib/dates'
 
@@ -31,6 +33,31 @@ export default async function KoppelingenPage({ searchParams }: { searchParams: 
   const origin = `${h.get('x-forwarded-proto') ?? 'https'}://${h.get('x-forwarded-host') ?? h.get('host') ?? 'localhost:3000'}`
   const [verbindingen, gebruik, { keuzes, fouten }] = await Promise.all([listVerbindingen(), gebruikPerVerbinding(), alleKeuzes()])
   const serviceaccount = serviceaccountAdres()
+  const ads = googleAdsInstellingen()
+  const meta = metaInstellingen()
+
+  /* Per advertentieplatform: werkt het, of wat er nog voor nodig is. */
+  const platforms: { naam: string; status: 'klaar' | 'instellen' | 'wacht'; tekst: string }[] = [
+    {
+      naam: 'Google Ads',
+      status: !ads.klaar || verbindingen.length === 0 ? 'instellen' : 'klaar',
+      tekst: !ads.klaar
+        ? `Via ons MCC-account. Nog niet ingesteld in Netlify: ${ads.ontbreekt.join(', ')}.`
+        : verbindingen.length === 0
+          ? 'Via ons MCC-account. Verbind hierboven eerst een Google-account dat bij het MCC kan.'
+          : 'Via ons MCC-account. Koppel bij de klant het klant-ID; het account moet onder het MCC hangen.',
+    },
+    {
+      naam: 'Meta (Facebook en Instagram)',
+      status: meta.klaar ? 'klaar' : 'instellen',
+      tekst: meta.klaar
+        ? 'Via onze Business Manager. Koppel bij de klant het act_-nummer; onze Business Manager moet toegang hebben tot dat account.'
+        : `Via onze Business Manager. Nog niet ingesteld in Netlify: ${meta.ontbreekt.join(', ')}.`,
+    },
+    { naam: 'LinkedIn Ads', status: 'wacht', tekst: 'Via Campaign Manager. Wacht op toegang tot de Marketing API.' },
+    { naam: 'TikTok Ads', status: 'wacht', tekst: 'Via Business Center. Wacht op goedkeuring van de TikTok-app.' },
+  ]
+  const kleur = { klaar: 'bg-[#34C759]', instellen: 'bg-[#FF9F0A]', wacht: 'bg-gray-300' }
 
   return (
     <AppShell user={user} actief="koppelingen">
@@ -154,24 +181,26 @@ export default async function KoppelingenPage({ searchParams }: { searchParams: 
       <section className="mb-6 rounded-xl bg-white shadow-sm">
         <div className="px-6 pt-5 pb-3">
           <h2 className="text-[17px]">Advertentieplatforms</h2>
-          <p className="text-xs text-gray-500">Deze komen via de bedrijfsaccounts van James Robinson, zodra de platforms onze toegang hebben goedgekeurd.</p>
+          <p className="text-xs text-gray-500">Via de bedrijfsaccounts van James Robinson. Google Ads en Meta werken; LinkedIn en TikTok volgen zodra die platforms onze toegang hebben goedgekeurd.</p>
         </div>
         <ul className="divide-y divide-gray-150 border-t border-gray-150">
-          {[
-            ['Google Ads', 'Via ons MCC-account. Wacht op een developer token van Google.'],
-            ['Meta (Facebook en Instagram)', 'Via onze Business Manager. Wacht op goedkeuring van de Meta-app.'],
-            ['LinkedIn Ads', 'Via Campaign Manager. Wacht op toegang tot de Marketing API.'],
-            ['TikTok Ads', 'Via Business Center. Wacht op goedkeuring van de TikTok-app.'],
-          ].map(([naam, tekst]) => (
-            <li key={naam} className="flex items-center gap-4 py-3.5 pr-6 pl-6">
-              <span aria-hidden="true" className="h-2.5 w-2.5 shrink-0 rounded-full bg-gray-300" />
+          {platforms.map((p) => (
+            <li key={p.naam} className="flex items-center gap-4 py-3.5 pr-6 pl-6">
+              <span aria-hidden="true" className={`h-2.5 w-2.5 shrink-0 rounded-full ${kleur[p.status]}`} />
               <div className="min-w-0 flex-1">
-                <p className="text-[15px]">{naam}</p>
-                <p className="text-[13px] text-gray-600">{tekst}</p>
+                <p className="text-[15px]">{p.naam}</p>
+                <p className={`text-[13px] ${p.status === 'instellen' ? 'text-[#94590A]' : 'text-gray-600'}`}>{p.tekst}</p>
               </div>
             </li>
           ))}
         </ul>
+        {(!ads.klaar || !meta.klaar) && (
+          <div className="border-t border-gray-150 px-6 py-4 text-[13px] text-gray-600">
+            <p>
+              <strong className="font-medium text-jr-text">Instellen:</strong> zet de variabelen in Netlify onder Site configuration → Environment variables en deploy opnieuw. Waar ze vandaan komen staat in .env.example: de developer token en het MCC-nummer uit het API Center van Google Ads, het Meta-token bij de systeemgebruiker in Business Manager.
+            </p>
+          </div>
+        )}
       </section>
 
       <section className="rounded-xl bg-white shadow-sm">

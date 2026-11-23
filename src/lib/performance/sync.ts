@@ -2,13 +2,16 @@ import { and, asc, eq, gte, lte, sql } from 'drizzle-orm'
 import { db } from '@/db'
 import { analyticsConnections, organizations, performanceDaily, type AnalyticsConnection } from '@/db/schema'
 import { KoppelingFout, haalGa4, haalSearchConsole, type Dagcijfers } from './google'
-import { getVerbinding, toegangstoken } from './oauth'
+import { GoogleAdsToegangFout, haalGoogleAds } from './google-ads'
+import { haalMeta } from './meta'
+import { getVerbinding, listVerbindingen, toegangstoken } from './oauth'
 
 /* -------------------------------------------------------------------------
    Cijfers ophalen en bewaren.
 
-   Elk uur: per koppeling de laatste dagen opnieuw (GA4 en Search Console
-   werken cijfers tot een paar dagen terug nog bij), en één stuk historie
+   Elk uur: per koppeling de laatste dagen opnieuw (GA4, Search Console en
+   de advertentieplatforms werken cijfers tot een paar dagen terug nog bij),
+   en één stuk historie
    erbij tot er dertien maanden staat. Een geplande functie op Netlify mag
    maar 30 seconden draaien, dus de run stopt op tijd en gaat het volgende
    uur verder bij de koppeling die het langst niet is bijgewerkt.
@@ -18,12 +21,12 @@ const RECENT_DAGEN = 4
 const STUK_DAGEN = 120
 const HISTORIE_MAANDEN = 13
 
-/** Welke bronnen we al kunnen ophalen. De rest wacht op een goedgekeurde koppeling (V2/V3). */
+/** Welke bronnen we al kunnen ophalen. LinkedIn en TikTok wachten op toegang tot hun API (V3). */
 export const KAN_OPHALEN: Record<AnalyticsConnection['source'], boolean> = {
   ga4: true,
   search_console: true,
-  google_ads: false,
-  meta_ads: false,
+  google_ads: true,
+  meta_ads: true,
   linkedin_ads: false,
   tiktok_ads: false,
 }
@@ -54,14 +57,41 @@ async function tokenVoor(k: AnalyticsConnection): Promise<string | undefined> {
   return toegangstoken(v)
 }
 
+/**
+ * Google Ads gaat via het MCC: elk verbonden Google-account dat daar bij kan,
+ * werkt. Is er bij de koppeling geen account gekozen, dan proberen we ze op
+ * volgorde; pas als geen enkel account toegang krijgt, komt die fout in beeld.
+ */
+async function haalGoogleAdsViaVerbindingen(k: AnalyticsConnection, van: string, tot: string, toegang?: string): Promise<Dagcijfers[]> {
+  if (toegang) return haalGoogleAds(k.externalId, van, tot, toegang)
+  const verbindingen = await listVerbindingen()
+  if (verbindingen.length === 0) {
+    throw new KoppelingFout('Google Ads leest mee via een verbonden Google-account met toegang tot het MCC. Verbind er eerst een onder Beheer → Koppelingen.')
+  }
+  let laatste: KoppelingFout | null = null
+  for (const v of verbindingen) {
+    try {
+      return await haalGoogleAds(k.externalId, van, tot, await toegangstoken(v))
+    } catch (e) {
+      if (!(e instanceof GoogleAdsToegangFout)) throw e
+      laatste = new KoppelingFout(`${v.email}: ${e.message}`)
+    }
+  }
+  throw laatste
+}
+
 async function haal(k: AnalyticsConnection, van: string, tot: string, toegang?: string): Promise<Dagcijfers[]> {
   switch (k.source) {
     case 'ga4':
       return haalGa4(k.externalId, van, tot, toegang)
     case 'search_console':
       return haalSearchConsole(k.externalId, van, tot, toegang)
+    case 'google_ads':
+      return haalGoogleAdsViaVerbindingen(k, van, tot, toegang)
+    case 'meta_ads':
+      return haalMeta(k.externalId, van, tot)
     default:
-      throw new KoppelingFout('Deze bron kunnen we nog niet ophalen; de koppeling volgt.')
+      throw new KoppelingFout('Deze bron kunnen we nog niet ophalen; de koppeling volgt zodra het platform onze toegang heeft goedgekeurd.')
   }
 }
 
