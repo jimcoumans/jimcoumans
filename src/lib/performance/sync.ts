@@ -9,12 +9,12 @@ import { getVerbinding, listVerbindingen, toegangstoken } from './oauth'
 /* -------------------------------------------------------------------------
    Cijfers ophalen en bewaren.
 
-   Elk uur: per koppeling de laatste dagen opnieuw (GA4, Search Console en
+   Elke nacht: per koppeling de laatste dagen opnieuw (GA4, Search Console en
    de advertentieplatforms werken cijfers tot een paar dagen terug nog bij),
-   en één stuk historie
-   erbij tot er dertien maanden staat. Een geplande functie op Netlify mag
-   maar 30 seconden draaien, dus de run stopt op tijd en gaat het volgende
-   uur verder bij de koppeling die het langst niet is bijgewerkt.
+   en één stuk historie erbij tot er dertien maanden staat. Een geplande
+   functie op Netlify mag maar 30 seconden draaien, dus de run stopt op tijd
+   en gaat de volgende nacht verder bij de koppeling die het langst niet is
+   bijgewerkt. Koppelen en "Nu bijwerken" halen direct op.
    ------------------------------------------------------------------------- */
 
 const RECENT_DAGEN = 4

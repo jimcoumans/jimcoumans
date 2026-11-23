@@ -151,7 +151,7 @@ export function leesMetaFout(status: number, body: unknown): KoppelingFout {
     return new KoppelingFout(`Meta weigert de toegang: de systeemgebruiker mist het recht ads_read op dit account, of de app heeft de Ads-toegang niet. (${melding})`)
   if (code === 100 && fout?.error_subcode === 33)
     return new KoppelingFout('Meta kent dit advertentieaccount niet, of onze Business Manager heeft er geen toegang toe. Voeg het account toe aan de Business Manager en geef de systeemgebruiker leesrecht.')
-  if (code === 17 || code === 4 || code === 32 || code === 613) return new KoppelingFout(`Meta vindt dat we te veel vragen; het volgende uur gaat het verder. (${melding})`)
+  if (code === 17 || code === 4 || code === 32 || code === 613) return new KoppelingFout(`Meta vindt dat we te veel vragen; de volgende ronde gaat het verder. (${melding})`)
   if (status === 404) return new KoppelingFout(`Meta kent dit advertentieaccount niet. Klopt het act_-nummer? (${melding})`)
   return new KoppelingFout(`Meta gaf fout ${status}: ${melding}`)
 }
