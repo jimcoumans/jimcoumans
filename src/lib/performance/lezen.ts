@@ -10,6 +10,14 @@ export async function getKoppelingen(organizationId: string): Promise<AnalyticsC
   return db.select().from(analyticsConnections).where(eq(analyticsConnections.organizationId, organizationId)).orderBy(asc(analyticsConnections.createdAt))
 }
 
+/**
+ * Bezoeken en conversies tellen alleen uit GA4. Google Ads en Meta leveren
+ * hun eigen conversies ook aan, maar die claimen allebei dezelfde boeking;
+ * dezelfde regel als in resultaten/bereken.ts.
+ */
+const alleenGa4 = (kolom: typeof performanceDaily.sessions | typeof performanceDaily.conversions) =>
+  sql<string | null>`SUM(CASE WHEN ${performanceDaily.provider} = 'ga4' THEN ${kolom} END)`
+
 /** Dagcijfers per bron, opgeteld over de koppelingen. Zonder klant: alle klanten samen. */
 export async function getDagcijfers(van: string, tot: string, organizationId?: string): Promise<DagRij[]> {
   const waar = [gte(performanceDaily.day, van), lte(performanceDaily.day, tot)]
@@ -20,8 +28,8 @@ export async function getDagcijfers(van: string, tot: string, organizationId?: s
       bron: performanceDaily.bron,
       impressions: sql<string | null>`SUM(${performanceDaily.impressions})`,
       clicks: sql<string | null>`SUM(${performanceDaily.clicks})`,
-      sessions: sql<string | null>`SUM(${performanceDaily.sessions})`,
-      conversions: sql<string | null>`SUM(${performanceDaily.conversions})`,
+      sessions: alleenGa4(performanceDaily.sessions),
+      conversions: alleenGa4(performanceDaily.conversions),
       costCents: sql<string | null>`SUM(${performanceDaily.costCents})`,
     })
     .from(performanceDaily)
@@ -39,8 +47,8 @@ export async function getPerKlant(van: string, tot: string) {
       naam: organizations.name,
       slug: organizations.slug,
       impressies: sql<string>`COALESCE(SUM(${performanceDaily.impressions}), 0)`,
-      bezoeken: sql<string>`COALESCE(SUM(${performanceDaily.sessions}), 0)`,
-      conversies: sql<string>`COALESCE(SUM(${performanceDaily.conversions}), 0)`,
+      bezoeken: sql<string>`COALESCE(${alleenGa4(performanceDaily.sessions)}, 0)`,
+      conversies: sql<string>`COALESCE(${alleenGa4(performanceDaily.conversions)}, 0)`,
       kostenCents: sql<string>`COALESCE(SUM(${performanceDaily.costCents}), 0)`,
     })
     .from(performanceDaily)
@@ -76,8 +84,18 @@ export const BRON_KOPPELING: Record<AnalyticsConnection['source'], { naam: strin
     voorbeeld: 'thiessen.nl of https://www.thiessen.nl/',
     uitleg: 'Precies zoals de property in Search Console heet. Een domein zonder https is een domeinproperty.',
   },
-  google_ads: { naam: 'Google Ads', veld: 'Klant-ID', voorbeeld: '123-456-7890', uitleg: 'Rechtsboven in Google Ads, of in jullie MCC.' },
-  meta_ads: { naam: 'Meta Ads', veld: 'Advertentieaccount-ID', voorbeeld: 'act_1234567890', uitleg: 'In Business Manager onder Advertentieaccounts.' },
+  google_ads: {
+    naam: 'Google Ads',
+    veld: 'Klant-ID',
+    voorbeeld: '123-456-7890',
+    uitleg: 'Rechtsboven in Google Ads, of in ons MCC. Het account moet onder het MCC van James Robinson hangen; de cijfers komen dan het volgende uur binnen.',
+  },
+  meta_ads: {
+    naam: 'Meta Ads',
+    veld: 'Advertentieaccount-ID',
+    voorbeeld: 'act_1234567890',
+    uitleg: 'In Business Manager onder Advertentieaccounts. Onze Business Manager moet toegang hebben tot dit account; de cijfers komen dan het volgende uur binnen.',
+  },
   linkedin_ads: { naam: 'LinkedIn Ads', veld: 'Account-ID', voorbeeld: '512345678', uitleg: 'In Campaign Manager, naast de accountnaam.' },
   tiktok_ads: { naam: 'TikTok Ads', veld: 'Advertiser-ID', voorbeeld: '7123456789012345678', uitleg: 'In TikTok Ads Manager onder het account.' },
 }
