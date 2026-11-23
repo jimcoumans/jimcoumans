@@ -4,6 +4,8 @@ import { db } from '@/db'
 import { analyticsConnections, googleConnections, type GoogleConnection } from '@/db/schema'
 import { metGeheugen, vergeet } from '@/lib/cache'
 import { KoppelingFout } from './google'
+import { googleAdsInstellingen, haalGoogleAdsKlanten, toonKlantId } from './google-ads'
+import { haalMetaAccounts, metaInstellingen } from './meta'
 
 /* -------------------------------------------------------------------------
    Google-accounts van James Robinson verbinden (info@, marketing@, ...).
@@ -198,12 +200,13 @@ export async function verwijderVerbinding(id: string) {
 /* ------------------------------ Wat er te kiezen is ---------------------- */
 
 export type Keuze = {
+  /** Het verbonden Google-account waarmee dit gezien is; leeg bij Meta, dat via de Business Manager gaat. */
   verbindingId: string
   email: string
-  source: 'ga4' | 'search_console'
+  source: 'ga4' | 'search_console' | 'google_ads' | 'meta_ads'
   externalId: string
   naam: string
-  /** Waaronder hij valt: het GA4-account, of het soort property in Search Console. */
+  /** Waaronder hij valt: het GA4-account, het soort property in Search Console, het klant-ID bij Google Ads, de Business Manager bij Meta. */
   groep: string
 }
 
@@ -240,7 +243,7 @@ async function haal(url: string, token: string, wat: string): Promise<unknown> {
   return json
 }
 
-async function keuzesVan(v: GoogleConnection): Promise<{ keuzes: Keuze[]; fouten: string[] }> {
+async function keuzesVan(v: GoogleConnection): Promise<{ keuzes: Keuze[]; fouten: string[]; adsFout?: string }> {
   const fouten: string[] = []
   const keuzes: Keuze[] = []
   let token: string
@@ -249,6 +252,7 @@ async function keuzesVan(v: GoogleConnection): Promise<{ keuzes: Keuze[]; fouten
   } catch (e) {
     return { keuzes, fouten: [(e as Error).message] }
   }
+  const metVerbinding = (k: Omit<Keuze, 'verbindingId' | 'email'>): Keuze => ({ ...k, verbindingId: v.id, email: v.email })
   try {
     let pagina: string | undefined
     do {
@@ -257,7 +261,7 @@ async function keuzesVan(v: GoogleConnection): Promise<{ keuzes: Keuze[]; fouten
         token,
         'GA4-properties ophalen',
       )) as Samenvattingen
-      keuzes.push(...leesGa4Lijst(json).map((k) => ({ ...k, verbindingId: v.id, email: v.email })))
+      keuzes.push(...leesGa4Lijst(json).map(metVerbinding))
       pagina = json.nextPageToken
     } while (pagina)
   } catch (e) {
@@ -265,34 +269,77 @@ async function keuzesVan(v: GoogleConnection): Promise<{ keuzes: Keuze[]; fouten
   }
   try {
     const json = (await haal('https://searchconsole.googleapis.com/webmasters/v3/sites', token, 'Search Console-sites ophalen')) as Sites
-    keuzes.push(...leesSiteLijst(json).map((k) => ({ ...k, verbindingId: v.id, email: v.email })))
+    keuzes.push(...leesSiteLijst(json).map(metVerbinding))
   } catch (e) {
     fouten.push(`${v.email}: ${(e as Error).message}`)
   }
-  return { keuzes, fouten }
+  // Google Ads: de klantaccounts onder het MCC. Niet elk verbonden adres kan bij het
+  // MCC; die fout telt pas als geen enkel adres de lijst kan ophalen (zie alleKeuzes).
+  let adsFout: string | undefined
+  if (googleAdsInstellingen().klaar) {
+    try {
+      const klanten = await haalGoogleAdsKlanten(token)
+      keuzes.push(
+        ...klanten.map((k) =>
+          metVerbinding({
+            source: 'google_ads',
+            externalId: toonKlantId(k.id),
+            naam: k.naam,
+            groep: k.munt === 'EUR' ? toonKlantId(k.id) : `${toonKlantId(k.id)} · rekent in ${k.munt}`,
+          }),
+        ),
+      )
+    } catch (e) {
+      adsFout = `${v.email}: Google Ads-accounts ophalen: ${(e as Error).message}`
+    }
+  }
+  return { keuzes, fouten, adsFout }
+}
+
+/** De advertentieaccounts van Meta; die gaan niet via een Google-account maar via de systeemgebruiker. */
+async function metaKeuzes(): Promise<{ keuzes: Keuze[]; fouten: string[] }> {
+  if (!metaInstellingen().klaar) return { keuzes: [], fouten: [] }
+  try {
+    const accounts = await haalMetaAccounts()
+    return {
+      keuzes: accounts.map((a) => ({
+        verbindingId: '',
+        email: '',
+        source: 'meta_ads' as const,
+        externalId: a.id,
+        naam: a.naam,
+        groep: [a.bedrijf || 'Business Manager', a.munt === 'EUR' ? '' : `rekent in ${a.munt}`, a.actief ? '' : 'niet actief'].filter(Boolean).join(' · '),
+      })),
+      fouten: [],
+    }
+  } catch (e) {
+    return { keuzes: [], fouten: [`Meta-advertentieaccounts ophalen: ${(e as Error).message}`] }
+  }
 }
 
 /**
- * Alles wat via de verbonden Google-accounts te kiezen is. Tien minuten
- * onthouden: de lijst verandert zelden, en ophalen kost seconden.
+ * Alles wat er bij een klant te kiezen is: GA4-properties, Search Console-
+ * sites en Google Ads-accounts via de verbonden Google-accounts, en Meta-
+ * advertentieaccounts via de Business Manager. Tien minuten onthouden: de
+ * lijst verandert zelden, en ophalen kost seconden.
  */
 export async function alleKeuzes(): Promise<{ keuzes: Keuze[]; fouten: string[] }> {
   return metGeheugen(
     'google:keuzes',
     async () => {
       const verbindingen = await listVerbindingen()
-      const per = await Promise.all(verbindingen.map(keuzesVan))
+      const [per, meta] = await Promise.all([Promise.all(verbindingen.map(keuzesVan)), metaKeuzes()])
       // Zit een property onder twee adressen, dan één keer tonen.
       const gezien = new Set<string>()
-      const keuzes = per
-        .flatMap((p) => p.keuzes)
-        .filter((k) => {
-          const s = `${k.source}|${k.externalId}`
-          if (gezien.has(s)) return false
-          gezien.add(s)
-          return true
-        })
-      return { keuzes, fouten: per.flatMap((p) => p.fouten) }
+      const keuzes = [...per.flatMap((p) => p.keuzes), ...meta.keuzes].filter((k) => {
+        const s = `${k.source}|${k.externalId}`
+        if (gezien.has(s)) return false
+        gezien.add(s)
+        return true
+      })
+      const fouten = [...per.flatMap((p) => p.fouten), ...meta.fouten]
+      if (!keuzes.some((k) => k.source === 'google_ads')) fouten.push(...per.flatMap((p) => (p.adsFout ? [p.adsFout] : [])))
+      return { keuzes, fouten }
     },
     10 * 60_000,
   )

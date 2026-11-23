@@ -1,7 +1,22 @@
 import { describe, it, mock } from 'node:test'
 import assert from 'node:assert/strict'
 import { KoppelingFout } from '../google'
-import { controleerMunt, haalMeta, insightsUrl, isConversie, leesMeta, leesMetaFout, metaAccountId, metaInstellingen, spendNaarCenten, telConversies, voegSamen } from '../meta'
+import {
+  accountsUrl,
+  controleerMunt,
+  haalMeta,
+  haalMetaAccounts,
+  insightsUrl,
+  isConversie,
+  leesMeta,
+  leesMetaAccounts,
+  leesMetaFout,
+  metaAccountId,
+  metaInstellingen,
+  spendNaarCenten,
+  telConversies,
+  voegSamen,
+} from '../meta'
 
 describe('instellingen', () => {
   it('noemt wat ontbreekt', () => {
@@ -142,5 +157,47 @@ describe('paginering', () => {
       fetchMock.mock.restore()
     }
     await assert.rejects(haalMeta('act_123456789', '2026-10-01', '2026-10-02', {} as unknown as NodeJS.ProcessEnv), /nog niet ingesteld in Netlify: META_ACCESS_TOKEN/)
+  })
+})
+
+describe('advertentieaccounts van de systeemgebruiker', () => {
+  it('vraagt de accounts van de systeemgebruiker zelf op', () => {
+    const url = new URL(accountsUrl('T'))
+    assert.equal(url.pathname, '/v26.0/me/adaccounts')
+    assert.match(url.searchParams.get('fields') ?? '', /account_status/)
+  })
+  it('laat gesloten accounts weg en zet act_ voor het nummer', () => {
+    const accounts = leesMetaAccounts({
+      data: [
+        { id: 'act_123456789', account_id: '123456789', name: 'Thiessen Wijnkoopers', account_status: 1, currency: 'EUR', business_name: 'James Robinson' },
+        { id: 'act_223456789', account_id: '223456789', name: 'Oud account', account_status: 101, currency: 'EUR' },
+        { id: 'act_323456789', account_id: '323456789', name: 'Op pauze', account_status: 2, currency: 'USD' },
+        { id: 'act_abc' },
+      ],
+    })
+    assert.deepEqual(accounts, [
+      { id: 'act_123456789', naam: 'Thiessen Wijnkoopers', bedrijf: 'James Robinson', munt: 'EUR', actief: true },
+      { id: 'act_323456789', naam: 'Op pauze', bedrijf: '', munt: 'USD', actief: false },
+    ])
+  })
+  it('volgt paging.next en telt elk account één keer', async () => {
+    const paginas = [
+      { data: [{ id: 'act_123456789', name: 'B' }], paging: { next: 'https://graph.facebook.com/v26.0/me/adaccounts?after=x' } },
+      { data: [{ id: 'act_223456789', name: 'A' }, { id: 'act_123456789', name: 'B' }] },
+    ]
+    const fetchMock = mock.method(globalThis, 'fetch', async () => new Response(JSON.stringify(paginas.shift()), { status: 200 }))
+    try {
+      const accounts = await haalMetaAccounts({ META_ACCESS_TOKEN: 'T' } as unknown as NodeJS.ProcessEnv)
+      assert.deepEqual(
+        accounts.map((a) => a.naam),
+        ['A', 'B'],
+      )
+      assert.equal(fetchMock.mock.callCount(), 2)
+    } finally {
+      fetchMock.mock.restore()
+    }
+  })
+  it('weigert zonder META_ACCESS_TOKEN', async () => {
+    await assert.rejects(haalMetaAccounts({} as unknown as NodeJS.ProcessEnv), /META_ACCESS_TOKEN/)
   })
 })

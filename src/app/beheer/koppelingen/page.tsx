@@ -45,13 +45,13 @@ export default async function KoppelingenPage({ searchParams }: { searchParams: 
         ? `Via ons MCC-account. Nog niet ingesteld in Netlify: ${ads.ontbreekt.join(', ')}.`
         : verbindingen.length === 0
           ? 'Via ons MCC-account. Verbind hierboven eerst een Google-account dat bij het MCC kan.'
-          : 'Via ons MCC-account. Koppel bij de klant het klant-ID; het account moet onder het MCC hangen.',
+          : `Via ons MCC-account. ${keuzes.filter((k) => k.source === 'google_ads').length} accounts onder het MCC; kies er bij de klant een uit de lijst.`,
     },
     {
       naam: 'Meta (Facebook en Instagram)',
       status: meta.klaar ? 'klaar' : 'instellen',
       tekst: meta.klaar
-        ? 'Via onze Business Manager. Koppel bij de klant het act_-nummer; onze Business Manager moet toegang hebben tot dat account.'
+        ? `Via onze Business Manager. ${keuzes.filter((k) => k.source === 'meta_ads').length} advertentieaccounts zichtbaar; kies er bij de klant een uit de lijst.`
         : `Via onze Business Manager. Nog niet ingesteld in Netlify: ${meta.ontbreekt.join(', ')}.`,
     },
     { naam: 'LinkedIn Ads', status: 'wacht', tekst: 'Via Campaign Manager. Wacht op toegang tot de Marketing API.' },
@@ -172,7 +172,7 @@ export default async function KoppelingenPage({ searchParams }: { searchParams: 
 
         <div className="border-t border-gray-150 px-6 py-4 text-[13px] text-gray-600">
           <p>
-            <strong className="font-medium text-jr-text">Nieuwe klant?</strong> Laat de klant in GA4 (Beheer → Toegangsbeheer voor account) en in Search Console (Instellingen → Gebruikers) een van onze verbonden adressen toevoegen als lezer. Klik daarna op Lijst verversen en kies hem bij de klant.
+            <strong className="font-medium text-jr-text">Nieuwe klant?</strong> Laat de klant in GA4 (Beheer → Toegangsbeheer voor account) en in Search Console (Instellingen → Gebruikers) een van onze verbonden adressen toevoegen als lezer. Voor Google Ads koppel je het account aan ons MCC, voor Meta voegt de klant ons als partner toe aan zijn advertentieaccount. Klik daarna op Lijst verversen en kies hem bij de klant.
           </p>
           {serviceaccount && <p className="mt-2 text-gray-500">Oude koppelingen via het serviceaccount ({serviceaccount}) blijven gewoon werken.</p>}
         </div>

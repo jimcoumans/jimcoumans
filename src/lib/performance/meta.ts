@@ -99,6 +99,9 @@ type MetaRij = {
 
 export type MetaAntwoord = { data?: MetaRij[]; paging?: { next?: string }; error?: MetaFout['error'] }
 
+/** Eén pagina van de lijst advertentieaccounts van de systeemgebruiker. */
+export type MetaAccountsAntwoord = { data?: MetaAccountRij[]; paging?: { next?: string }; error?: MetaFout['error'] }
+
 /** Eén pagina van het antwoord als dagcijfers voor de bron meta; per dag opgeteld. */
 export function leesMeta(json: MetaAntwoord): Dagcijfers[] {
   const per = new Map<string, Dagcijfers>()
@@ -171,7 +174,7 @@ export function insightsUrl(accountId: string, van: string, tot: string, token: 
   return `https://graph.facebook.com/${API_VERSIE}/${accountId}/insights?${p}`
 }
 
-async function haalPagina(url: string): Promise<MetaAntwoord> {
+async function haalPagina<T extends MetaAntwoord | MetaAccountsAntwoord = MetaAntwoord>(url: string): Promise<T> {
   const stop = new AbortController()
   const t = setTimeout(() => stop.abort(), 15000)
   try {
@@ -184,7 +187,7 @@ async function haalPagina(url: string): Promise<MetaAntwoord> {
       /* geen JSON */
     }
     if (!antwoord.ok) throw leesMetaFout(antwoord.status, json ?? { error: { message: tekst.slice(0, 200) } })
-    return (json ?? {}) as MetaAntwoord
+    return (json ?? {}) as T
   } catch (e) {
     if (e instanceof KoppelingFout) throw e
     if ((e as Error).name === 'AbortError') throw new KoppelingFout('Meta reageerde niet binnen 15 seconden.')
@@ -202,10 +205,69 @@ export async function haalMeta(accountId: string, van: string, tot: string, env 
   let url: string | undefined = insightsUrl(metaAccountId(accountId), van, tot, inst.token)
   // Meer dan een handvol pagina's is niet normaal voor dagcijfers; dit voorkomt een eindeloze lus.
   for (let n = 0; url && n < 50; n++) {
-    const json = await haalPagina(url)
+    const json: MetaAntwoord = await haalPagina(url)
     controleerMunt(json)
     paginas.push(leesMeta(json))
     url = json.paging?.next
   }
   return voegSamen(paginas)
+}
+
+/* ------------------------------ Advertentieaccounts ---------------------- */
+
+/*
+   Welke advertentieaccounts de systeemgebruiker kan zien, zodat je bij een
+   klant uit een lijst kiest in plaats van een act_-nummer over te typen. Dat
+   zijn de accounts van onze Business Manager plus de accounts van klanten
+   die ons als partner hebben toegevoegd, mits de systeemgebruiker er
+   leesrecht op heeft.
+ */
+
+export type MetaAccount = { id: string; naam: string; bedrijf: string; munt: string; actief: boolean }
+
+type MetaAccountRij = { id?: string; account_id?: string; name?: string; account_status?: number; currency?: string; business_name?: string }
+
+/* account_status van Meta: 1 actief, 2 uitgeschakeld, 3 openstaand saldo, 101 gesloten, enzovoort. */
+const ACTIEF = 1
+const GESLOTEN = new Set([100, 101, 202])
+
+export function accountsUrl(token: string): string {
+  const p = new URLSearchParams({ fields: 'id,account_id,name,account_status,currency,business_name', limit: String(PER_PAGINA), access_token: token })
+  return `https://graph.facebook.com/${API_VERSIE}/me/adaccounts?${p}`
+}
+
+export function leesMetaAccounts(json: MetaAccountsAntwoord): MetaAccount[] {
+  const uit: MetaAccount[] = []
+  for (const r of json.data ?? []) {
+    const nummer = r.account_id ?? r.id?.replace(/^act_/, '')
+    if (!nummer || !/^\d{6,20}$/.test(nummer)) continue
+    if (r.account_status !== undefined && GESLOTEN.has(r.account_status)) continue
+    uit.push({
+      id: `act_${nummer}`,
+      naam: r.name?.trim() || `act_${nummer}`,
+      bedrijf: r.business_name?.trim() || '',
+      munt: r.currency ?? 'EUR',
+      actief: r.account_status === undefined || r.account_status === ACTIEF,
+    })
+  }
+  return uit
+}
+
+/** Alle advertentieaccounts waar de systeemgebruiker bij kan, alle pagina's bij elkaar. */
+export async function haalMetaAccounts(env = process.env): Promise<MetaAccount[]> {
+  const inst = metaInstellingen(env)
+  if (!inst.klaar) throw new KoppelingFout(`Meta Ads is nog niet ingesteld in Netlify: ${inst.ontbreekt.join(', ')}.`)
+  const alles: MetaAccount[] = []
+  const gezien = new Set<string>()
+  let url: string | undefined = accountsUrl(inst.token)
+  for (let n = 0; url && n < 50; n++) {
+    const json: MetaAccountsAntwoord = await haalPagina(url)
+    for (const a of leesMetaAccounts(json)) {
+      if (gezien.has(a.id)) continue
+      gezien.add(a.id)
+      alles.push(a)
+    }
+    url = json.paging?.next
+  }
+  return alles.sort((a, b) => a.naam.localeCompare(b.naam, 'nl'))
 }
