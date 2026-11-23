@@ -522,7 +522,7 @@ async function PerformanceTab({
               ? 'Koppel Google Analytics en Search Console hieronder. Daarna zie je impressies, bezoeken en conversies per bron.'
               : koppelingen.every((k) => k.lastError)
                 ? 'Hieronder bij de koppeling staat wat er misgaat. Is dat opgelost, klik dan op Nu bijwerken.'
-                : 'De koppeling staat er; de cijfers komen binnen bij de volgende ronde ophalen (elk uur), of nu met Nu bijwerken.'
+                : 'De koppeling staat er; de cijfers komen binnen bij de volgende ronde ophalen (elke nacht), of nu met Nu bijwerken.'
           }
         />
       )}

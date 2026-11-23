@@ -1,10 +1,11 @@
 /* -------------------------------------------------------------------------
-   Elk uur de performancecijfers bijwerken.
+   Elke nacht om 04:17 (Nederlandse wintertijd) de performancecijfers bijwerken.
 
    Rechtstreeks op de database en de bronnen, net als de abonnementsrun: de
    site zelf zit achter de Netlify-login. Een geplande functie mag 30
-   seconden draaien; de sync stopt na 20 en gaat het volgende uur verder bij
-   de koppeling die het langst niet is bijgewerkt.
+   seconden draaien; de sync stopt na 20 en gaat de volgende nacht verder bij
+   de koppeling die het langst niet is bijgewerkt. Wie niet wil wachten,
+   klikt bij de klant op "Nu bijwerken".
    ------------------------------------------------------------------------- */
 
 import { syncAlles } from '../../src/lib/performance/sync'
@@ -25,5 +26,5 @@ export default async function handler(): Promise<Response> {
 }
 
 export const config: { schedule: string } = {
-  schedule: '17 * * * *',
+  schedule: '17 3 * * *',
 }

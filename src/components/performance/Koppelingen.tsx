@@ -51,7 +51,7 @@ export function Koppelingen({
       <div className="flex flex-wrap items-center justify-between gap-3 px-6 pt-5 pb-3">
         <div>
           <h2 className="text-[17px]">Koppelingen</h2>
-          <p className="text-xs text-gray-500">Elk uur bijgewerkt. Na het koppelen komen de cijfers van dertien maanden terug in een paar uur binnen.</p>
+          <p className="text-xs text-gray-500">Elke nacht bijgewerkt. Na het koppelen komen de cijfers van dertien maanden terug in een paar dagen binnen, of sneller met Nu bijwerken.</p>
         </div>
         {koppelingen.length > 0 && (
           <ActionForm action={nuBijwerken} submitLabel="Nu bijwerken" submitClassName="border border-gray-300 bg-white text-jr-text hover:bg-gray-50 !rounded-full" resetOnSuccess={false} className="">
