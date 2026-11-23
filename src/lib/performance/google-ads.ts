@@ -117,10 +117,21 @@ type AdsFout = {
  */
 export function leesGoogleAdsFout(status: number, body: unknown): KoppelingFout {
   const fout = (Array.isArray(body) ? body[0] : body) as AdsFout | null
-  const codes = (fout?.error?.details ?? []).flatMap((d) => d.errors ?? []).flatMap((e) => Object.values(e.errorCode ?? {}))
-  const melding = fout?.error?.message ?? `fout ${status}`
+  const geneste = (fout?.error?.details ?? []).flatMap((d) => d.errors ?? [])
+  const codes = geneste.flatMap((e) => Object.values(e.errorCode ?? {}))
+  // "The caller does not have permission" is een omhulsel; wat er echt
+  // aan de hand is, staat in de geneste fouten. Die horen in de melding.
+  const melding = [fout?.error?.message ?? `fout ${status}`, ...codes, ...geneste.map((e) => e.message).filter(Boolean)]
+    .filter((s, i, a) => s && a.indexOf(s) === i)
+    .join(' · ')
   const heeft = (code: string) => codes.includes(code)
 
+  // Sinds september 2026 hangt het toegangsniveau aan het Cloud-project van de
+  // OAuth-client, niet meer aan de developer token. Beide varianten vangen we.
+  if (heeft('CLOUD_PROJECT_NOT_APPROVED_FOR_PRODUCTION') || heeft('ACTION_NOT_PERMITTED'))
+    return new KoppelingFout(
+      'Het Google Cloud-project van de OAuth-client (GOOGLE_OAUTH_CLIENT_ID) heeft voor de Google Ads API nog Test-toegang; Google laat dan alleen testaccounts lezen. Vraag in de Cloud Console onder Google Ads API → Overview een hoger niveau aan, of gebruik een OAuth-client uit het project dat al Basic heeft.',
+    )
   if (heeft('DEVELOPER_TOKEN_NOT_APPROVED'))
     return new KoppelingFout(
       'De developer token van het MCC staat nog op Test-niveau; Google laat dan alleen testaccounts lezen. Vraag Basic-toegang aan in Google Ads → MCC → Beheer → API Center.',
@@ -182,7 +193,11 @@ export async function haalGoogleAds(klantId: string, van: string, tot: string, t
     } catch {
       /* geen JSON */
     }
-    if (!antwoord.ok) throw leesGoogleAdsFout(antwoord.status, json ?? { error: { message: tekst.slice(0, 200) } })
+    if (!antwoord.ok) {
+      // Het hele antwoord in het log van Netlify, voor als de melding niet genoeg zegt.
+      console.error(`[google-ads] ${antwoord.status} voor klant ${id}: ${tekst.slice(0, 2000)}`)
+      throw leesGoogleAdsFout(antwoord.status, json ?? { error: { message: tekst.slice(0, 200) } })
+    }
     controleerMunt(json as GoogleAdsAntwoord)
     return leesGoogleAds(json as GoogleAdsAntwoord)
   } catch (e) {
