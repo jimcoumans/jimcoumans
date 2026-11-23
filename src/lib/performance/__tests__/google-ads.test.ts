@@ -90,6 +90,11 @@ describe('fouten', () => {
     assert.match(f.message, /API Center/)
     assert.ok(!(f instanceof GoogleAdsToegangFout), 'een ander Google-account helpt hier niet')
   })
+  it('legt uit dat het Cloud-project van de OAuth-client nog Test-toegang heeft', () => {
+    const f = leesGoogleAdsFout(403, met({ authorizationError: 'CLOUD_PROJECT_NOT_APPROVED_FOR_PRODUCTION' }))
+    assert.match(f.message, /Cloud-project/)
+    assert.ok(!(f instanceof GoogleAdsToegangFout))
+  })
   it('markeert fouten waarbij een ander verbonden account kan helpen', () => {
     assert.ok(leesGoogleAdsFout(403, met({ authorizationError: 'USER_PERMISSION_DENIED' })) instanceof GoogleAdsToegangFout)
     assert.ok(leesGoogleAdsFout(401, null) instanceof GoogleAdsToegangFout)
