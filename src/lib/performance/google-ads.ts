@@ -164,14 +164,8 @@ export function gaql(van: string, tot: string): string {
   ].join(' ')
 }
 
-/**
- * Dagcijfers van één klantaccount. Het toegangstoken is van een verbonden
- * Google-account dat bij het MCC kan.
- */
-export async function haalGoogleAds(klantId: string, van: string, tot: string, toegang: string, env = process.env): Promise<Dagcijfers[]> {
-  const inst = googleAdsInstellingen(env)
-  if (!inst.klaar) throw new KoppelingFout(`Google Ads is nog niet ingesteld in Netlify: ${inst.ontbreekt.join(', ')}.`)
-  const id = googleAdsKlantId(klantId)
+/** Eén searchStream-aanroep op een account; fouten komen terug als KoppelingFout. */
+async function zoek(id: string, query: string, toegang: string, inst: ReturnType<typeof googleAdsInstellingen>): Promise<unknown> {
   const stop = new AbortController()
   const t = setTimeout(() => stop.abort(), 15000)
   try {
@@ -183,7 +177,7 @@ export async function haalGoogleAds(klantId: string, van: string, tot: string, t
         'login-customer-id': inst.loginCustomerId,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ query: gaql(van, tot) }),
+      body: JSON.stringify({ query }),
       signal: stop.signal,
     })
     const tekst = await antwoord.text()
@@ -198,8 +192,7 @@ export async function haalGoogleAds(klantId: string, van: string, tot: string, t
       console.error(`[google-ads] ${antwoord.status} voor klant ${id}: ${tekst.slice(0, 2000)}`)
       throw leesGoogleAdsFout(antwoord.status, json ?? { error: { message: tekst.slice(0, 200) } })
     }
-    controleerMunt(json as GoogleAdsAntwoord)
-    return leesGoogleAds(json as GoogleAdsAntwoord)
+    return json
   } catch (e) {
     if (e instanceof KoppelingFout) throw e
     if ((e as Error).name === 'AbortError') throw new KoppelingFout('Google Ads reageerde niet binnen 15 seconden.')
@@ -207,4 +200,64 @@ export async function haalGoogleAds(klantId: string, van: string, tot: string, t
   } finally {
     clearTimeout(t)
   }
+}
+
+/** Dagcijfers van één klantaccount, met het token van een verbonden Google-account dat bij het MCC kan. */
+export async function haalGoogleAds(klantId: string, van: string, tot: string, toegang: string, env = process.env): Promise<Dagcijfers[]> {
+  const inst = googleAdsInstellingen(env)
+  if (!inst.klaar) throw new KoppelingFout(`Google Ads is nog niet ingesteld in Netlify: ${inst.ontbreekt.join(', ')}.`)
+  const json = (await zoek(googleAdsKlantId(klantId), gaql(van, tot), toegang, inst)) as GoogleAdsAntwoord
+  controleerMunt(json)
+  return leesGoogleAds(json)
+}
+
+/* ------------------------------ Klantaccounts ---------------------------- */
+
+/*
+   Welke accounts onder ons MCC hangen, zodat je bij een klant uit een lijst
+   kiest in plaats van een klant-ID over te typen. customer_client geeft de
+   hele boom onder het MCC, inclusief het MCC zelf en eventuele sub-MCC's;
+   die laten we weg, want daar staan geen campagnes in.
+ */
+
+export type GoogleAdsKlant = { id: string; naam: string; munt: string }
+
+type KlantRij = { customerClient?: { id?: string | number; descriptiveName?: string; currencyCode?: string; manager?: boolean; status?: string } }
+export type GoogleAdsKlantenAntwoord = { results?: KlantRij[] }[] | { results?: KlantRij[] }
+
+export function klantenGaql(): string {
+  return [
+    'SELECT customer_client.id, customer_client.descriptive_name, customer_client.currency_code, customer_client.manager, customer_client.status',
+    'FROM customer_client',
+    "WHERE customer_client.status = 'ENABLED'",
+  ].join(' ')
+}
+
+/** Met streepjes, zoals Google Ads het zelf toont: 123-456-7890. */
+export function toonKlantId(id: string): string {
+  return /^\d{10}$/.test(id) ? `${id.slice(0, 3)}-${id.slice(3, 6)}-${id.slice(6)}` : id
+}
+
+export function leesGoogleAdsKlanten(json: GoogleAdsKlantenAntwoord): GoogleAdsKlant[] {
+  const batches = Array.isArray(json) ? json : [json]
+  const klanten: GoogleAdsKlant[] = []
+  const gezien = new Set<string>()
+  for (const b of batches) {
+    for (const r of b.results ?? []) {
+      const c = r.customerClient
+      if (!c?.id || c.manager) continue
+      const id = String(c.id)
+      if (gezien.has(id)) continue
+      gezien.add(id)
+      klanten.push({ id, naam: c.descriptiveName?.trim() || toonKlantId(id), munt: c.currencyCode ?? 'EUR' })
+    }
+  }
+  return klanten.sort((a, b) => a.naam.localeCompare(b.naam, 'nl'))
+}
+
+/** Alle klantaccounts onder het MCC, gezien door het Google-account van dit token. */
+export async function haalGoogleAdsKlanten(toegang: string, env = process.env): Promise<GoogleAdsKlant[]> {
+  const inst = googleAdsInstellingen(env)
+  if (!inst.klaar) throw new KoppelingFout(`Google Ads is nog niet ingesteld in Netlify: ${inst.ontbreekt.join(', ')}.`)
+  return leesGoogleAdsKlanten((await zoek(inst.loginCustomerId, klantenGaql(), toegang, inst)) as GoogleAdsKlantenAntwoord)
 }

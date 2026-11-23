@@ -7,9 +7,12 @@ import {
   gaql,
   googleAdsInstellingen,
   googleAdsKlantId,
+  klantenGaql,
   leesGoogleAds,
   leesGoogleAdsFout,
+  leesGoogleAdsKlanten,
   microsNaarCenten,
+  toonKlantId,
 } from '../google-ads'
 
 describe('instellingen', () => {
@@ -110,5 +113,34 @@ describe('fouten', () => {
       error: { message: 'The caller does not have permission', details: [{ errors: [{ errorCode: { quotaError: 'RESOURCE_EXHAUSTED' }, message: 'Too many requests' }] }] },
     })
     assert.match(f.message, /The caller does not have permission · RESOURCE_EXHAUSTED · Too many requests/)
+  })
+})
+
+describe('klantaccounts onder het MCC', () => {
+  it('vraagt de ingeschakelde accounts van de boom onder het MCC', () => {
+    assert.match(klantenGaql(), /FROM customer_client/)
+    assert.match(klantenGaql(), /customer_client\.status = 'ENABLED'/)
+  })
+  it('laat het MCC en sub-MCC’s weg en sorteert op naam', () => {
+    const klanten = leesGoogleAdsKlanten([
+      {
+        results: [
+          { customerClient: { id: '1111111111', descriptiveName: 'James Robinson MCC', manager: true, currencyCode: 'EUR' } },
+          { customerClient: { id: '2222222222', descriptiveName: 'Thiessen Wijnkoopers', manager: false, currencyCode: 'EUR' } },
+          { customerClient: { id: '3333333333', descriptiveName: 'Bakkerij De Korenaar', manager: false, currencyCode: 'USD' } },
+        ],
+      },
+      { results: [{ customerClient: { id: 4444444444, manager: false } }, { customerClient: { id: '2222222222', descriptiveName: 'Thiessen Wijnkoopers', manager: false } }] },
+    ])
+    assert.deepEqual(klanten, [
+      { id: '4444444444', naam: '444-444-4444', munt: 'EUR' },
+      { id: '3333333333', naam: 'Bakkerij De Korenaar', munt: 'USD' },
+      { id: '2222222222', naam: 'Thiessen Wijnkoopers', munt: 'EUR' },
+    ])
+    assert.deepEqual(leesGoogleAdsKlanten({}), [])
+  })
+  it('toont het klant-ID met streepjes', () => {
+    assert.equal(toonKlantId('1234567890'), '123-456-7890')
+    assert.equal(toonKlantId('12'), '12')
   })
 })

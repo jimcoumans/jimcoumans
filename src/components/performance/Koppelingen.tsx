@@ -7,12 +7,25 @@ import { BRON_KOPPELING } from '@/lib/performance/lezen'
 import { KAN_OPHALEN } from '@/lib/performance/sync'
 import { formatDate } from '@/lib/dates'
 import { score, type Keuze } from '@/lib/performance/oauth'
+import { googleAdsInstellingen } from '@/lib/performance/google-ads'
+import { metaInstellingen } from '@/lib/performance/meta'
 import { KeuzeLijst, type KeuzeOptie } from './KeuzeLijst'
 
 /* De koppelingen van één klant: wat er gekoppeld is, of het werkt, en
    een paneel om te koppelen. Fouten staan erbij in gewone taal. */
 
 const VOLGORDE: AnalyticsConnection['source'][] = ['ga4', 'search_console', 'google_ads', 'meta_ads', 'linkedin_ads', 'tiktok_ads']
+
+/** Bronnen waar je uit een lijst kiest in plaats van een ID over te typen. */
+const MET_LIJST = new Set<AnalyticsConnection['source']>(['ga4', 'search_console', 'google_ads', 'meta_ads'])
+
+/** Wat de klant moet doen voordat zijn account in onze lijst staat. */
+const TOEGANG: Record<string, { wat: string; hoe: string }> = {
+  ga4: { wat: 'GA4-property', hoe: 'Laat de klant in GA4 een van onze adressen als lezer toevoegen' },
+  search_console: { wat: 'Search Console-site', hoe: 'Laat de klant in Search Console een van onze adressen als lezer toevoegen' },
+  google_ads: { wat: 'Google Ads-account', hoe: 'Koppel het account van de klant aan ons MCC (in Google Ads: Accounts → Koppelen)' },
+  meta_ads: { wat: 'Meta-advertentieaccount', hoe: 'Laat de klant ons als partner toevoegen aan zijn advertentieaccount, en geef onze systeemgebruiker daar leesrecht op' },
+}
 
 const tijd = (d: Date) =>
   `${formatDate(d)} ${d.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Amsterdam' })}`
@@ -43,9 +56,31 @@ export function Koppelingen({
       .map((k) => ({
         waarde: `${k.verbindingId}|${k.externalId}`,
         naam: k.naam,
-        detail: [bron === 'ga4' ? `${k.groep} · ${k.externalId}` : k.groep, meerdere ? k.email : ''].filter(Boolean).join(' · '),
+        detail: [bron === 'ga4' ? `${k.groep} · ${k.externalId}` : k.groep, meerdere && k.email ? k.email : ''].filter(Boolean).join(' · '),
         voorgesteld: score(k, klant) >= 3,
       }))
+  /* Wat er nu gekoppeld is, terugvinden in de lijst: ook als het ID destijds met de hand is ingevuld. */
+  const gekozen = (bron: AnalyticsConnection['source'], k: AnalyticsConnection | undefined) =>
+    k ? (opties(bron).find((o) => o.waarde === `${k.googleConnectionId ?? ''}|${k.externalId}`) ?? opties(bron).find((o) => o.waarde.endsWith(`|${k.externalId}`)))?.waarde : undefined
+  const ads = googleAdsInstellingen()
+  const meta = metaInstellingen()
+  /* Waarom de lijst voor een bron leeg is, in gewone taal. */
+  const leeg = (bron: AnalyticsConnection['source']): { kop: string; tekst: string; link?: false } | null => {
+    const t = TOEGANG[bron]
+    if (!t) return null
+    if (bron === 'meta_ads') {
+      return meta.klaar
+        ? { kop: 'Nog niets te kiezen', tekst: `Onze Business Manager ziet nog geen ${t.wat}. ${t.hoe}, en ververs de lijst onder` }
+        : { kop: 'Meta Ads is nog niet ingesteld', tekst: `Zet ${meta.ontbreekt.join(', ')} in Netlify; daarna kies je hier uit een lijst. Tot die tijd vul je het act_-nummer hieronder zelf in.`, link: false }
+    }
+    if (verbonden.length === 0) {
+      return { kop: 'Sneller: verbind eerst onze Google-accounts', tekst: "Dan kies je hier gewoon uit een lijst, zonder ID's op te zoeken. Dat doet een beheerder één keer onder" }
+    }
+    if (bron === 'google_ads' && !ads.klaar) {
+      return { kop: 'Google Ads is nog niet ingesteld', tekst: `Zet ${ads.ontbreekt.join(', ')} in Netlify; daarna kies je hier uit een lijst. Tot die tijd vul je het klant-ID hieronder zelf in.`, link: false }
+    }
+    return { kop: 'Nog niets te kiezen', tekst: `Onze adressen (${verbonden.join(', ')}) zien nog geen ${t.wat}. ${t.hoe}, en ververs de lijst onder` }
+  }
   return (
     <section className="rounded-xl bg-white shadow-sm">
       <div className="flex flex-wrap items-center justify-between gap-3 px-6 pt-5 pb-3">
@@ -66,6 +101,8 @@ export function Koppelingen({
           const info = BRON_KOPPELING[bron]
           const kan = KAN_OPHALEN[bron]
           const google = bron === 'ga4' || bron === 'search_console'
+          const lijst = MET_LIJST.has(bron) && opties(bron).length > 0
+          const waarom = MET_LIJST.has(bron) ? leeg(bron) : null
           return (
             <li key={bron} className="flex items-center gap-4 py-3.5 pr-3 pl-6">
               <span
@@ -95,16 +132,17 @@ export function Koppelingen({
                 knop={k ? 'Wijzig' : 'Koppelen'}
                 stijl={k ? 'klein' : 'rustig'}
                 titel={`${info.naam} koppelen`}
-                uitleg={google && opties(bron).length > 0 ? 'Kies wat bij deze klant hoort. Voorgesteld betekent: past bij de naam of website van de klant.' : info.uitleg}
+                uitleg={lijst ? 'Kies wat bij deze klant hoort. Voorgesteld betekent: past bij de naam of website van de klant.' : info.uitleg}
               >
-                {google && opties(bron).length > 0 ? (
+                {lijst ? (
                   <ActionForm action={koppel} submitLabel={k ? 'Opslaan en ophalen' : 'Koppelen en ophalen'} resetOnSuccess={false}>
                     <input type="hidden" name="organizationId" value={organizationId} />
                     <input type="hidden" name="slug" value={slug} />
                     <input type="hidden" name="bron" value={bron} />
-                    <KeuzeLijst opties={opties(bron)} gekozen={k?.googleConnectionId ? `${k.googleConnectionId}|${k.externalId}` : undefined} />
+                    <KeuzeLijst opties={opties(bron)} gekozen={gekozen(bron, k)} />
                     <p className="col-span-full text-xs text-gray-600">
-                      Staat de klant er niet tussen? Laat de klant een van onze adressen ({verbonden.join(', ')}) als lezer toevoegen en ververs de lijst onder{' '}
+                      Staat de klant er niet tussen? {TOEGANG[bron]?.hoe}
+                      {google ? ` (${verbonden.join(', ')})` : ''}, en ververs de lijst onder{' '}
                       <a href="/beheer/koppelingen" className="text-jr-link underline">
                         Koppelingen
                       </a>
@@ -114,32 +152,22 @@ export function Koppelingen({
                   </ActionForm>
                 ) : (
                   <>
-                    {google && (
+                    {waarom && (
                       <div className="mb-5 rounded-lg bg-gray-50 px-4 py-3 text-sm">
-                        {verbonden.length === 0 ? (
-                          <>
-                            <p className="font-medium">Sneller: verbind eerst onze Google-accounts</p>
-                            <p className="mt-1 text-gray-600">
-                              Dan kies je hier gewoon uit een lijst, zonder ID's op te zoeken. Dat doet een beheerder één keer onder{' '}
+                        <p className="font-medium">{waarom.kop}</p>
+                        <p className="mt-1 text-gray-600">
+                          {waarom.tekst}
+                          {waarom.link !== false && (
+                            <>
+                              {' '}
                               <a href="/beheer/koppelingen" className="text-jr-link underline">
                                 Koppelingen
                               </a>
                               .
-                            </p>
-                          </>
-                        ) : (
-                          <>
-                            <p className="font-medium">Nog niets te kiezen</p>
-                            <p className="mt-1 text-gray-600">
-                              Onze adressen ({verbonden.join(', ')}) zien nog geen {bron === 'ga4' ? 'GA4-property' : 'Search Console-site'}. Laat de klant er een als lezer toevoegen en ververs de lijst onder{' '}
-                              <a href="/beheer/koppelingen" className="text-jr-link underline">
-                                Koppelingen
-                              </a>
-                              .
-                            </p>
-                          </>
-                        )}
-                        {serviceaccount && (
+                            </>
+                          )}
+                        </p>
+                        {google && serviceaccount && (
                           <p className="mt-2 text-gray-600">
                             Of via het serviceaccount: voeg <span className="font-mono text-[13px] break-all select-all">{serviceaccount}</span> toe als lezer en vul hieronder het ID in.
                           </p>
