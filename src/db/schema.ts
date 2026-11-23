@@ -4060,6 +4060,36 @@ export const googleConnections = pgTable(
 
 export type GoogleConnection = typeof googleConnections.$inferSelect
 
+/**
+ * Een LinkedIn-account van James Robinson dat bij Campaign Manager kan.
+ * LinkedIn geeft een toegangstoken van zestig dagen en een vernieuwtoken van
+ * een jaar; beide staan versleuteld, en het portaal vernieuwt zelf tot het
+ * vernieuwtoken op is. Dan moet een beheerder opnieuw verbinden.
+ */
+export const linkedinConnections = pgTable(
+  'linkedin_connections',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    /** urn:li:person:... van wie inlogde; LinkedIn geeft zonder extra product geen naam of e-mail. */
+    memberUrn: text('member_urn').notNull(),
+    /** Hoe we dit account noemen in de lijsten. */
+    label: text('label').notNull(),
+    accessTokenEnc: text('access_token_enc').notNull(),
+    accessTokenExpiresAt: timestamp('access_token_expires_at', { withTimezone: true }).notNull(),
+    refreshTokenEnc: text('refresh_token_enc').notNull(),
+    refreshTokenExpiresAt: timestamp('refresh_token_expires_at', { withTimezone: true }).notNull(),
+    scopes: text('scopes').notNull(),
+    lastError: text('last_error'),
+    lastErrorAt: timestamp('last_error_at', { withTimezone: true }),
+    createdByUserId: uuid('created_by_user_id').references(() => users.id, { onDelete: 'set null' }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex('linkedin_connections_member_idx').on(t.memberUrn)],
+)
+
+export type LinkedinConnection = typeof linkedinConnections.$inferSelect
+
 export const analyticsConnections = pgTable(
   'analytics_connections',
   {
@@ -4072,6 +4102,8 @@ export const analyticsConnections = pgTable(
     externalId: text('external_id').notNull(),
     /** Via welk Google-account we erbij kunnen. Leeg: via het serviceaccount (oude manier). */
     googleConnectionId: uuid('google_connection_id').references(() => googleConnections.id, { onDelete: 'set null' }),
+    /** Via welk LinkedIn-account we erbij kunnen (alleen bij linkedin_ads). */
+    linkedinConnectionId: uuid('linkedin_connection_id').references(() => linkedinConnections.id, { onDelete: 'set null' }),
     /** De naam zoals de bron hem noemt, bijvoorbeeld "Thiessen Wijnkoopers – GA4". */
     displayName: text('display_name'),
     active: boolean('active').notNull().default(true),

@@ -43,13 +43,14 @@ export async function koppel(formData: FormData): Promise<ActionResult> {
   return veilig(tekst(formData, 'slug'), async () => {
     if (keuze) {
       // Gekozen uit de lijst: verbinding en ID komen uit wat het platform zelf gaf.
-      // Bij Meta is er geen Google-verbinding; de keuze begint dan met "|".
+      // Bij Meta is er geen verbinding; de keuze begint dan met "|". Bij LinkedIn is het een LinkedIn-verbinding.
       const scheiding = keuze.indexOf('|')
       const verbindingId = keuze.slice(0, scheiding)
       const externalId = keuze.slice(scheiding + 1)
       const gevonden = (await alleKeuzes()).keuzes.find((k) => k.verbindingId === verbindingId && k.externalId === externalId && k.source === bron)
       if (!gevonden) throw new KoppelingFout('Deze keuze staat niet (meer) in de lijst. Ververs de lijst onder Koppelingen en probeer opnieuw.')
-      await zetKoppeling(orgId, bron, externalId, { googleConnectionId: verbindingId || null, displayName: gevonden.naam })
+      const via = bron === 'linkedin_ads' ? { linkedinConnectionId: verbindingId || null } : { googleConnectionId: verbindingId || null }
+      await zetKoppeling(orgId, bron, externalId, { ...via, displayName: gevonden.naam })
     } else {
       const externalId = tekst(formData, 'externalId')
       if (!externalId) throw new KoppelingFout('Kies een account uit de lijst.')

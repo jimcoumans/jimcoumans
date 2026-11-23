@@ -96,7 +96,12 @@ export const BRON_KOPPELING: Record<AnalyticsConnection['source'], { naam: strin
     voorbeeld: 'act_1234567890',
     uitleg: 'Heeft onze Business Manager toegang tot het account, dan staat het in de lijst. Anders: het act_-nummer staat in Business Manager onder Advertentieaccounts.',
   },
-  linkedin_ads: { naam: 'LinkedIn Ads', veld: 'Account-ID', voorbeeld: '512345678', uitleg: 'In Campaign Manager, naast de accountnaam.' },
+  linkedin_ads: {
+    naam: 'LinkedIn Ads',
+    veld: 'Account-ID',
+    voorbeeld: '512345678',
+    uitleg: 'Heeft ons verbonden LinkedIn-account een rol op het advertentieaccount, dan staat het in de lijst. Anders: het account-ID staat in Campaign Manager naast de accountnaam.',
+  },
   tiktok_ads: { naam: 'TikTok Ads', veld: 'Advertiser-ID', voorbeeld: '7123456789012345678', uitleg: 'In TikTok Ads Manager onder het account.' },
 }
 
@@ -128,10 +133,10 @@ export async function zetKoppeling(
   organizationId: string,
   source: AnalyticsConnection['source'],
   invoer: string,
-  via: { googleConnectionId?: string | null; displayName?: string | null } = {},
+  via: { googleConnectionId?: string | null; linkedinConnectionId?: string | null; displayName?: string | null } = {},
 ) {
   const externalId = normaliseerExternId(source, invoer)
-  const herkomst = { googleConnectionId: via.googleConnectionId ?? null, displayName: via.displayName?.trim() || null }
+  const herkomst = { googleConnectionId: via.googleConnectionId ?? null, linkedinConnectionId: via.linkedinConnectionId ?? null, displayName: via.displayName?.trim() || null }
   // Een ander ID betekent andere cijfers: de oude historie hoort er dan niet meer bij.
   const [oud] = await db
     .select()

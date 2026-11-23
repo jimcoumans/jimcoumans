@@ -44,6 +44,7 @@ import { LeegVlak } from '@/components/PaginaKop'
 import { getKoppelingen, getDagcijfers } from '@/lib/performance/lezen'
 import { serviceaccountAdres } from '@/lib/performance/google'
 import { alleKeuzes, listVerbindingen } from '@/lib/performance/oauth'
+import { listLinkedinVerbindingen } from '@/lib/performance/linkedin-verbinding'
 import { PERIODES, periodeGrenzen, perBron, type Periode } from '@/lib/performance/bronnen'
 import { getTijdlijn, laatsteContact } from '@/lib/tijdlijn'
 import { BookServiceForm } from '@/components/BookServiceForm'
@@ -450,12 +451,13 @@ async function PerformanceTab({
 }) {
   const periode = (PERIODES.some((p) => p.periode === periodeParam) ? periodeParam : '30_dagen') as Periode
   const g = periodeGrenzen(periode)
-  const [koppelingen, rijen, vorige, google, verbindingen] = await Promise.all([
+  const [koppelingen, rijen, vorige, google, verbindingen, linkedinVerbindingen] = await Promise.all([
     getKoppelingen(organizationId),
     getDagcijfers(g.van, g.tot, organizationId),
     getDagcijfers(g.vorigeVan, g.vorigeTot, organizationId),
     alleKeuzes(),
     listVerbindingen(),
+    listLinkedinVerbindingen(),
   ])
   const waarschuwingen = meetcheck(koppelingen, perBron(rijen).totaal)
 
@@ -535,6 +537,7 @@ async function PerformanceTab({
         klant={klant}
         keuzes={google.keuzes}
         verbonden={verbindingen.map((v) => v.email)}
+        linkedinVerbonden={linkedinVerbindingen.map((v) => v.label)}
       />
     </div>
   )

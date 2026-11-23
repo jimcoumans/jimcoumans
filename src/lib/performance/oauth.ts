@@ -1,11 +1,13 @@
-import { createCipheriv, createDecipheriv, createHash, randomBytes } from 'node:crypto'
 import { asc, eq, isNotNull, sql } from 'drizzle-orm'
 import { db } from '@/db'
 import { analyticsConnections, googleConnections, type GoogleConnection } from '@/db/schema'
 import { metGeheugen, vergeet } from '@/lib/cache'
 import { KoppelingFout } from './google'
+import { versleutel, ontsleutel } from './sleutel'
 import { googleAdsInstellingen, haalGoogleAdsKlanten, toonKlantId } from './google-ads'
 import { haalMetaAccounts, metaInstellingen } from './meta'
+import { haalLinkedinAccounts, linkedinInstellingen } from './linkedin'
+import { linkedinToegangstoken, listLinkedinVerbindingen } from './linkedin-verbinding'
 
 /* -------------------------------------------------------------------------
    Google-accounts van James Robinson verbinden (info@, marketing@, ...).
@@ -43,32 +45,8 @@ export function terugUrl(origin: string, env: Record<string, string | undefined>
   return `${basis}/api/google/terug`
 }
 
-/* ------------------------------ Versleutelen ----------------------------- */
-
-function sleutel(geheim = process.env.TOKEN_SLEUTEL): Buffer {
-  if (!geheim || geheim.trim().length < 32) throw new KoppelingFout('TOKEN_SLEUTEL ontbreekt of is te kort (minstens 32 tekens) in Netlify.')
-  return createHash('sha256').update(geheim.trim()).digest()
-}
-
-/** AES-256-GCM: versie, iv, tag en inhoud, punt-gescheiden in base64url. */
-export function versleutel(tekst: string, geheim?: string): string {
-  const iv = randomBytes(12)
-  const c = createCipheriv('aes-256-gcm', sleutel(geheim), iv)
-  const inhoud = Buffer.concat([c.update(tekst, 'utf8'), c.final()])
-  return ['v1', iv.toString('base64url'), c.getAuthTag().toString('base64url'), inhoud.toString('base64url')].join('.')
-}
-
-export function ontsleutel(versleuteld: string, geheim?: string): string {
-  const [versie, iv, tag, inhoud] = versleuteld.split('.')
-  if (versie !== 'v1' || !iv || !tag || !inhoud) throw new KoppelingFout('Opgeslagen sleutel is onleesbaar. Verbind het account opnieuw.')
-  const d = createDecipheriv('aes-256-gcm', sleutel(geheim), Buffer.from(iv, 'base64url'))
-  d.setAuthTag(Buffer.from(tag, 'base64url'))
-  try {
-    return Buffer.concat([d.update(Buffer.from(inhoud, 'base64url')), d.final()]).toString('utf8')
-  } catch {
-    throw new KoppelingFout('De opgeslagen sleutel past niet bij TOKEN_SLEUTEL. Is die gewijzigd? Verbind het account dan opnieuw.')
-  }
-}
+/* Versleutelen staat in sleutel.ts; hier opnieuw aangeboden voor wie het van hieruit gebruikt. */
+export { versleutel, ontsleutel } from './sleutel'
 
 /* ------------------------------ Inloggen --------------------------------- */
 
@@ -200,10 +178,11 @@ export async function verwijderVerbinding(id: string) {
 /* ------------------------------ Wat er te kiezen is ---------------------- */
 
 export type Keuze = {
-  /** Het verbonden Google-account waarmee dit gezien is; leeg bij Meta, dat via de Business Manager gaat. */
+  /** Het verbonden Google- of LinkedIn-account waarmee dit gezien is; leeg bij Meta, dat via de Business Manager gaat. */
   verbindingId: string
+  /** Het e-mailadres van het Google-account, of het label van het LinkedIn-account. */
   email: string
-  source: 'ga4' | 'search_console' | 'google_ads' | 'meta_ads'
+  source: 'ga4' | 'search_console' | 'google_ads' | 'meta_ads' | 'linkedin_ads'
   externalId: string
   naam: string
   /** Waaronder hij valt: het GA4-account, het soort property in Search Console, het klant-ID bij Google Ads, de Business Manager bij Meta. */
@@ -317,27 +296,53 @@ async function metaKeuzes(): Promise<{ keuzes: Keuze[]; fouten: string[] }> {
   }
 }
 
+/** De advertentieaccounts van LinkedIn, per verbonden LinkedIn-account. */
+async function linkedinKeuzes(): Promise<{ keuzes: Keuze[]; fouten: string[] }> {
+  if (!linkedinInstellingen().klaar) return { keuzes: [], fouten: [] }
+  const keuzes: Keuze[] = []
+  const fouten: string[] = []
+  for (const v of await listLinkedinVerbindingen()) {
+    try {
+      const accounts = await haalLinkedinAccounts(await linkedinToegangstoken(v))
+      keuzes.push(
+        ...accounts.map((a) => ({
+          verbindingId: v.id,
+          email: v.label,
+          source: 'linkedin_ads' as const,
+          externalId: a.id,
+          naam: a.naam,
+          groep: a.munt === 'EUR' ? `Account ${a.id}` : `Account ${a.id} · rekent in ${a.munt}`,
+        })),
+      )
+    } catch (e) {
+      fouten.push(`${v.label}: LinkedIn-advertentieaccounts ophalen: ${(e as Error).message}`)
+    }
+  }
+  return { keuzes, fouten }
+}
+
 /**
  * Alles wat er bij een klant te kiezen is: GA4-properties, Search Console-
- * sites en Google Ads-accounts via de verbonden Google-accounts, en Meta-
- * advertentieaccounts via de Business Manager. Tien minuten onthouden: de
- * lijst verandert zelden, en ophalen kost seconden.
+ * sites en Google Ads-accounts via de verbonden Google-accounts, Meta-
+ * advertentieaccounts via de Business Manager, en LinkedIn-accounts via de
+ * verbonden LinkedIn-accounts. Tien minuten onthouden: de lijst verandert
+ * zelden, en ophalen kost seconden.
  */
 export async function alleKeuzes(): Promise<{ keuzes: Keuze[]; fouten: string[] }> {
   return metGeheugen(
     'google:keuzes',
     async () => {
       const verbindingen = await listVerbindingen()
-      const [per, meta] = await Promise.all([Promise.all(verbindingen.map(keuzesVan)), metaKeuzes()])
+      const [per, meta, linkedin] = await Promise.all([Promise.all(verbindingen.map(keuzesVan)), metaKeuzes(), linkedinKeuzes()])
       // Zit een property onder twee adressen, dan één keer tonen.
       const gezien = new Set<string>()
-      const keuzes = [...per.flatMap((p) => p.keuzes), ...meta.keuzes].filter((k) => {
+      const keuzes = [...per.flatMap((p) => p.keuzes), ...meta.keuzes, ...linkedin.keuzes].filter((k) => {
         const s = `${k.source}|${k.externalId}`
         if (gezien.has(s)) return false
         gezien.add(s)
         return true
       })
-      const fouten = [...per.flatMap((p) => p.fouten), ...meta.fouten]
+      const fouten = [...per.flatMap((p) => p.fouten), ...meta.fouten, ...linkedin.fouten]
       if (!keuzes.some((k) => k.source === 'google_ads')) fouten.push(...per.flatMap((p) => (p.adsFout ? [p.adsFout] : [])))
       return { keuzes, fouten }
     },

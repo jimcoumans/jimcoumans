@@ -9,7 +9,9 @@ import { alleKeuzes, gebruikPerVerbinding, listVerbindingen, oauthInstellingen, 
 import { serviceaccountAdres } from '@/lib/performance/google'
 import { googleAdsInstellingen } from '@/lib/performance/google-ads'
 import { metaInstellingen } from '@/lib/performance/meta'
-import { verbindingLoskoppelen, keuzesVerversen } from '../koppelingen-actions'
+import { linkedinInstellingen, linkedinTerugUrl } from '@/lib/performance/linkedin'
+import { gebruikPerLinkedinVerbinding, listLinkedinVerbindingen } from '@/lib/performance/linkedin-verbinding'
+import { verbindingLoskoppelen, keuzesVerversen, linkedinVerbindingLoskoppelen } from '../koppelingen-actions'
 import { formatDate } from '@/lib/dates'
 
 export const maxDuration = 26
@@ -31,10 +33,18 @@ export default async function KoppelingenPage({ searchParams }: { searchParams: 
   const inst = oauthInstellingen()
   const h = await headers()
   const origin = `${h.get('x-forwarded-proto') ?? 'https'}://${h.get('x-forwarded-host') ?? h.get('host') ?? 'localhost:3000'}`
-  const [verbindingen, gebruik, { keuzes, fouten }] = await Promise.all([listVerbindingen(), gebruikPerVerbinding(), alleKeuzes()])
+  const [verbindingen, gebruik, { keuzes, fouten }, linkedinVerbindingen, linkedinGebruik] = await Promise.all([
+    listVerbindingen(),
+    gebruikPerVerbinding(),
+    alleKeuzes(),
+    listLinkedinVerbindingen(),
+    gebruikPerLinkedinVerbinding(),
+  ])
   const serviceaccount = serviceaccountAdres()
   const ads = googleAdsInstellingen()
   const meta = metaInstellingen()
+  const linkedin = linkedinInstellingen()
+  const linkedinAccounts = keuzes.filter((k) => k.source === 'linkedin_ads').length
 
   /* Per advertentieplatform: werkt het, of wat er nog voor nodig is. */
   const platforms: { naam: string; status: 'klaar' | 'instellen' | 'wacht'; tekst: string }[] = [
@@ -54,7 +64,15 @@ export default async function KoppelingenPage({ searchParams }: { searchParams: 
         ? `Via onze Business Manager. ${keuzes.filter((k) => k.source === 'meta_ads').length} advertentieaccounts zichtbaar; kies er bij de klant een uit de lijst.`
         : `Via onze Business Manager. Nog niet ingesteld in Netlify: ${meta.ontbreekt.join(', ')}.`,
     },
-    { naam: 'LinkedIn Ads', status: 'wacht', tekst: 'Via Campaign Manager. Wacht op toegang tot de Marketing API.' },
+    {
+      naam: 'LinkedIn Ads',
+      status: !linkedin.klaar || linkedinVerbindingen.length === 0 ? 'instellen' : 'klaar',
+      tekst: !linkedin.klaar
+        ? `Via een verbonden LinkedIn-account. Nog niet ingesteld in Netlify: ${linkedin.ontbreekt.join(', ')}.`
+        : linkedinVerbindingen.length === 0
+          ? 'Via een verbonden LinkedIn-account. Verbind hieronder eerst een LinkedIn-account met een rol in Campaign Manager.'
+          : `Via een verbonden LinkedIn-account. ${aantal(linkedinAccounts, 'advertentieaccount', 'advertentieaccounts')} zichtbaar; kies er bij de klant een uit de lijst.`,
+    },
     { naam: 'TikTok Ads', status: 'wacht', tekst: 'Via Business Center. Wacht op goedkeuring van de TikTok-app.' },
   ]
   const kleur = { klaar: 'bg-[#34C759]', instellen: 'bg-[#FF9F0A]', wacht: 'bg-gray-300' }
@@ -75,7 +93,7 @@ export default async function KoppelingenPage({ searchParams }: { searchParams: 
 
       {verbonden && (
         <p role="status" className="mb-6 rounded-xl bg-[#E8F7EC] px-5 py-3 text-sm text-[#1D7D3F]">
-          {verbonden} is verbonden. Alles waar dit adres bij kan, staat nu in de keuzelijst bij de klanten.
+          {verbonden} is verbonden. Alles waar dit account bij kan, staat nu in de keuzelijst bij de klanten.
         </p>
       )}
       {fout && (
@@ -181,7 +199,7 @@ export default async function KoppelingenPage({ searchParams }: { searchParams: 
       <section className="mb-6 rounded-xl bg-white shadow-sm">
         <div className="px-6 pt-5 pb-3">
           <h2 className="text-[17px]">Advertentieplatforms</h2>
-          <p className="text-xs text-gray-500">Via de bedrijfsaccounts van James Robinson. Google Ads en Meta werken; LinkedIn en TikTok volgen zodra die platforms onze toegang hebben goedgekeurd.</p>
+          <p className="text-xs text-gray-500">Via de bedrijfsaccounts van James Robinson. Google Ads, Meta en LinkedIn werken; TikTok volgt zodra dat platform onze toegang heeft goedgekeurd.</p>
         </div>
         <ul className="divide-y divide-gray-150 border-t border-gray-150">
           {platforms.map((p) => (
@@ -194,12 +212,83 @@ export default async function KoppelingenPage({ searchParams }: { searchParams: 
             </li>
           ))}
         </ul>
-        {(!ads.klaar || !meta.klaar) && (
+        {(!ads.klaar || !meta.klaar || !linkedin.klaar) && (
           <div className="border-t border-gray-150 px-6 py-4 text-[13px] text-gray-600">
             <p>
-              <strong className="font-medium text-jr-text">Instellen:</strong> zet de variabelen in Netlify onder Site configuration → Environment variables en deploy opnieuw. Waar ze vandaan komen staat in .env.example: de developer token en het MCC-nummer uit het API Center van Google Ads, het Meta-token bij de systeemgebruiker in Business Manager.
+              <strong className="font-medium text-jr-text">Instellen:</strong> zet de variabelen in Netlify onder Site configuration → Environment variables en deploy opnieuw. Waar ze vandaan komen staat in .env.example: de developer token en het MCC-nummer uit het API Center van Google Ads, het Meta-token bij de systeemgebruiker in Business Manager, de client-ID en het secret van de app in het LinkedIn Developer Portal.
+            </p>
+            {!linkedin.klaar && (
+              <p className="mt-2">
+                Bij de LinkedIn-app hoort dit als Authorized redirect URL: <span className="font-mono text-[13px] break-all select-all text-jr-text">{linkedinTerugUrl(origin)}</span>
+              </p>
+            )}
+          </div>
+        )}
+      </section>
+
+      <section className="mb-6 rounded-xl bg-white shadow-sm">
+        <div className="flex flex-wrap items-center justify-between gap-3 px-6 pt-5 pb-3">
+          <div>
+            <h2 className="text-[17px]">LinkedIn</h2>
+            <p className="text-xs text-gray-500">
+              {linkedinVerbindingen.length === 0 ? 'Nog geen LinkedIn-account verbonden.' : `${aantal(linkedinAccounts, 'advertentieaccount', 'advertentieaccounts')} te kiezen.`}
             </p>
           </div>
+          {admin && linkedin.klaar && (
+            <a href="/api/linkedin/verbinden" className="inline-flex min-h-11 items-center rounded-full border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-jr-text hover:bg-gray-50">
+              LinkedIn-account verbinden
+            </a>
+          )}
+        </div>
+        {linkedinVerbindingen.length === 0 ? (
+          <div className="border-t border-gray-150 px-6 py-5 text-sm text-gray-600">
+            {!linkedin.klaar
+              ? 'Eerst instellen in Netlify (zie Advertentieplatforms hierboven).'
+              : admin
+                ? 'Klik op LinkedIn-account verbinden en log in met het LinkedIn-account dat in Campaign Manager bij de advertentieaccounts van klanten kan. Het token blijft een jaar geldig; daarna verbind je opnieuw.'
+                : 'Een beheerder verbindt hier het LinkedIn-account van James Robinson.'}
+          </div>
+        ) : (
+          <ul className="divide-y divide-gray-150 border-t border-gray-150">
+            {linkedinVerbindingen.map((v) => {
+              const accounts = keuzes.filter((k) => k.verbindingId === v.id && k.source === 'linkedin_ads').length
+              const n = linkedinGebruik.get(v.id) ?? 0
+              return (
+                <li key={v.id} className="flex items-center gap-4 py-3.5 pr-3 pl-6">
+                  <span aria-hidden="true" className={`h-2.5 w-2.5 shrink-0 rounded-full ${v.lastError ? 'bg-[#C02A22]' : 'bg-[#34C759]'}`} />
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-[15px]">{v.label}</p>
+                    <p className={`text-[13px] ${v.lastError ? 'text-[#C02A22]' : 'text-gray-600'}`}>
+                      {v.lastError
+                        ? v.lastError
+                        : `${aantal(accounts, 'advertentieaccount', 'advertentieaccounts')} · gebruikt bij ${aantal(n, 'koppeling', 'koppelingen')} · verbonden ${formatDate(v.createdAt)} · geldig tot ${formatDate(v.refreshTokenExpiresAt)}`}
+                    </p>
+                  </div>
+                  {admin && v.lastError && (
+                    <a href="/api/linkedin/verbinden" className="rounded-full border border-gray-300 px-3.5 py-1.5 text-[13px] hover:bg-gray-50">
+                      Opnieuw verbinden
+                    </a>
+                  )}
+                  {admin && (
+                    <Menu>
+                      <ActionForm
+                        action={linkedinVerbindingLoskoppelen}
+                        submitLabel="Loskoppelen"
+                        submitClassName="!min-h-0 w-full !rounded-lg !px-3 !py-2 text-left !font-normal text-[#C02A22] hover:bg-[#FDECEA]"
+                        resetOnSuccess={false}
+                        meldGelukt={false}
+                        bevestig
+                        className=""
+                      >
+                        <input type="hidden" name="id" value={v.id} />
+                        {n > 0 && <p className="px-3 text-xs text-gray-600">{aantal(n, 'klantkoppeling stopt', 'klantkoppelingen stoppen')} tot je daar opnieuw kiest.</p>}
+                      </ActionForm>
+                    </Menu>
+                  )}
+                </li>
+              )
+            })}
+          </ul>
         )}
       </section>
 
