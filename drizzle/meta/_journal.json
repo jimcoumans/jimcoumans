@@ -414,6 +414,13 @@
       "when": 1795509090276,
       "tag": "0058_koppeling_campagnes",
       "breakpoints": true
+    },
+    {
+      "idx": 59,
+      "version": "7",
+      "when": 1795509463724,
+      "tag": "0059_google_bedrijfsprofiel",
+      "breakpoints": true
     }
   ]
 }
