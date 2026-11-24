@@ -10,12 +10,13 @@ import { score, type Keuze } from '@/lib/performance/oauth'
 import { googleAdsInstellingen } from '@/lib/performance/google-ads'
 import { metaInstellingen } from '@/lib/performance/meta'
 import { linkedinInstellingen } from '@/lib/performance/linkedin'
+import { ahrefsInstellingen, domeinUitWebsite } from '@/lib/performance/ahrefs'
 import { KeuzeLijst, type KeuzeOptie } from './KeuzeLijst'
 
 /* De koppelingen van één klant: wat er gekoppeld is, of het werkt, en
    een paneel om te koppelen. Fouten staan erbij in gewone taal. */
 
-const VOLGORDE: AnalyticsConnection['source'][] = ['ga4', 'search_console', 'google_ads', 'meta_ads', 'linkedin_ads', 'tiktok_ads']
+const VOLGORDE: AnalyticsConnection['source'][] = ['ga4', 'search_console', 'ahrefs', 'google_ads', 'meta_ads', 'linkedin_ads', 'tiktok_ads']
 
 /** Bronnen waar je uit een lijst kiest in plaats van een ID over te typen. */
 const MET_LIJST = new Set<AnalyticsConnection['source']>(['ga4', 'search_console', 'google_ads', 'meta_ads', 'linkedin_ads'])
@@ -72,6 +73,7 @@ export function Koppelingen({
   const ads = googleAdsInstellingen()
   const meta = metaInstellingen()
   const linkedin = linkedinInstellingen()
+  const ahrefs = ahrefsInstellingen()
   /* Waarom de lijst voor een bron leeg is, in gewone taal. */
   const leeg = (bron: AnalyticsConnection['source']): { kop: string; tekst: string; link?: false } | null => {
     const t = TOEGANG[bron]
@@ -115,7 +117,13 @@ export function Koppelingen({
           const kan = KAN_OPHALEN[bron]
           const google = bron === 'ga4' || bron === 'search_console'
           const lijst = MET_LIJST.has(bron) && opties(bron).length > 0
-          const waarom = MET_LIJST.has(bron) ? leeg(bron) : null
+          const waarom = MET_LIJST.has(bron)
+            ? leeg(bron)
+            : bron === 'ahrefs' && !ahrefs.klaar
+              ? { kop: 'Ahrefs is nog niet ingesteld', tekst: `Zet ${ahrefs.ontbreekt.join(', ')} in Netlify. Koppelen kan al; de cijfers komen zodra de sleutel er staat.`, link: false as const }
+              : null
+          // Bij Ahrefs is het "account" de website van de klant: die staat alvast ingevuld.
+          const standaard = k?.externalId ?? (bron === 'ahrefs' ? domeinUitWebsite(klant.website) : '')
           return (
             <li key={bron} className="flex items-center gap-4 py-3.5 pr-3 pl-6">
               <span
@@ -191,7 +199,7 @@ export function Koppelingen({
                       <input type="hidden" name="organizationId" value={organizationId} />
                       <input type="hidden" name="slug" value={slug} />
                       <input type="hidden" name="bron" value={bron} />
-                      <Field label={info.veld} name="externalId" required defaultValue={k?.externalId ?? ''} placeholder={info.voorbeeld} />
+                      <Field label={info.veld} name="externalId" required defaultValue={standaard} placeholder={info.voorbeeld} />
                       {k && <p className="text-xs text-gray-600">Een ander ID betekent andere cijfers: de opgehaalde historie van deze bron wordt dan opnieuw opgehaald.</p>}
                     </ActionForm>
                   </>

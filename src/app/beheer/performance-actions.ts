@@ -12,7 +12,7 @@ import { db } from '@/db'
 import { organizations, type AnalyticsConnection } from '@/db/schema'
 import type { ActionResult } from './actions'
 
-const BRONNEN = ['ga4', 'search_console', 'google_ads', 'meta_ads', 'linkedin_ads', 'tiktok_ads'] as const
+const BRONNEN = ['ga4', 'search_console', 'google_ads', 'meta_ads', 'linkedin_ads', 'tiktok_ads', 'ahrefs'] as const
 const tekst = (f: FormData, n: string) => String(f.get(n) ?? '').trim()
 
 function ververs(slug: string) {
@@ -53,7 +53,7 @@ export async function koppel(formData: FormData): Promise<ActionResult> {
       await zetKoppeling(orgId, bron, externalId, { ...via, displayName: gevonden.naam })
     } else {
       const externalId = tekst(formData, 'externalId')
-      if (!externalId) throw new KoppelingFout('Kies een account uit de lijst.')
+      if (!externalId) throw new KoppelingFout(bron === 'ahrefs' ? 'Vul het domein van de website in.' : 'Kies een account uit de lijst.')
       await zetKoppeling(orgId, bron, externalId)
     }
     // Meteen een eerste keer ophalen, zodat je ziet of de toegang klopt.

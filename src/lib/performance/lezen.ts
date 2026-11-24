@@ -1,7 +1,8 @@
 import { and, asc, eq, gte, lte, sql } from 'drizzle-orm'
 import { db } from '@/db'
-import { analyticsConnections, organizations, performanceDaily, type AnalyticsConnection } from '@/db/schema'
+import { analyticsConnections, organizations, performanceDaily, seoDaily, type AnalyticsConnection, type SeoDag } from '@/db/schema'
 import { KoppelingFout, ga4PropertyId, searchConsoleSite } from './google'
+import { ahrefsDomein } from './ahrefs'
 import type { DagRij } from './bronnen'
 
 /* De cijfers voor de schermen: per klant of voor alle klanten samen. */
@@ -37,6 +38,15 @@ export async function getDagcijfers(van: string, tot: string, organizationId?: s
     .groupBy(performanceDaily.day, performanceDaily.bron)
   const n = (v: string | null) => (v === null ? null : Number(v))
   return rijen.map((r) => ({ ...r, impressions: n(r.impressions), clicks: n(r.clicks), sessions: n(r.sessions), conversions: n(r.conversions), costCents: n(r.costCents) }))
+}
+
+/** De SEO-standen uit Ahrefs van één klant in een periode, oplopend op dag. */
+export async function getSeoStanden(organizationId: string, van: string, tot: string): Promise<SeoDag[]> {
+  return db
+    .select()
+    .from(seoDaily)
+    .where(and(eq(seoDaily.organizationId, organizationId), gte(seoDaily.day, van), lte(seoDaily.day, tot)))
+    .orderBy(asc(seoDaily.day))
 }
 
 /** Per klant de totalen in een periode, voor de overall-view. */
@@ -103,6 +113,12 @@ export const BRON_KOPPELING: Record<AnalyticsConnection['source'], { naam: strin
     uitleg: 'Heeft ons verbonden LinkedIn-account een rol op het advertentieaccount, dan staat het in de lijst. Anders: het account-ID staat in Campaign Manager naast de accountnaam.',
   },
   tiktok_ads: { naam: 'TikTok Ads', veld: 'Advertiser-ID', voorbeeld: '7123456789012345678', uitleg: 'In TikTok Ads Manager onder het account.' },
+  ahrefs: {
+    naam: 'Ahrefs',
+    veld: 'Domein',
+    voorbeeld: 'thiessen.nl',
+    uitleg: 'De website van de klant, zonder https of www. Ahrefs kijkt naar het domein met al zijn subdomeinen; de klant hoeft niets te doen.',
+  },
 }
 
 /** Nakijken en in nette vorm zetten; gooit een begrijpelijke fout. */
@@ -123,6 +139,8 @@ export function normaliseerExternId(source: AnalyticsConnection['source'], invoe
       if (!/^\d{6,20}$/.test(n)) throw new KoppelingFout('Een Meta-advertentieaccount is act_ gevolgd door cijfers.')
       return `act_${n}`
     }
+    case 'ahrefs':
+      return ahrefsDomein(s)
     default:
       if (!/^\d{5,25}$/.test(s)) throw new KoppelingFout('Vul het account-ID in: alleen cijfers.')
       return s
@@ -142,9 +160,7 @@ export async function zetKoppeling(
     .select()
     .from(analyticsConnections)
     .where(and(eq(analyticsConnections.organizationId, organizationId), eq(analyticsConnections.source, source)))
-  if (oud && oud.externalId !== externalId) {
-    await db.delete(performanceDaily).where(and(eq(performanceDaily.organizationId, organizationId), eq(performanceDaily.provider, source)))
-  }
+  if (oud && oud.externalId !== externalId) await wisCijfers(db, organizationId, source)
   await db
     .insert(analyticsConnections)
     .values({ organizationId, source, externalId, ...herkomst })
@@ -157,12 +173,18 @@ export async function zetKoppeling(
     })
 }
 
+/** De cijfers die een koppeling leverde: dagcijfers per bron, of de SEO-standen bij Ahrefs. */
+async function wisCijfers(tx: Pick<typeof db, 'delete'>, organizationId: string, source: AnalyticsConnection['source']) {
+  if (source === 'ahrefs') await tx.delete(seoDaily).where(eq(seoDaily.organizationId, organizationId))
+  else await tx.delete(performanceDaily).where(and(eq(performanceDaily.organizationId, organizationId), eq(performanceDaily.provider, source)))
+}
+
 /** Ontkoppelen haalt ook de cijfers van die bron weg; anders tellen ze stilletjes mee. */
 export async function verwijderKoppeling(id: string) {
   const [k] = await db.select().from(analyticsConnections).where(eq(analyticsConnections.id, id))
   if (!k) return
   await db.transaction(async (tx) => {
-    await tx.delete(performanceDaily).where(and(eq(performanceDaily.organizationId, k.organizationId), eq(performanceDaily.provider, k.source)))
+    await wisCijfers(tx, k.organizationId, k.source)
     await tx.delete(analyticsConnections).where(eq(analyticsConnections.id, id))
   })
 }
