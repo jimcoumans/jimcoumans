@@ -9,6 +9,7 @@ import { alleKeuzes, gebruikPerVerbinding, listVerbindingen, oauthInstellingen, 
 import { serviceaccountAdres } from '@/lib/performance/google'
 import { googleAdsInstellingen } from '@/lib/performance/google-ads'
 import { metaInstellingen } from '@/lib/performance/meta'
+import { ahrefsInstellingen } from '@/lib/performance/ahrefs'
 import { linkedinInstellingen, linkedinTerugUrl } from '@/lib/performance/linkedin'
 import { gebruikPerLinkedinVerbinding, listLinkedinVerbindingen } from '@/lib/performance/linkedin-verbinding'
 import { verbindingLoskoppelen, keuzesVerversen, linkedinVerbindingLoskoppelen } from '../koppelingen-actions'
@@ -44,6 +45,7 @@ export default async function KoppelingenPage({ searchParams }: { searchParams: 
   const ads = googleAdsInstellingen()
   const meta = metaInstellingen()
   const linkedin = linkedinInstellingen()
+  const ahrefs = ahrefsInstellingen()
   const linkedinAccounts = keuzes.filter((k) => k.source === 'linkedin_ads').length
 
   /* Per advertentieplatform: werkt het, of wat er nog voor nodig is. */
@@ -74,6 +76,13 @@ export default async function KoppelingenPage({ searchParams }: { searchParams: 
           : `Via een verbonden LinkedIn-account. ${aantal(linkedinAccounts, 'advertentieaccount', 'advertentieaccounts')} zichtbaar; kies er bij de klant een uit de lijst.`,
     },
     { naam: 'TikTok Ads', status: 'wacht', tekst: 'Via Business Center. Wacht op goedkeuring van de TikTok-app.' },
+    {
+      naam: 'Ahrefs (SEO)',
+      status: ahrefs.klaar ? 'klaar' : 'instellen',
+      tekst: ahrefs.klaar
+        ? 'Via het Ahrefs-abonnement van James Robinson. Geen lijst nodig: bij de klant vul je het domein van de website in.'
+        : `Via het Ahrefs-abonnement van James Robinson. Nog niet ingesteld in Netlify: ${ahrefs.ontbreekt.join(', ')}.`,
+    },
   ]
   const kleur = { klaar: 'bg-[#34C759]', instellen: 'bg-[#FF9F0A]', wacht: 'bg-gray-300' }
 
@@ -198,8 +207,8 @@ export default async function KoppelingenPage({ searchParams }: { searchParams: 
 
       <section className="mb-6 rounded-xl bg-white shadow-sm">
         <div className="px-6 pt-5 pb-3">
-          <h2 className="text-[17px]">Advertentieplatforms</h2>
-          <p className="text-xs text-gray-500">Via de bedrijfsaccounts van James Robinson. Google Ads, Meta en LinkedIn werken; TikTok volgt zodra dat platform onze toegang heeft goedgekeurd.</p>
+          <h2 className="text-[17px]">Advertentieplatforms en SEO</h2>
+          <p className="text-xs text-gray-500">Via de bedrijfsaccounts van James Robinson. Google Ads, Meta, LinkedIn en Ahrefs werken; TikTok volgt zodra dat platform onze toegang heeft goedgekeurd.</p>
         </div>
         <ul className="divide-y divide-gray-150 border-t border-gray-150">
           {platforms.map((p) => (
@@ -212,10 +221,10 @@ export default async function KoppelingenPage({ searchParams }: { searchParams: 
             </li>
           ))}
         </ul>
-        {(!ads.klaar || !meta.klaar || !linkedin.klaar) && (
+        {(!ads.klaar || !meta.klaar || !linkedin.klaar || !ahrefs.klaar) && (
           <div className="border-t border-gray-150 px-6 py-4 text-[13px] text-gray-600">
             <p>
-              <strong className="font-medium text-jr-text">Instellen:</strong> zet de variabelen in Netlify onder Site configuration → Environment variables en deploy opnieuw. Waar ze vandaan komen staat in .env.example: de developer token en het MCC-nummer uit het API Center van Google Ads, het Meta-token bij de systeemgebruiker in Business Manager, de client-ID en het secret van de app in het LinkedIn Developer Portal.
+              <strong className="font-medium text-jr-text">Instellen:</strong> zet de variabelen in Netlify onder Site configuration → Environment variables en deploy opnieuw. Waar ze vandaan komen staat in .env.example: de developer token en het MCC-nummer uit het API Center van Google Ads, het Meta-token bij de systeemgebruiker in Business Manager, de client-ID en het secret van de app in het LinkedIn Developer Portal, de Ahrefs-sleutel onder Account settings → API keys.
             </p>
             {!linkedin.klaar && (
               <p className="mt-2">

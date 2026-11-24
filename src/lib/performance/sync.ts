@@ -1,7 +1,8 @@
 import { and, asc, eq, gte, lte, sql } from 'drizzle-orm'
 import { db } from '@/db'
-import { analyticsConnections, organizations, performanceDaily, type AnalyticsConnection } from '@/db/schema'
+import { analyticsConnections, organizations, performanceDaily, seoDaily, type AnalyticsConnection } from '@/db/schema'
 import { KoppelingFout, haalGa4, haalSearchConsole, type Dagcijfers } from './google'
+import { haalAhrefs, type SeoStand } from './ahrefs'
 import { GoogleAdsToegangFout, haalGoogleAds } from './google-ads'
 import { haalMeta } from './meta'
 import { LinkedinToegangFout, haalLinkedin } from './linkedin'
@@ -31,6 +32,7 @@ export const KAN_OPHALEN: Record<AnalyticsConnection['source'], boolean> = {
   meta_ads: true,
   linkedin_ads: true,
   tiktok_ads: false,
+  ahrefs: true,
 }
 
 const iso = (d: Date) => d.toISOString().slice(0, 10)
@@ -108,6 +110,9 @@ async function haalLinkedinViaVerbindingen(k: AnalyticsConnection, van: string, 
 
 async function haal(k: AnalyticsConnection, van: string, tot: string, toegang?: string): Promise<Dagcijfers[]> {
   switch (k.source) {
+    case 'ahrefs':
+      // Ahrefs levert standen, geen dagcijfers; zie haalEnBewaar.
+      throw new KoppelingFout('Ahrefs gaat via de SEO-tabel.')
     case 'ga4':
       return haalGa4(k.externalId, van, tot, toegang)
     case 'search_console':
@@ -155,6 +160,38 @@ async function bewaar(k: AnalyticsConnection, van: string, tot: string, rijen: D
   })
 }
 
+/** Vervangt de SEO-standen van één klant in een periode; Ahrefs is de enige bron, dus zonder provider. */
+async function bewaarSeo(k: AnalyticsConnection, van: string, tot: string, rijen: SeoStand[]) {
+  await db.transaction(async (tx) => {
+    await tx.delete(seoDaily).where(and(eq(seoDaily.organizationId, k.organizationId), gte(seoDaily.day, van), lte(seoDaily.day, tot)))
+    if (rijen.length === 0) return
+    for (let i = 0; i < rijen.length; i += 500) {
+      await tx.insert(seoDaily).values(
+        rijen.slice(i, i + 500).map((r) => ({
+          organizationId: k.organizationId,
+          day: r.day,
+          domainRating: r.domainRating ?? null,
+          organicKeywords: r.organicKeywords ?? null,
+          organicTraffic: r.organicTraffic ?? null,
+          referringDomains: r.referringDomains ?? null,
+        })),
+      )
+    }
+  })
+}
+
+/** Eén stuk ophalen en wegschrijven; geeft terug hoeveel regels het waren. */
+async function haalEnBewaar(k: AnalyticsConnection, van: string, tot: string, toegang?: string): Promise<number> {
+  if (k.source === 'ahrefs') {
+    const rijen = await haalAhrefs(k.externalId, van, tot)
+    await bewaarSeo(k, van, tot, rijen)
+    return rijen.length
+  }
+  const rijen = await haal(k, van, tot, toegang)
+  await bewaar(k, van, tot, rijen)
+  return rijen.length
+}
+
 export type SyncUitkomst = { koppeling: string; klant: string; bron: AnalyticsConnection['source']; ok: boolean; melding: string }
 
 export async function syncKoppeling(k: AnalyticsConnection & { klant?: string }, vandaag = new Date()): Promise<SyncUitkomst> {
@@ -164,9 +201,7 @@ export async function syncKoppeling(k: AnalyticsConnection & { klant?: string },
     let regels = 0
     const toegang = await tokenVoor(k)
     for (const stuk of teHalen(k.historyFrom, vandaag)) {
-      const rijen = await haal(k, stuk.van, stuk.tot, toegang)
-      await bewaar(k, stuk.van, stuk.tot, rijen)
-      regels += rijen.length
+      regels += await haalEnBewaar(k, stuk.van, stuk.tot, toegang)
       historie = historie && historie < stuk.nieuweHistorie ? historie : stuk.nieuweHistorie
     }
     await db

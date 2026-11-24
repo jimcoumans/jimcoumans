@@ -1,3 +1,4 @@
+import type { SeoDag } from '@/db/schema'
 import { conversieratio, perBron, perDag, type Cijfers, type DagRij } from '@/lib/performance/bronnen'
 import { formatEuro } from '@/lib/money'
 import { Lijngrafiek } from './Lijngrafiek'
@@ -162,5 +163,80 @@ function BronRegel({ label, betaald, c, max, metKosten }: { label: string; betaa
         <td className="px-6 py-3 text-right tabular-nums">{c.kostenCents > 0 && c.conversies > 0 ? formatEuro(Math.round(c.kostenCents / c.conversies)) : '–'}</td>
       )}
     </tr>
+  )
+}
+
+/* -------------------------------------------------------------------------
+   SEO-stand uit Ahrefs: hoe sterk de website staat. Dit zijn standen, geen
+   dagtotalen: de tegels tonen de laatste stand in de periode en vergelijken
+   die met de laatste stand van de periode ervoor.
+   ------------------------------------------------------------------------- */
+
+type SeoMaat = Exclude<keyof SeoDag, 'organizationId' | 'day' | 'updatedAt'>
+
+const SEO_MATEN: { maat: SeoMaat; label: string; eenheid: string; uitleg: string; decimalen: boolean }[] = [
+  { maat: 'domainRating', label: 'Domain Rating', eenheid: 'punten', uitleg: 'Sterkte van het linkprofiel, 0 tot 100', decimalen: true },
+  { maat: 'organicKeywords', label: 'Organische zoekwoorden', eenheid: 'zoekwoorden', uitleg: 'Zoekwoorden in de top 100 van Google', decimalen: false },
+  { maat: 'organicTraffic', label: 'Organisch verkeer', eenheid: 'bezoeken per maand', uitleg: 'Schatting van Ahrefs, per maand', decimalen: false },
+  { maat: 'referringDomains', label: 'Verwijzende domeinen', eenheid: 'domeinen', uitleg: 'Websites die naar de klant linken', decimalen: false },
+]
+
+/** De laatste dag in de reeks die voor deze maat een waarde heeft. */
+function laatsteStand(rijen: SeoDag[], maat: SeoMaat): number | null {
+  for (let i = rijen.length - 1; i >= 0; i--) {
+    const v = rijen[i]![maat]
+    if (typeof v === 'number') return v
+  }
+  return null
+}
+
+function SeoTegel({ label, uitleg, nu, toen, decimalen, eenheid }: { label: string; uitleg: string; nu: number | null; toen: number | null; decimalen: boolean; eenheid: string }) {
+  const toon = (n: number) => (decimalen ? n.toLocaleString('nl-NL', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : compact(n))
+  const verschil = nu !== null && toen !== null ? nu - toen : null
+  return (
+    <div className="rounded-xl bg-white px-5 py-4 shadow-sm">
+      <p className="text-xs text-gray-600">{label}</p>
+      <p className="font-display mt-1 text-[30px] leading-none font-semibold tracking-tight">{nu === null ? '–' : toon(nu)}</p>
+      <p className="mt-2 text-xs text-gray-500">
+        {verschil === null ? (
+          'Geen vergelijking'
+        ) : (
+          <>
+            <span className={verschil > 0 ? 'text-[#1D7D3F]' : verschil < 0 ? 'text-[#C02A22]' : 'text-gray-600'}>
+              {verschil > 0 ? '▲' : verschil < 0 ? '▼' : ''} {decimalen ? toon(Math.abs(verschil)) : getal(Math.abs(verschil))} {eenheid}
+            </span>{' '}
+            t.o.v. de periode ervoor
+          </>
+        )}
+        <span className="block">{uitleg}</span>
+      </p>
+    </div>
+  )
+}
+
+export function SeoBlok({ rijen, vorige, domein }: { rijen: SeoDag[]; vorige: SeoDag[]; domein: string }) {
+  const punten = (maat: SeoMaat) => rijen.filter((r) => typeof r[maat] === 'number').map((r) => ({ day: r.day, waarde: r[maat] as number }))
+  return (
+    <section className="space-y-4">
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <h2 className="text-[17px]">Vindbaarheid van {domein}</h2>
+        <p className="text-xs text-gray-500">Uit Ahrefs, elke nacht bijgewerkt. Standen, geen totalen: de laatste stand telt.</p>
+      </div>
+      {rijen.length === 0 ? (
+        <p className="rounded-xl bg-white px-5 py-4 text-sm text-gray-500 shadow-sm">Nog geen SEO-stand in deze periode. Die komt binnen bij de volgende ronde ophalen, of nu met Nu bijwerken.</p>
+      ) : (
+        <>
+          <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))' }}>
+            {SEO_MATEN.map((m) => (
+              <SeoTegel key={m.maat} label={m.label} uitleg={m.uitleg} nu={laatsteStand(rijen, m.maat)} toen={laatsteStand(vorige, m.maat)} decimalen={m.decimalen} eenheid={m.eenheid} />
+            ))}
+          </div>
+          <div className="grid gap-4 xl:grid-cols-2">
+            <Lijngrafiek titel="Organisch verkeer (schatting per maand)" eenheid="bezoeken per maand" punten={punten('organicTraffic')} stand />
+            <Lijngrafiek titel="Organische zoekwoorden" eenheid="zoekwoorden" punten={punten('organicKeywords')} stand />
+          </div>
+        </>
+      )}
+    </section>
   )
 }

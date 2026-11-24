@@ -26,7 +26,12 @@ function plafond(max: number): number {
   return 10 * stap
 }
 
-export function Lijngrafiek({ titel, eenheid, punten }: { titel: string; eenheid: string; punten: { day: string; waarde: number }[] }) {
+/**
+ * `stand` is voor reeksen die een stand zijn in plaats van een dagtotaal
+ * (Domain Rating, aantal zoekwoorden): dan tonen we de laatste waarde, niet
+ * de som over de dagen, en mag de waarde decimalen hebben.
+ */
+export function Lijngrafiek({ titel, eenheid, punten, stand = false }: { titel: string; eenheid: string; punten: { day: string; waarde: number }[]; stand?: boolean }) {
   const doos = useRef<HTMLDivElement>(null)
   const [breedte, setBreedte] = useState(600)
   const [actief, setActief] = useState<number | null>(null)
@@ -51,6 +56,9 @@ export function Lijngrafiek({ titel, eenheid, punten }: { titel: string; eenheid
   const ticks = [0, max / 2, max]
   const labelDagen = punten.length ? [0, Math.floor((punten.length - 1) / 2), punten.length - 1] : []
   const totaal = punten.reduce((s, p) => s + p.waarde, 0)
+  const laatste = punten.at(-1)?.waarde ?? 0
+  const toon = (n: number) => (stand ? n.toLocaleString('nl-NL', { maximumFractionDigits: 1 }) : getal(n))
+  const samenvatting = stand ? `Stand per dag, nu ${toon(laatste)}` : `Per dag, ${getal(totaal)} in totaal`
 
   function wijs(clientX: number) {
     const el = doos.current
@@ -65,9 +73,7 @@ export function Lijngrafiek({ titel, eenheid, punten }: { titel: string; eenheid
     <figure className="rounded-xl bg-white p-5 shadow-sm">
       <figcaption className="mb-3">
         <span className="block text-[15px] font-medium">{titel}</span>
-        <span className="text-xs text-gray-500">
-          Per dag, {getal(totaal)} in totaal
-        </span>
+        <span className="text-xs text-gray-500">{samenvatting}</span>
       </figcaption>
       <div
         ref={doos}
@@ -82,7 +88,7 @@ export function Lijngrafiek({ titel, eenheid, punten }: { titel: string; eenheid
         }}
         tabIndex={0}
         role="img"
-        aria-label={`${titel}: ${getal(totaal)} ${eenheid} van ${punten[0] ? datum(punten[0].day, true) : ''} tot ${punten.at(-1) ? datum(punten.at(-1)!.day, true) : ''}`}
+        aria-label={`${titel}: ${toon(stand ? laatste : totaal)} ${eenheid} van ${punten[0] ? datum(punten[0].day, true) : ''} tot ${punten.at(-1) ? datum(punten.at(-1)!.day, true) : ''}`}
       >
         <svg width={breedte} height={HOOGTE} className="block max-w-full overflow-visible">
           {ticks.map((t) => (
@@ -113,7 +119,7 @@ export function Lijngrafiek({ titel, eenheid, punten }: { titel: string; eenheid
             style={{ left: Math.min(Math.max(x(actief) - 70, 0), breedte - 150), width: 140 }}
             role="status"
           >
-            <p className="text-[15px] font-semibold tabular-nums">{getal(p.waarde)}</p>
+            <p className="text-[15px] font-semibold tabular-nums">{toon(p.waarde)}</p>
             <p className="text-gray-600">
               {eenheid}, {datum(p.day, true)}
             </p>

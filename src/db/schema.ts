@@ -4,6 +4,7 @@ import {
   timestamp,
   integer,
   bigint,
+  real,
   uuid,
   pgEnum,
   index,
@@ -4033,6 +4034,7 @@ export const analyticsSourceEnum = pgEnum('analytics_source', [
   'meta_ads',
   'linkedin_ads',
   'tiktok_ads',
+  'ahrefs',
 ])
 
 /**
@@ -4145,6 +4147,43 @@ export const performanceDaily = pgTable(
     check('performance_daily_not_negative', sql`COALESCE(${t.impressions}, 0) >= 0 AND COALESCE(${t.clicks}, 0) >= 0 AND COALESCE(${t.sessions}, 0) >= 0 AND COALESCE(${t.conversions}, 0) >= 0 AND COALESCE(${t.costCents}, 0) >= 0`),
   ],
 )
+
+/**
+ * De SEO-stand per klant per dag, uit Ahrefs: hoe sterk de website staat in
+ * Google, los van wat er die dag gebeurde. Dit zijn standen (zoals een
+ * saldo), geen dagtotalen: je telt ze niet op over dagen, je kijkt naar de
+ * laatste en vergelijkt met eerder. Daarom een eigen tabel naast
+ * performance_daily. De koppeling zelf staat in analytics_connections met
+ * source 'ahrefs' en het domein als external_id.
+ */
+export const seoDaily = pgTable(
+  'seo_daily',
+  {
+    organizationId: uuid('organization_id')
+      .notNull()
+      .references(() => organizations.id, { onDelete: 'cascade' }),
+    day: date('day', { mode: 'string' }).notNull(),
+    /** Domain Rating van Ahrefs, 0 tot 100, met één decimaal. */
+    domainRating: real('domain_rating'),
+    /** Aantal zoekwoorden waarop de site in de top 100 van Google staat. */
+    organicKeywords: integer('organic_keywords'),
+    /** Geschat aantal organische bezoeken per maand, zoals Ahrefs het die dag schatte. */
+    organicTraffic: integer('organic_traffic'),
+    /** Aantal unieke domeinen dat naar de site linkt. */
+    referringDomains: integer('referring_domains'),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.organizationId, t.day] }),
+    index('seo_daily_day_idx').on(t.day),
+    check(
+      'seo_daily_not_negative',
+      sql`COALESCE(${t.domainRating}, 0) >= 0 AND COALESCE(${t.organicKeywords}, 0) >= 0 AND COALESCE(${t.organicTraffic}, 0) >= 0 AND COALESCE(${t.referringDomains}, 0) >= 0`,
+    ),
+  ],
+)
+
+export type SeoDag = typeof seoDaily.$inferSelect
 
 /**
  * Acties bij de rapportage: wat de marketingmanager per klant per maand

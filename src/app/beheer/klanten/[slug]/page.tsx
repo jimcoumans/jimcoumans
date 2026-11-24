@@ -37,11 +37,11 @@ import { getProfiel } from '@/lib/klantprofiel'
 import { listOwners } from '@/lib/crm-owners'
 import { merkTelling, getMerkkluis } from '@/lib/merkkluis'
 import { MerkkluisSamenvatting } from '@/components/stylesheet/MerkkluisSamenvatting'
-import { PerformanceDashboard } from '@/components/performance/PerformanceDashboard'
+import { PerformanceDashboard, SeoBlok } from '@/components/performance/PerformanceDashboard'
 import { Koppelingen, meetcheck } from '@/components/performance/Koppelingen'
 import { FilterBalk } from '@/components/FilterBalk'
 import { LeegVlak } from '@/components/PaginaKop'
-import { getKoppelingen, getDagcijfers } from '@/lib/performance/lezen'
+import { getKoppelingen, getDagcijfers, getSeoStanden } from '@/lib/performance/lezen'
 import { serviceaccountAdres } from '@/lib/performance/google'
 import { alleKeuzes, listVerbindingen } from '@/lib/performance/oauth'
 import { listLinkedinVerbindingen } from '@/lib/performance/linkedin-verbinding'
@@ -451,15 +451,18 @@ async function PerformanceTab({
 }) {
   const periode = (PERIODES.some((p) => p.periode === periodeParam) ? periodeParam : '30_dagen') as Periode
   const g = periodeGrenzen(periode)
-  const [koppelingen, rijen, vorige, google, verbindingen, linkedinVerbindingen] = await Promise.all([
+  const [koppelingen, rijen, vorige, seo, seoVorige, google, verbindingen, linkedinVerbindingen] = await Promise.all([
     getKoppelingen(organizationId),
     getDagcijfers(g.van, g.tot, organizationId),
     getDagcijfers(g.vorigeVan, g.vorigeTot, organizationId),
+    getSeoStanden(organizationId, g.van, g.tot),
+    getSeoStanden(organizationId, g.vorigeVan, g.vorigeTot),
     alleKeuzes(),
     listVerbindingen(),
     listLinkedinVerbindingen(),
   ])
   const waarschuwingen = meetcheck(koppelingen, perBron(rijen).totaal)
+  const ahrefs = koppelingen.find((k) => k.source === 'ahrefs')
 
   return (
     <div className="space-y-6">
@@ -528,6 +531,8 @@ async function PerformanceTab({
           }
         />
       )}
+
+      {ahrefs && <SeoBlok rijen={seo} vorige={seoVorige} domein={ahrefs.externalId} />}
 
       <Koppelingen
         organizationId={organizationId}
