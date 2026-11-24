@@ -8,6 +8,7 @@ import { googleAdsInstellingen, haalGoogleAdsKlanten, toonKlantId } from './goog
 import { haalMetaAccounts, metaInstellingen } from './meta'
 import { haalLinkedinAccounts, linkedinInstellingen } from './linkedin'
 import { linkedinToegangstoken, listLinkedinVerbindingen } from './linkedin-verbinding'
+import { BEDRIJFSPROFIEL_SCOPE, OPNIEUW_VERBINDEN, haalLocaties, heeftBedrijfsprofielRecht } from './bedrijfsprofiel'
 
 /* -------------------------------------------------------------------------
    Google-accounts van James Robinson verbinden (info@, marketing@, ...).
@@ -25,6 +26,9 @@ export const GOOGLE_SCOPES = [
   'https://www.googleapis.com/auth/webmasters.readonly',
   // Alvast voor Google Ads, zodat niemand later opnieuw hoeft te verbinden.
   'https://www.googleapis.com/auth/adwords',
+  // Google Bedrijfsprofiel (Maps en het blok in de zoekresultaten). Accounts die
+  // eerder verbonden zijn, missen dit recht en moeten één keer opnieuw verbinden.
+  BEDRIJFSPROFIEL_SCOPE,
 ]
 
 /* ------------------------------ Instellingen ----------------------------- */
@@ -182,7 +186,7 @@ export type Keuze = {
   verbindingId: string
   /** Het e-mailadres van het Google-account, of het label van het LinkedIn-account. */
   email: string
-  source: 'ga4' | 'search_console' | 'google_ads' | 'meta_ads' | 'linkedin_ads'
+  source: 'ga4' | 'search_console' | 'google_ads' | 'meta_ads' | 'linkedin_ads' | 'google_business'
   externalId: string
   naam: string
   /** Waaronder hij valt: het GA4-account, het soort property in Search Console, het klant-ID bij Google Ads, de Business Manager bij Meta. */
@@ -251,6 +255,22 @@ async function keuzesVan(v: GoogleConnection): Promise<{ keuzes: Keuze[]; fouten
     keuzes.push(...leesSiteLijst(json).map(metVerbinding))
   } catch (e) {
     fouten.push(`${v.email}: ${(e as Error).message}`)
+  }
+  // Google Bedrijfsprofiel: alleen met het recht dat sinds eind november 2026 bij het
+  // verbinden hoort. Oudere verbindingen melden dat ze opnieuw verbonden moeten worden.
+  if (heeftBedrijfsprofielRecht(v.scopes)) {
+    try {
+      const locaties = await haalLocaties(token)
+      keuzes.push(
+        ...locaties.map((l) =>
+          metVerbinding({ source: 'google_business', externalId: l.id, naam: l.naam, groep: [l.plaats, l.website.replace(/^https?:\/\//, '').replace(/\/$/, '')].filter(Boolean).join(' · ') || `Locatie ${l.id}` }),
+        ),
+      )
+    } catch (e) {
+      fouten.push(`${v.email}: ${(e as Error).message}`)
+    }
+  } else {
+    fouten.push(`${v.email}: ${OPNIEUW_VERBINDEN}`)
   }
   // Google Ads: de klantaccounts onder het MCC. Niet elk verbonden adres kan bij het
   // MCC; die fout telt pas als geen enkel adres de lijst kan ophalen (zie alleKeuzes).

@@ -1,8 +1,9 @@
 import { and, asc, eq, gte, lte, sql } from 'drizzle-orm'
 import { db } from '@/db'
-import { analyticsConnections, organizations, performanceDaily, seoDaily, type AnalyticsConnection, type SeoDag } from '@/db/schema'
+import { analyticsConnections, businessProfileDaily, organizations, performanceDaily, seoDaily, type AnalyticsConnection, type BedrijfsprofielDag, type SeoDag } from '@/db/schema'
 import { KoppelingFout, ga4PropertyId, searchConsoleSite } from './google'
 import { ahrefsDomein } from './ahrefs'
+import { bedrijfsprofielLocatieId } from './bedrijfsprofiel'
 import type { DagRij } from './bronnen'
 
 /* De cijfers voor de schermen: per klant of voor alle klanten samen. */
@@ -47,6 +48,15 @@ export async function getSeoStanden(organizationId: string, van: string, tot: st
     .from(seoDaily)
     .where(and(eq(seoDaily.organizationId, organizationId), gte(seoDaily.day, van), lte(seoDaily.day, tot)))
     .orderBy(asc(seoDaily.day))
+}
+
+/** De Bedrijfsprofiel-cijfers van één klant in een periode, oplopend op dag. */
+export async function getBedrijfsprofiel(organizationId: string, van: string, tot: string): Promise<BedrijfsprofielDag[]> {
+  return db
+    .select()
+    .from(businessProfileDaily)
+    .where(and(eq(businessProfileDaily.organizationId, organizationId), gte(businessProfileDaily.day, van), lte(businessProfileDaily.day, tot)))
+    .orderBy(asc(businessProfileDaily.day))
 }
 
 /** Per klant de totalen in een periode, voor de overall-view. */
@@ -113,6 +123,12 @@ export const BRON_KOPPELING: Record<AnalyticsConnection['source'], { naam: strin
     uitleg: 'Heeft ons verbonden LinkedIn-account een rol op het advertentieaccount, dan staat het in de lijst. Anders: het account-ID staat in Campaign Manager naast de accountnaam.',
   },
   tiktok_ads: { naam: 'TikTok Ads', veld: 'Advertiser-ID', voorbeeld: '7123456789012345678', uitleg: 'In TikTok Ads Manager onder het account.' },
+  google_business: {
+    naam: 'Google Bedrijfsprofiel',
+    veld: 'Locatienummer',
+    voorbeeld: '12345678901234567890',
+    uitleg: 'Is een verbonden Google-account eigenaar of beheerder van het profiel, dan staat het in de lijst. Anders: laat de klant een van onze adressen als beheerder uitnodigen.',
+  },
   ahrefs: {
     naam: 'Ahrefs',
     veld: 'Domein',
@@ -141,6 +157,8 @@ export function normaliseerExternId(source: AnalyticsConnection['source'], invoe
     }
     case 'ahrefs':
       return ahrefsDomein(s)
+    case 'google_business':
+      return bedrijfsprofielLocatieId(s)
     default:
       if (!/^\d{5,25}$/.test(s)) throw new KoppelingFout('Vul het account-ID in: alleen cijfers.')
       return s
@@ -169,14 +187,38 @@ export async function zetKoppeling(
       set:
         oud && oud.externalId === externalId
           ? { active: true, ...herkomst, lastError: null, lastErrorAt: null }
-          : { externalId, ...herkomst, active: true, historyFrom: null, lastSyncedAt: null, lastError: null, lastErrorAt: null },
+          : { externalId, ...herkomst, campaigns: null, active: true, historyFrom: null, lastSyncedAt: null, lastError: null, lastErrorAt: null },
     })
 }
 
 /** De cijfers die een koppeling leverde: dagcijfers per bron, of de SEO-standen bij Ahrefs. */
 async function wisCijfers(tx: Pick<typeof db, 'delete'>, organizationId: string, source: AnalyticsConnection['source']) {
   if (source === 'ahrefs') await tx.delete(seoDaily).where(eq(seoDaily.organizationId, organizationId))
+  else if (source === 'google_business') await tx.delete(businessProfileDaily).where(eq(businessProfileDaily.organizationId, organizationId))
   else await tx.delete(performanceDaily).where(and(eq(performanceDaily.organizationId, organizationId), eq(performanceDaily.provider, source)))
+}
+
+/** Een campagne zoals we hem bij de koppeling bewaren: id en naam zoals het platform ze noemt. */
+export type Campagne = { id: string; naam: string }
+
+/**
+ * Welke campagnes van het account bij deze klant horen. Leeg: het hele
+ * account. Een andere keuze betekent andere cijfers, dus de historie van
+ * deze bron gaat weg en wordt opnieuw opgehaald.
+ */
+export async function zetCampagnes(koppelingId: string, campagnes: Campagne[]) {
+  const [k] = await db.select().from(analyticsConnections).where(eq(analyticsConnections.id, koppelingId))
+  if (!k) throw new KoppelingFout('Deze koppeling bestaat niet (meer).')
+  const nieuw = campagnes.length ? [...campagnes].sort((a, b) => a.id.localeCompare(b.id)) : null
+  const oud = k.campaigns?.length ? [...k.campaigns].sort((a, b) => a.id.localeCompare(b.id)) : null
+  const anders = JSON.stringify(oud?.map((c) => c.id) ?? null) !== JSON.stringify(nieuw?.map((c) => c.id) ?? null)
+  await db.transaction(async (tx) => {
+    if (anders) await wisCijfers(tx, k.organizationId, k.source)
+    await tx
+      .update(analyticsConnections)
+      .set(anders ? { campaigns: nieuw, historyFrom: null, lastSyncedAt: null, lastError: null, lastErrorAt: null } : { campaigns: nieuw })
+      .where(eq(analyticsConnections.id, koppelingId))
+  })
 }
 
 /** Ontkoppelen haalt ook de cijfers van die bron weg; anders tellen ze stilletjes mee. */

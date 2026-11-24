@@ -10,6 +10,7 @@ import { serviceaccountAdres } from '@/lib/performance/google'
 import { googleAdsInstellingen } from '@/lib/performance/google-ads'
 import { metaInstellingen } from '@/lib/performance/meta'
 import { ahrefsInstellingen } from '@/lib/performance/ahrefs'
+import { heeftBedrijfsprofielRecht } from '@/lib/performance/bedrijfsprofiel'
 import { linkedinInstellingen, linkedinTerugUrl } from '@/lib/performance/linkedin'
 import { gebruikPerLinkedinVerbinding, listLinkedinVerbindingen } from '@/lib/performance/linkedin-verbinding'
 import { verbindingLoskoppelen, keuzesVerversen, linkedinVerbindingLoskoppelen } from '../koppelingen-actions'
@@ -90,7 +91,7 @@ export default async function KoppelingenPage({ searchParams }: { searchParams: 
     <AppShell user={user} actief="koppelingen">
       <PaginaKop
         titel="Koppelingen"
-        uitleg="Verbind de Google-accounts van James Robinson één keer. Daarna kies je bij elke klant onder Performance gewoon uit de lijst welke Analytics en Search Console erbij horen."
+        uitleg="Verbind de Google-accounts van James Robinson één keer. Daarna kies je bij elke klant onder Performance gewoon uit de lijst welke Analytics, Search Console en Google Bedrijfsprofiel erbij horen."
         acties={
           admin && inst.klaar ? (
             <a href="/api/google/verbinden" className="bg-jr-btn hover:bg-jr-btnhover inline-flex min-h-11 items-center rounded-full px-5 py-2.5 text-sm font-medium text-white">
@@ -129,7 +130,7 @@ export default async function KoppelingenPage({ searchParams }: { searchParams: 
             <p className="text-xs text-gray-500">
               {verbindingen.length === 0
                 ? 'Nog geen account verbonden.'
-                : `${aantal(keuzes.filter((k) => k.source === 'ga4').length, 'GA4-property', 'GA4-properties')} en ${aantal(keuzes.filter((k) => k.source === 'search_console').length, 'Search Console-site', 'Search Console-sites')} te kiezen.`}
+                : `${aantal(keuzes.filter((k) => k.source === 'ga4').length, 'GA4-property', 'GA4-properties')}, ${aantal(keuzes.filter((k) => k.source === 'search_console').length, 'Search Console-site', 'Search Console-sites')} en ${aantal(keuzes.filter((k) => k.source === 'google_business').length, 'Bedrijfsprofiel', 'Bedrijfsprofielen')} te kiezen.`}
             </p>
           </div>
           {verbindingen.length > 0 && (
@@ -150,6 +151,8 @@ export default async function KoppelingenPage({ searchParams }: { searchParams: 
             {verbindingen.map((v) => {
               const ga4 = keuzes.filter((k) => k.verbindingId === v.id && k.source === 'ga4').length
               const sites = keuzes.filter((k) => k.verbindingId === v.id && k.source === 'search_console').length
+              const profielen = keuzes.filter((k) => k.verbindingId === v.id && k.source === 'google_business').length
+              const zonderProfielRecht = !heeftBedrijfsprofielRecht(v.scopes)
               const n = gebruik.get(v.id) ?? 0
               return (
                 <li key={v.id} className="flex items-center gap-4 py-3.5 pr-3 pl-6">
@@ -159,10 +162,10 @@ export default async function KoppelingenPage({ searchParams }: { searchParams: 
                     <p className={`text-[13px] ${v.lastError ? 'text-[#C02A22]' : 'text-gray-600'}`}>
                       {v.lastError
                         ? v.lastError
-                        : `${aantal(ga4, 'GA4-property', 'GA4-properties')} · ${aantal(sites, 'site', 'sites')} · gebruikt bij ${aantal(n, 'koppeling', 'koppelingen')} · verbonden ${formatDate(v.createdAt)}`}
+                        : `${aantal(ga4, 'GA4-property', 'GA4-properties')} · ${aantal(sites, 'site', 'sites')} · ${zonderProfielRecht ? 'Bedrijfsprofiel: opnieuw verbinden nodig' : aantal(profielen, 'Bedrijfsprofiel', 'Bedrijfsprofielen')} · gebruikt bij ${aantal(n, 'koppeling', 'koppelingen')} · verbonden ${formatDate(v.createdAt)}`}
                     </p>
                   </div>
-                  {admin && v.lastError && (
+                  {admin && (v.lastError || zonderProfielRecht) && (
                     <a href="/api/google/verbinden" className="rounded-full border border-gray-300 px-3.5 py-1.5 text-[13px] hover:bg-gray-50">
                       Opnieuw verbinden
                     </a>

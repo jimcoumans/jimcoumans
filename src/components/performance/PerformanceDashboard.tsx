@@ -1,4 +1,4 @@
-import type { SeoDag } from '@/db/schema'
+import type { BedrijfsprofielDag, SeoDag } from '@/db/schema'
 import { conversieratio, perBron, perDag, type Cijfers, type DagRij } from '@/lib/performance/bronnen'
 import { formatEuro } from '@/lib/money'
 import { Lijngrafiek } from './Lijngrafiek'
@@ -234,6 +234,69 @@ export function SeoBlok({ rijen, vorige, domein }: { rijen: SeoDag[]; vorige: Se
           <div className="grid gap-4 xl:grid-cols-2">
             <Lijngrafiek titel="Organisch verkeer (schatting per maand)" eenheid="bezoeken per maand" punten={punten('organicTraffic')} stand />
             <Lijngrafiek titel="Organische zoekwoorden" eenheid="zoekwoorden" punten={punten('organicKeywords')} stand />
+          </div>
+        </>
+      )}
+    </section>
+  )
+}
+
+/* -------------------------------------------------------------------------
+   Google Bedrijfsprofiel: hoe vaak het profiel op Maps en in de zoekresultaten
+   gezien is, en wat mensen erop deden. Dagtotalen, dus optellen over de
+   periode en vergelijken met de periode ervoor, net als de kerncijfers.
+   ------------------------------------------------------------------------- */
+
+type ProfielMaat = Exclude<keyof BedrijfsprofielDag, 'organizationId' | 'day' | 'updatedAt'>
+
+const som = (rijen: BedrijfsprofielDag[], maten: ProfielMaat[]) => rijen.reduce((s, r) => s + maten.reduce((t, m) => t + (r[m] ?? 0), 0), 0)
+
+export function BedrijfsprofielBlok({ rijen, vorige, van, tot, naam }: { rijen: BedrijfsprofielDag[]; vorige: BedrijfsprofielDag[]; van: string; tot: string; naam: string }) {
+  const tegels: { label: string; maten: ProfielMaat[]; hint?: (nu: number) => string | undefined }[] = [
+    {
+      label: 'Weergaven van het profiel',
+      maten: ['impressionsMaps', 'impressionsSearch'],
+      hint: (nu) => (nu > 0 ? `${procent((som(rijen, ['impressionsMaps']) / nu) * 100)} op Google Maps` : undefined),
+    },
+    { label: 'Klikken naar de website', maten: ['websiteClicks'] },
+    { label: 'Telefoontjes', maten: ['callClicks'] },
+    { label: 'Routes opgevraagd', maten: ['directionRequests'] },
+  ]
+  const extra = som(rijen, ['messagingClicks', 'bookings'])
+  const weergaven = perDag(
+    rijen.map((r) => ({ day: r.day, bron: 'profiel', impressions: (r.impressionsMaps ?? 0) + (r.impressionsSearch ?? 0), clicks: null, sessions: null, conversions: null, costCents: null })),
+    van,
+    tot,
+  )
+  return (
+    <section className="space-y-4">
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <h2 className="text-[17px]">Google Bedrijfsprofiel van {naam}</h2>
+        <p className="text-xs text-gray-500">Maps en het blok in de zoekresultaten. Google levert deze cijfers een paar dagen later.</p>
+      </div>
+      {rijen.length === 0 ? (
+        <p className="rounded-xl bg-white px-5 py-4 text-sm text-gray-500 shadow-sm">Nog geen cijfers van het Bedrijfsprofiel in deze periode. Die komen binnen bij de volgende ronde ophalen, of nu met Nu bijwerken.</p>
+      ) : (
+        <>
+          <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))' }}>
+            {tegels.map((t) => {
+              const nu = som(rijen, t.maten)
+              return <Tegel key={t.label} label={t.label} waarde={compact(nu)} nu={nu} toen={som(vorige, t.maten)} hint={t.hint?.(nu)} />
+            })}
+          </div>
+          <div className="grid gap-4 xl:grid-cols-2">
+            <Lijngrafiek titel="Weergaven van het profiel" eenheid="weergaven" punten={weergaven.map((d) => ({ day: d.day, waarde: d.cijfers.impressies }))} />
+            <div className="rounded-xl bg-white p-5 text-sm shadow-sm">
+              <p className="text-[15px] font-medium">Wat mensen deden</p>
+              <ul className="mt-3 space-y-2 text-gray-600">
+                <li className="flex justify-between"><span>Naar de website</span><span className="tabular-nums">{getal(som(rijen, ['websiteClicks']))}</span></li>
+                <li className="flex justify-between"><span>Gebeld</span><span className="tabular-nums">{getal(som(rijen, ['callClicks']))}</span></li>
+                <li className="flex justify-between"><span>Route opgevraagd</span><span className="tabular-nums">{getal(som(rijen, ['directionRequests']))}</span></li>
+                <li className="flex justify-between"><span>Bericht gestuurd</span><span className="tabular-nums">{getal(som(rijen, ['messagingClicks']))}</span></li>
+                <li className="flex justify-between"><span>Gereserveerd via Google</span><span className="tabular-nums">{getal(som(rijen, ['bookings']))}</span></li>
+              </ul>
+              {extra === 0 && <p className="mt-3 text-xs text-gray-500">Berichten en reserveringen tellen alleen als de klant die knoppen op zijn profiel aan heeft.</p>}
+            </div>
           </div>
         </>
       )}

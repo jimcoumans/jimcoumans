@@ -37,14 +37,16 @@ import { getProfiel } from '@/lib/klantprofiel'
 import { listOwners } from '@/lib/crm-owners'
 import { merkTelling, getMerkkluis } from '@/lib/merkkluis'
 import { MerkkluisSamenvatting } from '@/components/stylesheet/MerkkluisSamenvatting'
-import { PerformanceDashboard, SeoBlok } from '@/components/performance/PerformanceDashboard'
+import { BedrijfsprofielBlok, PerformanceDashboard, SeoBlok } from '@/components/performance/PerformanceDashboard'
 import { Koppelingen, meetcheck } from '@/components/performance/Koppelingen'
 import { FilterBalk } from '@/components/FilterBalk'
 import { LeegVlak } from '@/components/PaginaKop'
-import { getKoppelingen, getDagcijfers, getSeoStanden } from '@/lib/performance/lezen'
+import { getBedrijfsprofiel, getKoppelingen, getDagcijfers, getSeoStanden } from '@/lib/performance/lezen'
 import { serviceaccountAdres } from '@/lib/performance/google'
 import { alleKeuzes, listVerbindingen } from '@/lib/performance/oauth'
 import { listLinkedinVerbindingen } from '@/lib/performance/linkedin-verbinding'
+import { haalMetaCampagnes } from '@/lib/performance/meta'
+import { metGeheugen } from '@/lib/cache'
 import { PERIODES, periodeGrenzen, perBron, type Periode } from '@/lib/performance/bronnen'
 import { getTijdlijn, laatsteContact } from '@/lib/tijdlijn'
 import { BookServiceForm } from '@/components/BookServiceForm'
@@ -451,18 +453,28 @@ async function PerformanceTab({
 }) {
   const periode = (PERIODES.some((p) => p.periode === periodeParam) ? periodeParam : '30_dagen') as Periode
   const g = periodeGrenzen(periode)
-  const [koppelingen, rijen, vorige, seo, seoVorige, google, verbindingen, linkedinVerbindingen] = await Promise.all([
+  const [koppelingen, rijen, vorige, seo, seoVorige, profiel, profielVorige, google, verbindingen, linkedinVerbindingen] = await Promise.all([
     getKoppelingen(organizationId),
     getDagcijfers(g.van, g.tot, organizationId),
     getDagcijfers(g.vorigeVan, g.vorigeTot, organizationId),
     getSeoStanden(organizationId, g.van, g.tot),
     getSeoStanden(organizationId, g.vorigeVan, g.vorigeTot),
+    getBedrijfsprofiel(organizationId, g.van, g.tot),
+    getBedrijfsprofiel(organizationId, g.vorigeVan, g.vorigeTot),
     alleKeuzes(),
     listVerbindingen(),
     listLinkedinVerbindingen(),
   ])
   const waarschuwingen = meetcheck(koppelingen, perBron(rijen).totaal)
   const ahrefs = koppelingen.find((k) => k.source === 'ahrefs')
+  const bedrijfsprofiel = koppelingen.find((k) => k.source === 'google_business')
+  // De campagnes van het Meta-account, om er een deel van aan te vinken. Tien minuten onthouden: de lijst verandert zelden.
+  const meta = koppelingen.find((k) => k.source === 'meta_ads')
+  const metaCampagnes = meta
+    ? await metGeheugen(`meta:campagnes:${meta.externalId}`, () => haalMetaCampagnes(meta.externalId), 10 * 60_000)
+        .then((lijst) => ({ lijst, fout: null }))
+        .catch((e: Error) => ({ lijst: [], fout: e.message }))
+    : null
 
   return (
     <div className="space-y-6">
@@ -532,6 +544,8 @@ async function PerformanceTab({
         />
       )}
 
+      {bedrijfsprofiel && <BedrijfsprofielBlok rijen={profiel} vorige={profielVorige} van={g.van} tot={g.tot} naam={bedrijfsprofiel.displayName ?? klant.name} />}
+
       {ahrefs && <SeoBlok rijen={seo} vorige={seoVorige} domein={ahrefs.externalId} />}
 
       <Koppelingen
@@ -543,6 +557,7 @@ async function PerformanceTab({
         keuzes={google.keuzes}
         verbonden={verbindingen.map((v) => v.email)}
         linkedinVerbonden={linkedinVerbindingen.map((v) => v.label)}
+        metaCampagnes={metaCampagnes}
       />
     </div>
   )

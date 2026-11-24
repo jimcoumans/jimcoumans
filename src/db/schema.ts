@@ -4035,6 +4035,7 @@ export const analyticsSourceEnum = pgEnum('analytics_source', [
   'linkedin_ads',
   'tiktok_ads',
   'ahrefs',
+  'google_business',
 ])
 
 /**
@@ -4108,6 +4109,12 @@ export const analyticsConnections = pgTable(
     linkedinConnectionId: uuid('linkedin_connection_id').references(() => linkedinConnections.id, { onDelete: 'set null' }),
     /** De naam zoals de bron hem noemt, bijvoorbeeld "Thiessen Wijnkoopers – GA4". */
     displayName: text('display_name'),
+    /**
+     * Alleen deze campagnes tellen mee, met id en naam zoals het platform ze
+     * noemt. Leeg: het hele account. Voor klanten die adverteren via het
+     * eigen advertentieaccount van James Robinson, waar meer klanten in zitten.
+     */
+    campaigns: jsonb('campaigns').$type<{ id: string; naam: string }[]>(),
     active: boolean('active').notNull().default(true),
     /** Tot hoe ver terug de cijfers er al zijn. Leeg: nog niets opgehaald. */
     historyFrom: date('history_from', { mode: 'string' }),
@@ -4184,6 +4191,45 @@ export const seoDaily = pgTable(
 )
 
 export type SeoDag = typeof seoDaily.$inferSelect
+
+/**
+ * Google Bedrijfsprofiel (het blok op Maps en in de zoekresultaten) per
+ * klant per dag: hoe vaak het profiel gezien is en wat mensen erop deden.
+ * Dagtotalen, maar van een ander soort dan websitebezoeken: wie belt of een
+ * route opvraagt, komt nooit op de website. Daarom een eigen tabel. De
+ * koppeling staat in analytics_connections met source 'google_business' en
+ * het locatienummer als external_id.
+ */
+export const businessProfileDaily = pgTable(
+  'business_profile_daily',
+  {
+    organizationId: uuid('organization_id')
+      .notNull()
+      .references(() => organizations.id, { onDelete: 'cascade' }),
+    day: date('day', { mode: 'string' }).notNull(),
+    /** Weergaven op Google Maps (desktop en mobiel samen). */
+    impressionsMaps: integer('impressions_maps'),
+    /** Weergaven in de zoekresultaten van Google (desktop en mobiel samen). */
+    impressionsSearch: integer('impressions_search'),
+    websiteClicks: integer('website_clicks'),
+    callClicks: integer('call_clicks'),
+    directionRequests: integer('direction_requests'),
+    messagingClicks: integer('messaging_clicks'),
+    /** Reserveringen via Reserve with Google. */
+    bookings: integer('bookings'),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.organizationId, t.day] }),
+    index('business_profile_daily_day_idx').on(t.day),
+    check(
+      'business_profile_daily_not_negative',
+      sql`COALESCE(${t.impressionsMaps}, 0) >= 0 AND COALESCE(${t.impressionsSearch}, 0) >= 0 AND COALESCE(${t.websiteClicks}, 0) >= 0 AND COALESCE(${t.callClicks}, 0) >= 0 AND COALESCE(${t.directionRequests}, 0) >= 0 AND COALESCE(${t.messagingClicks}, 0) >= 0 AND COALESCE(${t.bookings}, 0) >= 0`,
+    ),
+  ],
+)
+
+export type BedrijfsprofielDag = typeof businessProfileDaily.$inferSelect
 
 /**
  * Acties bij de rapportage: wat de marketingmanager per klant per maand

@@ -2,29 +2,31 @@ import type { AnalyticsConnection } from '@/db/schema'
 import { ActionForm, Field } from '@/components/ActionForm'
 import { Paneel } from '@/components/Paneel'
 import { Menu } from '@/components/Menu'
-import { koppel, ontkoppel, nuBijwerken } from '@/app/beheer/performance-actions'
+import { kiesCampagnes, koppel, ontkoppel, nuBijwerken } from '@/app/beheer/performance-actions'
 import { BRON_KOPPELING } from '@/lib/performance/lezen'
 import { KAN_OPHALEN } from '@/lib/performance/sync'
 import { formatDate } from '@/lib/dates'
 import { score, type Keuze } from '@/lib/performance/oauth'
 import { googleAdsInstellingen } from '@/lib/performance/google-ads'
-import { metaInstellingen } from '@/lib/performance/meta'
+import { metaInstellingen, type MetaCampagne } from '@/lib/performance/meta'
 import { linkedinInstellingen } from '@/lib/performance/linkedin'
 import { ahrefsInstellingen, domeinUitWebsite } from '@/lib/performance/ahrefs'
 import { KeuzeLijst, type KeuzeOptie } from './KeuzeLijst'
+import { VinkLijst, type VinkOptie } from './VinkLijst'
 
 /* De koppelingen van één klant: wat er gekoppeld is, of het werkt, en
    een paneel om te koppelen. Fouten staan erbij in gewone taal. */
 
-const VOLGORDE: AnalyticsConnection['source'][] = ['ga4', 'search_console', 'ahrefs', 'google_ads', 'meta_ads', 'linkedin_ads', 'tiktok_ads']
+const VOLGORDE: AnalyticsConnection['source'][] = ['ga4', 'search_console', 'google_business', 'ahrefs', 'google_ads', 'meta_ads', 'linkedin_ads', 'tiktok_ads']
 
 /** Bronnen waar je uit een lijst kiest in plaats van een ID over te typen. */
-const MET_LIJST = new Set<AnalyticsConnection['source']>(['ga4', 'search_console', 'google_ads', 'meta_ads', 'linkedin_ads'])
+const MET_LIJST = new Set<AnalyticsConnection['source']>(['ga4', 'search_console', 'google_business', 'google_ads', 'meta_ads', 'linkedin_ads'])
 
 /** Wat de klant moet doen voordat zijn account in onze lijst staat. */
 const TOEGANG: Record<string, { wat: string; hoe: string }> = {
   ga4: { wat: 'GA4-property', hoe: 'Laat de klant in GA4 een van onze adressen als lezer toevoegen' },
   search_console: { wat: 'Search Console-site', hoe: 'Laat de klant in Search Console een van onze adressen als lezer toevoegen' },
+  google_business: { wat: 'Bedrijfsprofiel', hoe: 'Laat de klant in zijn Google Bedrijfsprofiel een van onze adressen als beheerder uitnodigen (Instellingen → Gebruikers en toegang)' },
   google_ads: { wat: 'Google Ads-account', hoe: 'Koppel het account van de klant aan ons MCC (in Google Ads: Accounts → Koppelen)' },
   meta_ads: { wat: 'Meta-advertentieaccount', hoe: 'Laat de klant ons als partner toevoegen aan zijn advertentieaccount, en geef onze systeemgebruiker daar leesrecht op' },
   linkedin_ads: { wat: 'LinkedIn-advertentieaccount', hoe: 'Laat de klant ons verbonden LinkedIn-account in Campaign Manager een rol geven op zijn advertentieaccount (Viewer is genoeg)' },
@@ -42,6 +44,7 @@ export function Koppelingen({
   keuzes,
   verbonden,
   linkedinVerbonden,
+  metaCampagnes,
 }: {
   organizationId: string
   slug: string
@@ -53,6 +56,8 @@ export function Koppelingen({
   verbonden: string[]
   /** De labels van de verbonden LinkedIn-accounts. */
   linkedinVerbonden?: string[]
+  /** De campagnes van het gekoppelde Meta-account, om er een deel van aan te vinken; fout als Meta ze niet gaf. */
+  metaCampagnes?: { lijst: MetaCampagne[]; fout: string | null } | null
 }) {
   const per = new Map(koppelingen.map((k) => [k.source, k]))
   const meerdere = verbonden.length > 1
@@ -74,6 +79,15 @@ export function Koppelingen({
   const meta = metaInstellingen()
   const linkedin = linkedinInstellingen()
   const ahrefs = ahrefsInstellingen()
+  /* Campagnes om aan te vinken: wat Meta nu kent, plus wat eerder gekozen is maar niet meer bestaat. */
+  const campagneOpties = (k: AnalyticsConnection): VinkOptie[] => {
+    const lijst = metaCampagnes?.lijst ?? []
+    const bekend = new Set(lijst.map((c) => c.id))
+    return [
+      ...lijst.map((c) => ({ waarde: c.id, naam: c.naam, detail: `${c.actief ? 'Actief' : c.status === 'PAUSED' ? 'Gepauzeerd' : c.status.toLowerCase().replace(/_/g, ' ')} · ${c.id}` })),
+      ...(k.campaigns ?? []).filter((c) => !bekend.has(c.id)).map((c) => ({ waarde: c.id, naam: c.naam, detail: `Niet meer gevonden in dit account · ${c.id}`, weg: true })),
+    ]
+  }
   /* Waarom de lijst voor een bron leeg is, in gewone taal. */
   const leeg = (bron: AnalyticsConnection['source']): { kop: string; tekst: string; link?: false } | null => {
     const t = TOEGANG[bron]
@@ -115,7 +129,7 @@ export function Koppelingen({
           const k = per.get(bron)
           const info = BRON_KOPPELING[bron]
           const kan = KAN_OPHALEN[bron]
-          const google = bron === 'ga4' || bron === 'search_console'
+          const google = bron === 'ga4' || bron === 'search_console' || bron === 'google_business'
           const lijst = MET_LIJST.has(bron) && opties(bron).length > 0
           const waarom = MET_LIJST.has(bron)
             ? leeg(bron)
@@ -133,7 +147,12 @@ export function Koppelingen({
               <div className="min-w-0 flex-1">
                 <p className="text-[15px]">
                   {info.naam}
-                  {k && <span className="ml-2 text-[13px] text-gray-500">{k.displayName ?? k.externalId}</span>}
+                  {k && (
+                    <span className="ml-2 text-[13px] text-gray-500">
+                      {k.displayName ?? k.externalId}
+                      {k.campaigns?.length ? ` · ${k.campaigns.length === 1 ? '1 campagne' : `${k.campaigns.length} campagnes`}` : ''}
+                    </span>
+                  )}
                 </p>
                 <p className={`text-[13px] ${k?.lastError ? 'text-[#C02A22]' : 'text-gray-600'}`}>
                   {!k
@@ -188,7 +207,7 @@ export function Koppelingen({
                             </>
                           )}
                         </p>
-                        {google && serviceaccount && (
+                        {google && bron !== 'google_business' && serviceaccount && (
                           <p className="mt-2 text-gray-600">
                             Of via het serviceaccount: voeg <span className="font-mono text-[13px] break-all select-all">{serviceaccount}</span> toe als lezer en vul hieronder het ID in.
                           </p>
@@ -205,6 +224,26 @@ export function Koppelingen({
                   </>
                 )}
               </Paneel>
+              {k && bron === 'meta_ads' && (
+                <Paneel
+                  knop="Campagnes"
+                  stijl="klein"
+                  titel="Welke campagnes horen bij deze klant?"
+                  uitleg="Adverteert de klant vanuit het advertentieaccount van James Robinson, naast andere klanten? Vink dan alleen zijn campagnes aan. Niets aangevinkt: het hele account telt mee."
+                >
+                  {metaCampagnes?.fout && <p className="mb-4 rounded-lg bg-[#FDECEA] px-4 py-3 text-sm text-[#C02A22]">Meta gaf de campagnes niet: {metaCampagnes.fout}</p>}
+                  <ActionForm action={kiesCampagnes} submitLabel="Opslaan en ophalen" resetOnSuccess={false}>
+                    <input type="hidden" name="organizationId" value={organizationId} />
+                    <input type="hidden" name="slug" value={slug} />
+                    <input type="hidden" name="koppelingId" value={k.id} />
+                    <input type="hidden" name="accountId" value={k.externalId} />
+                    <VinkLijst opties={campagneOpties(k)} gekozen={(k.campaigns ?? []).map((c) => c.id)} naam="campagne" />
+                    <p className="col-span-full text-xs text-gray-600">
+                      Een andere keuze betekent andere cijfers: de historie van Meta Ads wordt dan opnieuw opgehaald. Nieuwe campagnes van de klant moet je hier ook aanvinken, anders tellen ze niet mee.
+                    </p>
+                  </ActionForm>
+                </Paneel>
+              )}
               {k && (
                 <Menu>
                   <ActionForm

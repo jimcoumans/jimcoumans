@@ -3620,3 +3620,60 @@ BEGIN
   END IF;
 END $jr_0057_ahrefs_seo$;
 
+-- ---------------------------------------------------------------------------
+-- 0058_koppeling_campagnes
+-- ---------------------------------------------------------------------------
+
+DO $jr_0058_koppeling_campagnes$
+BEGIN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = '24f58fe59010840310a7b1186f1707e3e58172c8c161786c53d3bd2b0296a13c') THEN
+    RAISE NOTICE 'Overgeslagen: 0058_koppeling_campagnes stond er al.';
+  ELSE
+    ALTER TABLE "analytics_connections" ADD COLUMN "campaigns" jsonb;
+
+    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+    VALUES ('24f58fe59010840310a7b1186f1707e3e58172c8c161786c53d3bd2b0296a13c', 1795509090276);
+    RAISE NOTICE 'Toegepast: 0058_koppeling_campagnes.';
+  END IF;
+END $jr_0058_koppeling_campagnes$;
+
+-- ---------------------------------------------------------------------------
+-- 0059_google_bedrijfsprofiel
+-- ---------------------------------------------------------------------------
+
+DO $jr_0059_google_bedrijfsprofiel$
+BEGIN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = 'a44094ee601267c1b21992aa7dbbb994893121ea89e6bcec5c8f5dbffa9f52de') THEN
+    RAISE NOTICE 'Overgeslagen: 0059_google_bedrijfsprofiel stond er al.';
+  ELSE
+    ALTER TYPE "public"."analytics_source" ADD VALUE 'google_business';
+
+    CREATE TABLE "business_profile_daily" (
+    	"organization_id" uuid NOT NULL,
+    	"day" date NOT NULL,
+    	"impressions_maps" integer,
+    	"impressions_search" integer,
+    	"website_clicks" integer,
+    	"call_clicks" integer,
+    	"direction_requests" integer,
+    	"messaging_clicks" integer,
+    	"bookings" integer,
+    	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
+    	CONSTRAINT "business_profile_daily_organization_id_day_pk" PRIMARY KEY("organization_id","day"),
+    	CONSTRAINT "business_profile_daily_not_negative" CHECK (COALESCE("business_profile_daily"."impressions_maps", 0) >= 0 AND COALESCE("business_profile_daily"."impressions_search", 0) >= 0 AND COALESCE("business_profile_daily"."website_clicks", 0) >= 0 AND COALESCE("business_profile_daily"."call_clicks", 0) >= 0 AND COALESCE("business_profile_daily"."direction_requests", 0) >= 0 AND COALESCE("business_profile_daily"."messaging_clicks", 0) >= 0 AND COALESCE("business_profile_daily"."bookings", 0) >= 0)
+    );
+
+
+    ALTER TABLE "business_profile_daily" ADD CONSTRAINT "business_profile_daily_organization_id_organizations_id_fk" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON DELETE cascade ON UPDATE no action;
+
+    CREATE INDEX "business_profile_daily_day_idx" ON "business_profile_daily" USING btree ("day");
+
+    -- Net als performance_daily: alleen de server (service role) mag erbij, nooit de anon-sleutel.
+    ALTER TABLE "business_profile_daily" ENABLE ROW LEVEL SECURITY;
+
+    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+    VALUES ('a44094ee601267c1b21992aa7dbbb994893121ea89e6bcec5c8f5dbffa9f52de', 1795509463724);
+    RAISE NOTICE 'Toegepast: 0059_google_bedrijfsprofiel.';
+  END IF;
+END $jr_0059_google_bedrijfsprofiel$;
+
