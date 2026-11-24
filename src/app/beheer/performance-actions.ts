@@ -4,7 +4,9 @@ import { revalidatePath } from 'next/cache'
 import { requireStaff } from '@/lib/auth'
 import { describeDbError } from '@/lib/db-errors'
 import { KoppelingFout } from '@/lib/performance/google'
-import { zetKoppeling, verwijderKoppeling } from '@/lib/performance/lezen'
+import { zetKoppeling, verwijderKoppeling, zetCampagnes } from '@/lib/performance/lezen'
+import { haalMetaCampagnes } from '@/lib/performance/meta'
+import { vergeet } from '@/lib/cache'
 import { syncAlles } from '@/lib/performance/sync'
 import { alleKeuzes } from '@/lib/performance/oauth'
 import { eq } from 'drizzle-orm'
@@ -57,6 +59,26 @@ export async function koppel(formData: FormData): Promise<ActionResult> {
       await zetKoppeling(orgId, bron, externalId)
     }
     // Meteen een eerste keer ophalen, zodat je ziet of de toegang klopt.
+    await syncAlles({ organizationId: orgId, budgetMs: 15000 })
+  })
+}
+
+/**
+ * Welke campagnes van het Meta-account bij deze klant horen. Niets aangevinkt
+ * is: het hele account. De namen komen van Meta zelf, niet uit het formulier.
+ */
+export async function kiesCampagnes(formData: FormData): Promise<ActionResult> {
+  await requireStaff()
+  const orgId = tekst(formData, 'organizationId')
+  const koppelingId = tekst(formData, 'koppelingId')
+  const accountId = tekst(formData, 'accountId')
+  const gekozen = new Set(formData.getAll('campagne').map((v) => String(v).trim()).filter((v) => /^\d+$/.test(v)))
+  return veilig(tekst(formData, 'slug'), async () => {
+    const lijst = gekozen.size ? await haalMetaCampagnes(accountId) : []
+    const campagnes = lijst.filter((c) => gekozen.has(c.id)).map((c) => ({ id: c.id, naam: c.naam }))
+    if (campagnes.length !== gekozen.size) throw new KoppelingFout('Een aangevinkte campagne staat niet (meer) in dit account. Herlaad de pagina en kies opnieuw.')
+    await zetCampagnes(koppelingId, campagnes)
+    vergeet(`meta:campagnes:${accountId}`)
     await syncAlles({ organizationId: orgId, budgetMs: 15000 })
   })
 }
