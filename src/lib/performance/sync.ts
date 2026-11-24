@@ -4,6 +4,8 @@ import { analyticsConnections, organizations, performanceDaily, type AnalyticsCo
 import { KoppelingFout, haalGa4, haalSearchConsole, type Dagcijfers } from './google'
 import { GoogleAdsToegangFout, haalGoogleAds } from './google-ads'
 import { haalMeta } from './meta'
+import { LinkedinToegangFout, haalLinkedin } from './linkedin'
+import { getLinkedinVerbinding, linkedinToegangstoken, listLinkedinVerbindingen } from './linkedin-verbinding'
 import { getVerbinding, listVerbindingen, toegangstoken } from './oauth'
 
 /* -------------------------------------------------------------------------
@@ -21,13 +23,13 @@ const RECENT_DAGEN = 4
 const STUK_DAGEN = 120
 const HISTORIE_MAANDEN = 13
 
-/** Welke bronnen we al kunnen ophalen. LinkedIn en TikTok wachten op toegang tot hun API (V3). */
+/** Welke bronnen we al kunnen ophalen. TikTok wacht op toegang tot zijn API (V3). */
 export const KAN_OPHALEN: Record<AnalyticsConnection['source'], boolean> = {
   ga4: true,
   search_console: true,
   google_ads: true,
   meta_ads: true,
-  linkedin_ads: false,
+  linkedin_ads: true,
   tiktok_ads: false,
 }
 
@@ -80,6 +82,30 @@ async function haalGoogleAdsViaVerbindingen(k: AnalyticsConnection, van: string,
   throw laatste
 }
 
+/**
+ * LinkedIn gaat via het LinkedIn-account dat bij de koppeling is gekozen.
+ * Is dat er niet (meer), dan proberen we de verbonden accounts op volgorde.
+ */
+async function haalLinkedinViaVerbindingen(k: AnalyticsConnection, van: string, tot: string): Promise<Dagcijfers[]> {
+  if (k.linkedinConnectionId) {
+    const v = await getLinkedinVerbinding(k.linkedinConnectionId)
+    if (!v) throw new KoppelingFout('Het LinkedIn-account van deze koppeling is losgekoppeld. Kies het advertentieaccount opnieuw.')
+    return haalLinkedin(k.externalId, van, tot, await linkedinToegangstoken(v))
+  }
+  const verbindingen = await listLinkedinVerbindingen()
+  if (verbindingen.length === 0) throw new KoppelingFout('LinkedIn leest mee via een verbonden LinkedIn-account. Verbind er eerst een onder Beheer → Koppelingen.')
+  let laatste: KoppelingFout | null = null
+  for (const v of verbindingen) {
+    try {
+      return await haalLinkedin(k.externalId, van, tot, await linkedinToegangstoken(v))
+    } catch (e) {
+      if (!(e instanceof LinkedinToegangFout)) throw e
+      laatste = new KoppelingFout(`${v.label}: ${e.message}`)
+    }
+  }
+  throw laatste
+}
+
 async function haal(k: AnalyticsConnection, van: string, tot: string, toegang?: string): Promise<Dagcijfers[]> {
   switch (k.source) {
     case 'ga4':
@@ -90,6 +116,8 @@ async function haal(k: AnalyticsConnection, van: string, tot: string, toegang?: 
       return haalGoogleAdsViaVerbindingen(k, van, tot, toegang)
     case 'meta_ads':
       return haalMeta(k.externalId, van, tot)
+    case 'linkedin_ads':
+      return haalLinkedinViaVerbindingen(k, van, tot)
     default:
       throw new KoppelingFout('Deze bron kunnen we nog niet ophalen; de koppeling volgt zodra het platform onze toegang heeft goedgekeurd.')
   }

@@ -9,6 +9,7 @@ import { formatDate } from '@/lib/dates'
 import { score, type Keuze } from '@/lib/performance/oauth'
 import { googleAdsInstellingen } from '@/lib/performance/google-ads'
 import { metaInstellingen } from '@/lib/performance/meta'
+import { linkedinInstellingen } from '@/lib/performance/linkedin'
 import { KeuzeLijst, type KeuzeOptie } from './KeuzeLijst'
 
 /* De koppelingen van één klant: wat er gekoppeld is, of het werkt, en
@@ -17,7 +18,7 @@ import { KeuzeLijst, type KeuzeOptie } from './KeuzeLijst'
 const VOLGORDE: AnalyticsConnection['source'][] = ['ga4', 'search_console', 'google_ads', 'meta_ads', 'linkedin_ads', 'tiktok_ads']
 
 /** Bronnen waar je uit een lijst kiest in plaats van een ID over te typen. */
-const MET_LIJST = new Set<AnalyticsConnection['source']>(['ga4', 'search_console', 'google_ads', 'meta_ads'])
+const MET_LIJST = new Set<AnalyticsConnection['source']>(['ga4', 'search_console', 'google_ads', 'meta_ads', 'linkedin_ads'])
 
 /** Wat de klant moet doen voordat zijn account in onze lijst staat. */
 const TOEGANG: Record<string, { wat: string; hoe: string }> = {
@@ -25,6 +26,7 @@ const TOEGANG: Record<string, { wat: string; hoe: string }> = {
   search_console: { wat: 'Search Console-site', hoe: 'Laat de klant in Search Console een van onze adressen als lezer toevoegen' },
   google_ads: { wat: 'Google Ads-account', hoe: 'Koppel het account van de klant aan ons MCC (in Google Ads: Accounts → Koppelen)' },
   meta_ads: { wat: 'Meta-advertentieaccount', hoe: 'Laat de klant ons als partner toevoegen aan zijn advertentieaccount, en geef onze systeemgebruiker daar leesrecht op' },
+  linkedin_ads: { wat: 'LinkedIn-advertentieaccount', hoe: 'Laat de klant ons verbonden LinkedIn-account in Campaign Manager een rol geven op zijn advertentieaccount (Viewer is genoeg)' },
 }
 
 const tijd = (d: Date) =>
@@ -38,6 +40,7 @@ export function Koppelingen({
   klant,
   keuzes,
   verbonden,
+  linkedinVerbonden,
 }: {
   organizationId: string
   slug: string
@@ -47,6 +50,8 @@ export function Koppelingen({
   keuzes: Keuze[]
   /** De verbonden Google-adressen van James Robinson. */
   verbonden: string[]
+  /** De labels van de verbonden LinkedIn-accounts. */
+  linkedinVerbonden?: string[]
 }) {
   const per = new Map(koppelingen.map((k) => [k.source, k]))
   const meerdere = verbonden.length > 1
@@ -61,9 +66,12 @@ export function Koppelingen({
       }))
   /* Wat er nu gekoppeld is, terugvinden in de lijst: ook als het ID destijds met de hand is ingevuld. */
   const gekozen = (bron: AnalyticsConnection['source'], k: AnalyticsConnection | undefined) =>
-    k ? (opties(bron).find((o) => o.waarde === `${k.googleConnectionId ?? ''}|${k.externalId}`) ?? opties(bron).find((o) => o.waarde.endsWith(`|${k.externalId}`)))?.waarde : undefined
+    k
+      ? (opties(bron).find((o) => o.waarde === `${k.googleConnectionId ?? k.linkedinConnectionId ?? ''}|${k.externalId}`) ?? opties(bron).find((o) => o.waarde.endsWith(`|${k.externalId}`)))?.waarde
+      : undefined
   const ads = googleAdsInstellingen()
   const meta = metaInstellingen()
+  const linkedin = linkedinInstellingen()
   /* Waarom de lijst voor een bron leeg is, in gewone taal. */
   const leeg = (bron: AnalyticsConnection['source']): { kop: string; tekst: string; link?: false } | null => {
     const t = TOEGANG[bron]
@@ -72,6 +80,11 @@ export function Koppelingen({
       return meta.klaar
         ? { kop: 'Nog niets te kiezen', tekst: `Onze Business Manager ziet nog geen ${t.wat}. ${t.hoe}, en ververs de lijst onder` }
         : { kop: 'Meta Ads is nog niet ingesteld', tekst: `Zet ${meta.ontbreekt.join(', ')} in Netlify; daarna kies je hier uit een lijst. Tot die tijd vul je het act_-nummer hieronder zelf in.`, link: false }
+    }
+    if (bron === 'linkedin_ads') {
+      if (!linkedin.klaar) return { kop: 'LinkedIn Ads is nog niet ingesteld', tekst: `Zet ${linkedin.ontbreekt.join(', ')} in Netlify; daarna verbindt een beheerder ons LinkedIn-account en kies je hier uit een lijst. Tot die tijd vul je het account-ID hieronder zelf in.`, link: false }
+      if (!linkedinVerbonden?.length) return { kop: 'Sneller: verbind eerst ons LinkedIn-account', tekst: "Dan kies je hier gewoon uit een lijst, zonder ID's op te zoeken. Dat doet een beheerder één keer onder" }
+      return { kop: 'Nog niets te kiezen', tekst: `Ons LinkedIn-account ziet nog geen ${t.wat}. ${t.hoe}, en ververs de lijst onder` }
     }
     if (verbonden.length === 0) {
       return { kop: 'Sneller: verbind eerst onze Google-accounts', tekst: "Dan kies je hier gewoon uit een lijst, zonder ID's op te zoeken. Dat doet een beheerder één keer onder" }
