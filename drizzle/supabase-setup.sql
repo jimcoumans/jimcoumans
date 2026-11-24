@@ -4270,3 +4270,20 @@ BEGIN
   END IF;
 END $jr_0059_google_bedrijfsprofiel$;
 
+-- ---------------------------------------------------------------------------
+-- 0060_koppeling_accounts
+-- ---------------------------------------------------------------------------
+
+DO $jr_0060_koppeling_accounts$
+BEGIN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = '065103df13636c3f93e4681cc3f63607a23d97a3db9f62183ba981702928b0b7') THEN
+    RAISE NOTICE 'Overgeslagen: 0060_koppeling_accounts stond er al.';
+  ELSE
+    ALTER TABLE "analytics_connections" ADD COLUMN "accounts" jsonb;
+
+    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+    VALUES ('065103df13636c3f93e4681cc3f63607a23d97a3db9f62183ba981702928b0b7', 1795517971588);
+    RAISE NOTICE 'Toegepast: 0060_koppeling_accounts.';
+  END IF;
+END $jr_0060_koppeling_accounts$;
+

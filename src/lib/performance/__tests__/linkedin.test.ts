@@ -2,9 +2,14 @@ import { describe, it, mock } from 'node:test'
 import assert from 'node:assert/strict'
 import { KoppelingFout } from '../google'
 import {
+  CAMPAGNES_PER_AANVRAAG,
   LinkedinToegangFout,
   accountsPad,
   analyticsPad,
+  campagnesPad,
+  haalLinkedin,
+  leesLinkedinCampagnes,
+  somPerDag,
   controleerMunt,
   haalLinkedinAccounts,
   kostenNaarCenten,
@@ -148,5 +153,62 @@ describe('fouten', () => {
     assert.ok(!(leesLinkedinFout(404, { message: 'x' }) instanceof LinkedinToegangFout))
     assert.match(leesLinkedinFout(500, { message: 'Internal error' }).message, /fout 500: Internal error/)
     assert.match(leesLinkedinFout(426, { message: 'Version not supported' }).message, /202611/)
+  })
+})
+
+describe('campagnes', () => {
+  it('zoekt de campagnes van één account, ook de afgelopen, en pagineert met een token', () => {
+    const pad = campagnesPad('512345678')
+    assert.match(pad, /^adAccounts\/512345678\/adCampaigns\?q=search&pageSize=1000&search=\(status:\(values:List\(ACTIVE,PAUSED,COMPLETED,ARCHIVED/)
+    assert.match(campagnesPad('512345678', 'volgende'), /pageToken=volgende/)
+  })
+  it('leest id, naam en status en laat test- en verwijderde campagnes weg', () => {
+    assert.deepEqual(
+      leesLinkedinCampagnes({
+        elements: [
+          { id: 1, name: ' Najaar ', status: 'ACTIVE' },
+          { id: 2, status: 'COMPLETED' },
+          { id: 3, name: 'Test', status: 'ACTIVE', test: true },
+          { id: 4, name: 'Weg', status: 'REMOVED' },
+        ],
+      }),
+      [
+        { id: '1', naam: 'Najaar', actief: true, status: 'ACTIVE' },
+        { id: '2', naam: 'Campagne 2', actief: false, status: 'COMPLETED' },
+      ],
+    )
+  })
+  it('vraagt met campagnes per campagne per dag, in stukken, en telt op', async () => {
+    const gezien: string[] = []
+    const fetchMock = mock.method(globalThis, 'fetch', async (input: string | URL | Request) => {
+      const url = String(input)
+      gezien.push(url)
+      if (url.includes('adAccounts/512345678')) return new Response(JSON.stringify({ currency: 'EUR' }), { status: 200 })
+      return new Response(
+        JSON.stringify({ elements: [{ dateRange: { start: { year: 2026, month: 10, day: 1 } }, impressions: 10, clicks: 1, costInLocalCurrency: '1.50', externalWebsiteConversions: 0 }] }),
+        { status: 200 },
+      )
+    })
+    try {
+      const ids = Array.from({ length: CAMPAGNES_PER_AANVRAAG + 1 }, (_, i) => String(100 + i))
+      const uit = await haalLinkedin('512345678', '2026-10-01', '2026-10-02', 'T', ids)
+      assert.equal(gezien.length, 3, 'account, en twee stukken campagnes')
+      assert.match(gezien[1] ?? '', /pivot=CAMPAIGN.*campaigns=List\(urn%3Ali%3AsponsoredCampaign%3A100,/)
+      assert.ok(!gezien[1]?.includes('accounts=List'))
+      assert.deepEqual(uit, [{ day: '2026-10-01', bron: 'linkedin', impressions: 20, clicks: 2, conversions: 0, costCents: 300 }])
+    } finally {
+      fetchMock.mock.restore()
+    }
+  })
+  it('telt reeksen van meer accounts per dag op', () => {
+    const a = [{ day: '2026-10-01', bron: 'linkedin' as const, impressions: 5, costCents: 100 }]
+    const b = [
+      { day: '2026-10-01', bron: 'linkedin' as const, impressions: 7, clicks: 2 },
+      { day: '2026-09-30', bron: 'linkedin' as const, impressions: 1 },
+    ]
+    assert.deepEqual(somPerDag([a, b]), [
+      { day: '2026-09-30', bron: 'linkedin', impressions: 1 },
+      { day: '2026-10-01', bron: 'linkedin', impressions: 12, clicks: 2, sessions: undefined, conversions: undefined, costCents: 100 },
+    ])
   })
 })

@@ -81,7 +81,7 @@ export default async function KoppelingenPage({ searchParams }: { searchParams: 
       naam: 'Ahrefs (SEO)',
       status: ahrefs.klaar ? 'klaar' : 'instellen',
       tekst: ahrefs.klaar
-        ? 'Via het Ahrefs-abonnement van James Robinson. Geen lijst nodig: bij de klant vul je het domein van de website in.'
+        ? `Via het Ahrefs-abonnement van James Robinson. ${aantal(keuzes.filter((k) => k.source === 'ahrefs').length, 'project', 'projecten')} te kiezen; een ander domein invullen kan ook.`
         : `Via het Ahrefs-abonnement van James Robinson. Nog niet ingesteld in Netlify: ${ahrefs.ontbreekt.join(', ')}.`,
     },
   ]

@@ -44,7 +44,9 @@ import { LeegVlak } from '@/components/PaginaKop'
 import { getBedrijfsprofiel, getKoppelingen, getDagcijfers, getSeoStanden } from '@/lib/performance/lezen'
 import { serviceaccountAdres } from '@/lib/performance/google'
 import { alleKeuzes, listVerbindingen } from '@/lib/performance/oauth'
-import { listLinkedinVerbindingen } from '@/lib/performance/linkedin-verbinding'
+import { listLinkedinVerbindingen, metLinkedinToegang } from '@/lib/performance/linkedin-verbinding'
+import { haalLinkedinCampagnes } from '@/lib/performance/linkedin'
+import { accountsVan } from '@/lib/performance/koppeling'
 import { haalMetaCampagnes } from '@/lib/performance/meta'
 import { metGeheugen } from '@/lib/cache'
 import { PERIODES, periodeGrenzen, perBron, type Periode } from '@/lib/performance/bronnen'
@@ -475,6 +477,17 @@ async function PerformanceTab({
         .then((lijst) => ({ lijst, fout: null }))
         .catch((e: Error) => ({ lijst: [], fout: e.message }))
     : null
+  // Idem voor LinkedIn, per advertentieaccount van de klant.
+  const linkedin = koppelingen.find((k) => k.source === 'linkedin_ads')
+  const linkedinCampagnes = linkedin
+    ? await Promise.all(
+        accountsVan(linkedin).map((a) =>
+          metGeheugen(`linkedin:campagnes:${a.id}`, () => metLinkedinToegang(a.verbinding ?? linkedin.linkedinConnectionId, (t) => haalLinkedinCampagnes(a.id, t)), 10 * 60_000)
+            .then((lijst) => ({ account: a.id, lijst, fout: null }))
+            .catch((e: Error) => ({ account: a.id, lijst: [], fout: e.message })),
+        ),
+      )
+    : null
 
   return (
     <div className="space-y-6">
@@ -558,6 +571,7 @@ async function PerformanceTab({
         verbonden={verbindingen.map((v) => v.email)}
         linkedinVerbonden={linkedinVerbindingen.map((v) => v.label)}
         metaCampagnes={metaCampagnes}
+        linkedinCampagnes={linkedinCampagnes}
       />
     </div>
   )

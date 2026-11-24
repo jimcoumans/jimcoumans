@@ -4114,7 +4114,14 @@ export const analyticsConnections = pgTable(
      * noemt. Leeg: het hele account. Voor klanten die adverteren via het
      * eigen advertentieaccount van James Robinson, waar meer klanten in zitten.
      */
-    campaigns: jsonb('campaigns').$type<{ id: string; naam: string }[]>(),
+    campaigns: jsonb('campaigns').$type<{ id: string; naam: string; account?: string }[]>(),
+    /**
+     * Meer advertentieaccounts die samen bij deze klant horen (LinkedIn), als
+     * het er meer dan één zijn: id en naam zoals het platform ze noemt, en via
+     * welke verbinding we erbij kunnen. Leeg: alleen externalId. Bij campagnes
+     * staat dan per campagne bij welk account hij hoort.
+     */
+    accounts: jsonb('accounts').$type<{ id: string; naam: string; verbinding?: string | null }[]>(),
     active: boolean('active').notNull().default(true),
     /** Tot hoe ver terug de cijfers er al zijn. Leeg: nog niets opgehaald. */
     historyFrom: date('history_from', { mode: 'string' }),

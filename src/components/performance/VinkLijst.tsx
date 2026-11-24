@@ -6,11 +6,24 @@ export type VinkOptie = { waarde: string; naam: string; detail: string; weg?: bo
 
 /**
  * Meerdere aanvinken uit een lange lijst, met zoeken: welke campagnes van
- * een advertentieaccount bij deze klant horen. Niets aangevinkt betekent:
- * alles telt mee. Aangevinkte regels staan bovenaan, zodat je ziet wat er
- * nu geldt zonder te scrollen.
+ * een advertentieaccount bij deze klant horen, of welke accounts. Aangevinkte
+ * regels staan bovenaan, zodat je ziet wat er nu geldt zonder te scrollen.
  */
-export function VinkLijst({ opties, gekozen = [], naam = 'keuze' }: { opties: VinkOptie[]; gekozen?: string[]; naam?: string }) {
+export function VinkLijst({
+  opties,
+  gekozen = [],
+  naam = 'keuze',
+  eenheid = ['campagne', 'campagnes'],
+  leegTekst = 'Alles telt mee',
+}: {
+  opties: VinkOptie[]
+  gekozen?: string[]
+  naam?: string
+  /** Enkelvoud en meervoud van wat er in de lijst staat, voor het zoekveld. */
+  eenheid?: [string, string]
+  /** Wat het betekent als er niets is aangevinkt. */
+  leegTekst?: string
+}) {
   const [zoek, setZoek] = useState('')
   const [aan, setAan] = useState<Set<string>>(() => new Set(gekozen))
   // De volgorde volgt wat bij het openen gold, niet elke klik: anders springt de regel onder je muis weg.
@@ -36,11 +49,11 @@ export function VinkLijst({ opties, gekozen = [], naam = 'keuze' }: { opties: Vi
           type="search"
           value={zoek}
           onChange={(e) => setZoek(e.target.value)}
-          placeholder={`Zoek in ${opties.length} ${opties.length === 1 ? 'campagne' : 'campagnes'}`}
+          placeholder={`Zoek in ${opties.length} ${opties.length === 1 ? eenheid[0] : eenheid[1]}`}
           aria-label="Zoeken"
           className="min-h-11 w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-[15px] outline-none focus:border-jr-blue"
         />
-        <span className="shrink-0 text-xs text-gray-600 tabular-nums">{aan.size === 0 ? 'Alles telt mee' : `${aan.size} aangevinkt`}</span>
+        <span className="shrink-0 text-xs text-gray-600 tabular-nums">{aan.size === 0 ? leegTekst : `${aan.size} aangevinkt`}</span>
         {aan.size > 0 && (
           <button type="button" onClick={() => setAan(new Set())} className="shrink-0 text-xs text-jr-link hover:underline">
             Leegmaken

@@ -3,7 +3,7 @@ import { db } from '@/db'
 import { analyticsConnections, linkedinConnections, type LinkedinConnection } from '@/db/schema'
 import { vergeet } from '@/lib/cache'
 import { KoppelingFout } from './google'
-import { haalLinkedinGebruiker, leesTokens, linkedinInstellingen, tokenAanvraag, tokenNogGoed } from './linkedin'
+import { LinkedinToegangFout, haalLinkedinGebruiker, leesTokens, linkedinInstellingen, tokenAanvraag, tokenNogGoed } from './linkedin'
 import { ontsleutel, versleutel } from './sleutel'
 
 /* -------------------------------------------------------------------------
@@ -78,6 +78,32 @@ export async function linkedinToegangstoken(v: LinkedinConnection): Promise<stri
     await db.update(linkedinConnections).set({ lastError: melding, lastErrorAt: new Date() }).where(eq(linkedinConnections.id, v.id))
     throw new KoppelingFout(`${v.label}: ${melding}`)
   }
+}
+
+/**
+ * Iets doen met het token van een verbonden LinkedIn-account: het gekozen
+ * account als dat er is, anders alle verbonden accounts op volgorde, tot er
+ * een is dat toegang krijgt. Pas als geen enkel account erbij kan, komt die
+ * fout in beeld.
+ */
+export async function metLinkedinToegang<T>(verbindingId: string | null | undefined, fn: (toegang: string) => Promise<T>): Promise<T> {
+  if (verbindingId) {
+    const v = await getLinkedinVerbinding(verbindingId)
+    if (!v) throw new KoppelingFout('Het LinkedIn-account van deze koppeling is losgekoppeld. Kies het advertentieaccount opnieuw.')
+    return fn(await linkedinToegangstoken(v))
+  }
+  const verbindingen = await listLinkedinVerbindingen()
+  if (verbindingen.length === 0) throw new KoppelingFout('LinkedIn leest mee via een verbonden LinkedIn-account. Verbind er eerst een onder Beheer → Koppelingen.')
+  let laatste: KoppelingFout = new KoppelingFout('Geen verbonden LinkedIn-account heeft toegang.')
+  for (const v of verbindingen) {
+    try {
+      return await fn(await linkedinToegangstoken(v))
+    } catch (e) {
+      if (!(e instanceof LinkedinToegangFout)) throw e
+      laatste = new KoppelingFout(`${v.label}: ${e.message}`)
+    }
+  }
+  throw laatste
 }
 
 /* ------------------------------ Beheer ----------------------------------- */
