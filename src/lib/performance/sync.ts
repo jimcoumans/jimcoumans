@@ -6,8 +6,9 @@ import { haalAhrefs, type SeoStand } from './ahrefs'
 import { OPNIEUW_VERBINDEN, haalBedrijfsprofiel, heeftBedrijfsprofielRecht, type BedrijfsprofielCijfers } from './bedrijfsprofiel'
 import { GoogleAdsToegangFout, haalGoogleAds } from './google-ads'
 import { haalMeta } from './meta'
-import { LinkedinToegangFout, haalLinkedin } from './linkedin'
-import { getLinkedinVerbinding, linkedinToegangstoken, listLinkedinVerbindingen } from './linkedin-verbinding'
+import { haalLinkedin, somPerDag } from './linkedin'
+import { metLinkedinToegang } from './linkedin-verbinding'
+import { accountsVan, campagnesVan } from './koppeling'
 import { getVerbinding, listVerbindingen, toegangstoken } from './oauth'
 
 /* -------------------------------------------------------------------------
@@ -88,27 +89,24 @@ async function haalGoogleAdsViaVerbindingen(k: AnalyticsConnection, van: string,
 }
 
 /**
- * LinkedIn gaat via het LinkedIn-account dat bij de koppeling is gekozen.
- * Is dat er niet (meer), dan proberen we de verbonden accounts op volgorde.
+ * LinkedIn gaat via het LinkedIn-account dat bij de koppeling is gekozen; is
+ * dat er niet (meer), dan proberen we de verbonden accounts op volgorde.
+ * Meer advertentieaccounts bij één klant tellen we per dag bij elkaar op,
+ * elk met alleen zijn eigen aangevinkte campagnes.
  */
 async function haalLinkedinViaVerbindingen(k: AnalyticsConnection, van: string, tot: string): Promise<Dagcijfers[]> {
-  if (k.linkedinConnectionId) {
-    const v = await getLinkedinVerbinding(k.linkedinConnectionId)
-    if (!v) throw new KoppelingFout('Het LinkedIn-account van deze koppeling is losgekoppeld. Kies het advertentieaccount opnieuw.')
-    return haalLinkedin(k.externalId, van, tot, await linkedinToegangstoken(v))
-  }
-  const verbindingen = await listLinkedinVerbindingen()
-  if (verbindingen.length === 0) throw new KoppelingFout('LinkedIn leest mee via een verbonden LinkedIn-account. Verbind er eerst een onder Beheer → Koppelingen.')
-  let laatste: KoppelingFout | null = null
-  for (const v of verbindingen) {
+  const accounts = accountsVan(k)
+  const reeksen: Dagcijfers[][] = []
+  for (const a of accounts) {
+    const campagnes = campagnesVan(k, a.id, accounts.length === 1)
     try {
-      return await haalLinkedin(k.externalId, van, tot, await linkedinToegangstoken(v))
+      reeksen.push(await metLinkedinToegang(a.verbinding ?? k.linkedinConnectionId, (toegang) => haalLinkedin(a.id, van, tot, toegang, campagnes)))
     } catch (e) {
-      if (!(e instanceof LinkedinToegangFout)) throw e
-      laatste = new KoppelingFout(`${v.label}: ${e.message}`)
+      if (accounts.length > 1 && e instanceof KoppelingFout) throw new KoppelingFout(`${a.naam}: ${e.message}`)
+      throw e
     }
   }
-  throw laatste
+  return somPerDag(reeksen)
 }
 
 async function haal(k: AnalyticsConnection, van: string, tot: string, toegang?: string): Promise<Dagcijfers[]> {
@@ -125,7 +123,7 @@ async function haal(k: AnalyticsConnection, van: string, tot: string, toegang?: 
       return haalGoogleAdsViaVerbindingen(k, van, tot, toegang)
     case 'meta_ads':
       // Alleen de gekozen campagnes, als de klant via het account van James Robinson adverteert.
-      return haalMeta(k.externalId, van, tot, process.env, (k.campaigns ?? []).map((c) => c.id))
+      return haalMeta(k.externalId, van, tot, process.env, campagnesVan(k, k.externalId, true))
     case 'linkedin_ads':
       return haalLinkedinViaVerbindingen(k, van, tot)
     default:

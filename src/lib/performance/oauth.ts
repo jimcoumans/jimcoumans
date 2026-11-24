@@ -7,6 +7,7 @@ import { versleutel, ontsleutel } from './sleutel'
 import { googleAdsInstellingen, haalGoogleAdsKlanten, toonKlantId } from './google-ads'
 import { haalMetaAccounts, metaInstellingen } from './meta'
 import { haalLinkedinAccounts, linkedinInstellingen } from './linkedin'
+import { ahrefsInstellingen, haalAhrefsProjecten } from './ahrefs'
 import { linkedinToegangstoken, listLinkedinVerbindingen } from './linkedin-verbinding'
 import { BEDRIJFSPROFIEL_SCOPE, OPNIEUW_VERBINDEN, haalLocaties, heeftBedrijfsprofielRecht } from './bedrijfsprofiel'
 
@@ -186,7 +187,7 @@ export type Keuze = {
   verbindingId: string
   /** Het e-mailadres van het Google-account, of het label van het LinkedIn-account. */
   email: string
-  source: 'ga4' | 'search_console' | 'google_ads' | 'meta_ads' | 'linkedin_ads' | 'google_business'
+  source: 'ga4' | 'search_console' | 'google_ads' | 'meta_ads' | 'linkedin_ads' | 'google_business' | 'ahrefs'
   externalId: string
   naam: string
   /** Waaronder hij valt: het GA4-account, het soort property in Search Console, het klant-ID bij Google Ads, de Business Manager bij Meta. */
@@ -341,11 +342,25 @@ async function linkedinKeuzes(): Promise<{ keuzes: Keuze[]; fouten: string[] }> 
   return { keuzes, fouten }
 }
 
+/** De projecten in Ahrefs: de klanten die het team daar al volgt. Ahrefs kijkt ook naar elk ander domein; de lijst is gemak. */
+async function ahrefsKeuzes(): Promise<{ keuzes: Keuze[]; fouten: string[] }> {
+  if (!ahrefsInstellingen().klaar) return { keuzes: [], fouten: [] }
+  try {
+    const projecten = await haalAhrefsProjecten()
+    return {
+      keuzes: projecten.map((p) => ({ verbindingId: '', email: '', source: 'ahrefs' as const, externalId: p.domein, naam: p.naam, groep: p.url })),
+      fouten: [],
+    }
+  } catch (e) {
+    return { keuzes: [], fouten: [`Ahrefs-projecten ophalen: ${(e as Error).message}`] }
+  }
+}
+
 /**
  * Alles wat er bij een klant te kiezen is: GA4-properties, Search Console-
  * sites en Google Ads-accounts via de verbonden Google-accounts, Meta-
  * advertentieaccounts via de Business Manager, en LinkedIn-accounts via de
- * verbonden LinkedIn-accounts. Tien minuten onthouden: de lijst verandert
+ * verbonden LinkedIn-accounts, en de projecten in Ahrefs. Tien minuten onthouden: de lijst verandert
  * zelden, en ophalen kost seconden.
  */
 export async function alleKeuzes(): Promise<{ keuzes: Keuze[]; fouten: string[] }> {
@@ -353,16 +368,16 @@ export async function alleKeuzes(): Promise<{ keuzes: Keuze[]; fouten: string[] 
     'google:keuzes',
     async () => {
       const verbindingen = await listVerbindingen()
-      const [per, meta, linkedin] = await Promise.all([Promise.all(verbindingen.map(keuzesVan)), metaKeuzes(), linkedinKeuzes()])
+      const [per, meta, linkedin, ahrefs] = await Promise.all([Promise.all(verbindingen.map(keuzesVan)), metaKeuzes(), linkedinKeuzes(), ahrefsKeuzes()])
       // Zit een property onder twee adressen, dan één keer tonen.
       const gezien = new Set<string>()
-      const keuzes = [...per.flatMap((p) => p.keuzes), ...meta.keuzes, ...linkedin.keuzes].filter((k) => {
+      const keuzes = [...per.flatMap((p) => p.keuzes), ...meta.keuzes, ...linkedin.keuzes, ...ahrefs.keuzes].filter((k) => {
         const s = `${k.source}|${k.externalId}`
         if (gezien.has(s)) return false
         gezien.add(s)
         return true
       })
-      const fouten = [...per.flatMap((p) => p.fouten), ...meta.fouten, ...linkedin.fouten]
+      const fouten = [...per.flatMap((p) => p.fouten), ...meta.fouten, ...linkedin.fouten, ...ahrefs.fouten]
       if (!keuzes.some((k) => k.source === 'google_ads')) fouten.push(...per.flatMap((p) => (p.adsFout ? [p.adsFout] : [])))
       return { keuzes, fouten }
     },

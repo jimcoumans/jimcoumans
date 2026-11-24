@@ -1,0 +1,1 @@
+ALTER TABLE "analytics_connections" ADD COLUMN "accounts" jsonb;

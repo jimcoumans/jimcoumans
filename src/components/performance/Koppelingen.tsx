@@ -9,8 +9,9 @@ import { formatDate } from '@/lib/dates'
 import { score, type Keuze } from '@/lib/performance/oauth'
 import { googleAdsInstellingen } from '@/lib/performance/google-ads'
 import { metaInstellingen, type MetaCampagne } from '@/lib/performance/meta'
-import { linkedinInstellingen } from '@/lib/performance/linkedin'
+import { linkedinInstellingen, type LinkedinCampagne } from '@/lib/performance/linkedin'
 import { ahrefsInstellingen, domeinUitWebsite } from '@/lib/performance/ahrefs'
+import { accountsVan, koppelingNaam, type Campagne } from '@/lib/performance/koppeling'
 import { KeuzeLijst, type KeuzeOptie } from './KeuzeLijst'
 import { VinkLijst, type VinkOptie } from './VinkLijst'
 
@@ -19,8 +20,13 @@ import { VinkLijst, type VinkOptie } from './VinkLijst'
 
 const VOLGORDE: AnalyticsConnection['source'][] = ['ga4', 'search_console', 'google_business', 'ahrefs', 'google_ads', 'meta_ads', 'linkedin_ads', 'tiktok_ads']
 
-/** Bronnen waar je uit een lijst kiest in plaats van een ID over te typen. */
-const MET_LIJST = new Set<AnalyticsConnection['source']>(['ga4', 'search_console', 'google_business', 'google_ads', 'meta_ads', 'linkedin_ads'])
+/** Bronnen waar je uit een lijst kiest in plaats van een ID over te typen. Bij Ahrefs mag een ander domein ook. */
+const MET_LIJST = new Set<AnalyticsConnection['source']>(['ga4', 'search_console', 'google_business', 'google_ads', 'meta_ads', 'linkedin_ads', 'ahrefs'])
+
+/** Bronnen met campagnes om aan te vinken, voor klanten die via het account van James Robinson adverteren. */
+const MET_CAMPAGNES = new Set<AnalyticsConnection['source']>(['meta_ads', 'linkedin_ads'])
+
+const STATUS_TEKST: Record<string, string> = { ACTIVE: 'Actief', PAUSED: 'Gepauzeerd', COMPLETED: 'Afgelopen', ARCHIVED: 'Gearchiveerd', DRAFT: 'Concept', CANCELED: 'Geannuleerd' }
 
 /** Wat de klant moet doen voordat zijn account in onze lijst staat. */
 const TOEGANG: Record<string, { wat: string; hoe: string }> = {
@@ -45,6 +51,7 @@ export function Koppelingen({
   verbonden,
   linkedinVerbonden,
   metaCampagnes,
+  linkedinCampagnes,
 }: {
   organizationId: string
   slug: string
@@ -58,6 +65,8 @@ export function Koppelingen({
   linkedinVerbonden?: string[]
   /** De campagnes van het gekoppelde Meta-account, om er een deel van aan te vinken; fout als Meta ze niet gaf. */
   metaCampagnes?: { lijst: MetaCampagne[]; fout: string | null } | null
+  /** De campagnes per LinkedIn-advertentieaccount van de klant; fout als LinkedIn ze niet gaf. */
+  linkedinCampagnes?: { account: string; lijst: LinkedinCampagne[]; fout: string | null }[] | null
 }) {
   const per = new Map(koppelingen.map((k) => [k.source, k]))
   const meerdere = verbonden.length > 1
@@ -71,21 +80,22 @@ export function Koppelingen({
         voorgesteld: score(k, klant) >= 3,
       }))
   /* Wat er nu gekoppeld is, terugvinden in de lijst: ook als het ID destijds met de hand is ingevuld. */
-  const gekozen = (bron: AnalyticsConnection['source'], k: AnalyticsConnection | undefined) =>
-    k
-      ? (opties(bron).find((o) => o.waarde === `${k.googleConnectionId ?? k.linkedinConnectionId ?? ''}|${k.externalId}`) ?? opties(bron).find((o) => o.waarde.endsWith(`|${k.externalId}`)))?.waarde
-      : undefined
+  const inLijst = (bron: AnalyticsConnection['source'], verbinding: string | null | undefined, id: string) =>
+    (opties(bron).find((o) => o.waarde === `${verbinding ?? ''}|${id}`) ?? opties(bron).find((o) => o.waarde.endsWith(`|${id}`)))?.waarde
+  const gekozen = (bron: AnalyticsConnection['source'], k: AnalyticsConnection | undefined) => (k ? inLijst(bron, k.googleConnectionId ?? k.linkedinConnectionId, k.externalId) : undefined)
+  /* Bij LinkedIn kunnen het er meer zijn. */
+  const gekozenMeer = (bron: AnalyticsConnection['source'], k: AnalyticsConnection | undefined) =>
+    k ? accountsVan(k).map((a) => inLijst(bron, a.verbinding, a.id)).filter((w): w is string => !!w) : []
   const ads = googleAdsInstellingen()
   const meta = metaInstellingen()
   const linkedin = linkedinInstellingen()
   const ahrefs = ahrefsInstellingen()
-  /* Campagnes om aan te vinken: wat Meta nu kent, plus wat eerder gekozen is maar niet meer bestaat. */
-  const campagneOpties = (k: AnalyticsConnection): VinkOptie[] => {
-    const lijst = metaCampagnes?.lijst ?? []
+  /* Campagnes om aan te vinken: wat het platform nu kent, plus wat eerder gekozen is maar niet meer bestaat. */
+  const campagneOpties = (lijst: { id: string; naam: string; actief: boolean; status: string }[], eerder: Campagne[], prefix = ''): VinkOptie[] => {
     const bekend = new Set(lijst.map((c) => c.id))
     return [
-      ...lijst.map((c) => ({ waarde: c.id, naam: c.naam, detail: `${c.actief ? 'Actief' : c.status === 'PAUSED' ? 'Gepauzeerd' : c.status.toLowerCase().replace(/_/g, ' ')} · ${c.id}` })),
-      ...(k.campaigns ?? []).filter((c) => !bekend.has(c.id)).map((c) => ({ waarde: c.id, naam: c.naam, detail: `Niet meer gevonden in dit account · ${c.id}`, weg: true })),
+      ...lijst.map((c) => ({ waarde: `${prefix}${c.id}`, naam: c.naam, detail: `${STATUS_TEKST[c.status] ?? c.status.toLowerCase().replace(/_/g, ' ')} · ${c.id}` })),
+      ...eerder.filter((c) => !bekend.has(c.id)).map((c) => ({ waarde: `${prefix}${c.id}`, naam: c.naam, detail: `Niet meer gevonden in dit account · ${c.id}`, weg: true })),
     ]
   }
   /* Waarom de lijst voor een bron leeg is, in gewone taal. */
@@ -131,13 +141,18 @@ export function Koppelingen({
           const kan = KAN_OPHALEN[bron]
           const google = bron === 'ga4' || bron === 'search_console' || bron === 'google_business'
           const lijst = MET_LIJST.has(bron) && opties(bron).length > 0
-          const waarom = MET_LIJST.has(bron)
-            ? leeg(bron)
-            : bron === 'ahrefs' && !ahrefs.klaar
-              ? { kop: 'Ahrefs is nog niet ingesteld', tekst: `Zet ${ahrefs.ontbreekt.join(', ')} in Netlify. Koppelen kan al; de cijfers komen zodra de sleutel er staat.`, link: false as const }
-              : null
-          // Bij Ahrefs is het "account" de website van de klant: die staat alvast ingevuld.
+          const meer = bron === 'linkedin_ads'
+          const waarom =
+            bron === 'ahrefs'
+              ? ahrefs.klaar
+                ? null
+                : { kop: 'Ahrefs is nog niet ingesteld', tekst: `Zet ${ahrefs.ontbreekt.join(', ')} in Netlify. Koppelen kan al; de cijfers komen zodra de sleutel er staat.`, link: false as const }
+              : MET_LIJST.has(bron)
+                ? leeg(bron)
+                : null
+          // Bij Ahrefs is het "account" de website van de klant: die staat alvast ingevuld, tenzij er een project in de lijst staat.
           const standaard = k?.externalId ?? (bron === 'ahrefs' ? domeinUitWebsite(klant.website) : '')
+          const losDomein = k && !gekozen(bron, k) ? k.externalId : ''
           return (
             <li key={bron} className="flex items-center gap-4 py-3.5 pr-3 pl-6">
               <span
@@ -149,7 +164,7 @@ export function Koppelingen({
                   {info.naam}
                   {k && (
                     <span className="ml-2 text-[13px] text-gray-500">
-                      {k.displayName ?? k.externalId}
+                      {koppelingNaam(k)}
                       {k.campaigns?.length ? ` · ${k.campaigns.length === 1 ? '1 campagne' : `${k.campaigns.length} campagnes`}` : ''}
                     </span>
                   )}
@@ -172,22 +187,44 @@ export function Koppelingen({
                 knop={k ? 'Wijzig' : 'Koppelen'}
                 stijl={k ? 'klein' : 'rustig'}
                 titel={`${info.naam} koppelen`}
-                uitleg={lijst ? 'Kies wat bij deze klant hoort. Voorgesteld betekent: past bij de naam of website van de klant.' : info.uitleg}
+                uitleg={
+                  !lijst
+                    ? info.uitleg
+                    : meer
+                      ? 'Vink de advertentieaccounts aan die bij deze klant horen; meer accounts tellen we bij elkaar op. Voorgesteld betekent: past bij de naam of website van de klant.'
+                      : bron === 'ahrefs'
+                        ? 'Kies het Ahrefs-project van deze klant, of vul een ander domein in. Ahrefs kijkt naar elke website, ook zonder project.'
+                        : 'Kies wat bij deze klant hoort. Voorgesteld betekent: past bij de naam of website van de klant.'
+                }
               >
                 {lijst ? (
                   <ActionForm action={koppel} submitLabel={k ? 'Opslaan en ophalen' : 'Koppelen en ophalen'} resetOnSuccess={false}>
                     <input type="hidden" name="organizationId" value={organizationId} />
                     <input type="hidden" name="slug" value={slug} />
                     <input type="hidden" name="bron" value={bron} />
-                    <KeuzeLijst opties={opties(bron)} gekozen={gekozen(bron, k)} />
-                    <p className="col-span-full text-xs text-gray-600">
-                      Staat de klant er niet tussen? {TOEGANG[bron]?.hoe}
-                      {google ? ` (${verbonden.join(', ')})` : ''}, en ververs de lijst onder{' '}
-                      <a href="/beheer/koppelingen" className="text-jr-link underline">
-                        Koppelingen
-                      </a>
-                      .
-                    </p>
+                    {meer ? (
+                      <VinkLijst
+                        opties={opties(bron).map((o) => ({ waarde: o.waarde, naam: o.voorgesteld ? `${o.naam} · voorgesteld` : o.naam, detail: o.detail }))}
+                        gekozen={gekozenMeer(bron, k)}
+                        naam="keuze"
+                        eenheid={['account', 'accounts']}
+                        leegTekst="Nog niets aangevinkt"
+                      />
+                    ) : (
+                      <KeuzeLijst opties={opties(bron)} gekozen={gekozen(bron, k)} />
+                    )}
+                    {bron === 'ahrefs' ? (
+                      <Field label="Of een ander domein" name="externalId" defaultValue={losDomein} placeholder={info.voorbeeld} />
+                    ) : (
+                      <p className="col-span-full text-xs text-gray-600">
+                        Staat de klant er niet tussen? {TOEGANG[bron]?.hoe}
+                        {google ? ` (${verbonden.join(', ')})` : ''}, en ververs de lijst onder{' '}
+                        <a href="/beheer/koppelingen" className="text-jr-link underline">
+                          Koppelingen
+                        </a>
+                        .
+                      </p>
+                    )}
                     {k && <p className="col-span-full text-xs text-gray-600">Een andere keuze betekent andere cijfers: de historie van deze bron wordt dan opnieuw opgehaald.</p>}
                   </ActionForm>
                 ) : (
@@ -224,22 +261,38 @@ export function Koppelingen({
                   </>
                 )}
               </Paneel>
-              {k && bron === 'meta_ads' && (
+              {k && MET_CAMPAGNES.has(bron) && (
                 <Paneel
                   knop="Campagnes"
                   stijl="klein"
                   titel="Welke campagnes horen bij deze klant?"
                   uitleg="Adverteert de klant vanuit het advertentieaccount van James Robinson, naast andere klanten? Vink dan alleen zijn campagnes aan. Niets aangevinkt: het hele account telt mee."
                 >
-                  {metaCampagnes?.fout && <p className="mb-4 rounded-lg bg-[#FDECEA] px-4 py-3 text-sm text-[#C02A22]">Meta gaf de campagnes niet: {metaCampagnes.fout}</p>}
                   <ActionForm action={kiesCampagnes} submitLabel="Opslaan en ophalen" resetOnSuccess={false}>
                     <input type="hidden" name="organizationId" value={organizationId} />
                     <input type="hidden" name="slug" value={slug} />
                     <input type="hidden" name="koppelingId" value={k.id} />
-                    <input type="hidden" name="accountId" value={k.externalId} />
-                    <VinkLijst opties={campagneOpties(k)} gekozen={(k.campaigns ?? []).map((c) => c.id)} naam="campagne" />
+                    {bron === 'meta_ads' ? (
+                      <>
+                        {metaCampagnes?.fout && <p className="col-span-full rounded-lg bg-[#FDECEA] px-4 py-3 text-sm text-[#C02A22]">Meta gaf de campagnes niet: {metaCampagnes.fout}</p>}
+                        <VinkLijst opties={campagneOpties(metaCampagnes?.lijst ?? [], k.campaigns ?? [])} gekozen={(k.campaigns ?? []).map((c) => c.id)} naam="campagne" />
+                      </>
+                    ) : (
+                      // Per advertentieaccount van de klant een eigen lijst; de waarde is "account|campagne".
+                      accountsVan(k).map((a) => {
+                        const van = linkedinCampagnes?.find((c) => c.account === a.id)
+                        const eerder = (k.campaigns ?? []).filter((c) => c.account === a.id)
+                        return (
+                          <div key={a.id} className="col-span-full">
+                            {accountsVan(k).length > 1 && <p className="mb-2 text-[15px] font-medium">{a.naam}</p>}
+                            {van?.fout && <p className="mb-3 rounded-lg bg-[#FDECEA] px-4 py-3 text-sm text-[#C02A22]">LinkedIn gaf de campagnes niet: {van.fout}</p>}
+                            <VinkLijst opties={campagneOpties(van?.lijst ?? [], eerder, `${a.id}|`)} gekozen={eerder.map((c) => `${a.id}|${c.id}`)} naam="campagne" />
+                          </div>
+                        )
+                      })
+                    )}
                     <p className="col-span-full text-xs text-gray-600">
-                      Een andere keuze betekent andere cijfers: de historie van Meta Ads wordt dan opnieuw opgehaald. Nieuwe campagnes van de klant moet je hier ook aanvinken, anders tellen ze niet mee.
+                      Een andere keuze betekent andere cijfers: de historie van {info.naam} wordt dan opnieuw opgehaald. Nieuwe campagnes van de klant moet je hier ook aanvinken, anders tellen ze niet mee.
                     </p>
                   </ActionForm>
                 </Paneel>

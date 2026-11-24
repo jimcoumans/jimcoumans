@@ -1,7 +1,17 @@
 import { describe, it, mock } from 'node:test'
 import assert from 'node:assert/strict'
 import { KoppelingFout } from '../google'
-import { ahrefsDomein, ahrefsInstellingen, ahrefsUrl, domeinUitWebsite, haalAhrefs, leesAhrefsFout, leesSeo } from '../ahrefs'
+import {
+  ahrefsDomein,
+  ahrefsInstellingen,
+  ahrefsUrl,
+  domeinUitWebsite,
+  haalAhrefs,
+  leesAhrefsFout,
+  leesAhrefsProjecten,
+  leesSeo,
+  projectenUrl,
+} from '../ahrefs'
 
 describe('instellingen', () => {
   it('noemt wat ontbreekt', () => {
@@ -116,5 +126,26 @@ describe('ophalen', () => {
     } finally {
       fetchMock.mock.restore()
     }
+  })
+})
+
+describe('projecten', () => {
+  it('leest de projecten als domein plus naam, en laat onbruikbare weg', () => {
+    assert.match(projectenUrl(), /\/v3\/management\/projects\?output=json$/)
+    assert.deepEqual(
+      leesAhrefsProjecten({
+        projects: [
+          { project_id: '9556964', project_name: 'Thiessen', url: 'thiessen.nl/' },
+          { project_id: 1, project_name: '', url: 'www.agz.nl/' },
+          { project_id: 2, project_name: 'Kapot', url: 'geen domein' },
+          { project_name: 'Zonder id', url: 'x.nl/' },
+        ],
+      }),
+      [
+        { id: '1', naam: 'agz.nl', domein: 'agz.nl', url: 'www.agz.nl' },
+        { id: '9556964', naam: 'Thiessen', domein: 'thiessen.nl', url: 'thiessen.nl' },
+      ],
+    )
+    assert.deepEqual(leesAhrefsProjecten(null), [])
   })
 })

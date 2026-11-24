@@ -5,8 +5,16 @@ import { KoppelingFout, ga4PropertyId, searchConsoleSite } from './google'
 import { ahrefsDomein } from './ahrefs'
 import { bedrijfsprofielLocatieId } from './bedrijfsprofiel'
 import type { DagRij } from './bronnen'
+import { accountsVan, campagnesNaKeuze, type Account, type Campagne } from './koppeling'
+
+export type { Account, Campagne } from './koppeling'
 
 /* De cijfers voor de schermen: per klant of voor alle klanten samen. */
+
+export async function getKoppeling(id: string): Promise<AnalyticsConnection | null> {
+  const [k] = await db.select().from(analyticsConnections).where(eq(analyticsConnections.id, id))
+  return k ?? null
+}
 
 export async function getKoppelingen(organizationId: string): Promise<AnalyticsConnection[]> {
   return db.select().from(analyticsConnections).where(eq(analyticsConnections.organizationId, organizationId)).orderBy(asc(analyticsConnections.createdAt))
@@ -165,29 +173,36 @@ export function normaliseerExternId(source: AnalyticsConnection['source'], invoe
   }
 }
 
+/**
+ * Koppelen of de keuze wijzigen. Bij LinkedIn kunnen het meer accounts zijn:
+ * het eerste staat in externalId, de hele lijst in accounts. Een andere set
+ * accounts betekent andere cijfers: de oude historie gaat dan weg en wordt
+ * opnieuw opgehaald; campagnes van accounts die blijven, blijven ook.
+ */
 export async function zetKoppeling(
   organizationId: string,
   source: AnalyticsConnection['source'],
   invoer: string,
-  via: { googleConnectionId?: string | null; linkedinConnectionId?: string | null; displayName?: string | null } = {},
+  via: { googleConnectionId?: string | null; linkedinConnectionId?: string | null; displayName?: string | null; accounts?: Account[] } = {},
 ) {
   const externalId = normaliseerExternId(source, invoer)
+  const accounts = via.accounts && via.accounts.length > 1 ? via.accounts.map((a) => ({ ...a, id: normaliseerExternId(source, a.id) })) : null
+  const ids = (accounts ?? [{ id: externalId }]).map((a) => a.id).sort()
   const herkomst = { googleConnectionId: via.googleConnectionId ?? null, linkedinConnectionId: via.linkedinConnectionId ?? null, displayName: via.displayName?.trim() || null }
-  // Een ander ID betekent andere cijfers: de oude historie hoort er dan niet meer bij.
   const [oud] = await db
     .select()
     .from(analyticsConnections)
     .where(and(eq(analyticsConnections.organizationId, organizationId), eq(analyticsConnections.source, source)))
-  if (oud && oud.externalId !== externalId) await wisCijfers(db, organizationId, source)
+  const anders = !oud || JSON.stringify(accountsVan(oud).map((a) => a.id).sort()) !== JSON.stringify(ids)
+  if (oud && anders) await wisCijfers(db, organizationId, source)
   await db
     .insert(analyticsConnections)
-    .values({ organizationId, source, externalId, ...herkomst })
+    .values({ organizationId, source, externalId, accounts, ...herkomst })
     .onConflictDoUpdate({
       target: [analyticsConnections.organizationId, analyticsConnections.source],
-      set:
-        oud && oud.externalId === externalId
-          ? { active: true, ...herkomst, lastError: null, lastErrorAt: null }
-          : { externalId, ...herkomst, campaigns: null, active: true, historyFrom: null, lastSyncedAt: null, lastError: null, lastErrorAt: null },
+      set: anders
+        ? { externalId, accounts, ...herkomst, campaigns: campagnesNaKeuze(oud?.campaigns, ids), active: true, historyFrom: null, lastSyncedAt: null, lastError: null, lastErrorAt: null }
+        : { externalId, accounts, ...herkomst, active: true, lastError: null, lastErrorAt: null },
     })
 }
 
@@ -197,9 +212,6 @@ async function wisCijfers(tx: Pick<typeof db, 'delete'>, organizationId: string,
   else if (source === 'google_business') await tx.delete(businessProfileDaily).where(eq(businessProfileDaily.organizationId, organizationId))
   else await tx.delete(performanceDaily).where(and(eq(performanceDaily.organizationId, organizationId), eq(performanceDaily.provider, source)))
 }
-
-/** Een campagne zoals we hem bij de koppeling bewaren: id en naam zoals het platform ze noemt. */
-export type Campagne = { id: string; naam: string }
 
 /**
  * Welke campagnes van het account bij deze klant horen. Leeg: het hele

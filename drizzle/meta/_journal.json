@@ -421,6 +421,13 @@
       "when": 1795509463724,
       "tag": "0059_google_bedrijfsprofiel",
       "breakpoints": true
+    },
+    {
+      "idx": 60,
+      "version": "7",
+      "when": 1795517971588,
+      "tag": "0060_koppeling_accounts",
+      "breakpoints": true
     }
   ]
 }

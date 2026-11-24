@@ -162,3 +162,32 @@ export async function haalAhrefs(domein: string, van: string, tot: string, env: 
   const antwoorden = await Promise.all(reeksen.map((r) => haalJson(ahrefsUrl(r, d, van, tot), inst.token)))
   return leesSeo(Object.fromEntries(reeksen.map((r, i) => [r, antwoorden[i]])) as AhrefsAntwoorden)
 }
+
+/* ------------------------------ Projecten -------------------------------- */
+
+/** Een project in het Ahrefs-abonnement: de klanten die het team al volgt, om uit te kiezen. */
+export type AhrefsProject = { id: string; naam: string; domein: string; url: string }
+
+type ProjectenAntwoord = { projects?: { project_id?: string | number; project_name?: string; url?: string }[] }
+
+export function projectenUrl(): string {
+  return `${API}/management/projects?output=json`
+}
+
+/** Van de projecten naar iets om uit te kiezen; een project zonder bruikbaar domein valt weg. */
+export function leesAhrefsProjecten(json: unknown): AhrefsProject[] {
+  const uit: AhrefsProject[] = []
+  for (const p of (json as ProjectenAntwoord | null)?.projects ?? []) {
+    const domein = domeinUitWebsite(p.url)
+    if (!domein || p.project_id == null) continue
+    uit.push({ id: String(p.project_id), naam: p.project_name?.trim() || domein, domein, url: (p.url ?? '').replace(/\/$/, '') })
+  }
+  return uit.sort((a, b) => a.naam.localeCompare(b.naam, 'nl'))
+}
+
+/** Alle projecten in het Ahrefs-abonnement. Kost geen eenheden. */
+export async function haalAhrefsProjecten(env: Record<string, string | undefined> = process.env): Promise<AhrefsProject[]> {
+  const inst = ahrefsInstellingen(env)
+  if (!inst.klaar) throw new KoppelingFout(`Ahrefs is nog niet ingesteld in Netlify: ${inst.ontbreekt.join(', ')}.`)
+  return leesAhrefsProjecten(await haalJson(projectenUrl(), inst.token))
+}

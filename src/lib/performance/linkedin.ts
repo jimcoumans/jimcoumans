@@ -189,6 +189,52 @@ export async function haalLinkedinAccounts(toegang: string): Promise<LinkedinAcc
   return alles.sort((a, b) => a.naam.localeCompare(b.naam, 'nl'))
 }
 
+/* ------------------------------ Campagnes -------------------------------- */
+
+export type LinkedinCampagne = { id: string; naam: string; actief: boolean; status: string }
+
+type CampagneRij = { id?: number | string; name?: string; status?: string; test?: boolean }
+export type LinkedinCampagnesAntwoord = { elements?: CampagneRij[]; metadata?: { nextPageToken?: string } }
+
+/* Ook afgelopen en gearchiveerde campagnes: die horen bij de historie van dertien maanden. Weg zijn alleen de verwijderde. */
+const CAMPAGNE_STATUSSEN = ['ACTIVE', 'PAUSED', 'COMPLETED', 'ARCHIVED', 'DRAFT', 'CANCELED']
+
+export function campagnesPad(accountId: string, pageToken?: string): string {
+  const p = new URLSearchParams({ q: 'search', pageSize: '1000' })
+  if (pageToken) p.set('pageToken', pageToken)
+  return `adAccounts/${linkedinAccountId(accountId)}/adCampaigns?${p}&search=(status:(values:List(${CAMPAGNE_STATUSSEN.join(',')})))`
+}
+
+export function leesLinkedinCampagnes(json: LinkedinCampagnesAntwoord): LinkedinCampagne[] {
+  const uit: LinkedinCampagne[] = []
+  for (const r of json.elements ?? []) {
+    if (r.id == null || r.test) continue
+    const status = r.status ?? 'ONBEKEND'
+    if (!CAMPAGNE_STATUSSEN.includes(status)) continue
+    const id = String(r.id)
+    uit.push({ id, naam: r.name?.trim() || `Campagne ${id}`, actief: status === 'ACTIVE', status })
+  }
+  return uit
+}
+
+/** Alle campagnes van één advertentieaccount, de actieve eerst. */
+export async function haalLinkedinCampagnes(accountId: string, toegang: string): Promise<LinkedinCampagne[]> {
+  const alles: LinkedinCampagne[] = []
+  const gezien = new Set<string>()
+  let token: string | undefined
+  for (let n = 0; n < 20; n++) {
+    const json = (await linkedinGet(campagnesPad(accountId, token), toegang)) as LinkedinCampagnesAntwoord
+    for (const c of leesLinkedinCampagnes(json)) {
+      if (gezien.has(c.id)) continue
+      gezien.add(c.id)
+      alles.push(c)
+    }
+    token = json.metadata?.nextPageToken
+    if (!token) break
+  }
+  return alles.sort((a, b) => Number(b.actief) - Number(a.actief) || a.naam.localeCompare(b.naam, 'nl'))
+}
+
 /* ------------------------------ Dagcijfers ------------------------------- */
 
 export function linkedinAccountId(invoer: string): string {
@@ -202,16 +248,26 @@ const datumDeel = (d: string) => {
   return `(year:${y},month:${m},day:${dag})`
 }
 
-/** Per dag de totalen van één account: impressies, klikken, kosten en conversies op de website. */
-export function analyticsPad(accountId: string, van: string, tot: string): string {
+/**
+ * Per dag de totalen van één account: impressies, klikken, kosten en
+ * conversies op de website. Met campagnes erbij alleen die campagnes, per
+ * campagne per dag; leesLinkedin telt ze dan op.
+ */
+export function analyticsPad(accountId: string, van: string, tot: string, campagneIds: string[] = []): string {
   const urn = encodeURIComponent(`urn:li:sponsoredAccount:${accountId}`)
+  const wie = campagneIds.length
+    ? `&campaigns=List(${campagneIds.map((id) => encodeURIComponent(`urn:li:sponsoredCampaign:${id}`)).join(',')})`
+    : `&accounts=List(${urn})`
   return (
-    `adAnalytics?q=analytics&pivot=ACCOUNT&timeGranularity=DAILY` +
+    `adAnalytics?q=analytics&pivot=${campagneIds.length ? 'CAMPAIGN' : 'ACCOUNT'}&timeGranularity=DAILY` +
     `&dateRange=(start:${datumDeel(van)},end:${datumDeel(tot)})` +
-    `&accounts=List(${urn})` +
+    wie +
     `&fields=dateRange,impressions,clicks,costInLocalCurrency,externalWebsiteConversions`
   )
 }
+
+/** Hoeveel campagnes we per aanvraag meesturen; meer campagnes worden meer aanvragen, bij elkaar opgeteld. */
+export const CAMPAGNES_PER_AANVRAAG = 20
 
 type AnalyticsRij = {
   dateRange?: { start?: { year?: number; month?: number; day?: number } }
@@ -252,10 +308,43 @@ export function controleerMunt(account: { currency?: string }) {
   }
 }
 
-/** Dagcijfers van één advertentieaccount, met het token van een verbonden LinkedIn-account. */
-export async function haalLinkedin(accountId: string, van: string, tot: string, toegang: string): Promise<Dagcijfers[]> {
+/** Meer reeksen dagcijfers (meer accounts) bij elkaar opgeteld, per dag. */
+export function somPerDag(reeksen: Dagcijfers[][]): Dagcijfers[] {
+  const per = new Map<string, Dagcijfers>()
+  const tel = (a: number | undefined, b: number | undefined) => (a === undefined && b === undefined ? undefined : (a ?? 0) + (b ?? 0))
+  for (const r of reeksen.flat()) {
+    const oud = per.get(r.day)
+    per.set(
+      r.day,
+      oud
+        ? {
+            ...oud,
+            impressions: tel(oud.impressions, r.impressions),
+            clicks: tel(oud.clicks, r.clicks),
+            sessions: tel(oud.sessions, r.sessions),
+            conversions: tel(oud.conversions, r.conversions),
+            costCents: tel(oud.costCents, r.costCents),
+          }
+        : { ...r },
+    )
+  }
+  return [...per.values()].sort((a, b) => a.day.localeCompare(b.day))
+}
+
+/**
+ * Dagcijfers van één advertentieaccount, met het token van een verbonden
+ * LinkedIn-account. Met campagnes erbij tellen alleen die campagnes mee,
+ * voor klanten die via het account van James Robinson adverteren.
+ */
+export async function haalLinkedin(accountId: string, van: string, tot: string, toegang: string, campagneIds: string[] = []): Promise<Dagcijfers[]> {
   const id = linkedinAccountId(accountId)
   // Eerst het account zelf: dat zegt de munt, en meteen of we erbij mogen.
   controleerMunt((await linkedinGet(`adAccounts/${id}`, toegang)) as { currency?: string })
-  return leesLinkedin((await linkedinGet(analyticsPad(id, van, tot), toegang)) as LinkedinAnalyticsAntwoord)
+  if (campagneIds.length === 0) return leesLinkedin((await linkedinGet(analyticsPad(id, van, tot), toegang)) as LinkedinAnalyticsAntwoord)
+  const elementen: AnalyticsRij[] = []
+  for (let i = 0; i < campagneIds.length; i += CAMPAGNES_PER_AANVRAAG) {
+    const json = (await linkedinGet(analyticsPad(id, van, tot, campagneIds.slice(i, i + CAMPAGNES_PER_AANVRAAG)), toegang)) as LinkedinAnalyticsAntwoord
+    elementen.push(...(json.elements ?? []))
+  }
+  return leesLinkedin({ elements: elementen })
 }
