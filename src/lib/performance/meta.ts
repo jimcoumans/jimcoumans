@@ -102,6 +102,9 @@ export type MetaAntwoord = { data?: MetaRij[]; paging?: { next?: string }; error
 /** Eén pagina van de lijst advertentieaccounts van de systeemgebruiker. */
 export type MetaAccountsAntwoord = { data?: MetaAccountRij[]; paging?: { next?: string }; error?: MetaFout['error'] }
 
+/** Eén pagina van de lijst campagnes van een advertentieaccount. */
+export type MetaCampagnesAntwoord = { data?: MetaCampagneRij[]; paging?: { next?: string }; error?: MetaFout['error'] }
+
 /** Eén pagina van het antwoord als dagcijfers voor de bron meta; per dag opgeteld. */
 export function leesMeta(json: MetaAntwoord): Dagcijfers[] {
   const per = new Map<string, Dagcijfers>()
@@ -161,20 +164,28 @@ export function leesMetaFout(status: number, body: unknown): KoppelingFout {
 
 /* ------------------------------ Ophalen ---------------------------------- */
 
-/** Het eerste adres; daarna volgen we paging.next tot het op is. */
-export function insightsUrl(accountId: string, van: string, tot: string, token: string): string {
+/**
+ * Het eerste adres; daarna volgen we paging.next tot het op is.
+ *
+ * Met campagne-ID's vragen we per campagne in plaats van per account en
+ * laten we Meta filteren; leesMeta telt de campagnes per dag weer op. Zo
+ * tellen voor een klant die via het eigen account van James Robinson
+ * adverteert, alleen zijn eigen campagnes mee.
+ */
+export function insightsUrl(accountId: string, van: string, tot: string, token: string, campagneIds: string[] = []): string {
   const p = new URLSearchParams({
     fields: 'impressions,clicks,spend,actions,account_currency',
     time_increment: '1',
     time_range: JSON.stringify({ since: van, until: tot }),
-    level: 'account',
+    level: campagneIds.length ? 'campaign' : 'account',
     limit: String(PER_PAGINA),
     access_token: token,
   })
+  if (campagneIds.length) p.set('filtering', JSON.stringify([{ field: 'campaign.id', operator: 'IN', value: campagneIds }]))
   return `https://graph.facebook.com/${API_VERSIE}/${accountId}/insights?${p}`
 }
 
-async function haalPagina<T extends MetaAntwoord | MetaAccountsAntwoord = MetaAntwoord>(url: string): Promise<T> {
+async function haalPagina<T extends MetaAntwoord | MetaAccountsAntwoord | MetaCampagnesAntwoord = MetaAntwoord>(url: string): Promise<T> {
   const stop = new AbortController()
   const t = setTimeout(() => stop.abort(), 15000)
   try {
@@ -197,12 +208,12 @@ async function haalPagina<T extends MetaAntwoord | MetaAccountsAntwoord = MetaAn
   }
 }
 
-/** Dagcijfers van één advertentieaccount, alle pagina's bij elkaar. */
-export async function haalMeta(accountId: string, van: string, tot: string, env = process.env): Promise<Dagcijfers[]> {
+/** Dagcijfers van één advertentieaccount (of alleen van de gekozen campagnes erin), alle pagina's bij elkaar. */
+export async function haalMeta(accountId: string, van: string, tot: string, env: Record<string, string | undefined> = process.env, campagneIds: string[] = []): Promise<Dagcijfers[]> {
   const inst = metaInstellingen(env)
   if (!inst.klaar) throw new KoppelingFout(`Meta Ads is nog niet ingesteld in Netlify: ${inst.ontbreekt.join(', ')}.`)
   const paginas: Dagcijfers[][] = []
-  let url: string | undefined = insightsUrl(metaAccountId(accountId), van, tot, inst.token)
+  let url: string | undefined = insightsUrl(metaAccountId(accountId), van, tot, inst.token, campagneIds)
   // Meer dan een handvol pagina's is niet normaal voor dagcijfers; dit voorkomt een eindeloze lus.
   for (let n = 0; url && n < 50; n++) {
     const json: MetaAntwoord = await haalPagina(url)
@@ -254,7 +265,7 @@ export function leesMetaAccounts(json: MetaAccountsAntwoord): MetaAccount[] {
 }
 
 /** Alle advertentieaccounts waar de systeemgebruiker bij kan, alle pagina's bij elkaar. */
-export async function haalMetaAccounts(env = process.env): Promise<MetaAccount[]> {
+export async function haalMetaAccounts(env: Record<string, string | undefined> = process.env): Promise<MetaAccount[]> {
   const inst = metaInstellingen(env)
   if (!inst.klaar) throw new KoppelingFout(`Meta Ads is nog niet ingesteld in Netlify: ${inst.ontbreekt.join(', ')}.`)
   const alles: MetaAccount[] = []
@@ -270,4 +281,55 @@ export async function haalMetaAccounts(env = process.env): Promise<MetaAccount[]
     url = json.paging?.next
   }
   return alles.sort((a, b) => a.naam.localeCompare(b.naam, 'nl'))
+}
+
+/* ------------------------------ Campagnes -------------------------------- */
+
+/*
+   Sommige klanten adverteren niet vanuit een eigen advertentieaccount maar
+   vanuit dat van James Robinson, naast andere klanten. Dan kies je bij de
+   koppeling welke campagnes van dat account bij deze klant horen; alleen
+   die tellen mee. Hiervoor de lijst campagnes van een account.
+ */
+
+export type MetaCampagne = { id: string; naam: string; actief: boolean; status: string }
+
+type MetaCampagneRij = { id?: string; name?: string; status?: string; effective_status?: string; updated_time?: string }
+
+/* Weg is weg: verwijderde en gearchiveerde campagnes staan niet in de lijst. */
+const WEG = new Set(['DELETED', 'ARCHIVED'])
+
+export function campagnesUrl(accountId: string, token: string): string {
+  const p = new URLSearchParams({ fields: 'id,name,status,effective_status,updated_time', limit: String(PER_PAGINA), access_token: token })
+  return `https://graph.facebook.com/${API_VERSIE}/${accountId}/campaigns?${p}`
+}
+
+export function leesMetaCampagnes(json: MetaCampagnesAntwoord): MetaCampagne[] {
+  const uit: MetaCampagne[] = []
+  for (const r of json.data ?? []) {
+    if (!r.id || !/^\d+$/.test(r.id)) continue
+    const status = r.effective_status ?? r.status ?? ''
+    if (WEG.has(status)) continue
+    uit.push({ id: r.id, naam: r.name?.trim() || r.id, actief: status === 'ACTIVE', status })
+  }
+  return uit
+}
+
+/** Alle campagnes van één advertentieaccount, actieve eerst, dan op naam. */
+export async function haalMetaCampagnes(accountId: string, env: Record<string, string | undefined> = process.env): Promise<MetaCampagne[]> {
+  const inst = metaInstellingen(env)
+  if (!inst.klaar) throw new KoppelingFout(`Meta Ads is nog niet ingesteld in Netlify: ${inst.ontbreekt.join(', ')}.`)
+  const alles: MetaCampagne[] = []
+  const gezien = new Set<string>()
+  let url: string | undefined = campagnesUrl(metaAccountId(accountId), inst.token)
+  for (let n = 0; url && n < 50; n++) {
+    const json: MetaCampagnesAntwoord = await haalPagina(url)
+    for (const c of leesMetaCampagnes(json)) {
+      if (gezien.has(c.id)) continue
+      gezien.add(c.id)
+      alles.push(c)
+    }
+    url = json.paging?.next
+  }
+  return alles.sort((a, b) => Number(b.actief) - Number(a.actief) || a.naam.localeCompare(b.naam, 'nl'))
 }

@@ -4108,6 +4108,12 @@ export const analyticsConnections = pgTable(
     linkedinConnectionId: uuid('linkedin_connection_id').references(() => linkedinConnections.id, { onDelete: 'set null' }),
     /** De naam zoals de bron hem noemt, bijvoorbeeld "Thiessen Wijnkoopers – GA4". */
     displayName: text('display_name'),
+    /**
+     * Alleen deze campagnes tellen mee, met id en naam zoals het platform ze
+     * noemt. Leeg: het hele account. Voor klanten die adverteren via het
+     * eigen advertentieaccount van James Robinson, waar meer klanten in zitten.
+     */
+    campaigns: jsonb('campaigns').$type<{ id: string; naam: string }[]>(),
     active: boolean('active').notNull().default(true),
     /** Tot hoe ver terug de cijfers er al zijn. Leeg: nog niets opgehaald. */
     historyFrom: date('history_from', { mode: 'string' }),

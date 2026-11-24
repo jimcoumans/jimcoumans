@@ -407,6 +407,13 @@
       "when": 1795508813421,
       "tag": "0057_ahrefs_seo",
       "breakpoints": true
+    },
+    {
+      "idx": 58,
+      "version": "7",
+      "when": 1795509090276,
+      "tag": "0058_koppeling_campagnes",
+      "breakpoints": true
     }
   ]
 }

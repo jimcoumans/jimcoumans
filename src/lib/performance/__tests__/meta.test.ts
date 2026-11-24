@@ -3,13 +3,16 @@ import assert from 'node:assert/strict'
 import { KoppelingFout } from '../google'
 import {
   accountsUrl,
+  campagnesUrl,
   controleerMunt,
   haalMeta,
   haalMetaAccounts,
+  haalMetaCampagnes,
   insightsUrl,
   isConversie,
   leesMeta,
   leesMetaAccounts,
+  leesMetaCampagnes,
   leesMetaFout,
   metaAccountId,
   metaInstellingen,
@@ -199,5 +202,63 @@ describe('advertentieaccounts van de systeemgebruiker', () => {
   })
   it('weigert zonder META_ACCESS_TOKEN', async () => {
     await assert.rejects(haalMetaAccounts({} as unknown as NodeJS.ProcessEnv), /META_ACCESS_TOKEN/)
+  })
+})
+
+describe('campagnes van een account', () => {
+  it('vraagt per account de campagnes met status op', () => {
+    const url = new URL(campagnesUrl('act_123456789', 'T'))
+    assert.equal(url.pathname, '/v26.0/act_123456789/campaigns')
+    assert.match(url.searchParams.get('fields') ?? '', /id,name,status,effective_status/)
+  })
+  it('laat verwijderde en gearchiveerde campagnes weg en zet actieve bovenaan', async () => {
+    const lijst = leesMetaCampagnes({
+      data: [
+        { id: '1', name: 'Zomer', status: 'PAUSED', effective_status: 'PAUSED' },
+        { id: '2', name: 'Altijd aan', status: 'ACTIVE', effective_status: 'ACTIVE' },
+        { id: '3', name: 'Oud', status: 'ARCHIVED', effective_status: 'ARCHIVED' },
+        { id: 'x', name: 'Raar' },
+      ],
+    })
+    assert.deepEqual(lijst, [
+      { id: '1', naam: 'Zomer', actief: false, status: 'PAUSED' },
+      { id: '2', naam: 'Altijd aan', actief: true, status: 'ACTIVE' },
+    ])
+    const fetchMock = mock.method(globalThis, 'fetch', async () =>
+      new Response(JSON.stringify({ data: [{ id: '1', name: 'Zomer', effective_status: 'PAUSED' }, { id: '2', name: 'Altijd aan', effective_status: 'ACTIVE' }] }), { status: 200 }),
+    )
+    try {
+      const uit = await haalMetaCampagnes('123456789', { META_ACCESS_TOKEN: 'T' })
+      assert.deepEqual(uit.map((c) => c.naam), ['Altijd aan', 'Zomer'])
+    } finally {
+      fetchMock.mock.restore()
+    }
+  })
+  it('vraagt met gekozen campagnes per campagne en laat Meta filteren', () => {
+    const zonder = new URL(insightsUrl('act_1', '2026-10-01', '2026-10-02', 'T'))
+    assert.equal(zonder.searchParams.get('level'), 'account')
+    assert.equal(zonder.searchParams.get('filtering'), null)
+    const met = new URL(insightsUrl('act_1', '2026-10-01', '2026-10-02', 'T', ['11', '22']))
+    assert.equal(met.searchParams.get('level'), 'campaign')
+    assert.deepEqual(JSON.parse(met.searchParams.get('filtering') ?? ''), [{ field: 'campaign.id', operator: 'IN', value: ['11', '22'] }])
+  })
+  it('telt de gekozen campagnes per dag op tot één regel', async () => {
+    const fetchMock = mock.method(globalThis, 'fetch', async () =>
+      new Response(
+        JSON.stringify({
+          data: [
+            { date_start: '2026-10-01', campaign_id: '11', impressions: '10', clicks: '1', spend: '1.00', account_currency: 'EUR' },
+            { date_start: '2026-10-01', campaign_id: '22', impressions: '5', clicks: '2', spend: '0.50', account_currency: 'EUR' },
+          ],
+        }),
+        { status: 200 },
+      ),
+    )
+    try {
+      const rijen = await haalMeta('act_123456789', '2026-10-01', '2026-10-01', { META_ACCESS_TOKEN: 'T' }, ['11', '22'])
+      assert.deepEqual(rijen, [{ day: '2026-10-01', bron: 'meta', impressions: 15, clicks: 3, conversions: 0, costCents: 150 }])
+    } finally {
+      fetchMock.mock.restore()
+    }
   })
 })

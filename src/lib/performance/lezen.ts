@@ -169,7 +169,7 @@ export async function zetKoppeling(
       set:
         oud && oud.externalId === externalId
           ? { active: true, ...herkomst, lastError: null, lastErrorAt: null }
-          : { externalId, ...herkomst, active: true, historyFrom: null, lastSyncedAt: null, lastError: null, lastErrorAt: null },
+          : { externalId, ...herkomst, campaigns: null, active: true, historyFrom: null, lastSyncedAt: null, lastError: null, lastErrorAt: null },
     })
 }
 
@@ -177,6 +177,29 @@ export async function zetKoppeling(
 async function wisCijfers(tx: Pick<typeof db, 'delete'>, organizationId: string, source: AnalyticsConnection['source']) {
   if (source === 'ahrefs') await tx.delete(seoDaily).where(eq(seoDaily.organizationId, organizationId))
   else await tx.delete(performanceDaily).where(and(eq(performanceDaily.organizationId, organizationId), eq(performanceDaily.provider, source)))
+}
+
+/** Een campagne zoals we hem bij de koppeling bewaren: id en naam zoals het platform ze noemt. */
+export type Campagne = { id: string; naam: string }
+
+/**
+ * Welke campagnes van het account bij deze klant horen. Leeg: het hele
+ * account. Een andere keuze betekent andere cijfers, dus de historie van
+ * deze bron gaat weg en wordt opnieuw opgehaald.
+ */
+export async function zetCampagnes(koppelingId: string, campagnes: Campagne[]) {
+  const [k] = await db.select().from(analyticsConnections).where(eq(analyticsConnections.id, koppelingId))
+  if (!k) throw new KoppelingFout('Deze koppeling bestaat niet (meer).')
+  const nieuw = campagnes.length ? [...campagnes].sort((a, b) => a.id.localeCompare(b.id)) : null
+  const oud = k.campaigns?.length ? [...k.campaigns].sort((a, b) => a.id.localeCompare(b.id)) : null
+  const anders = JSON.stringify(oud?.map((c) => c.id) ?? null) !== JSON.stringify(nieuw?.map((c) => c.id) ?? null)
+  await db.transaction(async (tx) => {
+    if (anders) await wisCijfers(tx, k.organizationId, k.source)
+    await tx
+      .update(analyticsConnections)
+      .set(anders ? { campaigns: nieuw, historyFrom: null, lastSyncedAt: null, lastError: null, lastErrorAt: null } : { campaigns: nieuw })
+      .where(eq(analyticsConnections.id, koppelingId))
+  })
 }
 
 /** Ontkoppelen haalt ook de cijfers van die bron weg; anders tellen ze stilletjes mee. */

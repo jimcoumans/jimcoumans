@@ -120,7 +120,8 @@ async function haal(k: AnalyticsConnection, van: string, tot: string, toegang?: 
     case 'google_ads':
       return haalGoogleAdsViaVerbindingen(k, van, tot, toegang)
     case 'meta_ads':
-      return haalMeta(k.externalId, van, tot)
+      // Alleen de gekozen campagnes, als de klant via het account van James Robinson adverteert.
+      return haalMeta(k.externalId, van, tot, process.env, (k.campaigns ?? []).map((c) => c.id))
     case 'linkedin_ads':
       return haalLinkedinViaVerbindingen(k, van, tot)
     default:

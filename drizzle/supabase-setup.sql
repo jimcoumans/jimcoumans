@@ -4213,3 +4213,20 @@ BEGIN
   END IF;
 END $jr_0057_ahrefs_seo$;
 
+-- ---------------------------------------------------------------------------
+-- 0058_koppeling_campagnes
+-- ---------------------------------------------------------------------------
+
+DO $jr_0058_koppeling_campagnes$
+BEGIN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = '24f58fe59010840310a7b1186f1707e3e58172c8c161786c53d3bd2b0296a13c') THEN
+    RAISE NOTICE 'Overgeslagen: 0058_koppeling_campagnes stond er al.';
+  ELSE
+    ALTER TABLE "analytics_connections" ADD COLUMN "campaigns" jsonb;
+
+    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+    VALUES ('24f58fe59010840310a7b1186f1707e3e58172c8c161786c53d3bd2b0296a13c', 1795509090276);
+    RAISE NOTICE 'Toegepast: 0058_koppeling_campagnes.';
+  END IF;
+END $jr_0058_koppeling_campagnes$;
+
