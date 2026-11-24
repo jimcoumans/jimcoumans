@@ -1,8 +1,9 @@
 import { and, asc, eq, gte, lte, sql } from 'drizzle-orm'
 import { db } from '@/db'
-import { analyticsConnections, organizations, performanceDaily, seoDaily, type AnalyticsConnection } from '@/db/schema'
+import { analyticsConnections, businessProfileDaily, organizations, performanceDaily, seoDaily, type AnalyticsConnection } from '@/db/schema'
 import { KoppelingFout, haalGa4, haalSearchConsole, type Dagcijfers } from './google'
 import { haalAhrefs, type SeoStand } from './ahrefs'
+import { OPNIEUW_VERBINDEN, haalBedrijfsprofiel, heeftBedrijfsprofielRecht, type BedrijfsprofielCijfers } from './bedrijfsprofiel'
 import { GoogleAdsToegangFout, haalGoogleAds } from './google-ads'
 import { haalMeta } from './meta'
 import { LinkedinToegangFout, haalLinkedin } from './linkedin'
@@ -33,6 +34,7 @@ export const KAN_OPHALEN: Record<AnalyticsConnection['source'], boolean> = {
   linkedin_ads: true,
   tiktok_ads: false,
   ahrefs: true,
+  google_business: true,
 }
 
 const iso = (d: Date) => d.toISOString().slice(0, 10)
@@ -58,6 +60,7 @@ async function tokenVoor(k: AnalyticsConnection): Promise<string | undefined> {
   if (!k.googleConnectionId) return undefined
   const v = await getVerbinding(k.googleConnectionId)
   if (!v) throw new KoppelingFout('Het Google-account van deze koppeling is losgekoppeld. Kies de property opnieuw.')
+  if (k.source === 'google_business' && !heeftBedrijfsprofielRecht(v.scopes)) throw new KoppelingFout(`${v.email}: ${OPNIEUW_VERBINDEN}`)
   return toegangstoken(v)
 }
 
@@ -111,8 +114,9 @@ async function haalLinkedinViaVerbindingen(k: AnalyticsConnection, van: string, 
 async function haal(k: AnalyticsConnection, van: string, tot: string, toegang?: string): Promise<Dagcijfers[]> {
   switch (k.source) {
     case 'ahrefs':
-      // Ahrefs levert standen, geen dagcijfers; zie haalEnBewaar.
-      throw new KoppelingFout('Ahrefs gaat via de SEO-tabel.')
+    case 'google_business':
+      // Eigen soort cijfers, eigen tabel; zie haalEnBewaar.
+      throw new KoppelingFout('Deze bron gaat via een eigen tabel.')
     case 'ga4':
       return haalGa4(k.externalId, van, tot, toegang)
     case 'search_console':
@@ -181,11 +185,41 @@ async function bewaarSeo(k: AnalyticsConnection, van: string, tot: string, rijen
   })
 }
 
+/** Vervangt de Bedrijfsprofiel-cijfers van één klant in een periode. */
+async function bewaarBedrijfsprofiel(k: AnalyticsConnection, van: string, tot: string, rijen: BedrijfsprofielCijfers[]) {
+  await db.transaction(async (tx) => {
+    await tx
+      .delete(businessProfileDaily)
+      .where(and(eq(businessProfileDaily.organizationId, k.organizationId), gte(businessProfileDaily.day, van), lte(businessProfileDaily.day, tot)))
+    if (rijen.length === 0) return
+    for (let i = 0; i < rijen.length; i += 500) {
+      await tx.insert(businessProfileDaily).values(
+        rijen.slice(i, i + 500).map((r) => ({
+          organizationId: k.organizationId,
+          day: r.day,
+          impressionsMaps: r.impressionsMaps ?? null,
+          impressionsSearch: r.impressionsSearch ?? null,
+          websiteClicks: r.websiteClicks ?? null,
+          callClicks: r.callClicks ?? null,
+          directionRequests: r.directionRequests ?? null,
+          messagingClicks: r.messagingClicks ?? null,
+          bookings: r.bookings ?? null,
+        })),
+      )
+    }
+  })
+}
+
 /** Eén stuk ophalen en wegschrijven; geeft terug hoeveel regels het waren. */
 async function haalEnBewaar(k: AnalyticsConnection, van: string, tot: string, toegang?: string): Promise<number> {
   if (k.source === 'ahrefs') {
     const rijen = await haalAhrefs(k.externalId, van, tot)
     await bewaarSeo(k, van, tot, rijen)
+    return rijen.length
+  }
+  if (k.source === 'google_business') {
+    const rijen = await haalBedrijfsprofiel(k.externalId, van, tot, toegang)
+    await bewaarBedrijfsprofiel(k, van, tot, rijen)
     return rijen.length
   }
   const rijen = await haal(k, van, tot, toegang)

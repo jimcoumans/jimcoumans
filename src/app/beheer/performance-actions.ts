@@ -14,7 +14,7 @@ import { db } from '@/db'
 import { organizations, type AnalyticsConnection } from '@/db/schema'
 import type { ActionResult } from './actions'
 
-const BRONNEN = ['ga4', 'search_console', 'google_ads', 'meta_ads', 'linkedin_ads', 'tiktok_ads', 'ahrefs'] as const
+const BRONNEN = ['ga4', 'search_console', 'google_ads', 'meta_ads', 'linkedin_ads', 'tiktok_ads', 'ahrefs', 'google_business'] as const
 const tekst = (f: FormData, n: string) => String(f.get(n) ?? '').trim()
 
 function ververs(slug: string) {

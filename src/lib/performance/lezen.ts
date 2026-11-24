@@ -1,8 +1,9 @@
 import { and, asc, eq, gte, lte, sql } from 'drizzle-orm'
 import { db } from '@/db'
-import { analyticsConnections, organizations, performanceDaily, seoDaily, type AnalyticsConnection, type SeoDag } from '@/db/schema'
+import { analyticsConnections, businessProfileDaily, organizations, performanceDaily, seoDaily, type AnalyticsConnection, type BedrijfsprofielDag, type SeoDag } from '@/db/schema'
 import { KoppelingFout, ga4PropertyId, searchConsoleSite } from './google'
 import { ahrefsDomein } from './ahrefs'
+import { bedrijfsprofielLocatieId } from './bedrijfsprofiel'
 import type { DagRij } from './bronnen'
 
 /* De cijfers voor de schermen: per klant of voor alle klanten samen. */
@@ -47,6 +48,15 @@ export async function getSeoStanden(organizationId: string, van: string, tot: st
     .from(seoDaily)
     .where(and(eq(seoDaily.organizationId, organizationId), gte(seoDaily.day, van), lte(seoDaily.day, tot)))
     .orderBy(asc(seoDaily.day))
+}
+
+/** De Bedrijfsprofiel-cijfers van één klant in een periode, oplopend op dag. */
+export async function getBedrijfsprofiel(organizationId: string, van: string, tot: string): Promise<BedrijfsprofielDag[]> {
+  return db
+    .select()
+    .from(businessProfileDaily)
+    .where(and(eq(businessProfileDaily.organizationId, organizationId), gte(businessProfileDaily.day, van), lte(businessProfileDaily.day, tot)))
+    .orderBy(asc(businessProfileDaily.day))
 }
 
 /** Per klant de totalen in een periode, voor de overall-view. */
@@ -113,6 +123,12 @@ export const BRON_KOPPELING: Record<AnalyticsConnection['source'], { naam: strin
     uitleg: 'Heeft ons verbonden LinkedIn-account een rol op het advertentieaccount, dan staat het in de lijst. Anders: het account-ID staat in Campaign Manager naast de accountnaam.',
   },
   tiktok_ads: { naam: 'TikTok Ads', veld: 'Advertiser-ID', voorbeeld: '7123456789012345678', uitleg: 'In TikTok Ads Manager onder het account.' },
+  google_business: {
+    naam: 'Google Bedrijfsprofiel',
+    veld: 'Locatienummer',
+    voorbeeld: '12345678901234567890',
+    uitleg: 'Is een verbonden Google-account eigenaar of beheerder van het profiel, dan staat het in de lijst. Anders: laat de klant een van onze adressen als beheerder uitnodigen.',
+  },
   ahrefs: {
     naam: 'Ahrefs',
     veld: 'Domein',
@@ -141,6 +157,8 @@ export function normaliseerExternId(source: AnalyticsConnection['source'], invoe
     }
     case 'ahrefs':
       return ahrefsDomein(s)
+    case 'google_business':
+      return bedrijfsprofielLocatieId(s)
     default:
       if (!/^\d{5,25}$/.test(s)) throw new KoppelingFout('Vul het account-ID in: alleen cijfers.')
       return s
@@ -176,6 +194,7 @@ export async function zetKoppeling(
 /** De cijfers die een koppeling leverde: dagcijfers per bron, of de SEO-standen bij Ahrefs. */
 async function wisCijfers(tx: Pick<typeof db, 'delete'>, organizationId: string, source: AnalyticsConnection['source']) {
   if (source === 'ahrefs') await tx.delete(seoDaily).where(eq(seoDaily.organizationId, organizationId))
+  else if (source === 'google_business') await tx.delete(businessProfileDaily).where(eq(businessProfileDaily.organizationId, organizationId))
   else await tx.delete(performanceDaily).where(and(eq(performanceDaily.organizationId, organizationId), eq(performanceDaily.provider, source)))
 }
 

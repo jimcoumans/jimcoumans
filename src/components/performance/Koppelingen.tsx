@@ -17,15 +17,16 @@ import { VinkLijst, type VinkOptie } from './VinkLijst'
 /* De koppelingen van één klant: wat er gekoppeld is, of het werkt, en
    een paneel om te koppelen. Fouten staan erbij in gewone taal. */
 
-const VOLGORDE: AnalyticsConnection['source'][] = ['ga4', 'search_console', 'ahrefs', 'google_ads', 'meta_ads', 'linkedin_ads', 'tiktok_ads']
+const VOLGORDE: AnalyticsConnection['source'][] = ['ga4', 'search_console', 'google_business', 'ahrefs', 'google_ads', 'meta_ads', 'linkedin_ads', 'tiktok_ads']
 
 /** Bronnen waar je uit een lijst kiest in plaats van een ID over te typen. */
-const MET_LIJST = new Set<AnalyticsConnection['source']>(['ga4', 'search_console', 'google_ads', 'meta_ads', 'linkedin_ads'])
+const MET_LIJST = new Set<AnalyticsConnection['source']>(['ga4', 'search_console', 'google_business', 'google_ads', 'meta_ads', 'linkedin_ads'])
 
 /** Wat de klant moet doen voordat zijn account in onze lijst staat. */
 const TOEGANG: Record<string, { wat: string; hoe: string }> = {
   ga4: { wat: 'GA4-property', hoe: 'Laat de klant in GA4 een van onze adressen als lezer toevoegen' },
   search_console: { wat: 'Search Console-site', hoe: 'Laat de klant in Search Console een van onze adressen als lezer toevoegen' },
+  google_business: { wat: 'Bedrijfsprofiel', hoe: 'Laat de klant in zijn Google Bedrijfsprofiel een van onze adressen als beheerder uitnodigen (Instellingen → Gebruikers en toegang)' },
   google_ads: { wat: 'Google Ads-account', hoe: 'Koppel het account van de klant aan ons MCC (in Google Ads: Accounts → Koppelen)' },
   meta_ads: { wat: 'Meta-advertentieaccount', hoe: 'Laat de klant ons als partner toevoegen aan zijn advertentieaccount, en geef onze systeemgebruiker daar leesrecht op' },
   linkedin_ads: { wat: 'LinkedIn-advertentieaccount', hoe: 'Laat de klant ons verbonden LinkedIn-account in Campaign Manager een rol geven op zijn advertentieaccount (Viewer is genoeg)' },
@@ -128,7 +129,7 @@ export function Koppelingen({
           const k = per.get(bron)
           const info = BRON_KOPPELING[bron]
           const kan = KAN_OPHALEN[bron]
-          const google = bron === 'ga4' || bron === 'search_console'
+          const google = bron === 'ga4' || bron === 'search_console' || bron === 'google_business'
           const lijst = MET_LIJST.has(bron) && opties(bron).length > 0
           const waarom = MET_LIJST.has(bron)
             ? leeg(bron)
@@ -206,7 +207,7 @@ export function Koppelingen({
                             </>
                           )}
                         </p>
-                        {google && serviceaccount && (
+                        {google && bron !== 'google_business' && serviceaccount && (
                           <p className="mt-2 text-gray-600">
                             Of via het serviceaccount: voeg <span className="font-mono text-[13px] break-all select-all">{serviceaccount}</span> toe als lezer en vul hieronder het ID in.
                           </p>
