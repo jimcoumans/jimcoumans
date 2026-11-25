@@ -340,7 +340,7 @@ export async function listBedrijfsnamen(): Promise<Bedrijfsnaam[]> {
   const rijen = await db
     .select({ id: organizations.id, naam: organizations.name, status: organizations.status })
     .from(organizations)
-    .orderBy(asc(organizations.name))
+    .orderBy(asc(sql`lower(${organizations.name})`))
 
   return rijen
 }

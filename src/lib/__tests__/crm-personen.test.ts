@@ -146,19 +146,18 @@ test('klant, partner en collega staan in één lijst met eigen label', async () 
   assert.equal(collega?.href, `/beheer/medewerkers/${collegaId}`)
 })
 
-test('er wordt op achternaam gesorteerd, niet op het tussenvoegsel', async () => {
+test('er wordt op voornaam gesorteerd', async () => {
   const mensen = await listCrmPersonen({ zoek: merk })
   const namen = mensen.map((m) => m.naam)
 
-  const voncken = namen.indexOf('Marieke van der Voncken')
-  const peters = namen.indexOf('Ruud Peters')
-  const wit = namen.indexOf('Sanne de Wit')
+  const marieke = namen.indexOf('Marieke van der Voncken')
+  const ruud = namen.indexOf('Ruud Peters')
+  const sanne = namen.indexOf('Sanne de Wit')
 
-  assert.ok(voncken >= 0 && peters >= 0 && wit >= 0, 'niet iedereen gevonden')
-  // Peters < Voncken < Wit. Zou er op de volledige naam gesorteerd worden,
-  // dan stond Marieke bij de M en Sanne bij de S.
-  assert.ok(peters < voncken, 'Peters hoort voor Voncken')
-  assert.ok(voncken < wit, 'Voncken hoort voor Wit')
+  assert.ok(marieke >= 0 && ruud >= 0 && sanne >= 0, 'niet iedereen gevonden')
+  // Marieke < Ruud < Sanne. Op achternaam zou het Peters, Voncken, Wit zijn.
+  assert.ok(marieke < ruud, 'Marieke hoort voor Ruud')
+  assert.ok(ruud < sanne, 'Ruud hoort voor Sanne')
 })
 
 test('filteren op soort laat alleen die groep zien', async () => {

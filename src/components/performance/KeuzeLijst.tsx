@@ -8,7 +8,17 @@ export type KeuzeOptie = { waarde: string; naam: string; detail: string; voorges
  * Kiezen uit wat onze Google-accounts kunnen zien: zoeken op naam, de
  * voorstellen bovenaan. Eén klik en klaar, geen ID's overtypen.
  */
-export function KeuzeLijst({ opties, gekozen, naam = 'keuze' }: { opties: KeuzeOptie[]; gekozen?: string; naam?: string }) {
+export function KeuzeLijst({
+  opties,
+  gekozen,
+  naam = 'keuze',
+  leegTekst = 'Niets gevonden. Klopt de naam, en heeft de klant ons al toegang gegeven?',
+}: {
+  opties: KeuzeOptie[]
+  gekozen?: string
+  naam?: string
+  leegTekst?: string
+}) {
   const [zoek, setZoek] = useState('')
   const [waarde, setWaarde] = useState(gekozen ?? opties.find((o) => o.voorgesteld)?.waarde ?? '')
   const zichtbaar = useMemo(() => {
@@ -28,7 +38,7 @@ export function KeuzeLijst({ opties, gekozen, naam = 'keuze' }: { opties: KeuzeO
         className="mb-2 min-h-11 w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-[15px] outline-none focus:border-jr-blue"
       />
       <div role="radiogroup" className="max-h-72 overflow-y-auto rounded-lg border border-gray-200">
-        {zichtbaar.length === 0 && <p className="px-4 py-3 text-sm text-gray-500">Niets gevonden. Klopt de naam, en heeft de klant ons al toegang gegeven?</p>}
+        {zichtbaar.length === 0 && <p className="px-4 py-3 text-sm text-gray-500">{leegTekst}</p>}
         {zichtbaar.map((o, i) => (
           <label
             key={o.waarde}

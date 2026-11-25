@@ -1087,6 +1087,30 @@ export const organizationPartners = pgTable(
   ],
 )
 
+/**
+ * Extra bedrijven waar een contactpersoon bij hoort.
+ *
+ * Het hoofdbedrijf blijft contacts.organizationId: daar hangen de vaste
+ * contactpersoon, de facturen en alles wat al bestond aan. Deze tabel is voor
+ * de rest: de eigenaar van drie zaken, de adviseur die bij twee klanten in
+ * het bestuur zit. Op elk van die bedrijven staat hij dan bij de contacten.
+ */
+export const contactOrganizations = pgTable(
+  'contact_organizations',
+  {
+    contactId: uuid('contact_id')
+      .notNull()
+      .references(() => contacts.id, { onDelete: 'cascade' }),
+    organizationId: uuid('organization_id')
+      .notNull()
+      .references(() => organizations.id, { onDelete: 'cascade' }),
+    /** Wat hij bij dit bedrijf doet, bijv. Eigenaar of Bestuurslid. */
+    role: text('role'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ name: 'contact_organizations_pk', columns: [t.contactId, t.organizationId] }), index('contact_organizations_org_idx').on(t.organizationId)],
+)
+
 /* ------------------------------ Gebruikers ------------------------------ */
 
 export const users = pgTable(
@@ -3684,6 +3708,7 @@ export type Invoice = typeof invoices.$inferSelect
 export type Service = typeof services.$inferSelect
 export type Subscription = typeof subscriptions.$inferSelect
 export type Contact = typeof contacts.$inferSelect
+export type ContactOrganization = typeof contactOrganizations.$inferSelect
 export type Account = typeof accounts.$inferSelect
 export type Quote = typeof quotes.$inferSelect
 export type QuoteLine = typeof quoteLines.$inferSelect

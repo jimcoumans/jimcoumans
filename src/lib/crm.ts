@@ -3,6 +3,7 @@ import { db } from '@/db'
 import {
   organizations,
   contacts,
+  contactOrganizations,
   partners,
   organizationPartners,
   accounts,
@@ -113,7 +114,83 @@ export async function listContacts(organizationId: string): Promise<Contact[]> {
     .from(contacts)
     .where(eq(contacts.organizationId, organizationId))
     // De vaste contactpersoon bovenaan; die zoek je het vaakst.
-    .orderBy(desc(contacts.isPrimary), asc(contacts.name))
+    .orderBy(desc(contacts.isPrimary), asc(sql`lower(${contacts.name})`))
+}
+
+/* ------------------- Een persoon bij meerdere bedrijven ------------------
+   Het hoofdbedrijf is contacts.organizationId. De rest staat in
+   contact_organizations, met per bedrijf wat hij daar doet. */
+
+export type ExtraBedrijf = { organizationId: string; naam: string; slug: string; rol: string | null }
+
+/** De bedrijven waar deze persoon naast zijn hoofdbedrijf bij hoort. */
+export async function extraBedrijvenVan(contactId: string): Promise<ExtraBedrijf[]> {
+  return db
+    .select({ organizationId: organizations.id, naam: organizations.name, slug: organizations.slug, rol: contactOrganizations.role })
+    .from(contactOrganizations)
+    .innerJoin(organizations, eq(organizations.id, contactOrganizations.organizationId))
+    .where(eq(contactOrganizations.contactId, contactId))
+    .orderBy(asc(sql`lower(${organizations.name})`))
+}
+
+/** Per contactpersoon de namen van zijn extra bedrijven. Voor lijsten, in één query. */
+export async function extraBedrijvenPerContact(): Promise<Map<string, string[]>> {
+  const rijen = await db
+    .select({ contactId: contactOrganizations.contactId, naam: organizations.name })
+    .from(contactOrganizations)
+    .innerJoin(organizations, eq(organizations.id, contactOrganizations.organizationId))
+    .orderBy(asc(sql`lower(${organizations.name})`))
+  const per = new Map<string, string[]>()
+  for (const r of rijen) per.set(r.contactId, [...(per.get(r.contactId) ?? []), r.naam])
+  return per
+}
+
+export type GekoppeldContact = { contact: Contact; rol: string | null; hoofdbedrijf: string | null }
+
+/** De mensen die bij dit bedrijf horen maar hun hoofdbedrijf ergens anders hebben. */
+export async function gekoppeldeContacten(organizationId: string): Promise<GekoppeldContact[]> {
+  const hoofd = sql<string | null>`(SELECT ${organizations.name} FROM ${organizations} WHERE ${organizations.id} = ${contacts.organizationId})`
+  const rijen = await db
+    .select({ contact: contacts, rol: contactOrganizations.role, hoofdbedrijf: hoofd })
+    .from(contactOrganizations)
+    .innerJoin(contacts, eq(contacts.id, contactOrganizations.contactId))
+    .where(eq(contactOrganizations.organizationId, organizationId))
+    .orderBy(asc(sql`lower(${contacts.name})`))
+  return rijen
+}
+
+/** Iedereen die je aan een bedrijf kunt koppelen, met waar hij nu bij hoort. Op voornaam. */
+export async function contactenOmTeKoppelen(): Promise<{ id: string; naam: string; organizationId: string | null; bij: string | null }[]> {
+  return db
+    .select({
+      id: contacts.id,
+      naam: contacts.name,
+      organizationId: contacts.organizationId,
+      bij: sql<string | null>`COALESCE(${organizations.name}, ${partners.name}, ${contacts.companyName})`,
+    })
+    .from(contacts)
+    .leftJoin(organizations, eq(organizations.id, contacts.organizationId))
+    .leftJoin(partners, eq(partners.id, contacts.partnerId))
+    .orderBy(asc(sql`lower(${contacts.name})`))
+}
+
+/** Hangt een bestaande persoon ook aan een ander bedrijf. */
+export async function koppelContactAanBedrijf(contactId: string, organizationId: string, rol?: string | null): Promise<void> {
+  const [c] = await db.select({ organizationId: contacts.organizationId }).from(contacts).where(eq(contacts.id, contactId)).limit(1)
+  if (!c) throw new CrmError('Contactpersoon niet gevonden.')
+  if (c.organizationId === organizationId) throw new CrmError('Dit is al het hoofdbedrijf van deze persoon.')
+  await db.insert(contactOrganizations).values({ contactId, organizationId, role: rol?.trim() || null })
+}
+
+export async function wijzigRolBijBedrijf(contactId: string, organizationId: string, rol: string | null): Promise<void> {
+  await db
+    .update(contactOrganizations)
+    .set({ role: rol?.trim() || null })
+    .where(and(eq(contactOrganizations.contactId, contactId), eq(contactOrganizations.organizationId, organizationId)))
+}
+
+export async function ontkoppelContactVanBedrijf(contactId: string, organizationId: string): Promise<void> {
+  await db.delete(contactOrganizations).where(and(eq(contactOrganizations.contactId, contactId), eq(contactOrganizations.organizationId, organizationId)))
 }
 
 export type NewContact = {
@@ -395,6 +472,8 @@ export async function wijzigContactBasis(contactId: string, b: ContactBasis): Pr
       updatedAt: new Date(),
     })
     .where(eq(contacts.id, contactId))
+  // Wordt een extra bedrijf zijn hoofdbedrijf, dan hoort het niet ook nog in de extra's.
+  if (naarAnder && b.organizationId) await ontkoppelContactVanBedrijf(contactId, b.organizationId)
 }
 
 export async function deleteContact(contactId: string): Promise<void> {
@@ -420,13 +499,13 @@ export async function listPartners(
     .leftJoin(organizationPartners, eq(organizationPartners.partnerId, partners.id))
     .where(opts.onlyActive ? eq(partners.active, true) : undefined)
     .groupBy(partners.id)
-    .orderBy(asc(partners.name))
+    .orderBy(asc(sql`lower(${partners.name})`))
 
   return rows.map((r) => ({ ...r.partner, clientCount: Number(r.clientCount) }))
 }
 
 export async function listActivePartners(): Promise<Partner[]> {
-  return db.select().from(partners).where(eq(partners.active, true)).orderBy(asc(partners.name))
+  return db.select().from(partners).where(eq(partners.active, true)).orderBy(asc(sql`lower(${partners.name})`))
 }
 
 export type NewPartner = {
@@ -564,7 +643,7 @@ export async function listOrganizationsForPartner(partnerId: string) {
     .from(organizationPartners)
     .innerJoin(organizations, eq(organizations.id, organizationPartners.organizationId))
     .where(eq(organizationPartners.partnerId, partnerId))
-    .orderBy(asc(organizations.name))
+    .orderBy(asc(sql`lower(${organizations.name})`))
 }
 
 /**
@@ -584,7 +663,7 @@ export async function listOrganizationsPerPartner(): Promise<
     })
     .from(organizationPartners)
     .innerJoin(organizations, eq(organizations.id, organizationPartners.organizationId))
-    .orderBy(asc(organizations.name))
+    .orderBy(asc(sql`lower(${organizations.name})`))
 
   const perPartner = new Map<
     string,
@@ -920,10 +999,7 @@ export async function listAlleContactpersonen(zoek?: string): Promise<ContactMet
             OR ${organizations.name} ILIKE ${'%' + term + '%'}
           )`,
     )
-    .orderBy(
-      asc(sql`COALESCE(NULLIF(${contacts.lastName}, ''), ${contacts.name})`),
-      asc(contacts.firstName),
-    )
+    .orderBy(asc(sql`lower(${contacts.name})`))
 
   return rijen.map((r) => ({
     ...r.contact,

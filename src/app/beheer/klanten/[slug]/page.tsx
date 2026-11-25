@@ -23,8 +23,8 @@ import {
 } from '../../factuur-actions'
 import { SubscriptionCard, NewSubscriptionForm } from '@/components/SubscriptionCard'
 import { listSubscriptions } from '@/lib/billing'
-import { listContacts, listAccounts, listPartnersForOrganization, listActivePartners, listKinderen, listVestigingen, listConcurrenten, listDoelen, organizationStatusLabels, organizationStatusStyles } from '@/lib/crm'
-import { Contactpersonen, Partners, Accounts, Bedrijfsgegevens } from '@/components/CrmSections'
+import { listContacts, gekoppeldeContacten, contactenOmTeKoppelen, listAccounts, listPartnersForOrganization, listActivePartners, listKinderen, listVestigingen, listConcurrenten, listDoelen, organizationStatusLabels, organizationStatusStyles } from '@/lib/crm'
+import { Contactpersonen, OokVerbonden, Partners, Accounts, Bedrijfsgegevens } from '@/components/CrmSections'
 import { Vestigingen, Concurrenten, Doelen } from '@/components/Bedrijfsprofiel'
 import { Tijdlijn } from '@/components/Tijdlijn'
 import { FormulierenTab } from '@/components/formulieren/FormulierenTab'
@@ -119,7 +119,11 @@ export default async function KlantPage({
     ])
   // De kinderen apart, want die hangen aan de contactpersonen die we net
   // hebben opgehaald.
-  const kinderenPer = await listKinderen(contacten.map((c) => c.id))
+  const [kinderenPer, gekoppeld, kandidaten] = await Promise.all([
+    listKinderen(contacten.map((c) => c.id)),
+    gekoppeldeContacten(klant.organization.id),
+    tab === 'contacten' ? contactenOmTeKoppelen() : Promise.resolve([]),
+  ])
   const [vestigingen, concurrenten, doelen, tijdlijn, laatsteContactOp] = await Promise.all([
     listVestigingen(klant.organization.id),
     listConcurrenten(klant.organization.id),
@@ -379,6 +383,11 @@ export default async function KlantPage({
               organizationId={klant.organization.id}
               slug={slug}
               kinderenPer={kinderenPer}
+            />
+            <OokVerbonden
+              gekoppeld={gekoppeld}
+              kandidaten={kandidaten.filter((k) => k.organizationId !== klant.organization.id && !gekoppeld.some((g) => g.contact.id === k.id))}
+              organizationId={klant.organization.id}
             />
             <Partners
               links={partnerLinks}

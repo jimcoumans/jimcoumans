@@ -1,12 +1,12 @@
 import { redirect, notFound } from 'next/navigation'
 import { getSessionUser } from '@/lib/auth'
-import { getContactKaart } from '@/lib/crm'
+import { extraBedrijvenVan, getContactKaart } from '@/lib/crm'
 import { listBedrijfsnamen } from '@/lib/pijplijn'
 import { AppShell } from '@/components/AppShell'
 import { Avatar } from '@/components/Avatar'
 import { ActionForm, Field, Select, TextArea } from '@/components/ActionForm'
 import { MAANDNAMEN } from '@/lib/dates'
-import { wijzigContact, verwijderContact } from '../../crm-actions'
+import { wijzigContact, verwijderContact, koppelAanBedrijf, ontkoppelVanBedrijf } from '../../crm-actions'
 
 const KNOP_RUSTIG = 'inline-flex items-center rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50'
 
@@ -23,7 +23,7 @@ export default async function ContactKaartPagina({ params }: { params: Promise<{
   const { id } = await params
   if (!/^[0-9a-f-]{36}$/i.test(id)) notFound()
 
-  const [kaart, bedrijven] = await Promise.all([getContactKaart(id), listBedrijfsnamen()])
+  const [kaart, bedrijven, extra] = await Promise.all([getContactKaart(id), listBedrijfsnamen(), extraBedrijvenVan(id)])
   if (!kaart) notFound()
   const { contact: c, organisatie, partner } = kaart
   const werkt = organisatie?.naam ?? partner?.naam ?? c.companyName
@@ -52,6 +52,7 @@ export default async function ContactKaartPagina({ params }: { params: Promise<{
             ) : (
               (werkt ?? (c.jobTitle ? '' : 'Los contact, zonder bedrijf'))
             )}
+            {extra.length > 0 && <span className="text-gray-500"> &middot; ook {extra.map((b) => b.naam).join(', ')}</span>}
             {c.birthDay !== null && c.birthMonth !== null && (
               <span className="text-gray-500">
                 {' '}
@@ -130,6 +131,40 @@ export default async function ContactKaartPagina({ params }: { params: Promise<{
         </section>
 
         <aside className="space-y-6">
+          <section className="rounded-xl bg-white p-6 shadow-sm">
+            <h2 className="mb-1 text-base">Ook bij andere bedrijven</h2>
+            <p className="mb-3 text-sm text-gray-600">
+              {organisatie ? `Naast ${organisatie.naam}.` : 'Naast waar hij werkt.'} Hij staat dan ook bij de contacten van dat bedrijf.
+            </p>
+            {extra.length > 0 && (
+              <ul className="mb-4 space-y-2 text-sm">
+                {extra.map((b) => (
+                  <li key={b.organizationId} className="flex items-start justify-between gap-3">
+                    <span className="min-w-0">
+                      <a href={`/beheer/klanten/${b.slug}`} className="text-jr-link hover:underline">{b.naam}</a>
+                      {b.rol && <span className="text-gray-500"> · {b.rol}</span>}
+                    </span>
+                    <ActionForm action={ontkoppelVanBedrijf} submitLabel="Ontkoppelen" submitClassName="!min-h-0 !px-0 !py-0 !bg-transparent text-xs !text-gray-500 hover:!text-[#C02A22]" resetOnSuccess={false} meldGelukt={false} className="">
+                      <input type="hidden" name="contactId" value={c.id} />
+                      <input type="hidden" name="organizationId" value={b.organizationId} />
+                    </ActionForm>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <ActionForm action={koppelAanBedrijf} submitLabel="Koppelen" submitClassName={KNOP_RUSTIG} className="space-y-3">
+              <input type="hidden" name="contactId" value={c.id} />
+              <Select
+                label="Bedrijf"
+                name="organizationId"
+                options={[
+                  { value: '', label: 'Kies een bedrijf' },
+                  ...bedrijven.filter((b) => b.id !== organisatie?.id && !extra.some((e) => e.organizationId === b.id)).map((b) => ({ value: b.id, label: b.naam })),
+                ]}
+              />
+              <Field label="Rol" name="rol" placeholder="Eigenaar, bestuurslid, adviseur" />
+            </ActionForm>
+          </section>
           {organisatie && (
             <section className="rounded-xl bg-white p-6 shadow-sm">
               <h2 className="mb-1 text-base">Meer over {c.firstName ?? c.name}</h2>

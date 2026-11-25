@@ -11,6 +11,7 @@ import {
   linkPartner, updatePartnerLink, unlinkPartner,
   createAccount, updateAccount, deleteAccount,
   updateOrganizationDetails, CrmError, wijzigContactBasis, getContactKaart,
+  koppelContactAanBedrijf, ontkoppelContactVanBedrijf, wijzigRolBijBedrijf,
 } from '@/lib/crm'
 import type { ContactPatch, NewPartner, NewAccount } from '@/lib/crm'
 import { volledigeNaam, type Aanhef } from '@/lib/namen'
@@ -834,4 +835,42 @@ export async function verwijderContact(formData: FormData): Promise<ActionResult
   })
   if (r.ok) redirect('/beheer/crm')
   return r
+}
+
+/* ------------------- Een persoon bij meerdere bedrijven ------------------- */
+
+function ververs(contactId: string) {
+  revalidatePath(`/beheer/crm/${contactId}`)
+  revalidatePath('/beheer/crm')
+  revalidatePath('/beheer/klanten', 'layout')
+}
+
+export async function koppelAanBedrijf(formData: FormData): Promise<ActionResult> {
+  await requireStaff()
+  const contactId = tekst(formData, 'contactId')
+  const organizationId = tekst(formData, 'organizationId')
+  if (!contactId) return { ok: false, error: 'Kies een persoon.' }
+  if (!organizationId) return { ok: false, error: 'Kies een bedrijf.' }
+  return veilig(async () => {
+    await koppelContactAanBedrijf(contactId, organizationId, tekst(formData, 'rol'))
+    ververs(contactId)
+  })
+}
+
+export async function wijzigRolBijBedrijfActie(formData: FormData): Promise<ActionResult> {
+  await requireStaff()
+  const contactId = tekst(formData, 'contactId')
+  return veilig(async () => {
+    await wijzigRolBijBedrijf(contactId, tekst(formData, 'organizationId'), tekst(formData, 'rol'))
+    ververs(contactId)
+  })
+}
+
+export async function ontkoppelVanBedrijf(formData: FormData): Promise<ActionResult> {
+  await requireStaff()
+  const contactId = tekst(formData, 'contactId')
+  return veilig(async () => {
+    await ontkoppelContactVanBedrijf(contactId, tekst(formData, 'organizationId'))
+    ververs(contactId)
+  })
 }
