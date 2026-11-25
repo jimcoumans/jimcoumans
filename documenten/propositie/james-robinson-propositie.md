@@ -38,7 +38,7 @@ We zorgen dat er voorspelbaar nieuwe aanvragen binnenkomen via advertenties in z
 
 ## 4. Het systeem
 
-1. **De motor: paid advertising.** Google Ads, Meta (Facebook en Instagram), LinkedIn, TikTok en Microsoft Ads. Het enige dat je vandaag aanzet en morgen meet. Standaard starten we met Google en Meta. LinkedIn is voor B2B met een duidelijke koper. TikTok als de doelgroep daar zit. Microsoft als Google laat zien dat er meer te halen is. ChatGPT Ads (sinds augustus 2026 in Nederland) is een nieuw kanaal: we testen het eerst bij James Robinson zelf en zetten het bij klanten in zodra de cijfers laten zien dat het werkt.
+1. **De motor: paid advertising.** Google Ads, Meta (Facebook en Instagram), LinkedIn, TikTok en Microsoft Ads. Het enige dat je vandaag aanzet en morgen meet. Standaard starten we met Google en Meta. LinkedIn is voor B2B met een duidelijke koper. TikTok als de doelgroep daar zit. Microsoft als Google laat zien dat er meer te halen is. Adverteren in AI (ChatGPT Ads, sinds augustus 2026 in Nederland) zetten we nog niet in: dat is nu nog te duur. We volgen het.
 2. **De brandstof: content.** We plannen de contentproductie meteen aan het begin. Eerst een contentplan, dan een contentshoot bij de klant op locatie. We werken met de beste makers per vak: fotografie, videografie, animatie, statische visuals en copywriting, in de formaten 9:16, 4:5 en 1:1. Advertenties slijten (creative fatigue, Meta waarschuwt er zelf voor), daarom maken we in contentrondes steeds nieuwe varianten.
 3. **De landing: website en landingspagina's.** Eén pagina per campagne, met één boodschap en één actie. We bouwen ze op de website van de klant, zodat snelheid en meting kloppen.
 4. **De voordeur: een kwalitatieve aanvraag.** Daar eindigt ons werk. Daarna is de klant aan zet.
@@ -51,9 +51,11 @@ We zorgen dat er voorspelbaar nieuwe aanvragen binnenkomen via advertenties in z
 
 **Waarom we met adverteren beginnen.** Adverteren laat binnen weken zien welke zoekwoorden, doelgroepen en boodschappen werken. SEO en organisch posten zijn trager. Die kennis gebruiken we daarna voor al het andere.
 
-**De derde weg: AI-assistenten.** Naast zoekmachines en social media is er een derde plek waar klanten zoeken en kiezen: ChatGPT, Gemini en de AI-antwoorden in Google. Daar wordt minder doorgeklikt: bij een AI-samenvatting klikten mensen in 8% van de bezoeken op een gewoon zoekresultaat, zonder samenvatting in 15% (Pew Research, 2025). Ook hier zijn er twee kanten:
-- **Betaald:** ChatGPT Ads, een kanaal in de motor (zie hierboven). In Google kunnen advertenties nog niet ín de AI-antwoorden in Nederland, wel erboven en eronder.
-- **Verdiend:** genoemd worden in de antwoorden. Dat doen we met de versneller Vindbaarheid: bedrijfsprofielen op orde (het Google Bedrijfsprofiel en, waar dat kan, het ChatGPT-bedrijfsprofiel), reviews, overal dezelfde gegevens, pagina's die de vragen van klanten beantwoorden, en genoemd worden op andere sites.
+**Drie domeinen, elk betaald en organisch.** De Performance Engine draait op drie domeinen waar klanten zoeken: social, search en AI. Elk heeft een betaalde en een organische kant. Social: advertenties op Meta, LinkedIn en TikTok, en de eigen pagina's. Search: Google Ads en Microsoft, en SEO met het Google Bedrijfsprofiel. AI: adverteren in AI (nu nog niet) en vindbaarheid in AI (GEO). CRO hoort bij de landingsplek: meer aanvragen uit hetzelfde verkeer, uit welk domein de bezoeker ook komt.
+
+**De derde weg: AI-assistenten.** Naast zoekmachines en social media is er een derde plek waar klanten zoeken en kiezen: ChatGPT, Gemini, Claude en de AI-antwoorden in Google. Daar wordt minder doorgeklikt: bij een AI-samenvatting klikten mensen in 8% van de bezoeken op een gewoon zoekresultaat, zonder samenvatting in 15% (Pew Research, 2025). Ook hier zijn er twee kanten:
+- **Betaald:** ChatGPT Ads. Zetten we nog niet in: nu nog te duur. In Google kunnen advertenties nog niet ín de AI-antwoorden in Nederland, wel erboven en eronder.
+- **Organisch (GEO):** genoemd worden in de antwoorden. Dat doen we met de versneller Vindbaarheid: bedrijfsprofielen op orde (het Google Bedrijfsprofiel en, waar dat kan, het ChatGPT-bedrijfsprofiel), reviews, overal dezelfde gegevens, pagina's die de vragen van klanten beantwoorden, en genoemd worden op andere sites.
 
 Het verhaal naar de klant is ons social-verhaal: organisch bereik op Facebook was ooit gratis en verdween toen het platform ging verkopen. In AI-assistenten staat dat raam nog open, maar de advertenties zijn er al. Wie nu zorgt dat hij genoemd wordt, heeft voorsprong. Dat brengen we als verwachting, niet als garantie.
 
@@ -344,8 +346,9 @@ Verder: het meest toonaangevende bureau van Limburg zijn. Niet in omzet of groot
 
 **Open punten AI (november 2026):**
 - Besloten: AI-assistenten zijn de derde weg naar klanten, naast zoekmachines en social. Wat meetbaar is, maken we meetbaar.
-- Pilot bij James Robinson zelf: nulmeting, ChatGPT-bedrijfsprofiel claimen als dat voor ons kan, en een kleine test met ChatGPT Ads. Daarna drie klanten in verschillende branches, drie maanden meten. Pas dan prijs en plek van Vindbaarheid in AI vastleggen.
+- Besloten (november 2026): adverteren in AI nog niet, nu nog te duur; AI zit wel in de Engine, organisch (GEO). De meetmodule AI-vindbaarheid staat in het portaal.
+- Pilot bij James Robinson zelf: nulmeting en ChatGPT-bedrijfsprofiel claimen als dat voor ons kan. Daarna drie klanten in verschillende branches, drie maanden meten. Pas dan prijs en plek van Vindbaarheid in AI vastleggen.
 - ChatGPT-bedrijfsprofiel voor lokale bedrijven in Nederland: volgen wanneer OpenAI het opent.
 - De AI-meting in het portaal bouwen (vaste vragen per klant, maandelijks; verkeer uit AI-assistenten apart).
 - Een AI-assistent die aanvragen direct beantwoordt: mogelijk een eigen dienst van James Robinson of een los bedrijf. Raakt aan "tot aan de voordeur" en "leads opvolgen: nooit". Geen primaire focus.
-- Gids, voorstelgenerator, website en magazine bijwerken voor Vindbaarheid (Google en AI) en ChatGPT Ads.
+- Gids, voorstelgenerator, website en magazine bijwerken voor de drie domeinen en Vindbaarheid (Google en AI).

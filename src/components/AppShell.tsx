@@ -208,6 +208,14 @@ const TEAM_GROEPEN: NavGroep[] = [
       { href: '/beheer/ai-vindbaarheid', label: 'AI-vindbaarheid', key: 'ai', icon: icons.performance },
     ],
   },
+  /* Onze eigen marketing, niet die van klanten. Nu de website; campagnes,
+     distributie en reporting komen hier later bij. */
+  {
+    label: 'Marketing',
+    key: 'g-marketing',
+    icon: icons.campagnes,
+    items: [{ href: '/beheer/marketing/website', label: 'Website', key: 'mkt-website', icon: icons.campagnes }],
+  },
   /* HR gaat over mensen: wie er werkt en wie er komt. Contracten horen bij
      een medewerker of kandidaat en staan daar; het overzicht van alle
      contracten zit onder Medewerkers. */

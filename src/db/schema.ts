@@ -4777,3 +4777,315 @@ export const aiMetingen = pgTable(
 export type AiMeetset = typeof aiMeetsets.$inferSelect
 export type AiVraag = typeof aiVragen.$inferSelect
 export type AiMeting = typeof aiMetingen.$inferSelect
+
+/* =========================================================================
+   Marketing → Website: de eigen marketingcontent van James Robinson.
+
+   Het portaal is de redactionele bron; WordPress blijft de plek waar het
+   gepubliceerd wordt, met de hand. Registers (onderwerpen, branches,
+   Engine-onderdelen, referentieklanten) staan centraal; een pagina hangt aan
+   een onderwerp, een branche of allebei. Een lege cel in de matrix is geen
+   record: een combinatie bestaat pas als iemand hem plant of bewust begint.
+   ========================================================================= */
+
+export const mktSubjectTypeEnum = pgEnum('mkt_subject_type', ['service', 'package', 'objective', 'engine', 'general_page'])
+export const mktLifecycleEnum = pgEnum('mkt_lifecycle', ['active', 'archived'])
+export const mktEngineGroupEnum = pgEnum('mkt_engine_group', ['direction', 'core_driver', 'fuel', 'booster', 'optimiser', 'intelligence', 'infrastructure'])
+export const mktActivationEnum = pgEnum('mkt_activation', ['always', 'optional', 'off', 'undecided'])
+export const mktContentKindEnum = pgEnum('mkt_content_kind', ['page', 'case', 'review', 'faq', 'insight'])
+export const mktWorkflowEnum = pgEnum('mkt_workflow', ['draft', 'in_review', 'approved', 'archived'])
+export const mktPublicationEnum = pgEnum('mkt_publication', ['unpublished', 'published', 'withdrawn'])
+export const mktBlockModeEnum = pgEnum('mkt_block_mode', ['override', 'inherit', 'hidden'])
+export const mktApplicabilityEnum = pgEnum('mkt_applicability', ['planned', 'not_relevant', 'deferred'])
+export const mktPermissionEnum = pgEnum('mkt_permission', ['unknown', 'granted', 'denied'])
+export const mktRevisionKindEnum = pgEnum('mkt_revision_kind', ['concept', 'review', 'approved', 'published', 'archived'])
+
+export const marketingSubjects = pgTable(
+  'marketing_subjects',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    type: mktSubjectTypeEnum('type').notNull(),
+    name: text('name').notNull(),
+    slug: text('slug').notNull(),
+    description: text('description'),
+    lifecycleStatus: mktLifecycleEnum('lifecycle_status').notNull().default('active'),
+    sortOrder: integer('sort_order').notNull().default(0),
+    /** Testrecord: telt niet als echte keuze van James Robinson. */
+    demo: boolean('demo').notNull().default(false),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex('marketing_subjects_type_slug_idx').on(t.type, t.slug),
+    check('marketing_subject_name_not_empty', sql`length(trim(${t.name})) > 0`),
+    check('marketing_subject_slug_format', sql`${t.slug} ~ '^[a-z0-9]+(-[a-z0-9]+)*$'`),
+  ],
+)
+
+export const marketingIndustries = pgTable(
+  'marketing_industries',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    name: text('name').notNull(),
+    slug: text('slug').notNull(),
+    description: text('description'),
+    priority: integer('priority').notNull().default(0),
+    active: boolean('active').notNull().default(true),
+    demo: boolean('demo').notNull().default(false),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex('marketing_industries_slug_idx').on(t.slug),
+    check('marketing_industry_name_not_empty', sql`length(trim(${t.name})) > 0`),
+    check('marketing_industry_slug_format', sql`${t.slug} ~ '^[a-z0-9]+(-[a-z0-9]+)*$'`),
+  ],
+)
+
+export const marketingEngineComponents = pgTable(
+  'marketing_engine_components',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    group: mktEngineGroupEnum('group').notNull(),
+    name: text('name').notNull(),
+    description: text('description'),
+    sortOrder: integer('sort_order').notNull().default(0),
+    active: boolean('active').notNull().default(true),
+    demo: boolean('demo').notNull().default(false),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [check('marketing_engine_component_name_not_empty', sql`length(trim(${t.name})) > 0`)],
+)
+
+export const marketingPackageComponents = pgTable(
+  'marketing_package_components',
+  {
+    packageSubjectId: uuid('package_subject_id')
+      .notNull()
+      .references(() => marketingSubjects.id, { onDelete: 'cascade' }),
+    componentId: uuid('component_id')
+      .notNull()
+      .references(() => marketingEngineComponents.id, { onDelete: 'cascade' }),
+    activation: mktActivationEnum('activation').notNull().default('undecided'),
+    notes: text('notes'),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.packageSubjectId, t.componentId], name: 'marketing_package_components_pk' })],
+)
+
+export const marketingClients = pgTable(
+  'marketing_clients',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    name: text('name').notNull(),
+    publicDescription: text('public_description'),
+    logoAssetId: uuid('logo_asset_id'),
+    /** Optioneel: dezelfde klant in het CRM. Het CRM is niet de bron van de publieke tekst. */
+    organizationId: uuid('organization_id').references(() => organizations.id, { onDelete: 'set null' }),
+    publicPermissionStatus: mktPermissionEnum('public_permission_status').notNull().default('unknown'),
+    demo: boolean('demo').notNull().default(false),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [check('marketing_client_name_not_empty', sql`length(trim(${t.name})) > 0`)],
+)
+
+export const marketingClientIndustries = pgTable(
+  'marketing_client_industries',
+  {
+    clientId: uuid('client_id')
+      .notNull()
+      .references(() => marketingClients.id, { onDelete: 'cascade' }),
+    industryId: uuid('industry_id')
+      .notNull()
+      .references(() => marketingIndustries.id, { onDelete: 'cascade' }),
+  },
+  (t) => [primaryKey({ columns: [t.clientId, t.industryId], name: 'marketing_client_industries_pk' })],
+)
+
+export const marketingContentItems = pgTable(
+  'marketing_content_items',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    /** Primaire context van een pagina. Bij cases, reviews, FAQ's en insights leeg: die koppel je via de linktabellen. */
+    subjectId: uuid('subject_id').references(() => marketingSubjects.id, { onDelete: 'restrict' }),
+    industryId: uuid('industry_id').references(() => marketingIndustries.id, { onDelete: 'restrict' }),
+    contentKind: mktContentKindEnum('content_kind').notNull(),
+    title: text('title').notNull(),
+    slug: text('slug'),
+    ownerId: uuid('owner_id').references(() => users.id, { onDelete: 'set null' }),
+    workflowStatus: mktWorkflowEnum('workflow_status').notNull().default('draft'),
+    publicationStatus: mktPublicationEnum('publication_status').notNull().default('unpublished'),
+    /** Een veld uit de algemene bron is gewijzigd na goedkeuring: opnieuw beoordelen. */
+    needsReview: boolean('needs_review').notNull().default(false),
+    targetUrl: text('target_url'),
+    wordpressExternalId: text('wordpress_external_id'),
+    publishedAt: timestamp('published_at', { withTimezone: true }),
+    approvedRevisionId: uuid('approved_revision_id'),
+    publishedRevisionId: uuid('published_revision_id'),
+    demo: boolean('demo').notNull().default(false),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('marketing_content_items_updated_idx').on(t.updatedAt),
+    uniqueIndex('marketing_content_general_page_idx')
+      .on(t.subjectId)
+      .where(sql`${t.contentKind} = 'page' AND ${t.industryId} IS NULL AND ${t.subjectId} IS NOT NULL AND ${t.workflowStatus} <> 'archived'`),
+    uniqueIndex('marketing_content_variant_page_idx')
+      .on(t.subjectId, t.industryId)
+      .where(sql`${t.contentKind} = 'page' AND ${t.industryId} IS NOT NULL AND ${t.subjectId} IS NOT NULL AND ${t.workflowStatus} <> 'archived'`),
+    uniqueIndex('marketing_content_hub_page_idx')
+      .on(t.industryId)
+      .where(sql`${t.contentKind} = 'page' AND ${t.subjectId} IS NULL AND ${t.industryId} IS NOT NULL AND ${t.workflowStatus} <> 'archived'`),
+    check('marketing_content_title_not_empty', sql`length(trim(${t.title})) > 0`),
+    check('marketing_content_page_context', sql`${t.contentKind} <> 'page' OR ${t.subjectId} IS NOT NULL OR ${t.industryId} IS NOT NULL`),
+    check('marketing_content_evidence_no_context', sql`${t.contentKind} = 'page' OR (${t.subjectId} IS NULL AND ${t.industryId} IS NULL)`),
+    check('marketing_content_published_approved', sql`${t.publicationStatus} <> 'published' OR ${t.publishedRevisionId} IS NOT NULL`),
+  ],
+)
+
+export const marketingContentBlocks = pgTable(
+  'marketing_content_blocks',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    contentItemId: uuid('content_item_id')
+      .notNull()
+      .references(() => marketingContentItems.id, { onDelete: 'cascade' }),
+    fieldKey: text('field_key').notNull(),
+    value: text('value'),
+    mode: mktBlockModeEnum('mode').notNull().default('override'),
+    updatedBy: uuid('updated_by').references(() => users.id, { onDelete: 'set null' }),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex('marketing_content_blocks_field_idx').on(t.contentItemId, t.fieldKey)],
+)
+
+export const marketingContentSubjectLinks = pgTable(
+  'marketing_content_subject_links',
+  {
+    contentItemId: uuid('content_item_id')
+      .notNull()
+      .references(() => marketingContentItems.id, { onDelete: 'cascade' }),
+    subjectId: uuid('subject_id')
+      .notNull()
+      .references(() => marketingSubjects.id, { onDelete: 'cascade' }),
+    relationType: text('relation_type').notNull().default('relevant'),
+  },
+  (t) => [primaryKey({ columns: [t.contentItemId, t.subjectId], name: 'marketing_content_subject_links_pk' })],
+)
+
+export const marketingContentIndustryLinks = pgTable(
+  'marketing_content_industry_links',
+  {
+    contentItemId: uuid('content_item_id')
+      .notNull()
+      .references(() => marketingContentItems.id, { onDelete: 'cascade' }),
+    industryId: uuid('industry_id')
+      .notNull()
+      .references(() => marketingIndustries.id, { onDelete: 'cascade' }),
+  },
+  (t) => [primaryKey({ columns: [t.contentItemId, t.industryId], name: 'marketing_content_industry_links_pk' })],
+)
+
+export const marketingContentClientLinks = pgTable(
+  'marketing_content_client_links',
+  {
+    contentItemId: uuid('content_item_id')
+      .notNull()
+      .references(() => marketingContentItems.id, { onDelete: 'cascade' }),
+    clientId: uuid('client_id')
+      .notNull()
+      .references(() => marketingClients.id, { onDelete: 'cascade' }),
+  },
+  (t) => [primaryKey({ columns: [t.contentItemId, t.clientId], name: 'marketing_content_client_links_pk' })],
+)
+
+export const marketingAssets = pgTable(
+  'marketing_assets',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    type: text('type').notNull().default('image'),
+    /** Waar het bestand staat: een link (bijvoorbeeld Kive) of een id in de afbeeldingen van het portaal. */
+    storageReference: text('storage_reference').notNull(),
+    altText: text('alt_text'),
+    rightsStatus: mktPermissionEnum('rights_status').notNull().default('unknown'),
+    description: text('description'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [check('marketing_asset_reference_not_empty', sql`length(trim(${t.storageReference})) > 0`)],
+)
+
+export const marketingContentAssetLinks = pgTable(
+  'marketing_content_asset_links',
+  {
+    contentItemId: uuid('content_item_id')
+      .notNull()
+      .references(() => marketingContentItems.id, { onDelete: 'cascade' }),
+    assetId: uuid('asset_id')
+      .notNull()
+      .references(() => marketingAssets.id, { onDelete: 'cascade' }),
+    role: text('role').notNull().default('beeld'),
+    sortOrder: integer('sort_order').notNull().default(0),
+  },
+  (t) => [primaryKey({ columns: [t.contentItemId, t.assetId], name: 'marketing_content_asset_links_pk' })],
+)
+
+export const marketingContentRevisions = pgTable(
+  'marketing_content_revisions',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    contentItemId: uuid('content_item_id')
+      .notNull()
+      .references(() => marketingContentItems.id, { onDelete: 'cascade' }),
+    kind: mktRevisionKindEnum('kind').notNull(),
+    /** Velden, effectieve tekst, context en koppelingen op dat moment. */
+    snapshot: jsonb('snapshot').notNull(),
+    authorId: uuid('author_id').references(() => users.id, { onDelete: 'set null' }),
+    changeNote: text('change_note'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index('marketing_content_revisions_item_idx').on(t.contentItemId, t.createdAt)],
+)
+
+export const marketingContentComments = pgTable(
+  'marketing_content_comments',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    contentItemId: uuid('content_item_id')
+      .notNull()
+      .references(() => marketingContentItems.id, { onDelete: 'cascade' }),
+    fieldKey: text('field_key'),
+    body: text('body').notNull(),
+    authorId: uuid('author_id').references(() => users.id, { onDelete: 'set null' }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('marketing_content_comments_item_idx').on(t.contentItemId),
+    check('marketing_comment_body_not_empty', sql`length(trim(${t.body})) > 0`),
+  ],
+)
+
+export const marketingCoverage = pgTable(
+  'marketing_coverage',
+  {
+    subjectId: uuid('subject_id')
+      .notNull()
+      .references(() => marketingSubjects.id, { onDelete: 'cascade' }),
+    industryId: uuid('industry_id')
+      .notNull()
+      .references(() => marketingIndustries.id, { onDelete: 'cascade' }),
+    applicability: mktApplicabilityEnum('applicability').notNull(),
+    priority: integer('priority').notNull().default(0),
+    notes: text('notes'),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.subjectId, t.industryId], name: 'marketing_coverage_pk' })],
+)
+
+export type MarketingSubject = typeof marketingSubjects.$inferSelect
+export type MarketingIndustry = typeof marketingIndustries.$inferSelect
+export type MarketingEngineComponent = typeof marketingEngineComponents.$inferSelect
+export type MarketingContentItem = typeof marketingContentItems.$inferSelect
+export type MarketingContentBlock = typeof marketingContentBlocks.$inferSelect
+export type MarketingClient = typeof marketingClients.$inferSelect
+export type MarketingRevision = typeof marketingContentRevisions.$inferSelect

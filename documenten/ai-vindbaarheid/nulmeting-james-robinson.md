@@ -58,7 +58,6 @@ De vragen zijn vast. Een vraag toevoegen mag, een bestaande vraag wijzigen niet:
 
 - **Bezoekers uit AI-assistenten.** In Google Analytics apart bijhouden hoeveel bezoekers en aanvragen er van chatgpt.com, gemini.google.com en andere AI-assistenten komen.
 - **ChatGPT-bedrijfsprofiel.** Als we ons profiel kunnen claimen: de vermeldingen en websiteklikken uit het overzicht van OpenAI (per 28 dagen).
-- **ChatGPT Ads.** Een kleine test met een vast budget: vertoningen, klikken, bezoekers en aanvragen.
 
 ## ChatGPT-bedrijfsprofiel claimen
 
@@ -76,6 +75,5 @@ Belangrijk voor de verwachtingen: volgens OpenAI maakt claimen een bedrijf niet 
 
 - Wat veranderde er in de metingen, en door welk werk?
 - Hoeveel uur kostte het werk?
-- Leverde ChatGPT Ads aanvragen op, en tegen welke prijs per aanvraag?
 
 Op basis daarvan kiezen we de drie pilotklanten en bepalen we prijs en plek van Vindbaarheid in AI.
