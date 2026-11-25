@@ -461,6 +461,50 @@ export function describeDbError(error: unknown): string | null {
       return 'De sleutel van het dossier klopt niet. Sla het dossier opnieuw op.'
     case 'proposals_naam_not_empty':
       return 'Vul eerst de bedrijfsnaam in.'
+    /* --- Marketing → Website --- */
+    case 'marketing_subjects_type_slug_idx':
+      return 'Er is al een onderwerp van deze soort met die slug. Kies een andere slug.'
+    case 'marketing_subject_name_not_empty':
+    case 'marketing_industry_name_not_empty':
+    case 'marketing_engine_component_name_not_empty':
+    case 'marketing_client_name_not_empty':
+      return 'Vul een naam in.'
+    case 'marketing_subject_slug_format':
+    case 'marketing_industry_slug_format':
+      return 'Een slug bestaat uit kleine letters, cijfers en streepjes, bijvoorbeeld google-ads.'
+    case 'marketing_industries_slug_idx':
+      return 'Er is al een branche met die slug.'
+    case 'marketing_package_components_pk':
+      return 'Dit onderdeel staat al bij dit pakket.'
+    case 'marketing_client_industries_pk':
+      return 'Deze klant hangt al aan deze branche.'
+    case 'marketing_content_general_page_idx':
+      return 'Er is al een algemene pagina voor dit onderwerp. Open die in plaats van een tweede te maken.'
+    case 'marketing_content_variant_page_idx':
+      return 'Er is al een pagina voor deze combinatie van onderwerp en branche. Open die in plaats van een tweede te maken.'
+    case 'marketing_content_hub_page_idx':
+      return 'Er is al een branchehub voor deze branche.'
+    case 'marketing_content_title_not_empty':
+      return 'Geef de content een titel.'
+    case 'marketing_content_page_context':
+      return 'Een pagina hoort bij een onderwerp, een branche of allebei.'
+    case 'marketing_content_evidence_no_context':
+      return 'Een case, review, FAQ of insight koppel je via de relevantie, niet als primaire context.'
+    case 'marketing_content_published_approved':
+      return 'Alleen een goedgekeurde versie kan als gepubliceerd worden vastgelegd.'
+    case 'marketing_content_blocks_field_idx':
+      return 'Dit veld bestaat al voor deze content.'
+    case 'marketing_content_subject_links_pk':
+    case 'marketing_content_industry_links_pk':
+    case 'marketing_content_client_links_pk':
+    case 'marketing_content_asset_links_pk':
+      return 'Die koppeling bestaat al.'
+    case 'marketing_asset_reference_not_empty':
+      return 'Vul in waar het beeld staat.'
+    case 'marketing_comment_body_not_empty':
+      return 'Een lege opmerking kan niet.'
+    case 'marketing_coverage_pk':
+      return 'Deze combinatie staat al in de planning.'
     /* --- AI-vindbaarheid --- */
     case 'ai_meetset_naam_not_empty':
       return 'Geef de meetset een naam.'
