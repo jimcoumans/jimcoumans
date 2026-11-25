@@ -3541,13 +3541,167 @@ BEGIN
 END $jr_0055_voorstel_profiel$;
 
 -- ---------------------------------------------------------------------------
--- 0056_ai_vindbaarheid
+-- 0056_linkedin_verbinding
 -- ---------------------------------------------------------------------------
 
-DO $jr_0056_ai_vindbaarheid$
+DO $jr_0056_linkedin_verbinding$
+BEGIN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = '6dd8e6694c6bdbfcb0da1ed5ec7db49e5e42c3dabbdc14e2ba408b9d15964a98') THEN
+    RAISE NOTICE 'Overgeslagen: 0056_linkedin_verbinding stond er al.';
+  ELSE
+    CREATE TABLE "linkedin_connections" (
+    	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+    	"member_urn" text NOT NULL,
+    	"label" text NOT NULL,
+    	"access_token_enc" text NOT NULL,
+    	"access_token_expires_at" timestamp with time zone NOT NULL,
+    	"refresh_token_enc" text NOT NULL,
+    	"refresh_token_expires_at" timestamp with time zone NOT NULL,
+    	"scopes" text NOT NULL,
+    	"last_error" text,
+    	"last_error_at" timestamp with time zone,
+    	"created_by_user_id" uuid,
+    	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+    	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
+    );
+
+
+    ALTER TABLE "analytics_connections" ADD COLUMN "linkedin_connection_id" uuid;
+
+    ALTER TABLE "linkedin_connections" ADD CONSTRAINT "linkedin_connections_created_by_user_id_users_id_fk" FOREIGN KEY ("created_by_user_id") REFERENCES "public"."users"("id") ON DELETE set null ON UPDATE no action;
+
+    CREATE UNIQUE INDEX "linkedin_connections_member_idx" ON "linkedin_connections" USING btree ("member_urn");
+
+    ALTER TABLE "analytics_connections" ADD CONSTRAINT "analytics_connections_linkedin_connection_id_linkedin_connections_id_fk" FOREIGN KEY ("linkedin_connection_id") REFERENCES "public"."linkedin_connections"("id") ON DELETE set null ON UPDATE no action;
+
+    -- Net als google_connections: alleen de server (service role) mag erbij, nooit de anon-sleutel.
+    ALTER TABLE "linkedin_connections" ENABLE ROW LEVEL SECURITY;
+
+    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+    VALUES ('6dd8e6694c6bdbfcb0da1ed5ec7db49e5e42c3dabbdc14e2ba408b9d15964a98', 1795450356942);
+    RAISE NOTICE 'Toegepast: 0056_linkedin_verbinding.';
+  END IF;
+END $jr_0056_linkedin_verbinding$;
+
+-- ---------------------------------------------------------------------------
+-- 0057_ahrefs_seo
+-- ---------------------------------------------------------------------------
+
+DO $jr_0057_ahrefs_seo$
+BEGIN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = 'c9cb4018ab3f0e933c1afb2fe4b946e3d727a37f3820f83583cc65dfb1c7f9d2') THEN
+    RAISE NOTICE 'Overgeslagen: 0057_ahrefs_seo stond er al.';
+  ELSE
+    ALTER TYPE "public"."analytics_source" ADD VALUE 'ahrefs';
+
+    CREATE TABLE "seo_daily" (
+    	"organization_id" uuid NOT NULL,
+    	"day" date NOT NULL,
+    	"domain_rating" real,
+    	"organic_keywords" integer,
+    	"organic_traffic" integer,
+    	"referring_domains" integer,
+    	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
+    	CONSTRAINT "seo_daily_organization_id_day_pk" PRIMARY KEY("organization_id","day"),
+    	CONSTRAINT "seo_daily_not_negative" CHECK (COALESCE("seo_daily"."domain_rating", 0) >= 0 AND COALESCE("seo_daily"."organic_keywords", 0) >= 0 AND COALESCE("seo_daily"."organic_traffic", 0) >= 0 AND COALESCE("seo_daily"."referring_domains", 0) >= 0)
+    );
+
+
+    ALTER TABLE "seo_daily" ADD CONSTRAINT "seo_daily_organization_id_organizations_id_fk" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON DELETE cascade ON UPDATE no action;
+
+    CREATE INDEX "seo_daily_day_idx" ON "seo_daily" USING btree ("day");
+
+    -- Net als performance_daily: alleen de server (service role) mag erbij, nooit de anon-sleutel.
+    ALTER TABLE "seo_daily" ENABLE ROW LEVEL SECURITY;
+
+    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+    VALUES ('c9cb4018ab3f0e933c1afb2fe4b946e3d727a37f3820f83583cc65dfb1c7f9d2', 1795508813421);
+    RAISE NOTICE 'Toegepast: 0057_ahrefs_seo.';
+  END IF;
+END $jr_0057_ahrefs_seo$;
+
+-- ---------------------------------------------------------------------------
+-- 0058_koppeling_campagnes
+-- ---------------------------------------------------------------------------
+
+DO $jr_0058_koppeling_campagnes$
+BEGIN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = '24f58fe59010840310a7b1186f1707e3e58172c8c161786c53d3bd2b0296a13c') THEN
+    RAISE NOTICE 'Overgeslagen: 0058_koppeling_campagnes stond er al.';
+  ELSE
+    ALTER TABLE "analytics_connections" ADD COLUMN "campaigns" jsonb;
+
+    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+    VALUES ('24f58fe59010840310a7b1186f1707e3e58172c8c161786c53d3bd2b0296a13c', 1795509090276);
+    RAISE NOTICE 'Toegepast: 0058_koppeling_campagnes.';
+  END IF;
+END $jr_0058_koppeling_campagnes$;
+
+-- ---------------------------------------------------------------------------
+-- 0059_google_bedrijfsprofiel
+-- ---------------------------------------------------------------------------
+
+DO $jr_0059_google_bedrijfsprofiel$
+BEGIN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = 'a44094ee601267c1b21992aa7dbbb994893121ea89e6bcec5c8f5dbffa9f52de') THEN
+    RAISE NOTICE 'Overgeslagen: 0059_google_bedrijfsprofiel stond er al.';
+  ELSE
+    ALTER TYPE "public"."analytics_source" ADD VALUE 'google_business';
+
+    CREATE TABLE "business_profile_daily" (
+    	"organization_id" uuid NOT NULL,
+    	"day" date NOT NULL,
+    	"impressions_maps" integer,
+    	"impressions_search" integer,
+    	"website_clicks" integer,
+    	"call_clicks" integer,
+    	"direction_requests" integer,
+    	"messaging_clicks" integer,
+    	"bookings" integer,
+    	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
+    	CONSTRAINT "business_profile_daily_organization_id_day_pk" PRIMARY KEY("organization_id","day"),
+    	CONSTRAINT "business_profile_daily_not_negative" CHECK (COALESCE("business_profile_daily"."impressions_maps", 0) >= 0 AND COALESCE("business_profile_daily"."impressions_search", 0) >= 0 AND COALESCE("business_profile_daily"."website_clicks", 0) >= 0 AND COALESCE("business_profile_daily"."call_clicks", 0) >= 0 AND COALESCE("business_profile_daily"."direction_requests", 0) >= 0 AND COALESCE("business_profile_daily"."messaging_clicks", 0) >= 0 AND COALESCE("business_profile_daily"."bookings", 0) >= 0)
+    );
+
+
+    ALTER TABLE "business_profile_daily" ADD CONSTRAINT "business_profile_daily_organization_id_organizations_id_fk" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON DELETE cascade ON UPDATE no action;
+
+    CREATE INDEX "business_profile_daily_day_idx" ON "business_profile_daily" USING btree ("day");
+
+    -- Net als performance_daily: alleen de server (service role) mag erbij, nooit de anon-sleutel.
+    ALTER TABLE "business_profile_daily" ENABLE ROW LEVEL SECURITY;
+
+    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+    VALUES ('a44094ee601267c1b21992aa7dbbb994893121ea89e6bcec5c8f5dbffa9f52de', 1795509463724);
+    RAISE NOTICE 'Toegepast: 0059_google_bedrijfsprofiel.';
+  END IF;
+END $jr_0059_google_bedrijfsprofiel$;
+
+-- ---------------------------------------------------------------------------
+-- 0060_koppeling_accounts
+-- ---------------------------------------------------------------------------
+
+DO $jr_0060_koppeling_accounts$
+BEGIN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = '065103df13636c3f93e4681cc3f63607a23d97a3db9f62183ba981702928b0b7') THEN
+    RAISE NOTICE 'Overgeslagen: 0060_koppeling_accounts stond er al.';
+  ELSE
+    ALTER TABLE "analytics_connections" ADD COLUMN "accounts" jsonb;
+
+    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+    VALUES ('065103df13636c3f93e4681cc3f63607a23d97a3db9f62183ba981702928b0b7', 1795517971588);
+    RAISE NOTICE 'Toegepast: 0060_koppeling_accounts.';
+  END IF;
+END $jr_0060_koppeling_accounts$;
+
+-- ---------------------------------------------------------------------------
+-- 0061_ai_vindbaarheid
+-- ---------------------------------------------------------------------------
+
+DO $jr_0061_ai_vindbaarheid$
 BEGIN
   IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = '6480c50b2506b1bcfe4c5ab4d851176a02f1023ca10dc3a17d1e26e0ac48b62e') THEN
-    RAISE NOTICE 'Overgeslagen: 0056_ai_vindbaarheid stond er al.';
+    RAISE NOTICE 'Overgeslagen: 0061_ai_vindbaarheid stond er al.';
   ELSE
     CREATE TYPE "public"."ai_meetwijze" AS ENUM('handmatig', 'automatisch');
 
@@ -3622,8 +3776,8 @@ BEGIN
     ALTER TABLE "ai_metingen" ENABLE ROW LEVEL SECURITY;
 
     INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
-    VALUES ('6480c50b2506b1bcfe4c5ab4d851176a02f1023ca10dc3a17d1e26e0ac48b62e', 1795596531777);
-    RAISE NOTICE 'Toegepast: 0056_ai_vindbaarheid.';
+    VALUES ('6480c50b2506b1bcfe4c5ab4d851176a02f1023ca10dc3a17d1e26e0ac48b62e', 1795597300328);
+    RAISE NOTICE 'Toegepast: 0061_ai_vindbaarheid.';
   END IF;
-END $jr_0056_ai_vindbaarheid$;
+END $jr_0061_ai_vindbaarheid$;
 

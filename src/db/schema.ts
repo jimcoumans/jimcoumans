@@ -4,6 +4,7 @@ import {
   timestamp,
   integer,
   bigint,
+  real,
   uuid,
   pgEnum,
   index,
@@ -4033,6 +4034,8 @@ export const analyticsSourceEnum = pgEnum('analytics_source', [
   'meta_ads',
   'linkedin_ads',
   'tiktok_ads',
+  'ahrefs',
+  'google_business',
 ])
 
 /**
@@ -4060,6 +4063,36 @@ export const googleConnections = pgTable(
 
 export type GoogleConnection = typeof googleConnections.$inferSelect
 
+/**
+ * Een LinkedIn-account van James Robinson dat bij Campaign Manager kan.
+ * LinkedIn geeft een toegangstoken van zestig dagen en een vernieuwtoken van
+ * een jaar; beide staan versleuteld, en het portaal vernieuwt zelf tot het
+ * vernieuwtoken op is. Dan moet een beheerder opnieuw verbinden.
+ */
+export const linkedinConnections = pgTable(
+  'linkedin_connections',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    /** urn:li:person:... van wie inlogde; LinkedIn geeft zonder extra product geen naam of e-mail. */
+    memberUrn: text('member_urn').notNull(),
+    /** Hoe we dit account noemen in de lijsten. */
+    label: text('label').notNull(),
+    accessTokenEnc: text('access_token_enc').notNull(),
+    accessTokenExpiresAt: timestamp('access_token_expires_at', { withTimezone: true }).notNull(),
+    refreshTokenEnc: text('refresh_token_enc').notNull(),
+    refreshTokenExpiresAt: timestamp('refresh_token_expires_at', { withTimezone: true }).notNull(),
+    scopes: text('scopes').notNull(),
+    lastError: text('last_error'),
+    lastErrorAt: timestamp('last_error_at', { withTimezone: true }),
+    createdByUserId: uuid('created_by_user_id').references(() => users.id, { onDelete: 'set null' }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex('linkedin_connections_member_idx').on(t.memberUrn)],
+)
+
+export type LinkedinConnection = typeof linkedinConnections.$inferSelect
+
 export const analyticsConnections = pgTable(
   'analytics_connections',
   {
@@ -4072,8 +4105,23 @@ export const analyticsConnections = pgTable(
     externalId: text('external_id').notNull(),
     /** Via welk Google-account we erbij kunnen. Leeg: via het serviceaccount (oude manier). */
     googleConnectionId: uuid('google_connection_id').references(() => googleConnections.id, { onDelete: 'set null' }),
+    /** Via welk LinkedIn-account we erbij kunnen (alleen bij linkedin_ads). */
+    linkedinConnectionId: uuid('linkedin_connection_id').references(() => linkedinConnections.id, { onDelete: 'set null' }),
     /** De naam zoals de bron hem noemt, bijvoorbeeld "Thiessen Wijnkoopers – GA4". */
     displayName: text('display_name'),
+    /**
+     * Alleen deze campagnes tellen mee, met id en naam zoals het platform ze
+     * noemt. Leeg: het hele account. Voor klanten die adverteren via het
+     * eigen advertentieaccount van James Robinson, waar meer klanten in zitten.
+     */
+    campaigns: jsonb('campaigns').$type<{ id: string; naam: string; account?: string }[]>(),
+    /**
+     * Meer advertentieaccounts die samen bij deze klant horen (LinkedIn), als
+     * het er meer dan één zijn: id en naam zoals het platform ze noemt, en via
+     * welke verbinding we erbij kunnen. Leeg: alleen externalId. Bij campagnes
+     * staat dan per campagne bij welk account hij hoort.
+     */
+    accounts: jsonb('accounts').$type<{ id: string; naam: string; verbinding?: string | null }[]>(),
     active: boolean('active').notNull().default(true),
     /** Tot hoe ver terug de cijfers er al zijn. Leeg: nog niets opgehaald. */
     historyFrom: date('history_from', { mode: 'string' }),
@@ -4113,6 +4161,82 @@ export const performanceDaily = pgTable(
     check('performance_daily_not_negative', sql`COALESCE(${t.impressions}, 0) >= 0 AND COALESCE(${t.clicks}, 0) >= 0 AND COALESCE(${t.sessions}, 0) >= 0 AND COALESCE(${t.conversions}, 0) >= 0 AND COALESCE(${t.costCents}, 0) >= 0`),
   ],
 )
+
+/**
+ * De SEO-stand per klant per dag, uit Ahrefs: hoe sterk de website staat in
+ * Google, los van wat er die dag gebeurde. Dit zijn standen (zoals een
+ * saldo), geen dagtotalen: je telt ze niet op over dagen, je kijkt naar de
+ * laatste en vergelijkt met eerder. Daarom een eigen tabel naast
+ * performance_daily. De koppeling zelf staat in analytics_connections met
+ * source 'ahrefs' en het domein als external_id.
+ */
+export const seoDaily = pgTable(
+  'seo_daily',
+  {
+    organizationId: uuid('organization_id')
+      .notNull()
+      .references(() => organizations.id, { onDelete: 'cascade' }),
+    day: date('day', { mode: 'string' }).notNull(),
+    /** Domain Rating van Ahrefs, 0 tot 100, met één decimaal. */
+    domainRating: real('domain_rating'),
+    /** Aantal zoekwoorden waarop de site in de top 100 van Google staat. */
+    organicKeywords: integer('organic_keywords'),
+    /** Geschat aantal organische bezoeken per maand, zoals Ahrefs het die dag schatte. */
+    organicTraffic: integer('organic_traffic'),
+    /** Aantal unieke domeinen dat naar de site linkt. */
+    referringDomains: integer('referring_domains'),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.organizationId, t.day] }),
+    index('seo_daily_day_idx').on(t.day),
+    check(
+      'seo_daily_not_negative',
+      sql`COALESCE(${t.domainRating}, 0) >= 0 AND COALESCE(${t.organicKeywords}, 0) >= 0 AND COALESCE(${t.organicTraffic}, 0) >= 0 AND COALESCE(${t.referringDomains}, 0) >= 0`,
+    ),
+  ],
+)
+
+export type SeoDag = typeof seoDaily.$inferSelect
+
+/**
+ * Google Bedrijfsprofiel (het blok op Maps en in de zoekresultaten) per
+ * klant per dag: hoe vaak het profiel gezien is en wat mensen erop deden.
+ * Dagtotalen, maar van een ander soort dan websitebezoeken: wie belt of een
+ * route opvraagt, komt nooit op de website. Daarom een eigen tabel. De
+ * koppeling staat in analytics_connections met source 'google_business' en
+ * het locatienummer als external_id.
+ */
+export const businessProfileDaily = pgTable(
+  'business_profile_daily',
+  {
+    organizationId: uuid('organization_id')
+      .notNull()
+      .references(() => organizations.id, { onDelete: 'cascade' }),
+    day: date('day', { mode: 'string' }).notNull(),
+    /** Weergaven op Google Maps (desktop en mobiel samen). */
+    impressionsMaps: integer('impressions_maps'),
+    /** Weergaven in de zoekresultaten van Google (desktop en mobiel samen). */
+    impressionsSearch: integer('impressions_search'),
+    websiteClicks: integer('website_clicks'),
+    callClicks: integer('call_clicks'),
+    directionRequests: integer('direction_requests'),
+    messagingClicks: integer('messaging_clicks'),
+    /** Reserveringen via Reserve with Google. */
+    bookings: integer('bookings'),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.organizationId, t.day] }),
+    index('business_profile_daily_day_idx').on(t.day),
+    check(
+      'business_profile_daily_not_negative',
+      sql`COALESCE(${t.impressionsMaps}, 0) >= 0 AND COALESCE(${t.impressionsSearch}, 0) >= 0 AND COALESCE(${t.websiteClicks}, 0) >= 0 AND COALESCE(${t.callClicks}, 0) >= 0 AND COALESCE(${t.directionRequests}, 0) >= 0 AND COALESCE(${t.messagingClicks}, 0) >= 0 AND COALESCE(${t.bookings}, 0) >= 0`,
+    ),
+  ],
+)
+
+export type BedrijfsprofielDag = typeof businessProfileDaily.$inferSelect
 
 /**
  * Acties bij de rapportage: wat de marketingmanager per klant per maand

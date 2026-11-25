@@ -1,5 +1,5 @@
 {
-  "id": "8785584b-33ff-460f-9a54-4ebefc34d227",
+  "id": "8336d616-f7d9-4d74-8d39-669c269b32e3",
   "prevId": "7bc31899-b33b-4b1f-9dd8-65f80b72ffcf",
   "version": "7",
   "dialect": "postgresql",
@@ -354,398 +354,6 @@
       },
       "isRLSEnabled": false
     },
-    "public.ai_meetsets": {
-      "name": "ai_meetsets",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "organization_id": {
-          "name": "organization_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "naam": {
-          "name": "naam",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "merknamen": {
-          "name": "merknamen",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'[]'::jsonb"
-        },
-        "concurrenten": {
-          "name": "concurrenten",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'[]'::jsonb"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {
-        "ai_meetsets_org_idx": {
-          "name": "ai_meetsets_org_idx",
-          "columns": [
-            {
-              "expression": "organization_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {
-        "ai_meetsets_organization_id_organizations_id_fk": {
-          "name": "ai_meetsets_organization_id_organizations_id_fk",
-          "tableFrom": "ai_meetsets",
-          "tableTo": "organizations",
-          "columnsFrom": [
-            "organization_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {
-        "ai_meetset_naam_not_empty": {
-          "name": "ai_meetset_naam_not_empty",
-          "value": "length(trim(\"ai_meetsets\".\"naam\")) > 0"
-        }
-      },
-      "isRLSEnabled": false
-    },
-    "public.ai_metingen": {
-      "name": "ai_metingen",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "vraag_id": {
-          "name": "vraag_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "periode": {
-          "name": "periode",
-          "type": "date",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "platform": {
-          "name": "platform",
-          "type": "ai_platform",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "meetwijze": {
-          "name": "meetwijze",
-          "type": "ai_meetwijze",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "herhaling": {
-          "name": "herhaling",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "antwoord": {
-          "name": "antwoord",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "genoemd": {
-          "name": "genoemd",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "plek": {
-          "name": "plek",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "concurrenten": {
-          "name": "concurrenten",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'[]'::jsonb"
-        },
-        "bronnen": {
-          "name": "bronnen",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'[]'::jsonb"
-        },
-        "gecorrigeerd": {
-          "name": "gecorrigeerd",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true,
-          "default": false
-        },
-        "door_user_id": {
-          "name": "door_user_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {
-        "ai_metingen_uniek_idx": {
-          "name": "ai_metingen_uniek_idx",
-          "columns": [
-            {
-              "expression": "vraag_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            },
-            {
-              "expression": "periode",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            },
-            {
-              "expression": "platform",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            },
-            {
-              "expression": "meetwijze",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            },
-            {
-              "expression": "herhaling",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": true,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "ai_metingen_periode_idx": {
-          "name": "ai_metingen_periode_idx",
-          "columns": [
-            {
-              "expression": "periode",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {
-        "ai_metingen_vraag_id_ai_vragen_id_fk": {
-          "name": "ai_metingen_vraag_id_ai_vragen_id_fk",
-          "tableFrom": "ai_metingen",
-          "tableTo": "ai_vragen",
-          "columnsFrom": [
-            "vraag_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "ai_metingen_door_user_id_users_id_fk": {
-          "name": "ai_metingen_door_user_id_users_id_fk",
-          "tableFrom": "ai_metingen",
-          "tableTo": "users",
-          "columnsFrom": [
-            "door_user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {
-        "ai_meting_herhaling_geldig": {
-          "name": "ai_meting_herhaling_geldig",
-          "value": "\"ai_metingen\".\"herhaling\" BETWEEN 1 AND 3"
-        },
-        "ai_meting_plek_geldig": {
-          "name": "ai_meting_plek_geldig",
-          "value": "\"ai_metingen\".\"plek\" IS NULL OR \"ai_metingen\".\"plek\" >= 1"
-        },
-        "ai_meting_antwoord_not_empty": {
-          "name": "ai_meting_antwoord_not_empty",
-          "value": "length(trim(\"ai_metingen\".\"antwoord\")) > 0"
-        },
-        "ai_meting_periode_eerste": {
-          "name": "ai_meting_periode_eerste",
-          "value": "extract(day from \"ai_metingen\".\"periode\") = 1"
-        }
-      },
-      "isRLSEnabled": false
-    },
-    "public.ai_vragen": {
-      "name": "ai_vragen",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "set_id": {
-          "name": "set_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "tekst": {
-          "name": "tekst",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "volgorde": {
-          "name": "volgorde",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "default": 0
-        },
-        "gearchiveerd_op": {
-          "name": "gearchiveerd_op",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {
-        "ai_vragen_set_idx": {
-          "name": "ai_vragen_set_idx",
-          "columns": [
-            {
-              "expression": "set_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {
-        "ai_vragen_set_id_ai_meetsets_id_fk": {
-          "name": "ai_vragen_set_id_ai_meetsets_id_fk",
-          "tableFrom": "ai_vragen",
-          "tableTo": "ai_meetsets",
-          "columnsFrom": [
-            "set_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {
-        "ai_vraag_tekst_not_empty": {
-          "name": "ai_vraag_tekst_not_empty",
-          "value": "length(trim(\"ai_vragen\".\"tekst\")) > 0"
-        }
-      },
-      "isRLSEnabled": false
-    },
     "public.analytics_connections": {
       "name": "analytics_connections",
       "schema": "",
@@ -778,6 +386,12 @@
         },
         "google_connection_id": {
           "name": "google_connection_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "linkedin_connection_id": {
+          "name": "linkedin_connection_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": false
@@ -870,6 +484,19 @@
           "tableTo": "google_connections",
           "columnsFrom": [
             "google_connection_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "analytics_connections_linkedin_connection_id_linkedin_connections_id_fk": {
+          "name": "analytics_connections_linkedin_connection_id_linkedin_connections_id_fk",
+          "tableFrom": "analytics_connections",
+          "tableTo": "linkedin_connections",
+          "columnsFrom": [
+            "linkedin_connection_id"
           ],
           "columnsTo": [
             "id"
@@ -7318,6 +6945,130 @@
       },
       "isRLSEnabled": false
     },
+    "public.linkedin_connections": {
+      "name": "linkedin_connections",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "member_urn": {
+          "name": "member_urn",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "label": {
+          "name": "label",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "access_token_enc": {
+          "name": "access_token_enc",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "access_token_expires_at": {
+          "name": "access_token_expires_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "refresh_token_enc": {
+          "name": "refresh_token_enc",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "refresh_token_expires_at": {
+          "name": "refresh_token_expires_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "scopes": {
+          "name": "scopes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "last_error": {
+          "name": "last_error",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "last_error_at": {
+          "name": "last_error_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_by_user_id": {
+          "name": "created_by_user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "linkedin_connections_member_idx": {
+          "name": "linkedin_connections_member_idx",
+          "columns": [
+            {
+              "expression": "member_urn",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "linkedin_connections_created_by_user_id_users_id_fk": {
+          "name": "linkedin_connections_created_by_user_id_users_id_fk",
+          "tableFrom": "linkedin_connections",
+          "tableTo": "users",
+          "columnsFrom": [
+            "created_by_user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.login_attempts": {
       "name": "login_attempts",
       "schema": "",
@@ -13352,24 +13103,6 @@
         "meeting",
         "email",
         "task"
-      ]
-    },
-    "public.ai_meetwijze": {
-      "name": "ai_meetwijze",
-      "schema": "public",
-      "values": [
-        "handmatig",
-        "automatisch"
-      ]
-    },
-    "public.ai_platform": {
-      "name": "ai_platform",
-      "schema": "public",
-      "values": [
-        "chatgpt",
-        "gemini",
-        "claude",
-        "google"
       ]
     },
     "public.analytics_source": {

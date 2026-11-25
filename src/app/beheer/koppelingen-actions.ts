@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { requireStaff } from '@/lib/auth'
 import { verwijderVerbinding, vergeetKeuzes } from '@/lib/performance/oauth'
+import { verwijderLinkedinVerbinding } from '@/lib/performance/linkedin-verbinding'
 import type { ActionResult } from './actions'
 
 export async function verbindingLoskoppelen(formData: FormData): Promise<ActionResult> {
@@ -20,5 +21,14 @@ export async function keuzesVerversen(): Promise<ActionResult> {
   vergeetKeuzes()
   revalidatePath('/beheer/koppelingen')
   revalidatePath('/beheer/klanten', 'layout')
+  return { ok: true }
+}
+
+export async function linkedinVerbindingLoskoppelen(formData: FormData): Promise<ActionResult> {
+  const user = await requireStaff()
+  if (user.role !== 'admin') return { ok: false, error: 'Alleen een beheerder kan een LinkedIn-account loskoppelen.' }
+  await verwijderLinkedinVerbinding(String(formData.get('id') ?? ''))
+  revalidatePath('/beheer/koppelingen')
+  revalidatePath('/beheer/performance')
   return { ok: true }
 }
