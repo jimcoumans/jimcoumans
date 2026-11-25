@@ -461,6 +461,21 @@ export function describeDbError(error: unknown): string | null {
       return 'De sleutel van het dossier klopt niet. Sla het dossier opnieuw op.'
     case 'proposals_naam_not_empty':
       return 'Vul eerst de bedrijfsnaam in.'
+    /* --- AI-vindbaarheid --- */
+    case 'ai_meetset_naam_not_empty':
+      return 'Geef de meetset een naam.'
+    case 'ai_vraag_tekst_not_empty':
+      return 'Een vraag zonder tekst kan niet.'
+    case 'ai_meting_herhaling_geldig':
+      return 'Per vraag en platform meet je drie keer: kies 1, 2 of 3.'
+    case 'ai_meting_plek_geldig':
+      return 'Een plek is 1 of hoger. Laat het leeg als er geen lijst is.'
+    case 'ai_meting_antwoord_not_empty':
+      return 'Plak eerst het antwoord van de AI.'
+    case 'ai_meting_periode_eerste':
+      return 'Een meting hoort bij een maand. Kies de maand opnieuw.'
+    case 'ai_metingen_uniek_idx':
+      return 'Deze meting bestaat al voor deze maand. Pas de bestaande aan.'
     /* --- Stylesheet --- */
     case 'brand_text_style_weight_valid':
     case 'brand_button_weight_valid':

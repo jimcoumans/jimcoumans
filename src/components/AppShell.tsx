@@ -205,6 +205,7 @@ const TEAM_GROEPEN: NavGroep[] = [
       { href: '/beheer/checks', label: 'Uitingen-check', key: 'checks', icon: icons.checks },
       { href: '/beheer/assets', label: 'Merkkluizen', key: 'assets', icon: icons.assets },
       { href: '/beheer/assets/beeldbank', label: 'Beeldbank', key: 'beeldbank', icon: icons.assets },
+      { href: '/beheer/ai-vindbaarheid', label: 'AI-vindbaarheid', key: 'ai', icon: icons.performance },
     ],
   },
   /* HR gaat over mensen: wie er werkt en wie er komt. Contracten horen bij

@@ -428,6 +428,13 @@
       "when": 1795517971588,
       "tag": "0060_koppeling_accounts",
       "breakpoints": true
+    },
+    {
+      "idx": 61,
+      "version": "7",
+      "when": 1795597300328,
+      "tag": "0061_ai_vindbaarheid",
+      "breakpoints": true
     }
   ]
 }
