@@ -25,7 +25,7 @@ Prijzen en tarieven in dit document komen uit de voorstelgenerator (besluit nove
 
 ## 2. De propositie in één alinea
 
-We zorgen dat er voorspelbaar nieuwe aanvragen binnenkomen via advertenties in zoekmachines en op social media, en dat die aanvragen steeds minder kosten. Adverteren is de motor, content is de brandstof, de website is waar het landt, en vier versnellers maken elke volgende klant goedkoper. Alles is meetbaar en de klant ziet realtime dezelfde cijfers als wij. Ons werk houdt op bij de voordeur: we leveren kwalitatieve aanvragen af die klaar zijn om te kopen.
+We zorgen dat er voorspelbaar nieuwe aanvragen binnenkomen via advertenties in zoekmachines en op social media, dat klanten je vinden waar ze hun vraag steeds vaker stellen (in Google en in AI-assistenten als ChatGPT), en dat die aanvragen steeds minder kosten. Adverteren is de motor, content is de brandstof, de website is waar het landt, en vier versnellers maken elke volgende klant goedkoper. Alles is meetbaar en de klant ziet realtime dezelfde cijfers als wij. Ons werk houdt op bij de voordeur: we leveren kwalitatieve aanvragen af die klaar zijn om te kopen.
 
 **Ons succes is jullie succes.** Onze winst is geen zo hoog mogelijke maandfactuur. Onze winst is dat we de doelen van de klant keer op keer halen, dat de klant blij is met wat het oplevert, en dat we over tien jaar nog voor hem werken. Daarom zetten we liever een deel van ons werk om in advertentiebudget dan dat we uren steken in werk dat weinig oplevert.
 
@@ -43,18 +43,38 @@ We zorgen dat er voorspelbaar nieuwe aanvragen binnenkomen via advertenties in z
 
 ## 4. Het systeem
 
-1. **De motor: paid advertising.** Google Ads, Meta (Facebook en Instagram), LinkedIn, TikTok en Microsoft Ads. Het enige dat je vandaag aanzet en morgen meet. Standaard starten we met Google en Meta. LinkedIn is voor B2B met een duidelijke koper. TikTok als de doelgroep daar zit. Microsoft als Google laat zien dat er meer te halen is.
+1. **De motor: paid advertising.** Google Ads, Meta (Facebook en Instagram), LinkedIn, TikTok en Microsoft Ads. Het enige dat je vandaag aanzet en morgen meet. Standaard starten we met Google en Meta. LinkedIn is voor B2B met een duidelijke koper. TikTok als de doelgroep daar zit. Microsoft als Google laat zien dat er meer te halen is. ChatGPT Ads (sinds augustus 2026 in Nederland) is een nieuw kanaal: we testen het eerst bij James Robinson zelf en zetten het bij klanten in zodra de cijfers laten zien dat het werkt.
 2. **De brandstof: content.** We plannen de contentproductie meteen aan het begin. Eerst een contentplan, dan een contentshoot bij de klant op locatie. We werken met de beste makers per vak: fotografie, videografie, animatie, statische visuals en copywriting, in de formaten 9:16, 4:5 en 1:1. Advertenties slijten (creative fatigue, Meta waarschuwt er zelf voor), daarom maken we in contentrondes steeds nieuwe varianten.
 3. **De landing: website en landingspagina's.** Eén pagina per campagne, met één boodschap en één actie. We bouwen ze op de website van de klant, zodat snelheid en meting kloppen.
 4. **De voordeur: een kwalitatieve aanvraag.** Daar eindigt ons werk. Daarna is de klant aan zet.
 5. **De versnellers.** Geen losse trucjes; ze worden ingezet als de motor draait, in de volgorde die de cijfers aanwijzen.
    - **CRO:** meer aanvragen uit hetzelfde verkeer.
    - **E-mail en automation:** terughalen wie er al was, en een klant meer laten opleveren.
-   - **SEO:** verkeer zonder kosten per klik, op de zoekwoorden waarvan de advertenties al bewezen hebben dat ze klanten opleveren.
+   - **Vindbaarheid (Google en AI):** gevonden worden in Google en genoemd worden in AI-assistenten (ChatGPT, Gemini, de AI-antwoorden van Google), zonder kosten per klik. Op de vragen, zoekwoorden en argumenten waarvan de advertenties al bewezen hebben dat ze klanten opleveren. Dat kan een bureau dat alleen SEO doet niet zeggen. Zie "De derde weg: AI-assistenten" hieronder.
    - **Landingspagina's verbeteren of toevoegen.**
 6. **Monitoring.** Elke ochtend om 7.00 uur een dagmail met alles wat buiten de drempels valt, voor alle klanten. Uitgaven, afgekeurde advertenties, meting, landingspagina, kosten per aanvraag, frequentie en opvolgtijd.
 
 **Waarom we met adverteren beginnen.** Adverteren laat binnen weken zien welke zoekwoorden, doelgroepen en boodschappen werken. SEO en organisch posten zijn trager. Die kennis gebruiken we daarna voor al het andere.
+
+**De derde weg: AI-assistenten.** Naast zoekmachines en social media is er een derde plek waar klanten zoeken en kiezen: ChatGPT, Gemini en de AI-antwoorden in Google. Daar wordt minder doorgeklikt: bij een AI-samenvatting klikten mensen in 8% van de bezoeken op een gewoon zoekresultaat, zonder samenvatting in 15% (Pew Research, 2025). Ook hier zijn er twee kanten:
+- **Betaald:** ChatGPT Ads, een kanaal in de motor (zie hierboven). In Google kunnen advertenties nog niet ín de AI-antwoorden in Nederland, wel erboven en eronder.
+- **Verdiend:** genoemd worden in de antwoorden. Dat doen we met de versneller Vindbaarheid: bedrijfsprofielen op orde (het Google Bedrijfsprofiel en, waar dat kan, het ChatGPT-bedrijfsprofiel), reviews, overal dezelfde gegevens, pagina's die de vragen van klanten beantwoorden, en genoemd worden op andere sites.
+
+Het verhaal naar de klant is ons social-verhaal: organisch bereik op Facebook was ooit gratis en verdween toen het platform ging verkopen. In AI-assistenten staat dat raam nog open, maar de advertenties zijn er al. Wie nu zorgt dat hij genoemd wordt, heeft voorsprong. Dat brengen we als verwachting, niet als garantie.
+
+**Wat meetbaar is, maken we meetbaar.**
+- Een nulmeting met een vaste set vragen per klant, die we elke maand op dezelfde manier nameten in ChatGPT, Gemini en Google AI Mode: genoemd of niet, op welke plek, naast welke concurrenten, en of de informatie klopt.
+- Bezoekers en aanvragen uit AI-assistenten apart in het portaal.
+- Waar de klant een ChatGPT-bedrijfsprofiel heeft: de vermeldingen en websiteklikken uit het overzicht van OpenAI.
+
+Wat we niet beloven: dat ChatGPT de klant aanraadt. Dat bepaalt de AI zelf, en volgens OpenAI verandert ook een geclaimd profiel of advertentiebudget daar niets aan.
+
+**Het ChatGPT-bedrijfsprofiel** (in bèta sinds november 2026, OpenAI Help Center). Een bedrijf claimt zijn profiel en beheert daarin onder meer website, omschrijving, categorie, logo en eventueel een productfeed. Een bureau kan beheerrechten krijgen. Na verificatie toont OpenAI per 28 dagen de vermeldingen en websiteklikken. Beperkingen nu:
+- lokale winkels en restaurants kunnen alleen een bestaande Amerikaanse vermelding claimen, dus voor de meeste van onze klanten kan het nog niet;
+- webshops en online dienstverleners kunnen claimen, afhankelijk van land en soort bedrijf;
+- claimen maakt een bedrijf niet zichtbaarder in de antwoorden.
+
+Waar het kan, claimen we het profiel in de Marketing Set-up. Voor lokale bedrijven doen we het zodra OpenAI dat in Nederland opent.
 
 **Hoe platformen werken: tijd + geld = data.** De algoritmes kunnen niet lezen, alleen meten. Ze hebben data nodig, en data komt met tijd en budget. We laten ballonnetjes op (doelgroepen, boodschappen, beelden), meten wat werkt, geven meer budget aan wat werkt en stoppen met wat niet werkt. Elk kanaal werkt als een veiling: hoge vraag betekent een hoge prijs per klik of weergave.
 
@@ -102,7 +122,7 @@ De les: onze rol houdt op bij de voordeur. We leveren ready-to-buy-aanvragen van
 | Marketingcontent: foto, video, animatie, graphics | Design en branding | E-commerce als propositie |
 | Landingspagina's en CRO | Social-mediatemplates, contentsessies | Werving als propositie |
 | E-mail en automation | Extra contentshoots | Social feeds vullen en beheren |
-| SEO op woorden die converteren | Koppelingen met systemen van de klant | Bedrijfsvideo's |
+| Vindbaarheid in Google en AI, op woorden die converteren | Koppelingen met systemen van de klant | Bedrijfsvideo's |
 | Nieuwe advertentievisuals elke maand, contentshoots naar afspraak | | Leads opvolgen |
 | | | Uren verantwoorden |
 | | | Marge op werk van een ander |
@@ -167,6 +187,8 @@ Een campagne is één aanbod, voor één doelgroep, met één doel en één land
   - Leadinfo vanaf € 69 per maand (alleen zakelijke klanten);
   - Calendly vanaf $ 10 per gebruiker per maand.
 
+**Vindbaarheid in AI.** Prijs en plek (in de set-up, in de Marketing Partnership of allebei) bepalen we na de pilot; zie de open punten. Tot die tijd staat het niet in een offerte.
+
 **Eerste factuur.** Set-up plus de licenties van het eerste jaar die via James Robinson lopen. De Marketing Partnership start de maand erna.
 
 **Losse opdrachten:** campagnemailing € 250, extra contentronde (tot zes varianten) € 500, extra contentshoot (dagdeel) € 1.500, landingspagina € 500, nieuwe campagne opzetten € 250 (daarna + € 250 per maand).
@@ -230,7 +252,7 @@ Voorbeeld: € 50.000 marketing per jaar met een hypothese van ROAS 4 is in pote
 ## 12. Communicatie en portaal
 
 - **Eén adres: support@jamesrobinson.nl**, antwoord binnen één werkdag van wie erover gaat. Dringend (campagne of website ligt eruit): bellen naar kantoor, 045 792 0009. Geen WhatsApp-groepen meer.
-- **Het portaal.** Realtime cijfers van alle bronnen (Google, Meta, LinkedIn, TikTok, website, Search Console), elk uur bijgewerkt. Verder:
+- **Het portaal.** Realtime cijfers van alle bronnen (Google, Meta, LinkedIn, TikTok, website, Search Console), elk uur bijgewerkt. Straks ook bezoekers en aanvragen uit AI-assistenten, en de maandelijkse AI-meting. Verder:
   - per aanvraag een oordeel en later of het een klant werd;
   - de merkkluis;
   - lopende campagnes en budget.
@@ -256,6 +278,8 @@ Voorbeeld: € 50.000 marketing per jaar met een hypothese van ROAS 4 is in pote
 - Advertentiebudget is de motor.
 - Ons succes is jullie succes.
 - Marketing moet geld opleveren; anders is het een hobby.
+
+**AI in onze eigen werkwijze.** We werken met AI en automatisering, maar dat is geen verkoopargument en staat niet prominent op de website. Wat het oplevert wel: sneller bijsturen, meer varianten, minder fouten. Naar buiten heet het verdiende deel "gevonden worden in AI" of "genoemd worden door ChatGPT", niet GEO of AEO.
 
 **Niet naar buiten (intern prima, extern niet):**
 
@@ -288,6 +312,8 @@ Voorbeeld: € 50.000 marketing per jaar met een hypothese van ROAS 4 is in pote
 - Deloitte/Google, Milliseconds Make Millions 2020 (laadsnelheid).
 - Binet & Field, IPA (merk en activatie).
 - Meta en Google Help Center (leerfase, creative fatigue).
+- Pew Research, juli 2025 (minder doorklikken bij AI-samenvattingen in Google).
+- OpenAI Help Center, "Setting up your business on ChatGPT" (bedrijfsprofiel, november 2026) en OpenAI, "ChatGPT Ads expands across Europe" (augustus 2026).
 
 **Niet gebruiken:**
 - "53% verlaat na 3 seconden";
@@ -320,3 +346,11 @@ Verder: het meest toonaangevende bureau van Limburg zijn. Niet in omzet of groot
 - Cases verzamelen (beschrijvend: uitdaging, aanpak, resultaat, inzicht, met quotes en toestemming van de klant).
 - Fotografie voor het magazine en een vectorlogo voor drukwerk.
 - Lettertype voor drukwerk: Helvetica Neue (brandbook) of Inter (designsysteem v3.0).
+
+**Open punten AI (november 2026):**
+- Besloten: AI-assistenten zijn de derde weg naar klanten, naast zoekmachines en social. Wat meetbaar is, maken we meetbaar.
+- Pilot bij James Robinson zelf: nulmeting, ChatGPT-bedrijfsprofiel claimen als dat voor ons kan, en een kleine test met ChatGPT Ads. Daarna drie klanten in verschillende branches, drie maanden meten. Pas dan prijs en plek van Vindbaarheid in AI vastleggen.
+- ChatGPT-bedrijfsprofiel voor lokale bedrijven in Nederland: volgen wanneer OpenAI het opent.
+- De AI-meting in het portaal bouwen (vaste vragen per klant, maandelijks; verkeer uit AI-assistenten apart).
+- Een AI-assistent die aanvragen direct beantwoordt: mogelijk een eigen dienst van James Robinson of een los bedrijf. Raakt aan "tot aan de voordeur" en "leads opvolgen: nooit". Geen primaire focus.
+- Gids, voorstelgenerator, website en magazine bijwerken voor Vindbaarheid (Google en AI) en ChatGPT Ads.
