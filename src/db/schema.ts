@@ -4556,3 +4556,100 @@ export type PartnerWerkSjabloon = typeof partnerWerkSjablonen.$inferSelect
 export type PartnerAanvraag = typeof partnerAanvragen.$inferSelect
 export type PartnerAanvraagWerk = typeof partnerAanvraagWerk.$inferSelect
 export type PartnerUitvraag = typeof partnerUitvragen.$inferSelect
+
+/* =========================================================================
+   AI-vindbaarheid
+
+   Of een AI-assistent (ChatGPT, Gemini, Claude, Google) een bedrijf noemt,
+   verschilt per vraag, per gebruiker en per dag. Eén losse vraag zegt dus
+   weinig; dezelfde vragen, op dezelfde manier, elke maand opnieuw, laten de
+   lijn zien. Daarom: een vaste set vragen per bedrijf, en per maand per
+   platform drie metingen per vraag.
+
+   Een vraag wijzig je niet; je archiveert hem en voegt een nieuwe toe.
+   Anders is de lijn van die vraag kapot.
+   ========================================================================= */
+
+export const aiPlatformEnum = pgEnum('ai_platform', ['chatgpt', 'gemini', 'claude', 'google'])
+/** Handmatig: iemand plakte het antwoord uit de app. Automatisch: via de API, zonder account of geheugen. */
+export const aiMeetwijzeEnum = pgEnum('ai_meetwijze', ['handmatig', 'automatisch'])
+
+export const aiMeetsets = pgTable(
+  'ai_meetsets',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    /** Het bedrijf dat we meten. Leeg: James Robinson zelf. */
+    organizationId: uuid('organization_id').references(() => organizations.id, { onDelete: 'cascade' }),
+    naam: text('naam').notNull(),
+    /** Hoe het bedrijf in een antwoord kan heten: naam, handelsnaam, domein. */
+    merknamen: jsonb('merknamen').$type<string[]>().notNull().default([]),
+    /** Concurrenten die we in de antwoorden willen herkennen. */
+    concurrenten: jsonb('concurrenten').$type<string[]>().notNull().default([]),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('ai_meetsets_org_idx').on(t.organizationId),
+    check('ai_meetset_naam_not_empty', sql`length(trim(${t.naam})) > 0`),
+  ],
+)
+
+export const aiVragen = pgTable(
+  'ai_vragen',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    setId: uuid('set_id')
+      .notNull()
+      .references(() => aiMeetsets.id, { onDelete: 'cascade' }),
+    tekst: text('tekst').notNull(),
+    volgorde: integer('volgorde').notNull().default(0),
+    /** Gearchiveerd: telt niet meer mee voor nieuwe metingen, de oude blijven zichtbaar. */
+    gearchiveerdOp: timestamp('gearchiveerd_op', { withTimezone: true }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('ai_vragen_set_idx').on(t.setId),
+    check('ai_vraag_tekst_not_empty', sql`length(trim(${t.tekst})) > 0`),
+  ],
+)
+
+export const aiMetingen = pgTable(
+  'ai_metingen',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    vraagId: uuid('vraag_id')
+      .notNull()
+      .references(() => aiVragen.id, { onDelete: 'cascade' }),
+    /** De eerste dag van de maand waarvoor gemeten is. */
+    periode: date('periode').notNull(),
+    platform: aiPlatformEnum('platform').notNull(),
+    meetwijze: aiMeetwijzeEnum('meetwijze').notNull(),
+    /** Eerste, tweede of derde keer dezelfde vraag, in een nieuw gesprek. */
+    herhaling: integer('herhaling').notNull(),
+    antwoord: text('antwoord').notNull(),
+    genoemd: boolean('genoemd').notNull(),
+    /** Op welke plek we in een lijst staan; leeg als we niet genoemd zijn of er geen lijst is. */
+    plek: integer('plek'),
+    /** Welke concurrenten uit de set in het antwoord stonden. */
+    concurrenten: jsonb('concurrenten').$type<string[]>().notNull().default([]),
+    /** Domeinen die het antwoord als bron noemt. */
+    bronnen: jsonb('bronnen').$type<string[]>().notNull().default([]),
+    /** Met de hand gecorrigeerd: dan rekent de herkenning het niet opnieuw uit. */
+    gecorrigeerd: boolean('gecorrigeerd').notNull().default(false),
+    doorUserId: uuid('door_user_id').references(() => users.id, { onDelete: 'set null' }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex('ai_metingen_uniek_idx').on(t.vraagId, t.periode, t.platform, t.meetwijze, t.herhaling),
+    index('ai_metingen_periode_idx').on(t.periode),
+    check('ai_meting_herhaling_geldig', sql`${t.herhaling} BETWEEN 1 AND 3`),
+    check('ai_meting_plek_geldig', sql`${t.plek} IS NULL OR ${t.plek} >= 1`),
+    check('ai_meting_antwoord_not_empty', sql`length(trim(${t.antwoord})) > 0`),
+    check('ai_meting_periode_eerste', sql`extract(day from ${t.periode}) = 1`),
+  ],
+)
+
+export type AiMeetset = typeof aiMeetsets.$inferSelect
+export type AiVraag = typeof aiVragen.$inferSelect
+export type AiMeting = typeof aiMetingen.$inferSelect

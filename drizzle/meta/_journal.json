@@ -393,6 +393,13 @@
       "when": 1795019770969,
       "tag": "0055_voorstel_profiel",
       "breakpoints": true
+    },
+    {
+      "idx": 56,
+      "version": "7",
+      "when": 1795596531777,
+      "tag": "0056_ai_vindbaarheid",
+      "breakpoints": true
     }
   ]
 }
