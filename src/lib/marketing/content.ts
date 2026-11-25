@@ -588,7 +588,7 @@ export async function voortgang() {
   const branches = await db.select().from(marketingIndustries).where(eq(marketingIndustries.active, true))
   const items = await db.select().from(marketingContentItems).where(and(eq(marketingContentItems.contentKind, 'page'), ne(marketingContentItems.workflowStatus, 'archived')))
   const planning = await db.select().from(marketingCoverage)
-  const klaar = (i: MarketingContentItem) => i.workflowStatus === 'approved' || i.publicationStatus === 'published' || !!i.approvedRevisionId
+  const klaar = (i: MarketingContentItem) => !i.needsReview && (i.workflowStatus === 'approved' || i.publicationStatus === 'published')
   const sids = new Set(onderwerpen.map((s) => s.id)), bids = new Set(branches.map((b) => b.id))
   const algemeen = items.filter((i) => i.subjectId && !i.industryId && sids.has(i.subjectId))
   const varianten = items.filter((i) => i.subjectId && i.industryId && sids.has(i.subjectId) && bids.has(i.industryId))
