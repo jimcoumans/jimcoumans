@@ -9,10 +9,13 @@ Of een AI-assistent je noemt, verschilt per vraag, per gebruiker en per dag. Eé
 ## Vaste werkwijze
 
 - **Wanneer:** elke maand in de eerste week, zo veel mogelijk op dezelfde dag. De eerste keer is de nulmeting.
-- **Waar:** ChatGPT, Gemini en Google (AI-modus, en het AI-overzicht als dat verschijnt).
-- **Hoe:**
-  - In ChatGPT een tijdelijke chat zonder geheugen; in Gemini een nieuw gesprek; Google in een privévenster.
-  - Elke vraag één keer, letterlijk zoals hieronder, zonder vervolgvraag.
+- **Waar:** ChatGPT, Gemini, Claude en Google (AI-modus, en het AI-overzicht als dat verschijnt).
+- **Hoe:** zo min mogelijk gekleurd door je eigen gebruik. Wie dagelijks met deze tools werkt, krijgt antwoorden die passen bij zijn geheugen, geschiedenis en instellingen.
+  - ChatGPT: uitgelogd, in een privévenster. Dat is ook wat de meeste mensen zien.
+  - Gemini: met een apart meetaccount zonder geschiedenis, niet met je eigen account.
+  - Claude: een incognitochat, of beter een apart meetaccount.
+  - Google (AI-modus): uitgelogd, in een privévenster.
+  - Elke vraag drie keer, letterlijk zoals hieronder, elke keer in een nieuw gesprek en zonder vervolgvraag. Noteer hoe vaak we genoemd worden (0 tot 3 keer).
   - Locatie: vanuit Hulsberg of omgeving, niet via een VPN.
 - **Wie:** één vaste persoon, zodat de meting elke maand op dezelfde manier gebeurt.
 
@@ -43,9 +46,9 @@ De vragen zijn vast. Een vraag toevoegen mag, een bestaande vraag wijzigen niet:
 | Veld | Wat |
 |---|---|
 | Datum | |
-| Platform | ChatGPT, Gemini of Google |
+| Platform | ChatGPT, Gemini, Claude of Google |
 | Vraag | Nummer 1 tot en met 12 |
-| Genoemd | Ja of nee |
+| Genoemd | Hoe vaak, van de drie keer |
 | Plek | Als we in een lijst staan: op welke plek |
 | Andere bureaus | Welke bureaus de AI noemt |
 | Klopt het? | Bij vraag 11 en 12: klopt wat er over ons staat? Wat niet? |
