@@ -2,6 +2,15 @@ import { z } from 'zod'
 import { parseAmountToCents } from '../money'
 
 const id = z.string().regex(/^\d+$/)
+const contactSchema = z.object({
+  id,
+  company_name: z.string().nullish(),
+  customer_id: z.string().nullish(),
+  firstname: z.string().nullish(),
+  lastname: z.string().nullish(),
+  archived: z.boolean().optional(),
+})
+
 const recurringSchema = z.object({
   id,
   contact_id: id,
@@ -82,9 +91,11 @@ export function moneybirdClient(signal = AbortSignal.timeout(9000)) {
   }
 
   return {
-    contact: (contactId: string) => verzoek(z.object({
-      id, company_name: z.string().nullish(), customer_id: z.string().nullish(),
-    }), `contacts/${moneybirdContactId(contactId)}.json`),
+    contact: (contactId: string) => verzoek(contactSchema, `contacts/${moneybirdContactId(contactId)}.json`),
+    zoekContacten: (zoekterm: string) => {
+      const query = new URLSearchParams({ query: zoekterm, include_archived: 'false', per_page: '100' })
+      return verzoek(z.array(contactSchema), `contacts.json?${query}`)
+    },
     facturen: (contactId: string, reeksId?: string) => {
       const filters = ['state:all', `contact_id:${moneybirdContactId(contactId)}`]
       if (reeksId) filters.push(`recurring_sales_invoice_id:${id.parse(reeksId)}`)

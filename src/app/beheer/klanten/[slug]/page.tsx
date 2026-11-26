@@ -55,6 +55,7 @@ import { BookServiceForm } from '@/components/BookServiceForm'
 import { aantalMetEenheid } from '@/lib/quantity'
 import { formatCents, formatEuro, formatSignedCents } from '@/lib/money'
 import { MoneybirdFacturen } from '@/components/MoneybirdFacturen'
+import { moneybirdContactKeuzes } from '@/lib/moneybird/contacten'
 import { leesMoneybirdFacturen } from '@/lib/moneybird/facturen'
 import { moneybirdAbonnementenAan } from '@/lib/moneybird/abonnementen'
 import { factuurTitel, bronLabel } from '@/lib/weergave'
@@ -109,7 +110,10 @@ export default async function KlantPage({
   const klant = await getOrganizationBySlug(slug)
   if (!klant) notFound()
 
-  const [facturen, diensten, team, abonnementen, contacten, accounts, partnerLinks, allePartners, moneybirdFacturen] =
+  const moneybirdContactKoppelen = tab === 'budget' && user.role === 'admin'
+    && process.env.MONEYBIRD_API_TOKEN && process.env.MONEYBIRD_ADMINISTRATION_ID
+    && !klant.organization.moneybirdContactId
+  const [facturen, diensten, team, abonnementen, contacten, accounts, partnerLinks, allePartners, moneybirdFacturen, moneybirdContacten] =
     await Promise.all([
       getOrganizationInvoices(klant.organization.id, 20),
       listActiveServices(),
@@ -120,6 +124,7 @@ export default async function KlantPage({
       listPartnersForOrganization(klant.organization.id),
       listActivePartners(),
       tab === 'budget' ? leesMoneybirdFacturen(klant.organization.id) : null,
+      moneybirdContactKoppelen ? moneybirdContactKeuzes(klant.organization) : null,
     ])
   // De kinderen apart, want die hangen aan de contactpersonen die we net
   // hebben opgehaald.
@@ -346,14 +351,21 @@ export default async function KlantPage({
               <Facturen facturen={facturen} klant={klant} slug={slug} vandaag={vandaag} />
             )}
 
-            {user.role === 'admin' && process.env.MONEYBIRD_API_TOKEN && process.env.MONEYBIRD_ADMINISTRATION_ID
-              && !klant.organization.moneybirdContactId && (
+            {moneybirdContacten && (
               <Paneel knop="Moneybird-contact koppelen" stijl="rustig" titel="Moneybird-contact koppelen"
                 uitleg="De klant ziet de verstuurde verkoopfacturen van dit contact daarna in het klantportaal.">
-                <ActionForm action={koppelMoneybirdContact} submitLabel="Contact koppelen" className="space-y-3">
-                  <input type="hidden" name="organizationId" value={klant.organization.id} />
-                  <Field label="Moneybird-contact-ID" name="contactId" required />
-                </ActionForm>
+                {!moneybirdContacten.ok ? (
+                  <p className="text-sm text-gray-600">Moneybird-contacten konden niet worden opgehaald. Ververs de pagina en probeer opnieuw.</p>
+                ) : moneybirdContacten.opties.length === 0 ? (
+                  <p className="text-sm text-gray-600">Geen Moneybird-contact gevonden op klantnaam of klantnummer.</p>
+                ) : (
+                  <ActionForm action={koppelMoneybirdContact} submitLabel="Contact koppelen" className="space-y-3">
+                    <input type="hidden" name="organizationId" value={klant.organization.id} />
+                    <Select label="Moneybird-contact" name="contactId" defaultValue=""
+                      options={[{ value: '', label: 'Kies een Moneybird-contact' }, ...moneybirdContacten.opties]}
+                    />
+                  </ActionForm>
+                )}
               </Paneel>
             )}
 

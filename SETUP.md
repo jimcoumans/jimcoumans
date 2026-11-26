@@ -258,7 +258,7 @@ van Production. De token heeft toegang nodig tot verkoopfacturen en de
 bijbehorende contacten.
 
 Bij **Beheer → Bedrijven → klant → Budget en facturen** koppelt een beheerder
-het Moneybird-contact. Voor gekoppelde klanten toont het portaal verstuurde
+het Moneybird-contact via de keuzelijst. Voor gekoppelde klanten toont het portaal verstuurde
 verkoopfacturen en hun Moneybird-status, met een apart overzicht voor
 facturen buiten de gekoppelde retainers.
 

@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { factuurStatus, moneybirdClient, verstuurd } from '../moneybird/client'
+import { moneybirdContactKeuzes } from '../moneybird/contacten'
 import { moneybirdPlanning } from '../moneybird/planning'
 
 test('een terugkerende factuur wordt gepland op de gekozen dag, vanaf de startdatum', () => {
@@ -35,7 +36,7 @@ test('factuurstatus komt van Moneybird en concepten of geplande facturen blijven
   assert.equal(factuurStatus({ ...verstuurde, state: 'paid', paid_at: '2026-11-20' }), 'Betaald')
 })
 
-test('facturen worden per klant en reeks uit Moneybird gelezen met behoud van lange IDs', async (t) => {
+function stelTestAdministratieIn(t: import('node:test').TestContext) {
   const oudToken = process.env.MONEYBIRD_API_TOKEN
   const oudeAdministratie = process.env.MONEYBIRD_ADMINISTRATION_ID
   process.env.MONEYBIRD_API_TOKEN = 'test'
@@ -46,6 +47,10 @@ test('facturen worden per klant en reeks uit Moneybird gelezen met behoud van la
     if (oudeAdministratie === undefined) delete process.env.MONEYBIRD_ADMINISTRATION_ID
     else process.env.MONEYBIRD_ADMINISTRATION_ID = oudeAdministratie
   })
+}
+
+test('facturen worden per klant en reeks uit Moneybird gelezen met behoud van lange IDs', async (t) => {
+  stelTestAdministratieIn(t)
   t.mock.method(globalThis, 'fetch', async (url: string, init: RequestInit) => {
     const pad = new URL(url)
     assert.equal(pad.pathname, '/api/v2/123/sales_invoices.json')
@@ -56,4 +61,25 @@ test('facturen worden per klant en reeks uit Moneybird gelezen met behoud van la
   })
   const [factuur] = await moneybirdClient().facturen(bronfactuur.contact_id, '503000000000000003')
   assert.equal(factuur?.id, bronfactuur.id)
+})
+
+
+test('de keuzelijst zoekt op klantnaam en nummer, zonder dubbele of gearchiveerde contacten', async (t) => {
+  stelTestAdministratieIn(t)
+  const termen: string[] = []
+  t.mock.method(globalThis, 'fetch', async (url: string) => {
+    const pad = new URL(url)
+    assert.equal(pad.pathname, '/api/v2/123/contacts.json')
+    const term = pad.searchParams.get('query')
+    if (term) termen.push(term)
+    return Response.json([
+      { id: '503000000000000002', company_name: 'Proefbedrijf B.V.', customer_id: '101' },
+      { id: '503000000000000003', company_name: 'Oud contact', archived: true },
+    ])
+  })
+  assert.deepEqual(await moneybirdContactKeuzes({ name: 'Proefbedrijf B.V.', customerNumber: '101' }), {
+    ok: true,
+    opties: [{ value: '503000000000000002', label: 'Proefbedrijf B.V. (klant 101)' }],
+  })
+  assert.deepEqual(termen.sort(), ['101', 'Proefbedrijf'])
 })
