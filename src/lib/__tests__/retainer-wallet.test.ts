@@ -9,7 +9,18 @@ const opties = [
   { id: 'project', name: 'Projectwerk', orderindex: 0 },
 ]
 
-function taak(id: string, tarief: unknown, plaats: unknown = 'abonnement', status = 'afgerond'): ClickUpTask {
+const balansOpties = [
+  { id: 'opdracht', name: 'Opdracht', orderindex: 1 },
+  { id: 'factuur', name: 'Factuur', orderindex: 0 },
+]
+
+function taak(
+  id: string,
+  tarief: unknown,
+  plaats: unknown = 'abonnement',
+  status = 'afgerond',
+  balans: unknown = 'opdracht',
+): ClickUpTask {
   return {
     id,
     name: id,
@@ -18,6 +29,7 @@ function taak(id: string, tarief: unknown, plaats: unknown = 'abonnement', statu
     custom_fields: [
       { id: 'plaats', name: 'Boekplaats', type: 'drop_down', value: plaats, type_config: { options: opties } },
       { id: 'tarief', name: 'Verkooptarief', type: 'currency', value: tarief },
+      { id: 'balans', name: 'Balans', type: 'drop_down', value: balans, type_config: { options: balansOpties } },
     ],
   }
 }
@@ -67,6 +79,29 @@ test('telt verzonden retainerfacturen vanaf de grens en passende ClickUp-taken u
   assert.equal(resultaat.regels.length, 7)
   assert.equal(resultaat.regels.find((regel) => regel.id === 'clickup:eerste')?.datum, '2025-09-12')
   assert.equal(resultaat.regels.find((regel) => regel.id === 'clickup:nultarief')?.bedragCents, 0)
+})
+
+test('alleen Balans Opdracht telt mee en een ClickUp-factuur geeft geen bijschrijving', () => {
+  const zonderBalansveld = taak('zonder-balansveld', 50)
+  zonderBalansveld.custom_fields = zonderBalansveld.custom_fields?.filter((veld) => veld.name !== 'Balans')
+  const taken = [
+    taak('optie-id', 10),
+    taak('volgnummer', 20, 'abonnement', 'afgerond', 1),
+    taak('optie-object', 30, 'abonnement', 'afgerond', { name: 'Opdracht' }),
+    taak('oude-factuur', '-1350', 'abonnement', 'afgerond', 'factuur'),
+    taak('lege-balans', 40, 'abonnement', 'afgerond', null),
+    zonderBalansveld,
+  ]
+
+  const resultaat = berekenRetainerWallet([factuur], taken, datum)
+  assert.equal(resultaat.bijgeschrevenCents, 100000)
+  assert.equal(resultaat.besteedCents, 6000)
+  assert.equal(resultaat.saldoCents, 94000)
+  assert.deepEqual(resultaat.regels.filter((regel) => regel.bron === 'ClickUp').map(({ id }) => id).sort(), [
+    'clickup:optie-id',
+    'clickup:optie-object',
+    'clickup:volgnummer',
+  ])
 })
 
 test('ClickUp haalt beide archiefstanden en alle vervolgpagina’s op', async (t) => {
