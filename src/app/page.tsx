@@ -30,9 +30,6 @@ export default async function HomePage() {
     return (
       <AppShell user={user} actief="wallet" meekijken={meekijken}>
         <RetainerWalletOverzicht wallet={retainerWallet} />
-        {retainerWallet.ok && retainerWallet.regels.length > 15 && (
-          <a href="/activiteit" className="mt-3 inline-block text-sm text-jr-link hover:underline">Alle boekingen bekijken</a>
-        )}
       </AppShell>
     )
   }
