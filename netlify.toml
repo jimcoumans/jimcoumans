@@ -12,6 +12,21 @@
   command = "npm run db:migrate && npm run build"
   publish = ".next"
 
+# Previews en branch-builds bouwen alleen, zonder migraties. Ze gebruiken
+# dezelfde database als productie, en een migratie uit een branch die nog
+# niet gemerged is, kwam zo al in productie terecht. Daarna liep de echte
+# deploy vast op een tabel die er al stond (november 2026). Alleen wat in de
+# productiebranch zit, mag de database veranderen.
+#
+# Gevolg: een preview van een branch met een nieuwe tabel kan op die pagina's
+# een fout geven. Dat is de prijs; een productiedatabase met ongereviewde
+# wijzigingen is erger.
+[context.deploy-preview]
+  command = "npm run build"
+
+[context.branch-deploy]
+  command = "npm run build"
+
 [build.environment]
   NODE_VERSION = "22"
 
