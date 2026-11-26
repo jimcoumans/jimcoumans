@@ -3,14 +3,17 @@
 import { revalidatePath } from 'next/cache'
 import { and, eq } from 'drizzle-orm'
 import { db } from '@/db'
-import { subscriptions, wallets } from '@/db/schema'
-import { requireStaff } from '@/lib/auth'
+import { organizations, subscriptions, wallets } from '@/db/schema'
+import { requireStaff, getSessionUser } from '@/lib/auth'
 import { LedgerError } from '@/lib/ledger'
 import { runBilling } from '@/lib/billing'
 import { parseAmountToCents } from '@/lib/money'
 import { describeDbError } from '@/lib/db-errors'
 import type { ActionResult } from './actions'
 import { vergeet } from '@/lib/cache'
+import { lokaalAbonnement, moneybirdAbonnementenAan, moneybirdBelastingId, stopMoneybirdAbonnement } from '@/lib/moneybird/abonnementen'
+import { moneybirdBedrag, moneybirdClient, moneybirdContactId, MoneybirdApiFout } from '@/lib/moneybird/client'
+import { moneybirdPlanning } from '@/lib/moneybird/planning'
 
 /* Acties voor abonnementen. Elke actie begint met requireStaff(). */
 
@@ -25,7 +28,7 @@ async function veilig(fn: () => Promise<void>): Promise<ActionResult> {
     vergeet()
     return { ok: true }
   } catch (error) {
-    if (error instanceof LedgerError) return { ok: false, error: error.message }
+    if (error instanceof LedgerError || error instanceof MoneybirdApiFout) return { ok: false, error: error.message }
 
     const melding = describeDbError(error)
     if (melding) return { ok: false, error: melding }
@@ -99,7 +102,23 @@ export async function nieuwAbonnement(formData: FormData): Promise<ActionResult>
 
     if (!wallet) throw new LedgerError('Deze wallet hoort niet bij deze klant.')
 
+    let moneybird: { moneybirdState: 'wacht'; moneybirdContactId: string } | undefined
+    if (moneybirdAbonnementenAan()) {
+      const [klant] = await db.select({ contactId: organizations.moneybirdContactId })
+        .from(organizations).where(eq(organizations.id, organizationId))
+      if (!klant?.contactId) throw new LedgerError('Koppel eerst het Moneybird-contact van deze klant.')
+      try {
+        moneybirdClient()
+        moneybirdBelastingId(btw)
+        moneybirdPlanning(start, eind, dag, new Date())
+        moneybird = { moneybirdState: 'wacht', moneybirdContactId: moneybirdContactId(klant.contactId) }
+      } catch (error) {
+        throw new LedgerError(error instanceof Error ? error.message : 'Controleer de Moneybird-instellingen.')
+      }
+    }
+
     await db.insert(subscriptions).values({
+      ...moneybird,
       organizationId,
       walletId,
       name: naam,
@@ -176,7 +195,7 @@ export async function wijzigAbonnement(formData: FormData): Promise<ActionResult
   const kortingBijWijzigen = kortingUitkomstWijzig.cents
 
   return veilig(async () => {
-    await db
+    const [aangepast] = await db
       .update(subscriptions)
       .set({
         name: naam,
@@ -188,7 +207,9 @@ export async function wijzigAbonnement(formData: FormData): Promise<ActionResult
         notes: String(formData.get('notities') ?? '').trim() || null,
         updatedAt: new Date(),
       })
-      .where(eq(subscriptions.id, id))
+       .where(and(eq(subscriptions.id, id), lokaalAbonnement))
+      .returning({ id: subscriptions.id })
+    if (!aangepast) throw new LedgerError('Bedrag en planning van deze Moneybird-reeks kunnen hier nog niet worden gewijzigd.')
 
     revalidatePath(`/beheer/klanten/${slug}`)
     revalidatePath('/beheer/abonnementen')
@@ -209,7 +230,13 @@ export async function zetAbonnementStatus(formData: FormData): Promise<ActionRes
   }
 
   return veilig(async () => {
-    await db
+    if (status === 'ended' && await stopMoneybirdAbonnement(id)) {
+      revalidatePath(`/beheer/klanten/${slug}`)
+      revalidatePath('/beheer/abonnementen')
+      return
+    }
+
+    const [aangepast] = await db
       .update(subscriptions)
       .set({
         status: status as 'active' | 'paused' | 'ended',
@@ -220,7 +247,9 @@ export async function zetAbonnementStatus(formData: FormData): Promise<ActionRes
         // Weer aanzetten haalt de einddatum weg, anders blijft hij stil staan.
         ...(status === 'active' ? { endsOn: null } : {}),
       })
-      .where(eq(subscriptions.id, id))
+      .where(and(eq(subscriptions.id, id), lokaalAbonnement))
+      .returning({ id: subscriptions.id })
+    if (!aangepast) throw new LedgerError('Je kunt deze Moneybird-reeks via de Wallet stopzetten.')
 
     revalidatePath(`/beheer/klanten/${slug}`)
     revalidatePath('/beheer/abonnementen')
@@ -255,5 +284,97 @@ export async function factureerNu(formData: FormData): Promise<ActionResult> {
     if (slug) revalidatePath(`/beheer/klanten/${slug}`)
     revalidatePath('/beheer/abonnementen')
     revalidatePath('/beheer/financieel')
+  })
+}
+
+
+function controleerMoneybirdContact(
+  klant: { name: string; customerNumber: string | null; moneybirdContactId: string | null },
+  contact: { id: string; customer_id?: string | null; company_name?: string | null },
+) {
+  if (klant.moneybirdContactId) {
+    if (klant.moneybirdContactId !== contact.id) throw new LedgerError('Deze klant is al aan een ander Moneybird-contact gekoppeld.')
+    return
+  }
+  const normaliseer = (naam: string) => naam.toLowerCase()
+    .replace(/\b(?:b\.?v\.?|n\.?v\.?)$/i, '').replace(/[^a-z0-9]/g, '')
+  if (klant.customerNumber && contact.customer_id && klant.customerNumber !== contact.customer_id) {
+    throw new LedgerError('Het Moneybird-klantnummer wijkt af van het CRM.')
+  }
+  const zelfdeNummer = Boolean(klant.customerNumber && contact.customer_id === klant.customerNumber)
+  const zelfdeNaam = Boolean(contact.company_name && normaliseer(contact.company_name) === normaliseer(klant.name))
+  if (!zelfdeNaam && !zelfdeNummer) throw new LedgerError('Klantnaam en klantnummer komen niet overeen met Moneybird.')
+}
+
+/** Contactkoppeling voor zowel abonnementen als losse verkoopfacturen. */
+export async function koppelMoneybirdContact(formData: FormData): Promise<ActionResult> {
+  const user = await getSessionUser()
+  if (user?.role !== 'admin') return { ok: false, error: 'Alleen een beheerder kan facturen koppelen.' }
+  const id = String(formData.get('organizationId') ?? '')
+  const contactId = String(formData.get('contactId') ?? '').trim()
+  if (!id || !/^\d+$/.test(contactId)) return { ok: false, error: 'Vul een geldig Moneybird-contact-ID in.' }
+
+  return veilig(async () => {
+    const contact = await moneybirdClient().contact(contactId)
+    if (contact.id !== contactId) throw new LedgerError('Moneybird bevestigde een ander contact.')
+    const slug = await db.transaction(async (tx) => {
+      const [klant] = await tx.select().from(organizations).where(eq(organizations.id, id)).for('update')
+      if (!klant) throw new LedgerError('Onbekende klant.')
+      controleerMoneybirdContact(klant, contact)
+      await tx.update(organizations).set({ moneybirdContactId: contactId }).where(eq(organizations.id, id))
+      return klant.slug
+    })
+    revalidatePath(`/beheer/klanten/${slug}`)
+    revalidatePath('/facturen')
+  })
+}
+
+/** Een bestaande reeks verifiëren voordat het CRM het beheer ervan overneemt. */
+export async function koppelMoneybirdReeks(formData: FormData): Promise<ActionResult> {
+  const user = await getSessionUser()
+  if (user?.role !== 'admin') return { ok: false, error: 'Alleen een beheerder kan facturen koppelen.' }
+  if (!moneybirdAbonnementenAan()) return { ok: false, error: 'Moneybird-abonnementen zijn nog uitgeschakeld.' }
+
+  const id = String(formData.get('id') ?? '')
+  const contactId = String(formData.get('contactId') ?? '').trim()
+  const reeksId = String(formData.get('reeksId') ?? '').trim()
+  if (!id || !/^\d+$/.test(contactId) || !/^\d+$/.test(reeksId)) {
+    return { ok: false, error: 'Vul een geldig Moneybird-contact-ID en reeks-ID in.' }
+  }
+
+  return veilig(async () => {
+    const client = moneybirdClient()
+    const [contact, reeks] = await Promise.all([client.contact(contactId), client.reeks(reeksId)])
+    if (reeks.contact_id !== contact.id || contact.id !== contactId
+        || !reeks.active || !reeks.auto_send || reeks.subscription) {
+      throw new LedgerError('Kies een actieve terugkerende factuur van dit Moneybird-contact.')
+    }
+    await db.transaction(async (tx) => {
+      const [abo] = await tx.select().from(subscriptions).where(eq(subscriptions.id, id)).for('update')
+      if (!abo || abo.moneybirdState || abo.status !== 'active') {
+        throw new LedgerError('Kies een actief CRM-abonnement dat nog niet gekoppeld is.')
+      }
+      const [klant] = await tx.select().from(organizations)
+        .where(eq(organizations.id, abo.organizationId)).for('update')
+      if (!klant) throw new LedgerError('Onbekende klant.')
+      controleerMoneybirdContact(klant, contact)
+      if (abo.endsOn || reeks.currency !== 'EUR' || reeks.frequency !== 1 || reeks.frequency_type !== 'month'
+          || !reeks.total_price_excl_tax || moneybirdBedrag(reeks.total_price_excl_tax) !== abo.amountExclVatCents - abo.discountCents
+          || !/^\d{4}-\d{2}-\d{2}$/.test(reeks.invoice_date)
+          || Number(reeks.invoice_date.slice(-2)) !== abo.billingDay) {
+        throw new LedgerError('Bedrag, valuta, looptijd of facturatiedag wijkt af. Controleer de reeks en het CRM-abonnement.')
+      }
+      await tx.update(organizations).set({ moneybirdContactId: contactId }).where(eq(organizations.id, klant.id))
+      await tx.update(subscriptions).set({
+        moneybirdState: 'gekoppeld',
+        moneybirdContactId: contactId,
+        moneybirdRecurringId: reeks.id,
+        moneybirdEersteFactuur: reeks.invoice_date,
+        updatedAt: new Date(),
+      }).where(eq(subscriptions.id, id))
+      revalidatePath(`/beheer/klanten/${klant.slug}`)
+    })
+    revalidatePath('/beheer/abonnementen')
+    revalidatePath('/facturen')
   })
 }

@@ -442,6 +442,13 @@
       "when": 1795613725265,
       "tag": "0062_marketing_website",
       "breakpoints": true
+    },
+    {
+      "idx": 63,
+      "version": "7",
+      "when": 1795701231523,
+      "tag": "0063_moneybird_facturatie",
+      "breakpoints": true
     }
   ]
 }
