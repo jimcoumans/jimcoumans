@@ -59,6 +59,7 @@ import { formatCents, formatEuro, formatSignedCents } from '@/lib/money'
 import { MoneybirdFacturen } from '@/components/MoneybirdFacturen'
 import { RetainerWalletOverzicht } from '@/components/RetainerWalletOverzicht'
 import { UitklapLijst } from '@/components/UitklapLijst'
+import { ClickUpWalletLijstVeld } from '@/components/ClickUpWalletLijstVeld'
 import { zetRetainerWallet } from '@/app/beheer/retainer-wallet-actions'
 import { toonWalletStartmaand } from '@/lib/retainer-wallet/bereken'
 import { leesRetainerWallet } from '@/lib/retainer-wallet/laden'
@@ -344,8 +345,7 @@ export default async function KlantPage({
                   <input type="hidden" name="organizationId" value={klant.organization.id} />
                   <Field label="Retainerfacturen meetellen vanaf (MM/JJ)" name="vanaf" placeholder="10/25" markeerOptioneel={false}
                     defaultValue={toonWalletStartmaand(klant.organization.walletFacturenVanaf)} />
-                  <Field label="ClickUp-takenlijst-ID" name="listId" placeholder="Numeriek lijst-ID" markeerOptioneel={false}
-                    defaultValue={klant.organization.walletClickupListId ?? ''} />
+                  <ClickUpWalletLijstVeld huidigId={klant.organization.walletClickupListId ?? ''} />
                 </ActionForm>
               </Paneel>
             )}

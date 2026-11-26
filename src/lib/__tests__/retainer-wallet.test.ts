@@ -122,3 +122,36 @@ test('ClickUp haalt beide archiefstanden en alle vervolgpagina’s op', async (t
   assert.deepEqual(aanroepen.sort(), ['false-0', 'false-1', 'true-0'])
   assert.deepEqual(taken.map(({ id }) => id), aanroepen)
 })
+
+test('de keuzelijst toont toegankelijke takenlijsten uit ruimtes en mappen', async (t) => {
+  const aanvragen: string[] = []
+  const fixtures: Record<string, unknown> = {
+    '/team': { teams: [{ id: '1', name: 'Bureau' }, { id: '2', name: 'Andere workspace' }] },
+    '/team/1/space?archived=false': { spaces: [{ id: '3', name: 'Klanten' }] },
+    '/space/3/list?archived=false': {
+      lists: [{ id: '4', name: 'Klant A' }, { id: '8', name: 'Archief', archived: true }],
+    },
+    '/space/3/folder?archived=false': {
+      folders: [
+        { id: '5', name: 'Actief', lists: [{ id: '6', name: 'Klant B' }] },
+        { id: '7', name: 'Nieuwe map' },
+      ],
+    },
+    '/folder/7/list?archived=false': { lists: [{ id: '9', name: 'Klant C' }] },
+  }
+  t.mock.method(globalThis, 'fetch', async (adres: string) => {
+    const url = new URL(adres)
+    const pad = url.pathname.slice('/api/v2'.length) + url.search
+    aanvragen.push(pad)
+    assert.ok(pad in fixtures, `Onverwachte aanvraag: ${pad}`)
+    return Response.json(fixtures[pad])
+  })
+
+  const lijsten = await new ClickUpClient('testtoken').listKeuzes(AbortSignal.timeout(1000), '1')
+  assert.deepEqual(lijsten, [
+    { value: '4', label: 'Klant A · Bureau / Klanten' },
+    { value: '6', label: 'Klant B · Bureau / Klanten / Actief' },
+    { value: '9', label: 'Klant C · Bureau / Klanten / Nieuwe map' },
+  ])
+  assert.deepEqual(aanvragen.sort(), Object.keys(fixtures).sort())
+})
