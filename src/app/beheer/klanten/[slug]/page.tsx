@@ -55,7 +55,6 @@ import { BookServiceForm } from '@/components/BookServiceForm'
 import { aantalMetEenheid } from '@/lib/quantity'
 import { formatCents, formatEuro, formatSignedCents } from '@/lib/money'
 import { MoneybirdFacturen } from '@/components/MoneybirdFacturen'
-import { moneybirdReeksKeuzes } from '@/lib/moneybird/reeksen'
 import { moneybirdContactKeuzes } from '@/lib/moneybird/contacten'
 import { leesMoneybirdFacturen } from '@/lib/moneybird/facturen'
 import { moneybirdAbonnementenAan } from '@/lib/moneybird/abonnementen'
@@ -114,7 +113,7 @@ export default async function KlantPage({
   const moneybirdContactKoppelen = tab === 'budget' && user.role === 'admin'
     && process.env.MONEYBIRD_API_TOKEN && process.env.MONEYBIRD_ADMINISTRATION_ID
     && !klant.organization.moneybirdContactId
-  const [facturen, diensten, team, abonnementen, contacten, accounts, partnerLinks, allePartners, moneybirdFacturen, moneybirdContacten, moneybirdReeksen] =
+  const [facturen, diensten, team, abonnementen, contacten, accounts, partnerLinks, allePartners, moneybirdFacturen, moneybirdContacten] =
     await Promise.all([
       getOrganizationInvoices(klant.organization.id, 20),
       listActiveServices(),
@@ -126,9 +125,6 @@ export default async function KlantPage({
       listActivePartners(),
       tab === 'budget' ? leesMoneybirdFacturen(klant.organization.id) : null,
       moneybirdContactKoppelen ? moneybirdContactKeuzes(klant.organization) : null,
-      tab === 'budget' && user.role === 'admin' && klant.organization.moneybirdContactId
-        && process.env.MONEYBIRD_API_TOKEN && process.env.MONEYBIRD_ADMINISTRATION_ID
-        ? moneybirdReeksKeuzes(klant.organization.moneybirdContactId) : null,
     ])
   // De kinderen apart, want die hangen aan de contactpersonen die we net
   // hebben opgehaald.
@@ -341,7 +337,6 @@ export default async function KlantPage({
                     <SubscriptionCard key={item.subscription.id} item={item} slug={slug}
                       moneybirdKoppelen={user.role === 'admin' && moneybirdAbonnementenAan()}
                       moneybirdContactId={klant.organization.moneybirdContactId}
-                      moneybirdReeksen={moneybirdReeksen}
                     />
                   ))}
                 </ul>

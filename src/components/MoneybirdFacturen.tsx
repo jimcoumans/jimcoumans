@@ -1,11 +1,19 @@
 import type { PortaalMoneybirdFacturen } from '@/lib/moneybird/facturen'
 import { formatDate } from '@/lib/dates'
+import type { MoneybirdFactuurStatus } from '@/lib/moneybird/client'
+
+const statusKleuren: Partial<Record<MoneybirdFactuurStatus, string>> = {
+  Betaald: '#2B8272',
+  Verlopen: '#EC0001',
+  Verstuurd: '#9E6900',
+  Herinnerd: '#44403C',
+}
 
 export function MoneybirdFacturen({ gegevens }: { gegevens: PortaalMoneybirdFacturen }) {
   if (!gegevens.ok) return <p role="status">Moneybird-facturen zijn tijdelijk niet beschikbaar.</p>
   const groepen = [
-    { titel: 'Retainerfacturen', uitleg: 'Facturen van je gekoppelde abonnementen.', retainer: true },
-    { titel: 'Overige facturen', uitleg: 'Moneybird-facturen buiten de gekoppelde abonnementen. Deze weergave verandert je walletsaldo niet.', retainer: false },
+    { titel: 'Retainerfacturen', uitleg: 'Facturen met het kenmerk Marketing Partnership.', retainer: true },
+    { titel: 'Overige facturen', uitleg: 'Losse facturen, zoals drukwerk. Deze tellen niet mee voor je walletsaldo.', retainer: false },
   ]
   return (
     <div className="space-y-8">
@@ -22,7 +30,13 @@ export function MoneybirdFacturen({ gegevens }: { gegevens: PortaalMoneybirdFact
                 {facturen.map((factuur) => (
                   <li key={factuur.id} className="flex flex-wrap justify-between gap-3 px-4 py-4 text-sm">
                     <div>
-                      <p>{factuur.nummer ? `Factuur ${factuur.nummer}` : 'Factuur'} · {factuur.status}</p>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <p>{factuur.nummer ? `Factuur ${factuur.nummer}` : 'Factuur'}</p>
+                        <span className="rounded-full border border-current px-2 py-0.5 text-xs font-medium"
+                          style={{ color: statusKleuren[factuur.status] }}>
+                          {factuur.status}
+                        </span>
+                      </div>
                       <p className="mt-1 text-xs text-gray-600">
                         {[datumMoneybird(factuur.datum), factuur.omschrijving].filter(Boolean).join(' · ')}
                       </p>

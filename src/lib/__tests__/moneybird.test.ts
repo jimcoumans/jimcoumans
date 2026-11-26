@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { factuurStatus, moneybirdClient, verstuurd } from '../moneybird/client'
 import { moneybirdContactKeuzes } from '../moneybird/contacten'
-import { moneybirdReeksKeuzes } from '../moneybird/reeksen'
+import { isRetainerfactuur, retainerReferentie } from '../moneybird/kenmerk'
 import { moneybirdPlanning } from '../moneybird/planning'
 
 test('een terugkerende factuur wordt gepland op de gekozen dag, vanaf de startdatum', () => {
@@ -85,32 +85,20 @@ test('de keuzelijst zoekt op klantnaam en nummer, zonder dubbele of gearchiveerd
   assert.deepEqual(termen.sort(), ['101', 'Proefbedrijf'])
 })
 
+test('alleen het afgesproken Moneybird-kenmerk bepaalt de retainerindeling', () => {
+  assert.equal(isRetainerfactuur('Marketing Partnership'), true)
+  assert.equal(isRetainerfactuur('  MARKETING  Partnership '), true)
+  assert.equal(isRetainerfactuur(retainerReferentie('dc6a1ea6-ead6-4c73-bf75-ed3d02cd9b24')), true)
+  assert.equal(isRetainerfactuur('Drukwerk'), false)
+  assert.equal(isRetainerfactuur('Drukwerk bij Marketing Partnership'), false)
+  assert.equal(isRetainerfactuur(null), false)
+})
 
-test('retainerkeuzes bevatten actieve en gestopte reeksen van het gekoppelde contact', async (t) => {
-  stelTestAdministratieIn(t)
-  const contactId = '503000000000000002'
-  const basis = { contact_id: contactId, invoice_date: '2026-12-02', currency: 'EUR' }
-  const filters: string[] = []
-
-  t.mock.method(globalThis, 'fetch', async (url: string) => {
-    const pad = new URL(url)
-    assert.equal(pad.pathname, '/api/v2/123/recurring_sales_invoices.json')
-    const filter = pad.searchParams.get('filter')
-    assert.ok(filter)
-    filters.push(filter)
-    if (filter.startsWith('state:inactive')) {
-      return Response.json([{ ...basis, id: '503000000000000005', reference: 'Oude retainer', active: false }])
-    }
-    return Response.json([
-      { ...basis, id: '503000000000000003', reference: 'Marketing Partnership', active: true, total_price_excl_tax: '1350.00' },
-      { ...basis, id: '503000000000000004', contact_id: '503000000000000006', reference: 'Andere klant', active: true },
-    ])
-  })
-
-  const keuzes = await moneybirdReeksKeuzes(contactId)
-  assert.ok(keuzes.ok)
-  assert.equal(keuzes.opties.length, 2)
-  assert.match(keuzes.opties[0]!.label, /Marketing Partnership.*1.350,00 excl. btw/)
-  assert.equal(keuzes.opties[1]!.label, 'Oude retainer · Gestopt')
-  assert.deepEqual(filters.sort(), [`state:active,contact_id:${contactId}`, `state:inactive,contact_id:${contactId}`])
+test('Moneybird-status onderscheidt betaaltermijn, verlopen en herinnerd', () => {
+  const factuur = { ...bronfactuur, sent_at: '2026-11-01', due_date: '2026-11-26', state: 'open' }
+  assert.equal(factuurStatus(factuur, '2026-11-26'), 'Verstuurd')
+  assert.equal(factuurStatus(factuur, '2026-11-27'), 'Verlopen')
+  assert.equal(factuurStatus({ ...factuur, state: 'late' }, '2026-11-26'), 'Verlopen')
+  assert.equal(factuurStatus({ ...factuur, state: 'reminded' }, '2026-11-27'), 'Herinnerd')
+  assert.equal(factuurStatus({ ...factuur, state: 'paid', paid_at: '2026-11-27' }, '2026-11-27'), 'Betaald')
 })

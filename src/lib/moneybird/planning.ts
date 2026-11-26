@@ -1,8 +1,12 @@
 /** Moneybird plant op kalenderdagen in de administratie. */
 const dagInNederland = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Amsterdam' })
 
+export function datumInNederland(datum: Date) {
+  return dagInNederland.format(datum)
+}
+
 export function moneybirdPlanning(start: Date, eind: Date | null, dag: number, nu: Date) {
-  const vandaag = new Date(dagInNederland.format(nu))
+  const vandaag = new Date(datumInNederland(nu))
   vandaag.setUTCDate(vandaag.getUTCDate() + 1)
   const vroegste = start > vandaag ? start : vandaag
   const eerste = new Date(Date.UTC(vroegste.getUTCFullYear(), vroegste.getUTCMonth(), dag))
@@ -16,8 +20,4 @@ export function moneybirdPlanning(start: Date, eind: Date | null, dag: number, n
     + laatste.getUTCMonth() - eerste.getUTCMonth()
   if (aantal < 1) throw new Error('Er past geen facturatiedag vóór de einddatum.')
   return { eersteDatum, aantal }
-}
-
-export function retainerReferentie(abonnementId: string) {
-  return `JR-WALLET-${abonnementId}`
 }
