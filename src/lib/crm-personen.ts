@@ -1,6 +1,7 @@
 import { and, asc, eq, isNotNull, isNull, or, sql } from 'drizzle-orm'
 import { db } from '@/db'
-import { organizations, contacts, partners, users } from '@/db/schema'
+import { organizations, contacts, contactOrganizations, partners, users } from '@/db/schema'
+import { extraBedrijvenPerContact } from './crm'
 import type { Contact, Organization, Partner } from '@/db/schema'
 
 type OrganizationStatus = Organization['status']
@@ -116,17 +117,16 @@ export type CrmFilter = {
   soort?: string
 }
 
-/** Sorteersleutel: achternaam als we hem hebben, anders de hele naam. */
-function sorteernaamVan(lastName: string | null, naam: string): string {
-  const achter = (lastName ?? '').trim()
-  return (achter === '' ? naam : achter).toLocaleLowerCase('nl-NL')
+/**
+ * Sorteersleutel: de volledige naam, die met de voornaam begint. Zo zoek je
+ * mensen ook op: je kent Marieke, niet "Voncken, Marieke".
+ */
+function sorteernaamVan(naam: string): string {
+  return naam.trim().toLocaleLowerCase('nl-NL')
 }
 
 /**
- * Alle mensen in het CRM, op achternaam.
- *
- * Er wordt op achternaam gesorteerd en niet op de volledige naam: anders
- * staat iedereen die Van heet onder de V.
+ * Alle mensen in het CRM, op voornaam.
  *
  * De drie bronnen worden in de app samengevoegd en niet met een SQL-UNION.
  * Een union dwingt alle kolommen in dezelfde vorm, en dan ga je nullen
@@ -136,8 +136,14 @@ function sorteernaamVan(lastName: string | null, naam: string): string {
 export async function listCrmPersonen(filter: CrmFilter = {}): Promise<CrmPersoon[]> {
   const term = (filter.zoek ?? '').trim()
   const like = `%${term}%`
+  // Wie ook bij een ander bedrijf hoort, vind je ook op de naam van dat bedrijf.
+  const viaExtraBedrijf = sql`${contacts.id} IN (
+    SELECT ${contactOrganizations.contactId} FROM ${contactOrganizations}
+    JOIN ${organizations} ON ${organizations.id} = ${contactOrganizations.organizationId}
+    WHERE ${organizations.name} ILIKE ${like} AND ${contactOrganizations.endedOn} IS NULL
+  )`
 
-  const [klantRijen, partnerRijen, losseRijen, collegaRijen] = await Promise.all([
+  const [klantRijen, partnerRijen, losseRijen, collegaRijen, extra] = await Promise.all([
     db
       .select({ contact: contacts, org: organizations })
       .from(contacts)
@@ -149,6 +155,7 @@ export async function listCrmPersonen(filter: CrmFilter = {}): Promise<CrmPersoo
               ${contacts.name} ILIKE ${like}
               OR ${contacts.email} ILIKE ${like}
               OR ${contacts.jobTitle} ILIKE ${like}
+              OR ${viaExtraBedrijf}
               OR ${organizations.name} ILIKE ${like}
             )`,
       ),
@@ -164,6 +171,7 @@ export async function listCrmPersonen(filter: CrmFilter = {}): Promise<CrmPersoo
               ${contacts.name} ILIKE ${like}
               OR ${contacts.email} ILIKE ${like}
               OR ${contacts.jobTitle} ILIKE ${like}
+              OR ${viaExtraBedrijf}
               OR ${partners.name} ILIKE ${like}
             )`,
       ),
@@ -181,6 +189,7 @@ export async function listCrmPersonen(filter: CrmFilter = {}): Promise<CrmPersoo
                 ${contacts.name} ILIKE ${like}
                 OR ${contacts.email} ILIKE ${like}
                 OR ${contacts.jobTitle} ILIKE ${like}
+              OR ${viaExtraBedrijf}
                 OR ${contacts.companyName} ILIKE ${like}
               )`,
         ),
@@ -199,7 +208,12 @@ export async function listCrmPersonen(filter: CrmFilter = {}): Promise<CrmPersoo
               OR ${users.department} ILIKE ${like}
             )`,
       ),
+    extraBedrijvenPerContact(),
   ])
+  const metExtra = (id: string, naam: string) => {
+    const n = extra.get(id)?.length ?? 0
+    return n ? `${naam} + ${n}` : naam
+  }
 
   const mensen: CrmPersoon[] = []
 
@@ -208,11 +222,11 @@ export async function listCrmPersonen(filter: CrmFilter = {}): Promise<CrmPersoo
       id: r.contact.id,
       soort: soortVoorStatus(r.org.status),
       naam: r.contact.name,
-      sorteernaam: sorteernaamVan(r.contact.lastName, r.contact.name),
+      sorteernaam: sorteernaamVan(r.contact.name),
       functie: r.contact.jobTitle,
       email: r.contact.email,
       telefoon: r.contact.mobile ?? r.contact.phone,
-      bijNaam: r.org.name,
+      bijNaam: metExtra(r.contact.id, r.org.name),
       href: `/beheer/crm/${r.contact.id}`,
       bijHref: `/beheer/klanten/${r.org.slug}`,
       avatarImageId: r.contact.avatarImageId,
@@ -230,11 +244,11 @@ export async function listCrmPersonen(filter: CrmFilter = {}): Promise<CrmPersoo
       id: r.contact.id,
       soort: 'partner',
       naam: r.contact.name,
-      sorteernaam: sorteernaamVan(r.contact.lastName, r.contact.name),
+      sorteernaam: sorteernaamVan(r.contact.name),
       functie: r.contact.jobTitle,
       email: r.contact.email,
       telefoon: r.contact.mobile ?? r.contact.phone,
-      bijNaam: r.partner.name,
+      bijNaam: metExtra(r.contact.id, r.partner.name),
       href: `/beheer/partners#${r.partner.id}`,
       bijHref: `/beheer/partners#${r.partner.id}`,
       avatarImageId: r.contact.avatarImageId,
@@ -252,12 +266,12 @@ export async function listCrmPersonen(filter: CrmFilter = {}): Promise<CrmPersoo
       id: c.id,
       soort: 'netwerk',
       naam: c.name,
-      sorteernaam: sorteernaamVan(c.lastName, c.name),
+      sorteernaam: sorteernaamVan(c.name),
       functie: c.jobTitle,
       email: c.email,
       telefoon: c.mobile ?? c.phone,
       // Bij een los contact staat het bedrijf, als we het weten, als tekst.
-      bijNaam: c.companyName ?? 'Geen bedrijf',
+      bijNaam: c.companyName ? metExtra(c.id, c.companyName) : (extra.get(c.id)?.join(', ') ?? 'Geen bedrijf'),
       href: `/beheer/crm/${c.id}`,
       bijHref: null,
       avatarImageId: c.avatarImageId,
@@ -276,7 +290,7 @@ export async function listCrmPersonen(filter: CrmFilter = {}): Promise<CrmPersoo
       id: u.id,
       soort: 'collega',
       naam,
-      sorteernaam: sorteernaamVan(u.lastName, naam),
+      sorteernaam: sorteernaamVan(naam),
       functie: u.jobTitle,
       email: u.email,
       telefoon: u.mobile ?? u.phone,
@@ -331,7 +345,7 @@ export async function listPartnerContacten(partnerId: string) {
     .orderBy(
       // De vaste contactpersoon bovenaan: die bel je.
       asc(sql`CASE WHEN ${contacts.isPrimary} THEN 0 ELSE 1 END`),
-      asc(sql`COALESCE(NULLIF(${contacts.lastName}, ''), ${contacts.name})`),
+      asc(sql`lower(${contacts.name})`),
     )
 }
 
@@ -353,7 +367,7 @@ export async function listContactenPerPartner(): Promise<Map<string, Contact[]>>
     .orderBy(
       // De vaste contactpersoon bovenaan: die bel je.
       asc(sql`CASE WHEN ${contacts.isPrimary} THEN 0 ELSE 1 END`),
-      asc(sql`COALESCE(NULLIF(${contacts.lastName}, ''), ${contacts.name})`),
+      asc(sql`lower(${contacts.name})`),
     )
 
   const perPartner = new Map<string, Contact[]>()

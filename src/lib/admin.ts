@@ -6,7 +6,7 @@ import type { Organization } from '@/db/schema'
 
 /** Klantenlijst met totaalsaldo, voor het overzicht van het team. */
 export async function listOrganizations() {
-  const orgs = await db.select().from(organizations).orderBy(asc(organizations.name))
+  const orgs = await db.select().from(organizations).orderBy(asc(sql`lower(${organizations.name})`))
 
   const walletRows = await db.select().from(wallets)
   const balances = await getWalletBalances(walletRows.map((w) => w.id))

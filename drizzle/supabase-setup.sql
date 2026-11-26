@@ -4742,3 +4742,36 @@ BEGIN
   END IF;
 END $jr_0064_moneybird_retainer_indeling$;
 
+-- ---------------------------------------------------------------------------
+-- 0065_contacten_meerdere_bedrijven
+-- ---------------------------------------------------------------------------
+
+DO $jr_0065_contacten_meerdere_bedrijven$
+BEGIN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = '530187888a19f4309665ae9e509881075b48dadd2bc3db11ddd44e1d8c98813d') THEN
+    RAISE NOTICE 'Overgeslagen: 0065_contacten_meerdere_bedrijven stond er al.';
+  ELSE
+    CREATE TABLE "contact_organizations" (
+    	"contact_id" uuid NOT NULL,
+    	"organization_id" uuid NOT NULL,
+    	"role" text,
+    	"ended_on" timestamp with time zone,
+    	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+    	CONSTRAINT "contact_organizations_pk" PRIMARY KEY("contact_id","organization_id")
+    );
+
+
+    ALTER TABLE "contact_organizations" ADD CONSTRAINT "contact_organizations_contact_id_contacts_id_fk" FOREIGN KEY ("contact_id") REFERENCES "public"."contacts"("id") ON DELETE cascade ON UPDATE no action;
+
+    ALTER TABLE "contact_organizations" ADD CONSTRAINT "contact_organizations_organization_id_organizations_id_fk" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON DELETE cascade ON UPDATE no action;
+
+    CREATE INDEX "contact_organizations_org_idx" ON "contact_organizations" USING btree ("organization_id");
+
+    ALTER TABLE "contact_organizations" ENABLE ROW LEVEL SECURITY;
+
+    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+    VALUES ('530187888a19f4309665ae9e509881075b48dadd2bc3db11ddd44e1d8c98813d', 1795706871497);
+    RAISE NOTICE 'Toegepast: 0065_contacten_meerdere_bedrijven.';
+  END IF;
+END $jr_0065_contacten_meerdere_bedrijven$;
+

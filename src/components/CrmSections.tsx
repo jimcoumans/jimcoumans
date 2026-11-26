@@ -5,12 +5,16 @@ import {
   koppelPartner, wijzigKoppeling, ontkoppelPartner,
   bedrijfsgegevens,
   nieuwKind, wisKind,
+  koppelAanBedrijf, ontkoppelVanBedrijf, wijzigRolBijBedrijfActie,
 } from '@/app/beheer/crm-actions'
 import {
   BRANCHES, COMMON_SYSTEMS, partnerTypeLabels, accountOwnerLabels,
   organizationStatusLabels,
 } from '@/lib/crm'
-import type { PartnerLink } from '@/lib/crm'
+import type { PartnerLink, GekoppeldContact } from '@/lib/crm'
+import { KeuzeLijst } from './performance/KeuzeLijst'
+import { VertrekFormulier } from './crm/Vertrek'
+import type { OudContact } from '@/lib/vertrek'
 import type { ContactChild } from '@/db/schema'
 import { formatCents, formatEuro } from '@/lib/money'
 import { formatDate } from '@/lib/dates'
@@ -263,12 +267,17 @@ export function Contactpersonen({
   organizationId,
   slug,
   kinderenPer,
+  organisatieNaam,
+  alleBedrijven = [],
 }: {
   contacts: Contact[]
   organizationId: string
   slug: string
   /** Per contactpersoon zijn kinderen; leeg als er geen zijn. */
   kinderenPer: Map<string, ContactChild[]>
+  /** Voor "Gaat weg bij dit bedrijf". Zonder deze twee staat die knop er niet. */
+  organisatieNaam?: string
+  alleBedrijven?: { id: string; naam: string }[]
 }) {
   const toevoegen = (stijl: 'primair' | 'rustig') => (
     <Paneel
@@ -376,6 +385,16 @@ export function Contactpersonen({
                       <AfbeeldingKiezer soort="contact" doelId={c.id} naam={c.name} imageId={c.avatarImageId} slug={slug} />
                     </div>
                   </Paneel>
+                  {organisatieNaam && (
+                    <Paneel knop="Gaat weg bij dit bedrijf" titel={`${c.name} gaat weg bij ${organisatieNaam}`} stijl="menu">
+                      <VertrekFormulier
+                        contactId={c.id}
+                        voornaam={c.firstName?.trim() || c.name}
+                        bijBedrijven={[{ id: organizationId, naam: organisatieNaam }]}
+                        alleBedrijven={alleBedrijven}
+                      />
+                    </Paneel>
+                  )}
                   {!c.isPrimary && (
                     <ActionForm
                       action={maakVasteContactpersoon}
@@ -434,6 +453,101 @@ export function Contactpersonen({
           })}
         </ul>
       )}
+    </section>
+  )
+}
+
+/**
+ * Mensen die bij dit bedrijf horen, maar hun hoofdbedrijf ergens anders
+ * hebben: de eigenaar van meerdere zaken, de adviseur in het bestuur.
+ * Hun gegevens wijzig je op hun eigen kaart; hier staat wat ze bij dit
+ * bedrijf doen.
+ */
+export function OokVerbonden({
+  gekoppeld,
+  kandidaten,
+  organizationId,
+}: {
+  gekoppeld: GekoppeldContact[]
+  kandidaten: { id: string; naam: string; bij: string | null }[]
+  organizationId: string
+}) {
+  return (
+    <section>
+      <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h2 className="text-lg">Ook verbonden met dit bedrijf</h2>
+          <p className="text-sm text-gray-600">Mensen met hun hoofdbedrijf ergens anders, die hier ook een rol hebben.</p>
+        </div>
+        <Paneel knop="+ Bestaande persoon koppelen" titel="Persoon koppelen" uitleg="Zoek op naam of bedrijf. Zijn gegevens blijven op één plek; hier leg je vast wat hij bij dit bedrijf doet." stijl="rustig">
+          <ActionForm action={koppelAanBedrijf} submitLabel="Koppelen" className="grid gap-4">
+            <input type="hidden" name="organizationId" value={organizationId} />
+            <KeuzeLijst
+              naam="contactId"
+              opties={kandidaten.map((k) => ({ waarde: k.id, naam: k.naam, detail: k.bij ?? 'Los contact', voorgesteld: false }))}
+              leegTekst="Niemand gevonden. Staat hij nog niet in het CRM, voeg hem dan hierboven toe als contactpersoon."
+            />
+            <Field label="Rol bij dit bedrijf" name="rol" placeholder="Eigenaar, bestuurslid, adviseur" />
+          </ActionForm>
+        </Paneel>
+      </div>
+      {gekoppeld.length === 0 ? (
+        <p className="text-sm text-gray-500">Nog niemand.</p>
+      ) : (
+        <ul className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
+          {gekoppeld.map(({ contact: c, rol, hoofdbedrijf }) => (
+            <li key={c.id} className="flex items-start gap-4 rounded-xl bg-white p-5 shadow-sm">
+              <Avatar naam={c.name} imageId={c.avatarImageId} maat={44} />
+              <div className="min-w-0 flex-1">
+                <a href={`/beheer/crm/${c.id}`} className="text-jr-link block truncate text-[17px] font-medium hover:underline">{c.name}</a>
+                <p className="truncate text-sm text-gray-600">{rol || 'Rol onbekend'}{hoofdbedrijf ? ` · hoofdbedrijf ${hoofdbedrijf}` : ''}</p>
+                {(c.email || c.mobile || c.phone) && (
+                  <p className="mt-1 truncate text-sm">
+                    {c.email && <a href={`mailto:${c.email}`} className="text-jr-link hover:underline">{c.email}</a>}
+                    {c.email && (c.mobile || c.phone) && ' · '}
+                    {(c.mobile || c.phone) && <a href={`tel:${(c.mobile ?? c.phone)!.replace(/\s/g, '')}`} className="text-jr-link hover:underline">{c.mobile ?? c.phone}</a>}
+                  </p>
+                )}
+              </div>
+              <Menu>
+                <Paneel knop="Rol wijzigen" titel={c.name} stijl="menu">
+                  <ActionForm action={wijzigRolBijBedrijfActie} submitLabel="Opslaan" resetOnSuccess={false}>
+                    <input type="hidden" name="contactId" value={c.id} />
+                    <input type="hidden" name="organizationId" value={organizationId} />
+                    <Field label="Rol bij dit bedrijf" name="rol" defaultValue={rol ?? ''} />
+                  </ActionForm>
+                </Paneel>
+                <ActionForm action={ontkoppelVanBedrijf} submitLabel="Ontkoppelen" submitClassName={MENU_KNOP_GEVAAR} resetOnSuccess={false} meldGelukt={false} className="">
+                  <input type="hidden" name="contactId" value={c.id} />
+                  <input type="hidden" name="organizationId" value={organizationId} />
+                </ActionForm>
+              </Menu>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  )
+}
+
+/** Wie hier werkte en is vertrokken. Blijft staan als geschiedenis. */
+export function OudContactpersonen({ oud }: { oud: OudContact[] }) {
+  if (oud.length === 0) return null
+  return (
+    <section>
+      <h2 className="mb-1 text-lg">Oud-contactpersonen</h2>
+      <p className="mb-3 text-sm text-gray-600">Werkten hier en zijn vertrokken. Ze staan nog in het CRM.</p>
+      <ul className="divide-y divide-gray-100 rounded-xl bg-white shadow-sm">
+        {oud.map(({ contact: c, rol, tot }) => (
+          <li key={c.id} className="flex flex-wrap items-baseline justify-between gap-2 px-5 py-3 text-sm">
+            <span>
+              <a href={`/beheer/crm/${c.id}`} className="text-jr-link hover:underline">{c.name}</a>
+              {rol && <span className="text-gray-500"> · {rol}</span>}
+            </span>
+            <span className="text-gray-500">tot {formatDate(tot)}{c.companyName ? ` · nu bij ${c.companyName}` : ''}</span>
+          </li>
+        ))}
+      </ul>
     </section>
   )
 }

@@ -476,6 +476,8 @@ export function describeDbError(error: unknown): string | null {
       return 'Een slug bestaat uit kleine letters, cijfers en streepjes, bijvoorbeeld google-ads.'
     case 'marketing_industries_slug_idx':
       return 'Er is al een branche met die slug.'
+    case 'contact_organizations_pk':
+      return 'Deze persoon hangt al aan dat bedrijf.'
     case 'marketing_package_components_pk':
       return 'Dit onderdeel staat al bij dit pakket.'
     case 'marketing_client_industries_pk':

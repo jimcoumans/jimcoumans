@@ -1,8 +1,12 @@
 'use client'
 
+import { useEffect, useRef, useState, useTransition } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
+
 /* -------------------------------------------------------------------------
    Een filterbalk zonder "Filteren"-knop: kies je iets in een keuzelijst,
-   dan past de lijst zich meteen aan. Zoeken gaat met Enter.
+   dan past de lijst zich meteen aan. Typ je in het zoekveld, dan zie je
+   de resultaten al tijdens het typen.
 
    Onder water nog steeds een gewoon formulier met GET: de filters staan in
    de URL, dus je kunt een selectie bewaren of naar een collega sturen, en
@@ -40,13 +44,42 @@ export function FilterBalk({
   )
 }
 
-/** Een zoekveld met vergrootglas, voor in de filterbalk. */
+/**
+ * Een zoekveld met vergrootglas, voor in de filterbalk.
+ *
+ * Zoekt live: een kwart seconde nadat je stopt met typen, gaat de zoekterm
+ * met de rest van het formulier in de URL en ververst de lijst, zonder dat het
+ * veld zijn focus kwijtraakt. Enter werkt nog steeds, ook zonder JavaScript.
+ */
 export function Zoekveld({ naam = 'zoek', waarde, placeholder }: { naam?: string; waarde: string; placeholder: string }) {
+  const router = useRouter()
+  const pad = usePathname()
+  const [bezig, start] = useTransition()
+  const [tekst, setTekst] = useState(waarde)
+  const veld = useRef<HTMLInputElement>(null)
+  const laatste = useRef(waarde)
+
+  useEffect(() => {
+    if (tekst.trim() === laatste.current.trim()) return
+    const t = setTimeout(() => {
+      const form = veld.current?.form
+      const params = new URLSearchParams()
+      if (form) {
+        for (const [k, v] of new FormData(form).entries()) {
+          if (typeof v === 'string' && v.trim() !== '' && k !== 'pagina') params.set(k, v)
+        }
+      } else if (tekst.trim()) params.set(naam, tekst.trim())
+      laatste.current = tekst
+      start(() => router.replace(params.size ? `${pad}?${params}` : pad, { scroll: false }))
+    }, 250)
+    return () => clearTimeout(t)
+  }, [tekst, naam, pad, router])
+
   return (
     <div className="relative w-full max-w-sm">
       <svg
         viewBox="0 0 24 24"
-        className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-gray-400"
+        className={`pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 ${bezig ? 'text-jr-blue animate-pulse' : 'text-gray-400'}`}
         fill="none"
         stroke="currentColor"
         strokeWidth="2"
@@ -56,11 +89,14 @@ export function Zoekveld({ naam = 'zoek', waarde, placeholder }: { naam?: string
         <path d="M20 20l-3.5-3.5" strokeLinecap="round" />
       </svg>
       <input
+        ref={veld}
         type="search"
         name={naam}
-        defaultValue={waarde}
+        value={tekst}
+        onChange={(e) => setTekst(e.target.value)}
         placeholder={placeholder}
         aria-label={placeholder}
+        autoComplete="off"
         className="min-h-11 w-full rounded-full border border-gray-300 bg-white py-2.5 pr-4 pl-10 text-[15px] outline-none hover:border-gray-400"
       />
     </div>
