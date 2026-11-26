@@ -55,6 +55,8 @@ export async function zetMoneybirdRetainerIndeling(formData: FormData): Promise<
 
     revalidatePath(`/beheer/klanten/${klant.slug}`)
     revalidatePath('/facturen')
+    revalidatePath('/')
+    revalidatePath('/activiteit')
     return { ok: true }
   } catch (error) {
     console.error('[moneybird] factuurindeling opslaan mislukt', error instanceof Error ? error.name : '')

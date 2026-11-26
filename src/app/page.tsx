@@ -2,6 +2,8 @@ import { redirect } from 'next/navigation'
 import { getPortaal } from '@/lib/meekijken'
 import { getOrganizationWallets, getWalletEntries, getReversedEntryIds } from '@/lib/ledger'
 import { AppShell } from '@/components/AppShell'
+import { RetainerWalletOverzicht } from '@/components/RetainerWalletOverzicht'
+import { leesPortaalRetainerWallet } from '@/lib/retainer-wallet/laden'
 import { BalanceCard } from '@/components/BalanceCard'
 import { TransactionList } from '@/components/TransactionList'
 import { formatCents } from '@/lib/money'
@@ -22,6 +24,18 @@ export default async function HomePage() {
   // Het JR-team komt in het beheer terecht, behalve als het meekijkt bij een klant.
   if (portaal.status === 'team') redirect('/beheer')
   const { user, organizationId, organisatieNaam, meekijken } = portaal
+
+  const retainerWallet = await leesPortaalRetainerWallet(organizationId)
+  if (retainerWallet) {
+    return (
+      <AppShell user={user} actief="wallet" meekijken={meekijken}>
+        <RetainerWalletOverzicht wallet={retainerWallet} />
+        {retainerWallet.ok && retainerWallet.regels.length > 15 && (
+          <a href="/activiteit" className="mt-3 inline-block text-sm text-jr-link hover:underline">Alle boekingen bekijken</a>
+        )}
+      </AppShell>
+    )
+  }
 
   const wallets = await getOrganizationWallets(organizationId)
 
