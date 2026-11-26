@@ -31,8 +31,8 @@ export function toonWalletStartmaand(datum: string | null) {
 
 const vergelijk = (value: string | undefined | null) => value?.trim().replace(/\s+/g, ' ').toLowerCase()
 
-function boekplaats(taak: ClickUpTask) {
-  const veld = findField(taak, 'Boekplaats')
+function dropdownWaarde(taak: ClickUpTask, naam: string) {
+  const veld = findField(taak, naam)
   const waarde = veld?.value
   if (waarde && typeof waarde === 'object' && 'name' in waarde && typeof waarde.name === 'string') {
     return waarde.name
@@ -42,7 +42,7 @@ function boekplaats(taak: ClickUpTask) {
     const opties = veld?.type_config?.options ?? []
     return opties.find((optie) => optie.orderindex === Number(waarde))?.name ?? opties[Number(waarde)]?.name
   }
-  return readDropdown(taak, 'Boekplaats')
+  return readDropdown(taak, naam)
 }
 
 function verkoopCents(taak: ClickUpTask) {
@@ -73,7 +73,11 @@ export function berekenRetainerWallet(facturen: Retainerfactuur[], taken: ClickU
   }
 
   for (const taak of new Map(taken.map((t) => [t.id, t])).values()) {
-    if (vergelijk(taak.status?.status) !== 'afgerond' || vergelijk(boekplaats(taak)) !== 'marketing abonnement') {
+    if (
+      vergelijk(taak.status?.status) !== 'afgerond'
+      || vergelijk(dropdownWaarde(taak, 'Boekplaats')) !== 'marketing abonnement'
+      || vergelijk(dropdownWaarde(taak, 'Balans')) !== 'opdracht'
+    ) {
       continue
     }
     const bedrag = verkoopCents(taak)
