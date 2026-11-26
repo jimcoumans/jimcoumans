@@ -1,0 +1,1 @@
+ALTER TABLE "organizations" ADD COLUMN "moneybird_retainer_factuur_ids" text[] DEFAULT ARRAY[]::text[] NOT NULL;

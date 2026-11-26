@@ -437,6 +437,8 @@ export const organizations = pgTable(
     klantType: klantTypeEnum('klant_type'),
     /** Id van dit contact in Moneybird, voor de koppeling. */
     moneybirdContactId: text('moneybird_contact_id'),
+    /** Handmatige retainerindeling voor facturen uit het gekoppelde Moneybird-contact. */
+    moneybirdRetainerFactuurIds: text('moneybird_retainer_factuur_ids').array().notNull().default(sql`ARRAY[]::text[]`),
     verzendmethode: verzendmethodeEnum('verzendmethode'),
     /** Projectnummer zoals dat in Moneybird als extra veld staat. */
     projectNumber: text('project_number'),
