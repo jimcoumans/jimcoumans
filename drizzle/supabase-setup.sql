@@ -4748,10 +4748,16 @@ END $jr_0064_moneybird_retainer_indeling$;
 
 DO $jr_0065_contacten_meerdere_bedrijven$
 BEGIN
-  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = '530187888a19f4309665ae9e509881075b48dadd2bc3db11ddd44e1d8c98813d') THEN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = '02a18fadde1e65ce28a678547ed5403f889aeec823d2e4266bff7c0071fb10ba') THEN
     RAISE NOTICE 'Overgeslagen: 0065_contacten_meerdere_bedrijven stond er al.';
   ELSE
-    CREATE TABLE "contact_organizations" (
+    -- Idempotent geschreven. Branch- en previewbuilds draaiden db:migrate tegen
+    -- de productiedatabase, waardoor deze tabel daar al kon staan (onder een
+    -- eerder migratienummer). Dezelfde reden voor het vangnet onderaan: een
+    -- migratie met een oudere tijdstempel dan de laatst uitgevoerde wordt door
+    -- drizzle overgeslagen, dus de Moneybird-wijzigingen uit 0063 en 0064 worden
+    -- hier nogmaals, veilig, aangebracht.
+    CREATE TABLE IF NOT EXISTS "contact_organizations" (
     	"contact_id" uuid NOT NULL,
     	"organization_id" uuid NOT NULL,
     	"role" text,
@@ -4761,16 +4767,54 @@ BEGIN
     );
 
 
-    ALTER TABLE "contact_organizations" ADD CONSTRAINT "contact_organizations_contact_id_contacts_id_fk" FOREIGN KEY ("contact_id") REFERENCES "public"."contacts"("id") ON DELETE cascade ON UPDATE no action;
+    ALTER TABLE "contact_organizations" ADD COLUMN IF NOT EXISTS "ended_on" timestamp with time zone;
 
-    ALTER TABLE "contact_organizations" ADD CONSTRAINT "contact_organizations_organization_id_organizations_id_fk" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON DELETE cascade ON UPDATE no action;
 
-    CREATE INDEX "contact_organizations_org_idx" ON "contact_organizations" USING btree ("organization_id");
+    DO $$ BEGIN
+      IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'contact_organizations_contact_id_contacts_id_fk') THEN
+        ALTER TABLE "contact_organizations" ADD CONSTRAINT "contact_organizations_contact_id_contacts_id_fk" FOREIGN KEY ("contact_id") REFERENCES "public"."contacts"("id") ON DELETE cascade ON UPDATE no action;
+      END IF;
+    END $$;
+
+
+    DO $$ BEGIN
+      IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'contact_organizations_organization_id_organizations_id_fk') THEN
+        ALTER TABLE "contact_organizations" ADD CONSTRAINT "contact_organizations_organization_id_organizations_id_fk" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON DELETE cascade ON UPDATE no action;
+      END IF;
+    END $$;
+
+
+    CREATE INDEX IF NOT EXISTS "contact_organizations_org_idx" ON "contact_organizations" USING btree ("organization_id");
+
 
     ALTER TABLE "contact_organizations" ENABLE ROW LEVEL SECURITY;
 
+
+    ALTER TYPE "public"."entry_source" ADD VALUE IF NOT EXISTS 'abonnement';
+
+
+    ALTER TABLE "subscriptions" ADD COLUMN IF NOT EXISTS "moneybird_state" text;
+
+
+    ALTER TABLE "subscriptions" ADD COLUMN IF NOT EXISTS "moneybird_recurring_id" text;
+
+
+    ALTER TABLE "subscriptions" ADD COLUMN IF NOT EXISTS "moneybird_contact_id" text;
+
+
+    ALTER TABLE "subscriptions" ADD COLUMN IF NOT EXISTS "moneybird_eerste_factuur" date;
+
+
+    ALTER TABLE "subscriptions" ADD COLUMN IF NOT EXISTS "moneybird_sync_fout" text;
+
+
+    CREATE UNIQUE INDEX IF NOT EXISTS "subscriptions_moneybird_recurring_idx" ON "subscriptions" USING btree ("moneybird_recurring_id");
+
+
+    ALTER TABLE "organizations" ADD COLUMN IF NOT EXISTS "moneybird_retainer_factuur_ids" text[] DEFAULT ARRAY[]::text[] NOT NULL;
+
     INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
-    VALUES ('530187888a19f4309665ae9e509881075b48dadd2bc3db11ddd44e1d8c98813d', 1795706871497);
+    VALUES ('02a18fadde1e65ce28a678547ed5403f889aeec823d2e4266bff7c0071fb10ba', 1795706871497);
     RAISE NOTICE 'Toegepast: 0065_contacten_meerdere_bedrijven.';
   END IF;
 END $jr_0065_contacten_meerdere_bedrijven$;
