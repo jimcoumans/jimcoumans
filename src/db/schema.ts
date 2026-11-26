@@ -59,6 +59,7 @@ export const entrySourceEnum = pgEnum('entry_source', [
   'clickup', // automatisch uit de ClickUp-sync
   'manual', // met de hand geboekt door het JR-team
   'invoice', // gekoppeld aan een factuur
+  'abonnement', // maandbudget op basis van de CRM-afspraak
 ])
 
 export const invoiceStatusEnum = pgEnum('invoice_status', [
@@ -1410,6 +1411,15 @@ export const subscriptions = pgTable(
       onDelete: 'set null',
     }),
 
+    /** De status van de koppeling met de terugkerende factuur in Moneybird. */
+    moneybirdState: text('moneybird_state', {
+      enum: ['wacht', 'maken', 'gekoppeld', 'stoppen', 'gestopt'],
+    }),
+    moneybirdRecurringId: text('moneybird_recurring_id'),
+    moneybirdContactId: text('moneybird_contact_id'),
+    moneybirdEersteFactuur: date('moneybird_eerste_factuur', { mode: 'string' }),
+    moneybirdSyncFout: text('moneybird_sync_fout'),
+
     /** Task-id van het abonnement in ClickUp, voor de koppeling. */
     clickupTaskId: text('clickup_task_id'),
 
@@ -1422,6 +1432,7 @@ export const subscriptions = pgTable(
     index('subscriptions_wallet_idx').on(t.walletId),
     index('subscriptions_status_idx').on(t.status),
     uniqueIndex('subscriptions_clickup_idx').on(t.clickupTaskId),
+    uniqueIndex('subscriptions_moneybird_recurring_idx').on(t.moneybirdRecurringId),
     check('subscription_amount_positive', sql`${t.amountExclVatCents} > 0`),
     check('subscription_discount_not_negative', sql`${t.discountCents} >= 0`),
     // De korting mag het budget niet opeten: dan zou er een factuur van nul

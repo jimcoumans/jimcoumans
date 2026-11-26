@@ -4696,3 +4696,32 @@ BEGIN
   END IF;
 END $jr_0062_marketing_website$;
 
+-- ---------------------------------------------------------------------------
+-- 0063_moneybird_facturatie
+-- ---------------------------------------------------------------------------
+
+DO $jr_0063_moneybird_facturatie$
+BEGIN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = '81be33dc9b70bbedfa581213238ef1565108436633adca87025c54aa462a8636') THEN
+    RAISE NOTICE 'Overgeslagen: 0063_moneybird_facturatie stond er al.';
+  ELSE
+    ALTER TYPE "public"."entry_source" ADD VALUE 'abonnement';
+
+    ALTER TABLE "subscriptions" ADD COLUMN "moneybird_state" text;
+
+    ALTER TABLE "subscriptions" ADD COLUMN "moneybird_recurring_id" text;
+
+    ALTER TABLE "subscriptions" ADD COLUMN "moneybird_contact_id" text;
+
+    ALTER TABLE "subscriptions" ADD COLUMN "moneybird_eerste_factuur" date;
+
+    ALTER TABLE "subscriptions" ADD COLUMN "moneybird_sync_fout" text;
+
+    CREATE UNIQUE INDEX "subscriptions_moneybird_recurring_idx" ON "subscriptions" USING btree ("moneybird_recurring_id");
+
+    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+    VALUES ('81be33dc9b70bbedfa581213238ef1565108436633adca87025c54aa462a8636', 1795701231523);
+    RAISE NOTICE 'Toegepast: 0063_moneybird_facturatie.';
+  END IF;
+END $jr_0063_moneybird_facturatie$;
+

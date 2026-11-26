@@ -8,6 +8,8 @@ import {
 import { AppShell } from '@/components/AppShell'
 import { formatCents } from '@/lib/money'
 import { formatDate } from '@/lib/dates'
+import { leesMoneybirdFacturen } from '@/lib/moneybird/facturen'
+import { MoneybirdFacturen } from '@/components/MoneybirdFacturen'
 
 /**
  * Netlify kapt een functie standaard na tien seconden af. Deze pagina haalt
@@ -24,6 +26,16 @@ export default async function FacturenPage() {
   if (portaal.status === 'geen_sessie') redirect('/login')
   if (portaal.status === 'team') redirect('/beheer')
   const { user, organizationId, meekijken } = portaal
+
+  const moneybird = await leesMoneybirdFacturen(organizationId)
+  if (moneybird) {
+    return (
+      <AppShell user={user} actief="facturen" meekijken={meekijken}>
+        <h1 className="mb-6 text-[28px] sm:text-[32px]">Facturen</h1>
+        <MoneybirdFacturen gegevens={moneybird} />
+      </AppShell>
+    )
+  }
 
   const facturen = await getOrganizationInvoices(organizationId)
 

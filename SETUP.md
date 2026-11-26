@@ -249,3 +249,33 @@ en alle mutaties, met bij elke regel het saldo dat je daarna over had.
 ---
 
 James Robinson — Marketing & Branding | www.jamesrobinson.nl
+
+## Moneybird voor verkoopfacturen
+
+Stel op Netlify `MONEYBIRD_ADMINISTRATION_ID` en `MONEYBIRD_API_TOKEN` in voor
+de juiste administratie. Bewaar de token als secret in de Functions-omgeving
+van Production. De token heeft toegang nodig tot verkoopfacturen en de
+bijbehorende contacten.
+
+Bij **Beheer → Bedrijven → klant → Budget en facturen** koppelt een beheerder
+het Moneybird-contact. Voor gekoppelde klanten toont het portaal verstuurde
+verkoopfacturen en hun Moneybird-status, met een apart overzicht voor
+facturen buiten de gekoppelde retainers.
+
+Stel `MONEYBIRD_BTW_IDS` in als JSON met het btw-percentage en het bijbehorende
+Moneybird-tarief-ID. Zet `MONEYBIRD_ABONNEMENTEN=true` zodra de administratie
+en tarieven zijn gecontroleerd. Nieuwe CRM-abonnementen krijgen dan via de
+Moneybird-sync een maandelijkse reeks met automatisch versturen. De sync
+verwerkt aanmaken en stopzetten elke vijftien minuten. Bij een onzekere
+aanmaak controleert de sync de unieke referentie vóór een reeks als gekoppeld
+wordt gemarkeerd.
+
+Kies bij een bestaand abonnement **Bestaande Moneybird-reeks koppelen**. Vul
+het contact-ID en het ID van de terugkerende factuur in. Het CRM controleert
+klant, bedrag en facturatiedag. Vanaf de gekoppelde periode boekt de bestaande
+abonnementsrun het maandbudget rechtstreeks in de wallet. Het maandbudget
+volgt de CRM-afspraak en kan hoger zijn dan de factuur bij korting. Losse
+Moneybird-facturen worden uitsluitend getoond en doen geen walletboeking.
+Bestaande CRM-abonnementen schakelen per stuk over na het koppelen van hun
+reeks. Wijzigen, pauzeren en heractiveren via de Wallet zijn voor gekoppelde
+reeksen nog niet beschikbaar.
