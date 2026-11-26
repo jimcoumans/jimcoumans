@@ -378,38 +378,3 @@ export async function koppelMoneybirdReeks(formData: FormData): Promise<ActionRe
     revalidatePath('/facturen')
   })
 }
-
-/** Koppel de facturen van een bestaande reeks aan dit CRM-abonnement. */
-export async function koppelMoneybirdRetainerfacturen(formData: FormData): Promise<ActionResult> {
-  const user = await getSessionUser()
-  if (user?.role !== 'admin') return { ok: false, error: 'Alleen een beheerder kan facturen koppelen.' }
-
-  const id = String(formData.get('id') ?? '')
-  const reeksId = String(formData.get('reeksId') ?? '').trim()
-  if (!id || !/^\d+$/.test(reeksId)) {
-    return { ok: false, error: 'Kies een Moneybird-reeks.' }
-  }
-
-  return veilig(async () => {
-    const reeks = await moneybirdClient().reeks(reeksId)
-    const slug = await db.transaction(async (tx) => {
-      const [abo] = await tx.select().from(subscriptions).where(eq(subscriptions.id, id)).for('update')
-      if (!abo || abo.moneybirdState) throw new LedgerError('Deze koppeling wordt al vanuit de Wallet beheerd.')
-      const [klant] = await tx.select({ contactId: organizations.moneybirdContactId, slug: organizations.slug })
-        .from(organizations).where(eq(organizations.id, abo.organizationId)).for('update')
-      if (!klant?.contactId || reeks.contact_id !== klant.contactId || reeks.id !== reeksId) {
-        throw new LedgerError('Deze Moneybird-reeks hoort niet bij het gekoppelde klantcontact.')
-      }
-      // De facturenpagina gebruikt het reeks-ID. De abonnementsrun gebruikt
-      // moneybirdState en blijft lokaal zolang die waarde leeg is.
-      await tx.update(subscriptions).set({
-        moneybirdRecurringId: reeksId,
-        updatedAt: new Date(),
-      }).where(eq(subscriptions.id, id))
-      return klant.slug
-    })
-    revalidatePath(`/beheer/klanten/${slug}`)
-    revalidatePath('/beheer/abonnementen')
-    revalidatePath('/facturen')
-  })
-}

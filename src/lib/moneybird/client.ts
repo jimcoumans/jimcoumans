@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { parseAmountToCents } from '../money'
+import { datumInNederland } from './planning'
 
 const id = z.string().regex(/^\d+$/)
 const contactSchema = z.object({
@@ -35,6 +36,7 @@ const factuurSchema = z.object({
   sent_at: z.string().nullish(),
   paid_at: z.string().nullish(),
   invoice_date: z.string().nullable(),
+  due_date: z.string().nullish(),
   total_price_excl_tax: z.string(),
   total_price_incl_tax: z.string(),
   currency: z.string(),
@@ -123,10 +125,18 @@ export function verstuurd(factuur: MoneybirdFactuur) {
     factuur.state !== 'draft' && factuur.state !== 'scheduled'
 }
 
-export function factuurStatus(factuur: MoneybirdFactuur) {
+export type MoneybirdFactuurStatus = 'Betaald' | 'Verlopen' | 'Verstuurd' | 'Herinnerd'
+  | 'Oninbaar' | 'Betaling onderweg'
+
+export function factuurStatus(
+  factuur: MoneybirdFactuur,
+  vandaag = datumInNederland(new Date()),
+): MoneybirdFactuurStatus {
   if (factuur.state === 'paid' || factuur.paid_at) return 'Betaald'
-  if (factuur.state === 'late' || factuur.state === 'reminded') return 'Te laat'
+  if (factuur.state === 'reminded') return 'Herinnerd'
+  if (factuur.state === 'late') return 'Verlopen'
   if (factuur.state === 'uncollectible') return 'Oninbaar'
   if (factuur.state === 'pending_payment') return 'Betaling onderweg'
+  if (factuur.due_date && factuur.due_date < vandaag) return 'Verlopen'
   return 'Verstuurd'
 }

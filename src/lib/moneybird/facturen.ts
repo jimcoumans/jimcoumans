@@ -1,7 +1,9 @@
-import { and, eq, isNotNull } from 'drizzle-orm'
+import { eq } from 'drizzle-orm'
 import { db } from '@/db'
-import { organizations, subscriptions } from '@/db/schema'
+import { organizations } from '@/db/schema'
 import { factuurStatus, moneybirdBedrag, moneybirdClient, verstuurd } from './client'
+import { isRetainerfactuur } from './kenmerk'
+import { datumInNederland } from './planning'
 
 export async function leesMoneybirdFacturen(organizationId: string) {
   if (!process.env.MONEYBIRD_API_TOKEN && !process.env.MONEYBIRD_ADMINISTRATION_ID) return null
@@ -12,19 +14,12 @@ export async function leesMoneybirdFacturen(organizationId: string) {
   try {
     const contactId = klant.contactId
     const client = moneybirdClient()
-    const [facturen, abonnementen] = await Promise.all([
-      client.facturen(contactId),
-      db.select({ reeksId: subscriptions.moneybirdRecurringId }).from(subscriptions)
-        .where(and(eq(subscriptions.organizationId, organizationId), isNotNull(subscriptions.moneybirdRecurringId))),
-    ])
-    const perReeks = await Promise.all(abonnementen.flatMap(({ reeksId }) =>
-      reeksId ? [client.facturen(contactId, reeksId)] : []
-    ))
-    const retainerIds = new Set(perReeks.flat().filter((f) => f.contact_id === contactId).map((f) => f.id))
+    const facturen = await client.facturen(contactId)
+    const vandaag = datumInNederland(new Date())
     return {
       ok: true as const,
       facturen: facturen
-        .filter((f) => f.contact_id === klant.contactId && verstuurd(f))
+        .filter((f) => f.contact_id === contactId && verstuurd(f))
         .map((f) => ({
           id: f.id,
           nummer: f.invoice_id,
@@ -33,8 +28,8 @@ export async function leesMoneybirdFacturen(organizationId: string) {
           omschrijving: f.details?.map((d) => d.description).find(Boolean),
           bedragCents: moneybirdBedrag(f.total_price_incl_tax),
           currency: f.currency,
-          status: factuurStatus(f),
-          retainer: retainerIds.has(f.id),
+          status: factuurStatus(f, vandaag),
+          retainer: isRetainerfactuur(f.reference),
         }))
         .sort((a, b) => (b.datum ?? '').localeCompare(a.datum ?? '')),
     }

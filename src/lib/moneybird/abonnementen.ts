@@ -3,7 +3,8 @@ import { db } from '@/db'
 import { LedgerError } from '../ledger'
 import { organizations, subscriptions } from '@/db/schema'
 import { moneybirdClient, MoneybirdApiFout } from './client'
-import { moneybirdPlanning, retainerReferentie } from './planning'
+import { moneybirdPlanning } from './planning'
+import { retainerReferentie } from './kenmerk'
 
 /** Alleen klanten met een expliciet gekoppeld Moneybird-contact komen in aanmerking. */
 export function moneybirdAbonnementenAan() {
@@ -36,6 +37,8 @@ async function verwerk(id: string, signal: AbortSignal) {
       if (!abo?.moneybirdContactId) return
       const contact = abo.moneybirdContactId
       const referentie = retainerReferentie(id)
+      const oudeReferentie = `JR-WALLET-${id}`
+      const zelfdeReferentie = (kenmerk: string | null) => kenmerk === referentie || kenmerk === oudeReferentie
 
       if (abo.moneybirdState === 'stoppen') {
         if (abo.moneybirdRecurringId) {
@@ -56,7 +59,7 @@ async function verwerk(id: string, signal: AbortSignal) {
         client.reeksen(contact, true), client.reeksen(contact, false),
       ])
       const matches = [...actieve, ...inactieve]
-        .filter((r) => r.contact_id === contact && r.reference === referentie)
+        .filter((r) => r.contact_id === contact && zelfdeReferentie(r.reference))
       if (matches.length > 1) throw new Error('Moneybird kent meerdere reeksen met deze referentie.')
       let reeks = matches[0]
       let eersteDatum = abo.moneybirdEersteFactuur ?? reeks?.start_date ?? reeks?.invoice_date ?? null
@@ -92,7 +95,7 @@ async function verwerk(id: string, signal: AbortSignal) {
           } },
         })
       }
-      if (reeks.contact_id !== contact || reeks.reference !== referentie) {
+      if (reeks.contact_id !== contact || !zelfdeReferentie(reeks.reference)) {
         throw new Error('Moneybird bevestigde een afwijkend contact of referentie.')
       }
       if (reeks.active !== true || reeks.auto_send !== true || !eersteDatum) {
