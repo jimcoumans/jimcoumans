@@ -4697,18 +4697,65 @@ BEGIN
 END $jr_0062_marketing_website$;
 
 -- ---------------------------------------------------------------------------
--- 0063_contact_meerdere_bedrijven
+-- 0063_moneybird_facturatie
 -- ---------------------------------------------------------------------------
 
-DO $jr_0063_contact_meerdere_bedrijven$
+DO $jr_0063_moneybird_facturatie$
 BEGIN
-  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = 'f81292282ce6b9d3cb6db69160056b9a1b2c4ae66f87f149185422ac7092b396') THEN
-    RAISE NOTICE 'Overgeslagen: 0063_contact_meerdere_bedrijven stond er al.';
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = '81be33dc9b70bbedfa581213238ef1565108436633adca87025c54aa462a8636') THEN
+    RAISE NOTICE 'Overgeslagen: 0063_moneybird_facturatie stond er al.';
+  ELSE
+    ALTER TYPE "public"."entry_source" ADD VALUE 'abonnement';
+
+    ALTER TABLE "subscriptions" ADD COLUMN "moneybird_state" text;
+
+    ALTER TABLE "subscriptions" ADD COLUMN "moneybird_recurring_id" text;
+
+    ALTER TABLE "subscriptions" ADD COLUMN "moneybird_contact_id" text;
+
+    ALTER TABLE "subscriptions" ADD COLUMN "moneybird_eerste_factuur" date;
+
+    ALTER TABLE "subscriptions" ADD COLUMN "moneybird_sync_fout" text;
+
+    CREATE UNIQUE INDEX "subscriptions_moneybird_recurring_idx" ON "subscriptions" USING btree ("moneybird_recurring_id");
+
+    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+    VALUES ('81be33dc9b70bbedfa581213238ef1565108436633adca87025c54aa462a8636', 1795701231523);
+    RAISE NOTICE 'Toegepast: 0063_moneybird_facturatie.';
+  END IF;
+END $jr_0063_moneybird_facturatie$;
+
+-- ---------------------------------------------------------------------------
+-- 0064_moneybird_retainer_indeling
+-- ---------------------------------------------------------------------------
+
+DO $jr_0064_moneybird_retainer_indeling$
+BEGIN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = '60d3ac317cb13777b4aacd9b44496703c3ac2553a2c047b3c8c5192d0c9085c8') THEN
+    RAISE NOTICE 'Overgeslagen: 0064_moneybird_retainer_indeling stond er al.';
+  ELSE
+    ALTER TABLE "organizations" ADD COLUMN "moneybird_retainer_factuur_ids" text[] DEFAULT ARRAY[]::text[] NOT NULL;
+
+    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+    VALUES ('60d3ac317cb13777b4aacd9b44496703c3ac2553a2c047b3c8c5192d0c9085c8', 1795706585144);
+    RAISE NOTICE 'Toegepast: 0064_moneybird_retainer_indeling.';
+  END IF;
+END $jr_0064_moneybird_retainer_indeling$;
+
+-- ---------------------------------------------------------------------------
+-- 0065_contacten_meerdere_bedrijven
+-- ---------------------------------------------------------------------------
+
+DO $jr_0065_contacten_meerdere_bedrijven$
+BEGIN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = '530187888a19f4309665ae9e509881075b48dadd2bc3db11ddd44e1d8c98813d') THEN
+    RAISE NOTICE 'Overgeslagen: 0065_contacten_meerdere_bedrijven stond er al.';
   ELSE
     CREATE TABLE "contact_organizations" (
     	"contact_id" uuid NOT NULL,
     	"organization_id" uuid NOT NULL,
     	"role" text,
+    	"ended_on" timestamp with time zone,
     	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
     	CONSTRAINT "contact_organizations_pk" PRIMARY KEY("contact_id","organization_id")
     );
@@ -4723,25 +4770,8 @@ BEGIN
     ALTER TABLE "contact_organizations" ENABLE ROW LEVEL SECURITY;
 
     INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
-    VALUES ('f81292282ce6b9d3cb6db69160056b9a1b2c4ae66f87f149185422ac7092b396', 1795625495071);
-    RAISE NOTICE 'Toegepast: 0063_contact_meerdere_bedrijven.';
+    VALUES ('530187888a19f4309665ae9e509881075b48dadd2bc3db11ddd44e1d8c98813d', 1795706871497);
+    RAISE NOTICE 'Toegepast: 0065_contacten_meerdere_bedrijven.';
   END IF;
-END $jr_0063_contact_meerdere_bedrijven$;
-
--- ---------------------------------------------------------------------------
--- 0064_contact_vertrek
--- ---------------------------------------------------------------------------
-
-DO $jr_0064_contact_vertrek$
-BEGIN
-  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = '75a3c6e61148f8a27958ec0a967a9e5a273cd0261d480b91316f090a400c6d16') THEN
-    RAISE NOTICE 'Overgeslagen: 0064_contact_vertrek stond er al.';
-  ELSE
-    ALTER TABLE "contact_organizations" ADD COLUMN "ended_on" timestamp with time zone;
-
-    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
-    VALUES ('75a3c6e61148f8a27958ec0a967a9e5a273cd0261d480b91316f090a400c6d16', 1795705674277);
-    RAISE NOTICE 'Toegepast: 0064_contact_vertrek.';
-  END IF;
-END $jr_0064_contact_vertrek$;
+END $jr_0065_contacten_meerdere_bedrijven$;
 

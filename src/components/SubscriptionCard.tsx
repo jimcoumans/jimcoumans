@@ -3,6 +3,7 @@ import {
   wijzigAbonnement,
   zetAbonnementStatus,
   factureerNu,
+  koppelMoneybirdReeks,
 } from '@/app/beheer/subscription-actions'
 import { formatEuro } from '@/lib/money'
 import { Menu } from './Menu'
@@ -37,10 +38,14 @@ export function SubscriptionCard({
   item,
   slug,
   toonKlant = false,
+  moneybirdKoppelen = false,
+  moneybirdContactId,
 }: {
   item: SubscriptionOverzicht
   slug: string
   toonKlant?: boolean
+  moneybirdKoppelen?: boolean
+  moneybirdContactId?: string | null
 }) {
   const { subscription: abo } = item
   // Het budget is wat de klant krijgt; het factuurbedrag is wat hij betaalt.
@@ -81,11 +86,25 @@ export function SubscriptionCard({
                 abonnement; anders staat er twee keer hetzelfde. */}
             {item.walletName !== abo.name && <> &middot; budget naar {item.walletName}</>}
           </p>
+          {abo.moneybirdState ? (
+            <p className="mt-1 text-[13px] text-gray-600">
+              Moneybird · {{
+                wacht: 'Aanmaak ingepland',
+                maken: 'Aanmaak wordt gecontroleerd',
+                gekoppeld: 'Gekoppeld',
+                stoppen: 'Stopzetten ingepland',
+                gestopt: 'Gestopt',
+              }[abo.moneybirdState]}
+              {abo.moneybirdSyncFout && <span className="block text-[#94590A]">{abo.moneybirdSyncFout}</span>}
+            </p>
+          ) : (
           <p className="mt-0.5 text-[13px] text-gray-600">
             {item.billedPeriods === 0
               ? 'Nog niet gefactureerd'
               : `${item.billedPeriods} ${item.billedPeriods === 1 ? 'maand' : 'maanden'} gefactureerd, ${formatEuro(item.billedCents)} bijgeschreven`}
           </p>
+
+          )}
 
           {abo.notes && <p className="mt-1.5 text-xs text-gray-500">{abo.notes}</p>}
         </div>
@@ -108,6 +127,7 @@ export function SubscriptionCard({
         </div>
 
         <Menu>
+          {!abo.moneybirdState && <>
           <Paneel
             knop="Aanpassen"
             stijl="menu"
@@ -170,6 +190,19 @@ export function SubscriptionCard({
               <input type="hidden" name="slug" value={slug} />
               <input type="hidden" name="status" value="active" />
             </ActionForm>
+          )}
+
+          </>}
+
+          {moneybirdKoppelen && !abo.moneybirdState && abo.status === 'active' && (
+            <Paneel knop="Bestaande Moneybird-reeks koppelen" stijl="menu" titel="Moneybird-reeks koppelen"
+              uitleg="Deze klant ziet daarna de Moneybird-facturen in het portaal. Stopzetten in de Wallet stopt de gekoppelde reeks ook in Moneybird.">
+              <ActionForm action={koppelMoneybirdReeks} submitLabel="Reeks koppelen" className="space-y-3">
+                <input type="hidden" name="id" value={abo.id} />
+                <Field label="Moneybird-contact-ID" name="contactId" required defaultValue={moneybirdContactId ?? ''} />
+                <Field label="Moneybird-reeks-ID" name="reeksId" required defaultValue={abo.moneybirdRecurringId ?? ''} />
+              </ActionForm>
+            </Paneel>
           )}
 
           {abo.status !== 'ended' && (

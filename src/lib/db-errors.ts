@@ -94,6 +94,8 @@ export function describeDbError(error: unknown): string | null {
       return 'Het btw-percentage moet tussen 0 en 100 liggen.'
     case 'subscription_ends_after_start':
       return 'De einddatum kan niet voor de startdatum liggen.'
+    case 'subscriptions_moneybird_recurring_idx':
+      return 'Deze Moneybird-reeks is al gekoppeld aan een ander CRM-abonnement.'
     case 'subscriptions_clickup_idx':
       return 'Dit ClickUp-abonnement is al aan een ander abonnement gekoppeld.'
     case 'company_documents_token_idx':

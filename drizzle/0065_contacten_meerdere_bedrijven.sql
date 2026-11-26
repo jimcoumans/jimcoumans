@@ -2,6 +2,7 @@ CREATE TABLE "contact_organizations" (
 	"contact_id" uuid NOT NULL,
 	"organization_id" uuid NOT NULL,
 	"role" text,
+	"ended_on" timestamp with time zone,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	CONSTRAINT "contact_organizations_pk" PRIMARY KEY("contact_id","organization_id")
 );

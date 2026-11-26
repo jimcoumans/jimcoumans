@@ -1,16 +1,19 @@
 # James Robinson Wallet: wat er in het platform zit
 
-Stand van 25 november 2026. Dit overzicht is opgesteld uit de code zelf, niet uit plannen of documenten. Bij twijfel geldt wat hier staat als "in de code", niet als "in gebruik".
+Stand van 26 november 2026. Dit overzicht is opgesteld uit de code zelf, niet uit plannen of documenten. Bij twijfel geldt wat hier staat als "in de code", niet als "in gebruik".
 
 ---
 
-## Eerst: wat nog niet live staat
+## Eerst: wat recent is toegevoegd
 
-| Onderdeel | Status |
+Alles hieronder staat in de code van de live-branch. Of het ook in het portaal te zien is, hangt af van een geslaagde deploy. De productiedeploy van PR #46 is op 25 november mislukt.
+
+| Onderdeel | PR |
 |---|---|
-| Marketing → Website | Gemerged in PR #46, maar de productiedeploy is mislukt. Staat in de code, nog niet in het portaal. |
-| CRM: op voornaam sorteren, live zoeken, een persoon bij meerdere bedrijven | Klaar en getest op de werkbranch. Nog geen PR. |
-| AI-vindbaarheid | Gemerged in PR #45. Controleer onder Uitvoering of het zichtbaar is. |
+| AI-vindbaarheid | #45 |
+| Marketing → Website | #46 |
+| Moneybird-facturatie (andere sessie) | #47 tot en met #51 |
+| CRM: op voornaam sorteren, live zoeken, een persoon bij meerdere bedrijven, vertrek van een contactpersoon | deze ronde |
 
 ---
 
@@ -19,7 +22,7 @@ Stand van 25 november 2026. Dit overzicht is opgesteld uit de code zelf, niet ui
 - **Wat het is.** Eén portaal voor het team en de klant. De klant ziet zijn budget, resultaten en facturen. Het team runt er de hele klantreis in: van lead tot voorstel, en van campagne tot maandrapport. Daarnaast zitten HR, contracten en de financiën erin.
 - **Omvang.**
   - Ongeveer 105 tabellen in de database.
-  - 63 databasemigraties, of 64 met de CRM-aanpassing die nog niet live staat.
+  - 66 databasemigraties.
   - 76 testbestanden met zo'n 940 tests.
 - **Techniek.** Next.js op Netlify, met een Postgres-database bij Supabase. Bestanden staan in Netlify Blobs.
 - **Adres.** `jamesrobinsonwallet.netlify.app`, achter de Netlify-login.
@@ -142,6 +145,14 @@ Stand van 25 november 2026. Dit overzicht is opgesteld uit de code zelf, niet ui
 - Eén adresboek voor iedereen: klanten, prospects, leads, partners, netwerk en collega's.
 - Filters met tellers, en zoeken op naam, mail, functie of bedrijf.
 - Per persoon een kaart met mail, bellen en LinkedIn met één klik.
+- Gesorteerd op voornaam. Zoeken werkt live, tijdens het typen.
+- **Een persoon bij meerdere bedrijven.** Eén hoofdbedrijf, plus extra bedrijven met een rol per bedrijf (bijvoorbeeld eigenaar of bestuurslid).
+- **Vertrek.** Met "Gaat weg bij" gebeurt in één keer:
+  - de portaltoegang voor dat bedrijf gaat dicht;
+  - vaste contactpersoon en factuurontvanger gaan eraf;
+  - de relatie gaat op "Vraagt aandacht", met een actie om kennis te maken met de opvolger;
+  - de geschiedenis blijft bewaard ("oud-contactpersonen", "werkte eerder bij");
+  - de nieuwe werkgever kan als lead in de pijplijn.
 
 **Partners**
 - Wat elke partner oplevert: offertes, opdrachten, omzet, kosten en marge.
@@ -192,7 +203,8 @@ Stand van 25 november 2026. Dit overzicht is opgesteld uit de code zelf, niet ui
 
 **Abonnementen**
 - Omzet per maand en per jaar, en wie welk aandeel heeft. Bij één klant met 15% of meer volgt een waarschuwing.
-- De dagelijkse run maakt interne facturen (ABO-JJJJ-MM) en waardeert het budget op. Gemiste dagen worden ingehaald. De echte factuur maak je met de hand in Moneybird.
+- De dagelijkse run maakt interne facturen (ABO-JJJJ-MM) en waardeert het budget op. Gemiste dagen worden ingehaald.
+- Sinds PR #47 tot en met #51 kunnen abonnementen ook als terugkerende factuur naar Moneybird. Facturen uit Moneybird verschijnen in het klantportaal.
 
 ### Uitvoering
 
@@ -245,7 +257,7 @@ Stand van 25 november 2026. Dit overzicht is opgesteld uit de code zelf, niet ui
   - welke bronnen de AI noemt.
 - **Overzicht** per platform, met een rooster per vraag over zes maanden.
 
-### Marketing (nog niet live)
+### Marketing
 **Website.** De redactie van onze eigen website:
 - registers en de Performance Engine;
 - algemene pagina's en branchevarianten met overerving per veld;
@@ -376,7 +388,7 @@ Bij die laatste stap gebeurt in één keer: de collega wordt aangemaakt, contrac
 | ClickUp | Campagneplannen en het boeken van taken | Ja; boeken alleen met de hand gestart |
 | WordPress | Binnenkomende sollicitaties | Ja |
 | TikTok Ads | Advertentiecijfers | Nee, wacht op API-toegang |
-| Moneybird | Facturen | Nee, alleen een veld voor het nummer |
+| Moneybird | Abonnementen als terugkerende facturen, Moneybird-facturen in het klantportaal | Ja, sinds PR #47 tot en met #51. Aan te zetten met een instelling; niet door mij nagelopen. |
 | MailerLite | E-mailmarketing | Nee, alleen genoemd in teksten |
 | OpenAI en Gemini | Automatische AI-meting | Nee, de meting is nu handmatig |
 
@@ -387,6 +399,7 @@ Bij die laatste stap gebeurt in één keer: de collega wordt aangemaakt, contrac
 | Elke nacht, 04:17 | Performancecijfers van alle bronnen bijwerken |
 | Elke dag, 06:00 | Sollicitatiegegevens met een verlopen bewaartermijn wissen |
 | Elke dag, 07:00 | Abonnementsrun: interne factuur en opwaardering |
+| Elk kwartier | Abonnementen en facturen met Moneybird afstemmen (sinds PR #47) |
 | Op aanvraag | AI-briefingverwerking en de Uitingen-check, als achtergrondtaak |
 | Bij elke deploy | Eerst de databasemigraties. Mislukken die, dan gaat er niets live. |
 
@@ -427,7 +440,7 @@ De mails voor het contract, het afschrift, de gegevensaanvraag en het welkom ver
 - **Geen mail bij een laag saldo.** De meldgrens kleurt alleen de balk.
 - **Geen uitnodigingsmail.** Een nieuwe klantgebruiker wordt aangemaakt, maar krijgt geen bericht.
 - **Geen pdf of verzending van offertes.**
-- **Geen koppeling met Moneybird of MailerLite.**
+- **Geen koppeling met MailerLite.** Moneybird is sinds PR #47 tot en met #51 wel gekoppeld.
 - **Geen automatische AI-meting.**
 - **Geen AI-vindbaarheid per klant.** Het datamodel kan het wel, maar er is geen knop.
 - **Omzet in het klantrapport is altijd leeg.**

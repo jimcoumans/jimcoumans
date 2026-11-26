@@ -25,6 +25,7 @@ export function factuurTitel(f: { number: string; description: string | null; pe
  * geboekt is de norm en zeggen we dus niet; een factuur staat al in de
  * omschrijving.
  */
-export function bronLabel(source: 'clickup' | 'manual' | 'invoice'): string | null {
+export function bronLabel(source: 'clickup' | 'manual' | 'invoice' | 'abonnement'): string | null {
+  if (source === 'abonnement') return 'maandbudget'
   return source === 'clickup' ? 'via ClickUp' : null
 }

@@ -1,6 +1,6 @@
 {
-  "id": "a2185008-2c81-4a18-a3ee-f27d51b75bb7",
-  "prevId": "506b49d4-b215-4da8-8a0a-2a5adf660b2f",
+  "id": "af3c6a9c-bc8f-43b5-bc9e-aa9a71989572",
+  "prevId": "64851b22-0f1d-4a67-bba6-590d667dbed8",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -4631,101 +4631,6 @@
           "value": "\"contact_children\".\"birth_month\" IS NULL OR (\"contact_children\".\"birth_month\" >= 1 AND \"contact_children\".\"birth_month\" <= 12)"
         }
       },
-      "isRLSEnabled": false
-    },
-    "public.contact_organizations": {
-      "name": "contact_organizations",
-      "schema": "",
-      "columns": {
-        "contact_id": {
-          "name": "contact_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "organization_id": {
-          "name": "organization_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "role": {
-          "name": "role",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "ended_on": {
-          "name": "ended_on",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {
-        "contact_organizations_org_idx": {
-          "name": "contact_organizations_org_idx",
-          "columns": [
-            {
-              "expression": "organization_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {
-        "contact_organizations_contact_id_contacts_id_fk": {
-          "name": "contact_organizations_contact_id_contacts_id_fk",
-          "tableFrom": "contact_organizations",
-          "tableTo": "contacts",
-          "columnsFrom": [
-            "contact_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "contact_organizations_organization_id_organizations_id_fk": {
-          "name": "contact_organizations_organization_id_organizations_id_fk",
-          "tableFrom": "contact_organizations",
-          "tableTo": "organizations",
-          "columnsFrom": [
-            "organization_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {
-        "contact_organizations_pk": {
-          "name": "contact_organizations_pk",
-          "columns": [
-            "contact_id",
-            "organization_id"
-          ]
-        }
-      },
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
       "isRLSEnabled": false
     },
     "public.contacts": {
@@ -10300,6 +10205,13 @@
           "primaryKey": false,
           "notNull": false
         },
+        "moneybird_retainer_factuur_ids": {
+          "name": "moneybird_retainer_factuur_ids",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "ARRAY[]::text[]"
+        },
         "verzendmethode": {
           "name": "verzendmethode",
           "type": "verzendmethode",
@@ -13892,6 +13804,36 @@
           "primaryKey": false,
           "notNull": false
         },
+        "moneybird_state": {
+          "name": "moneybird_state",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "moneybird_recurring_id": {
+          "name": "moneybird_recurring_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "moneybird_contact_id": {
+          "name": "moneybird_contact_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "moneybird_eerste_factuur": {
+          "name": "moneybird_eerste_factuur",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "moneybird_sync_fout": {
+          "name": "moneybird_sync_fout",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
         "clickup_task_id": {
           "name": "clickup_task_id",
           "type": "text",
@@ -13970,6 +13912,21 @@
           "columns": [
             {
               "expression": "clickup_task_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "subscriptions_moneybird_recurring_idx": {
+          "name": "subscriptions_moneybird_recurring_idx",
+          "columns": [
+            {
+              "expression": "moneybird_recurring_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -15612,7 +15569,8 @@
       "values": [
         "clickup",
         "manual",
-        "invoice"
+        "invoice",
+        "abonnement"
       ]
     },
     "public.font_licence": {

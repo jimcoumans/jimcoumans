@@ -111,8 +111,11 @@ async function factureerPeriode(
   abonnement: Subscription,
   period: string,
   createdByUserId: string | null,
-): Promise<{ amountCents: number }> {
+): Promise<{ amountCents: number } | null> {
   return db.transaction(async (tx) => {
+    const [actueel] = await tx.select({ status: subscriptions.status, koppeling: subscriptions.moneybirdState })
+      .from(subscriptions).where(eq(subscriptions.id, abonnement.id)).for('update')
+    if (actueel?.status !== 'active' || actueel.koppeling !== null) return null
     const nummer = await vrijFactuurnummer(tx, abonnement.organizationId, period)
     const uitgifte = billingDate(period, abonnement.billingDay)
 
@@ -198,7 +201,11 @@ export async function runBilling(opties: BillingOpties = {}): Promise<BillingRap
   }
 
   for (const { subscription: abonnement, organizationName } of rijen) {
-    const { periods, overgeslagenTeOud, overgeslagenVoorAanmaak } = billablePeriods(
+    const viaMoneybird = abonnement.moneybirdState !== null
+    if (viaMoneybird && (abonnement.moneybirdState !== 'gekoppeld' || !abonnement.moneybirdEersteFactuur)) {
+      continue
+    }
+    const { periods: allePeriodes, overgeslagenTeOud, overgeslagenVoorAanmaak } = billablePeriods(
       {
         status: abonnement.status,
         billingDay: abonnement.billingDay,
@@ -208,6 +215,11 @@ export async function runBilling(opties: BillingOpties = {}): Promise<BillingRap
       },
       today,
     )
+
+    const eersteMaand = abonnement.moneybirdEersteFactuur?.slice(0, 7)
+    const periods = eersteMaand ? allePeriodes.filter((periode) =>
+      periode >= eersteMaand && (!abonnement.endsOn || billingDate(periode, abonnement.billingDay) <= abonnement.endsOn)
+    ) : allePeriodes
 
     for (const period of overgeslagenVoorAanmaak) {
       rapport.regels.push({
@@ -246,6 +258,14 @@ export async function runBilling(opties: BillingOpties = {}): Promise<BillingRap
       )
 
     const gedaan = new Set(alGefactureerd.map((r) => r.period))
+    if (viaMoneybird) {
+      const boekingen = await db.select({ ref: ledgerEntries.sourceRef }).from(ledgerEntries)
+        .where(and(
+          eq(ledgerEntries.source, 'abonnement'),
+          inArray(ledgerEntries.sourceRef, periods.map((periode) => `${abonnement.id}:${periode}`)),
+        ))
+      for (const boeking of boekingen) gedaan.add(boeking.ref?.slice(-7) ?? null)
+    }
 
     for (const period of periods) {
       if (gedaan.has(period)) {
@@ -264,7 +284,9 @@ export async function runBilling(opties: BillingOpties = {}): Promise<BillingRap
           period,
           amountCents: abonnement.amountExclVatCents,
           toelichting:
-            abonnement.discountCents > 0
+            viaMoneybird
+              ? `zou ${formatCents(abonnement.amountExclVatCents)} als maandbudget bijschrijven`
+              : abonnement.discountCents > 0
               ? `zou ${formatCents(abonnement.amountExclVatCents)} bijschrijven en ${formatCents(
                   invoiceCents(abonnement.amountExclVatCents, abonnement.discountCents),
                 )} factureren`
@@ -274,7 +296,34 @@ export async function runBilling(opties: BillingOpties = {}): Promise<BillingRap
       }
 
       try {
-        const { amountCents } = await factureerPeriode(abonnement, period, null)
+        const amountCents = abonnement.amountExclVatCents
+        if (viaMoneybird) {
+          const geboekt = await db.transaction(async (tx) => {
+            const [actueel] = await tx.select({
+              status: subscriptions.status, koppeling: subscriptions.moneybirdState,
+            }).from(subscriptions).where(eq(subscriptions.id, abonnement.id)).for('update')
+            if (actueel?.status !== 'active' || actueel.koppeling !== 'gekoppeld') return false
+            const [boeking] = await tx.insert(ledgerEntries).values({
+              walletId: abonnement.walletId,
+              kind: 'topup',
+              amountCents,
+              description: `Budget ${periodLabel(period)}`,
+              detail: abonnement.name,
+              bookedOn: billingDate(period, abonnement.billingDay),
+              source: 'abonnement',
+              sourceRef: `${abonnement.id}:${period}`,
+            }).onConflictDoNothing({
+              target: [ledgerEntries.source, ledgerEntries.sourceRef],
+            }).returning({ id: ledgerEntries.id })
+            return Boolean(boeking)
+          })
+          if (!geboekt) {
+            rapport.bestondAl++
+            continue
+          }
+        } else if (!(await factureerPeriode(abonnement, period, null))) {
+          continue
+        }
 
         rapport.gefactureerd++
         rapport.bedragCents += amountCents

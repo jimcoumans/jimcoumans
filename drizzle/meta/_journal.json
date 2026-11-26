@@ -446,15 +446,22 @@
     {
       "idx": 63,
       "version": "7",
-      "when": 1795625495071,
-      "tag": "0063_contact_meerdere_bedrijven",
+      "when": 1795701231523,
+      "tag": "0063_moneybird_facturatie",
       "breakpoints": true
     },
     {
       "idx": 64,
       "version": "7",
-      "when": 1795705674277,
-      "tag": "0064_contact_vertrek",
+      "when": 1795706585144,
+      "tag": "0064_moneybird_retainer_indeling",
+      "breakpoints": true
+    },
+    {
+      "idx": 65,
+      "version": "7",
+      "when": 1795706871497,
+      "tag": "0065_contacten_meerdere_bedrijven",
       "breakpoints": true
     }
   ]

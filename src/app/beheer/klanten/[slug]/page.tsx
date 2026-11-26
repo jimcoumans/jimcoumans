@@ -15,7 +15,7 @@ import { Menu } from '@/components/Menu'
 import { Avatar } from '@/components/Avatar'
 import { boek, draaiTerug, nieuweWallet, nieuweGebruiker, wisselToegang } from '../../actions'
 import { boekDienst, nieuweFactuur, zetFactuurStatus } from '../../service-actions'
-import { nieuwAbonnement } from '../../subscription-actions'
+import { koppelMoneybirdContact, nieuwAbonnement } from '../../subscription-actions'
 import {
   crediteerFactuurActie,
   wijzigFactuurActie,
@@ -56,6 +56,10 @@ import { getTijdlijn, laatsteContact } from '@/lib/tijdlijn'
 import { BookServiceForm } from '@/components/BookServiceForm'
 import { aantalMetEenheid } from '@/lib/quantity'
 import { formatCents, formatEuro, formatSignedCents } from '@/lib/money'
+import { MoneybirdFacturen } from '@/components/MoneybirdFacturen'
+import { moneybirdContactKeuzes } from '@/lib/moneybird/contacten'
+import { leesMoneybirdFacturen } from '@/lib/moneybird/facturen'
+import { moneybirdAbonnementenAan } from '@/lib/moneybird/abonnementen'
 import { factuurTitel, bronLabel } from '@/lib/weergave'
 import { formatDate, formatDateInput } from '@/lib/dates'
 
@@ -108,7 +112,10 @@ export default async function KlantPage({
   const klant = await getOrganizationBySlug(slug)
   if (!klant) notFound()
 
-  const [facturen, diensten, team, abonnementen, contacten, accounts, partnerLinks, allePartners] =
+  const moneybirdContactKoppelen = tab === 'budget' && user.role === 'admin'
+    && process.env.MONEYBIRD_API_TOKEN && process.env.MONEYBIRD_ADMINISTRATION_ID
+    && !klant.organization.moneybirdContactId
+  const [facturen, diensten, team, abonnementen, contacten, accounts, partnerLinks, allePartners, moneybirdFacturen, moneybirdContacten] =
     await Promise.all([
       getOrganizationInvoices(klant.organization.id, 20),
       listActiveServices(),
@@ -118,6 +125,8 @@ export default async function KlantPage({
       listAccounts(klant.organization.id),
       listPartnersForOrganization(klant.organization.id),
       listActivePartners(),
+      tab === 'budget' ? leesMoneybirdFacturen(klant.organization.id) : null,
+      moneybirdContactKoppelen ? moneybirdContactKeuzes(klant.organization) : null,
     ])
   // De kinderen apart, want die hangen aan de contactpersonen die we net
   // hebben opgehaald.
@@ -333,7 +342,10 @@ export default async function KlantPage({
               {abonnementen.length > 0 ? (
                 <ul className="space-y-3">
                   {abonnementen.map((item) => (
-                    <SubscriptionCard key={item.subscription.id} item={item} slug={slug} />
+                    <SubscriptionCard key={item.subscription.id} item={item} slug={slug}
+                      moneybirdKoppelen={user.role === 'admin' && moneybirdAbonnementenAan()}
+                      moneybirdContactId={klant.organization.moneybirdContactId}
+                    />
                   ))}
                 </ul>
               ) : (
@@ -343,7 +355,27 @@ export default async function KlantPage({
               )}
             </section>
 
-            <Facturen facturen={facturen} klant={klant} slug={slug} vandaag={vandaag} />
+            {moneybirdFacturen ? <MoneybirdFacturen gegevens={moneybirdFacturen} beheerKlantId={user.role === 'admin' ? klant.organization.id : undefined} /> : (
+              <Facturen facturen={facturen} klant={klant} slug={slug} vandaag={vandaag} />
+            )}
+
+            {moneybirdContacten && (
+              <Paneel knop="Moneybird-contact koppelen" stijl="rustig" titel="Moneybird-contact koppelen"
+                uitleg="De klant ziet de verstuurde verkoopfacturen van dit contact daarna in het klantportaal.">
+                {!moneybirdContacten.ok ? (
+                  <p className="text-sm text-gray-600">Moneybird-contacten konden niet worden opgehaald. Ververs de pagina en probeer opnieuw.</p>
+                ) : moneybirdContacten.opties.length === 0 ? (
+                  <p className="text-sm text-gray-600">Geen Moneybird-contact gevonden op klantnaam of klantnummer.</p>
+                ) : (
+                  <ActionForm action={koppelMoneybirdContact} submitLabel="Contact koppelen" className="space-y-3">
+                    <input type="hidden" name="organizationId" value={klant.organization.id} />
+                    <Select label="Moneybird-contact" name="contactId" defaultValue=""
+                      options={[{ value: '', label: 'Kies een Moneybird-contact' }, ...moneybirdContacten.opties]}
+                    />
+                  </ActionForm>
+                )}
+              </Paneel>
+            )}
 
             <Paneel knop="+ Nog een wallet" stijl="link" titel="Wallet toevoegen" uitleg="Een tweede potje naast het abonnement, bijvoorbeeld een strippenkaart of een projectbudget.">
               <ActionForm action={nieuweWallet} submitLabel="Wallet aanmaken" className="grid gap-4 sm:grid-cols-2">
