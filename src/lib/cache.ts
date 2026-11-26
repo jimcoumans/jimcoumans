@@ -1,11 +1,17 @@
 /* -------------------------------------------------------------------------
    Een kort geheugen voor dure overzichten.
 
-   Waarom dit er is. Elke query naar de database kost vanaf de server zo'n
-   honderd milliseconde — dat is reistijd, geen rekentijd. Een dashboard dat
-   twintig overzichten ophaalt is daarmee twee seconden bezig, elke keer
-   opnieuw, ook als er in die twee seconden niets is veranderd. Bij vier
+   Waarom dit er is. Toen dit werd gebouwd kostte elke query naar de database
+   vanaf de server zo'n honderd milliseconde — reistijd van de Netlify-functies
+   in Ohio naar de database in Frankfurt, geen rekentijd. Een dashboard dat
+   twintig overzichten ophaalt was daarmee twee seconden bezig, elke keer
+   opnieuw, ook als er in die twee seconden niets was veranderd. Bij vier
    collega's die tegelijk kijken gebeurt datzelfde werk vier keer.
+
+   Sinds 23 november 2026 draaien de functies ook in Frankfurt en is die
+   reistijd grotendeels weg. Het geheugen blijft nuttig: het spaart de pooler
+   en het dubbele werk, alleen is de winst nu tienden van seconden in plaats
+   van seconden.
 
    Dat is zonde, want deze cijfers veranderen niet van seconde tot seconde.
    Hoeveel klanten we hebben, wat de abonnementsomzet is, wie er jarig is:

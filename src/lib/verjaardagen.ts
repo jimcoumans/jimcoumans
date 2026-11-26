@@ -196,8 +196,10 @@ export async function komendeVerjaardagen(
      pagina mee in een 502, terwijl hij lokaal twaalf milliseconden kostte.
 
      Achter elkaar kost het de som van vier rondes in plaats van het risico
-     dat er eentje blijft wachten op een verbinding die niet vrijkomt. Dat is
-     een paar honderd milliseconde; een 502 is de hele pagina. */
+     dat er eentje blijft wachten op een verbinding die niet vrijkomt. Dat was
+     een paar honderd milliseconde toen de functies in Ohio draaiden en is
+     sinds de verhuizing naar Frankfurt (23 november 2026) verwaarloosbaar;
+     een 502 is de hele pagina. */
   const queries = [
     db
       .select({ contact: contacts, org: organizations })
