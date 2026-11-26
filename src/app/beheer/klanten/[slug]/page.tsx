@@ -347,7 +347,7 @@ export default async function KlantPage({
               )}
             </section>
 
-            {moneybirdFacturen ? <MoneybirdFacturen gegevens={moneybirdFacturen} /> : (
+            {moneybirdFacturen ? <MoneybirdFacturen gegevens={moneybirdFacturen} beheerKlantId={user.role === 'admin' ? klant.organization.id : undefined} /> : (
               <Facturen facturen={facturen} klant={klant} slug={slug} vandaag={vandaag} />
             )}
 

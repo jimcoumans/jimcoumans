@@ -260,7 +260,10 @@ bijbehorende contacten.
 Bij **Beheer → Bedrijven → klant → Budget en facturen** koppelt een beheerder
 het Moneybird-contact via de keuzelijst. Voor gekoppelde klanten toont het portaal verstuurde
 verkoopfacturen en hun Moneybird-status. Het kenmerk Marketing Partnership
-bepaalt welke facturen onder Retainerfacturen staan.
+bepaalt welke facturen onder Retainerfacturen staan. Een beheerder kan
+een uitzondering markeren of terugdraaien op **Budget en facturen**. De
+Wallet leest de facturen en statussen opnieuw uit Moneybird bij het laden
+van de pagina.
 
 Stel `MONEYBIRD_BTW_IDS` in als JSON met het btw-percentage en het bijbehorende
 Moneybird-tarief-ID. Zet `MONEYBIRD_ABONNEMENTEN=true` zodra de administratie

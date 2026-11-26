@@ -4132,3 +4132,20 @@ BEGIN
   END IF;
 END $jr_0063_moneybird_facturatie$;
 
+-- ---------------------------------------------------------------------------
+-- 0064_moneybird_retainer_indeling
+-- ---------------------------------------------------------------------------
+
+DO $jr_0064_moneybird_retainer_indeling$
+BEGIN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = '60d3ac317cb13777b4aacd9b44496703c3ac2553a2c047b3c8c5192d0c9085c8') THEN
+    RAISE NOTICE 'Overgeslagen: 0064_moneybird_retainer_indeling stond er al.';
+  ELSE
+    ALTER TABLE "organizations" ADD COLUMN "moneybird_retainer_factuur_ids" text[] DEFAULT ARRAY[]::text[] NOT NULL;
+
+    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+    VALUES ('60d3ac317cb13777b4aacd9b44496703c3ac2553a2c047b3c8c5192d0c9085c8', 1795706585144);
+    RAISE NOTICE 'Toegepast: 0064_moneybird_retainer_indeling.';
+  END IF;
+END $jr_0064_moneybird_retainer_indeling$;
+

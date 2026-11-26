@@ -98,6 +98,7 @@ export function moneybirdClient(signal = AbortSignal.timeout(9000)) {
       const query = new URLSearchParams({ query: zoekterm, include_archived: 'false', per_page: '100' })
       return verzoek(z.array(contactSchema), `contacts.json?${query}`)
     },
+    factuur: (factuurId: string) => verzoek(factuurSchema, `sales_invoices/${id.parse(factuurId)}.json`),
     facturen: (contactId: string, reeksId?: string) => {
       const filters = ['state:all', `contact_id:${moneybirdContactId(contactId)}`]
       if (reeksId) filters.push(`recurring_sales_invoice_id:${id.parse(reeksId)}`)

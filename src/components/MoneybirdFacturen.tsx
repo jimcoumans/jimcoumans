@@ -1,6 +1,8 @@
 import type { PortaalMoneybirdFacturen } from '@/lib/moneybird/facturen'
 import { formatDate } from '@/lib/dates'
 import type { MoneybirdFactuurStatus } from '@/lib/moneybird/client'
+import { zetMoneybirdRetainerIndeling } from '@/app/beheer/moneybird-factuur-actions'
+import { ActionForm } from './ActionForm'
 
 const statusKleuren: Partial<Record<MoneybirdFactuurStatus, string>> = {
   Betaald: '#2B8272',
@@ -9,10 +11,13 @@ const statusKleuren: Partial<Record<MoneybirdFactuurStatus, string>> = {
   Herinnerd: '#44403C',
 }
 
-export function MoneybirdFacturen({ gegevens }: { gegevens: PortaalMoneybirdFacturen }) {
+export function MoneybirdFacturen({ gegevens, beheerKlantId }: {
+  gegevens: PortaalMoneybirdFacturen
+  beheerKlantId?: string
+}) {
   if (!gegevens.ok) return <p role="status">Moneybird-facturen zijn tijdelijk niet beschikbaar.</p>
   const groepen = [
-    { titel: 'Retainerfacturen', uitleg: 'Facturen met het kenmerk Marketing Partnership.', retainer: true },
+    { titel: 'Retainerfacturen', uitleg: 'Facturen die bij het Marketing Partnership horen.', retainer: true },
     { titel: 'Overige facturen', uitleg: 'Losse facturen, zoals drukwerk. Deze tellen niet mee voor je walletsaldo.', retainer: false },
   ]
   return (
@@ -45,10 +50,18 @@ export function MoneybirdFacturen({ gegevens }: { gegevens: PortaalMoneybirdFact
                       )}
                     </div>
                     <div className="text-right">
-                      <p className="tabular">{new Intl.NumberFormat('nl-NL', {
-                        style: 'currency', currency: factuur.currency,
-                      }).format(factuur.bedragCents / 100)}</p>
-                      <p className="text-xs text-gray-600">incl. btw</p>
+                      <p className="tabular">{formatBedrag(factuur.bedragExclCents, factuur.currency)} <span className="text-xs text-gray-600">excl. btw</span></p>
+                      <p className="tabular text-xs text-gray-600">{formatBedrag(factuur.bedragInclCents, factuur.currency)} incl. btw</p>
+                      {beheerKlantId && (!factuur.retainer || factuur.kanHandmatigeIndelingTerugdraaien) && (
+                        <ActionForm action={zetMoneybirdRetainerIndeling}
+                          submitLabel={factuur.retainer ? 'Terug naar overige facturen' : 'Markeer als retainerfactuur'}
+                          submitClassName="!min-h-0 !p-0 text-xs text-jr-link hover:underline"
+                          className="mt-2" resetOnSuccess={false} meldGelukt={false}>
+                          <input type="hidden" name="organizationId" value={beheerKlantId} />
+                          <input type="hidden" name="factuurId" value={factuur.id} />
+                          <input type="hidden" name="indeling" value={factuur.retainer ? 'standaard' : 'retainer'} />
+                        </ActionForm>
+                      )}
                     </div>
                   </li>
                 ))}
@@ -65,4 +78,9 @@ function datumMoneybird(datum: string | null) {
   if (!datum) return null
   const parsed = new Date(datum)
   return Number.isNaN(parsed.getTime()) ? null : formatDate(parsed)
+}
+
+
+function formatBedrag(centen: number, currency: string) {
+  return new Intl.NumberFormat('nl-NL', { style: 'currency', currency }).format(centen / 100)
 }

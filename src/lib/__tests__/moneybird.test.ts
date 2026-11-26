@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { factuurStatus, moneybirdClient, verstuurd } from '../moneybird/client'
 import { moneybirdContactKeuzes } from '../moneybird/contacten'
-import { isRetainerfactuur, retainerReferentie } from '../moneybird/kenmerk'
+import { isRetainerfactuur, retainerIndeling, retainerReferentie } from '../moneybird/kenmerk'
 import { moneybirdPlanning } from '../moneybird/planning'
 
 test('een terugkerende factuur wordt gepland op de gekozen dag, vanaf de startdatum', () => {
@@ -101,4 +101,31 @@ test('Moneybird-status onderscheidt betaaltermijn, verlopen en herinnerd', () =>
   assert.equal(factuurStatus({ ...factuur, state: 'late' }, '2026-11-26'), 'Verlopen')
   assert.equal(factuurStatus({ ...factuur, state: 'reminded' }, '2026-11-27'), 'Herinnerd')
   assert.equal(factuurStatus({ ...factuur, state: 'paid', paid_at: '2026-11-27' }, '2026-11-27'), 'Betaald')
+})
+
+
+test('een handmatige retainerindeling is terug te draaien zonder het kenmerk te veranderen', () => {
+  assert.deepEqual(retainerIndeling('Los project', false), {
+    retainer: false, kanHandmatigeIndelingTerugdraaien: false,
+  })
+  assert.deepEqual(retainerIndeling('Los project', true), {
+    retainer: true, kanHandmatigeIndelingTerugdraaien: true,
+  })
+  assert.deepEqual(retainerIndeling('Marketing Partnership', true), {
+    retainer: true, kanHandmatigeIndelingTerugdraaien: false,
+  })
+})
+
+test('de beheeractie kan een factuur rechtstreeks uitlezen en het klantcontact controleren', async (t) => {
+  stelTestAdministratieIn(t)
+  t.mock.method(globalThis, 'fetch', async (url: string, init: RequestInit) => {
+    assert.equal(new URL(url).pathname, `/api/v2/123/sales_invoices/${bronfactuur.id}.json`)
+    assert.equal(init.method, 'GET')
+    assert.equal(init.cache, 'no-store')
+    return Response.json({ ...bronfactuur, state: 'open', sent_at: '2026-11-01' })
+  })
+  const factuur = await moneybirdClient().factuur(bronfactuur.id)
+  assert.equal(factuur.contact_id, bronfactuur.contact_id)
+  assert.equal(factuur.total_price_excl_tax, '1350.00')
+  assert.equal(factuur.total_price_incl_tax, '1633.50')
 })
