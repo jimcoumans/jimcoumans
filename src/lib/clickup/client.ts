@@ -12,7 +12,7 @@ export type ClickUpCustomField = {
   name: string
   type: string
   value?: unknown
-  type_config?: { options?: { id: string; name: string }[] }
+  type_config?: { options?: { id: string; name: string; orderindex?: number }[] }
 }
 
 export type ClickUpTask = {
@@ -42,11 +42,12 @@ export class ClickUpClient {
     if (!token) throw new ClickUpError('CLICKUP_API_TOKEN ontbreekt.')
   }
 
-  private async get<T>(path: string): Promise<T> {
+  private async get<T>(path: string, signal?: AbortSignal): Promise<T> {
     const response = await fetch(`${BASE}${path}`, {
       headers: { Authorization: this.token, 'Content-Type': 'application/json' },
       // Nooit uit de cache: dit zijn financiele brongegevens.
       cache: 'no-store',
+      signal,
     })
 
     if (response.status === 429) {
@@ -92,6 +93,36 @@ export class ClickUpClient {
   async teamMembers(): Promise<{ id: number; email: string }[]> {
     const data = await this.get<{ teams: { members: { user: { id: number; email: string } }[] }[] }>('/team')
     return data.teams.flatMap((t) => t.members.map((m) => ({ id: m.user.id, email: m.user.email.toLowerCase() })))
+  }
+
+  getList(listId: string, signal: AbortSignal) {
+    return this.get<{ id: string; name: string }>(`/list/${encodeURIComponent(listId)}`, signal)
+  }
+
+  async listRetainerTaken(listId: string, signal: AbortSignal): Promise<ClickUpTask[]> {
+    const lijsten = await Promise.all([false, true].map(async (archived) => {
+      const taken: ClickUpTask[] = []
+      for (let page = 0; page < 100; page++) {
+        const filters = new URLSearchParams({
+          page: String(page),
+          archived: String(archived),
+          include_closed: 'true',
+          subtasks: 'true',
+          'statuses[]': 'afgerond',
+        })
+        const data = await this.get<{ tasks: ClickUpTask[]; last_page?: boolean }>(
+          `/list/${encodeURIComponent(listId)}/task?${filters}`, signal,
+        )
+        if (!Array.isArray(data.tasks)) throw new ClickUpError('ClickUp gaf geen takenlijst terug.')
+        taken.push(...data.tasks)
+        if (data.last_page || data.tasks.length === 0 || (data.last_page === undefined && data.tasks.length < 100)) {
+          return taken
+        }
+      }
+      throw new ClickUpError('De takenlijst van ClickUp kon niet volledig worden opgehaald.')
+    }))
+
+    return lijsten.flat()
   }
 
   /**

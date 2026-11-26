@@ -4226,3 +4226,24 @@ BEGIN
   END IF;
 END $jr_0065_contacten_meerdere_bedrijven$;
 
+-- ---------------------------------------------------------------------------
+-- 0066_wallet_retainer_bronnen
+-- ---------------------------------------------------------------------------
+
+DO $jr_0066_wallet_retainer_bronnen$
+BEGIN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = 'b43c520fca25f387d0525f7deec1a9256cbc47aef69b0e70137c38c0a8040e1a') THEN
+    RAISE NOTICE 'Overgeslagen: 0066_wallet_retainer_bronnen stond er al.';
+  ELSE
+    ALTER TABLE "organizations" ADD COLUMN "wallet_facturen_vanaf" date;
+
+    ALTER TABLE "organizations" ADD COLUMN "wallet_clickup_list_id" text;
+
+    CREATE UNIQUE INDEX "organizations_wallet_clickup_list_idx" ON "organizations" USING btree ("wallet_clickup_list_id");
+
+    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+    VALUES ('b43c520fca25f387d0525f7deec1a9256cbc47aef69b0e70137c38c0a8040e1a', 1795708573458);
+    RAISE NOTICE 'Toegepast: 0066_wallet_retainer_bronnen.';
+  END IF;
+END $jr_0066_wallet_retainer_bronnen$;
+

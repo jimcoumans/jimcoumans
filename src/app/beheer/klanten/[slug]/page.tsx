@@ -57,6 +57,10 @@ import { BookServiceForm } from '@/components/BookServiceForm'
 import { aantalMetEenheid } from '@/lib/quantity'
 import { formatCents, formatEuro, formatSignedCents } from '@/lib/money'
 import { MoneybirdFacturen } from '@/components/MoneybirdFacturen'
+import { RetainerWalletOverzicht } from '@/components/RetainerWalletOverzicht'
+import { zetRetainerWallet } from '@/app/beheer/retainer-wallet-actions'
+import { toonWalletStartmaand } from '@/lib/retainer-wallet/bereken'
+import { leesRetainerWallet } from '@/lib/retainer-wallet/laden'
 import { moneybirdContactKeuzes } from '@/lib/moneybird/contacten'
 import { leesMoneybirdFacturen } from '@/lib/moneybird/facturen'
 import { moneybirdAbonnementenAan } from '@/lib/moneybird/abonnementen'
@@ -115,7 +119,9 @@ export default async function KlantPage({
   const moneybirdContactKoppelen = tab === 'budget' && user.role === 'admin'
     && process.env.MONEYBIRD_API_TOKEN && process.env.MONEYBIRD_ADMINISTRATION_ID
     && !klant.organization.moneybirdContactId
-  const [facturen, diensten, team, abonnementen, contacten, accounts, partnerLinks, allePartners, moneybirdFacturen, moneybirdContacten] =
+  const walletIngesteld = klant.organization.walletFacturenVanaf && klant.organization.walletClickupListId
+  const moneybirdOphalen = tab === 'budget' || walletIngesteld ? leesMoneybirdFacturen(klant.organization.id) : undefined
+  const [facturen, diensten, team, abonnementen, contacten, accounts, partnerLinks, allePartners, moneybirdFacturen, moneybirdContacten, retainerWallet] =
     await Promise.all([
       getOrganizationInvoices(klant.organization.id, 20),
       listActiveServices(),
@@ -125,8 +131,9 @@ export default async function KlantPage({
       listAccounts(klant.organization.id),
       listPartnersForOrganization(klant.organization.id),
       listActivePartners(),
-      tab === 'budget' ? leesMoneybirdFacturen(klant.organization.id) : null,
+      tab === 'budget' ? moneybirdOphalen : null,
       moneybirdContactKoppelen ? moneybirdContactKeuzes(klant.organization) : null,
+      leesRetainerWallet(klant.organization, moneybirdOphalen),
     ])
   // De kinderen apart, want die hangen aan de contactpersonen die we net
   // hebben opgehaald.
@@ -158,7 +165,9 @@ export default async function KlantPage({
   // en wanneer de volgende bijschrijving is.
   const actief = abonnementen.filter((a) => a.subscription.status === 'active')
   const perMaand = actief.reduce((som, a) => som + a.subscription.amountExclVatCents, 0)
-  const saldo = klant.wallets.reduce((som, w) => som + (w.balance?.balanceCents ?? 0), 0)
+  const saldo = retainerWallet
+    ? (retainerWallet.ok ? retainerWallet.saldoCents : null)
+    : klant.wallets.reduce((som, w) => som + (w.balance?.balanceCents ?? 0), 0)
   const volgende = actief
     .map((a) => a.nextBillingOn)
     .filter((d): d is Date => d !== null)
@@ -212,11 +221,15 @@ export default async function KlantPage({
           {/* Het actuele budget, rechtsboven: groen, rood of zwart. */}
           <div className="sm:text-right">
             <p className="text-xs text-gray-600">Actueel budget</p>
-            <p className={`font-display tabular text-[32px] leading-tight font-bold tracking-tight ${saldoKleur(saldo)}`}>
-              {formatCents(saldo)}
+            <p className={`font-display tabular text-[32px] leading-tight font-bold tracking-tight ${saldoKleur(saldo ?? 0)}`}>
+              {saldo === null ? '—' : formatCents(saldo)}
             </p>
             <p className="text-xs text-gray-600">
-              {actief.length > 0 ? `${formatEuro(perMaand)} per maand erbij` : 'Geen lopend abonnement'}
+              {saldo === null
+                ? 'Tijdelijk niet beschikbaar'
+                : retainerWallet
+                  ? 'Moneybird en ClickUp'
+                  : actief.length > 0 ? `${formatEuro(perMaand)} per maand erbij` : 'Geen lopend abonnement'}
             </p>
           </div>
         </div>
@@ -308,7 +321,17 @@ export default async function KlantPage({
 
         {tab === 'budget' && (
           <div className="space-y-12">
-            {klant.wallets.map(({ wallet, balance }) => (
+            {retainerWallet ? (
+              <div>
+                <RetainerWalletOverzicht wallet={retainerWallet} beheer
+                  limiet={alles === '1' && retainerWallet.ok ? retainerWallet.regels.length : 15} />
+                {retainerWallet.ok && alles !== '1' && retainerWallet.regels.length > 15 && (
+                  <a className="mt-3 inline-block text-sm text-jr-link hover:underline" href={`/beheer/klanten/${slug}?tab=budget&alles=1`}>
+                    Alle boekingen bekijken
+                  </a>
+                )}
+              </div>
+            ) : klant.wallets.map(({ wallet, balance }) => (
               <WalletBeheer
                 key={wallet.id}
                 slug={slug}
@@ -321,10 +344,25 @@ export default async function KlantPage({
               />
             ))}
 
+            {user.role === 'admin' && (
+              <Paneel knop="Walletbronnen instellen" stijl="rustig" titel="Walletbronnen instellen"
+                uitleg="Koppel de ClickUp-takenlijst van deze klant en kies vanaf welke factuurmaand Moneybird-retainerfacturen meetellen. Maak beide velden leeg om de berekening uit te schakelen.">
+                <ActionForm action={zetRetainerWallet} submitLabel="Walletbronnen opslaan" className="space-y-3">
+                  <input type="hidden" name="organizationId" value={klant.organization.id} />
+                  <Field label="Retainerfacturen meetellen vanaf (MM/JJ)" name="vanaf" placeholder="10/25" markeerOptioneel={false}
+                    defaultValue={toonWalletStartmaand(klant.organization.walletFacturenVanaf)} />
+                  <Field label="ClickUp-takenlijst-ID" name="listId" placeholder="Numeriek lijst-ID" markeerOptioneel={false}
+                    defaultValue={klant.organization.walletClickupListId ?? ''} />
+                </ActionForm>
+              </Paneel>
+            )}
+
             <section>
               <SectieKop
                 titel="Abonnementen"
-                uitleg="Zolang een abonnement loopt, komt er elke maand vanzelf een factuur en gaat het budget erbij."
+                uitleg={retainerWallet
+                  ? 'Een verstuurde retainerfactuur telt mee vanaf de ingestelde factuurmaand.'
+                  : 'Zolang een abonnement loopt, komt er elke maand vanzelf een factuur en gaat het budget erbij.'}
                 actie={
                   klant.wallets.length > 0 && (
                     <Paneel knop="+ Abonnement" stijl="rustig" titel="Abonnement toevoegen" breed>
@@ -377,7 +415,7 @@ export default async function KlantPage({
               </Paneel>
             )}
 
-            <Paneel knop="+ Nog een wallet" stijl="link" titel="Wallet toevoegen" uitleg="Een tweede potje naast het abonnement, bijvoorbeeld een strippenkaart of een projectbudget.">
+            {!retainerWallet && <Paneel knop="+ Nog een wallet" stijl="link" titel="Wallet toevoegen" uitleg="Een tweede potje naast het abonnement, bijvoorbeeld een strippenkaart of een projectbudget.">
               <ActionForm action={nieuweWallet} submitLabel="Wallet aanmaken" className="grid gap-4 sm:grid-cols-2">
                 <input type="hidden" name="organizationId" value={klant.organization.id} />
                 <input type="hidden" name="slug" value={slug} />
@@ -389,7 +427,7 @@ export default async function KlantPage({
                   hint="Komt het saldo hieronder, dan krijgt de klant een seintje."
                 />
               </ActionForm>
-            </Paneel>
+            </Paneel>}
           </div>
         )}
 

@@ -7,6 +7,8 @@ import {
   getSpendByCategory,
 } from '@/lib/ledger'
 import { AppShell } from '@/components/AppShell'
+import { RetainerWalletOverzicht } from '@/components/RetainerWalletOverzicht'
+import { leesPortaalRetainerWallet } from '@/lib/retainer-wallet/laden'
 import { TransactionList } from '@/components/TransactionList'
 import { formatCents } from '@/lib/money'
 import { categoryColor } from '@/lib/chart-colors'
@@ -33,17 +35,34 @@ export default async function ActiviteitPage({
   if (portaal.status === 'team') redirect('/beheer')
   const { user, organizationId, meekijken } = portaal
 
+  const params = await searchParams
+  const pagina = Math.max(1, Number.parseInt(params.pagina ?? '1', 10) || 1)
+
+  const retainerWallet = await leesPortaalRetainerWallet(organizationId)
+  if (retainerWallet) {
+    return (
+      <AppShell user={user} actief="activiteit" meekijken={meekijken}>
+        <h1 className="mb-4 text-[28px] sm:text-[32px]">Activiteit</h1>
+        <RetainerWalletOverzicht wallet={retainerWallet} limiet={PER_PAGINA} offset={(pagina - 1) * PER_PAGINA} />
+        {retainerWallet.ok && (
+          <nav aria-label="Pagina’s met boekingen" className="mt-4 flex gap-5 text-sm text-jr-link">
+            {pagina > 1 && <a href={`/activiteit?pagina=${pagina - 1}`} className="hover:underline">Vorige</a>}
+            {retainerWallet.regels.length > pagina * PER_PAGINA && (
+              <a href={`/activiteit?pagina=${pagina + 1}`} className="hover:underline">Volgende</a>
+            )}
+          </nav>
+        )}
+      </AppShell>
+    )
+  }
+
   const wallets = await getOrganizationWallets(organizationId)
   if (wallets.length === 0) redirect('/')
-
-  const params = await searchParams
 
   // Alleen een wallet van deze klant mag geopend worden; een gegokt id in de
   // URL valt terug op de eerste eigen wallet.
   const gekozen =
     wallets.find((w) => w.wallet.id === params.wallet) ?? wallets[0]!
-
-  const pagina = Math.max(1, Number.parseInt(params.pagina ?? '1', 10) || 1)
 
   const [entries, reversedIds, perCategorie] = await Promise.all([
     getWalletEntries(gekozen.wallet.id, {

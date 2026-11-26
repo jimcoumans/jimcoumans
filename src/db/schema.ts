@@ -438,6 +438,8 @@ export const organizations = pgTable(
     /** Id van dit contact in Moneybird, voor de koppeling. */
     moneybirdContactId: text('moneybird_contact_id'),
     /** Handmatige retainerindeling voor facturen uit het gekoppelde Moneybird-contact. */
+    walletFacturenVanaf: date('wallet_facturen_vanaf', { mode: 'string' }),
+    walletClickupListId: text('wallet_clickup_list_id'),
     moneybirdRetainerFactuurIds: text('moneybird_retainer_factuur_ids').array().notNull().default(sql`ARRAY[]::text[]`),
     verzendmethode: verzendmethodeEnum('verzendmethode'),
     /** Projectnummer zoals dat in Moneybird als extra veld staat. */
@@ -515,6 +517,7 @@ export const organizations = pgTable(
     // de verkeerde klant wijzen. Dat vangt de database af.
     uniqueIndex('organizations_customer_number_idx').on(t.customerNumber),
     uniqueIndex('organizations_moneybird_idx').on(t.moneybirdContactId),
+    uniqueIndex('organizations_wallet_clickup_list_idx').on(t.walletClickupListId),
     index('organizations_health_idx').on(t.relationHealth),
     check(
       'organization_employee_count_valid',
