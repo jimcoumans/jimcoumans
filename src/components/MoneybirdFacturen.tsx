@@ -3,6 +3,7 @@ import { formatDate } from '@/lib/dates'
 import type { MoneybirdFactuurStatus } from '@/lib/moneybird/client'
 import { zetMoneybirdRetainerIndeling } from '@/app/beheer/moneybird-factuur-actions'
 import { ActionForm } from './ActionForm'
+import { UitklapLijst } from './UitklapLijst'
 
 const statusKleuren: Partial<Record<MoneybirdFactuurStatus, string>> = {
   Betaald: '#2B8272',
@@ -31,41 +32,43 @@ export function MoneybirdFacturen({ gegevens, beheerKlantId }: {
             {facturen.length === 0 ? (
               <p className="rounded-xl bg-white p-4 text-sm text-gray-600 shadow-sm">Geen facturen.</p>
             ) : (
-              <ul className="divide-y divide-gray-200 rounded-xl bg-white shadow-sm">
-                {facturen.map((factuur) => (
-                  <li key={factuur.id} className="flex flex-wrap justify-between gap-3 px-4 py-4 text-sm">
-                    <div>
-                      <div className="flex flex-wrap items-center gap-2">
-                        <p>{factuur.nummer ? `Factuur ${factuur.nummer}` : 'Factuur'}</p>
-                        <span className="rounded-full border border-current px-2 py-0.5 text-xs font-medium"
-                          style={{ color: statusKleuren[factuur.status] }}>
-                          {factuur.status}
-                        </span>
+              <UitklapLijst regels={facturen} label={titel.toLowerCase()} renderLijst={(regels) => (
+                <ul className="divide-y divide-gray-200 rounded-xl bg-white shadow-sm">
+                  {regels.map((factuur) => (
+                    <li key={factuur.id} className="flex flex-wrap justify-between gap-3 px-4 py-4 text-sm">
+                      <div>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <p>{factuur.nummer ? `Factuur ${factuur.nummer}` : 'Factuur'}</p>
+                          <span className="rounded-full border border-current px-2 py-0.5 text-xs font-medium"
+                            style={{ color: statusKleuren[factuur.status] }}>
+                            {factuur.status}
+                          </span>
+                        </div>
+                        <p className="mt-1 text-xs text-gray-600">
+                          {[datumMoneybird(factuur.datum), factuur.omschrijving].filter(Boolean).join(' · ')}
+                        </p>
+                        {factuur.betaaldOp && (
+                          <p className="mt-1 text-xs text-gray-600">Betaald op {datumMoneybird(factuur.betaaldOp)}</p>
+                        )}
                       </div>
-                      <p className="mt-1 text-xs text-gray-600">
-                        {[datumMoneybird(factuur.datum), factuur.omschrijving].filter(Boolean).join(' · ')}
-                      </p>
-                      {factuur.betaaldOp && (
-                        <p className="mt-1 text-xs text-gray-600">Betaald op {datumMoneybird(factuur.betaaldOp)}</p>
-                      )}
-                    </div>
-                    <div className="text-right">
-                      <p className="tabular">{formatBedrag(factuur.bedragExclCents, factuur.currency)} <span className="text-xs text-gray-600">excl. btw</span></p>
-                      <p className="tabular text-xs text-gray-600">{formatBedrag(factuur.bedragInclCents, factuur.currency)} incl. btw</p>
-                      {beheerKlantId && (!factuur.retainer || factuur.kanHandmatigeIndelingTerugdraaien) && (
-                        <ActionForm action={zetMoneybirdRetainerIndeling}
-                          submitLabel={factuur.retainer ? 'Terug naar overige facturen' : 'Markeer als retainerfactuur'}
-                          submitClassName="!min-h-0 !p-0 text-xs text-jr-link hover:underline"
-                          className="mt-2" resetOnSuccess={false} meldGelukt={false}>
-                          <input type="hidden" name="organizationId" value={beheerKlantId} />
-                          <input type="hidden" name="factuurId" value={factuur.id} />
-                          <input type="hidden" name="indeling" value={factuur.retainer ? 'standaard' : 'retainer'} />
-                        </ActionForm>
-                      )}
-                    </div>
-                  </li>
-                ))}
-              </ul>
+                      <div className="text-right">
+                        <p className="tabular">{formatBedrag(factuur.bedragExclCents, factuur.currency)} <span className="text-xs text-gray-600">excl. btw</span></p>
+                        <p className="tabular text-xs text-gray-600">{formatBedrag(factuur.bedragInclCents, factuur.currency)} incl. btw</p>
+                        {beheerKlantId && (!factuur.retainer || factuur.kanHandmatigeIndelingTerugdraaien) && (
+                          <ActionForm action={zetMoneybirdRetainerIndeling}
+                            submitLabel={factuur.retainer ? 'Terug naar overige facturen' : 'Markeer als retainerfactuur'}
+                            submitClassName="!min-h-0 !p-0 text-xs text-jr-link hover:underline"
+                            className="mt-2" resetOnSuccess={false} meldGelukt={false}>
+                            <input type="hidden" name="organizationId" value={beheerKlantId} />
+                            <input type="hidden" name="factuurId" value={factuur.id} />
+                            <input type="hidden" name="indeling" value={factuur.retainer ? 'standaard' : 'retainer'} />
+                          </ActionForm>
+                        )}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )} />
             )}
           </section>
         )

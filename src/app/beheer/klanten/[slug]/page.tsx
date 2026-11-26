@@ -58,6 +58,7 @@ import { aantalMetEenheid } from '@/lib/quantity'
 import { formatCents, formatEuro, formatSignedCents } from '@/lib/money'
 import { MoneybirdFacturen } from '@/components/MoneybirdFacturen'
 import { RetainerWalletOverzicht } from '@/components/RetainerWalletOverzicht'
+import { UitklapLijst } from '@/components/UitklapLijst'
 import { zetRetainerWallet } from '@/app/beheer/retainer-wallet-actions'
 import { toonWalletStartmaand } from '@/lib/retainer-wallet/bereken'
 import { leesRetainerWallet } from '@/lib/retainer-wallet/laden'
@@ -322,15 +323,7 @@ export default async function KlantPage({
         {tab === 'budget' && (
           <div className="space-y-12">
             {retainerWallet ? (
-              <div>
-                <RetainerWalletOverzicht wallet={retainerWallet} beheer
-                  limiet={alles === '1' && retainerWallet.ok ? retainerWallet.regels.length : 15} />
-                {retainerWallet.ok && alles !== '1' && retainerWallet.regels.length > 15 && (
-                  <a className="mt-3 inline-block text-sm text-jr-link hover:underline" href={`/beheer/klanten/${slug}?tab=budget&alles=1`}>
-                    Alle boekingen bekijken
-                  </a>
-                )}
-              </div>
+              <RetainerWalletOverzicht wallet={retainerWallet} beheer open={alles === '1'} />
             ) : klant.wallets.map(({ wallet, balance }) => (
               <WalletBeheer
                 key={wallet.id}
@@ -687,9 +680,6 @@ function SectieKop({ titel, uitleg, actie }: { titel: string; uitleg?: string; a
 const MENU_KNOP = '!min-h-0 w-full !rounded-lg !px-3 !py-2 text-left !font-normal text-jr-text hover:bg-gray-100'
 const MENU_KNOP_GEVAAR = '!min-h-0 w-full !rounded-lg !px-3 !py-2 text-left !font-normal text-[#C02A22] hover:bg-[#FDECEA]'
 
-/** Hoeveel boekingen je ziet voordat je op "alle" klikt. */
-const BOEKINGEN_KORT = 8
-
 async function WalletBeheer({
   slug,
   wallet,
@@ -707,12 +697,10 @@ async function WalletBeheer({
   vandaag: string
   alles: boolean
 }) {
-  const [opgehaald, reversedIds] = await Promise.all([
-    getWalletEntries(wallet.id, { limit: alles ? 1000 : BOEKINGEN_KORT + 1 }),
+  const [entries, reversedIds] = await Promise.all([
+    getWalletEntries(wallet.id, { limit: balance.entryCount }),
     getReversedEntryIds(wallet.id),
   ])
-  const meer = !alles && opgehaald.length > BOEKINGEN_KORT
-  const entries = meer ? opgehaald.slice(0, BOEKINGEN_KORT) : opgehaald
 
   return (
     <section>
@@ -774,86 +762,78 @@ async function WalletBeheer({
 
       <div className="mt-8 mb-3 flex items-baseline justify-between gap-4 px-1">
         <h3 className="text-[17px]">Boekingen</h3>
-        {meer && (
-          <a href={`/beheer/klanten/${slug}?tab=budget&alles=1`} className="text-jr-link text-sm hover:underline">
-            Alles tonen
-          </a>
-        )}
-        {alles && (
-          <a href={`/beheer/klanten/${slug}?tab=budget`} className="text-jr-link text-sm hover:underline">
-            Alleen de laatste
-          </a>
-        )}
       </div>
 
       {entries.length === 0 ? (
         <p className="rounded-xl bg-white px-6 py-5 text-sm text-gray-600 shadow-sm">Nog geen boekingen.</p>
       ) : (
-        <ul className="divide-y divide-gray-150 rounded-xl bg-white shadow-sm">
-          {entries.map((entry) => {
-            const teruggedraaid = reversedIds.has(entry.id)
-            // Budget uit een factuur draai je terug door de factuur te
-            // crediteren; dan blijven factuur en wallet gelijk.
-            const vanFactuur = entry.source === 'invoice' || entry.invoiceId !== null
-            const corrigeerbaar = entry.kind !== 'correction' && !teruggedraaid && !vanFactuur
-            const regel = [
-              formatDate(entry.bookedOn),
-              entry.serviceName && entry.quantityHundredths !== null && entry.serviceUnit && entry.unitPriceCents !== null
-                ? `${aantalMetEenheid(entry.quantityHundredths, entry.serviceUnit)} × ${formatEuro(entry.unitPriceCents)}`
-                : null,
-              entry.deliveredByName,
-              bronLabel(entry.source),
-              entry.kind === 'correction' ? 'Correctie' : null,
-              teruggedraaid ? 'Teruggedraaid' : null,
-            ].filter(Boolean)
+        <UitklapLijst regels={entries} label="boekingen" open={alles} renderLijst={(regels) => (
+          <ul className="divide-y divide-gray-150 rounded-xl bg-white shadow-sm">
+            {regels.map((entry) => {
+              const teruggedraaid = reversedIds.has(entry.id)
+              // Budget uit een factuur draai je terug door de factuur te
+              // crediteren; dan blijven factuur en wallet gelijk.
+              const vanFactuur = entry.source === 'invoice' || entry.invoiceId !== null
+              const corrigeerbaar = entry.kind !== 'correction' && !teruggedraaid && !vanFactuur
+              const regel = [
+                formatDate(entry.bookedOn),
+                entry.serviceName && entry.quantityHundredths !== null && entry.serviceUnit && entry.unitPriceCents !== null
+                  ? `${aantalMetEenheid(entry.quantityHundredths, entry.serviceUnit)} × ${formatEuro(entry.unitPriceCents)}`
+                  : null,
+                entry.deliveredByName,
+                bronLabel(entry.source),
+                entry.kind === 'correction' ? 'Correctie' : null,
+                teruggedraaid ? 'Teruggedraaid' : null,
+              ].filter(Boolean)
 
-            return (
-              <li key={entry.id} className="flex items-start gap-3 py-3.5 pr-3 pl-5 sm:pl-6">
-                {/* Op een telefoon het bedrag onder de omschrijving, niet ernaast. */}
-                <div className="flex min-w-0 flex-1 flex-col gap-1 sm:flex-row sm:gap-3">
-                <div className="min-w-0 flex-1">
-                  <p className={`text-[15px] ${teruggedraaid ? 'text-gray-500 line-through' : ''}`}>{entry.description}</p>
-                  <p className="mt-0.5 text-[13px] text-gray-600">{regel.join(' · ')}</p>
-                  {entry.detail && !vanFactuur && <p className="mt-0.5 text-[13px] text-gray-500">{entry.detail}</p>}
-                </div>
-                <p
-                  className={`tabular shrink-0 text-[15px] sm:pt-px ${
-                    teruggedraaid ? 'text-gray-500 line-through' : entry.amountCents > 0 ? 'text-[#1D7D3F]' : ''
-                  }`}
-                >
-                  {formatSignedCents(entry.amountCents)}
-                </p>
-                </div>
-                <div className="w-8 shrink-0">
-                  {corrigeerbaar && (
-                    <Menu>
-                      <Paneel
-                        knop="Terugdraaien"
-                        stijl="menuGevaar"
-                        titel="Boeking terugdraaien"
-                        uitleg="De boeking blijft staan en wordt opgeheven met een tegenboeking. De klant ziet beide regels en jouw reden."
-                      >
-                        <p className="mb-4 rounded-lg bg-gray-50 px-4 py-3 text-sm">
-                          {entry.description} <span className="tabular text-gray-600">({formatSignedCents(entry.amountCents)})</span>
-                        </p>
-                        <ActionForm
-                          action={draaiTerug}
-                          submitLabel="Terugdraaien"
-                          submitClassName="bg-[#C02A22] hover:bg-[#A3241D] text-white"
-                          resetOnSuccess={false}
+              return (
+                <li key={entry.id} className="flex items-start gap-3 py-3.5 pr-3 pl-5 sm:pl-6">
+                  {/* Op een telefoon het bedrag onder de omschrijving, niet ernaast. */}
+                  <div className="flex min-w-0 flex-1 flex-col gap-1 sm:flex-row sm:gap-3">
+                    <div className="min-w-0 flex-1">
+                      <p className={`text-[15px] ${teruggedraaid ? 'text-gray-500 line-through' : ''}`}>{entry.description}</p>
+                      <p className="mt-0.5 text-[13px] text-gray-600">{regel.join(' · ')}</p>
+                      {entry.detail && !vanFactuur && <p className="mt-0.5 text-[13px] text-gray-500">{entry.detail}</p>}
+                    </div>
+                    <p
+                      className={`tabular shrink-0 text-[15px] sm:pt-px ${
+                        teruggedraaid ? 'text-gray-500 line-through' : entry.amountCents > 0 ? 'text-[#1D7D3F]' : ''
+                      }`}
+                    >
+                      {formatSignedCents(entry.amountCents)}
+                    </p>
+                  </div>
+                  <div className="w-8 shrink-0">
+                    {corrigeerbaar && (
+                      <Menu>
+                        <Paneel
+                          knop="Terugdraaien"
+                          stijl="menuGevaar"
+                          titel="Boeking terugdraaien"
+                          uitleg="De boeking blijft staan en wordt opgeheven met een tegenboeking. De klant ziet beide regels en jouw reden."
                         >
-                          <input type="hidden" name="entryId" value={entry.id} />
-                          <input type="hidden" name="slug" value={slug} />
-                          <Field label="Reden" name="reden" required placeholder="Dubbel geboekt" />
-                        </ActionForm>
-                      </Paneel>
-                    </Menu>
-                  )}
-                </div>
-              </li>
-            )
-          })}
-        </ul>
+                          <p className="mb-4 rounded-lg bg-gray-50 px-4 py-3 text-sm">
+                            {entry.description} <span className="tabular text-gray-600">({formatSignedCents(entry.amountCents)})</span>
+                          </p>
+                          <ActionForm
+                            action={draaiTerug}
+                            submitLabel="Terugdraaien"
+                            submitClassName="bg-[#C02A22] hover:bg-[#A3241D] text-white"
+                            resetOnSuccess={false}
+                          >
+                            <input type="hidden" name="entryId" value={entry.id} />
+                            <input type="hidden" name="slug" value={slug} />
+                            <Field label="Reden" name="reden" required placeholder="Dubbel geboekt" />
+                          </ActionForm>
+                        </Paneel>
+                      </Menu>
+                    )}
+                  </div>
+                </li>
+              )
+            })}
+          </ul>
+        )} />
       )}
     </section>
   )
