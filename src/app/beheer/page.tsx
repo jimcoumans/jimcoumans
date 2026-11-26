@@ -1,3 +1,4 @@
+import { klantenZonderVasteContact } from '@/lib/vertrek'
 import { redirect } from 'next/navigation'
 import { getSessionUser } from '@/lib/auth'
 import { AppShell } from '@/components/AppShell'
@@ -98,6 +99,15 @@ export default async function DashboardPage() {
       tekst: `Bij ${k.organization.name} kan nog niemand inloggen`,
       href: `/beheer/klanten/${k.organization.slug}`,
     })
+  }
+
+  // Zonder vaste contactpersoon weet niemand wie hij belt. Gebeurt vooral
+  // als die vertrekt; één regel, anders duwt het de rest van de lijst weg.
+  const zonderVast = await metGeheugen('dash:zondervast', klantenZonderVasteContact)
+  if (zonderVast.length === 1) {
+    aandacht.push({ tekst: `${zonderVast[0]!.naam} heeft geen vaste contactpersoon`, href: `/beheer/klanten/${zonderVast[0]!.slug}?tab=contacten` })
+  } else if (zonderVast.length > 1) {
+    aandacht.push({ tekst: `${zonderVast.length} klanten hebben geen vaste contactpersoon`, href: '/beheer/klanten' })
   }
 
   const wachtOpPartner = offertes.filter((q) => q.status === 'awaiting_partner')

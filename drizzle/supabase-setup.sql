@@ -4728,3 +4728,20 @@ BEGIN
   END IF;
 END $jr_0063_contact_meerdere_bedrijven$;
 
+-- ---------------------------------------------------------------------------
+-- 0064_contact_vertrek
+-- ---------------------------------------------------------------------------
+
+DO $jr_0064_contact_vertrek$
+BEGIN
+  IF EXISTS (SELECT 1 FROM "drizzle"."__drizzle_migrations" WHERE hash = '75a3c6e61148f8a27958ec0a967a9e5a273cd0261d480b91316f090a400c6d16') THEN
+    RAISE NOTICE 'Overgeslagen: 0064_contact_vertrek stond er al.';
+  ELSE
+    ALTER TABLE "contact_organizations" ADD COLUMN "ended_on" timestamp with time zone;
+
+    INSERT INTO "drizzle"."__drizzle_migrations" ("hash", "created_at")
+    VALUES ('75a3c6e61148f8a27958ec0a967a9e5a273cd0261d480b91316f090a400c6d16', 1795705674277);
+    RAISE NOTICE 'Toegepast: 0064_contact_vertrek.';
+  END IF;
+END $jr_0064_contact_vertrek$;
+

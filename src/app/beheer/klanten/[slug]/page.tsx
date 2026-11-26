@@ -23,8 +23,10 @@ import {
 } from '../../factuur-actions'
 import { SubscriptionCard, NewSubscriptionForm } from '@/components/SubscriptionCard'
 import { listSubscriptions } from '@/lib/billing'
+import { oudContactpersonen } from '@/lib/vertrek'
+import { listBedrijfsnamen } from '@/lib/pijplijn'
 import { listContacts, gekoppeldeContacten, contactenOmTeKoppelen, listAccounts, listPartnersForOrganization, listActivePartners, listKinderen, listVestigingen, listConcurrenten, listDoelen, organizationStatusLabels, organizationStatusStyles } from '@/lib/crm'
-import { Contactpersonen, OokVerbonden, Partners, Accounts, Bedrijfsgegevens } from '@/components/CrmSections'
+import { Contactpersonen, OokVerbonden, OudContactpersonen, Partners, Accounts, Bedrijfsgegevens } from '@/components/CrmSections'
 import { Vestigingen, Concurrenten, Doelen } from '@/components/Bedrijfsprofiel'
 import { Tijdlijn } from '@/components/Tijdlijn'
 import { FormulierenTab } from '@/components/formulieren/FormulierenTab'
@@ -119,10 +121,12 @@ export default async function KlantPage({
     ])
   // De kinderen apart, want die hangen aan de contactpersonen die we net
   // hebben opgehaald.
-  const [kinderenPer, gekoppeld, kandidaten] = await Promise.all([
+  const [kinderenPer, gekoppeld, kandidaten, oud, alleBedrijven] = await Promise.all([
     listKinderen(contacten.map((c) => c.id)),
     gekoppeldeContacten(klant.organization.id),
     tab === 'contacten' ? contactenOmTeKoppelen() : Promise.resolve([]),
+    tab === 'contacten' ? oudContactpersonen(klant.organization.id) : Promise.resolve([]),
+    tab === 'contacten' ? listBedrijfsnamen() : Promise.resolve([]),
   ])
   const [vestigingen, concurrenten, doelen, tijdlijn, laatsteContactOp] = await Promise.all([
     listVestigingen(klant.organization.id),
@@ -383,12 +387,15 @@ export default async function KlantPage({
               organizationId={klant.organization.id}
               slug={slug}
               kinderenPer={kinderenPer}
+              organisatieNaam={klant.organization.name}
+              alleBedrijven={alleBedrijven.map((b) => ({ id: b.id, naam: b.naam }))}
             />
             <OokVerbonden
               gekoppeld={gekoppeld}
               kandidaten={kandidaten.filter((k) => k.organizationId !== klant.organization.id && !gekoppeld.some((g) => g.contact.id === k.id))}
               organizationId={klant.organization.id}
             />
+            <OudContactpersonen oud={oud} />
             <Partners
               links={partnerLinks}
               alle={allePartners}

@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, inArray, sql, count } from 'drizzle-orm'
+import { and, asc, desc, eq, inArray, isNull, sql, count } from 'drizzle-orm'
 import { db } from '@/db'
 import {
   organizations,
@@ -129,7 +129,7 @@ export async function extraBedrijvenVan(contactId: string): Promise<ExtraBedrijf
     .select({ organizationId: organizations.id, naam: organizations.name, slug: organizations.slug, rol: contactOrganizations.role })
     .from(contactOrganizations)
     .innerJoin(organizations, eq(organizations.id, contactOrganizations.organizationId))
-    .where(eq(contactOrganizations.contactId, contactId))
+    .where(and(eq(contactOrganizations.contactId, contactId), isNull(contactOrganizations.endedOn)))
     .orderBy(asc(sql`lower(${organizations.name})`))
 }
 
@@ -139,6 +139,7 @@ export async function extraBedrijvenPerContact(): Promise<Map<string, string[]>>
     .select({ contactId: contactOrganizations.contactId, naam: organizations.name })
     .from(contactOrganizations)
     .innerJoin(organizations, eq(organizations.id, contactOrganizations.organizationId))
+    .where(isNull(contactOrganizations.endedOn))
     .orderBy(asc(sql`lower(${organizations.name})`))
   const per = new Map<string, string[]>()
   for (const r of rijen) per.set(r.contactId, [...(per.get(r.contactId) ?? []), r.naam])
@@ -154,7 +155,7 @@ export async function gekoppeldeContacten(organizationId: string): Promise<Gekop
     .select({ contact: contacts, rol: contactOrganizations.role, hoofdbedrijf: hoofd })
     .from(contactOrganizations)
     .innerJoin(contacts, eq(contacts.id, contactOrganizations.contactId))
-    .where(eq(contactOrganizations.organizationId, organizationId))
+    .where(and(eq(contactOrganizations.organizationId, organizationId), isNull(contactOrganizations.endedOn)))
     .orderBy(asc(sql`lower(${contacts.name})`))
   return rijen
 }
@@ -179,6 +180,20 @@ export async function koppelContactAanBedrijf(contactId: string, organizationId:
   const [c] = await db.select({ organizationId: contacts.organizationId }).from(contacts).where(eq(contacts.id, contactId)).limit(1)
   if (!c) throw new CrmError('Contactpersoon niet gevonden.')
   if (c.organizationId === organizationId) throw new CrmError('Dit is al het hoofdbedrijf van deze persoon.')
+  const [bestaand] = await db
+    .select({ endedOn: contactOrganizations.endedOn })
+    .from(contactOrganizations)
+    .where(and(eq(contactOrganizations.contactId, contactId), eq(contactOrganizations.organizationId, organizationId)))
+    .limit(1)
+  if (bestaand && bestaand.endedOn === null) throw new CrmError('Deze persoon hangt al aan dat bedrijf.')
+  if (bestaand) {
+    // Werkte hier eerder: de oude rij wordt weer een lopende koppeling.
+    await db
+      .update(contactOrganizations)
+      .set({ endedOn: null, role: rol?.trim() || null })
+      .where(and(eq(contactOrganizations.contactId, contactId), eq(contactOrganizations.organizationId, organizationId)))
+    return
+  }
   await db.insert(contactOrganizations).values({ contactId, organizationId, role: rol?.trim() || null })
 }
 

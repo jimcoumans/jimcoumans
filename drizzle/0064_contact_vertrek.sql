@@ -1,0 +1,1 @@
+ALTER TABLE "contact_organizations" ADD COLUMN "ended_on" timestamp with time zone;

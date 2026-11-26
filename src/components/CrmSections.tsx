@@ -13,6 +13,8 @@ import {
 } from '@/lib/crm'
 import type { PartnerLink, GekoppeldContact } from '@/lib/crm'
 import { KeuzeLijst } from './performance/KeuzeLijst'
+import { VertrekFormulier } from './crm/Vertrek'
+import type { OudContact } from '@/lib/vertrek'
 import type { ContactChild } from '@/db/schema'
 import { formatCents, formatEuro } from '@/lib/money'
 import { formatDate } from '@/lib/dates'
@@ -265,12 +267,17 @@ export function Contactpersonen({
   organizationId,
   slug,
   kinderenPer,
+  organisatieNaam,
+  alleBedrijven = [],
 }: {
   contacts: Contact[]
   organizationId: string
   slug: string
   /** Per contactpersoon zijn kinderen; leeg als er geen zijn. */
   kinderenPer: Map<string, ContactChild[]>
+  /** Voor "Gaat weg bij dit bedrijf". Zonder deze twee staat die knop er niet. */
+  organisatieNaam?: string
+  alleBedrijven?: { id: string; naam: string }[]
 }) {
   const toevoegen = (stijl: 'primair' | 'rustig') => (
     <Paneel
@@ -378,6 +385,16 @@ export function Contactpersonen({
                       <AfbeeldingKiezer soort="contact" doelId={c.id} naam={c.name} imageId={c.avatarImageId} slug={slug} />
                     </div>
                   </Paneel>
+                  {organisatieNaam && (
+                    <Paneel knop="Gaat weg bij dit bedrijf" titel={`${c.name} gaat weg bij ${organisatieNaam}`} stijl="menu">
+                      <VertrekFormulier
+                        contactId={c.id}
+                        voornaam={c.firstName?.trim() || c.name}
+                        bijBedrijven={[{ id: organizationId, naam: organisatieNaam }]}
+                        alleBedrijven={alleBedrijven}
+                      />
+                    </Paneel>
+                  )}
                   {!c.isPrimary && (
                     <ActionForm
                       action={maakVasteContactpersoon}
@@ -509,6 +526,28 @@ export function OokVerbonden({
           ))}
         </ul>
       )}
+    </section>
+  )
+}
+
+/** Wie hier werkte en is vertrokken. Blijft staan als geschiedenis. */
+export function OudContactpersonen({ oud }: { oud: OudContact[] }) {
+  if (oud.length === 0) return null
+  return (
+    <section>
+      <h2 className="mb-1 text-lg">Oud-contactpersonen</h2>
+      <p className="mb-3 text-sm text-gray-600">Werkten hier en zijn vertrokken. Ze staan nog in het CRM.</p>
+      <ul className="divide-y divide-gray-100 rounded-xl bg-white shadow-sm">
+        {oud.map(({ contact: c, rol, tot }) => (
+          <li key={c.id} className="flex flex-wrap items-baseline justify-between gap-2 px-5 py-3 text-sm">
+            <span>
+              <a href={`/beheer/crm/${c.id}`} className="text-jr-link hover:underline">{c.name}</a>
+              {rol && <span className="text-gray-500"> · {rol}</span>}
+            </span>
+            <span className="text-gray-500">tot {formatDate(tot)}{c.companyName ? ` · nu bij ${c.companyName}` : ''}</span>
+          </li>
+        ))}
+      </ul>
     </section>
   )
 }

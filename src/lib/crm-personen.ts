@@ -140,7 +140,7 @@ export async function listCrmPersonen(filter: CrmFilter = {}): Promise<CrmPersoo
   const viaExtraBedrijf = sql`${contacts.id} IN (
     SELECT ${contactOrganizations.contactId} FROM ${contactOrganizations}
     JOIN ${organizations} ON ${organizations.id} = ${contactOrganizations.organizationId}
-    WHERE ${organizations.name} ILIKE ${like}
+    WHERE ${organizations.name} ILIKE ${like} AND ${contactOrganizations.endedOn} IS NULL
   )`
 
   const [klantRijen, partnerRijen, losseRijen, collegaRijen, extra] = await Promise.all([

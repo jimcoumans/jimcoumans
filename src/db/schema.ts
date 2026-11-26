@@ -1094,6 +1094,7 @@ export const organizationPartners = pgTable(
  * contactpersoon, de facturen en alles wat al bestond aan. Deze tabel is voor
  * de rest: de eigenaar van drie zaken, de adviseur die bij twee klanten in
  * het bestuur zit. Op elk van die bedrijven staat hij dan bij de contacten.
+ * Vertrekt hij ergens, dan blijft de rij staan met een einddatum.
  */
 export const contactOrganizations = pgTable(
   'contact_organizations',
@@ -1106,6 +1107,11 @@ export const contactOrganizations = pgTable(
       .references(() => organizations.id, { onDelete: 'cascade' }),
     /** Wat hij bij dit bedrijf doet, bijv. Eigenaar of Bestuurslid. */
     role: text('role'),
+    /**
+     * Gevuld als hij er niet meer werkt. De rij blijft staan als geschiedenis:
+     * "werkte tot december bij Hotel X". Leeg is een lopende koppeling.
+     */
+    endedOn: timestamp('ended_on', { withTimezone: true }),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [primaryKey({ name: 'contact_organizations_pk', columns: [t.contactId, t.organizationId] }), index('contact_organizations_org_idx').on(t.organizationId)],

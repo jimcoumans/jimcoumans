@@ -18,6 +18,7 @@ import { volledigeNaam, type Aanhef } from '@/lib/namen'
 import type { ActionResult } from './actions'
 import type { Partner } from '@/db/schema'
 import { vergeet } from '@/lib/cache'
+import { vertrekBijBedrijf, type Bestemming } from '@/lib/vertrek'
 
 const AANHEF_WAARDEN: readonly Aanhef[] = ['heer', 'mevrouw', 'neutraal']
 
@@ -872,5 +873,34 @@ export async function ontkoppelVanBedrijf(formData: FormData): Promise<ActionRes
   return veilig(async () => {
     await ontkoppelContactVanBedrijf(contactId, tekst(formData, 'organizationId'))
     ververs(contactId)
+  })
+}
+
+/* ------------------------- Vertrekt bij een bedrijf ------------------------ */
+
+export async function vertrekActie(formData: FormData): Promise<ActionResult> {
+  const user = await requireStaff()
+  const contactId = tekst(formData, 'contactId')
+  const organizationId = tekst(formData, 'organizationId')
+  if (!contactId) return { ok: false, error: 'Onbekende contactpersoon.' }
+  if (!organizationId) return { ok: false, error: 'Kies het bedrijf waar ze weggaat.' }
+  const naar = tekst(formData, 'naar')
+  let bestemming: Bestemming
+  if (naar === 'crm') {
+    const id = tekst(formData, 'naarOrganizationId')
+    if (!id) return { ok: false, error: 'Kies het nieuwe bedrijf, of kies een andere optie.' }
+    bestemming = { soort: 'crm', organizationId: id }
+  } else if (naar === 'tekst') {
+    bestemming = { soort: 'tekst', naam: tekst(formData, 'naarNaam'), alsLead: formData.get('alsLead') !== null }
+  } else bestemming = { soort: 'onbekend' }
+  const d = tekst(formData, 'datum')
+  const datum = d ? new Date(`${d}T12:00:00`) : undefined
+  if (datum && Number.isNaN(datum.getTime())) return { ok: false, error: 'Die datum klopt niet.' }
+
+  return veilig(async () => {
+    await vertrekBijBedrijf(contactId, organizationId, { datum, bestemming }, user)
+    ververs(contactId)
+    revalidatePath('/beheer')
+    revalidatePath('/beheer/pijplijn')
   })
 }

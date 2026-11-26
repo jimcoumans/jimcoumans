@@ -5,7 +5,10 @@ import { listBedrijfsnamen } from '@/lib/pijplijn'
 import { AppShell } from '@/components/AppShell'
 import { Avatar } from '@/components/Avatar'
 import { ActionForm, Field, Select, TextArea } from '@/components/ActionForm'
-import { MAANDNAMEN } from '@/lib/dates'
+import { MAANDNAMEN, formatDate } from '@/lib/dates'
+import { nogOpenBij, vorigeWerkgevers } from '@/lib/vertrek'
+import { VertrekFormulier } from '@/components/crm/Vertrek'
+import { Paneel } from '@/components/Paneel'
 import { wijzigContact, verwijderContact, koppelAanBedrijf, ontkoppelVanBedrijf } from '../../crm-actions'
 
 const KNOP_RUSTIG = 'inline-flex items-center rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50'
@@ -23,7 +26,7 @@ export default async function ContactKaartPagina({ params }: { params: Promise<{
   const { id } = await params
   if (!/^[0-9a-f-]{36}$/i.test(id)) notFound()
 
-  const [kaart, bedrijven, extra] = await Promise.all([getContactKaart(id), listBedrijfsnamen(), extraBedrijvenVan(id)])
+  const [kaart, bedrijven, extra, vorige, open] = await Promise.all([getContactKaart(id), listBedrijfsnamen(), extraBedrijvenVan(id), vorigeWerkgevers(id), nogOpenBij(id)])
   if (!kaart) notFound()
   const { contact: c, organisatie, partner } = kaart
   const werkt = organisatie?.naam ?? partner?.naam ?? c.companyName
@@ -131,6 +134,43 @@ export default async function ContactKaartPagina({ params }: { params: Promise<{
         </section>
 
         <aside className="space-y-6">
+          {(open.deals.length > 0 || open.campagnes.length > 0) && (
+            <section className="rounded-xl border-l-4 border-jr-orange bg-white p-6 shadow-sm">
+              <h2 className="mb-1 text-base">Staat nog als contact bij</h2>
+              <p className="mb-3 text-sm text-gray-600">Bij een bedrijf waar {c.firstName ?? c.name} niet meer werkt. Zet deze op de opvolger.</p>
+              <ul className="space-y-1 text-sm">
+                {open.deals.map((d) => (<li key={d.id}><a href="/beheer/pijplijn" className="text-jr-link hover:underline">Deal: {d.titel}</a> <span className="text-gray-500">· {d.bedrijf}</span></li>))}
+                {open.campagnes.map((k) => (<li key={k.id}><a href={`/beheer/campagnes/${k.id}`} className="text-jr-link hover:underline">Campagne: {k.titel}</a> <span className="text-gray-500">· {k.bedrijf}</span></li>))}
+              </ul>
+            </section>
+          )}
+          {(organisatie || extra.length > 0) && (
+            <section className="rounded-xl bg-white p-6 shadow-sm">
+              <h2 className="mb-1 text-base">Gaat weg?</h2>
+              <p className="mb-3 text-sm text-gray-600">Werkt {c.firstName ?? c.name} niet meer bij {organisatie?.naam ?? extra[0]!.naam}? Leg het vertrek vast: de login gaat dicht en de geschiedenis blijft bewaard.</p>
+              <Paneel knop="Vertrek vastleggen" titel={`${c.name} gaat weg`} stijl="rustig">
+                <VertrekFormulier
+                  contactId={c.id}
+                  voornaam={c.firstName?.trim() || c.name}
+                  bijBedrijven={[...(organisatie ? [{ id: organisatie.id, naam: organisatie.naam }] : []), ...extra.map((e) => ({ id: e.organizationId, naam: e.naam }))]}
+                  alleBedrijven={bedrijven.map((b) => ({ id: b.id, naam: b.naam }))}
+                />
+              </Paneel>
+            </section>
+          )}
+          {vorige.length > 0 && (
+            <section className="rounded-xl bg-white p-6 shadow-sm">
+              <h2 className="mb-3 text-base">Werkte eerder bij</h2>
+              <ul className="space-y-1 text-sm">
+                {vorige.map((v) => (
+                  <li key={v.organizationId}>
+                    <a href={`/beheer/klanten/${v.slug}`} className="text-jr-link hover:underline">{v.naam}</a>
+                    <span className="text-gray-500">{v.rol ? ` · ${v.rol}` : ''} · tot {formatDate(v.tot)}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
           <section className="rounded-xl bg-white p-6 shadow-sm">
             <h2 className="mb-1 text-base">Ook bij andere bedrijven</h2>
             <p className="mb-3 text-sm text-gray-600">
