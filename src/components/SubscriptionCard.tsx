@@ -1,9 +1,10 @@
-import { ActionForm, Field } from './ActionForm'
+import { ActionForm, Field, Select } from './ActionForm'
 import {
   wijzigAbonnement,
   zetAbonnementStatus,
   factureerNu,
   koppelMoneybirdReeks,
+  koppelMoneybirdRetainerfacturen,
 } from '@/app/beheer/subscription-actions'
 import { formatEuro } from '@/lib/money'
 import { Menu } from './Menu'
@@ -11,6 +12,7 @@ import { Paneel } from './Paneel'
 import { formatDate } from '@/lib/dates'
 import { invoiceCents, discountPercentage } from '@/lib/billing-periods'
 import type { SubscriptionOverzicht } from '@/lib/billing'
+import type { MoneybirdReeksKeuzes } from '@/lib/moneybird/reeksen'
 
 const statusLabels = {
   active: 'Loopt',
@@ -40,12 +42,14 @@ export function SubscriptionCard({
   toonKlant = false,
   moneybirdKoppelen = false,
   moneybirdContactId,
+  moneybirdReeksen,
 }: {
   item: SubscriptionOverzicht
   slug: string
   toonKlant?: boolean
   moneybirdKoppelen?: boolean
   moneybirdContactId?: string | null
+  moneybirdReeksen?: MoneybirdReeksKeuzes | null
 }) {
   const { subscription: abo } = item
   // Het budget is wat de klant krijgt; het factuurbedrag is wat hij betaalt.
@@ -106,6 +110,9 @@ export function SubscriptionCard({
 
           )}
 
+          {!abo.moneybirdState && abo.moneybirdRecurringId && (
+            <p className="mt-1 text-[13px] text-gray-600">Retainerfacturen gekoppeld</p>
+          )}
           {abo.notes && <p className="mt-1.5 text-xs text-gray-500">{abo.notes}</p>}
         </div>
 
@@ -194,13 +201,32 @@ export function SubscriptionCard({
 
           </>}
 
+          {moneybirdReeksen && !abo.moneybirdState && (
+            <Paneel knop={abo.moneybirdRecurringId ? 'Retainerreeks wijzigen' : 'Retainerfacturen koppelen'}
+              stijl="menu" titel="Moneybird-reeks voor retainerfacturen"
+              uitleg="Kies de reeks waarvan de facturen bij dit abonnement horen. Deze keuze bepaalt de indeling in het portaal.">
+              {!moneybirdReeksen.ok ? (
+                <p className="text-sm text-gray-600">Moneybird-reeksen konden niet worden opgehaald. Ververs de pagina.</p>
+              ) : moneybirdReeksen.opties.length === 0 ? (
+                <p className="text-sm text-gray-600">Geen terugkerende facturen gevonden voor dit Moneybird-contact.</p>
+              ) : (
+                <ActionForm action={koppelMoneybirdRetainerfacturen} submitLabel="Indeling opslaan" className="space-y-3">
+                  <input type="hidden" name="id" value={abo.id} />
+                  <Select label="Moneybird-reeks" name="reeksId" defaultValue={abo.moneybirdRecurringId ?? ''}
+                    options={[{ value: '', label: 'Kies een terugkerende factuur' }, ...moneybirdReeksen.opties]}
+                  />
+                </ActionForm>
+              )}
+            </Paneel>
+          )}
+
           {moneybirdKoppelen && !abo.moneybirdState && abo.status === 'active' && (
             <Paneel knop="Bestaande Moneybird-reeks koppelen" stijl="menu" titel="Moneybird-reeks koppelen"
               uitleg="Deze klant ziet daarna de Moneybird-facturen in het portaal. Stopzetten in de Wallet stopt de gekoppelde reeks ook in Moneybird.">
               <ActionForm action={koppelMoneybirdReeks} submitLabel="Reeks koppelen" className="space-y-3">
                 <input type="hidden" name="id" value={abo.id} />
                 <Field label="Moneybird-contact-ID" name="contactId" required defaultValue={moneybirdContactId ?? ''} />
-                <Field label="Moneybird-reeks-ID" name="reeksId" required />
+                <Field label="Moneybird-reeks-ID" name="reeksId" required defaultValue={abo.moneybirdRecurringId ?? ''} />
               </ActionForm>
             </Paneel>
           )}
