@@ -28,6 +28,10 @@ export type ClickUpTask = {
   url?: string
 }
 
+type ClickUpLocatie = { id: string; name: string }
+type ClickUpLijst = ClickUpLocatie & { archived?: boolean }
+type ClickUpMap = ClickUpLocatie & { lists?: ClickUpLijst[] }
+
 export class ClickUpError extends Error {
   constructor(
     message: string,
@@ -93,6 +97,39 @@ export class ClickUpClient {
   async teamMembers(): Promise<{ id: number; email: string }[]> {
     const data = await this.get<{ teams: { members: { user: { id: number; email: string } }[] }[] }>('/team')
     return data.teams.flatMap((t) => t.members.map((m) => ({ id: m.user.id, email: m.user.email.toLowerCase() })))
+  }
+
+  async listKeuzes(signal: AbortSignal, teamId?: string) {
+    const { teams } = await this.get<{ teams: ClickUpLocatie[] }>('/team', signal)
+    const werkruimtes = teams.filter((team) => !teamId || team.id === teamId)
+    if (teamId && werkruimtes.length === 0) throw new ClickUpError('De ingestelde ClickUp-workspace is niet bereikbaar.')
+
+    const resultaten = await Promise.all(werkruimtes.map(async (team) => {
+      const { spaces } = await this.get<{ spaces: ClickUpLocatie[] }>(
+        `/team/${encodeURIComponent(team.id)}/space?archived=false`, signal,
+      )
+      return Promise.all(spaces.map(async (space) => {
+        const pad = `/space/${encodeURIComponent(space.id)}`
+        const [{ folders }, { lists }] = await Promise.all([
+          this.get<{ folders: ClickUpMap[] }>(`${pad}/folder?archived=false`, signal),
+          this.get<{ lists: ClickUpLijst[] }>(`${pad}/list?archived=false`, signal),
+        ])
+        const locatie = `${team.name} / ${space.name}`
+        const keuzes = (lijsten: ClickUpLijst[], plek: string) => lijsten
+          .filter((lijst) => !lijst.archived)
+          .map((lijst) => ({ value: lijst.id, label: `${lijst.name} · ${plek}` }))
+        const mapKeuzes = await Promise.all(folders.map(async (folder) => {
+          const folderLists = folder.lists ?? (await this.get<{ lists: ClickUpLijst[] }>(
+            `/folder/${encodeURIComponent(folder.id)}/list?archived=false`, signal,
+          )).lists
+          return keuzes(folderLists, `${locatie} / ${folder.name}`)
+        }))
+        return [...keuzes(lists, locatie), ...mapKeuzes.flat()]
+      }))
+    }))
+
+    return Array.from(new Map(resultaten.flat(2).map((keuze) => [keuze.value, keuze])).values())
+      .sort((a, b) => a.label.localeCompare(b.label, 'nl'))
   }
 
   getList(listId: string, signal: AbortSignal) {

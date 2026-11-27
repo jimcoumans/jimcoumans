@@ -17,6 +17,22 @@ const formulier = z.object({
   listId: z.string().trim(),
 })
 
+export async function haalClickUpWalletLijsten(): Promise<
+  { ok: true; opties: { value: string; label: string }[] } | { ok: false }
+> {
+  const user = await getSessionUser()
+  if (user?.role !== 'admin') return { ok: false }
+
+  try {
+    const clickup = new ClickUpClient(process.env.CLICKUP_API_TOKEN ?? '')
+    const opties = await clickup.listKeuzes(AbortSignal.timeout(8000), process.env.CLICKUP_TEAM_ID)
+    return { ok: true, opties }
+  } catch (error) {
+    console.error('[retainer-wallet] ClickUp-lijsten ophalen mislukt', error instanceof Error ? error.name : '')
+    return { ok: false }
+  }
+}
+
 export async function zetRetainerWallet(formData: FormData): Promise<ActionResult> {
   const user = await getSessionUser()
   if (user?.role !== 'admin') return { ok: false, error: 'Alleen een beheerder kan de walletbronnen wijzigen.' }
@@ -35,7 +51,7 @@ export async function zetRetainerWallet(formData: FormData): Promise<ActionResul
     return { ok: false, error: 'Vul de startmaand in als MM/JJ, bijvoorbeeld 10/25.' }
   }
   if (!uitschakelen && !/^\d{1,30}$/.test(listId)) {
-    return { ok: false, error: 'Vul het numerieke ID van de ClickUp-takenlijst in.' }
+    return { ok: false, error: 'Kies een ClickUp-takenlijst.' }
   }
 
   if (!uitschakelen) {
