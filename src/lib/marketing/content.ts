@@ -21,6 +21,7 @@ import {
   type MarketingContentBlock,
   type MarketingContentItem,
 } from '@/db/schema'
+import { seinWebsite } from '../publiek/website'
 import { MarketingFout, magMarketing, type OnderwerpType } from './registers'
 import { soortVan, standaardModus, toegestaneModi, veldenVan, type Paginasoort, type Veld } from './velden'
 
@@ -345,6 +346,7 @@ export async function keurGoed(id: string, user: { id: string; role: Rol }, note
     const r = await legVast(tx, d, 'approved', user.id, note)
     await tx.update(marketingContentItems).set({ workflowStatus: 'approved', approvedRevisionId: r.id, needsReview: false, updatedAt: new Date() }).where(eq(marketingContentItems.id, id))
   })
+  await seinWebsite(['content'])
 }
 
 export async function stuurTerug(id: string, user: { id: string; role: Rol }, note: string) {
@@ -367,6 +369,7 @@ export async function archiveer(id: string, user: { id: string; role: Rol }, not
     await legVast(tx, d, 'archived', user.id, note)
     await tx.update(marketingContentItems).set({ workflowStatus: 'archived', updatedAt: new Date() }).where(eq(marketingContentItems.id, id))
   })
+  await seinWebsite(['content'])
 }
 
 /** Publicatie vastleggen, nadat iemand het met de hand in WordPress heeft gezet. */
