@@ -1,3 +1,4 @@
+import { seinWebsite } from './publiek/website'
 import { and, asc, count, desc, eq, inArray, isNull, lt, lte, or, sql } from 'drizzle-orm'
 import { db } from '@/db'
 import { candidates, vacancies, users, generatedContracts, candidateNotes, candidateDocuments } from '@/db/schema'
@@ -387,6 +388,7 @@ export async function maakVacature(input: NieuweVacature): Promise<Vacancy> {
     .returning()
 
   if (!vacature) throw new WervingError('De vacature kon niet worden opgeslagen.')
+  if (vacature.status === 'open') await seinWebsite(['vacatures'])
   return vacature
 }
 
@@ -416,6 +418,7 @@ export async function zetVacatureStatus(
       updatedAt: nu,
     })
     .where(eq(vacancies.id, id))
+  await seinWebsite(['vacatures'])
 }
 
 export type NieuweKandidaat = {

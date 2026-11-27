@@ -1,3 +1,4 @@
+import { seinWebsite } from './publiek/website'
 import { and, count, eq, isNull } from 'drizzle-orm'
 import { db } from '@/db'
 import {
@@ -114,7 +115,7 @@ export async function neemAan(invoer: AannameInvoer): Promise<{ userId: string }
   const roepnaam = k.firstName
   const naam = volledigeNaam({ firstName: roepnaam, infix: tussenvoegsel, lastName: achternaam }) || k.name
 
-  return db.transaction(async (tx) => {
+  const uit = await db.transaction(async (tx) => {
     /* 1. De collega. */
     const profiel = {
       name: naam,
@@ -233,6 +234,9 @@ export async function neemAan(invoer: AannameInvoer): Promise<{ userId: string }
 
     return { userId }
   })
+  // Een vacature die nu vol is, verdwijnt van de website.
+  await seinWebsite(['vacatures'])
+  return uit
 }
 
 /* --- Ondertekening -------------------------------------------------------- */
