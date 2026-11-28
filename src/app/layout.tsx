@@ -29,6 +29,9 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
+  // Tot in de hoeken van de telefoon, zodat de navigatie onderin boven de
+  // thuisbalk van de iPhone kan staan (env(safe-area-inset-bottom)).
+  viewportFit: 'cover',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

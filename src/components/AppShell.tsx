@@ -250,6 +250,19 @@ const TEAM_GROEPEN: NavGroep[] = [
 
 const ALLEEN_ADMIN = new Set(['salarishuis', 'bedrijf', 'sjablonen'])
 
+/*
+ * De balk onderin op een telefoon: de vijf plekken waar je onderweg het vaakst
+ * heen wilt, met één tik. Al het andere zit achter het menu linksboven.
+ * Bewust niet meer dan vijf: anders worden de knoppen te klein om te raken.
+ */
+const TEAM_TABS: NavItem[] = [
+  { href: '/beheer', label: 'Dashboard', key: 'dashboard', icon: icons.dashboard },
+  { href: '/beheer/klanten', label: 'Bedrijven', key: 'klanten', icon: icons.clients },
+  { href: '/beheer/crm', label: 'Contacten', key: 'crm', icon: icons.contacts },
+  { href: '/beheer/pijplijn', label: 'Pijplijn', key: 'pijplijn', icon: icons.pijplijn },
+  { href: '/beheer/performance', label: 'Performance', key: 'performance', icon: icons.performance },
+]
+
 const CLIENT_NAV: NavItem[] = [
   { href: '/', label: 'Mijn wallet', key: 'wallet', icon: icons.wallet },
   { href: '/resultaten', label: 'Resultaten', key: 'resultaten', icon: icons.performance },
@@ -312,7 +325,7 @@ export function AppShell({
   return (
     <div className="min-h-screen lg:flex">
       {/* Balk bovenaan, alleen op smalle schermen */}
-      <div className="bg-jr-black flex items-center justify-between px-4 py-3 lg:hidden">
+      <div className="bg-jr-black sticky top-0 z-30 flex items-center justify-between px-4 pt-[max(0.75rem,env(safe-area-inset-top))] pb-3 lg:hidden">
         <button
           type="button"
           onClick={() => setOpen(true)}
@@ -467,11 +480,39 @@ export function AppShell({
           </div>
         )}
         <main
-          className={`mx-auto px-4 py-8 sm:px-8 xl:px-12 ${breed ? 'max-w-[1800px]' : 'max-w-[1440px]'}`}
+          className={`mx-auto px-4 pt-5 pb-[calc(6rem+env(safe-area-inset-bottom))] sm:px-8 sm:pt-8 lg:pb-8 xl:px-12 ${breed ? 'max-w-[1800px]' : 'max-w-[1440px]'}`}
         >
           {children}
         </main>
       </div>
+
+      {/* De balk onderin, alleen op smalle schermen. */}
+      <nav
+        aria-label="Snelmenu"
+        className="fixed inset-x-0 bottom-0 z-30 border-t border-gray-200 bg-white/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl lg:hidden"
+      >
+        <ul className={`mx-auto grid max-w-lg ${isTeam ? 'grid-cols-5' : 'grid-cols-4'}`}>
+          {(isTeam ? TEAM_TABS : CLIENT_NAV).map((item) => {
+            const aan = actief === item.key
+            return (
+              <li key={item.key}>
+                <a
+                  href={item.href}
+                  aria-current={aan ? 'page' : undefined}
+                  className={`flex flex-col items-center gap-1 px-1 pt-2 pb-1.5 text-[11px] leading-none transition-colors ${
+                    aan ? 'text-jr-blue font-medium' : 'text-gray-500 active:text-gray-900'
+                  }`}
+                >
+                  <span className={`flex h-8 w-14 items-center justify-center rounded-full transition-colors ${aan ? 'bg-jr-blue/10' : ''}`}>
+                    <span className="h-[22px] w-[22px]">{item.icon}</span>
+                  </span>
+                  <span className="max-w-full truncate">{item.label}</span>
+                </a>
+              </li>
+            )
+          })}
+        </ul>
+      </nav>
     </div>
   )
 }

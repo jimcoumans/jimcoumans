@@ -51,7 +51,7 @@ export function FilterBalk({
  * met de rest van het formulier in de URL en ververst de lijst, zonder dat het
  * veld zijn focus kwijtraakt. Enter werkt nog steeds, ook zonder JavaScript.
  */
-export function Zoekveld({ naam = 'zoek', waarde, placeholder }: { naam?: string; waarde: string; placeholder: string }) {
+export function Zoekveld({ naam = 'zoek', waarde, placeholder, breed = false }: { naam?: string; waarde: string; placeholder: string; breed?: boolean }) {
   const router = useRouter()
   const pad = usePathname()
   const [bezig, start] = useTransition()
@@ -76,7 +76,7 @@ export function Zoekveld({ naam = 'zoek', waarde, placeholder }: { naam?: string
   }, [tekst, naam, pad, router])
 
   return (
-    <div className="relative w-full max-w-sm">
+    <div className={`relative w-full ${breed ? '' : 'max-w-sm'}`}>
       <svg
         viewBox="0 0 24 24"
         className={`pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 ${bezig ? 'text-jr-blue animate-pulse' : 'text-gray-400'}`}
